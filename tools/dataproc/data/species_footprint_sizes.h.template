@@ -3,7 +3,7 @@
 
 #include "constants/species.h"
 #include "generated/footprint_sizes.h"
-#include "overlay113/footprint_data.h"
+#include "footprint_stamp/footprint_data.h"
 
 static const FootprintData sSpeciesFootprints[NATIONAL_DEX_COUNT + 1] = {
 /* =========== MAGIC CONTENT MARKER =========== */

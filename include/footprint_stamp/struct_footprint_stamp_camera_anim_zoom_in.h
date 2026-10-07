@@ -1,0 +1,11 @@
+#ifndef POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_ZOOM_IN_H
+#define POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_ZOOM_IN_H
+
+typedef struct {
+    fx32 unk_00;
+    s16 unk_04;
+    u8 unk_06;
+    u8 unk_07;
+} FootprintStampCameraAnimZoomIn;
+
+#endif // POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_ZOOM_IN_H

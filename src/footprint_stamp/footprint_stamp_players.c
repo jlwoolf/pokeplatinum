@@ -1,4 +1,4 @@
-#include "overlay113/ov113_02260620.h"
+#include "footprint_stamp/footprint_stamp_players.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -9,8 +9,8 @@
 #include "overlay066/ov66_0222DDF0.h"
 #include "overlay066/ov66_022324F0.h"
 #include "overlay066/struct_ov66_0222DFF8_decl.h"
-#include "overlay113/footprint_data.h"
-#include "overlay113/struct_ov113_02260818.h"
+#include "footprint_stamp/footprint_data.h"
+#include "footprint_stamp/struct_footprint_stamp_entry.h"
 
 #include "bg_window.h"
 #include "heap.h"
@@ -21,7 +21,7 @@
 #include "touch_screen.h"
 #include "trainer_info.h"
 
-__attribute__((aligned(4))) static const u16 Unk_ov113_02260D6C[][2] = {
+__attribute__((aligned(4))) static const u16 sStampColors[][2] = {
     { 0x4210, 0x6f7b },
     { 0x1A, 0x483C },
     { 0x221, 0x1746 },
@@ -35,7 +35,7 @@ __attribute__((aligned(4))) static const u16 Unk_ov113_02260D6C[][2] = {
 
 #include "res/pokemon/species_footprint_sizes.h"
 
-static const TouchScreenRect Unk_ov113_02260D4C[] = {
+static const TouchScreenRect sTouchRects[] = {
     { 0xA0, 0xC0, 0x0, 0x20 },
     { 0xA0, 0xC0, 0x20, 0x40 },
     { 0xA0, 0xC0, 0x40, 0x60 },
@@ -46,7 +46,7 @@ static const TouchScreenRect Unk_ov113_02260D4C[] = {
     { 0xFF, 0x0, 0x0, 0x0 }
 };
 
-void ov113_02260620(MessageLoader *param0, StringTemplate *param1, Window param2[], UnkStruct_ov66_0222DFF8 *param3, s32 param4)
+void FootprintStampPlayers_DrawName(MessageLoader *param0, StringTemplate *param1, Window param2[], UnkStruct_ov66_0222DFF8 *param3, s32 param4)
 {
     const WiFiPlazaProfile *v0;
     TrainerInfo *v1;
@@ -109,7 +109,7 @@ void ov113_02260620(MessageLoader *param0, StringTemplate *param1, Window param2
     Heap_Free(v1);
 }
 
-void ov113_02260714(Window param0[], u32 param1)
+void FootprintStampPlayers_ClearName(Window param0[], u32 param1)
 {
     if (param1 >= 8) {
         GF_ASSERT(FALSE);
@@ -119,20 +119,20 @@ void ov113_02260714(Window param0[], u32 param1)
     Window_ClearAndCopyToVRAM(&param0[param1]);
 }
 
-u16 ov113_0226072C(int param0, u32 param1)
+u16 FootprintStampPlayers_GetStampColor(int param0, u32 param1)
 {
-    return Unk_ov113_02260D6C[param1 % NELEMS(Unk_ov113_02260D6C)][param0];
+    return sStampColors[param1 % NELEMS(sStampColors)][param0];
 }
 
-int ov113_02260748(UnkStruct_ov113_02260818 *param0, int param1)
+int FootprintStampPlayers_CheckTouch(FootprintStampEntry *param0, int param1)
 {
     int v0;
     int v1 = 0xff;
 
-    v0 = TouchScreen_CheckRectanglePressed(Unk_ov113_02260D4C);
+    v0 = TouchScreen_CheckRectanglePressed(sTouchRects);
 
     if (v0 < 6) {
-        if ((param1 != v0) && (param0[v0].unk_02 != 0) && (param0[v0].unk_02 <= NATIONAL_DEX_COUNT)) {
+        if ((param1 != v0) && (param0[v0].species != 0) && (param0[v0].species <= NATIONAL_DEX_COUNT)) {
             v1 = v0;
         }
     } else if (v0 == 6) {

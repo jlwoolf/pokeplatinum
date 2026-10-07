@@ -20,7 +20,7 @@
 #include "wifi_earth/wifi_earth.h"
 #include "overlay070/ov70_0225D9A4.h"
 #include "wifi_lobby_news/wifi_lobby_news.h"
-#include "overlay113/ov113_0225C700.h"
+#include "footprint_stamp/footprint_stamp.h"
 #include "overlay115/ov115_02260440.h"
 #include "overlay115/struct_ov115_02260440.h"
 #include "overlay116/ov116_022604C4.h"
@@ -38,7 +38,7 @@ FS_EXTERN_OVERLAY(wifi_lobby_questionnaire);
 FS_EXTERN_OVERLAY(wifi_earth);
 FS_EXTERN_OVERLAY(overlay70);
 FS_EXTERN_OVERLAY(wifi_lobby_news);
-FS_EXTERN_OVERLAY(overlay113);
+FS_EXTERN_OVERLAY(footprint_stamp);
 FS_EXTERN_OVERLAY(overlay114);
 FS_EXTERN_OVERLAY(overlay115);
 FS_EXTERN_OVERLAY(overlay116);
@@ -759,13 +759,13 @@ static void ov66_022312D8(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E
 {
     UnkStruct_ov66_0223127C *v0;
 
-    FS_EXTERN_OVERLAY(overlay113);
+    FS_EXTERN_OVERLAY(footprint_stamp);
 
     static const ApplicationManagerTemplate v1 = {
-        ov113_0225C700,
-        ov113_0225CA04,
-        ov113_0225CDFC,
-        FS_OVERLAY_ID(overlay113),
+        FootprintStamp_Init,
+        FootprintStamp_Main,
+        FootprintStamp_Exit,
+        FS_OVERLAY_ID(footprint_stamp),
     };
 
     v0 = param1->unk_00;
@@ -778,13 +778,13 @@ static void ov66_022312EC(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E
 {
     UnkStruct_ov66_0223127C *v0;
 
-    FS_EXTERN_OVERLAY(overlay113);
+    FS_EXTERN_OVERLAY(footprint_stamp);
 
     static const ApplicationManagerTemplate v1 = {
-        ov113_0225C700,
-        ov113_0225CA04,
-        ov113_0225CDFC,
-        FS_OVERLAY_ID(overlay113),
+        FootprintStamp_Init,
+        FootprintStamp_Main,
+        FootprintStamp_Exit,
+        FS_OVERLAY_ID(footprint_stamp),
     };
 
     v0 = param1->unk_00;

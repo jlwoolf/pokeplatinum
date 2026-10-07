@@ -1637,13 +1637,13 @@ Overlay wifi_lobby_news
 	Object main.nef.p/src_wifi_lobby_news_wifi_lobby_news.c.o
 }
 
-Overlay overlay113
+Overlay footprint_stamp
 {
 	After overlay66
-	Object main.nef.p/src_overlay113_ov113_0225C700.c.o
-	Object main.nef.p/src_overlay113_ov113_0225E368.c.o
-	Object main.nef.p/src_overlay113_ov113_02260620.c.o
-	Object main.nef.p/src_overlay113_ov113_022607D8.c.o
+	Object main.nef.p/src_footprint_stamp_footprint_stamp.c.o
+	Object main.nef.p/src_footprint_stamp_footprint_stamp_models.c.o
+	Object main.nef.p/src_footprint_stamp_footprint_stamp_players.c.o
+	Object main.nef.p/src_footprint_stamp_footprint_stamp_comm.c.o
 }
 
 Overlay overlay114
