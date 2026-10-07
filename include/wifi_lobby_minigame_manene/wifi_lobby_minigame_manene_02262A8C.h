@@ -1,0 +1,22 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02262A8C_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02262A8C_H
+
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_02262A8C.h"
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_022649E4.h"
+
+#include "sys_task_manager.h"
+
+WiFiLobbyMinigameManeneGame *WiFiLobbyMinigameManene_CreateGame(int param0, u32 param1, WiFiLobbyMinigameManeneResources *param2);
+void WiFiLobbyMinigameManene_ResetGame(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreeGame(WiFiLobbyMinigameManeneGame *param0);
+BOOL WiFiLobbyMinigameManene_IsBallLowEnough(WiFiLobbyMinigameManeneGame *param0, int *param1);
+void WiFiLobbyMinigameManene_UpdateBallAnimByHeight(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_BallBounceTask(SysTask *param0, void *param1);
+void WiFiLobbyMinigameManene_PlayerFallTask(SysTask *param0, void *param1);
+void WiFiLobbyMinigameManene_UpdateGame(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_HandleTouchInput(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_ResetRoundState(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_AdvanceLevelTimer(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_UpdateBallMovement(WiFiLobbyMinigameManeneGame *param0);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02262A8C_H

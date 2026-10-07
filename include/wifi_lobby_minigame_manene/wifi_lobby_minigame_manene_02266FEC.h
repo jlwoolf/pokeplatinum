@@ -1,0 +1,19 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02266FEC_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02266FEC_H
+
+#include <nitro/fx/fx.h>
+
+#include "wifi_lobby_minigame_manene/union_wifi_lobby_minigame_manene_02266FEC.h"
+#include "wifi_lobby_minigame_manene/union_wifi_lobby_minigame_manene_022671EC.h"
+
+void WiFiLobbyMinigameManene_QuaternionIdentity(WiFiLobbyMinigameManeneQuaternion *param0);
+void WiFiLobbyMinigameManene_QuaternionCopy(WiFiLobbyMinigameManeneQuaternion *param0, WiFiLobbyMinigameManeneQuaternion *param1);
+void WiFiLobbyMinigameManene_QuaternionMultiply(WiFiLobbyMinigameManeneQuaternion *param0, const WiFiLobbyMinigameManeneQuaternion *param1, const WiFiLobbyMinigameManeneQuaternion *param2);
+f32 WiFiLobbyMinigameManene_QuaternionMagnitudeSquared(const WiFiLobbyMinigameManeneQuaternion *param0);
+f32 WiFiLobbyMinigameManene_QuaternionMagnitude(const WiFiLobbyMinigameManeneQuaternion *param0);
+void WiFiLobbyMinigameManene_QuaternionScale(WiFiLobbyMinigameManeneQuaternion *param0, const WiFiLobbyMinigameManeneQuaternion *param1, f32 param2);
+void WiFiLobbyMinigameManene_QuaternionToMatrix(WiFiLobbyMinigameManeneMatrix *param0, const WiFiLobbyMinigameManeneQuaternion *param1);
+void WiFiLobbyMinigameManene_MatrixToMtx44(const WiFiLobbyMinigameManeneMatrix *param0, MtxFx44 *param1);
+void WiFiLobbyMinigameManene_MatrixToMtx43(const WiFiLobbyMinigameManeneMatrix *param0, MtxFx43 *param1);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02266FEC_H

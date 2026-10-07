@@ -1,0 +1,11 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02262A44_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02262A44_H
+
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_02262A44.h"
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_022649E4.h"
+
+WiFiLobbyMinigameManeneCountdown *WiFiLobbyMinigameManene_CreateCountdown(int param0, WiFiLobbyMinigameManeneResources *param1);
+void WiFiLobbyMinigameManene_FreeCountdown(WiFiLobbyMinigameManeneCountdown *param0);
+BOOL WiFiLobbyMinigameManene_TickCountdown(WiFiLobbyMinigameManeneCountdown *param0);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02262A44_H

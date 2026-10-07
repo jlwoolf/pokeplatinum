@@ -15,7 +15,7 @@
 #include "gts/struct_gts_menu_args.h"
 #include "wifi_lobby_minigame_bucket/wifi_lobby_minigame_bucket.h"
 #include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_args.h"
-#include "overlay116/ov116_022604C4.h"
+#include "wifi_lobby_minigame_manene/wifi_lobby_minigame_manene.h"
 #include "overlay117/ov117_02260440.h"
 #include "overlay117/struct_ov117_02260440.h"
 #include "wfc_settings/wfc_settings.h"
@@ -38,7 +38,7 @@
 FS_EXTERN_OVERLAY(overlay65);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame_bucket);
-FS_EXTERN_OVERLAY(overlay116);
+FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
 FS_EXTERN_OVERLAY(overlay117);
 
 // Field task that drives the Nintendo WFC menu. It runs the overlay065 menu
@@ -454,19 +454,19 @@ static void WiFiMenu_FreeSwalotMinigame(WiFiLobbyMinigameBucketArgs *param0)
     Overlay_UnloadByID(FS_OVERLAY_ID(wifi_lobby_minigame));
 }
 
-// Launches the Mime Jr. ball-rolling WiFi Plaza minigame (overlay116).
+// Launches the Mime Jr. ball-rolling WiFi Plaza minigame (wifi_lobby_minigame_manene).
 static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2)
 {
     UnkStruct_ov66_02231134 *v0;
 
-    FS_EXTERN_OVERLAY(overlay116);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
     FS_EXTERN_OVERLAY(wifi_lobby_minigame);
     {
         static const ApplicationManagerTemplate v1 = {
-            ov116_022609B4,
-            ov116_02260CF4,
-            ov116_0226126C,
-            FS_OVERLAY_ID(overlay116),
+            WiFiLobbyMinigameManene_Init,
+            WiFiLobbyMinigameManene_Main,
+            WiFiLobbyMinigameManene_Exit,
+            FS_OVERLAY_ID(wifi_lobby_minigame_manene),
         };
 
         v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov66_02231134));

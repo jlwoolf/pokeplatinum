@@ -1,0 +1,12 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02260440_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02260440_H
+
+#include "struct_defs/comm_cmd_table.h"
+
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_0226139C.h"
+
+const CommCmdTable *WiFiLobbyMinigameManene_GetCommCmdTable(void);
+int WiFiLobbyMinigameManene_GetCommCmdCount(void);
+void WiFiLobbyMinigameManene_InitCommCmd(WiFiLobbyMinigameManeneApp *param0);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02260440_H
