@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_CONST_SLOT_MACHINE_REEL_STRIPS_H
+#define POKEPLATINUM_CONST_SLOT_MACHINE_REEL_STRIPS_H
+
+#include "enums.h"
+
+extern const SlotMachineSymbol sSlotMachineReelStrips[3][21];
+
+#endif // POKEPLATINUM_CONST_SLOT_MACHINE_REEL_STRIPS_H

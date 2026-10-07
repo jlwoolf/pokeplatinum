@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_CONST_SLOT_MACHINE_BONUS_MULTIPLIER_TABLE_H
+#define POKEPLATINUM_CONST_SLOT_MACHINE_BONUS_MULTIPLIER_TABLE_H
+
+#include "slot_machine/struct_slot_machine_bonus_multiplier.h"
+
+#include "enums.h"
+
+extern const SlotMachineBonusMultiplier sSlotMachineBonusMultiplierTable[6][SlotMachineBonusKind_03][SlotMachineWinType_03];
+
+#endif // POKEPLATINUM_CONST_SLOT_MACHINE_BONUS_MULTIPLIER_TABLE_H

@@ -1,0 +1,99 @@
+#ifndef POKEPLATINUM_STRUCT_SLOT_MACHINE_CONTEXT_H
+#define POKEPLATINUM_STRUCT_SLOT_MACHINE_CONTEXT_H
+
+#include <nnsys.h>
+
+#include "slot_machine/struct_slot_machine_message_box.h"
+#include "slot_machine/struct_slot_machine_bgm_state.h"
+#include "slot_machine/struct_slot_machine_reel_task.h"
+#include "slot_machine/struct_slot_machine_payout_task.h"
+#include "slot_machine/struct_slot_machine_reel_anim_task.h"
+#include "slot_machine/struct_slot_machine_palette.h"
+#include "slot_machine/struct_slot_machine_sprite_manager_decl.h"
+
+#include "bg_window.h"
+#include "enums.h"
+#include "narc.h"
+#include "overworld_anim_manager.h"
+
+typedef struct SlotMachineContext_t {
+    u32 unk_00;
+    u32 unk_04;
+    u32 unk_08;
+    u32 unk_0C;
+    u32 unk_10;
+    u32 unk_14;
+    u32 unk_18;
+    u32 unk_1C;
+    u32 unk_20;
+    u32 unk_24;
+    u32 unk_28;
+    u32 unk_2C;
+    u32 unk_30;
+    u32 unk_34;
+    u32 unk_38;
+    u32 unk_3C;
+    u32 unk_40;
+    SlotMachineSymbol unk_44;
+    u32 unk_48;
+    SlotMachineBonusKind unk_4C;
+    SlotMachineBonusType unk_50;
+    u32 unk_54[3];
+    int unk_60;
+    int unk_64;
+    int unk_68;
+    fx32 unk_6C;
+    int unk_70;
+    u32 unk_74;
+    u32 unk_78;
+    SlotMachineReelButtonState unk_7C[3];
+    int unk_88;
+    fx32 unk_8C;
+    fx32 unk_90[3];
+    fx32 unk_9C[3];
+    int unk_A8[3];
+    SlotMachineReelTask unk_B4[3];
+    SlotMachinePayoutTask unk_120;
+    SlotMachineReelAnimTask unk_13C;
+    SlotMachinePalette unk_184;
+    SlotMachineMessageBox unk_408;
+    SlotMachineBgmState unk_424;
+    NARC *unk_438;
+    BgConfig *unk_43C;
+    NNSG2dScreenData *unk_440;
+    NNSG2dCharacterData *unk_444;
+    NNSG2dPaletteData *unk_448;
+    OverworldAnimManagerList *unk_44C;
+    SlotMachineSpriteManager *unk_450;
+    OverworldAnimManager *unk_454;
+    u32 unk_458;
+    u32 unk_45C;
+    u32 unk_460;
+    u32 unk_464;
+    u32 unk_468;
+    u32 unk_46C;
+    u32 unk_470;
+    u32 unk_474;
+    u32 unk_478;
+    u32 unk_47C;
+    u32 unk_480;
+    u32 unk_484;
+    u32 unk_488;
+    u32 unk_48C;
+    u32 unk_490;
+    u32 unk_494;
+    u32 unk_498;
+    u32 unk_49C;
+    u32 unk_4A0;
+    u32 unk_4A4;
+    u32 unk_4A8;
+    u32 unk_4AC;
+    u32 unk_4B0;
+    u32 unk_4B4;
+    u32 unk_4B8;
+    u32 unk_4BC;
+    u32 unk_4C0;
+    int msgBoxFrame;
+} SlotMachineContext;
+
+#endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_CONTEXT_H

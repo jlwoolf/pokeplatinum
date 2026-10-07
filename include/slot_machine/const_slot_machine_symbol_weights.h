@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_CONST_SLOT_MACHINE_SYMBOL_WEIGHTS_H
+#define POKEPLATINUM_CONST_SLOT_MACHINE_SYMBOL_WEIGHTS_H
+
+#include "slot_machine/struct_slot_machine_symbol_weights.h"
+
+extern const SlotMachineSymbolWeights sSlotMachineSymbolWeights[6];
+
+#endif // POKEPLATINUM_CONST_SLOT_MACHINE_SYMBOL_WEIGHTS_H

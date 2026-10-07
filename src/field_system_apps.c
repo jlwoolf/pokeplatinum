@@ -65,7 +65,7 @@
 #include "overlay022/ov22_0225B660.h"
 #include "mix_records/mix_records.h"
 #include "geonet/geonet.h"
-#include "overlay101/ov101_021D0D80.h"
+#include "slot_machine/slot_machine.h"
 #include "savedata/save_table.h"
 #include "union_room_drawing/union_room_drawing.h"
 #include "wifi_battle_tower/application.h"
@@ -160,7 +160,7 @@ FS_EXTERN_OVERLAY(gts_application);
 FS_EXTERN_OVERLAY(trade_sequence);
 FS_EXTERN_OVERLAY(wifi_battle_tower);
 FS_EXTERN_OVERLAY(end_credits);
-FS_EXTERN_OVERLAY(overlay101);
+FS_EXTERN_OVERLAY(slot_machine);
 FS_EXTERN_OVERLAY(frontier_records_app);
 FS_EXTERN_OVERLAY(scratch_off_cards);
 FS_EXTERN_OVERLAY(dw_warp);
@@ -1526,13 +1526,13 @@ void FieldSystem_HatchEgg(FieldSystem *fieldSystem)
 
 BOOL FieldSystem_OpenSlotMachine(FieldSystem *fieldSystem, UnkStruct_0203E348 *appArgs)
 {
-    FS_EXTERN_OVERLAY(overlay101);
+    FS_EXTERN_OVERLAY(slot_machine);
 
     static const ApplicationManagerTemplate appTemplate = {
-        ov101_021D0D80,
-        ov101_021D0E40,
-        ov101_021D0EE4,
-        FS_OVERLAY_ID(overlay101)
+        SlotMachine_Init,
+        SlotMachine_Main,
+        SlotMachine_Exit,
+        FS_OVERLAY_ID(slot_machine)
     };
 
     FieldSystem_StartChildProcess(fieldSystem, &appTemplate, appArgs);

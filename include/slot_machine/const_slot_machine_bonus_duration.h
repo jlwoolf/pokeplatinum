@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_CONST_SLOT_MACHINE_BONUS_DURATION_H
+#define POKEPLATINUM_CONST_SLOT_MACHINE_BONUS_DURATION_H
+
+#include "enums.h"
+
+extern const u32 sSlotMachineBonusDuration[SlotMachineBonusType_06];
+
+#endif // POKEPLATINUM_CONST_SLOT_MACHINE_BONUS_DURATION_H

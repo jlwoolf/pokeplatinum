@@ -44,125 +44,125 @@ typedef enum {
 } UnkEnum_0202F510;
 
 typedef enum {
-    UnkEnum_ov101_021D9688_00 = 0,
-    UnkEnum_ov101_021D9688_01,
-    UnkEnum_ov101_021D9688_02,
-    UnkEnum_ov101_021D9688_03,
-    UnkEnum_ov101_021D9688_04,
-    UnkEnum_ov101_021D9688_05,
-    UnkEnum_ov101_021D9688_06,
-} UnkEnum_ov101_021D9688;
+    SlotMachineSymbol_00 = 0,
+    SlotMachineSymbol_01,
+    SlotMachineSymbol_02,
+    SlotMachineSymbol_03,
+    SlotMachineSymbol_04,
+    SlotMachineSymbol_05,
+    SlotMachineSymbol_06,
+} SlotMachineSymbol;
 
 typedef enum {
-    UnkEnum_ov101_021D2BDC_00,
-    UnkEnum_ov101_021D2BDC_01,
-    UnkEnum_ov101_021D2BDC_02,
-    UnkEnum_ov101_021D2BDC_03,
-} UnkEnum_ov101_021D2BDC;
+    SlotMachineReelIndex_00,
+    SlotMachineReelIndex_01,
+    SlotMachineReelIndex_02,
+    SlotMachineReelIndex_03,
+} SlotMachineReelIndex;
 
 typedef enum {
-    UnkEnum_ov101_021D4F58_00 = 0,
-    UnkEnum_ov101_021D4F58_01,
-    UnkEnum_ov101_021D4F58_02,
-    UnkEnum_ov101_021D4F58_03,
-    UnkEnum_ov101_021D4F58_04,
-    UnkEnum_ov101_021D4F58_05,
-} UnkEnum_ov101_021D4F58;
+    SlotMachinePaletteIndex_00 = 0,
+    SlotMachinePaletteIndex_01,
+    SlotMachinePaletteIndex_02,
+    SlotMachinePaletteIndex_03,
+    SlotMachinePaletteIndex_04,
+    SlotMachinePaletteIndex_05,
+} SlotMachinePaletteIndex;
 
 typedef enum {
-    UnkEnum_ov101_021D394C_00 = 0,
-    UnkEnum_ov101_021D394C_01,
-    UnkEnum_ov101_021D394C_02,
-} UnkEnum_ov101_021D394C;
+    SlotMachineReelButtonState_00 = 0,
+    SlotMachineReelButtonState_01,
+    SlotMachineReelButtonState_02,
+} SlotMachineReelButtonState;
 
 typedef enum {
-    UnkEnum_ov101_021D5814_00 = 0,
-    UnkEnum_ov101_021D5814_01,
-    UnkEnum_ov101_021D5814_02,
-    UnkEnum_ov101_021D5814_03,
-    UnkEnum_ov101_021D5814_04,
-    UnkEnum_ov101_021D5814_05,
-} UnkEnum_ov101_021D5814;
+    SlotMachineReelType_00 = 0,
+    SlotMachineReelType_01,
+    SlotMachineReelType_02,
+    SlotMachineReelType_03,
+    SlotMachineReelType_04,
+    SlotMachineReelType_05,
+} SlotMachineReelType;
 
 typedef enum {
-    UnkEnum_ov101_021D5D90_00 = 0,
-    UnkEnum_ov101_021D5D90_01,
-    UnkEnum_ov101_021D5D90_02,
-    UnkEnum_ov101_021D5D90_03,
-    UnkEnum_ov101_021D5D90_04,
-    UnkEnum_ov101_021D5D90_05,
-    UnkEnum_ov101_021D5D90_06,
-    UnkEnum_ov101_021D5D90_07,
-} UnkEnum_ov101_021D5D90;
+    SlotMachineReelStateEnum_00 = 0,
+    SlotMachineReelStateEnum_01,
+    SlotMachineReelStateEnum_02,
+    SlotMachineReelStateEnum_03,
+    SlotMachineReelStateEnum_04,
+    SlotMachineReelStateEnum_05,
+    SlotMachineReelStateEnum_06,
+    SlotMachineReelStateEnum_07,
+} SlotMachineReelStateEnum;
 
 typedef enum {
-    UnkEnum_ov101_021D6764_00 = 0,
-    UnkEnum_ov101_021D6764_01,
-    UnkEnum_ov101_021D6764_02,
-    UnkEnum_ov101_021D6764_03,
-} UnkEnum_ov101_021D6764;
+    SlotMachineWinType_00 = 0,
+    SlotMachineWinType_01,
+    SlotMachineWinType_02,
+    SlotMachineWinType_03,
+} SlotMachineWinType;
 
 typedef enum {
-    UnkEnum_ov101_021D679C_00,
-    UnkEnum_ov101_021D679C_01,
-    UnkEnum_ov101_021D679C_02,
-    UnkEnum_ov101_021D679C_03,
-    UnkEnum_ov101_021D679C_04,
-    UnkEnum_ov101_021D679C_05,
-    UnkEnum_ov101_021D679C_06,
-    UnkEnum_ov101_021D679C_07,
-    UnkEnum_ov101_021D679C_08,
-    UnkEnum_ov101_021D679C_09,
-} UnkEnum_ov101_021D679C;
+    SlotMachineWinSymbolState_00,
+    SlotMachineWinSymbolState_01,
+    SlotMachineWinSymbolState_02,
+    SlotMachineWinSymbolState_03,
+    SlotMachineWinSymbolState_04,
+    SlotMachineWinSymbolState_05,
+    SlotMachineWinSymbolState_06,
+    SlotMachineWinSymbolState_07,
+    SlotMachineWinSymbolState_08,
+    SlotMachineWinSymbolState_09,
+} SlotMachineWinSymbolState;
 
 typedef enum {
-    UnkEnum_ov101_021D4550_00 = 0,
-    UnkEnum_ov101_021D4550_01,
-    UnkEnum_ov101_021D4550_02,
-    UnkEnum_ov101_021D4550_03,
-} UnkEnum_ov101_021D4550;
+    SlotMachinePayoutResultEnum_00 = 0,
+    SlotMachinePayoutResultEnum_01,
+    SlotMachinePayoutResultEnum_02,
+    SlotMachinePayoutResultEnum_03,
+} SlotMachinePayoutResultEnum;
 
 typedef enum {
-    UnkEnum_ov101_021D77E4_00 = 0,
-    UnkEnum_ov101_021D77E4_01,
-} UnkEnum_ov101_021D77E4;
+    SlotMachineNumberType_00 = 0,
+    SlotMachineNumberType_01,
+} SlotMachineNumberType;
 
 typedef enum {
-    UnkEnum_ov101_021D9934_00 = 0,
-    UnkEnum_ov101_021D9934_01,
-    UnkEnum_ov101_021D9934_02,
-    UnkEnum_ov101_021D9934_03,
-    UnkEnum_ov101_021D9934_04,
-    UnkEnum_ov101_021D9934_05,
-    UnkEnum_ov101_021D9934_06,
-} UnkEnum_ov101_021D9934;
+    SlotMachineBonusType_00 = 0,
+    SlotMachineBonusType_01,
+    SlotMachineBonusType_02,
+    SlotMachineBonusType_03,
+    SlotMachineBonusType_04,
+    SlotMachineBonusType_05,
+    SlotMachineBonusType_06,
+} SlotMachineBonusType;
 
 typedef enum {
-    UnkEnum_ov101_021D9934_1_00 = 0,
-    UnkEnum_ov101_021D9934_1_01,
-    UnkEnum_ov101_021D9934_1_02,
-    UnkEnum_ov101_021D9934_1_03,
-} UnkEnum_ov101_021D9934_1;
+    SlotMachineBonusKind_00 = 0,
+    SlotMachineBonusKind_01,
+    SlotMachineBonusKind_02,
+    SlotMachineBonusKind_03,
+} SlotMachineBonusKind;
 
 typedef enum {
-    UnkEnum_ov101_021D9AE4_00 = 0,
-    UnkEnum_ov101_021D9AE4_01 = 5,
-    UnkEnum_ov101_021D9AE4_02 = 15,
-    UnkEnum_ov101_021D9AE4_03 = 25,
-    UnkEnum_ov101_021D9AE4_04 = 35,
-    UnkEnum_ov101_021D9AE4_05 = 45,
-    UnkEnum_ov101_021D9AE4_06 = 55,
-    UnkEnum_ov101_021D9AE4_07 = 65,
-    UnkEnum_ov101_021D9AE4_08 = 75,
-    UnkEnum_ov101_021D9AE4_09 = 9,
-} UnkEnum_ov101_021D9AE4;
+    SlotMachinePayoutThreshold_00 = 0,
+    SlotMachinePayoutThreshold_01 = 5,
+    SlotMachinePayoutThreshold_02 = 15,
+    SlotMachinePayoutThreshold_03 = 25,
+    SlotMachinePayoutThreshold_04 = 35,
+    SlotMachinePayoutThreshold_05 = 45,
+    SlotMachinePayoutThreshold_06 = 55,
+    SlotMachinePayoutThreshold_07 = 65,
+    SlotMachinePayoutThreshold_08 = 75,
+    SlotMachinePayoutThreshold_09 = 9,
+} SlotMachinePayoutThreshold;
 
 typedef enum {
-    UnkEnum_ov101_021D1894_00,
-    UnkEnum_ov101_021D1894_01,
-    UnkEnum_ov101_021D1894_02,
-    UnkEnum_ov101_021D1894_03,
-} UnkEnum_ov101_021D1894;
+    SlotMachineBgmMode_00,
+    SlotMachineBgmMode_01,
+    SlotMachineBgmMode_02,
+    SlotMachineBgmMode_03,
+} SlotMachineBgmMode;
 
 typedef enum {
     WiFiPlazaLobbyNewsResultFlags_00 = 0,
