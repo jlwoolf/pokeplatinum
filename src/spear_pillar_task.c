@@ -8,7 +8,7 @@
 
 #include "field/field_system.h"
 #include "overlay005/fieldmap.h"
-#include "overlay100/ov100_021D0D80.h"
+#include "spear_pillar/spear_pillar.h"
 
 #include "field_system.h"
 #include "field_task.h"
@@ -18,7 +18,7 @@
 #include "screen_fade.h"
 #include "trainer_info.h"
 
-FS_EXTERN_OVERLAY(overlay100);
+FS_EXTERN_OVERLAY(spear_pillar);
 
 // Entry point for the Spear Pillar cutscene field task, invoked by script
 // command ScrCmd_2FB. Collects the player's options and trainer info, then
@@ -39,7 +39,7 @@ void SpearPillarTask_Start(FieldTask *task, SaveData *saveData)
 }
 
 // Field task state machine that fades the field out, runs the Spear Pillar
-// cutscene in overlay100, then restores the field map.
+// cutscene in spear_pillar, then restores the field map.
 BOOL SpearPillarTask_Main(FieldTask *task)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(task);
@@ -59,10 +59,10 @@ BOOL SpearPillarTask_Main(FieldTask *task)
             // Launch the Spear Pillar cutscene overlay, passing the collected
             // options and trainer info as its application arguments.
             static const ApplicationManagerTemplate v2 = {
-                ov100_021D0D80,
-                ov100_021D0EA8,
-                ov100_021D0F44,
-                FS_OVERLAY_ID(overlay100)
+                SpearPillar_Init,
+                SpearPillar_Main,
+                SpearPillar_Exit,
+                FS_OVERLAY_ID(spear_pillar)
             };
 
             FieldSystem_StartChildProcess(fieldSystem, &v2, env->args);

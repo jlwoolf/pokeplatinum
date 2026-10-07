@@ -1495,17 +1495,17 @@ Overlay end_credits
 	Object main.nef.p/src_cutscenes_end_credits_common.c.o
 }
 
-Overlay overlay100
+Overlay spear_pillar
 {
 	After main
-	Object main.nef.p/src_overlay100_ov100_021D0D80.c.o
-	Object main.nef.p/src_overlay100_ov100_021D13E4.c.o
-	Object main.nef.p/src_overlay100_ov100_021D1C44.c.o
-	Object main.nef.p/src_overlay100_ov100_021D2F0C.c.o
-	Object main.nef.p/src_overlay100_ov100_021D400C.c.o
-	Object main.nef.p/src_overlay100_ov100_021D44C0.c.o
-	Object main.nef.p/src_overlay100_ov100_021D46C8.c.o
-	Object main.nef.p/src_overlay100_ov100_021D4E04.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_lake_trio.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_giratina.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_dialga_palkia.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_sprite.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_object_anim.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_common.c.o
+	Object main.nef.p/src_spear_pillar_spear_pillar_screen.c.o
 }
 
 Overlay overlay101
