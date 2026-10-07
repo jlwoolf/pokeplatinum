@@ -1,4 +1,4 @@
-#include "overlay069/ov69_0225C700.h"
+#include "wifi_earth/wifi_earth.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -13,7 +13,7 @@
 #include "overlay066/struct_ov66_02230F50.h"
 #include "overlay066/struct_ov66_02231428.h"
 #include "overlay066/struct_ov66_02231560.h"
-#include "overlay069/struct_ov69_0225C980.h"
+#include "wifi_earth/struct_wifi_earth_region_entry.h"
 #include "overlay092/struct_ov92_021D1530.h"
 
 #include "bg_window.h"
@@ -54,25 +54,32 @@
 #include "wifi_history_save_data.h"
 #include "yes_no_touch_menu.h"
 
+// A marker drawn on the globe. `rotation` orients the marker so that it stands
+// upright on the globe's surface at (longitude, latitude). `spriteIndex` is the
+// marker model to draw (3 = no marker), `country`/`region` identify the place.
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    MtxFx33 unk_04;
-    u16 unk_28;
-    u16 unk_2A;
-    u16 unk_2C;
-} UnkStruct_ov69_0225CA7C_sub1_sub1;
+    s16 unk_00; // longitude
+    s16 unk_02; // latitude
+    MtxFx33 unk_04; // rotation
+    u16 unk_28; // spriteIndex
+    u16 unk_2A; // country
+    u16 unk_2C; // region
+} WiFiEarthPlaceMarker;
 
+// Every place marker loaded for the globe. `unk_00` is the number of valid
+// entries at the front of `unk_04`.
 typedef struct {
-    u32 unk_00;
-    UnkStruct_ov69_0225CA7C_sub1_sub1 unk_04[1024];
-} UnkStruct_ov69_0225CA7C_sub1;
+    u32 unk_00; // count
+    WiFiEarthPlaceMarker unk_04[1024];
+} WiFiEarthPlaceMarkerList;
 
+// Maps a place index to the marker sprite and animation to use.
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-} UnkStruct_ov69_0225F0E8;
+    u8 unk_00; // spriteIndex
+    u8 unk_01; // animIndex
+} WiFiEarthMarkerSprite;
 
+// One keyframe of a marker's bounce animation.
 typedef struct {
     s16 unk_00;
     s16 unk_02;
@@ -82,318 +89,332 @@ typedef struct {
     s16 unk_0A;
     s16 unk_0C;
     u16 unk_0E;
-} UnkStruct_ov69_0225ECF0;
+} WiFiEarthMarkerAnimFrame;
+
+// NARC members and palette used to draw one profile graphic.
+typedef struct {
+    u16 unk_00[2]; // screenDataMembers
+    u16 unk_04; // numScreenData
+    u16 unk_06; // paletteMember
+    u16 unk_08; // numPaletteFrames
+    u16 unk_0A; // paletteOffset
+} WiFiEarthProfileGraphicParams;
 
 typedef struct {
-    u16 unk_00[2];
-    u16 unk_04;
-    u16 unk_06;
-    u16 unk_08;
-    u16 unk_0A;
-} UnkStruct_ov69_0225F118;
-
-typedef struct {
-    u32 unk_00_0 : 1;
-    u32 unk_00_1 : 1;
+    u32 worldUnlocked : 1;
+    u32 isJapanese : 1;
     u32 : 30;
-    u32 unk_04_0 : 31;
+    u32 unk_04_0 : 31; // unused
     u32 : 1;
-} UnkStruct_ov69_0225DA74;
+} WiFiEarthAppFlags;
 
+// All rendering state owned by the overlay.
 typedef struct {
-    BgConfig *unk_00;
-    SpriteList *unk_04;
-    G2dRenderer unk_08;
-    SpriteResourceCollection *unk_194[4];
-    G3DPipelineBuffers *unk_1A4;
-    NARC *unk_1A8;
-} UnkStruct_ov69_0225D35C;
+    BgConfig *unk_00; // bgConfig
+    SpriteList *unk_04; // spriteList
+    G2dRenderer unk_08; // g2dRenderer
+    SpriteResourceCollection *unk_194[4]; // spriteResources
+    G3DPipelineBuffers *unk_1A4; // g3dPipeline
+    NARC *unk_1A8; // worldTimerNarc
+} WiFiEarthGraphics;
 
+// The globe model and its transform.
 typedef struct {
-    VecFx32 unk_00;
-    VecFx32 unk_0C;
-    VecFx32 unk_18;
-    Easy3DObject unk_24;
-    Easy3DModel unk_9C;
-} UnkStruct_ov69_0225D71C;
+    VecFx32 unk_00; // position
+    VecFx32 unk_0C; // scale
+    VecFx32 unk_18; // rotation (x = pitch, y = yaw, z = roll)
+    Easy3DObject unk_24; // object
+    Easy3DModel unk_9C; // model
+} WiFiEarthGlobeObject;
 
+// The place markers and the three marker models drawn on the globe.
 typedef struct {
-    UnkStruct_ov69_0225CA7C_sub1 unk_00;
-    VecFx32 unk_B804;
-    Easy3DObject unk_B810[3];
-    Easy3DModel unk_B978[3];
-} UnkStruct_ov69_0225CA7C;
+    WiFiEarthPlaceMarkerList unk_00; // placeMarkers
+    VecFx32 unk_B804; // markerScale
+    Easy3DObject unk_B810[3]; // markerObjects
+    Easy3DModel unk_B978[3]; // markerModels
+} WiFiEarthGlobe;
 
 typedef struct {
     Camera *camera;
-    CameraAngle unk_04;
-    fx32 unk_0C;
-    u16 unk_10;
-    u16 unk_12;
-} UnkStruct_ov69_0225DAEC;
+    CameraAngle unk_04; // angle
+    fx32 unk_0C; // distance
+    u16 unk_10; // zoomedIn
+    u16 unk_12; // animating
+} WiFiEarthCamera;
+
+// A visitor profile shown on the panel: the place index and its country/region.
+typedef struct {
+    u32 unk_00; // placeIndex
+    u32 unk_04; // country
+    u32 unk_08; // region
+} WiFiEarthProfile;
+
+// A scrolling profile graphic loaded from the world-timer NARC.
+typedef struct {
+    u16 unk_00; // frame
+    u16 unk_02; // numFrames
+    u8 unk_04[4]; // visible
+    void *unk_08[2]; // screenData
+    NNSG2dScreenData *unk_10[2]; // screenDataPtrs
+    u16 unk_18; // numScreenData
+    u16 unk_1A; // currentScreenData
+    void *unk_1C; // paletteData
+    NNSG2dPaletteData *unk_20; // palette
+    u8 unk_24; // numPaletteFrames
+    u8 unk_25; // currentPaletteFrame
+    u8 unk_26; // paletteOffset
+    u8 unk_27; // unused
+} WiFiEarthProfileGraphic;
+
+// Per-tile animation state while a profile is revealed.
+typedef struct {
+    u8 unk_00; // started
+    s8 unk_01; // progress
+    u8 unk_02[2]; // padding
+} WiFiEarthProfileTileState;
+
+// A marker's bounce animation state.
+typedef struct {
+    s16 unk_00; // startX
+    s16 unk_02; // startY
+    s16 unk_04; // endX
+    s16 unk_06; // endY
+    u16 unk_08; // flagA
+    u16 unk_0A; // flagB
+    const WiFiEarthMarkerAnimFrame *unk_0C; // frame
+} WiFiEarthMarkerAnimation;
+
+// The twelve marker sprites and their per-animation state.
+typedef struct {
+    WiFiEarthMarkerAnimation unk_00[3]; // animations
+    s16 unk_30; // timer
+    s16 unk_32; // delay
+    u8 unk_34[4]; // visible
+    u8 unk_38[4]; // spriteIndex
+    Sprite *unk_3C[12]; // sprites
+    SpriteResource *unk_6C[12][4]; // resources
+} WiFiEarthMarkerSprites;
+
+// The two sub-screen window masks used to clip the profile panel.
+typedef struct {
+    s16 unk_00; // window0Active
+    s16 unk_02; // window1Active
+    s16 unk_04; // window0Top
+    s16 unk_06; // window0Bottom
+    s16 unk_08; // window1Top
+    s16 unk_0A; // window1Bottom
+    SysTask *unk_0C; // task
+} WiFiEarthWindowMask;
+
+// The sliding panel that lists the visitor profiles.
+typedef struct {
+    u32 unk_00; // state
+    WiFiEarthProfile unk_04[4]; // profileHistory
+    u16 unk_34; // historyStart
+    u16 unk_36; // historyEnd
+    u32 unk_38; // historyCount
+    u16 unk_3C; // progress
+    u16 unk_3E; // numTiles
+    WiFiEarthProfileTileState unk_40[18]; // tileStates
+    u32 unk_88[3]; // profileGraphics
+    void *unk_94; // headerScreenData
+    NNSG2dScreenData *unk_98; // headerScreenDataPtr
+    u16 unk_9C; // unused
+    u16 unk_9E; // unused
+    WiFiEarthProfileGraphic unk_A0[5]; // profileGraphics
+    Window unk_168[3]; // profileWindows
+    Window unk_198; // headerWindow
+    Window unk_1A8; // messageWindow
+    WiFiEarthMarkerSprites unk_1B8; // markerSprites
+    WiFiEarthWindowMask unk_2E4; // windowMask
+} WiFiEarthProfilePanel;
+
+// The on-screen EXIT banner, which also synthesises key input from touch drags.
+typedef struct {
+    int unk_00; // input
+    int unk_04; // touchX
+    int unk_08; // touchY
+    int unk_0C; // state
+    int unk_10; // dragX
+    int unk_14; // dragY
+    int unk_18; // delay
+    Window unk_1C; // window
+} WiFiEarthExitWindow;
+
+// The "Exit the Visitor Profiles?" confirmation box.
+typedef struct {
+    u32 unk_00; // state
+    u32 unk_04; // printer
+    u32 unk_08; // textDelay
+    String *unk_0C; // message
+    Window unk_10; // window
+    YesNoTouchMenu *unk_20; // yesNoMenu
+} WiFiEarthConfirmWindow;
 
 typedef struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-} UnkStruct_ov69_0225E0C0;
+    MessageLoader *unk_00; // messageLoader
+    StringTemplate *unk_04; // stringTemplate
+    String *unk_08; // string
+    String *unk_0C; // formattedString
+} WiFiEarthMessageLoader;
 
+// State shared by every screen of the overlay.
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    u8 unk_04[4];
-    void *unk_08[2];
-    NNSG2dScreenData *unk_10[2];
-    u16 unk_18;
-    u16 unk_1A;
-    void *unk_1C;
-    NNSG2dPaletteData *unk_20;
-    u8 unk_24;
-    u8 unk_25;
-    u8 unk_26;
-    u8 unk_27;
-} UnkStruct_ov69_0225E7DC;
-
-typedef struct {
-    u8 unk_00;
-    s8 unk_01;
-    u8 unk_02[2];
-} UnkStruct_ov69_0225E084_sub1;
-
-typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
-    s16 unk_06;
-    u16 unk_08;
-    u16 unk_0A;
-    const UnkStruct_ov69_0225ECF0 *unk_0C;
-} UnkStruct_ov69_0225ED90;
-
-typedef struct {
-    UnkStruct_ov69_0225ED90 unk_00[3];
-    s16 unk_30;
-    s16 unk_32;
-    u8 unk_34[4];
-    u8 unk_38[4];
-    Sprite *unk_3C[12];
-    SpriteResource *unk_6C[12][4];
-} UnkStruct_ov69_0225EB60;
-
-typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0A;
-    SysTask *unk_0C;
-} UnkStruct_ov69_0225E478;
-
-typedef struct {
-    u32 unk_00;
-    UnkStruct_ov69_0225E0C0 unk_04[4];
-    u16 unk_34;
-    u16 unk_36;
-    u32 unk_38;
-    u16 unk_3C;
-    u16 unk_3E;
-    UnkStruct_ov69_0225E084_sub1 unk_40[18];
-    u32 unk_88[3];
-    void *unk_94;
-    NNSG2dScreenData *unk_98;
-    u16 unk_9C;
-    u16 unk_9E;
-    UnkStruct_ov69_0225E7DC unk_A0[5];
-    Window unk_168[3];
-    Window unk_198;
-    Window unk_1A8;
-    UnkStruct_ov69_0225EB60 unk_1B8;
-    UnkStruct_ov69_0225E478 unk_2E4;
-} UnkStruct_ov69_0225E084;
-
-typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    int unk_18;
-    Window unk_1C;
-} UnkStruct_ov69_0225DC48;
-
-typedef struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    String *unk_0C;
-    Window unk_10;
-    YesNoTouchMenu *unk_20;
-} UnkStruct_ov69_0225DDC8;
-
-typedef struct {
-    MessageLoader *unk_00;
-    StringTemplate *unk_04;
-    String *unk_08;
-    String *unk_0C;
-} UnkStruct_ov69_0225EF54;
-
-typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    UnkStruct_ov69_0225DA74 unk_04;
+    u16 unk_00; // state
+    u16 unk_02; // subState
+    WiFiEarthAppFlags unk_04; // flags
     WiFiHistory *wiFiHistory;
     Options *options;
-    int unk_14;
-    int unk_18;
-    UnkStruct_ov66_02231428 unk_1C;
-    UnkStruct_ov69_0225D35C unk_20;
-    UnkStruct_ov69_0225EF54 unk_1CC;
-    UnkStruct_ov69_0225D71C unk_1DC;
-    UnkStruct_ov69_0225CA7C unk_288;
-    UnkStruct_ov69_0225DAEC unk_BC30;
-    UnkStruct_ov69_0225DC48 unk_BC44;
-    UnkStruct_ov69_0225E084 unk_BC70;
-    UnkStruct_ov69_0225DDC8 unk_BF64;
-} UnkStruct_ov69_0225CE64;
+    int unk_14; // country
+    int unk_18; // region
+    UnkStruct_ov66_02231428 unk_1C; // localTime
+    WiFiEarthGraphics unk_20; // graphics
+    WiFiEarthMessageLoader unk_1CC; // messageLoader
+    WiFiEarthGlobeObject unk_1DC; // globeObject
+    WiFiEarthGlobe unk_288; // globe
+    WiFiEarthCamera unk_BC30; // camera
+    WiFiEarthExitWindow unk_BC44; // exitWindow
+    WiFiEarthProfilePanel unk_BC70; // profilePanel
+    WiFiEarthConfirmWindow unk_BF64; // confirmWindow
+} WiFiEarthAppData;
 
-static void ov69_0225CA7C(UnkStruct_ov69_0225CA7C *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const UnkStruct_ov66_02231560 *param6);
-static void ov69_0225CAF4(MtxFx33 *param0, const VecFx32 *param1);
-static void ov69_0225CB6C(MtxFx33 *param0, const VecFx32 *param1);
-static void ov69_0225CBE4(int param0, int param1, int *param2, int *param3, int *param4, int *param5);
-static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2);
-static void ov69_0225CE0C(VecFx32 *param0);
-static BOOL ov69_0225CE64(UnkStruct_ov69_0225CE64 *param0);
-static void ov69_0225CF30(UnkStruct_ov69_0225CE64 *param0);
-static void ov69_0225CF50(UnkStruct_ov69_0225CE64 *param0);
-static void ov69_0225CF90(void *param0);
-static u32 ov69_0225CF9C(UnkStruct_ov69_0225CE64 *param0);
-static void ov69_0225D030(UnkStruct_ov69_0225CE64 *param0, const UnkStruct_ov66_02230F50 *param1);
-static BOOL ov69_0225D088(const UnkStruct_ov69_0225CE64 *param0, UnkStruct_ov69_0225E0C0 *param1);
-static u32 ov69_0225D0D8(const UnkStruct_ov69_0225CE64 *param0);
-static u32 ov69_0225D194(const VecFx32 *param0, const VecFx32 *param1);
-static u32 ov69_0225D1E0(const UnkStruct_ov69_0225CE64 *param0, u32 param1, UnkStruct_ov66_02231428 param2);
-static BOOL ov69_0225D268(UnkStruct_ov69_0225CE64 *param0, u8 param1, u8 param2);
-static void ov69_0225D2A8(UnkStruct_ov69_0225CE64 *param0, const UnkStruct_ov66_02230F50 *param1);
-static void ov69_0225D318(UnkStruct_ov69_0225D35C *param0, Options *options, u32 heapID);
-static void ov69_0225D35C(UnkStruct_ov69_0225D35C *param0);
-static void ov69_0225D384(UnkStruct_ov69_0225D35C *param0);
-static void ov69_0225D390(UnkStruct_ov69_0225D35C *param0);
-static void ov69_0225D3A4(UnkStruct_ov69_0225D35C *param0, Options *options, u32 param2);
-static void ov69_0225D504(UnkStruct_ov69_0225D35C *param0);
-static void ov69_0225D53C(UnkStruct_ov69_0225D35C *param0, u32 heapID);
-static void ov69_0225D5D8(UnkStruct_ov69_0225D35C *param0);
-static void ov69_0225D604(UnkStruct_ov69_0225D35C *param0, u32 heapID);
-static void ov69_0225D63C(UnkStruct_ov69_0225D35C *param0);
-static void ov69_0225D64C(void);
-static void ov69_0225D6D8(UnkStruct_ov69_0225D71C *param0, UnkStruct_ov69_0225D35C *param1, u32 heapID);
-static void ov69_0225D71C(UnkStruct_ov69_0225D71C *param0);
-static void ov69_0225D728(UnkStruct_ov69_0225D71C *param0);
-static void ov69_0225D760(const UnkStruct_ov69_0225D71C *param0, VecFx32 *param1);
-static void ov69_0225D770(const UnkStruct_ov69_0225D71C *param0, MtxFx33 *param1);
-static void ov69_0225D780(const UnkStruct_ov69_0225D71C *param0, VecFx32 *param1);
-static void ov69_0225D790(UnkStruct_ov69_0225D71C *param0, const VecFx32 *param1);
-static void ov69_0225D7A0(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_02231560 *param1, UnkStruct_ov69_0225D35C *param2, UnkStruct_ov69_0225DA74 param3, u32 heapID);
-static void ov69_0225D838(UnkStruct_ov69_0225CA7C *param0);
-static void ov69_0225D854(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov69_0225D71C *param1);
-static u32 ov69_0225D91C(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 param2);
-static u32 ov69_0225D984(const UnkStruct_ov69_0225CA7C *param0, u16 param1, u16 param2, VecFx32 *param3);
-static u32 ov69_0225D9C4(const UnkStruct_ov69_0225CA7C *param0, u16 param1, u16 param2);
-static void ov69_0225D9F0(const UnkStruct_ov69_0225CA7C *param0, VecFx32 *param1, int param2);
-static u32 ov69_0225DA1C(const UnkStruct_ov69_0225CA7C *param0, int param1);
-static u32 ov69_0225DA38(const UnkStruct_ov69_0225CA7C *param0, int param1);
-static u32 ov69_0225DA54(const UnkStruct_ov69_0225CA7C *param0, int param1);
-static u32 ov69_0225DA70(const UnkStruct_ov69_0225CA7C *param0);
-static void ov69_0225DA74(UnkStruct_ov69_0225DAEC *param0, UnkStruct_ov69_0225DA74 param1, enum HeapID param2);
-static void ov69_0225DAEC(UnkStruct_ov69_0225DAEC *param0);
-static void ov69_0225DAF8(const UnkStruct_ov69_0225DAEC *param0);
-static void ov69_0225DB00(UnkStruct_ov69_0225DAEC *param0);
-static BOOL ov69_0225DB2C(UnkStruct_ov69_0225DAEC *param0, UnkStruct_ov69_0225CA7C *param1);
-static u32 ov69_0225DBB0(const UnkStruct_ov69_0225DAEC *param0);
-static void ov69_0225DBB4(UnkStruct_ov69_0225DC48 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225EF54 *param2, u32 heapID);
-static void ov69_0225DC48(UnkStruct_ov69_0225DC48 *param0);
-static void ov69_0225DC54(UnkStruct_ov69_0225DC48 *param0);
-static int ov69_0225DD10(const UnkStruct_ov69_0225DC48 *param0, u32 param1);
-static void ov69_0225DD2C(UnkStruct_ov69_0225DC48 *param0);
-static void ov69_0225DD44(UnkStruct_ov69_0225DC48 *param0);
-static void ov69_0225DD60(UnkStruct_ov69_0225DDC8 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225EF54 *param2, SaveData *saveData, u32 heapID);
-static void ov69_0225DDC8(UnkStruct_ov69_0225DDC8 *param0);
-static void ov69_0225DDFC(UnkStruct_ov69_0225DDC8 *param0);
-static u32 ov69_0225DE40(UnkStruct_ov69_0225DDC8 *param0);
-static void ov69_0225DEA0(UnkStruct_ov69_0225DDC8 *param0);
-static void ov69_0225DEC0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225EF54 *param2, enum HeapID heapID);
-static void ov69_0225DFBC(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1);
-static void ov69_0225E00C(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF54 *param1, UnkStruct_ov69_0225D35C *param2);
-static void ov69_0225E084(UnkStruct_ov69_0225E084 *param0);
-static void ov69_0225E0A0(UnkStruct_ov69_0225E084 *param0);
-static BOOL ov69_0225E0C0(UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_0225E0C0 *param1);
-static BOOL ov69_0225E0F8(const UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_0225E0C0 *param1);
-static void ov69_0225E13C(UnkStruct_ov69_0225E084 *param0);
-static void ov69_0225E148(UnkStruct_ov69_0225E084 *param0);
-static void ov69_0225E154(UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_0225E0C0 *param1);
-static void ov69_0225E1A0(UnkStruct_ov69_0225E084 *param0);
-static BOOL ov69_0225E1C0(const UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225E0C0 *param1, u32 param2);
-static void ov69_0225E1EC(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1);
-static void ov69_0225E208(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF54 *param1, UnkStruct_ov69_0225D35C *param2);
-static BOOL ov69_0225E2D0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1);
-static void ov69_0225E2DC(UnkStruct_ov69_0225E084 *param0);
-static BOOL ov69_0225E2E4(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1);
-static BOOL ov69_0225E2F0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1, int param2);
-static void ov69_0225E368(UnkStruct_ov69_0225E084 *param0, u32 param1);
-static BOOL ov69_0225E374(UnkStruct_ov69_0225E084 *param0, u32 param1, UnkStruct_ov69_0225D35C *param2);
-static void ov69_0225E430(UnkStruct_ov69_0225E084 *param0, u32 param1, UnkStruct_ov69_0225D35C *param2);
-static void ov69_0225E478(UnkStruct_ov69_0225E478 *param0);
-static void ov69_0225E4E8(UnkStruct_ov69_0225E478 *param0);
-static void ov69_0225E504(UnkStruct_ov69_0225E478 *param0, s16 param1, s16 param2);
-static void ov69_0225E51C(UnkStruct_ov69_0225E478 *param0, s16 param1, s16 param2);
-static void ov69_0225E534(SysTask *param0, void *param1);
-static void ov69_0225E590(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1, u32 param2);
-static void ov69_0225E61C(UnkStruct_ov69_0225E084 *param0);
-static void ov69_0225E644(UnkStruct_ov69_0225E084 *param0, u32 param1, const UnkStruct_ov69_0225E0C0 *param2, UnkStruct_ov69_0225EF54 *param3);
-static u8 *ov69_0225E6E8(UnkStruct_ov69_0225E084 *param0, u32 param1, u32 param2);
-static u8 *ov69_0225E70C(UnkStruct_ov69_0225E084 *param0, u32 param1);
-static void ov69_0225E71C(UnkStruct_ov69_0225E084 *param0, u32 param1, u32 param2, const u8 *param3);
-static void ov69_0225E748(UnkStruct_ov69_0225E7DC *param0, UnkStruct_ov69_0225D35C *param1, const UnkStruct_ov69_0225F118 *param2, u16 param3, enum HeapID heapID);
-static void ov69_0225E7DC(UnkStruct_ov69_0225E7DC *param0);
-static void ov69_0225E810(UnkStruct_ov69_0225E7DC *param0, UnkStruct_ov69_0225D35C *param1);
-static void ov69_0225E8EC(UnkStruct_ov69_0225E7DC *param0, u32 param1, BOOL param2);
-static void ov69_0225E904(UnkStruct_ov69_0225E7DC *param0);
-static void ov69_0225E910(UnkStruct_ov69_0225E7DC *param0, u32 param1, UnkStruct_ov69_0225D35C *param2);
-static void ov69_0225E960(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225E478 *param2, u32 param3);
-static void ov69_0225EAE8(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225D35C *param1);
-static void ov69_0225EB60(UnkStruct_ov69_0225EB60 *param0);
-static void ov69_0225EB8C(UnkStruct_ov69_0225EB60 *param0, u8 param1, u8 param2, u8 param3);
-static void ov69_0225EBEC(UnkStruct_ov69_0225EB60 *param0);
-static void ov69_0225EC08(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225E478 *param1);
-static BOOL ov69_0225EC70(UnkStruct_ov69_0225EB60 *param0, u32 param1, UnkStruct_ov69_0225E478 *param2);
-static BOOL ov69_0225ECAC(UnkStruct_ov69_0225EB60 *param0, u32 param1, UnkStruct_ov69_0225E478 *param2);
-static void ov69_0225ECF0(UnkStruct_ov69_0225ED90 *param0, const UnkStruct_ov69_0225ECF0 *param1);
-static void ov69_0225ED0C(UnkStruct_ov69_0225ED90 *param0, BOOL param1);
-static void ov69_0225ED10(UnkStruct_ov69_0225ED90 *param0, BOOL param1);
-static BOOL ov69_0225ED14(UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E478 *param1);
-static void ov69_0225ED5C(UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E478 *param1);
-static void ov69_0225ED78(const UnkStruct_ov69_0225ED90 *param0, VecFx32 *param1);
-static void ov69_0225ED90(UnkStruct_ov69_0225ED90 *param0);
-static void ov69_0225EE68(const UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E478 *param1);
-static void ov69_0225EEC4(UnkStruct_ov69_0225EB60 *param0, u32 param1);
-static u16 ov69_0225EEEC(u32 param0);
-static u16 ov69_0225EF04(u32 param0);
-static void ov69_0225EF1C(UnkStruct_ov69_0225EF54 *param0, u32 heapID);
-static void ov69_0225EF54(UnkStruct_ov69_0225EF54 *param0);
-static String *ov69_0225EF74(UnkStruct_ov69_0225EF54 *param0, u32 param1);
-static String *ov69_0225EF90(UnkStruct_ov69_0225EF54 *param0, u32 param1);
-static String *ov69_0225EFB8(UnkStruct_ov69_0225EF54 *param0, u32 param1, u32 param2);
-static void ov69_0225EF84(UnkStruct_ov69_0225EF54 *param0, u32 param1, String *param2);
-static u32 ov69_0225EFEC(const UnkStruct_ov66_02231560 *param0);
+static void WiFiEarth_AddPlaceMarker(WiFiEarthGlobe *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const UnkStruct_ov66_02231560 *param6);
+static void WiFiEarth_BuildRotationMatrix(MtxFx33 *param0, const VecFx32 *param1);
+static void WiFiEarth_BuildMarkerRotationMatrix(MtxFx33 *param0, const VecFx32 *param1);
+static void WiFiEarth_CalcTouchDrag(int param0, int param1, int *param2, int *param3, int *param4, int *param5);
+static u32 WiFiEarth_ProcessGlobeInput(WiFiEarthAppData *param0, int param1, int param2);
+static void WiFiEarth_WrapAngle(VecFx32 *param0);
+static BOOL WiFiEarth_UpdateState(WiFiEarthAppData *param0);
+static void WiFiEarth_UpdateProfilePanelState(WiFiEarthAppData *param0);
+static void WiFiEarth_DrawFrame(WiFiEarthAppData *param0);
+static void WiFiEarth_VBlankCallback(void *param0);
+static u32 WiFiEarth_ProcessInput(WiFiEarthAppData *param0);
+static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1);
+static BOOL WiFiEarth_GetMarkerUnderCursor(const WiFiEarthAppData *param0, WiFiEarthProfile *param1);
+static u32 WiFiEarth_FindNearestMarker(const WiFiEarthAppData *param0);
+static u32 WiFiEarth_AngleDistance(const VecFx32 *param0, const VecFx32 *param1);
+static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, UnkStruct_ov66_02231428 param2);
+static BOOL WiFiEarth_MoveCameraToPlace(WiFiEarthAppData *param0, u8 param1, u8 param2);
+static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1);
+static void WiFiEarth_InitGraphics(WiFiEarthGraphics *param0, Options *options, u32 heapID);
+static void WiFiEarth_FreeGraphics(WiFiEarthGraphics *param0);
+static void WiFiEarth_UpdateSprites(WiFiEarthGraphics *param0);
+static void WiFiEarth_ProcessVBlank(WiFiEarthGraphics *param0);
+static void WiFiEarth_InitBackgrounds(WiFiEarthGraphics *param0, Options *options, u32 param2);
+static void WiFiEarth_FreeBackgrounds(WiFiEarthGraphics *param0);
+static void WiFiEarth_InitSpriteSystem(WiFiEarthGraphics *param0, u32 heapID);
+static void WiFiEarth_FreeSpriteSystem(WiFiEarthGraphics *param0);
+static void WiFiEarth_Init3D(WiFiEarthGraphics *param0, u32 heapID);
+static void WiFiEarth_Free3D(WiFiEarthGraphics *param0);
+static void WiFiEarth_Setup3D(void);
+static void WiFiEarth_InitGlobe(WiFiEarthGlobeObject *param0, WiFiEarthGraphics *param1, u32 heapID);
+static void WiFiEarth_FreeGlobe(WiFiEarthGlobeObject *param0);
+static void WiFiEarth_DrawGlobe(WiFiEarthGlobeObject *param0);
+static void WiFiEarth_GetGlobePosition(const WiFiEarthGlobeObject *param0, VecFx32 *param1);
+static void WiFiEarth_GetGlobeRotationMatrix(const WiFiEarthGlobeObject *param0, MtxFx33 *param1);
+static void WiFiEarth_GetGlobeRotation(const WiFiEarthGlobeObject *param0, VecFx32 *param1);
+static void WiFiEarth_SetGlobeRotation(WiFiEarthGlobeObject *param0, const VecFx32 *param1);
+static void WiFiEarth_InitPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_ov66_02231560 *param1, WiFiEarthGraphics *param2, WiFiEarthAppFlags param3, u32 heapID);
+static void WiFiEarth_FreePlaceMarkers(WiFiEarthGlobe *param0);
+static void WiFiEarth_DrawPlaceMarkers(WiFiEarthGlobe *param0, const WiFiEarthGlobeObject *param1);
+static u32 WiFiEarth_GetPlaceStatus(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 param2);
+static u32 WiFiEarth_FindMarkerByPlace(const WiFiEarthGlobe *param0, u16 param1, u16 param2, VecFx32 *param3);
+static u32 WiFiEarth_GetMarkerIndex(const WiFiEarthGlobe *param0, u16 param1, u16 param2);
+static void WiFiEarth_GetMarkerPosition(const WiFiEarthGlobe *param0, VecFx32 *param1, int param2);
+static u32 WiFiEarth_GetMarkerStatus(const WiFiEarthGlobe *param0, int param1);
+static u32 WiFiEarth_GetMarkerCountry(const WiFiEarthGlobe *param0, int param1);
+static u32 WiFiEarth_GetMarkerRegion(const WiFiEarthGlobe *param0, int param1);
+static u32 WiFiEarth_GetMarkerCount(const WiFiEarthGlobe *param0);
+static void WiFiEarth_InitCamera(WiFiEarthCamera *param0, WiFiEarthAppFlags param1, enum HeapID param2);
+static void WiFiEarth_FreeCamera(WiFiEarthCamera *param0);
+static void WiFiEarth_UpdateCamera(const WiFiEarthCamera *param0);
+static void WiFiEarth_ToggleZoom(WiFiEarthCamera *param0);
+static BOOL WiFiEarth_UpdateZoom(WiFiEarthCamera *param0, WiFiEarthGlobe *param1);
+static u32 WiFiEarth_IsZoomedIn(const WiFiEarthCamera *param0);
+static void WiFiEarth_InitExitWindow(WiFiEarthExitWindow *param0, WiFiEarthGraphics *param1, WiFiEarthMessageLoader *param2, u32 heapID);
+static void WiFiEarth_FreeExitWindow(WiFiEarthExitWindow *param0);
+static void WiFiEarth_ProcessExitWindowInput(WiFiEarthExitWindow *param0);
+static int WiFiEarth_GetExitWindowInput(const WiFiEarthExitWindow *param0, u32 param1);
+static void WiFiEarth_ShowExitWindow(WiFiEarthExitWindow *param0);
+static void WiFiEarth_HideExitWindow(WiFiEarthExitWindow *param0);
+static void WiFiEarth_InitConfirmWindow(WiFiEarthConfirmWindow *param0, WiFiEarthGraphics *param1, WiFiEarthMessageLoader *param2, SaveData *saveData, u32 heapID);
+static void WiFiEarth_FreeConfirmWindow(WiFiEarthConfirmWindow *param0);
+static void WiFiEarth_ShowConfirmWindow(WiFiEarthConfirmWindow *param0);
+static u32 WiFiEarth_ProcessConfirmInput(WiFiEarthConfirmWindow *param0);
+static void WiFiEarth_HideConfirmWindow(WiFiEarthConfirmWindow *param0);
+static void WiFiEarth_InitProfilePanel(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1, WiFiEarthMessageLoader *param2, enum HeapID heapID);
+static void WiFiEarth_FreeProfilePanel(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1);
+static void WiFiEarth_UpdateProfilePanel(WiFiEarthProfilePanel *param0, WiFiEarthMessageLoader *param1, WiFiEarthGraphics *param2);
+static void WiFiEarth_HideProfilePanel(WiFiEarthProfilePanel *param0);
+static void WiFiEarth_ShowProfilePanel(WiFiEarthProfilePanel *param0);
+static BOOL WiFiEarth_PushProfile(WiFiEarthProfilePanel *param0, const WiFiEarthProfile *param1);
+static BOOL WiFiEarth_ProfileExists(const WiFiEarthProfilePanel *param0, const WiFiEarthProfile *param1);
+static void WiFiEarth_ResetProfileHistory(WiFiEarthProfilePanel *param0);
+static void WiFiEarth_ClearProfileHistory(WiFiEarthProfilePanel *param0);
+static void WiFiEarth_AddProfileToHistory(WiFiEarthProfilePanel *param0, const WiFiEarthProfile *param1);
+static void WiFiEarth_PopProfileHistory(WiFiEarthProfilePanel *param0);
+static BOOL WiFiEarth_GetProfileFromHistory(const WiFiEarthProfilePanel *param0, WiFiEarthProfile *param1, u32 param2);
+static void WiFiEarth_UpdateProfileSprites(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1);
+static void WiFiEarth_ShowProfiles(WiFiEarthProfilePanel *param0, WiFiEarthMessageLoader *param1, WiFiEarthGraphics *param2);
+static BOOL WiFiEarth_AnimateProfilesSlow(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1);
+static void WiFiEarth_HalveProfileProgress(WiFiEarthProfilePanel *param0);
+static BOOL WiFiEarth_AnimateProfilesFast(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1);
+static BOOL WiFiEarth_AnimateProfileProgress(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1, int param2);
+static void WiFiEarth_StartProfileTile(WiFiEarthProfilePanel *param0, u32 param1);
+static BOOL WiFiEarth_UpdateProfileTile(WiFiEarthProfilePanel *param0, u32 param1, WiFiEarthGraphics *param2);
+static void WiFiEarth_CopyProfileTilemap(WiFiEarthProfilePanel *param0, u32 param1, WiFiEarthGraphics *param2);
+static void WiFiEarth_InitWindowMask(WiFiEarthWindowMask *param0);
+static void WiFiEarth_FreeWindowMask(WiFiEarthWindowMask *param0);
+static void WiFiEarth_SetWindow0(WiFiEarthWindowMask *param0, s16 param1, s16 param2);
+static void WiFiEarth_SetWindow1(WiFiEarthWindowMask *param0, s16 param1, s16 param2);
+static void WiFiEarth_ApplyWindowMask(SysTask *param0, void *param1);
+static void WiFiEarth_InitProfileWindows(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1, u32 param2);
+static void WiFiEarth_FreeProfileWindows(WiFiEarthProfilePanel *param0);
+static void WiFiEarth_PrintProfile(WiFiEarthProfilePanel *param0, u32 param1, const WiFiEarthProfile *param2, WiFiEarthMessageLoader *param3);
+static u8 *WiFiEarth_GetProfileTilePixels(WiFiEarthProfilePanel *param0, u32 param1, u32 param2);
+static u8 *WiFiEarth_GetProfileHeaderPixels(WiFiEarthProfilePanel *param0, u32 param1);
+static void WiFiEarth_TransferProfileTile(WiFiEarthProfilePanel *param0, u32 param1, u32 param2, const u8 *param3);
+static void WiFiEarth_InitProfileGraphic(WiFiEarthProfileGraphic *param0, WiFiEarthGraphics *param1, const WiFiEarthProfileGraphicParams *param2, u16 param3, enum HeapID heapID);
+static void WiFiEarth_FreeProfileGraphic(WiFiEarthProfileGraphic *param0);
+static void WiFiEarth_UpdateProfileGraphic(WiFiEarthProfileGraphic *param0, WiFiEarthGraphics *param1);
+static void WiFiEarth_SetProfileGraphicVisible(WiFiEarthProfileGraphic *param0, u32 param1, BOOL param2);
+static void WiFiEarth_ClearProfileGraphicVisible(WiFiEarthProfileGraphic *param0);
+static void WiFiEarth_DrawProfileGraphic(WiFiEarthProfileGraphic *param0, u32 param1, WiFiEarthGraphics *param2);
+static void WiFiEarth_InitMarkerSprites(WiFiEarthMarkerSprites *param0, WiFiEarthGraphics *param1, WiFiEarthWindowMask *param2, u32 param3);
+static void WiFiEarth_FreeMarkerSprites(WiFiEarthMarkerSprites *param0, WiFiEarthGraphics *param1);
+static void WiFiEarth_ResetMarkerSprites(WiFiEarthMarkerSprites *param0);
+static void WiFiEarth_ShowMarkerSprite(WiFiEarthMarkerSprites *param0, u8 param1, u8 param2, u8 param3);
+static void WiFiEarth_HideMarkerSprites(WiFiEarthMarkerSprites *param0);
+static void WiFiEarth_UpdateMarkerSprites(WiFiEarthMarkerSprites *param0, WiFiEarthWindowMask *param1);
+static BOOL WiFiEarth_ShowMarkerSpriteByIndex(WiFiEarthMarkerSprites *param0, u32 param1, WiFiEarthWindowMask *param2);
+static BOOL WiFiEarth_HideMarkerSpriteByIndex(WiFiEarthMarkerSprites *param0, u32 param1, WiFiEarthWindowMask *param2);
+static void WiFiEarth_InitMarkerAnimation(WiFiEarthMarkerAnimation *param0, const WiFiEarthMarkerAnimFrame *param1);
+static void WiFiEarth_SetMarkerAnimFlagA(WiFiEarthMarkerAnimation *param0, BOOL param1);
+static void WiFiEarth_SetMarkerAnimFlagB(WiFiEarthMarkerAnimation *param0, BOOL param1);
+static BOOL WiFiEarth_UpdateMarkerAnimation(WiFiEarthMarkerAnimation *param0, WiFiEarthWindowMask *param1);
+static void WiFiEarth_RestartMarkerAnimation(WiFiEarthMarkerAnimation *param0, WiFiEarthWindowMask *param1);
+static void WiFiEarth_GetMarkerSpritePosition(const WiFiEarthMarkerAnimation *param0, VecFx32 *param1);
+static void WiFiEarth_UpdateMarkerPosition(WiFiEarthMarkerAnimation *param0);
+static void WiFiEarth_UpdateMarkerWindowMask(const WiFiEarthMarkerAnimation *param0, WiFiEarthWindowMask *param1);
+static void WiFiEarth_SetMarkerSpritePosition(WiFiEarthMarkerSprites *param0, u32 param1);
+static u16 WiFiEarth_GetMarkerSpriteIndex(u32 param0);
+static u16 WiFiEarth_GetMarkerSpriteAnim(u32 param0);
+static void WiFiEarth_InitMessageLoader(WiFiEarthMessageLoader *param0, u32 heapID);
+static void WiFiEarth_FreeMessageLoader(WiFiEarthMessageLoader *param0);
+static String *WiFiEarth_GetMessage(WiFiEarthMessageLoader *param0, u32 param1);
+static String *WiFiEarth_FormatCountryName(WiFiEarthMessageLoader *param0, u32 param1);
+static String *WiFiEarth_FormatCityName(WiFiEarthMessageLoader *param0, u32 param1, u32 param2);
+static void WiFiEarth_GetMessageInto(WiFiEarthMessageLoader *param0, u32 param1, String *param2);
+static u32 WiFiEarth_GetPlayerCountryIndex(const UnkStruct_ov66_02231560 *param0);
 
-static const u32 Unk_ov69_0225F028[3] = {
+static const u32 sGlobeModelMembers[3] = {
     0x0,
     0x1,
     0x2
 };
 
-static const GXBanks Unk_ov69_0225F0C0 = {
+static const GXBanks sGxBanks = {
     GX_VRAM_BG_16_F,
     GX_VRAM_BGEXTPLTT_NONE,
     GX_VRAM_SUB_BG_128_C,
@@ -406,14 +427,14 @@ static const GXBanks Unk_ov69_0225F0C0 = {
     GX_VRAM_TEXPLTT_0123_E
 };
 
-static const GraphicsModes Unk_ov69_0225F040 = {
+static const GraphicsModes sGraphicsModes = {
     GX_DISPMODE_GRAPHICS,
     GX_BGMODE_0,
     GX_BGMODE_0,
     GX_BG0_AS_3D
 };
 
-static const u32 Unk_ov69_0225F060[5] = {
+static const u32 sBgLayers[5] = {
     0x1,
     0x6,
     0x7,
@@ -421,7 +442,7 @@ static const u32 Unk_ov69_0225F060[5] = {
     0x5
 };
 
-static const BgTemplate Unk_ov69_0225F154[5] = {
+static const BgTemplate sBgTemplates[5] = {
     {
         .x = 0x0,
         .y = 0x0,
@@ -494,26 +515,26 @@ static const BgTemplate Unk_ov69_0225F154[5] = {
     },
 };
 
-static const CharTransferTemplate Unk_ov69_0225F050 = {
+static const CharTransferTemplate sCharTransferTemplate = {
     0x20,
     0x4000,
     0x4000,
     0x69
 };
 
-static const VecFx32 Unk_ov69_0225F034 = {
+static const VecFx32 sCameraTarget = {
     0x0,
     0x0,
     0x0
 };
 
-static const VecFx32 Unk_ov69_0225F01C = {
+static const VecFx32 sCameraPosition = {
     0x0,
     0x0,
     0x128000
 };
 
-static const UnkStruct_ov69_0225F0E8 Unk_ov69_0225F0E8[24] = {
+static const WiFiEarthMarkerSprite sMarkerSpriteTable[24] = {
     { 0x0, 0x0 },
     { 0x0, 0x0 },
     { 0x0, 0x1 },
@@ -540,7 +561,7 @@ static const UnkStruct_ov69_0225F0E8 Unk_ov69_0225F0E8[24] = {
     { 0x4, 0xB },
 };
 
-static const u8 Unk_ov69_0225F014[5] = {
+static const u8 sProfileGraphicFrames[5] = {
     0x1E,
     0x1E,
     0x1E,
@@ -548,7 +569,7 @@ static const u8 Unk_ov69_0225F014[5] = {
     0x1E,
 };
 
-static const TextColor Unk_ov69_0225F088[5] = {
+static const TextColor sProfileTextColors[5] = {
     TEXT_COLOR(5, 6, 0),
     TEXT_COLOR(7, 8, 0),
     TEXT_COLOR(9, 10, 0),
@@ -556,7 +577,7 @@ static const TextColor Unk_ov69_0225F088[5] = {
     TEXT_COLOR(11, 12, 0),
 };
 
-static const UnkStruct_ov69_0225ECF0 Unk_ov69_0225F1E0[12][3] = {
+static const WiFiEarthMarkerAnimFrame sMarkerAnimFrames[12][3] = {
     {
         { 0xA0, 0x30, 0xBE, 0x0, 0x13F, 0x8, 0x50 },
         { 0xCE, 0x60, 0xA0, 0x30, 0x13F, 0x8, 0x50 },
@@ -619,7 +640,7 @@ static const UnkStruct_ov69_0225ECF0 Unk_ov69_0225F1E0[12][3] = {
     },
 };
 
-static const YesNoTouchMenuParams Unk_ov69_0225F074 = {
+static const YesNoTouchMenuParams sYesNoTouchMenuParams = {
     NULL,
     0x1,
     0xA0,
@@ -628,7 +649,7 @@ static const YesNoTouchMenuParams Unk_ov69_0225F074 = {
     0x6,
 };
 
-static const UnkStruct_ov69_0225F118 Unk_ov69_0225F118[5] = {
+static const WiFiEarthProfileGraphicParams sProfileGraphicParams[5] = {
     {
         { 0x6 },
         0x1,
@@ -666,14 +687,14 @@ static const UnkStruct_ov69_0225F118 Unk_ov69_0225F118[5] = {
     },
 };
 
-int ov69_0225C700(ApplicationManager *appMan, int *param1)
+int WiFiEarth_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov69_0225CE64 *v0;
+    WiFiEarthAppData *v0;
     UnkStruct_ov66_02230F50 *v1 = ApplicationManager_Args(appMan);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_105, 0x50000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov69_0225CE64), HEAP_ID_105);
-    memset(v0, 0, sizeof(UnkStruct_ov69_0225CE64));
+    v0 = ApplicationManager_NewData(appMan, sizeof(WiFiEarthAppData), HEAP_ID_105);
+    memset(v0, 0, sizeof(WiFiEarthAppData));
 
     v0->wiFiHistory = SaveData_WiFiHistory(v1->saveData);
     v0->options = SaveData_GetOptions(v1->saveData);
@@ -681,26 +702,26 @@ int ov69_0225C700(ApplicationManager *appMan, int *param1)
     v0->unk_18 = WiFiHistory_GetRegion(v0->wiFiHistory);
     v0->unk_1C = v1->unk_08;
 
-    ov69_0225D2A8(v0, v1);
-    ov69_0225D318(&v0->unk_20, v0->options, HEAP_ID_105);
-    ov69_0225D6D8(&v0->unk_1DC, &v0->unk_20, HEAP_ID_105);
-    ov69_0225EF1C(&v0->unk_1CC, HEAP_ID_105);
-    ov69_0225D7A0(&v0->unk_288, v1->unk_00, &v0->unk_20, v0->unk_04, HEAP_ID_105);
-    ov69_0225DA74(&v0->unk_BC30, v0->unk_04, HEAP_ID_105);
-    ov69_0225DBB4(&v0->unk_BC44, &v0->unk_20, &v0->unk_1CC, HEAP_ID_105);
-    ov69_0225DD60(&v0->unk_BF64, &v0->unk_20, &v0->unk_1CC, v1->saveData, HEAP_ID_105);
-    ov69_0225DEC0(&v0->unk_BC70, &v0->unk_20, &v0->unk_1CC, HEAP_ID_105);
-    ov69_0225D030(v0, v1);
+    WiFiEarth_InitWorldUnlock(v0, v1);
+    WiFiEarth_InitGraphics(&v0->unk_20, v0->options, HEAP_ID_105);
+    WiFiEarth_InitGlobe(&v0->unk_1DC, &v0->unk_20, HEAP_ID_105);
+    WiFiEarth_InitMessageLoader(&v0->unk_1CC, HEAP_ID_105);
+    WiFiEarth_InitPlaceMarkers(&v0->unk_288, v1->unk_00, &v0->unk_20, v0->unk_04, HEAP_ID_105);
+    WiFiEarth_InitCamera(&v0->unk_BC30, v0->unk_04, HEAP_ID_105);
+    WiFiEarth_InitExitWindow(&v0->unk_BC44, &v0->unk_20, &v0->unk_1CC, HEAP_ID_105);
+    WiFiEarth_InitConfirmWindow(&v0->unk_BF64, &v0->unk_20, &v0->unk_1CC, v1->saveData, HEAP_ID_105);
+    WiFiEarth_InitProfilePanel(&v0->unk_BC70, &v0->unk_20, &v0->unk_1CC, HEAP_ID_105);
+    WiFiEarth_SelectInitialMarker(v0, v1);
 
-    SetVBlankCallback(ov69_0225CF90, v0);
+    SetVBlankCallback(WiFiEarth_VBlankCallback, v0);
     DisableHBlank();
 
     return 1;
 }
 
-int ov69_0225C820(ApplicationManager *appMan, int *param1)
+int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov69_0225CE64 *v0;
+    WiFiEarthAppData *v0;
     UnkStruct_ov66_02230F50 *v1;
     BOOL v2;
 
@@ -721,8 +742,8 @@ int ov69_0225C820(ApplicationManager *appMan, int *param1)
         }
         break;
     case 2:
-        v2 = ov69_0225CE64(v0);
-        ov69_0225CF30(v0);
+        v2 = WiFiEarth_UpdateState(v0);
+        WiFiEarth_UpdateProfilePanelState(v0);
 
         if (ov66_0222E12C(v1->unk_0C) == 1) {
             ov66_0222E2A4(v1->unk_0C);
@@ -750,27 +771,27 @@ int ov69_0225C820(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    ov69_0225CF50(v0);
+    WiFiEarth_DrawFrame(v0);
 
     return 0;
 }
 
-int ov69_0225C8FC(ApplicationManager *appMan, int *param1)
+int WiFiEarth_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov69_0225CE64 *v0 = ApplicationManager_Data(appMan);
+    WiFiEarthAppData *v0 = ApplicationManager_Data(appMan);
     UnkStruct_ov66_02230F50 *v1 = ApplicationManager_Args(appMan);
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
 
-    ov69_0225DFBC(&v0->unk_BC70, &v0->unk_20);
-    ov69_0225DDC8(&v0->unk_BF64);
-    ov69_0225DC48(&v0->unk_BC44);
-    ov69_0225DAEC(&v0->unk_BC30);
-    ov69_0225D71C(&v0->unk_1DC);
-    ov69_0225D838(&v0->unk_288);
-    ov69_0225EF54(&v0->unk_1CC);
-    ov69_0225D35C(&v0->unk_20);
+    WiFiEarth_FreeProfilePanel(&v0->unk_BC70, &v0->unk_20);
+    WiFiEarth_FreeConfirmWindow(&v0->unk_BF64);
+    WiFiEarth_FreeExitWindow(&v0->unk_BC44);
+    WiFiEarth_FreeCamera(&v0->unk_BC30);
+    WiFiEarth_FreeGlobe(&v0->unk_1DC);
+    WiFiEarth_FreePlaceMarkers(&v0->unk_288);
+    WiFiEarth_FreeMessageLoader(&v0->unk_1CC);
+    WiFiEarth_FreeGraphics(&v0->unk_20);
 
     ApplicationManager_FreeData(appMan);
     Heap_Destroy(HEAP_ID_105);
@@ -778,7 +799,7 @@ int ov69_0225C8FC(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static void ov69_0225C980(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_02231560 *param1, u32 heapID)
+static void WiFiEarth_LoadPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_ov66_02231560 *param1, u32 heapID)
 {
     NARC *v0 = NARC_ctor(NARC_INDEX_APPLICATION__WIFI_EARTH__WIFI_EARTH_PLACE, heapID);
 
@@ -798,7 +819,7 @@ static void ov69_0225C980(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_
 
         for (v4 = 1; v4 < v5; v4++) {
             if (v2->type != 2) {
-                ov69_0225CA7C(param0, param0->unk_00.unk_00, v2->longitude, v2->latitude, v4, 0, param1);
+                WiFiEarth_AddPlaceMarker(param0, param0->unk_00.unk_00, v2->longitude, v2->latitude, v4, 0, param1);
                 param0->unk_00.unk_00++;
             }
 
@@ -809,7 +830,7 @@ static void ov69_0225C980(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_
     }
     {
         void *v6;
-        UnkStruct_ov69_0225C980 *v7;
+        WiFiEarthRegionEntry *v7;
         u32 v8, v9;
         int v10, v11, v12, v13;
 
@@ -819,13 +840,13 @@ static void ov69_0225C980(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_
         while (v12 < v11) {
             v9 = WiFiEarthPlace_GetNarcMemberIndex(v12);
             v6 = LoadMemberFromOpenNARC_OutFileSize(v0, v9, 0, heapID, 0, &v8);
-            v7 = (UnkStruct_ov69_0225C980 *)v6;
+            v7 = (WiFiEarthRegionEntry *)v6;
             v13 = v8 / 4;
 
             v7++;
 
             for (v10 = 1; v10 < v13; v10++) {
-                ov69_0225CA7C(param0, param0->unk_00.unk_00, v7->unk_00, v7->unk_02, WiFiEarthPlace_GetCountry(v12), v10, param1);
+                WiFiEarth_AddPlaceMarker(param0, param0->unk_00.unk_00, v7->longitude, v7->latitude, WiFiEarthPlace_GetCountry(v12), v10, param1);
                 param0->unk_00.unk_00++;
                 v7++;
             }
@@ -838,7 +859,7 @@ static void ov69_0225C980(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_
     NARC_dtor(v0);
 }
 
-static void ov69_0225CA7C(UnkStruct_ov69_0225CA7C *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const UnkStruct_ov66_02231560 *param6)
+static void WiFiEarth_AddPlaceMarker(WiFiEarthGlobe *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const UnkStruct_ov66_02231560 *param6)
 {
     MtxFx33 v0 = { FX32_ONE, 0, 0, 0, FX32_ONE, 0, 0, 0, FX32_ONE };
     VecFx32 v1;
@@ -850,19 +871,19 @@ static void ov69_0225CA7C(UnkStruct_ov69_0225CA7C *param0, u32 param1, s16 param
     v1.y = param3;
     v1.z = 0;
 
-    ov69_0225CB6C(&v0, &v1);
+    WiFiEarth_BuildMarkerRotationMatrix(&v0, &v1);
 
     param0->unk_00.unk_04[param1].unk_04 = v0;
 
     if (param6 != NULL) {
-        param0->unk_00.unk_04[param1].unk_28 = ov69_0225D91C(param6, param4, param5);
+        param0->unk_00.unk_04[param1].unk_28 = WiFiEarth_GetPlaceStatus(param6, param4, param5);
     }
 
     param0->unk_00.unk_04[param1].unk_2A = param4;
     param0->unk_00.unk_04[param1].unk_2C = param5;
 }
 
-static void ov69_0225CAF4(MtxFx33 *param0, const VecFx32 *param1)
+static void WiFiEarth_BuildRotationMatrix(MtxFx33 *param0, const VecFx32 *param1)
 {
     MtxFx33 v0;
 
@@ -873,7 +894,7 @@ static void ov69_0225CAF4(MtxFx33 *param0, const VecFx32 *param1)
     MTX_Concat33(param0, &v0, param0);
 }
 
-static void ov69_0225CB6C(MtxFx33 *param0, const VecFx32 *param1)
+static void WiFiEarth_BuildMarkerRotationMatrix(MtxFx33 *param0, const VecFx32 *param1)
 {
     MtxFx33 v0;
 
@@ -884,7 +905,7 @@ static void ov69_0225CB6C(MtxFx33 *param0, const VecFx32 *param1)
     MTX_Concat33(param0, &v0, param0);
 }
 
-static void ov69_0225CBE4(int param0, int param1, int *param2, int *param3, int *param4, int *param5)
+static void WiFiEarth_CalcTouchDrag(int param0, int param1, int *param2, int *param3, int *param4, int *param5)
 {
     int v0 = 0;
     int v1 = 0;
@@ -928,7 +949,7 @@ static void ov69_0225CBE4(int param0, int param1, int *param2, int *param3, int 
     *param5 = v3;
 }
 
-static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2)
+static u32 WiFiEarth_ProcessGlobeInput(WiFiEarthAppData *param0, int param1, int param2)
 {
     u16 v0;
     u16 v1;
@@ -940,18 +961,18 @@ static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2
     int v7, v8;
     u32 v9;
 
-    ov69_0225D780(&param0->unk_1DC, &v5);
+    WiFiEarth_GetGlobeRotation(&param0->unk_1DC, &v5);
 
-    v6 = ov69_0225DD10(&param0->unk_BC44, 0);
-    v7 = ov69_0225DD10(&param0->unk_BC44, 1);
-    v8 = ov69_0225DD10(&param0->unk_BC44, 2);
-    v9 = ov69_0225DBB0(&param0->unk_BC30);
+    v6 = WiFiEarth_GetExitWindowInput(&param0->unk_BC44, 0);
+    v7 = WiFiEarth_GetExitWindowInput(&param0->unk_BC44, 1);
+    v8 = WiFiEarth_GetExitWindowInput(&param0->unk_BC44, 2);
+    v9 = WiFiEarth_IsZoomedIn(&param0->unk_BC30);
 
     v2 = v5.x;
     v3 = v5.y;
 
     if ((param1 & PAD_BUTTON_A) || (v6 & PAD_BUTTON_A)) {
-        if (param0->unk_04.unk_00_0 == 1) {
+        if (param0->unk_04.worldUnlocked == 1) {
             v4 = 1;
         }
 
@@ -977,7 +998,7 @@ static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2
     }
 
     if ((param2 & PAD_KEY_LEFT) || (v6 & PAD_KEY_LEFT)) {
-        if (param0->unk_04.unk_00_0 == 1) {
+        if (param0->unk_04.worldUnlocked == 1) {
             v5.y += v0;
         } else {
             if (v3 < (s16)0xd820) {
@@ -987,7 +1008,7 @@ static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2
     }
 
     if ((param2 & PAD_KEY_RIGHT) || (v6 & PAD_KEY_RIGHT)) {
-        if (param0->unk_04.unk_00_0 == 1) {
+        if (param0->unk_04.worldUnlocked == 1) {
             v5.y -= v0;
         } else {
             if (v3 > (s16)0xcc80) {
@@ -997,7 +1018,7 @@ static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2
     }
 
     if ((param2 & PAD_KEY_UP) || (v6 & PAD_KEY_UP)) {
-        if (param0->unk_04.unk_00_0 == 1) {
+        if (param0->unk_04.worldUnlocked == 1) {
             if ((v2 + v1) < (0x4000 - 0x200)) {
                 v5.x += v1;
             } else {
@@ -1011,7 +1032,7 @@ static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2
     }
 
     if ((param2 & PAD_KEY_DOWN) || (v6 & PAD_KEY_DOWN)) {
-        if (param0->unk_04.unk_00_0 == 1) {
+        if (param0->unk_04.worldUnlocked == 1) {
             if ((v2 - v1) > (-0x4000 + 0x200)) {
                 v5.x -= v1;
             } else {
@@ -1024,11 +1045,11 @@ static u32 ov69_0225CC54(UnkStruct_ov69_0225CE64 *param0, int param1, int param2
         }
     }
 
-    ov69_0225D790(&param0->unk_1DC, &v5);
+    WiFiEarth_SetGlobeRotation(&param0->unk_1DC, &v5);
     return v4;
 }
 
-static void ov69_0225CE0C(VecFx32 *param0)
+static void WiFiEarth_WrapAngle(VecFx32 *param0)
 {
     if (param0->x >= 0) {
         param0->x = param0->x % 0xffff;
@@ -1043,19 +1064,19 @@ static void ov69_0225CE0C(VecFx32 *param0)
     }
 }
 
-static BOOL ov69_0225CE64(UnkStruct_ov69_0225CE64 *param0)
+static BOOL WiFiEarth_UpdateState(WiFiEarthAppData *param0)
 {
     u32 v0;
 
     switch (param0->unk_00) {
     case 0:
-        v0 = ov69_0225CF9C(param0);
+        v0 = WiFiEarth_ProcessInput(param0);
 
         switch (v0) {
         case 0:
             break;
         case 1:
-            ov69_0225DB00(&param0->unk_BC30);
+            WiFiEarth_ToggleZoom(&param0->unk_BC30);
             param0->unk_00 = 1;
             break;
         case 2:
@@ -1064,30 +1085,30 @@ static BOOL ov69_0225CE64(UnkStruct_ov69_0225CE64 *param0)
         }
         break;
     case 1:
-        v0 = ov69_0225DB2C(&param0->unk_BC30, &param0->unk_288);
+        v0 = WiFiEarth_UpdateZoom(&param0->unk_BC30, &param0->unk_288);
 
         if (v0 == 1) {
             param0->unk_00 = 0;
         }
         break;
     case 2:
-        ov69_0225DDFC(&param0->unk_BF64);
-        ov69_0225E084(&param0->unk_BC70);
-        ov69_0225DD2C(&param0->unk_BC44);
+        WiFiEarth_ShowConfirmWindow(&param0->unk_BF64);
+        WiFiEarth_HideProfilePanel(&param0->unk_BC70);
+        WiFiEarth_ShowExitWindow(&param0->unk_BC44);
         param0->unk_00++;
         break;
     case 3: {
         u32 v1;
 
-        v1 = ov69_0225DE40(&param0->unk_BF64);
+        v1 = WiFiEarth_ProcessConfirmInput(&param0->unk_BF64);
 
         switch (v1) {
         case YES_NO_TOUCH_MENU_NOTHING_CHOSEN:
             break;
         case YES_NO_TOUCH_MENU_NO:
-            ov69_0225E0A0(&param0->unk_BC70);
-            ov69_0225DEA0(&param0->unk_BF64);
-            ov69_0225DD44(&param0->unk_BC44);
+            WiFiEarth_ShowProfilePanel(&param0->unk_BC70);
+            WiFiEarth_HideConfirmWindow(&param0->unk_BF64);
+            WiFiEarth_HideExitWindow(&param0->unk_BC44);
             param0->unk_00 = 0;
             break;
         default:
@@ -1103,39 +1124,39 @@ static BOOL ov69_0225CE64(UnkStruct_ov69_0225CE64 *param0)
     return 0;
 }
 
-static void ov69_0225CF30(UnkStruct_ov69_0225CE64 *param0)
+static void WiFiEarth_UpdateProfilePanelState(WiFiEarthAppData *param0)
 {
     switch (param0->unk_02) {
     case 0:
-        ov69_0225E00C(&param0->unk_BC70, &param0->unk_1CC, &param0->unk_20);
+        WiFiEarth_UpdateProfilePanel(&param0->unk_BC70, &param0->unk_1CC, &param0->unk_20);
         break;
     }
 }
 
-static void ov69_0225CF50(UnkStruct_ov69_0225CE64 *param0)
+static void WiFiEarth_DrawFrame(WiFiEarthAppData *param0)
 {
     G3_ResetG3X();
 
-    ov69_0225DAF8(&param0->unk_BC30);
-    ov69_0225D728(&param0->unk_1DC);
-    ov69_0225D854(&param0->unk_288, &param0->unk_1DC);
-    ov69_0225D384(&param0->unk_20);
+    WiFiEarth_UpdateCamera(&param0->unk_BC30);
+    WiFiEarth_DrawGlobe(&param0->unk_1DC);
+    WiFiEarth_DrawPlaceMarkers(&param0->unk_288, &param0->unk_1DC);
+    WiFiEarth_UpdateSprites(&param0->unk_20);
 
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_W);
 }
 
-static void ov69_0225CF90(void *param0)
+static void WiFiEarth_VBlankCallback(void *param0)
 {
-    UnkStruct_ov69_0225CE64 *v0 = param0;
-    ov69_0225D390(&v0->unk_20);
+    WiFiEarthAppData *v0 = param0;
+    WiFiEarth_ProcessVBlank(&v0->unk_20);
 }
 
-static u32 ov69_0225CF9C(UnkStruct_ov69_0225CE64 *param0)
+static u32 WiFiEarth_ProcessInput(WiFiEarthAppData *param0)
 {
     u32 v0;
     BOOL v1;
 
-    ov69_0225DC54(&param0->unk_BC44);
+    WiFiEarth_ProcessExitWindowInput(&param0->unk_BC44);
 
     if (param0->unk_BC44.unk_00 & PAD_BUTTON_B) {
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
@@ -1143,47 +1164,47 @@ static u32 ov69_0225CF9C(UnkStruct_ov69_0225CE64 *param0)
     } else {
         if (gSystem.pressedKeys & PAD_BUTTON_X) {
             {
-                UnkStruct_ov69_0225E0C0 v2;
+                WiFiEarthProfile v2;
 
-                v1 = ov69_0225D088(param0, &v2);
+                v1 = WiFiEarth_GetMarkerUnderCursor(param0, &v2);
 
                 if (v1 == 1) {
-                    v1 = ov69_0225E0F8(&param0->unk_BC70, &v2);
+                    v1 = WiFiEarth_ProfileExists(&param0->unk_BC70, &v2);
 
                     if (v1 == 0) {
-                        v1 = ov69_0225E0C0(&param0->unk_BC70, &v2);
+                        v1 = WiFiEarth_PushProfile(&param0->unk_BC70, &v2);
 
                         if (v1 == 0) {
                             (void)0;
                         } else {
-                            ov69_0225D268(param0, v2.unk_04, v2.unk_08);
+                            WiFiEarth_MoveCameraToPlace(param0, v2.unk_04, v2.unk_08);
                             Sound_PlayEffect(SEQ_SE_PL_TIMER04_sseq);
                         }
                     }
                 }
             }
         } else {
-            v0 = ov69_0225CC54(param0, gSystem.pressedKeys, gSystem.heldKeys);
+            v0 = WiFiEarth_ProcessGlobeInput(param0, gSystem.pressedKeys, gSystem.heldKeys);
         }
     }
 
     return v0;
 }
 
-static void ov69_0225D030(UnkStruct_ov69_0225CE64 *param0, const UnkStruct_ov66_02230F50 *param1)
+static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1)
 {
     int v0;
     int v1;
     int v2;
-    BOOL v3 = ov69_0225D268(param0, param0->unk_14, param0->unk_18);
+    BOOL v3 = WiFiEarth_MoveCameraToPlace(param0, param0->unk_14, param0->unk_18);
 
     if (v3 == 0) {
-        v0 = ov69_0225EFEC(param1->unk_00);
+        v0 = WiFiEarth_GetPlayerCountryIndex(param1->unk_00);
 
         if (v0 != 50) {
             v1 = ov66_022315D8(param1->unk_00, v0);
             v2 = ov66_022315FC(param1->unk_00, v0);
-            v3 = ov69_0225D268(param0, v1, v2);
+            v3 = WiFiEarth_MoveCameraToPlace(param0, v1, v2);
 
             GF_ASSERT(v3 == 1);
         } else {
@@ -1192,22 +1213,22 @@ static void ov69_0225D030(UnkStruct_ov69_0225CE64 *param0, const UnkStruct_ov66_
     }
 }
 
-static BOOL ov69_0225D088(const UnkStruct_ov69_0225CE64 *param0, UnkStruct_ov69_0225E0C0 *param1)
+static BOOL WiFiEarth_GetMarkerUnderCursor(const WiFiEarthAppData *param0, WiFiEarthProfile *param1)
 {
-    u32 v0 = ov69_0225D0D8(param0);
+    u32 v0 = WiFiEarth_FindNearestMarker(param0);
 
-    if (v0 >= ov69_0225DA70(&param0->unk_288)) {
+    if (v0 >= WiFiEarth_GetMarkerCount(&param0->unk_288)) {
         return 0;
     }
 
-    param1->unk_00 = ov69_0225D1E0(param0, v0, param0->unk_1C);
-    param1->unk_04 = ov69_0225DA38(&param0->unk_288, v0);
-    param1->unk_08 = ov69_0225DA54(&param0->unk_288, v0);
+    param1->unk_00 = WiFiEarth_CalcLocalTime(param0, v0, param0->unk_1C);
+    param1->unk_04 = WiFiEarth_GetMarkerCountry(&param0->unk_288, v0);
+    param1->unk_08 = WiFiEarth_GetMarkerRegion(&param0->unk_288, v0);
 
     return 1;
 }
 
-static u32 ov69_0225D0D8(const UnkStruct_ov69_0225CE64 *param0)
+static u32 WiFiEarth_FindNearestMarker(const WiFiEarthAppData *param0)
 {
     int v0;
     s16 v1;
@@ -1224,9 +1245,9 @@ static u32 ov69_0225D0D8(const UnkStruct_ov69_0225CE64 *param0)
     BOOL v12;
     BOOL v13;
 
-    v10 = ov69_0225DA70(&param0->unk_288);
+    v10 = WiFiEarth_GetMarkerCount(&param0->unk_288);
 
-    ov69_0225D780(&param0->unk_1DC, &v7);
+    WiFiEarth_GetGlobeRotation(&param0->unk_1DC, &v7);
 
     v1 = (s16)(v7.x - 0x80);
     v2 = (s16)(v7.x + 0x80);
@@ -1236,14 +1257,14 @@ static u32 ov69_0225D0D8(const UnkStruct_ov69_0225CE64 *param0)
     v11 = v10;
 
     for (v0 = 0; v0 < v10; v0++) {
-        ov69_0225D9F0(&param0->unk_288, &v8, v0);
-        v9 = ov69_0225DA1C(&param0->unk_288, v0);
+        WiFiEarth_GetMarkerPosition(&param0->unk_288, &v8, v0);
+        v9 = WiFiEarth_GetMarkerStatus(&param0->unk_288, v0);
 
         if ((v8.x > v1) && (v8.x < v2) && (v8.y > v3) && (v8.y < v4) && (v9 != 3)) {
-            ov69_0225CE0C(&v7);
-            ov69_0225CE0C(&v8);
+            WiFiEarth_WrapAngle(&v7);
+            WiFiEarth_WrapAngle(&v8);
 
-            v5 = ov69_0225D194(&v7, &v8);
+            v5 = WiFiEarth_AngleDistance(&v7, &v8);
 
             if (v5 < v6) {
                 v6 = v5;
@@ -1255,7 +1276,7 @@ static u32 ov69_0225D0D8(const UnkStruct_ov69_0225CE64 *param0)
     return v11;
 }
 
-static u32 ov69_0225D194(const VecFx32 *param0, const VecFx32 *param1)
+static u32 WiFiEarth_AngleDistance(const VecFx32 *param0, const VecFx32 *param1)
 {
     s32 v0, v1;
     u32 v2;
@@ -1276,7 +1297,7 @@ static u32 ov69_0225D194(const VecFx32 *param0, const VecFx32 *param1)
     return v2;
 }
 
-static u32 ov69_0225D1E0(const UnkStruct_ov69_0225CE64 *param0, u32 param1, UnkStruct_ov66_02231428 param2)
+static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, UnkStruct_ov66_02231428 param2)
 {
     s32 v0;
     u16 v1;
@@ -1285,12 +1306,12 @@ static u32 ov69_0225D1E0(const UnkStruct_ov69_0225CE64 *param0, u32 param1, UnkS
     int v4;
 
     v0 = param2.unk_00_val2_unk_00 - 4;
-    v4 = ov69_0225D9C4(&param0->unk_288, 219, 3);
+    v4 = WiFiEarth_GetMarkerIndex(&param0->unk_288, 219, 3);
 
-    GF_ASSERT(v4 < ov69_0225DA70(&param0->unk_288));
+    GF_ASSERT(v4 < WiFiEarth_GetMarkerCount(&param0->unk_288));
 
-    ov69_0225D9F0(&param0->unk_288, &v2, v4);
-    ov69_0225D9F0(&param0->unk_288, &v3, param1);
+    WiFiEarth_GetMarkerPosition(&param0->unk_288, &v2, v4);
+    WiFiEarth_GetMarkerPosition(&param0->unk_288, &v3, param1);
 
     v1 = v2.y - v3.y;
     v0 += (v1 * 24) / 0xffff;
@@ -1306,85 +1327,85 @@ static u32 ov69_0225D1E0(const UnkStruct_ov69_0225CE64 *param0, u32 param1, UnkS
     return v0;
 }
 
-static BOOL ov69_0225D268(UnkStruct_ov69_0225CE64 *param0, u8 param1, u8 param2)
+static BOOL WiFiEarth_MoveCameraToPlace(WiFiEarthAppData *param0, u8 param1, u8 param2)
 {
     VecFx32 v0;
     VecFx32 v1;
-    u32 v2 = ov69_0225D984(&param0->unk_288, param1, param2, &v0);
+    u32 v2 = WiFiEarth_FindMarkerByPlace(&param0->unk_288, param1, param2, &v0);
 
     if (v2 != 3) {
-        ov69_0225D780(&param0->unk_1DC, &v1);
+        WiFiEarth_GetGlobeRotation(&param0->unk_1DC, &v1);
         v0.z = v1.z;
-        ov69_0225D790(&param0->unk_1DC, &v0);
+        WiFiEarth_SetGlobeRotation(&param0->unk_1DC, &v0);
         return 1;
     }
 
     return 0;
 }
 
-static void ov69_0225D2A8(UnkStruct_ov69_0225CE64 *param0, const UnkStruct_ov66_02230F50 *param1)
+static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1)
 {
     int v0;
 
-    param0->unk_04.unk_00_1 = 0;
-    param0->unk_04.unk_00_0 = 0;
+    param0->unk_04.isJapanese = 0;
+    param0->unk_04.worldUnlocked = 0;
 
     if (gGameLanguage == LANGUAGE_JAPANESE) {
-        param0->unk_04.unk_00_1 = 1;
+        param0->unk_04.isJapanese = 1;
     } else {
-        param0->unk_04.unk_00_1 = 0;
+        param0->unk_04.isJapanese = 0;
     }
 
-    if (param0->unk_04.unk_00_1 == 1) {
+    if (param0->unk_04.isJapanese == 1) {
         for (v0 = 0; v0 < 50; v0++) {
             if (param1->unk_00->unk_00[v0].unk_03_4 == 1) {
                 if (param1->unk_00->unk_00[v0].unk_00 != 103) {
-                    param0->unk_04.unk_00_0 = 1;
+                    param0->unk_04.worldUnlocked = 1;
                 }
             }
         }
     } else {
-        param0->unk_04.unk_00_0 = 1;
+        param0->unk_04.worldUnlocked = 1;
     }
 }
 
-static void ov69_0225D318(UnkStruct_ov69_0225D35C *param0, Options *options, u32 heapID)
+static void WiFiEarth_InitGraphics(WiFiEarthGraphics *param0, Options *options, u32 heapID)
 {
     param0->unk_1A8 = NARC_ctor(NARC_INDEX_GRAPHIC__WORLDTIMER, heapID);
 
     VramTransfer_New(64, heapID);
-    GXLayers_SetBanks(&Unk_ov69_0225F0C0);
+    GXLayers_SetBanks(&sGxBanks);
 
-    ov69_0225D3A4(param0, options, heapID);
-    ov69_0225D53C(param0, heapID);
-    ov69_0225D604(param0, heapID);
+    WiFiEarth_InitBackgrounds(param0, options, heapID);
+    WiFiEarth_InitSpriteSystem(param0, heapID);
+    WiFiEarth_Init3D(param0, heapID);
 }
 
-static void ov69_0225D35C(UnkStruct_ov69_0225D35C *param0)
+static void WiFiEarth_FreeGraphics(WiFiEarthGraphics *param0)
 {
     NARC_dtor(param0->unk_1A8);
     VramTransfer_Free();
 
-    ov69_0225D504(param0);
-    ov69_0225D5D8(param0);
-    ov69_0225D63C(param0);
+    WiFiEarth_FreeBackgrounds(param0);
+    WiFiEarth_FreeSpriteSystem(param0);
+    WiFiEarth_Free3D(param0);
 }
 
-static void ov69_0225D384(UnkStruct_ov69_0225D35C *param0)
+static void WiFiEarth_UpdateSprites(WiFiEarthGraphics *param0)
 {
     SpriteList_Update(param0->unk_04);
 }
 
-static void ov69_0225D390(UnkStruct_ov69_0225D35C *param0)
+static void WiFiEarth_ProcessVBlank(WiFiEarthGraphics *param0)
 {
     Bg_RunScheduledUpdates(param0->unk_00);
     RenderOam_Transfer();
     VramTransfer_Process();
 }
 
-static void ov69_0225D3A4(UnkStruct_ov69_0225D35C *param0, Options *options, u32 heapID)
+static void WiFiEarth_InitBackgrounds(WiFiEarthGraphics *param0, Options *options, u32 heapID)
 {
-    SetAllGraphicsModes(&Unk_ov69_0225F040);
+    SetAllGraphicsModes(&sGraphicsModes);
 
     param0->unk_00 = BgConfig_New(heapID);
     gSystem.whichScreenIs3D = DS_SCREEN_SUB;
@@ -1394,9 +1415,9 @@ static void ov69_0225D3A4(UnkStruct_ov69_0225D35C *param0, Options *options, u32
     int i;
 
     for (i = 0; i < 5; i++) {
-        Bg_InitFromTemplate(param0->unk_00, Unk_ov69_0225F060[i], &Unk_ov69_0225F154[i], 0);
-        Bg_ClearTilesRange(Unk_ov69_0225F060[i], 32, 0, heapID);
-        Bg_ClearTilemap(param0->unk_00, Unk_ov69_0225F060[i]);
+        Bg_InitFromTemplate(param0->unk_00, sBgLayers[i], &sBgTemplates[i], 0);
+        Bg_ClearTilesRange(sBgLayers[i], 32, 0, heapID);
+        Bg_ClearTilemap(param0->unk_00, sBgLayers[i]);
     }
 
     Graphics_LoadPaletteFromOpenNARC(param0->unk_1A8, 5, 4, 0, 0, heapID);
@@ -1419,13 +1440,13 @@ static void ov69_0225D3A4(UnkStruct_ov69_0225D35C *param0, Options *options, u32
     Bg_MaskPalette(BG_LAYER_MAIN_0, 0x72ca);
 }
 
-static void ov69_0225D504(UnkStruct_ov69_0225D35C *param0)
+static void WiFiEarth_FreeBackgrounds(WiFiEarthGraphics *param0)
 {
     {
         int v0;
 
         for (v0 = 0; v0 < 5; v0++) {
-            Bg_FreeTilemapBuffer(param0->unk_00, Unk_ov69_0225F060[v0]);
+            Bg_FreeTilemapBuffer(param0->unk_00, sBgLayers[v0]);
         }
     }
 
@@ -1434,14 +1455,14 @@ static void ov69_0225D504(UnkStruct_ov69_0225D35C *param0)
     GXLayers_SwapDisplay();
 }
 
-static void ov69_0225D53C(UnkStruct_ov69_0225D35C *param0, u32 heapID)
+static void WiFiEarth_InitSpriteSystem(WiFiEarthGraphics *param0, u32 heapID)
 {
     int i;
 
     NNS_G2dInitOamManagerModule();
 
     RenderOam_Init(0, 126, 0, 31, 0, 126, 0, 31, heapID);
-    CharTransfer_InitWithVramModes(&Unk_ov69_0225F050, GX_OBJVRAMMODE_CHAR_1D_32K, GX_OBJVRAMMODE_CHAR_1D_32K);
+    CharTransfer_InitWithVramModes(&sCharTransferTemplate, GX_OBJVRAMMODE_CHAR_1D_32K, GX_OBJVRAMMODE_CHAR_1D_32K);
     PlttTransfer_Init(32, heapID);
     CharTransfer_ClearBuffers();
     PlttTransfer_Clear();
@@ -1461,7 +1482,7 @@ static void ov69_0225D53C(UnkStruct_ov69_0225D35C *param0, u32 heapID)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void ov69_0225D5D8(UnkStruct_ov69_0225D35C *param0)
+static void WiFiEarth_FreeSpriteSystem(WiFiEarthGraphics *param0)
 {
     int v0;
 
@@ -1476,18 +1497,18 @@ static void ov69_0225D5D8(UnkStruct_ov69_0225D35C *param0)
     RenderOam_Free();
 }
 
-static void ov69_0225D604(UnkStruct_ov69_0225D35C *param0, u32 heapID)
+static void WiFiEarth_Init3D(WiFiEarthGraphics *param0, u32 heapID)
 {
-    param0->unk_1A4 = G3DPipeline_Init(heapID, TEXTURE_VRAM_SIZE_256K, PALETTE_VRAM_SIZE_64K, ov69_0225D64C);
+    param0->unk_1A4 = G3DPipeline_Init(heapID, TEXTURE_VRAM_SIZE_256K, PALETTE_VRAM_SIZE_64K, WiFiEarth_Setup3D);
     NNS_G3dGlbLightVector(0, 0, 0, -(FX32_ONE - 1));
 }
 
-static void ov69_0225D63C(UnkStruct_ov69_0225D35C *param0)
+static void WiFiEarth_Free3D(WiFiEarthGraphics *param0)
 {
     G3DPipelineBuffers_Free(param0->unk_1A4);
 }
 
-static void ov69_0225D64C(void)
+static void WiFiEarth_Setup3D(void)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
 
@@ -1502,7 +1523,7 @@ static void ov69_0225D64C(void)
     G3_ViewPort(0, 0, 255, 191);
 }
 
-static void ov69_0225D6D8(UnkStruct_ov69_0225D71C *param0, UnkStruct_ov69_0225D35C *param1, u32 heapID)
+static void WiFiEarth_InitGlobe(WiFiEarthGlobeObject *param0, WiFiEarthGraphics *param1, u32 heapID)
 {
     VEC_Set(&param0->unk_00, 0, 0, 0);
     VEC_Set(&param0->unk_0C, FX32_ONE, FX32_ONE, FX32_ONE);
@@ -1511,16 +1532,16 @@ static void ov69_0225D6D8(UnkStruct_ov69_0225D71C *param0, UnkStruct_ov69_0225D3
     Easy3DObject_Init(&param0->unk_24, &param0->unk_9C);
 }
 
-static void ov69_0225D71C(UnkStruct_ov69_0225D71C *param0)
+static void WiFiEarth_FreeGlobe(WiFiEarthGlobeObject *param0)
 {
     Easy3DModel_Release(&param0->unk_9C);
 }
 
-static void ov69_0225D728(UnkStruct_ov69_0225D71C *param0)
+static void WiFiEarth_DrawGlobe(WiFiEarthGlobeObject *param0)
 {
     MtxFx33 v0;
 
-    ov69_0225D770(param0, &v0);
+    WiFiEarth_GetGlobeRotationMatrix(param0, &v0);
 
     Easy3DObject_SetPosition(&param0->unk_24, param0->unk_00.x, param0->unk_00.y, param0->unk_00.z);
     Easy3DObject_SetScale(&param0->unk_24, param0->unk_0C.x, param0->unk_0C.y, param0->unk_0C.z);
@@ -1528,45 +1549,45 @@ static void ov69_0225D728(UnkStruct_ov69_0225D71C *param0)
     Easy3DObject_DrawRotated(&param0->unk_24, &v0);
 }
 
-static void ov69_0225D760(const UnkStruct_ov69_0225D71C *param0, VecFx32 *param1)
+static void WiFiEarth_GetGlobePosition(const WiFiEarthGlobeObject *param0, VecFx32 *param1)
 {
     *param1 = param0->unk_00;
 }
 
-static void ov69_0225D770(const UnkStruct_ov69_0225D71C *param0, MtxFx33 *param1)
+static void WiFiEarth_GetGlobeRotationMatrix(const WiFiEarthGlobeObject *param0, MtxFx33 *param1)
 {
-    ov69_0225CAF4(param1, &param0->unk_18);
+    WiFiEarth_BuildRotationMatrix(param1, &param0->unk_18);
 }
 
-static void ov69_0225D780(const UnkStruct_ov69_0225D71C *param0, VecFx32 *param1)
+static void WiFiEarth_GetGlobeRotation(const WiFiEarthGlobeObject *param0, VecFx32 *param1)
 {
     *param1 = param0->unk_18;
 }
 
-static void ov69_0225D790(UnkStruct_ov69_0225D71C *param0, const VecFx32 *param1)
+static void WiFiEarth_SetGlobeRotation(WiFiEarthGlobeObject *param0, const VecFx32 *param1)
 {
     param0->unk_18 = *param1;
 }
 
-static void ov69_0225D7A0(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov66_02231560 *param1, UnkStruct_ov69_0225D35C *param2, UnkStruct_ov69_0225DA74 param3, u32 heapID)
+static void WiFiEarth_InitPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_ov66_02231560 *param1, WiFiEarthGraphics *param2, WiFiEarthAppFlags param3, u32 heapID)
 {
     int v0;
 
-    ov69_0225C980(param0, param1, heapID);
+    WiFiEarth_LoadPlaceMarkers(param0, param1, heapID);
 
     for (v0 = 0; v0 < 3; v0++) {
-        Easy3DModel_LoadFrom(&param0->unk_B978[v0], param2->unk_1A8, Unk_ov69_0225F028[v0], heapID);
+        Easy3DModel_LoadFrom(&param0->unk_B978[v0], param2->unk_1A8, sGlobeModelMembers[v0], heapID);
         Easy3DObject_Init(&param0->unk_B810[v0], &param0->unk_B978[v0]);
     }
 
-    if (param3.unk_00_0 == 0) {
+    if (param3.worldUnlocked == 0) {
         VEC_Set(&param0->unk_B804, 0x300, 0x300, FX32_ONE);
     } else {
         VEC_Set(&param0->unk_B804, FX32_ONE, FX32_ONE, FX32_ONE);
     }
 }
 
-static void ov69_0225D838(UnkStruct_ov69_0225CA7C *param0)
+static void WiFiEarth_FreePlaceMarkers(WiFiEarthGlobe *param0)
 {
     int v0;
 
@@ -1575,15 +1596,15 @@ static void ov69_0225D838(UnkStruct_ov69_0225CA7C *param0)
     }
 }
 
-static void ov69_0225D854(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov69_0225D71C *param1)
+static void WiFiEarth_DrawPlaceMarkers(WiFiEarthGlobe *param0, const WiFiEarthGlobeObject *param1)
 {
     MtxFx33 v0;
     int v1;
     MtxFx33 v2;
     VecFx32 v3;
 
-    ov69_0225D760(param1, &v3);
-    ov69_0225D770(param1, &v2);
+    WiFiEarth_GetGlobePosition(param1, &v3);
+    WiFiEarth_GetGlobeRotationMatrix(param1, &v2);
 
     for (v1 = 0; v1 < 3; v1++) {
         Easy3DObject_SetPosition(&param0->unk_B810[v1], v3.x, v3.y, v3.z);
@@ -1611,7 +1632,7 @@ static void ov69_0225D854(UnkStruct_ov69_0225CA7C *param0, const UnkStruct_ov69_
     }
 }
 
-static u32 ov69_0225D91C(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 param2)
+static u32 WiFiEarth_GetPlaceStatus(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 param2)
 {
     int v0;
     BOOL v1;
@@ -1639,23 +1660,23 @@ static u32 ov69_0225D91C(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 
     return 3;
 }
 
-static u32 ov69_0225D984(const UnkStruct_ov69_0225CA7C *param0, u16 param1, u16 param2, VecFx32 *param3)
+static u32 WiFiEarth_FindMarkerByPlace(const WiFiEarthGlobe *param0, u16 param1, u16 param2, VecFx32 *param3)
 {
     u32 v0 = 3;
     int v1;
-    int v2 = ov69_0225DA70(param0);
-    v1 = ov69_0225D9C4(param0, param1, param2);
+    int v2 = WiFiEarth_GetMarkerCount(param0);
+    v1 = WiFiEarth_GetMarkerIndex(param0, param1, param2);
 
     if (v1 < v2) {
-        v0 = ov69_0225DA1C(param0, v1);
+        v0 = WiFiEarth_GetMarkerStatus(param0, v1);
 
-        ov69_0225D9F0(param0, param3, v1);
+        WiFiEarth_GetMarkerPosition(param0, param3, v1);
     }
 
     return v0;
 }
 
-static u32 ov69_0225D9C4(const UnkStruct_ov69_0225CA7C *param0, u16 param1, u16 param2)
+static u32 WiFiEarth_GetMarkerIndex(const WiFiEarthGlobe *param0, u16 param1, u16 param2)
 {
     int v0;
 
@@ -1668,7 +1689,7 @@ static u32 ov69_0225D9C4(const UnkStruct_ov69_0225CA7C *param0, u16 param1, u16 
     return param0->unk_00.unk_00;
 }
 
-static void ov69_0225D9F0(const UnkStruct_ov69_0225CA7C *param0, VecFx32 *param1, int param2)
+static void WiFiEarth_GetMarkerPosition(const WiFiEarthGlobe *param0, VecFx32 *param1, int param2)
 {
     GF_ASSERT(param2 < param0->unk_00.unk_00);
 
@@ -1677,39 +1698,39 @@ static void ov69_0225D9F0(const UnkStruct_ov69_0225CA7C *param0, VecFx32 *param1
     param1->z = 0;
 }
 
-static u32 ov69_0225DA1C(const UnkStruct_ov69_0225CA7C *param0, int param1)
+static u32 WiFiEarth_GetMarkerStatus(const WiFiEarthGlobe *param0, int param1)
 {
     GF_ASSERT(param1 < param0->unk_00.unk_00);
     return param0->unk_00.unk_04[param1].unk_28;
 }
 
-static u32 ov69_0225DA38(const UnkStruct_ov69_0225CA7C *param0, int param1)
+static u32 WiFiEarth_GetMarkerCountry(const WiFiEarthGlobe *param0, int param1)
 {
     GF_ASSERT(param1 < param0->unk_00.unk_00);
     return param0->unk_00.unk_04[param1].unk_2A;
 }
 
-static u32 ov69_0225DA54(const UnkStruct_ov69_0225CA7C *param0, int param1)
+static u32 WiFiEarth_GetMarkerRegion(const WiFiEarthGlobe *param0, int param1)
 {
     GF_ASSERT(param1 < param0->unk_00.unk_00);
     return param0->unk_00.unk_04[param1].unk_2C;
 }
 
-static u32 ov69_0225DA70(const UnkStruct_ov69_0225CA7C *param0)
+static u32 WiFiEarth_GetMarkerCount(const WiFiEarthGlobe *param0)
 {
     return param0->unk_00.unk_00;
 }
 
-static void ov69_0225DA74(UnkStruct_ov69_0225DAEC *param0, UnkStruct_ov69_0225DA74 param1, enum HeapID heapID)
+static void WiFiEarth_InitCamera(WiFiEarthCamera *param0, WiFiEarthAppFlags param1, enum HeapID heapID)
 {
     param0->camera = Camera_Alloc(heapID);
 
-    Camera_InitWithTargetAndPosition(&Unk_ov69_0225F034, &Unk_ov69_0225F01C, 0x5c1, 0, 0, param0->camera);
+    Camera_InitWithTargetAndPosition(&sCameraTarget, &sCameraPosition, 0x5c1, 0, 0, param0->camera);
     Camera_SetClipping(0, FX32_ONE * 100, param0->camera);
     Camera_ComputeProjectionMatrix(0, param0->camera);
     Camera_SetAsActive(param0->camera);
 
-    if (param1.unk_00_0 == 0) {
+    if (param1.worldUnlocked == 0) {
         param0->unk_10 = 1;
         param0->unk_0C = 0x50000;
     } else {
@@ -1720,17 +1741,17 @@ static void ov69_0225DA74(UnkStruct_ov69_0225DAEC *param0, UnkStruct_ov69_0225DA
     Camera_SetDistance(param0->unk_0C, param0->camera);
 }
 
-static void ov69_0225DAEC(UnkStruct_ov69_0225DAEC *param0)
+static void WiFiEarth_FreeCamera(WiFiEarthCamera *param0)
 {
     Camera_Delete(param0->camera);
 }
 
-static void ov69_0225DAF8(const UnkStruct_ov69_0225DAEC *param0)
+static void WiFiEarth_UpdateCamera(const WiFiEarthCamera *param0)
 {
     Camera_ComputeViewMatrix();
 }
 
-static void ov69_0225DB00(UnkStruct_ov69_0225DAEC *param0)
+static void WiFiEarth_ToggleZoom(WiFiEarthCamera *param0)
 {
     if (param0->unk_10 == 0) {
         param0->unk_10 = 1;
@@ -1743,7 +1764,7 @@ static void ov69_0225DB00(UnkStruct_ov69_0225DAEC *param0)
     param0->unk_12 = 1;
 }
 
-static BOOL ov69_0225DB2C(UnkStruct_ov69_0225DAEC *param0, UnkStruct_ov69_0225CA7C *param1)
+static BOOL WiFiEarth_UpdateZoom(WiFiEarthCamera *param0, WiFiEarthGlobe *param1)
 {
     if (param0->unk_12 == 0) {
         return 1;
@@ -1777,14 +1798,14 @@ static BOOL ov69_0225DB2C(UnkStruct_ov69_0225DAEC *param0, UnkStruct_ov69_0225CA
     return 0;
 }
 
-static u32 ov69_0225DBB0(const UnkStruct_ov69_0225DAEC *param0)
+static u32 WiFiEarth_IsZoomedIn(const WiFiEarthCamera *param0)
 {
     return param0->unk_10;
 }
 
-static void ov69_0225DBB4(UnkStruct_ov69_0225DC48 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225EF54 *param2, u32 heapID)
+static void WiFiEarth_InitExitWindow(WiFiEarthExitWindow *param0, WiFiEarthGraphics *param1, WiFiEarthMessageLoader *param2, u32 heapID)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov69_0225DC48));
+    memset(param0, 0, sizeof(WiFiEarthExitWindow));
 
     Window_Add(param1->unk_00, &param0->unk_1C, 1, 25, 21, 6, 2, 1, (1 + (18 + 12)) + 9);
     Window_FillTilemap(&param0->unk_1C, 15);
@@ -1792,7 +1813,7 @@ static void ov69_0225DBB4(UnkStruct_ov69_0225DC48 *param0, UnkStruct_ov69_0225D3
     {
         String *v0;
 
-        v0 = ov69_0225EF74(param2, 1);
+        v0 = WiFiEarth_GetMessage(param2, 1);
 
         Font_InitManager(FONT_SUBSCREEN, heapID);
         {
@@ -1806,12 +1827,12 @@ static void ov69_0225DBB4(UnkStruct_ov69_0225DC48 *param0, UnkStruct_ov69_0225D3
     Window_DrawStandardFrame(&param0->unk_1C, 0, 1 + (18 + 12), 0);
 }
 
-static void ov69_0225DC48(UnkStruct_ov69_0225DC48 *param0)
+static void WiFiEarth_FreeExitWindow(WiFiEarthExitWindow *param0)
 {
     Window_Remove(&param0->unk_1C);
 }
 
-static void ov69_0225DC54(UnkStruct_ov69_0225DC48 *param0)
+static void WiFiEarth_ProcessExitWindowInput(WiFiEarthExitWindow *param0)
 {
     int v0, v1, v2, v3;
 
@@ -1843,7 +1864,7 @@ static void ov69_0225DC54(UnkStruct_ov69_0225DC48 *param0)
                 param0->unk_18--;
             }
         case 1:
-            ov69_0225CBE4(param0->unk_08, param0->unk_0C, &v0, &v1, &v2, &v3);
+            WiFiEarth_CalcTouchDrag(param0->unk_08, param0->unk_0C, &v0, &v1, &v2, &v3);
             param0->unk_00 = v0 | v2;
             param0->unk_10 = v1;
             param0->unk_14 = v3;
@@ -1863,7 +1884,7 @@ static void ov69_0225DC54(UnkStruct_ov69_0225DC48 *param0)
     }
 }
 
-static int ov69_0225DD10(const UnkStruct_ov69_0225DC48 *param0, u32 param1)
+static int WiFiEarth_GetExitWindowInput(const WiFiEarthExitWindow *param0, u32 param1)
 {
     int v0;
 
@@ -1884,21 +1905,21 @@ static int ov69_0225DD10(const UnkStruct_ov69_0225DC48 *param0, u32 param1)
     return v0;
 }
 
-static void ov69_0225DD2C(UnkStruct_ov69_0225DC48 *param0)
+static void WiFiEarth_ShowExitWindow(WiFiEarthExitWindow *param0)
 {
     Window_EraseStandardFrame(&param0->unk_1C, 1);
     Window_ClearAndScheduleCopyToVRAM(&param0->unk_1C);
 }
 
-static void ov69_0225DD44(UnkStruct_ov69_0225DC48 *param0)
+static void WiFiEarth_HideExitWindow(WiFiEarthExitWindow *param0)
 {
     Window_ScheduleCopyToVRAM(&param0->unk_1C);
     Window_DrawStandardFrame(&param0->unk_1C, 0, 1 + (18 + 12), 0);
 }
 
-static void ov69_0225DD60(UnkStruct_ov69_0225DDC8 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225EF54 *param2, SaveData *saveData, u32 heapID)
+static void WiFiEarth_InitConfirmWindow(WiFiEarthConfirmWindow *param0, WiFiEarthGraphics *param1, WiFiEarthMessageLoader *param2, SaveData *saveData, u32 heapID)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov69_0225DC48));
+    memset(param0, 0, sizeof(WiFiEarthExitWindow));
 
     param0->unk_08 = Options_TextFrameDelay(SaveData_GetOptions(saveData));
     param0->unk_0C = String_Init(128, heapID);
@@ -1906,12 +1927,12 @@ static void ov69_0225DD60(UnkStruct_ov69_0225DDC8 *param0, UnkStruct_ov69_0225D3
     Window_Add(param1->unk_00, &param0->unk_10, 1, 2, 1, 27, 4, 1, ((1 + (18 + 12)) + 9) + (6 * 2));
     Window_FillTilemap(&param0->unk_10, 15);
 
-    ov69_0225EF84(param2, 5, param0->unk_0C);
+    WiFiEarth_GetMessageInto(param2, 5, param0->unk_0C);
 
     param0->unk_20 = YesNoTouchMenu_New(heapID);
 }
 
-static void ov69_0225DDC8(UnkStruct_ov69_0225DDC8 *param0)
+static void WiFiEarth_FreeConfirmWindow(WiFiEarthConfirmWindow *param0)
 {
     if (Text_IsPrinterActive(param0->unk_04) != 0) {
         Text_RemovePrinter(param0->unk_04);
@@ -1922,7 +1943,7 @@ static void ov69_0225DDC8(UnkStruct_ov69_0225DDC8 *param0)
     Window_Remove(&param0->unk_10);
 }
 
-static void ov69_0225DDFC(UnkStruct_ov69_0225DDC8 *param0)
+static void WiFiEarth_ShowConfirmWindow(WiFiEarthConfirmWindow *param0)
 {
     Window_FillTilemap(&param0->unk_10, 15);
     Window_DrawMessageBoxWithScrollCursor(&param0->unk_10, 1, 1, 2);
@@ -1932,7 +1953,7 @@ static void ov69_0225DDFC(UnkStruct_ov69_0225DDC8 *param0)
     param0->unk_00 = 0;
 }
 
-static u32 ov69_0225DE40(UnkStruct_ov69_0225DDC8 *param0)
+static u32 WiFiEarth_ProcessConfirmInput(WiFiEarthConfirmWindow *param0)
 {
     u32 v0;
 
@@ -1943,7 +1964,7 @@ static u32 ov69_0225DE40(UnkStruct_ov69_0225DDC8 *param0)
         if (Text_IsPrinterActive(param0->unk_04) == 0) {
             YesNoTouchMenuParams v1;
 
-            v1 = Unk_ov69_0225F074;
+            v1 = sYesNoTouchMenuParams;
             v1.bgConfig = Window_GetBgConfig(&param0->unk_10);
             YesNoTouchMenu_InitWithParams(param0->unk_20, &v1);
             param0->unk_00++;
@@ -1957,24 +1978,24 @@ static u32 ov69_0225DE40(UnkStruct_ov69_0225DDC8 *param0)
     return v0;
 }
 
-static void ov69_0225DEA0(UnkStruct_ov69_0225DDC8 *param0)
+static void WiFiEarth_HideConfirmWindow(WiFiEarthConfirmWindow *param0)
 {
     YesNoTouchMenu_Reset(param0->unk_20);
     Window_EraseMessageBox(&param0->unk_10, 1);
     Window_ClearAndScheduleCopyToVRAM(&param0->unk_10);
 }
 
-static void ov69_0225DEC0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225EF54 *param2, enum HeapID heapID)
+static void WiFiEarth_InitProfilePanel(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1, WiFiEarthMessageLoader *param2, enum HeapID heapID)
 {
     param0->unk_00 = 0;
 
-    ov69_0225E13C(param0);
+    WiFiEarth_ResetProfileHistory(param0);
 
     {
         int v0;
 
         for (v0 = 0; v0 < 5; v0++) {
-            ov69_0225E748(&param0->unk_A0[v0], param1, &Unk_ov69_0225F118[v0], Unk_ov69_0225F014[v0], heapID);
+            WiFiEarth_InitProfileGraphic(&param0->unk_A0[v0], param1, &sProfileGraphicParams[v0], sProfileGraphicFrames[v0], heapID);
         }
     }
 
@@ -1984,68 +2005,68 @@ static void ov69_0225DEC0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D3
         Window_Add(param1->unk_00, &param0->unk_1A8, 4, 2, 19, 27, 4, 11, 10 + (18 + 12));
         Window_FillTilemap(&param0->unk_1A8, 15);
 
-        v1 = ov69_0225EF74(param2, 0);
+        v1 = WiFiEarth_GetMessage(param2, 0);
 
         Text_AddPrinterWithParams(&param0->unk_1A8, FONT_MESSAGE, v1, 0, 0, TEXT_SPEED_NO_TRANSFER, NULL);
         Window_DrawMessageBoxWithScrollCursor(&param0->unk_1A8, 0, 10, 10);
     }
 
-    ov69_0225E590(param0, param1, heapID);
+    WiFiEarth_InitProfileWindows(param0, param1, heapID);
 
     {
         param0->unk_94 = Graphics_GetScrnDataFromOpenNARC(param1->unk_1A8, 19, 0, &param0->unk_98, heapID);
     }
 
-    ov69_0225E960(&param0->unk_1B8, param1, &param0->unk_2E4, heapID);
-    ov69_0225E478(&param0->unk_2E4);
+    WiFiEarth_InitMarkerSprites(&param0->unk_1B8, param1, &param0->unk_2E4, heapID);
+    WiFiEarth_InitWindowMask(&param0->unk_2E4);
 }
 
-static void ov69_0225DFBC(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1)
+static void WiFiEarth_FreeProfilePanel(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1)
 {
-    ov69_0225E4E8(&param0->unk_2E4);
-    ov69_0225EAE8(&param0->unk_1B8, param1);
+    WiFiEarth_FreeWindowMask(&param0->unk_2E4);
+    WiFiEarth_FreeMarkerSprites(&param0->unk_1B8, param1);
 
     Heap_Free(param0->unk_94);
-    ov69_0225E61C(param0);
+    WiFiEarth_FreeProfileWindows(param0);
     Window_Remove(&param0->unk_1A8);
-    ov69_0225E148(param0);
+    WiFiEarth_ClearProfileHistory(param0);
 
     {
         int v0;
 
         for (v0 = 0; v0 < 5; v0++) {
-            ov69_0225E7DC(&param0->unk_A0[v0]);
+            WiFiEarth_FreeProfileGraphic(&param0->unk_A0[v0]);
         }
     }
 }
 
-static void ov69_0225E00C(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF54 *param1, UnkStruct_ov69_0225D35C *param2)
+static void WiFiEarth_UpdateProfilePanel(WiFiEarthProfilePanel *param0, WiFiEarthMessageLoader *param1, WiFiEarthGraphics *param2)
 {
     BOOL v0;
 
     switch (param0->unk_00) {
     case 0:
-        ov69_0225E1EC(param0, param2);
-        ov69_0225EC08(&param0->unk_1B8, &param0->unk_2E4);
+        WiFiEarth_UpdateProfileSprites(param0, param2);
+        WiFiEarth_UpdateMarkerSprites(&param0->unk_1B8, &param0->unk_2E4);
         break;
     case 1:
-        ov69_0225E208(param0, param1, param2);
+        WiFiEarth_ShowProfiles(param0, param1, param2);
         param0->unk_00 = 2;
         break;
     case 2:
-        v0 = ov69_0225E2D0(param0, param2);
+        v0 = WiFiEarth_AnimateProfilesSlow(param0, param2);
 
         if (v0 == 1) {
             param0->unk_00 = 0;
         }
         break;
     case 3:
-        ov69_0225E2DC(param0);
-        ov69_0225E2E4(param0, param2);
+        WiFiEarth_HalveProfileProgress(param0);
+        WiFiEarth_AnimateProfilesFast(param0, param2);
         param0->unk_00 = 4;
         break;
     case 4:
-        v0 = ov69_0225E2E4(param0, param2);
+        v0 = WiFiEarth_AnimateProfilesFast(param0, param2);
 
         if (v0 == 1) {
             param0->unk_00 = 0;
@@ -2054,19 +2075,19 @@ static void ov69_0225E00C(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF
     }
 }
 
-static void ov69_0225E084(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_HideProfilePanel(WiFiEarthProfilePanel *param0)
 {
     Window_EraseMessageBox(&param0->unk_1A8, 1);
     Window_ClearAndScheduleCopyToVRAM(&param0->unk_1A8);
 }
 
-static void ov69_0225E0A0(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_ShowProfilePanel(WiFiEarthProfilePanel *param0)
 {
     Window_ScheduleCopyToVRAM(&param0->unk_1A8);
     Window_DrawMessageBoxWithScrollCursor(&param0->unk_1A8, 1, 10, 10);
 }
 
-static BOOL ov69_0225E0C0(UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_0225E0C0 *param1)
+static BOOL WiFiEarth_PushProfile(WiFiEarthProfilePanel *param0, const WiFiEarthProfile *param1)
 {
     switch (param0->unk_00) {
     case 0:
@@ -2081,19 +2102,19 @@ static BOOL ov69_0225E0C0(UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_
         return 0;
     }
 
-    ov69_0225E154(param0, param1);
+    WiFiEarth_AddProfileToHistory(param0, param1);
 
     return 1;
 }
 
-static BOOL ov69_0225E0F8(const UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_0225E0C0 *param1)
+static BOOL WiFiEarth_ProfileExists(const WiFiEarthProfilePanel *param0, const WiFiEarthProfile *param1)
 {
     int v0;
-    UnkStruct_ov69_0225E0C0 v1;
+    WiFiEarthProfile v1;
     BOOL v2;
 
     for (v0 = 0; v0 < 3; v0++) {
-        v2 = ov69_0225E1C0(param0, &v1, v0);
+        v2 = WiFiEarth_GetProfileFromHistory(param0, &v1, v0);
 
         if (v2 == 0) {
             return 0;
@@ -2107,24 +2128,24 @@ static BOOL ov69_0225E0F8(const UnkStruct_ov69_0225E084 *param0, const UnkStruct
     return 0;
 }
 
-static void ov69_0225E13C(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_ResetProfileHistory(WiFiEarthProfilePanel *param0)
 {
     param0->unk_34 = 0;
     param0->unk_36 = 0;
     param0->unk_38 = 0;
 }
 
-static void ov69_0225E148(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_ClearProfileHistory(WiFiEarthProfilePanel *param0)
 {
     param0->unk_34 = 0;
     param0->unk_36 = 0;
     param0->unk_38 = 0;
 }
 
-static void ov69_0225E154(UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_0225E0C0 *param1)
+static void WiFiEarth_AddProfileToHistory(WiFiEarthProfilePanel *param0, const WiFiEarthProfile *param1)
 {
     if (((param0->unk_36 + 1) % 4) == param0->unk_34) {
-        ov69_0225E1A0(param0);
+        WiFiEarth_PopProfileHistory(param0);
     }
 
     param0->unk_04[param0->unk_36] = *param1;
@@ -2132,7 +2153,7 @@ static void ov69_0225E154(UnkStruct_ov69_0225E084 *param0, const UnkStruct_ov69_
     param0->unk_38++;
 }
 
-static void ov69_0225E1A0(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_PopProfileHistory(WiFiEarthProfilePanel *param0)
 {
     if (param0->unk_36 == param0->unk_34) {
         return;
@@ -2142,7 +2163,7 @@ static void ov69_0225E1A0(UnkStruct_ov69_0225E084 *param0)
     param0->unk_38--;
 }
 
-static BOOL ov69_0225E1C0(const UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225E0C0 *param1, u32 param2)
+static BOOL WiFiEarth_GetProfileFromHistory(const WiFiEarthProfilePanel *param0, WiFiEarthProfile *param1, u32 param2)
 {
     s32 v0;
 
@@ -2161,18 +2182,18 @@ static BOOL ov69_0225E1C0(const UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_
     return 1;
 }
 
-static void ov69_0225E1EC(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1)
+static void WiFiEarth_UpdateProfileSprites(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1)
 {
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        ov69_0225E810(&param0->unk_A0[v0], param1);
+        WiFiEarth_UpdateProfileGraphic(&param0->unk_A0[v0], param1);
     }
 }
 
-static void ov69_0225E208(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF54 *param1, UnkStruct_ov69_0225D35C *param2)
+static void WiFiEarth_ShowProfiles(WiFiEarthProfilePanel *param0, WiFiEarthMessageLoader *param1, WiFiEarthGraphics *param2)
 {
-    memset(param0->unk_40, 0, sizeof(UnkStruct_ov69_0225E084_sub1) * (3 * 6));
+    memset(param0->unk_40, 0, sizeof(WiFiEarthProfileTileState) * (3 * 6));
 
     param0->unk_3C = 0;
     param0->unk_3E = 0;
@@ -2183,28 +2204,28 @@ static void ov69_0225E208(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF
         int v2;
         BOOL v3;
         int v4;
-        UnkStruct_ov69_0225E0C0 v5;
+        WiFiEarthProfile v5;
 
         for (v0 = 0; v0 < 5; v0++) {
-            ov69_0225E904(&param0->unk_A0[v0]);
+            WiFiEarth_ClearProfileGraphicVisible(&param0->unk_A0[v0]);
         }
 
-        ov69_0225EB60(&param0->unk_1B8);
+        WiFiEarth_ResetMarkerSprites(&param0->unk_1B8);
 
         v4 = -1;
 
         for (v0 = 0; v0 < 3; v0++) {
             v1 = 2 - v0;
-            v3 = ov69_0225E1C0(param0, &v5, v0);
+            v3 = WiFiEarth_GetProfileFromHistory(param0, &v5, v0);
 
             if (v3 == 1) {
-                v2 = ov69_0225EEEC(v5.unk_00);
+                v2 = WiFiEarth_GetMarkerSpriteIndex(v5.unk_00);
 
-                ov69_0225E8EC(&param0->unk_A0[v2], v1, 1);
-                ov69_0225E644(param0, v1, &v5, param1);
+                WiFiEarth_SetProfileGraphicVisible(&param0->unk_A0[v2], v1, 1);
+                WiFiEarth_PrintProfile(param0, v1, &v5, param1);
 
                 param0->unk_88[v1] = v2;
-                ov69_0225EB8C(&param0->unk_1B8, v1, v5.unk_00, v4);
+                WiFiEarth_ShowMarkerSprite(&param0->unk_1B8, v1, v5.unk_00, v4);
                 param0->unk_3E += 6;
 
                 v4 = v5.unk_00;
@@ -2216,23 +2237,23 @@ static void ov69_0225E208(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225EF
     }
 }
 
-static BOOL ov69_0225E2D0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1)
+static BOOL WiFiEarth_AnimateProfilesSlow(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1)
 {
-    return ov69_0225E2F0(param0, param1, 2);
+    return WiFiEarth_AnimateProfileProgress(param0, param1, 2);
 }
 
-static void ov69_0225E2DC(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_HalveProfileProgress(WiFiEarthProfilePanel *param0)
 {
     int v0 = param0->unk_3C / 2;
     param0->unk_3C = v0 * 1;
 }
 
-static BOOL ov69_0225E2E4(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1)
+static BOOL WiFiEarth_AnimateProfilesFast(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1)
 {
-    return ov69_0225E2F0(param0, param1, 1);
+    return WiFiEarth_AnimateProfileProgress(param0, param1, 1);
 }
 
-static BOOL ov69_0225E2F0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1, int param2)
+static BOOL WiFiEarth_AnimateProfileProgress(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1, int param2)
 {
     u32 v0;
     int v1;
@@ -2241,7 +2262,7 @@ static BOOL ov69_0225E2F0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D3
 
     if ((param0->unk_3C % param2) == 0) {
         v0 = param0->unk_3C / param2;
-        ov69_0225E368(param0, v0);
+        WiFiEarth_StartProfileTile(param0, v0);
     }
 
     if ((param0->unk_3C + 1) < ((3 * 6) * param2)) {
@@ -2249,7 +2270,7 @@ static BOOL ov69_0225E2F0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D3
     }
 
     for (v1 = 0; v1 < param0->unk_3E; v1++) {
-        v2 = ov69_0225E374(param0, v1, param1);
+        v2 = WiFiEarth_UpdateProfileTile(param0, v1, param1);
 
         if (v2 == 0) {
             v3 = 0;
@@ -2257,19 +2278,19 @@ static BOOL ov69_0225E2F0(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D3
     }
 
     if (v3 == 1) {
-        ov69_0225EBEC(&param0->unk_1B8);
-        ov69_0225E51C(&param0->unk_2E4, 0, 0);
+        WiFiEarth_HideMarkerSprites(&param0->unk_1B8);
+        WiFiEarth_SetWindow1(&param0->unk_2E4, 0, 0);
     }
 
     return v3;
 }
 
-static void ov69_0225E368(UnkStruct_ov69_0225E084 *param0, u32 param1)
+static void WiFiEarth_StartProfileTile(WiFiEarthProfilePanel *param0, u32 param1)
 {
     param0->unk_40[param1].unk_00 = 1;
 }
 
-static BOOL ov69_0225E374(UnkStruct_ov69_0225E084 *param0, u32 param1, UnkStruct_ov69_0225D35C *param2)
+static BOOL WiFiEarth_UpdateProfileTile(WiFiEarthProfilePanel *param0, u32 param1, WiFiEarthGraphics *param2)
 {
     u32 v0;
     u32 v1;
@@ -2293,26 +2314,26 @@ static BOOL ov69_0225E374(UnkStruct_ov69_0225E084 *param0, u32 param1, UnkStruct
     case 0: {
         u8 *v4;
 
-        v4 = ov69_0225E70C(param0, v1);
-        ov69_0225E71C(param0, v2, v1, v4);
+        v4 = WiFiEarth_GetProfileHeaderPixels(param0, v1);
+        WiFiEarth_TransferProfileTile(param0, v2, v1, v4);
     }
 
         {
-            ov69_0225E430(param0, v0, param2);
+            WiFiEarth_CopyProfileTilemap(param0, v0, param2);
         }
 
         {
-            ov69_0225E51C(&param0->unk_2E4, v0 * 8, (3 * 6) * 8);
+            WiFiEarth_SetWindow1(&param0->unk_2E4, v0 * 8, (3 * 6) * 8);
         }
         break;
     case 1: {
         u8 *v5;
 
-        v5 = ov69_0225E6E8(param0, v2, v1);
-        ov69_0225E71C(param0, v2, v1, v5);
+        v5 = WiFiEarth_GetProfileTilePixels(param0, v2, v1);
+        WiFiEarth_TransferProfileTile(param0, v2, v1, v5);
     }
         {
-            ov69_0225E910(&param0->unk_A0[v3], v0, param2);
+            WiFiEarth_DrawProfileGraphic(&param0->unk_A0[v3], v0, param2);
         }
         break;
     default:
@@ -2323,32 +2344,32 @@ static BOOL ov69_0225E374(UnkStruct_ov69_0225E084 *param0, u32 param1, UnkStruct
     return 0;
 }
 
-static void ov69_0225E430(UnkStruct_ov69_0225E084 *param0, u32 param1, UnkStruct_ov69_0225D35C *param2)
+static void WiFiEarth_CopyProfileTilemap(WiFiEarthProfilePanel *param0, u32 param1, WiFiEarthGraphics *param2)
 {
     Bg_CopyToTilemapRect(param2->unk_00, 6, 0, 0 + param1, 32, 1, param0->unk_98->rawData, 0, 0 + param1, param0->unk_98->screenWidth / 8, param0->unk_98->screenHeight / 8);
     Bg_ScheduleTilemapTransfer(param2->unk_00, 6);
 }
 
-static void ov69_0225E478(UnkStruct_ov69_0225E478 *param0)
+static void WiFiEarth_InitWindowMask(WiFiEarthWindowMask *param0)
 {
     GXS_SetVisibleWnd(GX_WNDMASK_W0 | GX_WNDMASK_W1);
     G2S_SetWndOutsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 0);
     G2S_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3, 0);
     G2S_SetWnd1InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3, 0);
 
-    ov69_0225E504(param0, 0, 0);
-    ov69_0225E51C(param0, 0, 0);
+    WiFiEarth_SetWindow0(param0, 0, 0);
+    WiFiEarth_SetWindow1(param0, 0, 0);
 
-    param0->unk_0C = SysTask_ExecuteAfterVBlank(ov69_0225E534, param0, 0);
+    param0->unk_0C = SysTask_ExecuteAfterVBlank(WiFiEarth_ApplyWindowMask, param0, 0);
 }
 
-static void ov69_0225E4E8(UnkStruct_ov69_0225E478 *param0)
+static void WiFiEarth_FreeWindowMask(WiFiEarthWindowMask *param0)
 {
     SysTask_Done(param0->unk_0C);
     GXS_SetVisibleWnd(GX_WNDMASK_NONE);
 }
 
-static void ov69_0225E504(UnkStruct_ov69_0225E478 *param0, s16 param1, s16 param2)
+static void WiFiEarth_SetWindow0(WiFiEarthWindowMask *param0, s16 param1, s16 param2)
 {
     if (param1 < 0) {
         param1 = 0;
@@ -2363,7 +2384,7 @@ static void ov69_0225E504(UnkStruct_ov69_0225E478 *param0, s16 param1, s16 param
     param0->unk_06 = param2;
 }
 
-static void ov69_0225E51C(UnkStruct_ov69_0225E478 *param0, s16 param1, s16 param2)
+static void WiFiEarth_SetWindow1(WiFiEarthWindowMask *param0, s16 param1, s16 param2)
 {
     if (param1 < 0) {
         param1 = 0;
@@ -2378,9 +2399,9 @@ static void ov69_0225E51C(UnkStruct_ov69_0225E478 *param0, s16 param1, s16 param
     param0->unk_0A = param2;
 }
 
-static void ov69_0225E534(SysTask *param0, void *param1)
+static void WiFiEarth_ApplyWindowMask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov69_0225E478 *v0 = param1;
+    WiFiEarthWindowMask *v0 = param1;
 
     if (v0->unk_00) {
         G2S_SetWnd0Position(0, v0->unk_04, 255, v0->unk_06);
@@ -2393,7 +2414,7 @@ static void ov69_0225E534(SysTask *param0, void *param1)
     }
 }
 
-static void ov69_0225E590(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D35C *param1, u32 param2)
+static void WiFiEarth_InitProfileWindows(WiFiEarthProfilePanel *param0, WiFiEarthGraphics *param1, u32 param2)
 {
     int v0;
     int v1 = ((10 + (18 + 12)) + (27 * 4));
@@ -2411,7 +2432,7 @@ static void ov69_0225E590(UnkStruct_ov69_0225E084 *param0, UnkStruct_ov69_0225D3
     Window_FillTilemap(&param0->unk_198, 0);
 }
 
-static void ov69_0225E61C(UnkStruct_ov69_0225E084 *param0)
+static void WiFiEarth_FreeProfileWindows(WiFiEarthProfilePanel *param0)
 {
     int v0;
 
@@ -2422,7 +2443,7 @@ static void ov69_0225E61C(UnkStruct_ov69_0225E084 *param0)
     Window_Remove(&param0->unk_198);
 }
 
-static void ov69_0225E644(UnkStruct_ov69_0225E084 *param0, u32 param1, const UnkStruct_ov69_0225E0C0 *param2, UnkStruct_ov69_0225EF54 *param3)
+static void WiFiEarth_PrintProfile(WiFiEarthProfilePanel *param0, u32 param1, const WiFiEarthProfile *param2, WiFiEarthMessageLoader *param3)
 {
     String *v0;
     Window *v1;
@@ -2432,25 +2453,25 @@ static void ov69_0225E644(UnkStruct_ov69_0225E084 *param0, u32 param1, const Unk
 
     v1 = &param0->unk_168[param1];
     Window_FillTilemap(v1, 0);
-    v2 = ov69_0225EEEC(param2->unk_00);
+    v2 = WiFiEarth_GetMarkerSpriteIndex(param2->unk_00);
 
     {
-        v0 = ov69_0225EF74(param3, 2);
-        Text_AddPrinterWithParamsAndColor(v1, FONT_MESSAGE, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, Unk_ov69_0225F088[v2], NULL);
+        v0 = WiFiEarth_GetMessage(param3, 2);
+        Text_AddPrinterWithParamsAndColor(v1, FONT_MESSAGE, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, sProfileTextColors[v2], NULL);
     }
 
     {
-        v0 = ov69_0225EF90(param3, param2->unk_04);
+        v0 = WiFiEarth_FormatCountryName(param3, param2->unk_04);
         Text_AddPrinterWithParamsAndColor(v1, FONT_MESSAGE, v0, 0, 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
     }
 
     {
-        v0 = ov69_0225EFB8(param3, param2->unk_04, param2->unk_08);
+        v0 = WiFiEarth_FormatCityName(param3, param2->unk_04, param2->unk_08);
         Text_AddPrinterWithParamsAndColor(v1, FONT_MESSAGE, v0, 0, 32, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
     }
 }
 
-static u8 *ov69_0225E6E8(UnkStruct_ov69_0225E084 *param0, u32 param1, u32 param2)
+static u8 *WiFiEarth_GetProfileTilePixels(WiFiEarthProfilePanel *param0, u32 param1, u32 param2)
 {
     u8 *v0;
 
@@ -2460,13 +2481,13 @@ static u8 *ov69_0225E6E8(UnkStruct_ov69_0225E084 *param0, u32 param1, u32 param2
     return &v0[((27 * param2) * 32)];
 }
 
-static u8 *ov69_0225E70C(UnkStruct_ov69_0225E084 *param0, u32 param1)
+static u8 *WiFiEarth_GetProfileHeaderPixels(WiFiEarthProfilePanel *param0, u32 param1)
 {
     u8 *v0 = param0->unk_198.pixels;
     return &v0[((27 * param1) * 32)];
 }
 
-static void ov69_0225E71C(UnkStruct_ov69_0225E084 *param0, u32 param1, u32 param2, const u8 *param3)
+static void WiFiEarth_TransferProfileTile(WiFiEarthProfilePanel *param0, u32 param1, u32 param2, const u8 *param3)
 {
     u16 v0 = Window_GetBaseTile(&param0->unk_168[param1]);
     v0 += (27 * param2);
@@ -2474,11 +2495,11 @@ static void ov69_0225E71C(UnkStruct_ov69_0225E084 *param0, u32 param1, u32 param
     VramTransfer_Request(NNS_GFD_DST_2D_BG1_CHAR_SUB, v0 * 32, (void *)param3, 27 * 32);
 }
 
-static void ov69_0225E748(UnkStruct_ov69_0225E7DC *param0, UnkStruct_ov69_0225D35C *param1, const UnkStruct_ov69_0225F118 *param2, u16 param3, enum HeapID heapID)
+static void WiFiEarth_InitProfileGraphic(WiFiEarthProfileGraphic *param0, WiFiEarthGraphics *param1, const WiFiEarthProfileGraphicParams *param2, u16 param3, enum HeapID heapID)
 {
     int v0;
 
-    memset(param0, 0, sizeof(UnkStruct_ov69_0225E7DC));
+    memset(param0, 0, sizeof(WiFiEarthProfileGraphic));
     param0->unk_02 = param3;
 
     if (param2->unk_04 > 0) {
@@ -2497,7 +2518,7 @@ static void ov69_0225E748(UnkStruct_ov69_0225E7DC *param0, UnkStruct_ov69_0225D3
     }
 }
 
-static void ov69_0225E7DC(UnkStruct_ov69_0225E7DC *param0)
+static void WiFiEarth_FreeProfileGraphic(WiFiEarthProfileGraphic *param0)
 {
     int v0;
 
@@ -2512,7 +2533,7 @@ static void ov69_0225E7DC(UnkStruct_ov69_0225E7DC *param0)
     }
 }
 
-static void ov69_0225E810(UnkStruct_ov69_0225E7DC *param0, UnkStruct_ov69_0225D35C *param1)
+static void WiFiEarth_UpdateProfileGraphic(WiFiEarthProfileGraphic *param0, WiFiEarthGraphics *param1)
 {
     int v0;
     u32 v1, v2;
@@ -2545,18 +2566,18 @@ static void ov69_0225E810(UnkStruct_ov69_0225E7DC *param0, UnkStruct_ov69_0225D3
     }
 }
 
-static void ov69_0225E8EC(UnkStruct_ov69_0225E7DC *param0, u32 param1, BOOL param2)
+static void WiFiEarth_SetProfileGraphicVisible(WiFiEarthProfileGraphic *param0, u32 param1, BOOL param2)
 {
     GF_ASSERT(param1 < 3);
     param0->unk_04[param1] = param2;
 }
 
-static void ov69_0225E904(UnkStruct_ov69_0225E7DC *param0)
+static void WiFiEarth_ClearProfileGraphicVisible(WiFiEarthProfileGraphic *param0)
 {
     memset(param0->unk_04, 0, sizeof(u8) * 4);
 }
 
-static void ov69_0225E910(UnkStruct_ov69_0225E7DC *param0, u32 param1, UnkStruct_ov69_0225D35C *param2)
+static void WiFiEarth_DrawProfileGraphic(WiFiEarthProfileGraphic *param0, u32 param1, WiFiEarthGraphics *param2)
 {
     if (param0->unk_18 > 0) {
         Bg_CopyToTilemapRect(param2->unk_00, 6, 0, 0 + param1, 32, 1, param0->unk_10[param0->unk_1A]->rawData, 0, 0 + param1, param0->unk_10[param0->unk_1A]->screenWidth / 8, param0->unk_10[param0->unk_1A]->screenHeight / 8);
@@ -2564,14 +2585,14 @@ static void ov69_0225E910(UnkStruct_ov69_0225E7DC *param0, u32 param1, UnkStruct
     }
 }
 
-static void ov69_0225E960(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225D35C *param1, UnkStruct_ov69_0225E478 *param2, u32 param3)
+static void WiFiEarth_InitMarkerSprites(WiFiEarthMarkerSprites *param0, WiFiEarthGraphics *param1, WiFiEarthWindowMask *param2, u32 param3)
 {
     int v0;
     SpriteResourcesHeader v1;
     BOOL v2;
     SpriteListTemplate v3 = { NULL };
 
-    memset(param0, 0, sizeof(UnkStruct_ov69_0225EB60));
+    memset(param0, 0, sizeof(WiFiEarthMarkerSprites));
 
     param0->unk_30 = 2;
     param0->unk_32 = 128;
@@ -2604,11 +2625,11 @@ static void ov69_0225E960(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225D3
         Sprite_SetAnimSpeed(param0->unk_3C[v0], FX32_ONE);
     }
 
-    ov69_0225EBEC(param0);
-    ov69_0225E51C(param2, 0, 0);
+    WiFiEarth_HideMarkerSprites(param0);
+    WiFiEarth_SetWindow1(param2, 0, 0);
 }
 
-static void ov69_0225EAE8(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225D35C *param1)
+static void WiFiEarth_FreeMarkerSprites(WiFiEarthMarkerSprites *param0, WiFiEarthGraphics *param1)
 {
     int v0, v1;
 
@@ -2631,7 +2652,7 @@ static void ov69_0225EAE8(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225D3
     }
 }
 
-static void ov69_0225EB60(UnkStruct_ov69_0225EB60 *param0)
+static void WiFiEarth_ResetMarkerSprites(WiFiEarthMarkerSprites *param0)
 {
     memset(param0->unk_34, 0, sizeof(u8) * 4);
     memset(param0->unk_38, 0, sizeof(u8) * 4);
@@ -2640,28 +2661,28 @@ static void ov69_0225EB60(UnkStruct_ov69_0225EB60 *param0)
     param0->unk_32 = 128;
 }
 
-static void ov69_0225EB8C(UnkStruct_ov69_0225EB60 *param0, u8 param1, u8 param2, u8 param3)
+static void WiFiEarth_ShowMarkerSprite(WiFiEarthMarkerSprites *param0, u8 param1, u8 param2, u8 param3)
 {
     int v0;
 
     param0->unk_34[param1] = 1;
-    param0->unk_38[param1] = ov69_0225EF04(param2);
+    param0->unk_38[param1] = WiFiEarth_GetMarkerSpriteAnim(param2);
 
-    ov69_0225ECF0(&param0->unk_00[param1], &Unk_ov69_0225F1E0[param0->unk_38[param1]][param1]);
+    WiFiEarth_InitMarkerAnimation(&param0->unk_00[param1], &sMarkerAnimFrames[param0->unk_38[param1]][param1]);
 
     if (param3 < 24) {
-        v0 = ov69_0225EF04(param3);
+        v0 = WiFiEarth_GetMarkerSpriteAnim(param3);
 
         if (v0 == param0->unk_38[param1]) {
             if (param1 < 2) {
-                ov69_0225ED10(&param0->unk_00[param1 + 1], 1);
-                ov69_0225ED0C(&param0->unk_00[param1], 1);
+                WiFiEarth_SetMarkerAnimFlagB(&param0->unk_00[param1 + 1], 1);
+                WiFiEarth_SetMarkerAnimFlagA(&param0->unk_00[param1], 1);
             }
         }
     }
 }
 
-static void ov69_0225EBEC(UnkStruct_ov69_0225EB60 *param0)
+static void WiFiEarth_HideMarkerSprites(WiFiEarthMarkerSprites *param0)
 {
     int v0;
 
@@ -2670,7 +2691,7 @@ static void ov69_0225EBEC(UnkStruct_ov69_0225EB60 *param0)
     }
 }
 
-static void ov69_0225EC08(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225E478 *param1)
+static void WiFiEarth_UpdateMarkerSprites(WiFiEarthMarkerSprites *param0, WiFiEarthWindowMask *param1)
 {
     BOOL v0;
 
@@ -2678,7 +2699,7 @@ static void ov69_0225EC08(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225E4
         param0->unk_32--;
 
         if (param0->unk_32 == 0) {
-            v0 = ov69_0225EC70(param0, param0->unk_30, param1);
+            v0 = WiFiEarth_ShowMarkerSpriteByIndex(param0, param0->unk_30, param1);
 
             if (v0 == 1) {
                 Sound_PlayEffect(SEQ_SE_PL_TOKEI3_sseq);
@@ -2688,12 +2709,12 @@ static void ov69_0225EC08(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225E4
         return;
     }
 
-    v0 = ov69_0225ECAC(param0, param0->unk_30, param1);
+    v0 = WiFiEarth_HideMarkerSpriteByIndex(param0, param0->unk_30, param1);
 
     if (v0 == 1) {
         if ((param0->unk_30 - 1) >= 0) {
             param0->unk_30--;
-            ov69_0225EC70(param0, param0->unk_30, param1);
+            WiFiEarth_ShowMarkerSpriteByIndex(param0, param0->unk_30, param1);
         } else {
             Sound_StopEffect(1473, 0);
             param0->unk_30 = 2;
@@ -2702,20 +2723,20 @@ static void ov69_0225EC08(UnkStruct_ov69_0225EB60 *param0, UnkStruct_ov69_0225E4
     }
 }
 
-static BOOL ov69_0225EC70(UnkStruct_ov69_0225EB60 *param0, u32 param1, UnkStruct_ov69_0225E478 *param2)
+static BOOL WiFiEarth_ShowMarkerSpriteByIndex(WiFiEarthMarkerSprites *param0, u32 param1, WiFiEarthWindowMask *param2)
 {
     if (param0->unk_34[param1] == 0) {
         return 0;
     }
 
-    ov69_0225ED5C(&param0->unk_00[param1], param2);
+    WiFiEarth_RestartMarkerAnimation(&param0->unk_00[param1], param2);
     Sprite_SetDrawFlag(param0->unk_3C[param0->unk_38[param1]], TRUE);
-    ov69_0225EEC4(param0, param1);
+    WiFiEarth_SetMarkerSpritePosition(param0, param1);
 
     return 1;
 }
 
-static BOOL ov69_0225ECAC(UnkStruct_ov69_0225EB60 *param0, u32 param1, UnkStruct_ov69_0225E478 *param2)
+static BOOL WiFiEarth_HideMarkerSpriteByIndex(WiFiEarthMarkerSprites *param0, u32 param1, WiFiEarthWindowMask *param2)
 {
     BOOL v0;
 
@@ -2723,8 +2744,8 @@ static BOOL ov69_0225ECAC(UnkStruct_ov69_0225EB60 *param0, u32 param1, UnkStruct
         return 1;
     }
 
-    v0 = ov69_0225ED14(&param0->unk_00[param1], param2);
-    ov69_0225EEC4(param0, param1);
+    v0 = WiFiEarth_UpdateMarkerAnimation(&param0->unk_00[param1], param2);
+    WiFiEarth_SetMarkerSpritePosition(param0, param1);
 
     if (v0 == 1) {
         Sprite_SetDrawFlag(param0->unk_3C[param0->unk_38[param1]], FALSE);
@@ -2733,7 +2754,7 @@ static BOOL ov69_0225ECAC(UnkStruct_ov69_0225EB60 *param0, u32 param1, UnkStruct
     return v0;
 }
 
-static void ov69_0225ECF0(UnkStruct_ov69_0225ED90 *param0, const UnkStruct_ov69_0225ECF0 *param1)
+static void WiFiEarth_InitMarkerAnimation(WiFiEarthMarkerAnimation *param0, const WiFiEarthMarkerAnimFrame *param1)
 {
     param0->unk_0C = param1;
     param0->unk_00 = param1->unk_00;
@@ -2744,23 +2765,23 @@ static void ov69_0225ECF0(UnkStruct_ov69_0225ED90 *param0, const UnkStruct_ov69_
     param0->unk_0A = 0;
 }
 
-static void ov69_0225ED0C(UnkStruct_ov69_0225ED90 *param0, BOOL param1)
+static void WiFiEarth_SetMarkerAnimFlagA(WiFiEarthMarkerAnimation *param0, BOOL param1)
 {
     param0->unk_08 = param1;
 }
 
-static void ov69_0225ED10(UnkStruct_ov69_0225ED90 *param0, BOOL param1)
+static void WiFiEarth_SetMarkerAnimFlagB(WiFiEarthMarkerAnimation *param0, BOOL param1)
 {
     param0->unk_0A = param1;
 }
 
-static BOOL ov69_0225ED14(UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E478 *param1)
+static BOOL WiFiEarth_UpdateMarkerAnimation(WiFiEarthMarkerAnimation *param0, WiFiEarthWindowMask *param1)
 {
     if (param0->unk_04 > param0->unk_0C->unk_08) {
         return 1;
     }
 
-    ov69_0225ED90(param0);
+    WiFiEarth_UpdateMarkerPosition(param0);
     param0->unk_04++;
 
     if ((param0->unk_06 + 1) > param0->unk_0C->unk_0C) {
@@ -2769,27 +2790,27 @@ static BOOL ov69_0225ED14(UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E4
         param0->unk_06++;
     }
 
-    ov69_0225EE68(param0, param1);
+    WiFiEarth_UpdateMarkerWindowMask(param0, param1);
 
     return 0;
 }
 
-static void ov69_0225ED5C(UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E478 *param1)
+static void WiFiEarth_RestartMarkerAnimation(WiFiEarthMarkerAnimation *param0, WiFiEarthWindowMask *param1)
 {
     param0->unk_04 = 0;
     param0->unk_06 = 0;
 
-    ov69_0225ED90(param0);
-    ov69_0225EE68(param0, param1);
+    WiFiEarth_UpdateMarkerPosition(param0);
+    WiFiEarth_UpdateMarkerWindowMask(param0, param1);
 }
 
-static void ov69_0225ED78(const UnkStruct_ov69_0225ED90 *param0, VecFx32 *param1)
+static void WiFiEarth_GetMarkerSpritePosition(const WiFiEarthMarkerAnimation *param0, VecFx32 *param1)
 {
     param1->x = param0->unk_00 << FX32_SHIFT;
     param1->y = (param0->unk_02 << FX32_SHIFT) + (FX32_CONST(256));
 }
 
-static void ov69_0225ED90(UnkStruct_ov69_0225ED90 *param0)
+static void WiFiEarth_UpdateMarkerPosition(WiFiEarthMarkerAnimation *param0)
 {
     u16 v0;
     s16 v1, v2;
@@ -2813,47 +2834,47 @@ static void ov69_0225ED90(UnkStruct_ov69_0225ED90 *param0)
     param0->unk_00 += FX_Mul(FX32_CONST(param0->unk_0C->unk_0A), FX_SinIdx(v0)) >> FX32_SHIFT;
 }
 
-static void ov69_0225EE68(const UnkStruct_ov69_0225ED90 *param0, UnkStruct_ov69_0225E478 *param1)
+static void WiFiEarth_UpdateMarkerWindowMask(const WiFiEarthMarkerAnimation *param0, WiFiEarthWindowMask *param1)
 {
-    ov69_0225E504(param1, 0, 0);
+    WiFiEarth_SetWindow0(param1, 0, 0);
 
     if (param0->unk_08 == 0) {
         if (param0->unk_02 > (param0->unk_0C->unk_02 - 16)) {
-            ov69_0225E504(param1, param0->unk_0C->unk_02, param0->unk_0C->unk_02 + 32);
+            WiFiEarth_SetWindow0(param1, param0->unk_0C->unk_02, param0->unk_0C->unk_02 + 32);
         }
     }
 
     if (param0->unk_0A == 0) {
         if ((param0->unk_02 - 16) <= param0->unk_0C->unk_06) {
-            ov69_0225E504(param1, param0->unk_0C->unk_06 - 32, param0->unk_0C->unk_06);
+            WiFiEarth_SetWindow0(param1, param0->unk_0C->unk_06 - 32, param0->unk_0C->unk_06);
         }
     }
 }
 
-static void ov69_0225EEC4(UnkStruct_ov69_0225EB60 *param0, u32 param1)
+static void WiFiEarth_SetMarkerSpritePosition(WiFiEarthMarkerSprites *param0, u32 param1)
 {
     VecFx32 v0;
     Sprite *v1;
 
-    ov69_0225ED78(&param0->unk_00[param1], &v0);
+    WiFiEarth_GetMarkerSpritePosition(&param0->unk_00[param1], &v0);
 
     v1 = param0->unk_3C[param0->unk_38[param1]];
     Sprite_SetPosition(v1, &v0);
 }
 
-static u16 ov69_0225EEEC(u32 param0)
+static u16 WiFiEarth_GetMarkerSpriteIndex(u32 param0)
 {
     GF_ASSERT(param0 < 24);
-    return Unk_ov69_0225F0E8[param0].unk_00;
+    return sMarkerSpriteTable[param0].unk_00;
 }
 
-static u16 ov69_0225EF04(u32 param0)
+static u16 WiFiEarth_GetMarkerSpriteAnim(u32 param0)
 {
     GF_ASSERT(param0 < 24);
-    return Unk_ov69_0225F0E8[param0].unk_01;
+    return sMarkerSpriteTable[param0].unk_01;
 }
 
-static void ov69_0225EF1C(UnkStruct_ov69_0225EF54 *param0, u32 heapID)
+static void WiFiEarth_InitMessageLoader(WiFiEarthMessageLoader *param0, u32 heapID)
 {
     param0->unk_00 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0696, heapID);
     param0->unk_04 = StringTemplate_New(8, 64, heapID);
@@ -2861,7 +2882,7 @@ static void ov69_0225EF1C(UnkStruct_ov69_0225EF54 *param0, u32 heapID)
     param0->unk_0C = String_Init(128, heapID);
 }
 
-static void ov69_0225EF54(UnkStruct_ov69_0225EF54 *param0)
+static void WiFiEarth_FreeMessageLoader(WiFiEarthMessageLoader *param0)
 {
     {
         MessageLoader_Free(param0->unk_00);
@@ -2875,18 +2896,18 @@ static void ov69_0225EF54(UnkStruct_ov69_0225EF54 *param0)
     String_Free(param0->unk_0C);
 }
 
-static String *ov69_0225EF74(UnkStruct_ov69_0225EF54 *param0, u32 param1)
+static String *WiFiEarth_GetMessage(WiFiEarthMessageLoader *param0, u32 param1)
 {
     MessageLoader_GetString(param0->unk_00, param1, param0->unk_08);
     return param0->unk_08;
 }
 
-static void ov69_0225EF84(UnkStruct_ov69_0225EF54 *param0, u32 param1, String *param2)
+static void WiFiEarth_GetMessageInto(WiFiEarthMessageLoader *param0, u32 param1, String *param2)
 {
     MessageLoader_GetString(param0->unk_00, param1, param2);
 }
 
-static String *ov69_0225EF90(UnkStruct_ov69_0225EF54 *param0, u32 param1)
+static String *WiFiEarth_FormatCountryName(WiFiEarthMessageLoader *param0, u32 param1)
 {
     MessageLoader_GetString(param0->unk_00, 3, param0->unk_0C);
     StringTemplate_SetCountryName(param0->unk_04, 0, param1);
@@ -2895,7 +2916,7 @@ static String *ov69_0225EF90(UnkStruct_ov69_0225EF54 *param0, u32 param1)
     return param0->unk_08;
 }
 
-static String *ov69_0225EFB8(UnkStruct_ov69_0225EF54 *param0, u32 param1, u32 param2)
+static String *WiFiEarth_FormatCityName(WiFiEarthMessageLoader *param0, u32 param1, u32 param2)
 {
     StringTemplate_ClearArgs(param0->unk_04);
     MessageLoader_GetString(param0->unk_00, 3, param0->unk_0C);
@@ -2905,7 +2926,7 @@ static String *ov69_0225EFB8(UnkStruct_ov69_0225EF54 *param0, u32 param1, u32 pa
     return param0->unk_08;
 }
 
-static u32 ov69_0225EFEC(const UnkStruct_ov66_02231560 *param0)
+static u32 WiFiEarth_GetPlayerCountryIndex(const UnkStruct_ov66_02231560 *param0)
 {
     int v0;
     u8 v1;

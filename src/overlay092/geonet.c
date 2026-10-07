@@ -55,7 +55,7 @@
 
 // A region entry loaded from a country's wifi_earth_place.narc member. The
 // first entry of each member is a header and is skipped. This mirrors
-// overlay069's struct_ov69_0225C980.
+// wifi_earth's WiFiEarthRegionEntry.
 typedef struct WiFiEarthRegionEntry {
     s16 longitude;
     s16 latitude;

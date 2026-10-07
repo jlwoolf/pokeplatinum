@@ -1209,10 +1209,10 @@ Overlay overlay68
 	Object main.nef.p/src_overlay068_ov68_0225C700.c.o
 }
 
-Overlay overlay69
+Overlay wifi_earth
 {
 	After overlay66
-	Object main.nef.p/src_overlay069_ov69_0225C700.c.o
+	Object main.nef.p/src_wifi_earth_wifi_earth.c.o
 }
 
 Overlay overlay70
