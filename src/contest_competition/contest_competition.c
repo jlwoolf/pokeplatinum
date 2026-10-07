@@ -53,7 +53,7 @@
 
 FS_EXTERN_OVERLAY(overlay11);
 FS_EXTERN_OVERLAY(battle_anim);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 static void contest_competition_0223B728(BgConfig *param0);
 static void contest_competition_0223B858(UnkStruct_contest_competition_02246F24 *param0);
@@ -373,7 +373,7 @@ int ActingCompetition_Exit(ApplicationManager *appMan, int *param1)
     NetworkIcon_Destroy();
     Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+    Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
 
     return 1;
 }

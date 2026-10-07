@@ -10,7 +10,7 @@
 #include "struct_defs/struct_020298D8.h"
 #include "struct_defs/struct_02029C88.h"
 
-#include "overlay022/struct_ov22_02255040.h"
+#include "image_clip_app/struct_image_clip_app_02255040.h"
 #include "global_terminal/struct_global_terminal_0222AE80.h"
 
 #include "pokemon.h"
@@ -41,7 +41,7 @@ BOOL DressUpPhoto_HasData(const DressUpPhoto *photo);
 void DressUpPhoto_SetLanguageAndMagic(DressUpPhoto *photo);
 void DressUpPhoto_Init(DressUpPhoto *photo);
 void DressUpPhoto_SetPhotoMonFromSprite(DressUpPhoto *photo, Pokemon *mon, UnkStruct_020298D8 *sprite);
-void DressUpPhoto_AddAccessory(DressUpPhoto *photo, const UnkStruct_ov22_02255040 *sprite, int slot);
+void DressUpPhoto_AddAccessory(DressUpPhoto *photo, const ImageClipSprite *sprite, int slot);
 void DressUpPhoto_SetBackdrop(DressUpPhoto *photo, u8 backdrop);
 void DressUpPhoto_SetTitle(DressUpPhoto *photo, u16 word);
 void DressUpPhoto_Copy(DressUpPhoto *dest, const DressUpPhoto *src);
@@ -59,7 +59,7 @@ BOOL ContestPhoto_HasData(const ContestPhoto *photo);
 void ContestPhoto_SetFullMagic(ContestPhoto *photo);
 void ContestPhoto_Init(ContestPhoto *photo);
 void ContestPhoto_SetPhotoMonFromSprite(ContestPhoto *photo, Pokemon *mon, UnkStruct_020298D8 *sprite);
-void ContestPhoto_AddAccessory(ContestPhoto *photo, const UnkStruct_ov22_02255040 *sprite, int slot);
+void ContestPhoto_AddAccessory(ContestPhoto *photo, const ImageClipSprite *sprite, int slot);
 void ContestPhoto_SetBackdrop(ContestPhoto *photo, u8 backdrop);
 void ContestPhoto_SetContestRank(ContestPhoto *photo, enum PokemonContestRank contestRank);
 void ContestPhoto_Copy(ContestPhoto *dest, const ContestPhoto *src);

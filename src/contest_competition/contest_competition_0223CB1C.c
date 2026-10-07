@@ -10,7 +10,7 @@
 #include "contest_competition/contest_competition_0224F18C.h"
 #include "contest_competition/struct_contest_competition_0223D60C.h"
 #include "contest_competition/struct_contest_competition_02247A48.h"
-#include "overlay022/ov22_0225AF8C.h"
+#include "image_clip_app/image_clip_app_0225AF8C.h"
 
 #include "bg_window.h"
 #include "comm_manager.h"
@@ -45,7 +45,7 @@
 
 FS_EXTERN_OVERLAY(overlay11);
 FS_EXTERN_OVERLAY(battle_anim);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 static void contest_competition_0223D0C8(void *param0);
 static void contest_competition_0223D164(SysTask *param0, void *param1);
@@ -308,7 +308,7 @@ int VisualCompetitionScoring_Exit(ApplicationManager *appMan, int *param1)
 
     for (v1 = 0; v1 < 4; v1++) {
         if (v0->unk_F18[v1].unk_00 != NULL) {
-            ov22_0225B020(v0->unk_F18[v1].unk_00);
+            PhotoSprite_Free(v0->unk_F18[v1].unk_00);
         }
     }
 
@@ -339,7 +339,7 @@ int VisualCompetitionScoring_Exit(ApplicationManager *appMan, int *param1)
     NetworkIcon_Destroy();
     Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+    Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
 
     return 1;
 }
@@ -360,7 +360,7 @@ static void contest_competition_0223D0C8(void *param0)
 
         for (v1 = 0; v1 < 4; v1++) {
             if (v0->unk_F18[v1].unk_00 != NULL) {
-                ov22_0225B06C(v0->unk_F18[v1].unk_00);
+                PhotoSprite_UpdateGraphics(v0->unk_F18[v1].unk_00);
             }
         }
     }
@@ -385,7 +385,7 @@ static void contest_competition_0223D164(SysTask *param0, void *param1)
 
             for (v1 = 0; v1 < 4; v1++) {
                 if (v0->unk_F18[v1].unk_00 != NULL) {
-                    ov22_0225AFF8(v0->unk_F18[v1].unk_00);
+                    PhotoSprite_Update(v0->unk_F18[v1].unk_00);
                 }
             }
         }

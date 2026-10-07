@@ -61,8 +61,8 @@
 #include "overlay005/daycare.h"
 #include "overlay006/struct_npc_trade_animation_template.h"
 #include "overlay007/accessory_shop.h"
-#include "overlay022/ov22_02255D44.h"
-#include "overlay022/ov22_0225B660.h"
+#include "image_clip_app/image_clip_app_02255D44.h"
+#include "image_clip_app/image_clip_app_0225B660.h"
 #include "mix_records/mix_records.h"
 #include "geonet/geonet.h"
 #include "slot_machine/slot_machine.h"
@@ -137,7 +137,7 @@ FS_EXTERN_OVERLAY(battle);
 FS_EXTERN_OVERLAY(pc_boxes);
 FS_EXTERN_OVERLAY(easy_chat);
 FS_EXTERN_OVERLAY(pokedex);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 FS_EXTERN_OVERLAY(union_room_drawing);
 FS_EXTERN_OVERLAY(mix_records);
 FS_EXTERN_OVERLAY(global_terminal);
@@ -905,13 +905,13 @@ void FieldSystem_StartDressUpApp(FieldTask *taskMan, u16 *result, SaveData *save
 
 BOOL FieldSystem_OpenVisualCompetition(FieldSystem *fieldSystem, void *appData)
 {
-    FS_EXTERN_OVERLAY(overlay22);
+    FS_EXTERN_OVERLAY(image_clip_app);
 
     static ApplicationManagerTemplate appTemplate = {
-        ov22_02255D44,
-        ov22_02255E50,
-        ov22_02256098,
-        FS_OVERLAY_ID(overlay22)
+        VisualCompetitionApp_Init,
+        VisualCompetitionApp_Main,
+        VisualCompetitionApp_Exit,
+        FS_OVERLAY_ID(image_clip_app)
     };
 
     FieldSystem_StartChildProcess(fieldSystem, &appTemplate, appData);
@@ -921,13 +921,13 @@ BOOL FieldSystem_OpenVisualCompetition(FieldSystem *fieldSystem, void *appData)
 
 BOOL FieldSystem_OpenDressUpPhotoViewer(FieldSystem *fieldSystem, void *appData)
 {
-    FS_EXTERN_OVERLAY(overlay22);
+    FS_EXTERN_OVERLAY(image_clip_app);
 
     static ApplicationManagerTemplate appTemplate = {
-        ov22_0225B660,
-        ov22_0225B738,
-        ov22_0225B7FC,
-        FS_OVERLAY_ID(overlay22)
+        DressUpPhotoViewer_Init,
+        DressUpPhotoViewer_Main,
+        DressUpPhotoViewer_Exit,
+        FS_OVERLAY_ID(image_clip_app)
     };
 
     FieldSystem_StartChildProcess(fieldSystem, &appTemplate, appData);

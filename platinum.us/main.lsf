@@ -807,26 +807,26 @@ Overlay pokedex
 	Object main.nef.p/src_applications_pokedex_ov21_021E8D48.c.o
 }
 
-Overlay overlay22
+Overlay image_clip_app
 {
 	After contest_competition
-	Object main.nef.p/src_overlay022_ov22_02254DE0.c.o
-	Object main.nef.p/src_overlay022_ov22_02255094.c.o
-	Object main.nef.p/src_overlay022_ov22_02255D44.c.o
-	Object main.nef.p/src_overlay022_ov22_022578F4.c.o
-	Object main.nef.p/src_overlay022_ov22_02257F50.c.o
-	Object main.nef.p/src_overlay022_ov22_022588F0.c.o
-	Object main.nef.p/src_overlay022_ov22_0225894C.c.o
-	Object main.nef.p/src_overlay022_ov22_022589E0.c.o
-	Object main.nef.p/src_overlay022_ov22_02259098.c.o
-	Object main.nef.p/src_overlay022_ov22_02259484.c.o
-	Object main.nef.p/src_overlay022_ov22_02259560.c.o
-	Object main.nef.p/src_overlay022_ov22_022597BC.c.o
-	Object main.nef.p/src_overlay022_ov22_02259C58.c.o
-	Object main.nef.p/src_overlay022_ov22_0225A428.c.o
-	Object main.nef.p/src_overlay022_ov22_0225AF44.c.o
-	Object main.nef.p/src_overlay022_ov22_0225AF8C.c.o
-	Object main.nef.p/src_overlay022_ov22_0225B660.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02255094.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02255D44.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_022578F4.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02257F50.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_022588F0.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_0225894C.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_022589E0.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02259098.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02259484.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02259560.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_022597BC.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_02259C58.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_0225A428.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_0225AF44.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_0225AF8C.c.o
+	Object main.nef.p/src_image_clip_app_image_clip_app_0225B660.c.o
 }
 
 Overlay underground

@@ -30,8 +30,8 @@
 #include "contest_competition/struct_contest_competition_0224F30C.h"
 #include "contest_competition/struct_contest_competition_0224F3D8.h"
 #include "contest_competition/struct_contest_competition_022539E4.h"
-#include "overlay022/ov22_0225AF8C.h"
-#include "overlay022/struct_ov22_0225AF8C.h"
+#include "image_clip_app/image_clip_app_0225AF8C.h"
+#include "image_clip_app/struct_image_clip_app_0225AF8C.h"
 
 #include "assert.h"
 #include "bg_window.h"
@@ -219,7 +219,7 @@ static void contest_competition_02247B00(UnkStruct_contest_competition_0224F30C 
 
     for (v4 = 0; v4 < 4; v4++) {
         if (v2->unk_00->unk_F18[v4].unk_00 != NULL) {
-            ov22_0225B020(v2->unk_00->unk_F18[v4].unk_00);
+            PhotoSprite_Free(v2->unk_00->unk_F18[v4].unk_00);
             v2->unk_00->unk_F18[v4].unk_00 = NULL;
         }
     }
@@ -227,18 +227,18 @@ static void contest_competition_02247B00(UnkStruct_contest_competition_0224F30C 
     v3 = Pokemon_DPSpriteYOffset(v0->unk_0C.unk_00->contestMons[v1->unk_00], 2);
 
     {
-        UnkStruct_ov22_0225AF8C v5;
+        PhotoSpriteConfig v5;
 
-        MI_CpuClear8(&v5, sizeof(UnkStruct_ov22_0225AF8C));
+        MI_CpuClear8(&v5, sizeof(PhotoSpriteConfig));
 
         v5.heapID = HEAP_ID_22;
         v5.unk_04 = 128;
         v5.unk_08 = (96 - 32) + 80 / 2;
         v0->unk_F18[v1->unk_00].unk_04 = 128;
         v0->unk_F18[v1->unk_00].unk_08 = (96 - 32) + 80 / 2;
-        v0->unk_F18[v1->unk_00].unk_00 = ov22_0225AFD4(&v5, v0->unk_00->data.photos[v1->unk_00]);
+        v0->unk_F18[v1->unk_00].unk_00 = PhotoSprite_CreateForContestNoBackdrop(&v5, v0->unk_00->data.photos[v1->unk_00]);
 
-        ov22_0225B074(v0->unk_F18[v1->unk_00].unk_00, 0);
+        PhotoSprite_SetTransformEnabled(v0->unk_F18[v1->unk_00].unk_00, 0);
     }
 
     {
@@ -269,8 +269,8 @@ static void contest_competition_02247C5C(SysTask *param0, void *param1)
     case 1:
         G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
         v1 = Pokemon_DPSpriteYOffset(v0->unk_00->unk_0C.unk_00->contestMons[v0->unk_11], 2);
-        ov22_0225B158(v0->unk_00->unk_F18[v0->unk_11].unk_00, v0->unk_00->unk_F18[v0->unk_11].unk_04, v0->unk_00->unk_F18[v0->unk_11].unk_08, v1);
-        ov22_0225B074(v0->unk_00->unk_F18[v0->unk_11].unk_00, 1);
+        PhotoSprite_MoveToWithOffset(v0->unk_00->unk_F18[v0->unk_11].unk_00, v0->unk_00->unk_F18[v0->unk_11].unk_04, v0->unk_00->unk_F18[v0->unk_11].unk_08, v1);
+        PhotoSprite_SetTransformEnabled(v0->unk_00->unk_F18[v0->unk_11].unk_00, 1);
         v0->unk_10++;
         break;
     case 2:
@@ -542,10 +542,10 @@ static void contest_competition_02248198(SysTask *param0, void *param1)
             v0->unk_10++;
         }
 
-        ov22_0225B158(v0->unk_00->unk_F18[v0->unk_11].unk_00, v0->unk_14 >> 8, v0->unk_18 >> 8, monYOffset);
+        PhotoSprite_MoveToWithOffset(v0->unk_00->unk_F18[v0->unk_11].unk_00, v0->unk_14 >> 8, v0->unk_18 >> 8, monYOffset);
         break;
     default:
-        ov22_0225B020(v0->unk_00->unk_F18[v0->unk_11].unk_00);
+        PhotoSprite_Free(v0->unk_00->unk_F18[v0->unk_11].unk_00);
         v0->unk_00->unk_F18[v0->unk_11].unk_00 = NULL;
         contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
         Heap_Free(v0);
@@ -895,18 +895,18 @@ static void contest_competition_02248860(SysTask *param0, void *param1)
         SysTask_Start(contest_competition_02248BE0, &v0->unk_48, (30000 + 10));
 
         {
-            UnkStruct_ov22_0225AF8C v1;
+            PhotoSpriteConfig v1;
             int v2;
 
             v2 = Pokemon_DPSpriteYOffset(v0->unk_38.unk_00->unk_0C.unk_00->contestMons[v0->unk_38.contestantID], 2);
-            MI_CpuClear8(&v1, sizeof(UnkStruct_ov22_0225AF8C));
+            MI_CpuClear8(&v1, sizeof(PhotoSpriteConfig));
 
             v1.heapID = HEAP_ID_22;
             v1.unk_04 = 128;
             v1.unk_08 = (96 - 32) + v2;
-            v0->unk_38.unk_00->unk_F18[v0->unk_38.contestantID].unk_00 = ov22_0225AFD4(&v1, v0->unk_38.unk_00->unk_00->data.photos[v0->unk_38.contestantID]);
+            v0->unk_38.unk_00->unk_F18[v0->unk_38.contestantID].unk_00 = PhotoSprite_CreateForContestNoBackdrop(&v1, v0->unk_38.unk_00->unk_00->data.photos[v0->unk_38.contestantID]);
 
-            ov22_0225B074(v0->unk_38.unk_00->unk_F18[v0->unk_38.contestantID].unk_00, 0);
+            PhotoSprite_SetTransformEnabled(v0->unk_38.unk_00->unk_F18[v0->unk_38.contestantID].unk_00, 0);
         }
 
         v0->state++;
@@ -1015,11 +1015,11 @@ static void contest_competition_02248AA4(SysTask *param0, void *param1)
     case 0: {
         v0->unk_04 = 0;
         v0->unk_08 = 0;
-        ov22_0225B0EC(v0->unk_00->unk_F18[v0->contestantID].unk_00, 0, 0, FX32_ONE);
+        PhotoSprite_SetScale(v0->unk_00->unk_F18[v0->contestantID].unk_00, 0, 0, FX32_ONE);
 
         v0->unk_00->unk_F18[v0->contestantID].unk_04 = 128;
         v0->unk_00->unk_F18[v0->contestantID].unk_08 = (96 - 32) + 80 / 2;
-        ov22_0225B074(v0->unk_00->unk_F18[v0->contestantID].unk_00, 1);
+        PhotoSprite_SetTransformEnabled(v0->unk_00->unk_F18[v0->contestantID].unk_00, 1);
     }
         v0->unk_0C++;
     case 1:
@@ -1031,8 +1031,8 @@ static void contest_competition_02248AA4(SysTask *param0, void *param1)
             v0->unk_08 = FX32_ONE;
         }
 
-        ov22_0225B0EC(v0->unk_00->unk_F18[v0->contestantID].unk_00, v0->unk_04, v0->unk_08, FX32_ONE);
-        ov22_0225B158(v0->unk_00->unk_F18[v0->contestantID].unk_00, v0->unk_00->unk_F18[v0->contestantID].unk_04, v0->unk_00->unk_F18[v0->contestantID].unk_08, v1);
+        PhotoSprite_SetScale(v0->unk_00->unk_F18[v0->contestantID].unk_00, v0->unk_04, v0->unk_08, FX32_ONE);
+        PhotoSprite_MoveToWithOffset(v0->unk_00->unk_F18[v0->contestantID].unk_00, v0->unk_00->unk_F18[v0->contestantID].unk_04, v0->unk_00->unk_F18[v0->contestantID].unk_08, v1);
 
         if (v0->unk_04 >= FX32_ONE) {
             s32 species = Pokemon_GetValue(v0->unk_00->unk_0C.unk_00->contestMons[v0->contestantID], MON_DATA_SPECIES, NULL);

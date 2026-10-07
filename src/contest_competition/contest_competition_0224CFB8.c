@@ -32,7 +32,7 @@
 #include "contest_competition/struct_contest_competition_0224F30C.h"
 #include "contest_competition/struct_contest_competition_0224F3D8.h"
 #include "contest_competition/struct_contest_competition_022539E4.h"
-#include "overlay022/ov22_0225AF8C.h"
+#include "image_clip_app/image_clip_app_0225AF8C.h"
 
 #include "bg_window.h"
 #include "communication_system.h"
@@ -1160,12 +1160,12 @@ static void contest_competition_0224E1F4(SysTask *param0, void *param1)
 
                 if (v0->unk_0D == 0) {
                     v0->unk_10 = (0 - 100) * 0x100;
-                    ov22_0225B07C(v0->unk_08->unk_00, 1);
-                    ov22_0225B1AC(v0->unk_08->unk_00, 100);
+                    PhotoSprite_SetVisible(v0->unk_08->unk_00, 1);
+                    PhotoSprite_AdjustPriority(v0->unk_08->unk_00, 100);
                 } else {
                     v0->unk_10 = (contest_competition_0224A0FC(v0->unk_0D) + 80) * 0x100;
-                    ov22_0225B07C(v0->unk_08->unk_00, 0);
-                    ov22_0225B1AC(v0->unk_08->unk_00, -100);
+                    PhotoSprite_SetVisible(v0->unk_08->unk_00, 0);
+                    PhotoSprite_AdjustPriority(v0->unk_08->unk_00, -100);
                 }
 
                 v7 = Pokemon_DPSpriteYOffset(v0->mon, 2);
@@ -1198,7 +1198,7 @@ static void contest_competition_0224E1F4(SysTask *param0, void *param1)
         v0->unk_08->unk_08 = v0->unk_14 / 0x100;
         v0->unk_08->unk_0C = v0->unk_18 / 0x100;
 
-        ov22_0225B100(v0->unk_08->unk_00, v0->unk_08->unk_04, v0->unk_08->unk_08);
+        PhotoSprite_MoveTo(v0->unk_08->unk_00, v0->unk_08->unk_04, v0->unk_08->unk_08);
         contest_competition_0224B09C(v0->unk_04, v0->unk_08);
         break;
     default:

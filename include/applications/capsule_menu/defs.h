@@ -9,7 +9,7 @@
 #include "applications/capsule_menu/main.h"
 #include "battle_anim/struct_ball_rotation_decl.h"
 #include "battle_anim/struct_ov12_02235FE0_decl.h"
-#include "overlay022/struct_ov22_02258A48.h"
+#include "image_clip_app/struct_image_clip_app_02258A48.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -85,7 +85,7 @@ typedef struct CapsuleGraphicsManager {
     PokemonSpriteManager *pokemonSpriteManager;
     PokemonSprite *pokemonSprite;
     int pokemonYOffset;
-    UnkStruct_ov22_02258A48 unk_DC;
+    PhotoRendererController unk_DC;
     TouchScreenActions *touchScreenActions;
     TouchScreenRect touchScreenRects[CAPSULE_TOUCH_RECTS];
     YesNoTouchMenu *yesNoTouchMenu;
