@@ -17,7 +17,7 @@
 #include "overlay066/struct_ov66_02231374.h"
 #include "wifi_p2p_match/wifi_p2p_match.h"
 #include "wifi_lobby_questionnaire/wifi_lobby_questionnaire.h"
-#include "overlay069/ov69_0225C700.h"
+#include "wifi_earth/wifi_earth.h"
 #include "overlay070/ov70_0225D9A4.h"
 #include "overlay112/ov112_0225C700.h"
 #include "overlay113/ov113_0225C700.h"
@@ -35,7 +35,7 @@
 
 FS_EXTERN_OVERLAY(wifi_p2p_match);
 FS_EXTERN_OVERLAY(wifi_lobby_questionnaire);
-FS_EXTERN_OVERLAY(overlay69);
+FS_EXTERN_OVERLAY(wifi_earth);
 FS_EXTERN_OVERLAY(overlay70);
 FS_EXTERN_OVERLAY(overlay112);
 FS_EXTERN_OVERLAY(overlay113);
@@ -418,10 +418,10 @@ static void ov66_02230F50(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E
 {
     UnkStruct_ov66_02230F50 *v0;
 
-    FS_EXTERN_OVERLAY(overlay69);
+    FS_EXTERN_OVERLAY(wifi_earth);
 
     static const ApplicationManagerTemplate v1 = {
-        ov69_0225C700, ov69_0225C820, ov69_0225C8FC, FS_OVERLAY_ID(overlay69)
+        WiFiEarth_Init, WiFiEarth_Main, WiFiEarth_Exit, FS_OVERLAY_ID(wifi_earth)
     };
 
     v0 = param1->unk_00;
