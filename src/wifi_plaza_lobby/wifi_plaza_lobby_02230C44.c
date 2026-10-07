@@ -18,7 +18,7 @@
 #include "wifi_p2p_match/wifi_p2p_match.h"
 #include "wifi_lobby_questionnaire/wifi_lobby_questionnaire.h"
 #include "wifi_earth/wifi_earth.h"
-#include "overlay070/ov70_0225D9A4.h"
+#include "wifi_lobby_map/wifi_lobby_map_0225D9A4.h"
 #include "wifi_lobby_news/wifi_lobby_news.h"
 #include "footprint_stamp/footprint_stamp.h"
 #include "wifi_lobby_minigame_bucket/wifi_lobby_minigame_bucket.h"
@@ -36,7 +36,7 @@
 FS_EXTERN_OVERLAY(wifi_p2p_match);
 FS_EXTERN_OVERLAY(wifi_lobby_questionnaire);
 FS_EXTERN_OVERLAY(wifi_earth);
-FS_EXTERN_OVERLAY(overlay70);
+FS_EXTERN_OVERLAY(wifi_lobby_map);
 FS_EXTERN_OVERLAY(wifi_lobby_news);
 FS_EXTERN_OVERLAY(footprint_stamp);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame);
@@ -337,10 +337,10 @@ static void WiFiPlazaLobby_AppManager_LaunchMainPlaza(WiFiPlazaLobbyAppManager *
 {
     WiFiPlazaLobbyMainAppArgs *v0;
 
-    FS_EXTERN_OVERLAY(overlay70);
+    FS_EXTERN_OVERLAY(wifi_lobby_map);
 
     static const ApplicationManagerTemplate v1 = {
-        ov70_0225D9A4, ov70_0225DB90, ov70_0225DDF8, FS_OVERLAY_ID(overlay70)
+        wifi_lobby_map_0225D9A4, wifi_lobby_map_0225DB90, wifi_lobby_map_0225DDF8, FS_OVERLAY_ID(wifi_lobby_map)
     };
 
     v0 = param1->unk_00;
