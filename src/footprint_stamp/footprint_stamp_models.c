@@ -1,27 +1,27 @@
-#include "overlay113/ov113_0225E368.h"
+#include "footprint_stamp/footprint_stamp_models.h"
 
 #include <nitro.h>
 #include <string.h>
 
 #include "constants/species.h"
 
-#include "overlay113/ov113_02260620.h"
-#include "overlay113/struct_ov113_0225DBCC_decl.h"
-#include "overlay113/struct_ov113_0225EB20.h"
-#include "overlay113/struct_ov113_0225EB20_sub1.h"
-#include "overlay113/struct_ov113_0225EDCC.h"
-#include "overlay113/struct_ov113_0225FD80.h"
-#include "overlay113/struct_ov113_0225FE30.h"
-#include "overlay113/struct_ov113_0225FEE0.h"
-#include "overlay113/struct_ov113_0225FF8C.h"
-#include "overlay113/struct_ov113_02260064.h"
-#include "overlay113/struct_ov113_0226013C.h"
-#include "overlay113/struct_ov113_02260218.h"
-#include "overlay113/struct_ov113_022602E4.h"
-#include "overlay113/struct_ov113_02260394.h"
-#include "overlay113/struct_ov113_0226046C.h"
-#include "overlay113/struct_ov113_02260544.h"
-#include "overlay113/struct_ov113_02260818.h"
+#include "footprint_stamp/footprint_stamp_players.h"
+#include "footprint_stamp/struct_footprint_stamp_app_decl.h"
+#include "footprint_stamp/struct_footprint_stamp_model_manager.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_data.h"
+#include "footprint_stamp/struct_footprint_stamp_slot.h"
+#include "footprint_stamp/struct_footprint_stamp_fade.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_zoom_in.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_shake.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_rotate_left.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_rotate_right.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_tilt_up.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_spin.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_zoom_out.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_sway_x.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_sway_y.h"
+#include "footprint_stamp/struct_footprint_stamp_camera_anim_tilt_down.h"
+#include "footprint_stamp/struct_footprint_stamp_entry.h"
 
 #include "camera.h"
 #include "easy3d.h"
@@ -34,7 +34,7 @@
 #include "screen_fade.h"
 #include "sound_playback.h"
 
-__attribute__((aligned(4))) static const s16 Unk_ov113_02260BCC[] = {
+__attribute__((aligned(4))) static const s16 sSlotThresholds[] = {
     0xFF,
     0xA,
     0xA,
@@ -46,58 +46,58 @@ __attribute__((aligned(4))) static const s16 Unk_ov113_02260BCC[] = {
     0xA
 };
 
-typedef int (*UnkFuncPtr_ov113_02260CAC)(UnkStruct_ov113_0225EB20 *, UnkStruct_ov113_0225E6B8 *);
-typedef void (*UnkFuncPtr_ov113_02260CAC_1)(UnkStruct_ov113_0225EB20 *, UnkStruct_ov113_0225E6B8 *);
-typedef BOOL (*UnkFuncPtr_ov113_02260CAC_2)(UnkStruct_ov113_0225EB20 *, UnkStruct_ov113_0225E6B8 *, UnkStruct_ov113_0225E6B8 *);
-typedef BOOL (*UnkFuncPtr_ov113_02260C0C)(UnkStruct_ov113_0225EB20 *, UnkStruct_ov113_0225EB20_sub1 *, Camera *);
+typedef int (*FootprintStampAnimInitFunc)(FootprintStampModelManager *, FootprintStampModel *);
+typedef void (*FootprintStampAnimDrawFunc)(FootprintStampModelManager *, FootprintStampModel *);
+typedef BOOL (*FootprintStampAnimCollideFunc)(FootprintStampModelManager *, FootprintStampModel *, FootprintStampModel *);
+typedef BOOL (*FootprintStampCameraAnimFunc)(FootprintStampModelManager *, FootprintStampCameraAnimData *, Camera *);
 
 typedef struct {
-    UnkFuncPtr_ov113_02260CAC unk_00;
-    UnkFuncPtr_ov113_02260CAC_1 unk_04;
-    UnkFuncPtr_ov113_02260CAC_2 unk_08;
-} UnkStruct_ov113_02260CAC;
+    FootprintStampAnimInitFunc unk_00; // Advances the animation; returns 1 when it finishes.
+    FootprintStampAnimDrawFunc unk_04; // Optional custom draw callback.
+    FootprintStampAnimCollideFunc unk_08; // Tests overlap against another model.
+} FootprintStampAnimHandler;
 
 typedef struct {
-    fx32 unk_00;
-    fx32 unk_04;
-    fx32 unk_08;
-    fx32 unk_0C;
-} UnkStruct_ov113_0225EDA4;
+    fx32 unk_00; // Minimum X.
+    fx32 unk_04; // Maximum X.
+    fx32 unk_08; // Minimum Y.
+    fx32 unk_0C; // Maximum Y.
+} FootprintStampBounds;
 
 typedef struct {
     s32 unk_00;
-    UnkStruct_ov113_0225EDA4 unk_04;
-} UnkStruct_ov113_0225EF0C;
+    FootprintStampBounds unk_04;
+} FootprintStampAnimAppear;
 
 typedef struct {
     int unk_00;
     fx32 unk_04;
     u8 unk_08;
     u8 unk_09;
-    UnkStruct_ov113_0225EDA4 unk_0C;
-} UnkStruct_ov113_0225EF78;
+    FootprintStampBounds unk_0C;
+} FootprintStampAnimGrow;
 
 typedef struct {
     Easy3DObject unk_00[3];
     u16 unk_168;
     u8 unk_16A;
-    UnkStruct_ov113_0225EDA4 unk_16C[4];
-} UnkStruct_ov113_0225F060;
+    FootprintStampBounds unk_16C[4];
+} FootprintStampAnimSplit;
 
 typedef struct {
     int unk_00;
     int unk_04;
     int unk_08;
-    UnkStruct_ov113_0225EDA4 unk_0C;
-} UnkStruct_ov113_0225F1E4;
+    FootprintStampBounds unk_0C;
+} FootprintStampAnimSpin;
 
 typedef struct {
     int unk_00;
     fx32 unk_04;
     int unk_08;
     fx32 unk_0C;
-    UnkStruct_ov113_0225EDA4 unk_10;
-} UnkStruct_ov113_0225F368;
+    FootprintStampBounds unk_10;
+} FootprintStampAnimBounce;
 
 typedef struct {
     Easy3DObject unk_00[3];
@@ -106,22 +106,22 @@ typedef struct {
     u8 unk_16B;
     u8 unk_16C;
     u8 unk_16D;
-    UnkStruct_ov113_0225EDA4 unk_170;
-} UnkStruct_ov113_0225F51C;
+    FootprintStampBounds unk_170;
+} FootprintStampAnimTrail;
 
 typedef struct {
     int unk_00;
     fx32 unk_04;
     fx32 unk_08;
-    UnkStruct_ov113_0225EDA4 unk_0C;
-} UnkStruct_ov113_0225F728;
+    FootprintStampBounds unk_0C;
+} FootprintStampAnimSwing;
 
 typedef struct {
     fx32 unk_00;
     u16 unk_04;
     u8 unk_06;
-    UnkStruct_ov113_0225EDA4 unk_08;
-} UnkStruct_ov113_0225F818;
+    FootprintStampBounds unk_08;
+} FootprintStampAnimPulse;
 
 typedef struct {
     Easy3DObject unk_00[2];
@@ -129,8 +129,8 @@ typedef struct {
     u16 unk_F4;
     u8 unk_F6;
     u8 unk_F7;
-    UnkStruct_ov113_0225EDA4 unk_F8[3];
-} UnkStruct_ov113_0225F890;
+    FootprintStampBounds unk_F8[3];
+} FootprintStampAnimSplitX;
 
 typedef struct {
     Easy3DObject unk_00[2];
@@ -138,128 +138,128 @@ typedef struct {
     u16 unk_F4;
     u8 unk_F6;
     u8 unk_F7;
-    UnkStruct_ov113_0225EDA4 unk_F8[3];
-} UnkStruct_ov113_0225FAB0;
+    FootprintStampBounds unk_F8[3];
+} FootprintStampAnimSplitY;
 
 typedef struct {
     fx32 unk_00;
     u16 unk_04;
     u8 unk_06;
-    UnkStruct_ov113_0225EDA4 unk_08;
-} UnkStruct_ov113_0225FCD0;
+    FootprintStampBounds unk_08;
+} FootprintStampAnimStretch;
 
 typedef union {
-    UnkStruct_ov113_0225EF0C val1;
-    UnkStruct_ov113_0225EF78 val2;
-    UnkStruct_ov113_0225F060 val3;
-    UnkStruct_ov113_0225F1E4 val4;
-    UnkStruct_ov113_0225F368 val5;
-    UnkStruct_ov113_0225F51C val6;
-    UnkStruct_ov113_0225F728 val7;
-    UnkStruct_ov113_0225F818 val8;
-    UnkStruct_ov113_0225F890 val9;
-    UnkStruct_ov113_0225FAB0 val10;
-    UnkStruct_ov113_0225FCD0 val11;
-} UnkStruct_ov113_0225E6B8_sub1;
+    FootprintStampAnimAppear val1;
+    FootprintStampAnimGrow val2;
+    FootprintStampAnimSplit val3;
+    FootprintStampAnimSpin val4;
+    FootprintStampAnimBounce val5;
+    FootprintStampAnimTrail val6;
+    FootprintStampAnimSwing val7;
+    FootprintStampAnimPulse val8;
+    FootprintStampAnimSplitX val9;
+    FootprintStampAnimSplitY val10;
+    FootprintStampAnimStretch val11;
+} FootprintStampModelAnimData;
 
-typedef struct UnkStruct_ov113_0225E6B8_t {
-    UnkStruct_ov113_02260818 unk_00;
+typedef struct FootprintStampModel_t {
+    FootprintStampEntry unk_00; // The footprint entry this model represents.
     Easy3DModel unk_0C;
     Easy3DObject unk_1C;
-    UnkStruct_ov113_0225E6B8_sub1 unk_94;
-    u32 unk_240_0 : 4;
-    u32 unk_240_4 : 4;
-    u32 unk_240_8 : 8;
-    u32 unk_240_16 : 8;
-    u32 unk_240_24 : 8;
-} UnkStruct_ov113_0225E6B8;
+    FootprintStampModelAnimData unk_94; // Per-animation scratch data.
+    u32 unk_240_0 : 4; // Whether the model has finished appearing.
+    u32 unk_240_4 : 4; // Whether the texture is currently rotated.
+    u32 unk_240_8 : 8; // Current animation state index.
+    u32 unk_240_16 : 8; // Animation state requested to start.
+    u32 unk_240_24 : 8; // Slot index assigned to this model.
+} FootprintStampModel;
 
-static UnkStruct_ov113_0225E6B8 *ov113_0225E6B8(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225EB20 *param1, const UnkStruct_ov113_02260818 *param2, NARC *param3, NARC *param4, BOOL param5);
-static void ov113_0225EB0C(UnkStruct_ov113_0225E6B8 *param0);
-static void ov113_0225EB20(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, int param2);
-static void ov113_0225EB64(UnkStruct_ov113_0225DBCC *param0, int param1, int param2, fx32 *param3, fx32 *param4);
-static BOOL ov113_0225E774(UnkStruct_ov113_0225EB20 *param0, Easy3DModel *param1, NARC *param2, NARC *param3, const UnkStruct_ov113_02260818 *param4, BOOL param5);
-static void ov113_0225E920(NNSG3dResTex *param0, NARC *param1, NARC *param2, const UnkStruct_ov113_02260818 *param3, BOOL param4);
-static void ov113_0225EA60(NNSG3dResTex *param0, int param1);
-static BOOL ov113_0225E8B0(NNSG3dResTex *param0);
-static BOOL ov113_0225E854(UnkStruct_ov113_0225EB20 *param0, NNSG3dResTex *param1);
-static void ov113_0225E884(UnkStruct_ov113_0225EB20 *param0, NNSG3dResTex *param1);
-static BOOL ov113_0225EEBC(UnkStruct_ov113_0225E6B8 *param0, int param1);
-static u8 ov113_0225EEF8(const UnkStruct_ov113_02260818 *param0);
-static int ov113_0225EBFC(UnkStruct_ov113_0225EB20 *param0);
-static void ov113_0225EC60(UnkStruct_ov113_0225EB20 *param0, int param1);
-static void ov113_0225ECA0(Easy3DObject *param0, const UnkStruct_ov113_02260818 *param1, UnkStruct_ov113_0225EDA4 *param2, int param3);
-static BOOL ov113_0225EDA4(const UnkStruct_ov113_0225EDA4 *param0, const UnkStruct_ov113_0225EDA4 *param1);
-static void ov113_0225EDCC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225EE0C(UnkStruct_ov113_0225EB20 *param0, int param1, int param2);
-static void ov113_0225EE78(UnkStruct_ov113_0225EB20 *param0, int param1);
-static void ov113_0225EE98(UnkStruct_ov113_0225EB20 *param0);
-static BOOL ov113_0225FD80(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225FD80 *param1, int param2, int param3);
-static int ov113_0225EF0C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225EF78(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F060(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F1E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F368(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F51C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F728(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F818(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225F890(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225FAB0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static int ov113_0225FCD0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static void ov113_0225EFFC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static void ov113_0225F194(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static void ov113_0225F680(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static void ov113_0225FA24(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static void ov113_0225FC44(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1);
-static BOOL ov113_0225EF74(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F044(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F1B8(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F34C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F500(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F70C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F7FC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225F874(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225FA84(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225FCA4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225FD64(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2);
-static BOOL ov113_0225FE30(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_0225FEE0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_0225FF8C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_02260064(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_0226013C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_02260218(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_022602E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_02260394(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_0226046C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
-static BOOL ov113_02260544(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera);
+static FootprintStampModel *FootprintStampModels_CreateModel(FootprintStampApp *param0, FootprintStampModelManager *param1, const FootprintStampEntry *param2, NARC *param3, NARC *param4, BOOL param5);
+static void FootprintStampModels_FreeModel(FootprintStampModel *param0);
+static void FootprintStampModels_RemoveModel(FootprintStampModelManager *param0, FootprintStampModel *param1, int param2);
+static void FootprintStampModels_GetBoardPosition(FootprintStampApp *param0, int param1, int param2, fx32 *param3, fx32 *param4);
+static BOOL FootprintStampModels_LoadModel(FootprintStampModelManager *param0, Easy3DModel *param1, NARC *param2, NARC *param3, const FootprintStampEntry *param4, BOOL param5);
+static void FootprintStampModels_BuildFootprintTexture(NNSG3dResTex *param0, NARC *param1, NARC *param2, const FootprintStampEntry *param3, BOOL param4);
+static void FootprintStampModels_RotateTexture(NNSG3dResTex *param0, int param1);
+static BOOL FootprintStampModels_AllocTextureVram(NNSG3dResTex *param0);
+static BOOL FootprintStampModels_AddTexture(FootprintStampModelManager *param0, NNSG3dResTex *param1);
+static void FootprintStampModels_RemoveTexture(FootprintStampModelManager *param0, NNSG3dResTex *param1);
+static BOOL FootprintStampModels_StartModelAnim(FootprintStampModel *param0, int param1);
+static u8 FootprintStampModels_GetNatureAnim(const FootprintStampEntry *param0);
+static int FootprintStampModels_AllocSlot(FootprintStampModelManager *param0);
+static void FootprintStampModels_FreeSlot(FootprintStampModelManager *param0, int param1);
+static void FootprintStampModels_ComputeBounds(Easy3DObject *param0, const FootprintStampEntry *param1, FootprintStampBounds *param2, int param3);
+static BOOL FootprintStampModels_BoundsOverlap(const FootprintStampBounds *param0, const FootprintStampBounds *param1);
+static void FootprintStampModels_AssignSlot(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampModels_CountSlot(FootprintStampModelManager *param0, int param1, int param2);
+static void FootprintStampModels_ReleaseSlot(FootprintStampModelManager *param0, int param1);
+static void FootprintStampModels_StartCameraAnim(FootprintStampModelManager *param0);
+static BOOL FootprintStampModels_UpdateFade(FootprintStampModelManager *param0, FootprintStampFade *param1, int param2, int param3);
+static int FootprintStampAnim_Appear(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Grow(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Split(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Spin(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Bounce(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Trail(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Swing(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Pulse(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_SplitX(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_SplitY(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static int FootprintStampAnim_Stretch(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static void FootprintStampAnim_GrowDraw(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static void FootprintStampAnim_SplitDraw(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static void FootprintStampAnim_TrailDraw(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static void FootprintStampAnim_SplitXDraw(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static void FootprintStampAnim_SplitYDraw(FootprintStampModelManager *param0, FootprintStampModel *param1);
+static BOOL FootprintStampAnim_AppearCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_GrowCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_SplitCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_SpinCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_BounceCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_TrailCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_SwingCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_PulseCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_SplitXCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_SplitYCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampAnim_StretchCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2);
+static BOOL FootprintStampCameraAnim_ZoomIn(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_Shake(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_RotateLeft(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_RotateRight(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_TiltUp(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_Spin(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_ZoomOut(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_SwayX(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_SwayY(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
+static BOOL FootprintStampCameraAnim_TiltDown(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera);
 
 static const struct {
     fx32 unk_00;
     fx32 unk_04;
     fx32 unk_08;
     fx32 unk_0C;
-} Unk_ov113_02260BBC = {
+} sBoardBounds = {
     -FX32_ONE * 16 * (5 + 0),
     FX32_ONE * 16 * (5 + 0),
     FX32_ONE * 16 * (3 + 0),
     -FX32_ONE * 16 * (3 + 0),
 };
 
-static const UnkStruct_ov113_02260CAC Unk_ov113_02260CAC[] = {
-    { ov113_0225EF0C, NULL, ov113_0225EF74 },
-    { ov113_0225EF78, ov113_0225EFFC, ov113_0225F044 },
-    { ov113_0225F060, ov113_0225F194, ov113_0225F1B8 },
-    { ov113_0225F1E4, NULL, ov113_0225F34C },
-    { ov113_0225F368, NULL, ov113_0225F500 },
-    { ov113_0225F51C, ov113_0225F680, ov113_0225F70C },
-    { ov113_0225F728, NULL, ov113_0225F7FC },
-    { ov113_0225F818, NULL, ov113_0225F874 },
-    { ov113_0225F890, ov113_0225FA24, ov113_0225FA84 },
-    { ov113_0225FAB0, ov113_0225FC44, ov113_0225FCA4 },
-    { ov113_0225FCD0, NULL, ov113_0225FD64 }
+static const FootprintStampAnimHandler sAnimHandlers[] = {
+    { FootprintStampAnim_Appear, NULL, FootprintStampAnim_AppearCollide },
+    { FootprintStampAnim_Grow, FootprintStampAnim_GrowDraw, FootprintStampAnim_GrowCollide },
+    { FootprintStampAnim_Split, FootprintStampAnim_SplitDraw, FootprintStampAnim_SplitCollide },
+    { FootprintStampAnim_Spin, NULL, FootprintStampAnim_SpinCollide },
+    { FootprintStampAnim_Bounce, NULL, FootprintStampAnim_BounceCollide },
+    { FootprintStampAnim_Trail, FootprintStampAnim_TrailDraw, FootprintStampAnim_TrailCollide },
+    { FootprintStampAnim_Swing, NULL, FootprintStampAnim_SwingCollide },
+    { FootprintStampAnim_Pulse, NULL, FootprintStampAnim_PulseCollide },
+    { FootprintStampAnim_SplitX, FootprintStampAnim_SplitXDraw, FootprintStampAnim_SplitXCollide },
+    { FootprintStampAnim_SplitY, FootprintStampAnim_SplitYDraw, FootprintStampAnim_SplitYCollide },
+    { FootprintStampAnim_Stretch, NULL, FootprintStampAnim_StretchCollide }
 };
 
-__attribute__((aligned(4))) static const u8 Unk_ov113_02260D30[] = {
+__attribute__((aligned(4))) static const u8 sNatureToAnim[] = {
     0x5,
     0x1,
     0x5,
@@ -287,7 +287,7 @@ __attribute__((aligned(4))) static const u8 Unk_ov113_02260D30[] = {
     0x2
 };
 
-static const UnkStruct_ov113_0225EDA4 Unk_ov113_02260C38[] = {
+static const FootprintStampBounds sFootprintSizeBounds[] = {
     { -(((FX32_ONE * 16 * 1) / 2) / 3),
         ((FX32_ONE * 16 * 1) / 2) / 3,
         ((FX32_ONE * 16 * 1) / 2) / 3,
@@ -302,21 +302,21 @@ static const UnkStruct_ov113_0225EDA4 Unk_ov113_02260C38[] = {
         -(((FX32_ONE * 16 * 1) / 2) / 3 * 2) }
 };
 
-static const UnkFuncPtr_ov113_02260C0C Unk_ov113_02260C0C[] = {
+static const FootprintStampCameraAnimFunc sCameraAnimHandlers[] = {
     NULL,
-    ov113_0225FE30,
-    ov113_0225FEE0,
-    ov113_0225FF8C,
-    ov113_02260064,
-    ov113_0226013C,
-    ov113_02260218,
-    ov113_022602E4,
-    ov113_02260394,
-    ov113_0226046C,
-    ov113_02260544
+    FootprintStampCameraAnim_ZoomIn,
+    FootprintStampCameraAnim_Shake,
+    FootprintStampCameraAnim_RotateLeft,
+    FootprintStampCameraAnim_RotateRight,
+    FootprintStampCameraAnim_TiltUp,
+    FootprintStampCameraAnim_Spin,
+    FootprintStampCameraAnim_ZoomOut,
+    FootprintStampCameraAnim_SwayX,
+    FootprintStampCameraAnim_SwayY,
+    FootprintStampCameraAnim_TiltDown
 };
 
-static const s32 Unk_ov113_02260C68[] = {
+static const s32 sBoardXPositions[] = {
     0xFFFFFFFFFFFC5E04,
     0xFFFFFFFFFFFCCE04,
     0xFFFFFFFFFFFD3E04,
@@ -336,7 +336,7 @@ static const s32 Unk_ov113_02260C68[] = {
     0x39804
 };
 
-static const s32 Unk_ov113_02260BE0[] = {
+static const s32 sBoardYPositions[] = {
     0x23B0F,
     0x1CB0F,
     0x1550F,
@@ -350,23 +350,23 @@ static const s32 Unk_ov113_02260BE0[] = {
     0xFFFFFFFFFFFDB70F
 };
 
-void ov113_0225E368(UnkStruct_ov113_0225EB20 *param0, BOOL param1)
+void FootprintStampModels_Init(FootprintStampModelManager *param0, BOOL param1)
 {
-    MI_CpuClear8(param0, sizeof(UnkStruct_ov113_0225EB20));
+    MI_CpuClear8(param0, sizeof(FootprintStampModelManager));
 }
 
-void ov113_0225E378(UnkStruct_ov113_0225EB20 *param0)
+void FootprintStampModels_Free(FootprintStampModelManager *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 128; v0++) {
         if (param0->unk_B4[v0] != NULL) {
-            ov113_0225EB0C(param0->unk_B4[v0]);
+            FootprintStampModels_FreeModel(param0->unk_B4[v0]);
         }
     }
 }
 
-BOOL ov113_0225E398(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225EB20 *param1, const UnkStruct_ov113_02260818 *param2, NARC *param3, NARC *param4, BOOL param5)
+BOOL FootprintStampModels_Add(FootprintStampApp *param0, FootprintStampModelManager *param1, const FootprintStampEntry *param2, NARC *param3, NARC *param4, BOOL param5)
 {
     int v0;
 
@@ -376,7 +376,7 @@ BOOL ov113_0225E398(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225EB20 *
 
     for (v0 = 0; v0 < 128; v0++) {
         if (param1->unk_B4[v0] == NULL) {
-            param1->unk_B4[v0] = ov113_0225E6B8(param0, param1, param2, param3, param4, param5);
+            param1->unk_B4[v0] = FootprintStampModels_CreateModel(param0, param1, param2, param3, param4, param5);
 
             if (param1->unk_B4[v0] == NULL) {
                 return 0;
@@ -389,19 +389,19 @@ BOOL ov113_0225E398(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225EB20 *
     return 0;
 }
 
-void ov113_0225E3F0(UnkStruct_ov113_0225EB20 *param0, Camera *camera, int param2, int param3)
+void FootprintStampModels_Update(FootprintStampModelManager *param0, Camera *camera, int param2, int param3)
 {
     int v0;
-    UnkStruct_ov113_0225E6B8 *v1;
+    FootprintStampModel *v1;
     int v2;
     BOOL v3;
 
     if (param0->unk_73D != 0) {
-        ov113_0225FD80(param0, &param0->unk_B0, param2, param3);
+        FootprintStampModels_UpdateFade(param0, &param0->unk_B0, param2, param3);
     }
 
     if (param0->unk_73C != 0) {
-        if (Unk_ov113_02260C0C[param0->unk_73C](param0, &param0->unk_00, camera) == 1) {
+        if (sCameraAnimHandlers[param0->unk_73C](param0, &param0->unk_00, camera) == 1) {
             param0->unk_73C = 0;
         }
     }
@@ -414,11 +414,11 @@ void ov113_0225E3F0(UnkStruct_ov113_0225EB20 *param0, Camera *camera, int param2
                 v1->unk_240_8 = v1->unk_240_16;
             }
 
-            v2 = Unk_ov113_02260CAC[v1->unk_240_8].unk_00(param0, v1);
+            v2 = sAnimHandlers[v1->unk_240_8].unk_00(param0, v1);
 
             switch (v2) {
             case 1:
-                ov113_0225EB20(param0, v1, v0);
+                FootprintStampModels_RemoveModel(param0, v1, v0);
                 break;
             }
         }
@@ -427,17 +427,17 @@ void ov113_0225E3F0(UnkStruct_ov113_0225EB20 *param0, Camera *camera, int param2
     }
 }
 
-void ov113_0225E4A0(UnkStruct_ov113_0225EB20 *param0)
+void FootprintStampModels_Draw(FootprintStampModelManager *param0)
 {
     int v0;
-    UnkStruct_ov113_0225E6B8 *v1;
+    FootprintStampModel *v1;
 
     for (v0 = 0; v0 < 128; v0++) {
         v1 = param0->unk_B4[v0];
 
         if (v1 != NULL) {
-            if (Unk_ov113_02260CAC[v1->unk_240_8].unk_04 != NULL) {
-                Unk_ov113_02260CAC[v1->unk_240_8].unk_04(param0, v1);
+            if (sAnimHandlers[v1->unk_240_8].unk_04 != NULL) {
+                sAnimHandlers[v1->unk_240_8].unk_04(param0, v1);
             } else {
                 Easy3DObject_Draw(&v1->unk_1C);
             }
@@ -445,11 +445,11 @@ void ov113_0225E4A0(UnkStruct_ov113_0225EB20 *param0)
     }
 }
 
-void ov113_0225E4E8(UnkStruct_ov113_0225EB20 *param0)
+void FootprintStampModels_UpdateAnimations(FootprintStampModelManager *param0)
 {
     int v0, v1, v2, v3, v4;
-    UnkStruct_ov113_0225E6B8 *v5;
-    UnkStruct_ov113_0225E6B8 *v6;
+    FootprintStampModel *v5;
+    FootprintStampModel *v6;
     BOOL v7;
     int v8 = 0;
 
@@ -476,13 +476,13 @@ void ov113_0225E4E8(UnkStruct_ov113_0225EB20 *param0)
         for (v3 = 0; v3 < v1; v3++) {
             v5 = param0->unk_2B4[v3];
 
-            if (Unk_ov113_02260CAC[v5->unk_240_8].unk_08(param0, v5, v6) == 1) {
-                v7 = ov113_0225EEBC(v6, v5->unk_240_8);
+            if (sAnimHandlers[v5->unk_240_8].unk_08(param0, v5, v6) == 1) {
+                v7 = FootprintStampModels_StartModelAnim(v6, v5->unk_240_8);
 
                 if ((v7 == 1) && (v6->unk_240_24 == 0xff)) {
                     v6->unk_240_24 = v5->unk_240_24;
 
-                    if (ov113_0225EE0C(param0, v5->unk_240_24, v5->unk_240_8) == 1) {
+                    if (FootprintStampModels_CountSlot(param0, v5->unk_240_24, v5->unk_240_8) == 1) {
                         v8++;
                     }
 
@@ -497,17 +497,17 @@ void ov113_0225E4E8(UnkStruct_ov113_0225EB20 *param0)
             v5 = param0->unk_B4[v0];
 
             if ((v5 != NULL) && (v5->unk_240_8 != param0->unk_73D) && (v5->unk_240_16 != param0->unk_73D)) {
-                if (ov113_0225EEBC(v5, param0->unk_73D) == 0) {
-                    ov113_0225EB20(param0, v5, v0);
+                if (FootprintStampModels_StartModelAnim(v5, param0->unk_73D) == 0) {
+                    FootprintStampModels_RemoveModel(param0, v5, v0);
                 }
             }
         }
 
-        ov113_0225EE98(param0);
+        FootprintStampModels_StartCameraAnim(param0);
     }
 }
 
-void ov113_0225E65C(UnkStruct_ov113_0225EB20 *param0, int param1)
+void FootprintStampModels_FlushTextures(FootprintStampModelManager *param0, int param1)
 {
     int v0;
     NNSG3dResTex **v1;
@@ -533,31 +533,31 @@ void ov113_0225E65C(UnkStruct_ov113_0225EB20 *param0, int param1)
     }
 }
 
-static UnkStruct_ov113_0225E6B8 *ov113_0225E6B8(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225EB20 *param1, const UnkStruct_ov113_02260818 *param2, NARC *param3, NARC *param4, BOOL param5)
+static FootprintStampModel *FootprintStampModels_CreateModel(FootprintStampApp *param0, FootprintStampModelManager *param1, const FootprintStampEntry *param2, NARC *param3, NARC *param4, BOOL param5)
 {
-    UnkStruct_ov113_0225E6B8 *v0;
+    FootprintStampModel *v0;
     fx32 v1, v2;
     BOOL v3;
 
-    v0 = Heap_Alloc(HEAP_ID_118, sizeof(UnkStruct_ov113_0225E6B8));
-    MI_CpuClear8(v0, sizeof(UnkStruct_ov113_0225E6B8));
+    v0 = Heap_Alloc(HEAP_ID_118, sizeof(FootprintStampModel));
+    MI_CpuClear8(v0, sizeof(FootprintStampModel));
 
     v0->unk_240_24 = 0xff;
     v0->unk_00 = *param2;
 
-    if (v0->unk_00.unk_02 > NATIONAL_DEX_COUNT) {
+    if (v0->unk_00.species > NATIONAL_DEX_COUNT) {
         GF_ASSERT(FALSE);
-        v0->unk_00.unk_02 = 132;
+        v0->unk_00.species = 132;
     }
 
-    v3 = ov113_0225E774(param1, &v0->unk_0C, param3, param4, &v0->unk_00, param5);
+    v3 = FootprintStampModels_LoadModel(param1, &v0->unk_0C, param3, param4, &v0->unk_00, param5);
 
     if (v3 == 0) {
         return NULL;
     }
 
     Easy3DObject_Init(&v0->unk_1C, &v0->unk_0C);
-    ov113_0225EB64(param0, param2->unk_09, param2->unk_0A, &v1, &v2);
+    FootprintStampModels_GetBoardPosition(param0, param2->touchX, param2->touchY, &v1, &v2);
     Easy3DObject_SetPosition(&v0->unk_1C, v1, v2, (FX32_ONE * 16));
     Easy3DObject_SetScale(&v0->unk_1C, (FX32_CONST(1.00f)), (FX32_CONST(1.00f)), (FX32_CONST(1.00f)));
     Easy3DObject_SetVisible(&v0->unk_1C, 0);
@@ -565,7 +565,7 @@ static UnkStruct_ov113_0225E6B8 *ov113_0225E6B8(UnkStruct_ov113_0225DBCC *param0
     return v0;
 }
 
-static BOOL ov113_0225E774(UnkStruct_ov113_0225EB20 *param0, Easy3DModel *param1, NARC *param2, NARC *param3, const UnkStruct_ov113_02260818 *param4, BOOL param5)
+static BOOL FootprintStampModels_LoadModel(FootprintStampModelManager *param0, Easy3DModel *param1, NARC *param2, NARC *param3, const FootprintStampEntry *param4, BOOL param5)
 {
     param1->data = LoadMemberFromOpenNARC(param2, 29, 0, HEAP_ID_118, 0);
 
@@ -579,10 +579,10 @@ static BOOL ov113_0225E774(UnkStruct_ov113_0225EB20 *param0, Easy3DModel *param1
         param1->texture = NNS_G3dGetTex(param1->data);
 
         if (param1->texture) {
-            ov113_0225E920(param1->texture, param2, param3, param4, param5);
-            v0 = ov113_0225E8B0(param1->texture);
+            FootprintStampModels_BuildFootprintTexture(param1->texture, param2, param3, param4, param5);
+            v0 = FootprintStampModels_AllocTextureVram(param1->texture);
 
-            if ((v0 == 0) || (ov113_0225E854(param0, param1->texture) == 0)) {
+            if ((v0 == 0) || (FootprintStampModels_AddTexture(param0, param1->texture) == 0)) {
                 NNSG3dTexKey v1;
                 NNSG3dTexKey v2;
                 NNSG3dPlttKey v3;
@@ -610,7 +610,7 @@ static BOOL ov113_0225E774(UnkStruct_ov113_0225EB20 *param0, Easy3DModel *param1
     return 1;
 }
 
-static BOOL ov113_0225E854(UnkStruct_ov113_0225EB20 *param0, NNSG3dResTex *param1)
+static BOOL FootprintStampModels_AddTexture(FootprintStampModelManager *param0, NNSG3dResTex *param1)
 {
     int v0;
 
@@ -624,7 +624,7 @@ static BOOL ov113_0225E854(UnkStruct_ov113_0225EB20 *param0, NNSG3dResTex *param
     return 0;
 }
 
-static void ov113_0225E884(UnkStruct_ov113_0225EB20 *param0, NNSG3dResTex *param1)
+static void FootprintStampModels_RemoveTexture(FootprintStampModelManager *param0, NNSG3dResTex *param1)
 {
     int v0;
 
@@ -636,7 +636,7 @@ static void ov113_0225E884(UnkStruct_ov113_0225EB20 *param0, NNSG3dResTex *param
     }
 }
 
-static BOOL ov113_0225E8B0(NNSG3dResTex *param0)
+static BOOL FootprintStampModels_AllocTextureVram(NNSG3dResTex *param0)
 {
     u32 v0, v1;
     NNSG3dTexKey v2;
@@ -665,16 +665,16 @@ static BOOL ov113_0225E8B0(NNSG3dResTex *param0)
     return 1;
 }
 
-static void ov113_0225E920(NNSG3dResTex *param0, NARC *param1, NARC *param2, const UnkStruct_ov113_02260818 *param3, BOOL param4)
+static void FootprintStampModels_BuildFootprintTexture(NNSG3dResTex *param0, NARC *param1, NARC *param2, const FootprintStampEntry *param3, BOOL param4)
 {
     u16 *v0;
     u8 *v1, *v2;
     NNSG2dCharacterData *v3;
-    int v4 = PokemonHasOverworldFootprint(param3->unk_02, param3->unk_08, param4);
+    int v4 = PokemonHasOverworldFootprint(param3->species, param3->form, param4);
     v1 = (u8 *)((u8 *)param0 + param0->texInfo.ofsTex);
 
     if (v4 == 1) {
-        v2 = LoadMemberFromOpenNARC(param2, 3 + param3->unk_02, 1, HEAP_ID_118, 1);
+        v2 = LoadMemberFromOpenNARC(param2, 3 + param3->species, 1, HEAP_ID_118, 1);
         NNS_G2dGetUnpackedCharacterData(v2, &v3);
     } else {
         v2 = LoadMemberFromOpenNARC(param1, 16, 0, HEAP_ID_118, 1);
@@ -763,12 +763,12 @@ static void ov113_0225E920(NNSG3dResTex *param0, NARC *param1, NARC *param2, con
     }
 
     v0 = (u16 *)((u8 *)param0 + param0->plttInfo.ofsPlttData);
-    v0[1] = param3->unk_00;
+    v0[1] = param3->stampColor;
 
     Heap_Free(v2);
 }
 
-static void ov113_0225EA60(NNSG3dResTex *param0, int param1)
+static void FootprintStampModels_RotateTexture(NNSG3dResTex *param0, int param1)
 {
     u32 *v0;
     u32 *v1;
@@ -816,52 +816,52 @@ static void ov113_0225EA60(NNSG3dResTex *param0, int param1)
     Heap_Free(v1);
 }
 
-static void ov113_0225EB0C(UnkStruct_ov113_0225E6B8 *param0)
+static void FootprintStampModels_FreeModel(FootprintStampModel *param0)
 {
     Easy3DModel_Release(&param0->unk_0C);
     Heap_Free(param0);
 }
 
-static void ov113_0225EB20(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, int param2)
+static void FootprintStampModels_RemoveModel(FootprintStampModelManager *param0, FootprintStampModel *param1, int param2)
 {
     if ((param1->unk_240_0 == 0) || (param1->unk_240_4 == 1)) {
-        ov113_0225E884(param0, param1->unk_0C.texture);
+        FootprintStampModels_RemoveTexture(param0, param1->unk_0C.texture);
     }
 
-    ov113_0225EE78(param0, param1->unk_240_24);
-    ov113_0225EB0C(param1);
+    FootprintStampModels_ReleaseSlot(param0, param1->unk_240_24);
+    FootprintStampModels_FreeModel(param1);
 
     param0->unk_B4[param2] = NULL;
 }
 
-static void ov113_0225EB64(UnkStruct_ov113_0225DBCC *param0, int param1, int param2, fx32 *param3, fx32 *param4)
+static void FootprintStampModels_GetBoardPosition(FootprintStampApp *param0, int param1, int param2, fx32 *param3, fx32 *param4)
 {
     int v0 = param1 / 16;
 
-    if (v0 >= NELEMS(Unk_ov113_02260C68)) {
-        v0 = NELEMS(Unk_ov113_02260C68) - 1;
+    if (v0 >= NELEMS(sBoardXPositions)) {
+        v0 = NELEMS(sBoardXPositions) - 1;
     }
 
-    *param3 = Unk_ov113_02260C68[v0];
+    *param3 = sBoardXPositions[v0];
 
-    if (v0 < NELEMS(Unk_ov113_02260C68) - 1) {
-        *param3 += (Unk_ov113_02260C68[v0 + 1] - Unk_ov113_02260C68[v0]) / 16 * (param1 % 16);
+    if (v0 < NELEMS(sBoardXPositions) - 1) {
+        *param3 += (sBoardXPositions[v0 + 1] - sBoardXPositions[v0]) / 16 * (param1 % 16);
     }
 
     v0 = param2 / 16;
 
-    if (v0 >= NELEMS(Unk_ov113_02260BE0)) {
-        v0 = NELEMS(Unk_ov113_02260BE0) - 1;
+    if (v0 >= NELEMS(sBoardYPositions)) {
+        v0 = NELEMS(sBoardYPositions) - 1;
     }
 
-    *param4 = Unk_ov113_02260BE0[v0];
+    *param4 = sBoardYPositions[v0];
 
-    if (v0 < NELEMS(Unk_ov113_02260BE0) - 1) {
-        *param4 += (Unk_ov113_02260BE0[v0 + 1] - Unk_ov113_02260BE0[v0]) / 16 * (param2 % 16);
+    if (v0 < NELEMS(sBoardYPositions) - 1) {
+        *param4 += (sBoardYPositions[v0 + 1] - sBoardYPositions[v0]) / 16 * (param2 % 16);
     }
 }
 
-static int ov113_0225EBFC(UnkStruct_ov113_0225EB20 *param0)
+static int FootprintStampModels_AllocSlot(FootprintStampModelManager *param0)
 {
     int v0, v1;
 
@@ -886,7 +886,7 @@ static int ov113_0225EBFC(UnkStruct_ov113_0225EB20 *param0)
     return 0xff;
 }
 
-static void ov113_0225EC60(UnkStruct_ov113_0225EB20 *param0, int param1)
+static void FootprintStampModels_FreeSlot(FootprintStampModelManager *param0, int param1)
 {
     if (param1 == 0xff) {
         return;
@@ -899,22 +899,22 @@ static void ov113_0225EC60(UnkStruct_ov113_0225EB20 *param0, int param1)
     }
 }
 
-static void ov113_0225ECA0(Easy3DObject *param0, const UnkStruct_ov113_02260818 *param1, UnkStruct_ov113_0225EDA4 *param2, int param3)
+static void FootprintStampModels_ComputeBounds(Easy3DObject *param0, const FootprintStampEntry *param1, FootprintStampBounds *param2, int param3)
 {
     fx32 v0, v1, v2;
     fx32 v3, v4, v5;
     int v6;
     fx64 v7, v8, v9, v10;
 
-    v6 = PokemonOverworldFootprintSize(param1->unk_02, param1->unk_08);
-    GF_ASSERT(v6 < NELEMS(Unk_ov113_02260C38));
+    v6 = PokemonOverworldFootprintSize(param1->species, param1->form);
+    GF_ASSERT(v6 < NELEMS(sFootprintSizeBounds));
 
     Easy3DObject_GetPosition(param0, &v0, &v1, &v2);
 
-    param2->unk_00 = v0 + Unk_ov113_02260C38[v6].unk_00;
-    param2->unk_04 = v0 + Unk_ov113_02260C38[v6].unk_04;
-    param2->unk_08 = v1 + Unk_ov113_02260C38[v6].unk_08;
-    param2->unk_0C = v1 + Unk_ov113_02260C38[v6].unk_0C;
+    param2->unk_00 = v0 + sFootprintSizeBounds[v6].unk_00;
+    param2->unk_04 = v0 + sFootprintSizeBounds[v6].unk_04;
+    param2->unk_08 = v1 + sFootprintSizeBounds[v6].unk_08;
+    param2->unk_0C = v1 + sFootprintSizeBounds[v6].unk_0C;
 
     if (param3 == 1) {
         Easy3DObject_GetScale(param0, &v3, &v4, &v5);
@@ -933,7 +933,7 @@ static void ov113_0225ECA0(Easy3DObject *param0, const UnkStruct_ov113_02260818 
     }
 }
 
-static BOOL ov113_0225EDA4(const UnkStruct_ov113_0225EDA4 *param0, const UnkStruct_ov113_0225EDA4 *param1)
+static BOOL FootprintStampModels_BoundsOverlap(const FootprintStampBounds *param0, const FootprintStampBounds *param1)
 {
     if ((param0->unk_00 <= param1->unk_04) && (param1->unk_00 <= param0->unk_04) && (param0->unk_08 >= param1->unk_0C) && (param1->unk_08 >= param0->unk_0C)) {
         return 1;
@@ -942,10 +942,10 @@ static BOOL ov113_0225EDA4(const UnkStruct_ov113_0225EDA4 *param0, const UnkStru
     }
 }
 
-static void ov113_0225EDCC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static void FootprintStampModels_AssignSlot(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
     int v0;
-    UnkStruct_ov113_0225EDCC *v1 = param0->unk_53C;
+    FootprintStampSlot *v1 = param0->unk_53C;
 
     for (v0 = 0; v0 < 128; v0++) {
         if (v1->unk_01 == 0) {
@@ -961,7 +961,7 @@ static void ov113_0225EDCC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     GF_ASSERT(FALSE);
 }
 
-static int ov113_0225EE0C(UnkStruct_ov113_0225EB20 *param0, int param1, int param2)
+static int FootprintStampModels_CountSlot(FootprintStampModelManager *param0, int param1, int param2)
 {
     if (param1 == 0xff) {
         return 0;
@@ -970,16 +970,16 @@ static int ov113_0225EE0C(UnkStruct_ov113_0225EB20 *param0, int param1, int para
     param0->unk_53C[param1].unk_00++;
     param0->unk_53C[param1].unk_01++;
 
-    if ((param0->unk_73C == 0) && (param0->unk_73D == 0) && (param0->unk_53C[param1].unk_00 >= Unk_ov113_02260BCC[param0->unk_73F])) {
+    if ((param0->unk_73C == 0) && (param0->unk_73D == 0) && (param0->unk_53C[param1].unk_00 >= sSlotThresholds[param0->unk_73F])) {
         param0->unk_73D = param2;
-        MI_CpuClear8(&param0->unk_B0, sizeof(UnkStruct_ov113_0225FD80));
+        MI_CpuClear8(&param0->unk_B0, sizeof(FootprintStampFade));
         return 1;
     }
 
     return 0;
 }
 
-static void ov113_0225EE78(UnkStruct_ov113_0225EB20 *param0, int param1)
+static void FootprintStampModels_ReleaseSlot(FootprintStampModelManager *param0, int param1)
 {
     int v0;
 
@@ -998,65 +998,65 @@ static void ov113_0225EE78(UnkStruct_ov113_0225EB20 *param0, int param1)
     param0->unk_53C[param1].unk_01 = v0;
 }
 
-static void ov113_0225EE98(UnkStruct_ov113_0225EB20 *param0)
+static void FootprintStampModels_StartCameraAnim(FootprintStampModelManager *param0)
 {
-    MI_CpuClear8(&param0->unk_00, sizeof(UnkStruct_ov113_0225EB20_sub1));
+    MI_CpuClear8(&param0->unk_00, sizeof(FootprintStampCameraAnimData));
 
     param0->unk_73C = param0->unk_73D;
     param0->unk_73D = 0;
     param0->unk_73E = 0;
 }
 
-static BOOL ov113_0225EEBC(UnkStruct_ov113_0225E6B8 *param0, int param1)
+static BOOL FootprintStampModels_StartModelAnim(FootprintStampModel *param0, int param1)
 {
     if ((param0->unk_240_8 != 0) || (param0->unk_240_16 != 0) || (param0->unk_240_0 == 0)) {
         return 0;
     }
 
     param0->unk_240_16 = param1;
-    MI_CpuClear8(&param0->unk_94, sizeof(UnkStruct_ov113_0225E6B8_sub1));
+    MI_CpuClear8(&param0->unk_94, sizeof(FootprintStampModelAnimData));
     return 1;
 }
 
-static u8 ov113_0225EEF8(const UnkStruct_ov113_02260818 *param0)
+static u8 FootprintStampModels_GetNatureAnim(const FootprintStampEntry *param0)
 {
-    u8 v0 = Pokemon_GetNatureOf(param0->unk_04);
-    return Unk_ov113_02260D30[v0];
+    u8 v0 = Pokemon_GetNatureOf(param0->personality);
+    return sNatureToAnim[v0];
 }
 
-static int ov113_0225EF0C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Appear(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225EF0C *v0 = &param1->unk_94.val1;
+    FootprintStampAnimAppear *v0 = &param1->unk_94.val1;
 
     v0->unk_00++;
 
     if (v0->unk_00 == 2) {
-        ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_04, 0);
+        FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_04, 0);
         Easy3DObject_SetVisible(&param1->unk_1C, 1);
         param1->unk_240_0 = 1;
     }
 
     if (v0->unk_00 > 40) {
-        ov113_0225EDCC(param0, param1);
-        ov113_0225EEBC(param1, ov113_0225EEF8(&param1->unk_00));
+        FootprintStampModels_AssignSlot(param0, param1);
+        FootprintStampModels_StartModelAnim(param1, FootprintStampModels_GetNatureAnim(&param1->unk_00));
     }
 
     return 0;
 }
 
-static BOOL ov113_0225EF74(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_AppearCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
     return 0;
 }
 
-static int ov113_0225EF78(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Grow(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225EF78 *v0 = &param1->unk_94.val2;
+    FootprintStampAnimGrow *v0 = &param1->unk_94.val2;
 
     switch (v0->unk_08) {
     case 0:
         v0->unk_00 = 31 << 8;
-        v0->unk_09 = ov113_0225EBFC(param0);
+        v0->unk_09 = FootprintStampModels_AllocSlot(param0);
         v0->unk_04 = FX32_ONE;
         v0->unk_08++;
     case 1:
@@ -1072,17 +1072,17 @@ static int ov113_0225EF78(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         Easy3DObject_SetScale(&param1->unk_1C, v0->unk_04, v0->unk_04, FX32_ONE);
         break;
     default:
-        ov113_0225EC60(param0, v0->unk_09);
+        FootprintStampModels_FreeSlot(param0, v0->unk_09);
         return 1;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_0C, 1);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_0C, 1);
     return 0;
 }
 
-static void ov113_0225EFFC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static void FootprintStampAnim_GrowDraw(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225EF78 *v0 = &param1->unk_94.val2;
+    FootprintStampAnimGrow *v0 = &param1->unk_94.val2;
 
     if (v0->unk_09 != 0xff) {
         NNS_G3dGlbPolygonAttr(0, 0, 0, v0->unk_09, v0->unk_00 >> 8, 0);
@@ -1093,21 +1093,21 @@ static void ov113_0225EFFC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     Easy3DObject_Draw(&param1->unk_1C);
 }
 
-static BOOL ov113_0225F044(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_GrowCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225EF78 *v0 = &param1->unk_94.val2;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimGrow *v0 = &param1->unk_94.val2;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_0C, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_0C, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static int ov113_0225F060(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Split(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F060 *v0 = &param1->unk_94.val3;
+    FootprintStampAnimSplit *v0 = &param1->unk_94.val3;
     int v1;
     fx32 v2, v3, v4;
 
@@ -1138,18 +1138,18 @@ static int ov113_0225F060(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         }
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_16C[0], 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_16C[0], 0);
 
     for (v1 = 0; v1 < 3; v1++) {
-        ov113_0225ECA0(&v0->unk_00[v1], &param1->unk_00, &v0->unk_16C[1 + v1], 0);
+        FootprintStampModels_ComputeBounds(&v0->unk_00[v1], &param1->unk_00, &v0->unk_16C[1 + v1], 0);
     }
 
     return 0;
 }
 
-static void ov113_0225F194(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static void FootprintStampAnim_SplitDraw(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F060 *v0 = &param1->unk_94.val3;
+    FootprintStampAnimSplit *v0 = &param1->unk_94.val3;
     int v1;
 
     for (v1 = 0; v1 < 3; v1++) {
@@ -1159,14 +1159,14 @@ static void ov113_0225F194(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     Easy3DObject_Draw(&param1->unk_1C);
 }
 
-static BOOL ov113_0225F1B8(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_SplitCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F060 *v0 = &param1->unk_94.val3;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimSplit *v0 = &param1->unk_94.val3;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
     int v2;
 
     for (v2 = 0; v2 < 3 + 1; v2++) {
-        if (ov113_0225EDA4(&v0->unk_16C[v2], &v1->unk_04) == 1) {
+        if (FootprintStampModels_BoundsOverlap(&v0->unk_16C[v2], &v1->unk_04) == 1) {
             return 1;
         }
     }
@@ -1174,9 +1174,9 @@ static BOOL ov113_0225F1B8(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static int ov113_0225F1E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Spin(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F1E4 *v0 = &param1->unk_94.val4;
+    FootprintStampAnimSpin *v0 = &param1->unk_94.val4;
     u16 v1, v2;
     fx32 v3, v4, v5;
 
@@ -1186,8 +1186,8 @@ static int ov113_0225F1E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         v1 -= 65536 / 4 / 6;
 
         if (v1 <= 65536 / 8 * 7) {
-            ov113_0225EA60(param1->unk_0C.texture, param1->unk_240_8);
-            ov113_0225E854(param0, param1->unk_0C.texture);
+            FootprintStampModels_RotateTexture(param1->unk_0C.texture, param1->unk_240_8);
+            FootprintStampModels_AddTexture(param0, param1->unk_0C.texture);
             param1->unk_240_4 = 1;
             v1 += 65536 / 4;
             v0->unk_00++;
@@ -1220,7 +1220,7 @@ static int ov113_0225F1E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
     case 3:
         Easy3DObject_GetPosition(&param1->unk_1C, &v3, &v4, &v5);
 
-        if ((v3 < Unk_ov113_02260BBC.unk_00) || (v3 > Unk_ov113_02260BBC.unk_04) || (v4 > Unk_ov113_02260BBC.unk_08) || (v4 < Unk_ov113_02260BBC.unk_0C)) {
+        if ((v3 < sBoardBounds.unk_00) || (v3 > sBoardBounds.unk_04) || (v4 > sBoardBounds.unk_08) || (v4 < sBoardBounds.unk_0C)) {
             return 1;
         }
 
@@ -1239,25 +1239,25 @@ static int ov113_0225F1E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         break;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_0C, 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_0C, 0);
     return 0;
 }
 
-static BOOL ov113_0225F34C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_SpinCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F1E4 *v0 = &param1->unk_94.val4;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimSpin *v0 = &param1->unk_94.val4;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_0C, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_0C, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static int ov113_0225F368(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Bounce(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F368 *v0 = &param1->unk_94.val5;
+    FootprintStampAnimBounce *v0 = &param1->unk_94.val5;
     u16 v1;
     fx32 v2, v3, v4;
     fx32 v5;
@@ -1268,9 +1268,9 @@ static int ov113_0225F368(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         v1 += 65536 / 4 / 6;
 
         if (v1 >= 65536 / 4 / 2) {
-            ov113_0225EA60(param1->unk_0C.texture, param1->unk_240_8);
+            FootprintStampModels_RotateTexture(param1->unk_0C.texture, param1->unk_240_8);
             v1 -= 65536 / 4;
-            ov113_0225E854(param0, param1->unk_0C.texture);
+            FootprintStampModels_AddTexture(param0, param1->unk_0C.texture);
             param1->unk_240_4 = 1;
             v0->unk_00++;
         }
@@ -1305,7 +1305,7 @@ static int ov113_0225F368(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
     case 3:
         Easy3DObject_GetPosition(&param1->unk_1C, &v2, &v3, &v4);
 
-        if ((v2 < Unk_ov113_02260BBC.unk_00) || (v2 > Unk_ov113_02260BBC.unk_04) || (v3 > Unk_ov113_02260BBC.unk_08) || (v3 < Unk_ov113_02260BBC.unk_0C)) {
+        if ((v2 < sBoardBounds.unk_00) || (v2 > sBoardBounds.unk_04) || (v3 > sBoardBounds.unk_08) || (v3 < sBoardBounds.unk_0C)) {
             return 1;
         }
 
@@ -1320,31 +1320,31 @@ static int ov113_0225F368(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         break;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_10, 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_10, 0);
     return 0;
 }
 
-static BOOL ov113_0225F500(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_BounceCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F368 *v0 = &param1->unk_94.val5;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimBounce *v0 = &param1->unk_94.val5;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_10, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_10, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static int ov113_0225F51C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Trail(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F51C *v0 = &param1->unk_94.val6;
+    FootprintStampAnimTrail *v0 = &param1->unk_94.val6;
     fx32 v1, v2, v3;
     int v4;
 
     switch (v0->unk_16D) {
     case 0:
-        v0->unk_16C = ov113_0225EBFC(param0);
+        v0->unk_16C = FootprintStampModels_AllocSlot(param0);
 
         Easy3DObject_GetPosition(&param1->unk_1C, &v1, &v2, &v3);
 
@@ -1358,7 +1358,7 @@ static int ov113_0225F51C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
     case 1:
         Easy3DObject_GetPosition(&param1->unk_1C, &v1, &v2, &v3);
 
-        if ((v1 < Unk_ov113_02260BBC.unk_00) || (v1 > Unk_ov113_02260BBC.unk_04) || (v2 > Unk_ov113_02260BBC.unk_08) || (v2 < Unk_ov113_02260BBC.unk_0C) || (v0->unk_16B == 1)) {
+        if ((v1 < sBoardBounds.unk_00) || (v1 > sBoardBounds.unk_04) || (v2 > sBoardBounds.unk_08) || (v2 < sBoardBounds.unk_0C) || (v0->unk_16B == 1)) {
             for (v4 = 0; v4 < 3; v4++) {
                 Easy3DObject_SetVisible(&v0->unk_00[v4], 0);
             }
@@ -1384,17 +1384,17 @@ static int ov113_0225F51C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         v0->unk_168++;
         break;
     default:
-        ov113_0225EC60(param0, v0->unk_16C);
+        FootprintStampModels_FreeSlot(param0, v0->unk_16C);
         return 1;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_170, 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_170, 0);
     return 0;
 }
 
-static void ov113_0225F680(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static void FootprintStampAnim_TrailDraw(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F51C *v0 = &param1->unk_94.val6;
+    FootprintStampAnimTrail *v0 = &param1->unk_94.val6;
     int v1;
 
     if (v0->unk_16C != 0xff) {
@@ -1416,21 +1416,21 @@ static void ov113_0225F680(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     Easy3DObject_Draw(&param1->unk_1C);
 }
 
-static BOOL ov113_0225F70C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_TrailCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F51C *v0 = &param1->unk_94.val6;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimTrail *v0 = &param1->unk_94.val6;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_170, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_170, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static int ov113_0225F728(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Swing(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F728 *v0 = &param1->unk_94.val7;
+    FootprintStampAnimSwing *v0 = &param1->unk_94.val7;
     u16 v1;
     fx32 v2, v3, v4;
     fx32 v5;
@@ -1444,7 +1444,7 @@ static int ov113_0225F728(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
     case 1:
         Easy3DObject_GetPosition(&param1->unk_1C, &v2, &v3, &v4);
 
-        if ((v2 < Unk_ov113_02260BBC.unk_00) || (v2 > Unk_ov113_02260BBC.unk_04) || (v3 > Unk_ov113_02260BBC.unk_08) || (v3 < Unk_ov113_02260BBC.unk_0C)) {
+        if ((v2 < sBoardBounds.unk_00) || (v2 > sBoardBounds.unk_04) || (v3 > sBoardBounds.unk_08) || (v3 < sBoardBounds.unk_0C)) {
             return 1;
         }
 
@@ -1459,25 +1459,25 @@ static int ov113_0225F728(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         break;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_0C, 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_0C, 0);
     return 0;
 }
 
-static BOOL ov113_0225F7FC(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_SwingCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F728 *v0 = &param1->unk_94.val7;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimSwing *v0 = &param1->unk_94.val7;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_0C, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_0C, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static int ov113_0225F818(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Pulse(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F818 *v0 = &param1->unk_94.val8;
+    FootprintStampAnimPulse *v0 = &param1->unk_94.val8;
 
     switch (v0->unk_06) {
     case 0:
@@ -1495,32 +1495,32 @@ static int ov113_0225F818(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         break;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_08, 1);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_08, 1);
     return 0;
 }
 
-static BOOL ov113_0225F874(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_PulseCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F818 *v0 = &param1->unk_94.val8;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimPulse *v0 = &param1->unk_94.val8;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_08, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_08, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static int ov113_0225F890(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_SplitX(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F890 *v0 = &param1->unk_94.val9;
+    FootprintStampAnimSplitX *v0 = &param1->unk_94.val9;
     fx32 v1, v2, v3;
     fx32 v4;
     int v5;
 
     switch (v0->unk_F7) {
     case 0:
-        v0->unk_F6 = ov113_0225EBFC(param0);
+        v0->unk_F6 = FootprintStampModels_AllocSlot(param0);
         Easy3DObject_GetPosition(&param1->unk_1C, &v1, &v2, &v3);
 
         for (v5 = 0; v5 < 2; v5++) {
@@ -1562,22 +1562,22 @@ static int ov113_0225F890(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         }
         break;
     default:
-        ov113_0225EC60(param0, v0->unk_F6);
+        FootprintStampModels_FreeSlot(param0, v0->unk_F6);
         return 1;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_F8[0], 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_F8[0], 0);
 
     for (v5 = 0; v5 < 2; v5++) {
-        ov113_0225ECA0(&v0->unk_00[v5], &param1->unk_00, &v0->unk_F8[1 + v5], 0);
+        FootprintStampModels_ComputeBounds(&v0->unk_00[v5], &param1->unk_00, &v0->unk_F8[1 + v5], 0);
     }
 
     return 0;
 }
 
-static void ov113_0225FA24(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static void FootprintStampAnim_SplitXDraw(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225F890 *v0 = &param1->unk_94.val9;
+    FootprintStampAnimSplitX *v0 = &param1->unk_94.val9;
     int v1;
 
     if (v0->unk_F6 != 0xff) {
@@ -1593,14 +1593,14 @@ static void ov113_0225FA24(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     Easy3DObject_Draw(&param1->unk_1C);
 }
 
-static BOOL ov113_0225FA84(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_SplitXCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225F890 *v0 = &param1->unk_94.val9;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimSplitX *v0 = &param1->unk_94.val9;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
     int v2;
 
     for (v2 = 0; v2 < 2 + 1; v2++) {
-        if (ov113_0225EDA4(&v0->unk_F8[v2], &v1->unk_04) == 1) {
+        if (FootprintStampModels_BoundsOverlap(&v0->unk_F8[v2], &v1->unk_04) == 1) {
             return 1;
         }
     }
@@ -1608,16 +1608,16 @@ static BOOL ov113_0225FA84(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static int ov113_0225FAB0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_SplitY(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225FAB0 *v0 = &param1->unk_94.val10;
+    FootprintStampAnimSplitY *v0 = &param1->unk_94.val10;
     fx32 v1, v2, v3;
     fx32 v4;
     int v5;
 
     switch (v0->unk_F7) {
     case 0:
-        v0->unk_F6 = ov113_0225EBFC(param0);
+        v0->unk_F6 = FootprintStampModels_AllocSlot(param0);
 
         Easy3DObject_GetPosition(&param1->unk_1C, &v1, &v2, &v3);
 
@@ -1660,22 +1660,22 @@ static int ov113_0225FAB0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         }
         break;
     default:
-        ov113_0225EC60(param0, v0->unk_F6);
+        FootprintStampModels_FreeSlot(param0, v0->unk_F6);
         return 1;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_F8[0], 0);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_F8[0], 0);
 
     for (v5 = 0; v5 < 2; v5++) {
-        ov113_0225ECA0(&v0->unk_00[v5], &param1->unk_00, &v0->unk_F8[1 + v5], 0);
+        FootprintStampModels_ComputeBounds(&v0->unk_00[v5], &param1->unk_00, &v0->unk_F8[1 + v5], 0);
     }
 
     return 0;
 }
 
-static void ov113_0225FC44(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static void FootprintStampAnim_SplitYDraw(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225FAB0 *v0 = &param1->unk_94.val10;
+    FootprintStampAnimSplitY *v0 = &param1->unk_94.val10;
     int v1;
 
     if (v0->unk_F6 != 0xff) {
@@ -1691,14 +1691,14 @@ static void ov113_0225FC44(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     Easy3DObject_Draw(&param1->unk_1C);
 }
 
-static BOOL ov113_0225FCA4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_SplitYCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225FAB0 *v0 = &param1->unk_94.val10;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimSplitY *v0 = &param1->unk_94.val10;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
     int v2;
 
     for (v2 = 0; v2 < 2 + 1; v2++) {
-        if (ov113_0225EDA4(&v0->unk_F8[v2], &v1->unk_04) == 1) {
+        if (FootprintStampModels_BoundsOverlap(&v0->unk_F8[v2], &v1->unk_04) == 1) {
             return 1;
         }
     }
@@ -1706,9 +1706,9 @@ static BOOL ov113_0225FCA4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static int ov113_0225FCD0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1)
+static int FootprintStampAnim_Stretch(FootprintStampModelManager *param0, FootprintStampModel *param1)
 {
-    UnkStruct_ov113_0225FCD0 *v0 = &param1->unk_94.val11;
+    FootprintStampAnimStretch *v0 = &param1->unk_94.val11;
     fx32 v1, v2, v3;
     fx32 v4;
 
@@ -1733,23 +1733,23 @@ static int ov113_0225FCD0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225
         break;
     }
 
-    ov113_0225ECA0(&param1->unk_1C, &param1->unk_00, &v0->unk_08, 1);
+    FootprintStampModels_ComputeBounds(&param1->unk_1C, &param1->unk_00, &v0->unk_08, 1);
     return 0;
 }
 
-static BOOL ov113_0225FD64(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225E6B8 *param1, UnkStruct_ov113_0225E6B8 *param2)
+static BOOL FootprintStampAnim_StretchCollide(FootprintStampModelManager *param0, FootprintStampModel *param1, FootprintStampModel *param2)
 {
-    UnkStruct_ov113_0225FCD0 *v0 = &param1->unk_94.val11;
-    UnkStruct_ov113_0225EF0C *v1 = &param2->unk_94.val1;
+    FootprintStampAnimStretch *v0 = &param1->unk_94.val11;
+    FootprintStampAnimAppear *v1 = &param2->unk_94.val1;
 
-    if (ov113_0225EDA4(&v0->unk_08, &v1->unk_04) == 1) {
+    if (FootprintStampModels_BoundsOverlap(&v0->unk_08, &v1->unk_04) == 1) {
         return 1;
     }
 
     return 0;
 }
 
-static BOOL ov113_0225FD80(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225FD80 *param1, int param2, int param3)
+static BOOL FootprintStampModels_UpdateFade(FootprintStampModelManager *param0, FootprintStampFade *param1, int param2, int param3)
 {
     int v0;
 
@@ -1800,9 +1800,9 @@ static BOOL ov113_0225FD80(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_0225FE30(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_ZoomIn(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_0225FE30 *v0 = &param1->unk_00;
+    FootprintStampCameraAnimZoomIn *v0 = &param1->unk_00;
 
     switch (v0->unk_06) {
     case 0:
@@ -1841,9 +1841,9 @@ static BOOL ov113_0225FE30(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_0225FEE0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_Shake(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_0225FEE0 *v0 = &param1->unk_08;
+    FootprintStampCameraAnimShake *v0 = &param1->unk_08;
     fx32 v1;
 
     switch (v0->unk_0C) {
@@ -1890,9 +1890,9 @@ static BOOL ov113_0225FEE0(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_0225FF8C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_RotateLeft(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_0225FF8C *v0 = &param1->unk_18;
+    FootprintStampCameraAnimRotateLeft *v0 = &param1->unk_18;
     CameraAngle v1 = { 0, 0, 0, 0 };
 
     switch (v0->unk_0E) {
@@ -1933,9 +1933,9 @@ static BOOL ov113_0225FF8C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_02260064(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_RotateRight(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_02260064 *v0 = &param1->unk_28;
+    FootprintStampCameraAnimRotateRight *v0 = &param1->unk_28;
     CameraAngle v1 = { 0, 0, 0, 0 };
 
     switch (v0->unk_0E) {
@@ -1976,9 +1976,9 @@ static BOOL ov113_02260064(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_0226013C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_TiltUp(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_0226013C *v0 = &param1->unk_38;
+    FootprintStampCameraAnimTiltUp *v0 = &param1->unk_38;
     CameraAngle v1 = { 0, 0, 0, 0 };
 
     switch (v0->unk_0E) {
@@ -2022,9 +2022,9 @@ static BOOL ov113_0226013C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_02260218(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_Spin(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_02260218 *v0 = &param1->unk_48;
+    FootprintStampCameraAnimSpin *v0 = &param1->unk_48;
     fx32 v1;
     CameraAngle v2 = { 0, 0, 0, 0 };
 
@@ -2058,9 +2058,9 @@ static BOOL ov113_02260218(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_022602E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_ZoomOut(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_022602E4 *v0 = &param1->unk_58;
+    FootprintStampCameraAnimZoomOut *v0 = &param1->unk_58;
 
     switch (v0->unk_06) {
     case 0:
@@ -2099,9 +2099,9 @@ static BOOL ov113_022602E4(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_02260394(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_SwayX(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_02260394 *v0 = &param1->unk_60;
+    FootprintStampCameraAnimSwayX *v0 = &param1->unk_60;
     VecFx32 v1 = { 0, 0, 0 };
     fx32 v2;
 
@@ -2138,9 +2138,9 @@ static BOOL ov113_02260394(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_0226046C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_SwayY(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_0226046C *v0 = &param1->unk_80;
+    FootprintStampCameraAnimSwayY *v0 = &param1->unk_80;
     VecFx32 v1 = { 0, 0, 0 };
     fx32 v2;
 
@@ -2177,9 +2177,9 @@ static BOOL ov113_0226046C(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_022
     return 0;
 }
 
-static BOOL ov113_02260544(UnkStruct_ov113_0225EB20 *param0, UnkStruct_ov113_0225EB20_sub1 *param1, Camera *camera)
+static BOOL FootprintStampCameraAnim_TiltDown(FootprintStampModelManager *param0, FootprintStampCameraAnimData *param1, Camera *camera)
 {
-    UnkStruct_ov113_02260544 *v0 = &param1->unk_A0;
+    FootprintStampCameraAnimTiltDown *v0 = &param1->unk_A0;
     CameraAngle v1 = { 0, 0, 0, 0 };
 
     switch (v0->unk_0E) {

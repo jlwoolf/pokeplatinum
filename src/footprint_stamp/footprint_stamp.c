@@ -1,4 +1,4 @@
-#include "overlay113/ov113_0225C700.h"
+#include "footprint_stamp/footprint_stamp.h"
 
 #include <dwc.h>
 #include <nitro.h>
@@ -17,13 +17,13 @@
 #include "overlay066/struct_ov66_0223127C.h"
 #include "overlay066/struct_ov66_02232B20.h"
 #include "overlay066/struct_ov66_022589B4.h"
-#include "overlay113/ov113_0225E368.h"
-#include "overlay113/ov113_02260620.h"
-#include "overlay113/ov113_022607D8.h"
-#include "overlay113/struct_ov113_0225CA04.h"
-#include "overlay113/struct_ov113_0225EB20.h"
-#include "overlay113/struct_ov113_022607EC.h"
-#include "overlay113/struct_ov113_02260818.h"
+#include "footprint_stamp/footprint_stamp_models.h"
+#include "footprint_stamp/footprint_stamp_players.h"
+#include "footprint_stamp/footprint_stamp_comm.h"
+#include "footprint_stamp/struct_footprint_stamp_add_payload.h"
+#include "footprint_stamp/struct_footprint_stamp_model_manager.h"
+#include "footprint_stamp/struct_footprint_stamp_comm_state.h"
+#include "footprint_stamp/struct_footprint_stamp_entry.h"
 
 #include "bg_window.h"
 #include "camera.h"
@@ -65,24 +65,24 @@
 #include "yes_no_touch_menu.h"
 
 typedef struct {
-    Easy3DModel unk_00;
-    Easy3DObject unk_10;
-} UnkStruct_ov113_0225DBCC_sub1;
+    Easy3DModel unk_00; // The footprint board's 3D model.
+    Easy3DObject unk_10; // The placed instance of the board model.
+} FootprintStampBoardModel;
 
 typedef struct {
-    FontOAM *unk_00;
-    CharTransferAllocation unk_04;
-    u16 unk_10;
-} UnkStruct_ov113_0225E250;
+    FontOAM *unk_00; // OAM used to draw the "EXIT" label.
+    CharTransferAllocation unk_04; // Character transfer allocation backing the OAM.
+    u16 unk_10; // Rendered width of the string in pixels.
+} FootprintStampText;
 
-typedef struct UnkStruct_ov113_0225DBCC_t {
-    UnkStruct_ov66_0223127C *unk_00;
+typedef struct FootprintStampApp_t {
+    UnkStruct_ov66_0223127C *unk_00; // Wi-Fi lobby communication data passed in as args.
     SaveData *saveData;
     BgConfig *unk_08;
     PaletteData *unk_0C;
     FontOAMManager *unk_10;
     G3DPipelineBuffers *unk_14;
-    SysTask *unk_18;
+    SysTask *unk_18; // Per-frame task that updates the models and draws sprites.
     SpriteSystem *unk_1C;
     SpriteManager *unk_20;
     YesNoTouchMenu *unk_24;
@@ -90,84 +90,84 @@ typedef struct UnkStruct_ov113_0225DBCC_t {
     u8 unk_29;
     StringTemplate *unk_2C;
     MessageLoader *unk_30;
-    Window unk_34[8];
+    Window unk_34[8]; // One window per Wi-Fi lobby player slot.
     Window unk_B4;
     String *unk_C4;
     u8 unk_C8;
     Camera *camera;
-    fx32 unk_D0;
-    fx32 unk_D4;
-    UnkStruct_ov113_0225DBCC_sub1 unk_D8;
-    NARC *unk_160;
-    NARC *unk_164;
-    UnkStruct_ov113_022607EC unk_168;
-    s32 unk_170[8];
+    fx32 unk_D0; // Horizontal field of view, computed from the camera.
+    fx32 unk_D4; // Vertical field of view, computed from the camera.
+    FootprintStampBoardModel unk_D8;
+    NARC *unk_160; // graphic/footprint_board.narc
+    NARC *unk_164; // poketool/pokefoot/pokefoot.narc
+    FootprintStampCommState unk_168;
+    s32 unk_170[8]; // Last-seen DWC user ID for each player slot.
     int unk_190;
-    UnkStruct_ov113_0225EB20 unk_194;
-    UnkStruct_ov113_02260818 unk_8D8[6];
+    FootprintStampModelManager unk_194;
+    FootprintStampEntry unk_8D8[6]; // The player's party, as footprint entries.
     u8 unk_920;
-    u8 unk_921;
+    u8 unk_921; // Palette row reserved for the selected party member.
     ManagedSprite *unk_924[6];
     ManagedSprite *unk_93C[6];
     ManagedSprite *unk_954[6];
     ManagedSprite *unk_96C;
-    ManagedSprite *unk_970[8];
+    ManagedSprite *unk_970[8]; // Footprints of other players in the lobby.
     ManagedSprite *unk_990[3];
-    u16 unk_99C[8];
-    u16 unk_9AC[8];
+    u16 unk_99C[8]; // Species currently shown in each player slot.
+    u16 unk_9AC[8]; // Stamp color currently shown in each player slot.
     int unk_9BC;
-    u16 unk_9C0[2048];
-    UnkStruct_ov113_0225E250 unk_19C0;
+    u16 unk_9C0[2048]; // Saved copy of the player-name tilemap.
+    FootprintStampText unk_19C0;
     int unk_19D4;
     int unk_19D8;
     int unk_19DC;
-    BOOL unk_19E0;
-} UnkStruct_ov113_0225DBCC;
+    BOOL unk_19E0; // Whether Arceus may be shown (from Wi-Fi room data).
+} FootprintStampApp;
 
-static void ov113_0225CEF0(SysTask *param0, void *param1);
-static void ov113_0225CF18(void *param0);
-static void ov113_0225CF58(BgConfig *param0);
-static void ov113_0225D12C(BgConfig *param0);
-static void ov113_0225D160(UnkStruct_ov113_0225DBCC *param0, NARC *param1);
-static void ov113_0225DBCC(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225DC4C(UnkStruct_ov113_0225DBCC *param0);
-static G3DPipelineBuffers *ov113_0225DC6C(enum HeapID heapID);
-static void ov113_0225DC88(void);
-static void ov113_0225DD0C(G3DPipelineBuffers *param0);
-static void ov113_0225D9FC(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225DA9C(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225DAA8(UnkStruct_ov113_0225DBCC *param0, NARC *param1);
-static void ov113_0225DAFC(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225DB08(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225E364(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225DD14(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225DD24(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225CA04 *param1);
-static void ov113_0225DD4C(int param0, SaveData *saveData, UnkStruct_ov113_02260818 *param2);
-static void ov113_0225D304(UnkStruct_ov113_0225DBCC *param0, NARC *param1);
-static void ov113_0225D630(UnkStruct_ov113_0225DBCC *param0, NARC *param1);
-static void ov113_0225D484(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225D5D8(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225D6F8(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225D7A4(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225D7CC(UnkStruct_ov113_0225DBCC *param0);
-static BOOL ov113_0225D938(int param0, int param1, ManagedSprite *param2, NARC *param3, NARC *param4, NNS_G2D_VRAM_TYPE param5, BOOL param6);
-static void ov113_0225E068(UnkStruct_ov113_0225DBCC *param0, int param1);
-static void ov113_0225E0D4(UnkStruct_ov113_0225DBCC *param0, int param1);
-static void ov113_0225E118(UnkStruct_ov113_0225DBCC *param0);
-static int ov113_0225DE98(UnkStruct_ov113_0225DBCC *param0);
-static void ov113_0225E15C(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225E250 *param1, const String *param2, enum Font param3, TextColor param4, int param5, int param6, int param7, int param8, int param9);
-static void ov113_0225E250(UnkStruct_ov113_0225E250 *param0);
-static void ov113_0225E264(const String *param0, int param1, int *param2, int *param3);
-static void ov113_0225E294(UnkStruct_ov113_0225DBCC *param0);
-static BOOL ov113_0225E318(UnkStruct_ov113_0225DBCC *param0, int param1);
+static void FootprintStamp_SysTask(SysTask *param0, void *param1);
+static void FootprintStamp_VBlankCallback(void *param0);
+static void FootprintStamp_InitGraphics(BgConfig *param0);
+static void FootprintStamp_FreeGraphics(BgConfig *param0);
+static void FootprintStamp_LoadBoardGraphics(FootprintStampApp *param0, NARC *param1);
+static void FootprintStamp_InitWindows(FootprintStampApp *param0);
+static void FootprintStamp_FreeWindows(FootprintStampApp *param0);
+static G3DPipelineBuffers *FootprintStamp_InitPipeline(enum HeapID heapID);
+static void FootprintStamp_Init3D(void);
+static void FootprintStamp_FreePipeline(G3DPipelineBuffers *param0);
+static void FootprintStamp_InitCamera(FootprintStampApp *param0);
+static void FootprintStamp_FreeCamera(FootprintStampApp *param0);
+static void FootprintStamp_LoadBoardModel(FootprintStampApp *param0, NARC *param1);
+static void FootprintStamp_FreeBoardModel(FootprintStampApp *param0);
+static void FootprintStamp_DrawBoard(FootprintStampApp *param0);
+static void FootprintStamp_Noop(FootprintStampApp *param0);
+static void FootprintStamp_InitCommState(FootprintStampApp *param0);
+static void FootprintStamp_InitEntry(FootprintStampApp *param0, FootprintStampAddPayload *param1);
+static void FootprintStamp_LoadPartyEntries(int param0, SaveData *saveData, FootprintStampEntry *param2);
+static void FootprintStamp_LoadMainSprites(FootprintStampApp *param0, NARC *param1);
+static void FootprintStamp_LoadSubSprites(FootprintStampApp *param0, NARC *param1);
+static void FootprintStamp_CreatePartySprites(FootprintStampApp *param0);
+static void FootprintStamp_FreePartySprites(FootprintStampApp *param0);
+static void FootprintStamp_CreateSubSprites(FootprintStampApp *param0);
+static void FootprintStamp_FreeSubSprites(FootprintStampApp *param0);
+static void FootprintStamp_RefreshPartySprites(FootprintStampApp *param0);
+static BOOL FootprintStamp_LoadFootprintTexture(int param0, int param1, ManagedSprite *param2, NARC *param3, NARC *param4, NNS_G2D_VRAM_TYPE param5, BOOL param6);
+static void FootprintStamp_SelectPartySlot(FootprintStampApp *param0, int param1);
+static void FootprintStamp_HighlightPartySlot(FootprintStampApp *param0, int param1);
+static void FootprintStamp_UpdateSelectionSprites(FootprintStampApp *param0);
+static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0);
+static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintStampText *param1, const String *param2, enum Font param3, TextColor param4, int param5, int param6, int param7, int param8, int param9);
+static void FootprintStamp_FreeTextOAM(FootprintStampText *param0);
+static void FootprintStamp_MeasureText(const String *param0, int param1, int *param2, int *param3);
+static void FootprintStamp_UpdatePartySpritePositions(FootprintStampApp *param0);
+static BOOL FootprintStamp_ScrollPartySprites(FootprintStampApp *param0, int param1);
 
-static const CameraAngle Unk_ov113_022608B4 = {
+static const CameraAngle sCameraAngle = {
     0x0,
     0x0,
     0x0
 };
 
-static const RenderOamTemplate Unk_ov113_02260954 = {
+static const RenderOamTemplate sRenderOamTemplate = {
     0x0,
     0x80,
     0x0,
@@ -178,7 +178,7 @@ static const RenderOamTemplate Unk_ov113_02260954 = {
     0x20
 };
 
-static const CharTransferTemplateWithModes Unk_ov113_022608E8 = {
+static const CharTransferTemplateWithModes sCharTransferTemplate = {
     0x60,
     0x10000,
     0x4000,
@@ -186,7 +186,7 @@ static const CharTransferTemplateWithModes Unk_ov113_022608E8 = {
     GX_OBJVRAMMODE_CHAR_1D_32K
 };
 
-static const SpriteResourceCapacities Unk_ov113_022608FC = {
+static const SpriteResourceCapacities sSpriteResourceCapacities = {
     0x60,
     0x20,
     0x40,
@@ -195,7 +195,7 @@ static const SpriteResourceCapacities Unk_ov113_022608FC = {
     0x8
 };
 
-__attribute__((aligned(4))) static const u8 Unk_ov113_022608C8[][2] = {
+__attribute__((aligned(4))) static const u8 sPartyWindowPositions[][2] = {
     { 0x7, 0x5 },
     { 0x16, 0x5 },
     { 0x7, 0xA },
@@ -206,7 +206,7 @@ __attribute__((aligned(4))) static const u8 Unk_ov113_022608C8[][2] = {
     { 0x16, 0x14 }
 };
 
-__attribute__((aligned(4))) static const s16 Unk_ov113_02260934[][2] = {
+__attribute__((aligned(4))) static const s16 sSubSpritePositions[][2] = {
     { 0x20, 0x30 },
     { 0x98, 0x30 },
     { 0x20, 0x58 },
@@ -217,7 +217,7 @@ __attribute__((aligned(4))) static const s16 Unk_ov113_02260934[][2] = {
     { 0x98, 0xA8 }
 };
 
-__attribute__((aligned(4))) static const s16 Unk_ov113_02260914[][2] = {
+__attribute__((aligned(4))) static const s16 sCursorSpritePositions[][2] = {
     { 0x48, 0x30 },
     { 0xC0, 0x30 },
     { 0x48, 0x58 },
@@ -228,7 +228,7 @@ __attribute__((aligned(4))) static const s16 Unk_ov113_02260914[][2] = {
     { 0xC0, 0xA8 }
 };
 
-__attribute__((aligned(4))) static const u16 Unk_ov113_02260AD4[][4] = {
+__attribute__((aligned(4))) static const u16 sPlayerSlotRects[][4] = {
     { 0x2, 0x4, 0xE, 0x4 },
     { 0x11, 0x4, 0xE, 0x4 },
     { 0x2, 0x9, 0xE, 0x4 },
@@ -239,14 +239,14 @@ __attribute__((aligned(4))) static const u16 Unk_ov113_02260AD4[][4] = {
     { 0x11, 0x13, 0xE, 0x4 }
 };
 
-static const u16 Unk_ov113_022608AC[] = {
+static const u16 sEmptySlotTiles[] = {
     0x15,
     0x35,
     0x35,
     0x55
 };
 
-static const SpriteTemplate Unk_ov113_02260A04 = {
+static const SpriteTemplate sPartySpriteTemplate = {
     0x0,
     0x0,
     0x0,
@@ -259,7 +259,7 @@ static const SpriteTemplate Unk_ov113_02260A04 = {
     0x0
 };
 
-static const SpriteTemplate Unk_ov113_02260A38 = {
+static const SpriteTemplate sPartyShadowSpriteTemplate = {
     0x0,
     0x0,
     0x0,
@@ -272,7 +272,7 @@ static const SpriteTemplate Unk_ov113_02260A38 = {
     0x0
 };
 
-static const SpriteTemplate Unk_ov113_02260A6C = {
+static const SpriteTemplate sPartyFootprintSpriteTemplate = {
     0x0,
     0x0,
     0x0,
@@ -285,7 +285,7 @@ static const SpriteTemplate Unk_ov113_02260A6C = {
     0x0
 };
 
-static const SpriteTemplate Unk_ov113_02260AA0 = {
+static const SpriteTemplate sSelectionSpriteTemplate = {
     0x0,
     0x0,
     0x0,
@@ -298,7 +298,7 @@ static const SpriteTemplate Unk_ov113_02260AA0 = {
     0x0
 };
 
-static const SpriteTemplate Unk_ov113_0226099C = {
+static const SpriteTemplate sCursorSpriteTemplate = {
     0x0,
     0x0,
     0x0,
@@ -311,7 +311,7 @@ static const SpriteTemplate Unk_ov113_0226099C = {
     0x0
 };
 
-static const SpriteTemplate Unk_ov113_022609D0 = {
+static const SpriteTemplate sSubFootprintSpriteTemplate = {
     0x0,
     0x0,
     0x0,
@@ -324,9 +324,9 @@ static const SpriteTemplate Unk_ov113_022609D0 = {
     0x0
 };
 
-int ov113_0225C700(ApplicationManager *appMan, int *param1)
+int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov113_0225DBCC *v0;
+    FootprintStampApp *v0;
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -342,19 +342,19 @@ int ov113_0225C700(ApplicationManager *appMan, int *param1)
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_118, 0x50000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov113_0225DBCC), HEAP_ID_118);
-    MI_CpuClear8(v0, sizeof(UnkStruct_ov113_0225DBCC));
+    v0 = ApplicationManager_NewData(appMan, sizeof(FootprintStampApp), HEAP_ID_118);
+    MI_CpuClear8(v0, sizeof(FootprintStampApp));
 
     v0->unk_00 = ApplicationManager_Args(appMan);
     v0->saveData = ov66_0222E0C4(v0->unk_00->unk_00);
     v0->unk_19E0 = ov66_0222E0C8(v0->unk_00->unk_00);
 
-    ov113_0225DD14(v0);
-    ov113_0225DD4C(v0->unk_00->unk_04, v0->saveData, v0->unk_8D8);
+    FootprintStamp_InitCommState(v0);
+    FootprintStamp_LoadPartyEntries(v0->unk_00->unk_04, v0->saveData, v0->unk_8D8);
 
     v0->unk_19D4 = (32 << 8);
     v0->unk_19D8 = v0->unk_19D4;
-    v0->unk_14 = ov113_0225DC6C(HEAP_ID_118);
+    v0->unk_14 = FootprintStamp_InitPipeline(HEAP_ID_118);
     v0->unk_0C = PaletteData_New(HEAP_ID_118);
 
     PaletteData_SetAutoTransparent(v0->unk_0C, TRUE);
@@ -369,7 +369,7 @@ int ov113_0225C700(ApplicationManager *appMan, int *param1)
     VramTransfer_New(64, HEAP_ID_118);
     SetAutorepeat(4, 8);
 
-    ov113_0225CF58(v0->unk_08);
+    FootprintStamp_InitGraphics(v0->unk_08);
 
     EnableTouchPad();
     InitializeTouchPad(4);
@@ -381,31 +381,31 @@ int ov113_0225C700(ApplicationManager *appMan, int *param1)
     v0->unk_160 = NARC_ctor(NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, HEAP_ID_118);
     v0->unk_164 = NARC_ctor(NARC_INDEX_POKETOOL__POKEFOOT__POKEFOOT, HEAP_ID_118);
 
-    ov113_0225D160(v0, v0->unk_160);
-    ov113_0225DAA8(v0, v0->unk_160);
-    ov113_0225D9FC(v0);
-    ov113_0225DBCC(v0);
+    FootprintStamp_LoadBoardGraphics(v0, v0->unk_160);
+    FootprintStamp_LoadBoardModel(v0, v0->unk_160);
+    FootprintStamp_InitCamera(v0);
+    FootprintStamp_InitWindows(v0);
 
     v0->unk_C4 = String_Init(256, HEAP_ID_118);
     v0->unk_1C = SpriteSystem_Alloc(HEAP_ID_118);
 
-    SpriteSystem_Init(v0->unk_1C, &Unk_ov113_02260954, &Unk_ov113_022608E8, 16 + 16);
+    SpriteSystem_Init(v0->unk_1C, &sRenderOamTemplate, &sCharTransferTemplate, 16 + 16);
     ReserveVramForWirelessIconChars(NNS_G2D_VRAM_TYPE_2DMAIN, GX_OBJVRAMMODE_CHAR_1D_128K);
     ReserveSlotsForWirelessIconPalette(NNS_G2D_VRAM_TYPE_2DMAIN);
 
     v0->unk_20 = SpriteManager_New(v0->unk_1C);
 
     SpriteSystem_InitSprites(v0->unk_1C, v0->unk_20, 64 + 64);
-    SpriteSystem_InitManagerWithCapacities(v0->unk_1C, v0->unk_20, &Unk_ov113_022608FC);
+    SpriteSystem_InitManagerWithCapacities(v0->unk_1C, v0->unk_20, &sSpriteResourceCapacities);
     SetSubScreenViewRect(SpriteSystem_GetRenderer(v0->unk_1C), 0, (192 + 80) << FX32_SHIFT);
     NetworkIcon_Init();
 
-    ov113_0225E368(&v0->unk_194, v0->unk_19E0);
-    ov113_0225D304(v0, v0->unk_160);
-    ov113_0225D630(v0, v0->unk_160);
-    ov113_0225D484(v0);
-    ov113_0225D6F8(v0);
-    ov113_0225D7CC(v0);
+    FootprintStampModels_Init(&v0->unk_194, v0->unk_19E0);
+    FootprintStamp_LoadMainSprites(v0, v0->unk_160);
+    FootprintStamp_LoadSubSprites(v0, v0->unk_160);
+    FootprintStamp_CreatePartySprites(v0);
+    FootprintStamp_CreateSubSprites(v0);
+    FootprintStamp_RefreshPartySprites(v0);
 
     v0->unk_24 = YesNoTouchMenu_New(HEAP_ID_118);
 
@@ -432,27 +432,27 @@ int ov113_0225C700(ApplicationManager *appMan, int *param1)
     RenderControlFlags_SetAutoScrollFlags(AUTO_SCROLL_DISABLED);
     RenderControlFlags_SetSpeedUpOnTouch(FALSE);
 
-    v0->unk_18 = SysTask_Start(ov113_0225CEF0, v0, 60000);
+    v0->unk_18 = SysTask_Start(FootprintStamp_SysTask, v0, 60000);
 
-    SetVBlankCallback(ov113_0225CF18, v0);
+    SetVBlankCallback(FootprintStamp_VBlankCallback, v0);
 
     return 1;
 }
 
-int ov113_0225CA04(ApplicationManager *appMan, int *param1)
+int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov113_0225DBCC *v0 = ApplicationManager_Data(appMan);
+    FootprintStampApp *v0 = ApplicationManager_Data(appMan);
 
-    ov113_0225E3F0(&v0->unk_194, v0->camera, v0->unk_9BC, v0->unk_00->unk_04);
+    FootprintStampModels_Update(&v0->unk_194, v0->camera, v0->unk_9BC, v0->unk_00->unk_04);
 
     switch (*param1) {
     case 0:
         v0->unk_168.unk_00 = 1;
-        ov113_022607D8(v0);
+        FootprintStampComm_Init(v0);
 
         {
-            UnkStruct_ov113_0225CA04 v1;
-            ov113_0225DD24(v0, &v1);
+            FootprintStampAddPayload v1;
+            FootprintStamp_InitEntry(v0, &v1);
         }
         (*param1)++;
         break;
@@ -464,12 +464,12 @@ int ov113_0225CA04(ApplicationManager *appMan, int *param1)
         break;
     case 2:
         if (gSystem.touchPressed && (gSystem.touchY < 160)) {
-            if (ov113_0225E318(v0, (32 << 8) / 6) == 1) {
-                v0->unk_8D8[v0->unk_920].unk_09 = gSystem.touchX;
-                v0->unk_8D8[v0->unk_920].unk_0A = gSystem.touchY;
+            if (FootprintStamp_ScrollPartySprites(v0, (32 << 8) / 6) == 1) {
+                v0->unk_8D8[v0->unk_920].touchX = gSystem.touchX;
+                v0->unk_8D8[v0->unk_920].touchY = gSystem.touchY;
 
-                ov113_0225DDC0(v0, &v0->unk_8D8[v0->unk_920], v0->unk_168.unk_04);
-                ov113_02260818(&v0->unk_8D8[v0->unk_920]);
+                FootprintStamp_AddEntry(v0, &v0->unk_8D8[v0->unk_920], v0->unk_168.unk_04);
+                FootprintStampComm_SendEntry(&v0->unk_8D8[v0->unk_920]);
             } else {
                 (void)0;
             }
@@ -477,11 +477,11 @@ int ov113_0225CA04(ApplicationManager *appMan, int *param1)
 
         {
             int v2;
-            v2 = ov113_02260748(v0->unk_8D8, v0->unk_920);
+            v2 = FootprintStampPlayers_CheckTouch(v0->unk_8D8, v0->unk_920);
 
             if (v2 < 6) {
                 v0->unk_920 = v2;
-                ov113_0225E068(v0, v2);
+                FootprintStamp_SelectPartySlot(v0, v2);
             } else if (((*param1) == 2) && (v2 == 0xfe)) {
                 Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
                 PaletteData_Blend(v0->unk_0C, PLTTBUF_MAIN_BG, 0 * 16 + 9, 1, 8, 0x0);
@@ -577,15 +577,15 @@ int ov113_0225CA04(ApplicationManager *appMan, int *param1)
         return 1;
     }
 
-    ov113_0225E118(v0);
-    ov113_0225E294(v0);
+    FootprintStamp_UpdateSelectionSprites(v0);
+    FootprintStamp_UpdatePartySpritePositions(v0);
 
     if (v0->unk_9BC == 1) {
         v0->unk_190++;
 
         if (v0->unk_190 > 30) {
             v0->unk_190 = 0;
-            ov113_0225DE98(v0);
+            FootprintStamp_UpdatePlayerSlots(v0);
         }
 
         if (((ov66_02231760() == 1) || (ov66_0222E12C(v0->unk_00->unk_00) == 1)) && ((*param1) != 4)) {
@@ -606,20 +606,20 @@ int ov113_0225CA04(ApplicationManager *appMan, int *param1)
         }
     }
 
-    ov113_0225E364(v0);
+    FootprintStamp_Noop(v0);
 
     return 0;
 }
 
-int ov113_0225CDFC(ApplicationManager *appMan, int *param1)
+int FootprintStamp_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov113_0225DBCC *v0 = ApplicationManager_Data(appMan);
+    FootprintStampApp *v0 = ApplicationManager_Data(appMan);
 
     SysTask_Done(v0->unk_18);
-    ov113_0225D5D8(v0);
-    ov113_0225D7A4(v0);
+    FootprintStamp_FreePartySprites(v0);
+    FootprintStamp_FreeSubSprites(v0);
     YesNoTouchMenu_Free(v0->unk_24);
-    ov113_0225E378(&v0->unk_194);
+    FootprintStampModels_Free(&v0->unk_194);
 
     String_Free(v0->unk_C4);
     Font_Free(FONT_SUBSCREEN);
@@ -627,8 +627,8 @@ int ov113_0225CDFC(ApplicationManager *appMan, int *param1)
     MessageLoader_Free(v0->unk_30);
     StringTemplate_Free(v0->unk_2C);
 
-    ov113_0225DC4C(v0);
-    ov113_0225D12C(v0->unk_08);
+    FootprintStamp_FreeWindows(v0);
+    FootprintStamp_FreeGraphics(v0->unk_08);
 
     Heap_Free(v0->unk_08);
     SpriteSystem_FreeResourcesAndManager(v0->unk_1C, v0->unk_20);
@@ -639,9 +639,9 @@ int ov113_0225CDFC(ApplicationManager *appMan, int *param1)
     PaletteData_FreeBuffer(v0->unk_0C, PLTTBUF_SUB_OBJ);
     PaletteData_Free(v0->unk_0C);
 
-    ov113_0225DAFC(v0);
-    ov113_0225DA9C(v0);
-    ov113_0225DD0C(v0->unk_14);
+    FootprintStamp_FreeBoardModel(v0);
+    FootprintStamp_FreeCamera(v0);
+    FootprintStamp_FreePipeline(v0->unk_14);
 
     NARC_dtor(v0->unk_160);
     NARC_dtor(v0->unk_164);
@@ -659,23 +659,23 @@ int ov113_0225CDFC(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static void ov113_0225CEF0(SysTask *param0, void *param1)
+static void FootprintStamp_SysTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov113_0225DBCC *v0 = param1;
+    FootprintStampApp *v0 = param1;
 
-    ov113_0225E4E8(&v0->unk_194);
-    ov113_0225DB08(v0);
+    FootprintStampModels_UpdateAnimations(&v0->unk_194);
+    FootprintStamp_DrawBoard(v0);
 
     SpriteSystem_DrawSprites(v0->unk_20);
     SpriteSystem_UpdateTransfer();
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
 }
 
-static void ov113_0225CF18(void *param0)
+static void FootprintStamp_VBlankCallback(void *param0)
 {
-    UnkStruct_ov113_0225DBCC *v0 = param0;
+    FootprintStampApp *v0 = param0;
 
-    ov113_0225E65C(&v0->unk_194, v0->unk_9BC);
+    FootprintStampModels_FlushTextures(&v0->unk_194, v0->unk_9BC);
 
     VramTransfer_Process();
     SpriteSystem_TransferOam();
@@ -685,7 +685,7 @@ static void ov113_0225CF18(void *param0)
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
-static void ov113_0225CF58(BgConfig *param0)
+static void FootprintStamp_InitGraphics(BgConfig *param0)
 {
     GXLayers_DisableEngineALayers();
     GXLayers_DisableEngineBLayers();
@@ -853,7 +853,7 @@ static void ov113_0225CF58(BgConfig *param0)
     Bg_ClearTilesRange(5, 32, 0, HEAP_ID_118);
 }
 
-static void ov113_0225D12C(BgConfig *param0)
+static void FootprintStamp_FreeGraphics(BgConfig *param0)
 {
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_2);
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_1);
@@ -863,7 +863,7 @@ static void ov113_0225D12C(BgConfig *param0)
     Bg_FreeTilemapBuffer(param0, BG_LAYER_MAIN_1);
 }
 
-static void ov113_0225D160(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
+static void FootprintStamp_LoadBoardGraphics(FootprintStampApp *param0, NARC *param1)
 {
     BgConfig *v0 = param0->unk_08;
     u16 *v1;
@@ -905,7 +905,7 @@ static void ov113_0225D160(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
     Bg_ScheduleTilemapTransfer(param0->unk_08, 6);
 }
 
-static void ov113_0225D304(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
+static void FootprintStamp_LoadMainSprites(FootprintStampApp *param0, NARC *param1)
 {
     int v0, v1;
     u16 v2;
@@ -938,12 +938,12 @@ static void ov113_0225D304(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
     param0->unk_921 = SpriteSystem_LoadPaletteBuffer(param0->unk_0C, 2, param0->unk_1C, param0->unk_20, 187, 26, 0, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
 }
 
-static void ov113_0225D484(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_CreatePartySprites(FootprintStampApp *param0)
 {
     int v0;
     SpriteTemplate v1;
 
-    v1 = Unk_ov113_02260A04;
+    v1 = sPartySpriteTemplate;
 
     for (v0 = 0; v0 < 6; v0++) {
         v1.x = 16 + 32 * v0;
@@ -955,7 +955,7 @@ static void ov113_0225D484(UnkStruct_ov113_0225DBCC *param0)
         Sprite_TickFrame(param0->unk_924[v0]->sprite);
     }
 
-    v1 = Unk_ov113_02260A38;
+    v1 = sPartyShadowSpriteTemplate;
 
     for (v0 = 0; v0 < 6; v0++) {
         v1.x = 16 + 32 * v0;
@@ -967,7 +967,7 @@ static void ov113_0225D484(UnkStruct_ov113_0225DBCC *param0)
         Sprite_TickFrame(param0->unk_93C[v0]->sprite);
     }
 
-    v1 = Unk_ov113_02260A6C;
+    v1 = sPartyFootprintSpriteTemplate;
 
     for (v0 = 0; v0 < 6; v0++) {
         v1.x = 16 + 32 * v0;
@@ -982,13 +982,13 @@ static void ov113_0225D484(UnkStruct_ov113_0225DBCC *param0)
         String *v2;
 
         v2 = MessageLoader_GetNewString(param0->unk_30, 1);
-        ov113_0225E15C(param0, &param0->unk_19C0, v2, FONT_SUBSCREEN, TEXT_COLOR(1, 2, 3), 0, 10003, 0x1c * 8, 176, 1);
+        FootprintStamp_CreateTextOAM(param0, &param0->unk_19C0, v2, FONT_SUBSCREEN, TEXT_COLOR(1, 2, 3), 0, 10003, 0x1c * 8, 176, 1);
         FontOAM_SetDrawFlag(param0->unk_19C0.unk_00, 1);
         String_Free(v2);
     }
 }
 
-static void ov113_0225D5D8(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_FreePartySprites(FootprintStampApp *param0)
 {
     int v0;
 
@@ -1004,10 +1004,10 @@ static void ov113_0225D5D8(UnkStruct_ov113_0225DBCC *param0)
         Sprite_DeleteAndFreeResources(param0->unk_954[v0]);
     }
 
-    ov113_0225E250(&param0->unk_19C0);
+    FootprintStamp_FreeTextOAM(&param0->unk_19C0);
 }
 
-static void ov113_0225D630(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
+static void FootprintStamp_LoadSubSprites(FootprintStampApp *param0, NARC *param1)
 {
     int v0;
 
@@ -1024,29 +1024,29 @@ static void ov113_0225D630(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
     SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 11, FALSE, 10005);
 }
 
-static void ov113_0225D6F8(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_CreateSubSprites(FootprintStampApp *param0)
 {
     int v0;
     SpriteTemplate v1;
 
-    param0->unk_96C = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &Unk_ov113_0226099C);
+    param0->unk_96C = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &sCursorSpriteTemplate);
 
     Sprite_TickFrame(param0->unk_96C->sprite);
     ManagedSprite_SetDrawFlag(param0->unk_96C, 0);
 
-    v1 = Unk_ov113_022609D0;
+    v1 = sSubFootprintSpriteTemplate;
 
     for (v0 = 0; v0 < 8; v0++) {
         v1.resources[0] = 10010 + v0;
         param0->unk_970[v0] = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &v1);
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_970[v0], Unk_ov113_02260934[v0][0], Unk_ov113_02260934[v0][1], (192 + 80) << FX32_SHIFT);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_970[v0], sSubSpritePositions[v0][0], sSubSpritePositions[v0][1], (192 + 80) << FX32_SHIFT);
         Sprite_TickFrame(param0->unk_970[v0]->sprite);
         ManagedSprite_SetDrawFlag(param0->unk_970[v0], 0);
     }
 }
 
-static void ov113_0225D7A4(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_FreeSubSprites(FootprintStampApp *param0)
 {
     int v0;
 
@@ -1057,7 +1057,7 @@ static void ov113_0225D7A4(UnkStruct_ov113_0225DBCC *param0)
     }
 }
 
-static void ov113_0225D7CC(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_RefreshPartySprites(FootprintStampApp *param0)
 {
     int v0, v1;
     u16 *v2, *v3;
@@ -1067,19 +1067,19 @@ static void ov113_0225D7CC(UnkStruct_ov113_0225DBCC *param0)
     v3 = PaletteData_GetFadedBuffer(param0->unk_0C, 2);
 
     for (v0 = 0; v0 < 6; v0++) {
-        if ((param0->unk_8D8[v0].unk_02 == 0) || (param0->unk_8D8[v0].unk_02 > NATIONAL_DEX_COUNT)) {
+        if ((param0->unk_8D8[v0].species == 0) || (param0->unk_8D8[v0].species > NATIONAL_DEX_COUNT)) {
             ManagedSprite_SetDrawFlag(param0->unk_924[v0], 0);
             ManagedSprite_SetDrawFlag(param0->unk_93C[v0], 0);
             ManagedSprite_SetDrawFlag(param0->unk_954[v0], 0);
 
             for (v1 = 0; v1 < 4; v1++) {
-                Bg_FillTilemapRect(param0->unk_08, 2, Unk_ov113_022608AC[v1], 0 + 4 * v0, 0x14 + v1, 4, 1, 17);
+                Bg_FillTilemapRect(param0->unk_08, 2, sEmptySlotTiles[v1], 0 + 4 * v0, 0x14 + v1, 4, 1, 17);
             }
         } else {
-            ov113_0225D938(param0->unk_8D8[v0].unk_02, param0->unk_8D8[v0].unk_08, param0->unk_954[v0], param0->unk_160, param0->unk_164, NNS_G2D_VRAM_TYPE_2DMAIN, param0->unk_19E0);
+            FootprintStamp_LoadFootprintTexture(param0->unk_8D8[v0].species, param0->unk_8D8[v0].form, param0->unk_954[v0], param0->unk_160, param0->unk_164, NNS_G2D_VRAM_TYPE_2DMAIN, param0->unk_19E0);
 
-            v2[1 * 16 + 1 + v0] = param0->unk_8D8[v0].unk_00;
-            v3[1 * 16 + 1 + v0] = param0->unk_8D8[v0].unk_00;
+            v2[1 * 16 + 1 + v0] = param0->unk_8D8[v0].stampColor;
+            v3[1 * 16 + 1 + v0] = param0->unk_8D8[v0].stampColor;
 
             BlendPalette(&v2[1 * 16 + 1 + v0], &v2[2 * 16 + 1 + v0], 1, 12, 0x0);
             v3[2 * 16 + 1 + v0] = v2[2 * 16 + 1 + v0];
@@ -1091,11 +1091,11 @@ static void ov113_0225D7CC(UnkStruct_ov113_0225DBCC *param0)
         }
     }
 
-    ov113_0225E0D4(param0, 0);
+    FootprintStamp_HighlightPartySlot(param0, 0);
     Bg_ScheduleTilemapTransfer(param0->unk_08, 2);
 }
 
-static BOOL ov113_0225D938(int param0, int param1, ManagedSprite *param2, NARC *param3, NARC *param4, NNS_G2D_VRAM_TYPE param5, BOOL param6)
+static BOOL FootprintStamp_LoadFootprintTexture(int param0, int param1, ManagedSprite *param2, NARC *param3, NARC *param4, NNS_G2D_VRAM_TYPE param5, BOOL param6)
 {
     void *v0;
     NNSG2dImageProxy *v1;
@@ -1136,13 +1136,13 @@ static BOOL ov113_0225D938(int param0, int param1, ManagedSprite *param2, NARC *
     return 1;
 }
 
-static void ov113_0225D9FC(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_InitCamera(FootprintStampApp *param0)
 {
     VecFx32 v0 = { 0, -FX32_ONE * 8, 0 };
 
     param0->camera = Camera_Alloc(HEAP_ID_118);
 
-    Camera_InitWithTarget(&v0, 0x7c000, &Unk_ov113_022608B4, (22 * 0xffff) / 360, 0, 0, param0->camera);
+    Camera_InitWithTarget(&v0, 0x7c000, &sCameraAngle, (22 * 0xffff) / 360, 0, 0, param0->camera);
     Camera_SetClipping(FX32_ONE, FX32_ONE * 900, param0->camera);
     Camera_SetAsActive(param0->camera);
 
@@ -1162,12 +1162,12 @@ static void ov113_0225D9FC(UnkStruct_ov113_0225DBCC *param0)
     }
 }
 
-static void ov113_0225DA9C(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_FreeCamera(FootprintStampApp *param0)
 {
     Camera_Delete(param0->camera);
 }
 
-static void ov113_0225DAA8(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
+static void FootprintStamp_LoadBoardModel(FootprintStampApp *param0, NARC *param1)
 {
     int v0;
 
@@ -1184,12 +1184,12 @@ static void ov113_0225DAA8(UnkStruct_ov113_0225DBCC *param0, NARC *param1)
     Easy3DObject_SetVisible(&param0->unk_D8.unk_10, 1);
 }
 
-static void ov113_0225DAFC(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_FreeBoardModel(FootprintStampApp *param0)
 {
     Easy3DModel_Release(&param0->unk_D8.unk_00);
 }
 
-static void ov113_0225DB08(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_DrawBoard(FootprintStampApp *param0)
 {
     VecFx32 v0, v1;
     MtxFx33 v2;
@@ -1220,13 +1220,13 @@ static void ov113_0225DB08(UnkStruct_ov113_0225DBCC *param0)
 
     {
         Easy3DObject_Draw(&param0->unk_D8.unk_10);
-        ov113_0225E4A0(&param0->unk_194);
+        FootprintStampModels_Draw(&param0->unk_194);
     }
 
     NNS_G3dGePopMtx(1);
 }
 
-static void ov113_0225DBCC(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_InitWindows(FootprintStampApp *param0)
 {
     int v0;
 
@@ -1234,12 +1234,12 @@ static void ov113_0225DBCC(UnkStruct_ov113_0225DBCC *param0)
     Window_FillTilemap(&param0->unk_B4, 0xf);
 
     for (v0 = 0; v0 < 8; v0++) {
-        Window_Add(param0->unk_08, &param0->unk_34[v0], 5, Unk_ov113_022608C8[v0][0], Unk_ov113_022608C8[v0][1], 8, 2, 13, (0x4000 / 0x20) + (8 * 2) * v0);
+        Window_Add(param0->unk_08, &param0->unk_34[v0], 5, sPartyWindowPositions[v0][0], sPartyWindowPositions[v0][1], 8, 2, 13, (0x4000 / 0x20) + (8 * 2) * v0);
         Window_FillTilemap(&param0->unk_34[v0], 0x0);
     }
 }
 
-static void ov113_0225DC4C(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_FreeWindows(FootprintStampApp *param0)
 {
     int v0;
 
@@ -1250,12 +1250,12 @@ static void ov113_0225DC4C(UnkStruct_ov113_0225DBCC *param0)
     }
 }
 
-static G3DPipelineBuffers *ov113_0225DC6C(enum HeapID heapID)
+static G3DPipelineBuffers *FootprintStamp_InitPipeline(enum HeapID heapID)
 {
-    return G3DPipeline_Init(heapID, TEXTURE_VRAM_SIZE_256K, PALETTE_VRAM_SIZE_32K, ov113_0225DC88);
+    return G3DPipeline_Init(heapID, TEXTURE_VRAM_SIZE_256K, PALETTE_VRAM_SIZE_32K, FootprintStamp_Init3D);
 }
 
-static void ov113_0225DC88(void)
+static void FootprintStamp_Init3D(void)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
     G2_SetBG0Priority(1);
@@ -1270,74 +1270,74 @@ static void ov113_0225DC88(void)
     G3_ViewPort(0, 0, 255, 191);
 }
 
-static void ov113_0225DD0C(G3DPipelineBuffers *param0)
+static void FootprintStamp_FreePipeline(G3DPipelineBuffers *param0)
 {
     G3DPipelineBuffers_Free(param0);
 }
 
-static void ov113_0225DD14(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_InitCommState(FootprintStampApp *param0)
 {
-    UnkStruct_ov113_022607EC *v0 = &param0->unk_168;
+    FootprintStampCommState *v0 = &param0->unk_168;
     v0->unk_04 = ov66_022328F0();
 }
 
-static void ov113_0225DD24(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225CA04 *param1)
+static void FootprintStamp_InitEntry(FootprintStampApp *param0, FootprintStampAddPayload *param1)
 {
-    UnkStruct_ov113_02260818 *v0;
+    FootprintStampEntry *v0;
 
-    MI_CpuClear8(param1, sizeof(UnkStruct_ov113_0225CA04));
+    MI_CpuClear8(param1, sizeof(FootprintStampAddPayload));
 
     v0 = &param1->unk_00;
 
-    v0->unk_02 = 150;
-    v0->unk_00 = 0x1f;
-    v0->unk_04 = 0x101;
-    v0->unk_08 = 0;
+    v0->species = 150;
+    v0->stampColor = 0x1f;
+    v0->personality = 0x101;
+    v0->form = 0;
 }
 
-UnkStruct_ov113_022607EC *ov113_0225DD44(UnkStruct_ov113_0225DBCC *param0)
+FootprintStampCommState *FootprintStamp_GetCommState(FootprintStampApp *param0)
 {
     return &param0->unk_168;
 }
 
-static void ov113_0225DD4C(int param0, SaveData *saveData, UnkStruct_ov113_02260818 *param2)
+static void FootprintStamp_LoadPartyEntries(int param0, SaveData *saveData, FootprintStampEntry *param2)
 {
     Party *v0;
     int v1;
     Pokemon *v2;
     int v3;
 
-    MI_CpuClear8(param2, sizeof(UnkStruct_ov113_02260818) * 6);
+    MI_CpuClear8(param2, sizeof(FootprintStampEntry) * 6);
 
     v0 = SaveData_GetParty(saveData);
     v1 = Party_GetCurrentCount(v0);
 
     for (v3 = 0; v3 < v1; v3++) {
         v2 = Party_GetPokemonBySlotIndex(v0, v3);
-        param2[v3].unk_02 = Pokemon_GetValue(v2, MON_DATA_SPECIES_OR_EGG, NULL);
-        param2[v3].unk_04 = Pokemon_GetValue(v2, MON_DATA_PERSONALITY, NULL);
-        param2[v3].unk_08 = Pokemon_GetValue(v2, MON_DATA_FORM, NULL);
-        param2[v3].unk_00 = ov113_0226072C(param0, Pokemon_GetValue(v2, MON_DATA_OT_ID, NULL));
+        param2[v3].species = Pokemon_GetValue(v2, MON_DATA_SPECIES_OR_EGG, NULL);
+        param2[v3].personality = Pokemon_GetValue(v2, MON_DATA_PERSONALITY, NULL);
+        param2[v3].form = Pokemon_GetValue(v2, MON_DATA_FORM, NULL);
+        param2[v3].stampColor = FootprintStampPlayers_GetStampColor(param0, Pokemon_GetValue(v2, MON_DATA_OT_ID, NULL));
     }
 }
 
-BOOL ov113_0225DDC0(UnkStruct_ov113_0225DBCC *param0, const UnkStruct_ov113_02260818 *param1, s32 param2)
+BOOL FootprintStamp_AddEntry(FootprintStampApp *param0, const FootprintStampEntry *param1, s32 param2)
 {
     int v0;
     u32 v1;
 
-    v0 = ov113_0225E398(param0, &param0->unk_194, param1, param0->unk_160, param0->unk_164, param0->unk_19E0);
+    v0 = FootprintStampModels_Add(param0, &param0->unk_194, param1, param0->unk_160, param0->unk_164, param0->unk_19E0);
 
     if (v0 == 1) {
         v1 = ov66_02232B8C(param2);
 
         if (v1 != 0xffffffff) {
-            if ((param0->unk_99C[v1] != param1->unk_02) || (param0->unk_9AC[v1] != param1->unk_00)) {
-                param0->unk_99C[v1] = param1->unk_02;
-                param0->unk_9AC[v1] = param1->unk_00;
-                ov113_0225D938(param1->unk_02, param1->unk_08, param0->unk_970[v1], param0->unk_160, param0->unk_164, NNS_G2D_VRAM_TYPE_2DSUB, param0->unk_19E0);
+            if ((param0->unk_99C[v1] != param1->species) || (param0->unk_9AC[v1] != param1->stampColor)) {
+                param0->unk_99C[v1] = param1->species;
+                param0->unk_9AC[v1] = param1->stampColor;
+                FootprintStamp_LoadFootprintTexture(param1->species, param1->form, param0->unk_970[v1], param0->unk_160, param0->unk_164, NNS_G2D_VRAM_TYPE_2DSUB, param0->unk_19E0);
                 ManagedSprite_SetDrawFlag(param0->unk_970[v1], 1);
-                PaletteData_FillBufferRange(param0->unk_0C, PLTTBUF_SUB_BG, PLTTSEL_BOTH, param1->unk_00, (2 * 16 + 1) + v1, (2 * 16 + 1) + v1 + 1);
+                PaletteData_FillBufferRange(param0->unk_0C, PLTTBUF_SUB_BG, PLTTSEL_BOTH, param1->stampColor, (2 * 16 + 1) + v1, (2 * 16 + 1) + v1 + 1);
             }
         }
 
@@ -1347,7 +1347,7 @@ BOOL ov113_0225DDC0(UnkStruct_ov113_0225DBCC *param0, const UnkStruct_ov113_0226
     return v0;
 }
 
-static int ov113_0225DE98(UnkStruct_ov113_0225DBCC *param0)
+static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
 {
     UnkStruct_ov66_02232B20 v0;
     int v1, v2, v3, v4;
@@ -1360,7 +1360,7 @@ static int ov113_0225DE98(UnkStruct_ov113_0225DBCC *param0)
     for (v1 = 0; v1 < 8; v1++) {
         if (param0->unk_170[v1] != v0.unk_04[v1]) {
             if (v0.unk_04[v1] != DWC_LOBBY_INVALID_USER_ID) {
-                ov113_02260620(param0->unk_30, param0->unk_2C, param0->unk_34, param0->unk_00->unk_00, v0.unk_04[v1]);
+                FootprintStampPlayers_DrawName(param0->unk_30, param0->unk_2C, param0->unk_34, param0->unk_00->unk_00, v0.unk_04[v1]);
 
                 {
                     u16 *v5;
@@ -1368,8 +1368,8 @@ static int ov113_0225DE98(UnkStruct_ov113_0225DBCC *param0)
 
                     v5 = Bg_GetTilemapBuffer(param0->unk_08, 6);
 
-                    for (v7 = Unk_ov113_02260AD4[v1][1]; v7 < Unk_ov113_02260AD4[v1][1] + Unk_ov113_02260AD4[v1][3]; v7++) {
-                        MI_CpuCopy16(&param0->unk_9C0[v7 * 32 + Unk_ov113_02260AD4[v1][0]], &v5[v7 * 32 + Unk_ov113_02260AD4[v1][0]], Unk_ov113_02260AD4[v1][2] * 2);
+                    for (v7 = sPlayerSlotRects[v1][1]; v7 < sPlayerSlotRects[v1][1] + sPlayerSlotRects[v1][3]; v7++) {
+                        MI_CpuCopy16(&param0->unk_9C0[v7 * 32 + sPlayerSlotRects[v1][0]], &v5[v7 * 32 + sPlayerSlotRects[v1][0]], sPlayerSlotRects[v1][2] * 2);
                     }
 
                     Bg_ScheduleTilemapTransfer(param0->unk_08, 6);
@@ -1377,19 +1377,19 @@ static int ov113_0225DE98(UnkStruct_ov113_0225DBCC *param0)
 
                 v2++;
             } else {
-                ov113_02260714(param0->unk_34, v1);
+                FootprintStampPlayers_ClearName(param0->unk_34, v1);
 
                 param0->unk_99C[v1] = 0;
                 param0->unk_9AC[v1] = 0;
 
                 ManagedSprite_SetDrawFlag(param0->unk_970[v1], 0);
-                Bg_FillTilemapRect(param0->unk_08, 6, 0, Unk_ov113_02260AD4[v1][0], Unk_ov113_02260AD4[v1][1], Unk_ov113_02260AD4[v1][2], Unk_ov113_02260AD4[v1][3], 16);
+                Bg_FillTilemapRect(param0->unk_08, 6, 0, sPlayerSlotRects[v1][0], sPlayerSlotRects[v1][1], sPlayerSlotRects[v1][2], sPlayerSlotRects[v1][3], 16);
                 Bg_ScheduleTilemapTransfer(param0->unk_08, 6);
                 v3++;
             }
 
             if (v0.unk_04[v1] == param0->unk_168.unk_04) {
-                ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_96C, Unk_ov113_02260914[v1][0], Unk_ov113_02260914[v1][1], (192 + 80) << FX32_SHIFT);
+                ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_96C, sCursorSpritePositions[v1][0], sCursorSpritePositions[v1][1], (192 + 80) << FX32_SHIFT);
                 ManagedSprite_SetDrawFlag(param0->unk_96C, 1);
             }
         }
@@ -1418,22 +1418,22 @@ static int ov113_0225DE98(UnkStruct_ov113_0225DBCC *param0)
     return 0;
 }
 
-void ov113_0225E044(UnkStruct_ov113_0225DBCC *param0, s32 param1)
+void FootprintStamp_DrawPlayerName(FootprintStampApp *param0, s32 param1)
 {
-    ov113_02260620(param0->unk_30, param0->unk_2C, param0->unk_34, param0->unk_00->unk_00, param1);
+    FootprintStampPlayers_DrawName(param0->unk_30, param0->unk_2C, param0->unk_34, param0->unk_00->unk_00, param1);
 }
 
-void ov113_0225E05C(UnkStruct_ov113_0225DBCC *param0, u32 param1)
+void FootprintStamp_ClearPlayerName(FootprintStampApp *param0, u32 param1)
 {
-    ov113_02260714(param0->unk_34, param1);
+    FootprintStampPlayers_ClearName(param0->unk_34, param1);
 }
 
-static void ov113_0225E068(UnkStruct_ov113_0225DBCC *param0, int param1)
+static void FootprintStamp_SelectPartySlot(FootprintStampApp *param0, int param1)
 {
     SpriteTemplate v0;
     int v1;
 
-    v0 = Unk_ov113_02260AA0;
+    v0 = sSelectionSpriteTemplate;
 
     for (v1 = 0; v1 < 3; v1++) {
         if (param0->unk_990[v1] == NULL) {
@@ -1445,11 +1445,11 @@ static void ov113_0225E068(UnkStruct_ov113_0225DBCC *param0, int param1)
         }
     }
 
-    ov113_0225E0D4(param0, param1);
+    FootprintStamp_HighlightPartySlot(param0, param1);
     Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
 }
 
-static void ov113_0225E0D4(UnkStruct_ov113_0225DBCC *param0, int param1)
+static void FootprintStamp_HighlightPartySlot(FootprintStampApp *param0, int param1)
 {
     u16 *v0, *v1;
 
@@ -1460,7 +1460,7 @@ static void ov113_0225E0D4(UnkStruct_ov113_0225DBCC *param0, int param1)
     BlendPalette(&v0[1 * 16 + 1 + param1], &v1[1 * 16 + 1 + param1], 1, 6, 0x0);
 }
 
-static void ov113_0225E118(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_UpdateSelectionSprites(FootprintStampApp *param0)
 {
     int v0;
 
@@ -1476,7 +1476,7 @@ static void ov113_0225E118(UnkStruct_ov113_0225DBCC *param0)
     }
 }
 
-static void ov113_0225E15C(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_0225E250 *param1, const String *param2, enum Font param3, TextColor param4, int param5, int param6, int param7, int param8, int param9)
+static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintStampText *param1, const String *param2, enum Font param3, TextColor param4, int param5, int param6, int param7, int param8, int param9)
 {
     UnkStruct_020127E8 v0;
     Window v1;
@@ -1492,7 +1492,7 @@ static void ov113_0225E15C(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_022
     v5 = param0->unk_08;
     v6 = param0->unk_20;
 
-    ov113_0225E264(param2, param3, &v7, &v8);
+    FootprintStamp_MeasureText(param2, param3, &v7, &v8);
 
     Window_Init(&v1);
     Window_AddToTopLeftCorner(v5, &v1, v8, 16 / 8, 0, 0);
@@ -1531,13 +1531,13 @@ static void ov113_0225E15C(UnkStruct_ov113_0225DBCC *param0, UnkStruct_ov113_022
     param1->unk_10 = v7;
 }
 
-static void ov113_0225E250(UnkStruct_ov113_0225E250 *param0)
+static void FootprintStamp_FreeTextOAM(FootprintStampText *param0)
 {
     FontOAM_Free(param0->unk_00);
     CharTransfer_ClearRange(&param0->unk_04);
 }
 
-static void ov113_0225E264(const String *param0, int param1, int *param2, int *param3)
+static void FootprintStamp_MeasureText(const String *param0, int param1, int *param2, int *param3)
 {
     int v0 = Font_CalcStringWidth(param1, param0, 0);
     int v1 = v0 / 8;
@@ -1550,7 +1550,7 @@ static void ov113_0225E264(const String *param0, int param1, int *param2, int *p
     *param3 = v1;
 }
 
-static void ov113_0225E294(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_UpdatePartySpritePositions(FootprintStampApp *param0)
 {
     int v0, v1;
 
@@ -1577,7 +1577,7 @@ static void ov113_0225E294(UnkStruct_ov113_0225DBCC *param0)
     }
 }
 
-static BOOL ov113_0225E318(UnkStruct_ov113_0225DBCC *param0, int param1)
+static BOOL FootprintStamp_ScrollPartySprites(FootprintStampApp *param0, int param1)
 {
     if (param0->unk_19D4 < param1) {
         return 0;
@@ -1594,7 +1594,7 @@ static BOOL ov113_0225E318(UnkStruct_ov113_0225DBCC *param0, int param1)
     return 1;
 }
 
-static void ov113_0225E364(UnkStruct_ov113_0225DBCC *param0)
+static void FootprintStamp_Noop(FootprintStampApp *param0)
 {
     return;
 }
