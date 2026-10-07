@@ -26,7 +26,7 @@
 #include "battle_anim/struct_ov12_02223764.h"
 #include "battle_anim/struct_ov12_022380DC.h"
 #include "global/utility.h"
-#include "overlay017/ov17_022413D8.h"
+#include "contest_competition/contest_competition_022413D8.h"
 
 #include "bg_window.h"
 #include "graphics.h"
@@ -1082,7 +1082,7 @@ static void BattleAnimScriptCmd_End(BattleAnimSystem *system)
         Bg_ClearTilemap(BattleAnimSystem_GetBgConfig(system), BattleAnimSystem_GetBgLayer(system, 1));
         Bg_ToggleLayer(BG_LAYER_MAIN_2, TRUE);
     } else {
-        ov17_022413D8();
+        contest_competition_022413D8();
     }
 
     Bg_SetPriority(BG_LAYER_MAIN_0, system->bgLayerPriorities[BG_LAYER_MAIN_0]);
@@ -2462,7 +2462,7 @@ static BOOL BattleBgRestore_Blend(SysTask *task, BattleBgSwitch *bgSwitch)
         if (!BattleAnimSystem_IsContest(bgSwitch->battleAnimSystem)) {
             Battle_SetDefaultBlend();
         } else {
-            ov17_022413D8();
+            contest_competition_022413D8();
         }
 
         BattleAnimSystem_UnloadBaseBg(bgSwitch->battleAnimSystem, BATTLE_BG_BASE);

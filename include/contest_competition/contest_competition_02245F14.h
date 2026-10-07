@@ -1,0 +1,23 @@
+#ifndef POKEPLATINUM_CONTEST_COMPETITION_02245F14_H
+#define POKEPLATINUM_CONTEST_COMPETITION_02245F14_H
+
+#include "contest_competition/struct_contest_competition_022463C4.h"
+#include "contest_competition/struct_contest_competition_02246540.h"
+#include "contest_competition/struct_contest_competition_02246F24.h"
+
+void contest_competition_02245F44(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1);
+void contest_competition_02245FB4(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID);
+void contest_competition_02246018(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID);
+void contest_competition_02246044(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1);
+void contest_competition_022460C8(UnkStruct_contest_competition_02246540 *param0);
+void contest_competition_022460DC(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID);
+void contest_competition_02246138(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID);
+void contest_competition_02246160(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, int param3);
+void contest_competition_02246228(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, int param3);
+BOOL contest_competition_022462A4(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, int param3);
+BOOL contest_competition_02246304(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, int param3);
+BOOL contest_competition_02246364(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, int param3);
+void contest_competition_022463C4(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, UnkStruct_contest_competition_022463C4 *param3);
+void contest_competition_02246518(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246540 *param1, int contestantID, UnkStruct_contest_competition_022463C4 *param3);
+
+#endif // POKEPLATINUM_CONTEST_COMPETITION_02245F14_H

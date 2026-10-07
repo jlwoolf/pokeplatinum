@@ -21,10 +21,10 @@
 #include "field/field_system.h"
 #include "overlay006/ov6_022489E4.h"
 #include "overlay006/struct_ov6_02248DD8.h"
-#include "overlay017/ov17_0223B140.h"
-#include "overlay017/ov17_0223CB1C.h"
-#include "overlay017/ov17_0223DAD0.h"
-#include "overlay017/ov17_0224F4D4.h"
+#include "contest_competition/contest_competition.h"
+#include "contest_competition/contest_competition_0223CB1C.h"
+#include "contest_competition/contest_competition_0223DAD0.h"
+#include "contest_competition/contest_competition_0224F4D4.h"
 #include "overlay022/ov22_02255D44.h"
 #include "pch/global_pch.h"
 #include "savedata/save_table.h"
@@ -61,7 +61,7 @@
 #include "contest_comm.h"
 #include "vars_flags.h"
 
-FS_EXTERN_OVERLAY(overlay17);
+FS_EXTERN_OVERLAY(contest_competition);
 FS_EXTERN_OVERLAY(overlay22);
 
 typedef struct ContestTaskEnv {
@@ -91,28 +91,28 @@ const ApplicationManagerTemplate ActingCompetitionAppTemplate = {
     ActingCompetition_Init,
     ActingCompetition_Main,
     ActingCompetition_Exit,
-    FS_OVERLAY_ID(overlay17)
+    FS_OVERLAY_ID(contest_competition)
 };
 
 const ApplicationManagerTemplate DanceCompetitionAppTemplate = {
     DanceCompetition_Init,
     DanceCompetition_Main,
     DanceCompetition_Exit,
-    FS_OVERLAY_ID(overlay17)
+    FS_OVERLAY_ID(contest_competition)
 };
 
 const ApplicationManagerTemplate VisualCompetitionScoringAppTemplate = {
     VisualCompetitionScoring_Init,
     VisualCompetitionScoring_Main,
     VisualCompetitionScoring_Exit,
-    FS_OVERLAY_ID(overlay17)
+    FS_OVERLAY_ID(contest_competition)
 };
 
 const ApplicationManagerTemplate ContestFinalScoringAppTemplate = {
     ContestFinalScoring_Init,
     ContestFinalScoring_Main,
     ContestFinalScoring_Exit,
-    FS_OVERLAY_ID(overlay17)
+    FS_OVERLAY_ID(contest_competition)
 };
 
 const ApplicationManagerTemplate VisualCompetitionAppTemplate = {

@@ -9,8 +9,8 @@
 #include "struct_defs/struct_02095C60.h"
 
 #include "overlay006/ov6_022489E4.h"
-#include "overlay017/ov17_02252CEC.h"
-#include "overlay017/struct_ov17_0224EDE0.h"
+#include "contest_competition/contest_competition_02252CEC.h"
+#include "contest_competition/struct_contest_competition_0224EDE0.h"
 
 #include "communication_system.h"
 #include "contest.h"
@@ -39,8 +39,8 @@ static int ContestComm_ScoringPacketSize(void);
 static const CommCmdTable sContestCommCmdTable[] = {
     { NULL, CommPacketSizeOf_Nothing, NULL }, // 22
     { ContestComm_RecvNoOp, CommPacketSizeOf_Nothing, NULL }, // 23
-    { ov17_02252CEC, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 24: dance data
-    { ov17_02252D7C, ContestComm_DancePacketSize, NULL }, // 25: dance packet
+    { contest_competition_02252CEC, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 24: dance data
+    { contest_competition_02252D7C, ContestComm_DancePacketSize, NULL }, // 25: dance packet
     { ov6_022489E4, CommPacketSizeOf_Variable, NULL }, // 26
     { ov6_02248AC8, CommPacketSizeOf_Variable, NULL }, // 27
     { ov6_02248B30, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 28
@@ -77,7 +77,7 @@ static u8 *ContestComm_GetRecvBuffer(int netId, void *commState, int size)
 
 static int ContestComm_DancePacketSize(void)
 {
-    return sizeof(UnkStruct_ov17_0224EDE0);
+    return sizeof(UnkStruct_contest_competition_0224EDE0);
 }
 
 static int ContestComm_ScoringPacketSize(void)
