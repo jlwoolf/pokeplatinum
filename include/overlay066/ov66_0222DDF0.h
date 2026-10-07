@@ -14,7 +14,7 @@
 #include "overlay066/struct_ov66_02231560.h"
 #include "overlay066/struct_ov66_0223177C_decl.h"
 #include "overlay066/struct_ov66_02232068.h"
-#include "wifi_lobby_news/struct_wifi_lobby_news_answer_tally.h"
+#include "wifi_lobby_questionnaire/struct_wifi_lobby_questionnaire_answer_tally.h"
 
 #include "charcode.h"
 #include "enums.h"
@@ -177,8 +177,8 @@ int ov66_0222F05C(const UnkStruct_ov66_0222DFF8 *param0);
 u32 ov66_0222F0DC(const UnkStruct_ov66_0222DFF8 *param0);
 int ov66_0222F104(const UnkStruct_ov66_0222DFF8 *param0);
 u32 ov66_0222F114(const UnkStruct_ov66_0222DFF8 *param0);
-void ov66_0222F124(UnkStruct_ov66_0222DFF8 *param0, const WiFiLobbyNewsAnswerTally *param1);
-BOOL ov66_0222F144(const UnkStruct_ov66_0222DFF8 *param0, WiFiLobbyNewsAnswerTally *param1);
+void ov66_0222F124(UnkStruct_ov66_0222DFF8 *param0, const WiFiLobbyQuestionnaireAnswerTally *param1);
+BOOL ov66_0222F144(const UnkStruct_ov66_0222DFF8 *param0, WiFiLobbyQuestionnaireAnswerTally *param1);
 void ov66_0222F16C(UnkStruct_ov66_0222DFF8 *param0);
 void ov66_0222F198(UnkStruct_ov66_0222DFF8 *param0);
 

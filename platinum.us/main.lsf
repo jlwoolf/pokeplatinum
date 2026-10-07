@@ -1203,10 +1203,10 @@ Overlay wifi_p2p_match
 	Object main.nef.p/src_wifi_p2p_match_wifi_p2p_match.c.o
 }
 
-Overlay wifi_lobby_news
+Overlay wifi_lobby_questionnaire
 {
 	After overlay66
-	Object main.nef.p/src_wifi_lobby_news_wifi_lobby_news.c.o
+	Object main.nef.p/src_wifi_lobby_questionnaire_wifi_lobby_questionnaire.c.o
 }
 
 Overlay overlay69

@@ -39,7 +39,7 @@
 #include "overlay066/struct_ov66_022324F0.h"
 #include "overlay066/struct_ov66_02232B20.h"
 #include "overlay066/struct_ov66_022589B4.h"
-#include "wifi_lobby_news/struct_wifi_lobby_news_answer_tally.h"
+#include "wifi_lobby_questionnaire/struct_wifi_lobby_questionnaire_answer_tally.h"
 
 #include "appearance.h"
 #include "charcode.h"
@@ -198,7 +198,7 @@ typedef struct {
 } UnkStruct_ov66_0222FBF0;
 
 typedef struct {
-    WiFiLobbyNewsAnswerTally unk_00;
+    WiFiLobbyQuestionnaireAnswerTally unk_00;
     BOOL unk_14;
 } UnkStruct_ov66_0222DFF8_sub3;
 
@@ -1835,13 +1835,13 @@ u32 ov66_0222F114(const UnkStruct_ov66_0222DFF8 *param0)
     return ov66_02230A64(&param0->unk_49C);
 }
 
-void ov66_0222F124(UnkStruct_ov66_0222DFF8 *param0, const WiFiLobbyNewsAnswerTally *param1)
+void ov66_0222F124(UnkStruct_ov66_0222DFF8 *param0, const WiFiLobbyQuestionnaireAnswerTally *param1)
 {
     param0->unk_510.unk_14 = 1;
     param0->unk_510.unk_00 = *param1;
 }
 
-BOOL ov66_0222F144(const UnkStruct_ov66_0222DFF8 *param0, WiFiLobbyNewsAnswerTally *param1)
+BOOL ov66_0222F144(const UnkStruct_ov66_0222DFF8 *param0, WiFiLobbyQuestionnaireAnswerTally *param1)
 {
     if (param0->unk_510.unk_14 == 1) {
         *param1 = param0->unk_510.unk_00;

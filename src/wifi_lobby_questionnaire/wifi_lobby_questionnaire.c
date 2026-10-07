@@ -1,4 +1,4 @@
-#include "wifi_lobby_news/wifi_lobby_news.h"
+#include "wifi_lobby_questionnaire/wifi_lobby_questionnaire.h"
 
 #include <dwc.h>
 #include <nitro.h>
@@ -13,7 +13,7 @@
 #include "overlay066/struct_ov66_0222DFF8_decl.h"
 #include "overlay066/struct_ov66_0222E908.h"
 #include "overlay066/struct_ov66_02231374.h"
-#include "wifi_lobby_news/struct_wifi_lobby_news_answer_tally.h"
+#include "wifi_lobby_questionnaire/struct_wifi_lobby_questionnaire_answer_tally.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -53,7 +53,7 @@ typedef struct {
     BOOL isFreeQuestion;
     String *questionText;
     String *answerTexts[3];
-} WiFiLobbyNewsQuestion;
+} WiFiLobbyQuestionnaireQuestion;
 
 typedef struct {
     Window window[1];
@@ -62,8 +62,8 @@ typedef struct {
     SpriteResource *spriteResources[4];
     u16 state;
     u16 returnState;
-    WiFiLobbyNewsQuestion question;
-} WiFiLobbyNewsAnswerSelection;
+    WiFiLobbyQuestionnaireQuestion question;
+} WiFiLobbyQuestionnaireAnswerSelection;
 
 typedef struct {
     Window windows[6];
@@ -74,16 +74,16 @@ typedef struct {
     s32 barTargets[3];
     void *charDataRaw;
     NNSG2dCharacterData *charData;
-    WiFiLobbyNewsQuestion currentQuestion;
-    WiFiLobbyNewsQuestion lastQuestion;
-    WiFiLobbyNewsAnswerTally currentTally;
-    WiFiLobbyNewsAnswerTally lastTally;
-} WiFiLobbyNewsResults;
+    WiFiLobbyQuestionnaireQuestion currentQuestion;
+    WiFiLobbyQuestionnaireQuestion lastQuestion;
+    WiFiLobbyQuestionnaireAnswerTally currentTally;
+    WiFiLobbyQuestionnaireAnswerTally lastTally;
+} WiFiLobbyQuestionnaireResults;
 
 typedef union {
-    WiFiLobbyNewsAnswerSelection answerSelection;
-    WiFiLobbyNewsResults results;
-} WiFiLobbyNewsScreen;
+    WiFiLobbyQuestionnaireAnswerSelection answerSelection;
+    WiFiLobbyQuestionnaireResults results;
+} WiFiLobbyQuestionnaireScreen;
 
 typedef struct {
     u32 printer;
@@ -92,7 +92,7 @@ typedef struct {
     String *string;
     void *waitDial;
     Menu *menu;
-} WiFiLobbyNewsMessageBox;
+} WiFiLobbyQuestionnaireMessageBox;
 
 typedef struct {
     MessageLoader *loaders[9];
@@ -100,7 +100,7 @@ typedef struct {
     String *string1;
     String *string2;
     UnkStruct_ov66_0222DFF8 *profile;
-} WiFiLobbyNewsMessages;
+} WiFiLobbyQuestionnaireMessages;
 
 typedef struct {
     BgConfig *bgConfig;
@@ -108,68 +108,68 @@ typedef struct {
     G2dRenderer renderer;
     SpriteResourceCollection *spriteResources[4];
     NARC *narc;
-} WiFiLobbyNewsGraphics;
+} WiFiLobbyQuestionnaireGraphics;
 
 typedef struct {
-    WiFiLobbyNewsGraphics graphics;
-    WiFiLobbyNewsMessages messages;
-    WiFiLobbyNewsScreen screen;
-    WiFiLobbyNewsMessageBox messageBox;
-} WiFiLobbyNews;
+    WiFiLobbyQuestionnaireGraphics graphics;
+    WiFiLobbyQuestionnaireMessages messages;
+    WiFiLobbyQuestionnaireScreen screen;
+    WiFiLobbyQuestionnaireMessageBox messageBox;
+} WiFiLobbyQuestionnaire;
 
-static void WiFiLobbyNews_VBlankCallback(void *param0);
-static void WiFiLobbyNewsGraphics_Init(WiFiLobbyNewsGraphics *param0, SaveData *saveData, enum HeapID heapID);
-static void WiFiLobbyNewsGraphics_Free(WiFiLobbyNewsGraphics *param0);
-static void WiFiLobbyNewsGraphics_UpdateSprites(WiFiLobbyNewsGraphics *param0);
-static void WiFiLobbyNewsGraphics_ProcessVBlank(WiFiLobbyNewsGraphics *param0);
-static void WiFiLobbyNewsGraphics_InitBackgrounds(WiFiLobbyNewsGraphics *param0, Options *options, enum HeapID heapID);
-static void WiFiLobbyNewsGraphics_FreeBackgrounds(WiFiLobbyNewsGraphics *param0);
-static void WiFiLobbyNewsGraphics_InitSpriteSystem(WiFiLobbyNewsGraphics *param0, enum HeapID heapID);
-static void WiFiLobbyNewsGraphics_FreeSpriteSystem(WiFiLobbyNewsGraphics *param0);
-static void WiFiLobbyNewsMessages_Init(WiFiLobbyNewsMessages *param0, UnkStruct_ov66_0222DFF8 *param1, enum HeapID heapID);
-static void WiFiLobbyNewsMessages_Free(WiFiLobbyNewsMessages *param0);
-static String *WiFiLobbyNewsMessages_GetString(WiFiLobbyNewsMessages *param0, u32 param1, u32 param2);
-static String *WiFiLobbyNewsMessages_GetQuestionText(WiFiLobbyNewsMessages *param0, u32 param1);
-static String *WiFiLobbyNewsMessages_GetAnswerText(WiFiLobbyNewsMessages *param0, u32 param1, u32 param2);
-static void WiFiLobbyNewsMessages_SetPlayerName(WiFiLobbyNewsMessages *param0, u32 param1, enum HeapID heapID);
-static void WiFiLobbyNewsQuestion_Init(WiFiLobbyNewsQuestion *param0, BOOL param1, enum HeapID heapID);
-static void WiFiLobbyNewsQuestion_Free(WiFiLobbyNewsQuestion *param0);
-static String *WiFiLobbyNewsQuestion_GetText(const WiFiLobbyNewsQuestion *param0, WiFiLobbyNewsMessages *param1);
-static String *WiFiLobbyNewsQuestion_GetAnswerText(const WiFiLobbyNewsQuestion *param0, WiFiLobbyNewsMessages *param1, u32 param2);
-static void WiFiLobbyNewsAnswerTally_Init(WiFiLobbyNewsAnswerTally *param0);
-static u32 WiFiLobbyNewsAnswerTally_GetBarWidth(const WiFiLobbyNewsAnswerTally *param0, u32 param1, u32 param2);
-static void WiFiLobbyNewsAnswerTally_CountAnswers(WiFiLobbyNewsAnswerTally *param0, const UnkStruct_ov66_0222DFF8 *param1);
-static void WiFiLobbyNewsScreen_InitAnswerSelection(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4);
-static BOOL WiFiLobbyNewsScreen_MainAnswerSelection(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
-static void WiFiLobbyNewsScreen_FreeAnswerSelection(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2);
-static void WiFiLobbyNewsAnswerSelection_Init(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, u32 param3);
-static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, u32 param5);
-static void WiFiLobbyNewsAnswerSelection_Free(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2);
-static void WiFiLobbyNewsAnswerSelection_DrawQuestion(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2);
-static void WiFiLobbyNewsAnswerSelection_UpdateCursor(WiFiLobbyNewsAnswerSelection *param0);
-static void WiFiLobbyNewsAnswerSelection_AnimateCursor(WiFiLobbyNewsAnswerSelection *param0);
-static void WiFiLobbyNewsScreen_InitResults(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4);
-static BOOL WiFiLobbyNewsScreen_MainResults(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
-static void WiFiLobbyNewsScreen_FreeResults(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2);
-static void WiFiLobbyNewsResults_Init(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, UnkStruct_ov66_02231374 *param3, enum HeapID heapID);
-static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
-static void WiFiLobbyNewsResults_Free(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2);
-static void WiFiLobbyNewsResults_DrawHeader(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, u32 param2, TextColor param3);
-static void WiFiLobbyNewsResults_DrawQuestion(WiFiLobbyNewsResults *param0, const WiFiLobbyNewsQuestion *param1, WiFiLobbyNewsMessages *param2, WiFiLobbyNewsGraphics *param3, const UnkStruct_ov66_0222E908 *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8);
-static void WiFiLobbyNewsResults_InitBars(WiFiLobbyNewsResults *param0, const WiFiLobbyNewsAnswerTally *param1, WiFiLobbyNewsGraphics *param2, u32 param3);
-static BOOL WiFiLobbyNewsResults_AnimateBars(WiFiLobbyNewsResults *param0, WiFiLobbyNewsGraphics *param1);
-static void WiFiLobbyNewsResults_DrawPage(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, u32 param3);
-static void WiFiLobbyNewsMessageBox_Init(WiFiLobbyNewsMessageBox *param0, WiFiLobbyNewsGraphics *param1, SaveData *saveData, enum HeapID heapID);
-static void WiFiLobbyNewsMessageBox_Free(WiFiLobbyNewsMessageBox *param0, u32 param1);
-static void WiFiLobbyNewsMessageBox_Print(WiFiLobbyNewsMessageBox *param0, const String *param1);
-static void WiFiLobbyNewsMessageBox_PrintInstant(WiFiLobbyNewsMessageBox *param0, const String *param1);
-static void WiFiLobbyNewsMessageBox_ShowWaitDial(WiFiLobbyNewsMessageBox *param0);
-static void WiFiLobbyNewsMessageBox_HideWaitDial(WiFiLobbyNewsMessageBox *param0);
-static BOOL WiFiLobbyNewsMessageBox_IsMessageDone(const WiFiLobbyNewsMessageBox *param0);
-static void WiFiLobbyNewsMessageBox_Erase(WiFiLobbyNewsMessageBox *param0);
-static void WiFiLobbyNewsMessageBox_OpenYesNoMenu(WiFiLobbyNewsMessageBox *param0, WiFiLobbyNewsGraphics *param1, u32 param2);
-static u32 WiFiLobbyNewsMessageBox_ProcessMenuInput(WiFiLobbyNewsMessageBox *param0, u32 param1);
-static void WiFiLobbyNewsMessageBox_DestroyMenu(WiFiLobbyNewsMessageBox *param0, u32 param1);
+static void WiFiLobbyQuestionnaire_VBlankCallback(void *param0);
+static void WiFiLobbyQuestionnaireGraphics_Init(WiFiLobbyQuestionnaireGraphics *param0, SaveData *saveData, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireGraphics_Free(WiFiLobbyQuestionnaireGraphics *param0);
+static void WiFiLobbyQuestionnaireGraphics_UpdateSprites(WiFiLobbyQuestionnaireGraphics *param0);
+static void WiFiLobbyQuestionnaireGraphics_ProcessVBlank(WiFiLobbyQuestionnaireGraphics *param0);
+static void WiFiLobbyQuestionnaireGraphics_InitBackgrounds(WiFiLobbyQuestionnaireGraphics *param0, Options *options, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireGraphics_FreeBackgrounds(WiFiLobbyQuestionnaireGraphics *param0);
+static void WiFiLobbyQuestionnaireGraphics_InitSpriteSystem(WiFiLobbyQuestionnaireGraphics *param0, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireGraphics_FreeSpriteSystem(WiFiLobbyQuestionnaireGraphics *param0);
+static void WiFiLobbyQuestionnaireMessages_Init(WiFiLobbyQuestionnaireMessages *param0, UnkStruct_ov66_0222DFF8 *param1, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireMessages_Free(WiFiLobbyQuestionnaireMessages *param0);
+static String *WiFiLobbyQuestionnaireMessages_GetString(WiFiLobbyQuestionnaireMessages *param0, u32 param1, u32 param2);
+static String *WiFiLobbyQuestionnaireMessages_GetQuestionText(WiFiLobbyQuestionnaireMessages *param0, u32 param1);
+static String *WiFiLobbyQuestionnaireMessages_GetAnswerText(WiFiLobbyQuestionnaireMessages *param0, u32 param1, u32 param2);
+static void WiFiLobbyQuestionnaireMessages_SetPlayerName(WiFiLobbyQuestionnaireMessages *param0, u32 param1, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireQuestion_Init(WiFiLobbyQuestionnaireQuestion *param0, BOOL param1, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireQuestion_Free(WiFiLobbyQuestionnaireQuestion *param0);
+static String *WiFiLobbyQuestionnaireQuestion_GetText(const WiFiLobbyQuestionnaireQuestion *param0, WiFiLobbyQuestionnaireMessages *param1);
+static String *WiFiLobbyQuestionnaireQuestion_GetAnswerText(const WiFiLobbyQuestionnaireQuestion *param0, WiFiLobbyQuestionnaireMessages *param1, u32 param2);
+static void WiFiLobbyQuestionnaireAnswerTally_Init(WiFiLobbyQuestionnaireAnswerTally *param0);
+static u32 WiFiLobbyQuestionnaireAnswerTally_GetBarWidth(const WiFiLobbyQuestionnaireAnswerTally *param0, u32 param1, u32 param2);
+static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnaireAnswerTally *param0, const UnkStruct_ov66_0222DFF8 *param1);
+static void WiFiLobbyQuestionnaireScreen_InitAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4);
+static BOOL WiFiLobbyQuestionnaireScreen_MainAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireScreen_FreeAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
+static void WiFiLobbyQuestionnaireAnswerSelection_Init(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3);
+static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, u32 param5);
+static void WiFiLobbyQuestionnaireAnswerSelection_Free(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
+static void WiFiLobbyQuestionnaireAnswerSelection_DrawQuestion(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
+static void WiFiLobbyQuestionnaireAnswerSelection_UpdateCursor(WiFiLobbyQuestionnaireAnswerSelection *param0);
+static void WiFiLobbyQuestionnaireAnswerSelection_AnimateCursor(WiFiLobbyQuestionnaireAnswerSelection *param0);
+static void WiFiLobbyQuestionnaireScreen_InitResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4);
+static BOOL WiFiLobbyQuestionnaireScreen_MainResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireScreen_FreeResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
+static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, enum HeapID heapID);
+static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireResults_Free(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
+static void WiFiLobbyQuestionnaireResults_DrawHeader(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, u32 param2, TextColor param3);
+static void WiFiLobbyQuestionnaireResults_DrawQuestion(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireQuestion *param1, WiFiLobbyQuestionnaireMessages *param2, WiFiLobbyQuestionnaireGraphics *param3, const UnkStruct_ov66_0222E908 *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8);
+static void WiFiLobbyQuestionnaireResults_InitBars(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireAnswerTally *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3);
+static BOOL WiFiLobbyQuestionnaireResults_AnimateBars(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireGraphics *param1);
+static void WiFiLobbyQuestionnaireResults_DrawPage(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3);
+static void WiFiLobbyQuestionnaireMessageBox_Init(WiFiLobbyQuestionnaireMessageBox *param0, WiFiLobbyQuestionnaireGraphics *param1, SaveData *saveData, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireMessageBox_Free(WiFiLobbyQuestionnaireMessageBox *param0, u32 param1);
+static void WiFiLobbyQuestionnaireMessageBox_Print(WiFiLobbyQuestionnaireMessageBox *param0, const String *param1);
+static void WiFiLobbyQuestionnaireMessageBox_PrintInstant(WiFiLobbyQuestionnaireMessageBox *param0, const String *param1);
+static void WiFiLobbyQuestionnaireMessageBox_ShowWaitDial(WiFiLobbyQuestionnaireMessageBox *param0);
+static void WiFiLobbyQuestionnaireMessageBox_HideWaitDial(WiFiLobbyQuestionnaireMessageBox *param0);
+static BOOL WiFiLobbyQuestionnaireMessageBox_IsMessageDone(const WiFiLobbyQuestionnaireMessageBox *param0);
+static void WiFiLobbyQuestionnaireMessageBox_Erase(WiFiLobbyQuestionnaireMessageBox *param0);
+static void WiFiLobbyQuestionnaireMessageBox_OpenYesNoMenu(WiFiLobbyQuestionnaireMessageBox *param0, WiFiLobbyQuestionnaireGraphics *param1, u32 param2);
+static u32 WiFiLobbyQuestionnaireMessageBox_ProcessMenuInput(WiFiLobbyQuestionnaireMessageBox *param0, u32 param1);
+static void WiFiLobbyQuestionnaireMessageBox_DestroyMenu(WiFiLobbyQuestionnaireMessageBox *param0, u32 param1);
 
 static const CharTransferTemplate sCharTransferTemplate = {
     0x20,
@@ -293,47 +293,47 @@ static const BgTemplate sBgTemplates[4] = {
     },
 };
 
-static void (*sScreenInitFuncs[2])(WiFiLobbyNewsScreen *, WiFiLobbyNewsMessages *, WiFiLobbyNewsGraphics *, UnkStruct_ov66_02231374 *, u32) = {
-    WiFiLobbyNewsScreen_InitAnswerSelection,
-    WiFiLobbyNewsScreen_InitResults
+static void (*sScreenInitFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *, UnkStruct_ov66_02231374 *, u32) = {
+    WiFiLobbyQuestionnaireScreen_InitAnswerSelection,
+    WiFiLobbyQuestionnaireScreen_InitResults
 };
 
-static BOOL (*sScreenMainFuncs[2])(WiFiLobbyNewsScreen *, WiFiLobbyNewsMessages *, WiFiLobbyNewsGraphics *, WiFiLobbyNewsMessageBox *, UnkStruct_ov66_02231374 *, enum HeapID) = {
-    WiFiLobbyNewsScreen_MainAnswerSelection,
-    WiFiLobbyNewsScreen_MainResults
+static BOOL (*sScreenMainFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *, WiFiLobbyQuestionnaireMessageBox *, UnkStruct_ov66_02231374 *, enum HeapID) = {
+    WiFiLobbyQuestionnaireScreen_MainAnswerSelection,
+    WiFiLobbyQuestionnaireScreen_MainResults
 };
 
-static void (*sScreenFreeFuncs[2])(WiFiLobbyNewsScreen *, WiFiLobbyNewsMessages *, WiFiLobbyNewsGraphics *) = {
-    WiFiLobbyNewsScreen_FreeAnswerSelection,
-    WiFiLobbyNewsScreen_FreeResults
+static void (*sScreenFreeFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *) = {
+    WiFiLobbyQuestionnaireScreen_FreeAnswerSelection,
+    WiFiLobbyQuestionnaireScreen_FreeResults
 };
 
-int WiFiLobbyNews_Init(ApplicationManager *appMan, int *param1)
+int WiFiLobbyQuestionnaire_Init(ApplicationManager *appMan, int *param1)
 {
-    WiFiLobbyNews *v0;
+    WiFiLobbyQuestionnaire *v0;
     UnkStruct_ov66_02231374 *v1 = ApplicationManager_Args(appMan);
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_PARTY_MENU2, 0x50000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyNews), HEAP_ID_PARTY_MENU2);
-    memset(v0, 0, sizeof(WiFiLobbyNews));
+    v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyQuestionnaire), HEAP_ID_PARTY_MENU2);
+    memset(v0, 0, sizeof(WiFiLobbyQuestionnaire));
 
-    WiFiLobbyNewsGraphics_Init(&v0->graphics, v1->saveData, 122);
-    WiFiLobbyNewsMessages_Init(&v0->messages, v1->unk_04, 122);
-    WiFiLobbyNewsMessageBox_Init(&v0->messageBox, &v0->graphics, v1->saveData, 122);
+    WiFiLobbyQuestionnaireGraphics_Init(&v0->graphics, v1->saveData, 122);
+    WiFiLobbyQuestionnaireMessages_Init(&v0->messages, v1->unk_04, 122);
+    WiFiLobbyQuestionnaireMessageBox_Init(&v0->messageBox, &v0->graphics, v1->saveData, 122);
 
     GF_ASSERT(v1->unk_08 < 2);
     sScreenInitFuncs[v1->unk_08](&v0->screen, &v0->messages, &v0->graphics, v1, 122);
 
-    SetVBlankCallback(WiFiLobbyNews_VBlankCallback, v0);
+    SetVBlankCallback(WiFiLobbyQuestionnaire_VBlankCallback, v0);
     DisableHBlank();
 
     return 1;
 }
 
-int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
+int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
 {
-    WiFiLobbyNews *v0;
+    WiFiLobbyQuestionnaire *v0;
     UnkStruct_ov66_02231374 *v1;
     BOOL v2;
 
@@ -381,19 +381,19 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
         v2 = IsScreenFadeDone();
 
         if (v2 == 1) {
-            WiFiLobbyNewsMessageBox_HideWaitDial(&v0->messageBox);
+            WiFiLobbyQuestionnaireMessageBox_HideWaitDial(&v0->messageBox);
             return 1;
         }
         break;
     }
 
-    WiFiLobbyNewsGraphics_UpdateSprites(&v0->graphics);
+    WiFiLobbyQuestionnaireGraphics_UpdateSprites(&v0->graphics);
     return 0;
 }
 
-int WiFiLobbyNews_Exit(ApplicationManager *appMan, int *param1)
+int WiFiLobbyQuestionnaire_Exit(ApplicationManager *appMan, int *param1)
 {
-    WiFiLobbyNews *v0 = ApplicationManager_Data(appMan);
+    WiFiLobbyQuestionnaire *v0 = ApplicationManager_Data(appMan);
     UnkStruct_ov66_02231374 *v1 = ApplicationManager_Args(appMan);
 
     SetVBlankCallback(NULL, NULL);
@@ -401,9 +401,9 @@ int WiFiLobbyNews_Exit(ApplicationManager *appMan, int *param1)
 
     sScreenFreeFuncs[v1->unk_08](&v0->screen, &v0->messages, &v0->graphics);
 
-    WiFiLobbyNewsMessageBox_Free(&v0->messageBox, 122);
-    WiFiLobbyNewsMessages_Free(&v0->messages);
-    WiFiLobbyNewsGraphics_Free(&v0->graphics);
+    WiFiLobbyQuestionnaireMessageBox_Free(&v0->messageBox, 122);
+    WiFiLobbyQuestionnaireMessages_Free(&v0->messages);
+    WiFiLobbyQuestionnaireGraphics_Free(&v0->graphics);
 
     ApplicationManager_FreeData(appMan);
     Heap_Destroy(HEAP_ID_PARTY_MENU2);
@@ -412,45 +412,45 @@ int WiFiLobbyNews_Exit(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static void WiFiLobbyNews_VBlankCallback(void *param0)
+static void WiFiLobbyQuestionnaire_VBlankCallback(void *param0)
 {
-    WiFiLobbyNews *v0 = param0;
-    WiFiLobbyNewsGraphics_ProcessVBlank(&v0->graphics);
+    WiFiLobbyQuestionnaire *v0 = param0;
+    WiFiLobbyQuestionnaireGraphics_ProcessVBlank(&v0->graphics);
 }
 
-static void WiFiLobbyNewsGraphics_Init(WiFiLobbyNewsGraphics *param0, SaveData *saveData, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireGraphics_Init(WiFiLobbyQuestionnaireGraphics *param0, SaveData *saveData, enum HeapID heapID)
 {
     Options *options = SaveData_GetOptions(saveData);
     param0->narc = NARC_ctor(NARC_INDEX_GRAPHIC__WIFI_LOBBY_OTHER, heapID);
 
     VramTransfer_New(32, heapID);
     GXLayers_SetBanks(&sGxBanks);
-    WiFiLobbyNewsGraphics_InitBackgrounds(param0, options, heapID);
-    WiFiLobbyNewsGraphics_InitSpriteSystem(param0, heapID);
+    WiFiLobbyQuestionnaireGraphics_InitBackgrounds(param0, options, heapID);
+    WiFiLobbyQuestionnaireGraphics_InitSpriteSystem(param0, heapID);
 }
 
-static void WiFiLobbyNewsGraphics_Free(WiFiLobbyNewsGraphics *param0)
+static void WiFiLobbyQuestionnaireGraphics_Free(WiFiLobbyQuestionnaireGraphics *param0)
 {
     NARC_dtor(param0->narc);
     VramTransfer_Free();
 
-    WiFiLobbyNewsGraphics_FreeBackgrounds(param0);
-    WiFiLobbyNewsGraphics_FreeSpriteSystem(param0);
+    WiFiLobbyQuestionnaireGraphics_FreeBackgrounds(param0);
+    WiFiLobbyQuestionnaireGraphics_FreeSpriteSystem(param0);
 }
 
-static void WiFiLobbyNewsGraphics_UpdateSprites(WiFiLobbyNewsGraphics *param0)
+static void WiFiLobbyQuestionnaireGraphics_UpdateSprites(WiFiLobbyQuestionnaireGraphics *param0)
 {
     SpriteList_Update(param0->spriteList);
 }
 
-static void WiFiLobbyNewsGraphics_ProcessVBlank(WiFiLobbyNewsGraphics *param0)
+static void WiFiLobbyQuestionnaireGraphics_ProcessVBlank(WiFiLobbyQuestionnaireGraphics *param0)
 {
     Bg_RunScheduledUpdates(param0->bgConfig);
     RenderOam_Transfer();
     VramTransfer_Process();
 }
 
-static void WiFiLobbyNewsGraphics_InitBackgrounds(WiFiLobbyNewsGraphics *param0, Options *options, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireGraphics_InitBackgrounds(WiFiLobbyQuestionnaireGraphics *param0, Options *options, enum HeapID heapID)
 {
     SetAllGraphicsModes(&sGraphicsModes);
 
@@ -477,7 +477,7 @@ static void WiFiLobbyNewsGraphics_InitBackgrounds(WiFiLobbyNewsGraphics *param0,
     Graphics_LoadPalette(NARC_INDEX_GRAPHIC__LOBBY_NEWS, 0, 4, 0, 0, heapID);
 }
 
-static void WiFiLobbyNewsGraphics_FreeBackgrounds(WiFiLobbyNewsGraphics *param0)
+static void WiFiLobbyQuestionnaireGraphics_FreeBackgrounds(WiFiLobbyQuestionnaireGraphics *param0)
 {
     {
         int v0;
@@ -490,7 +490,7 @@ static void WiFiLobbyNewsGraphics_FreeBackgrounds(WiFiLobbyNewsGraphics *param0)
     Heap_Free(param0->bgConfig);
 }
 
-static void WiFiLobbyNewsGraphics_InitSpriteSystem(WiFiLobbyNewsGraphics *param0, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireGraphics_InitSpriteSystem(WiFiLobbyQuestionnaireGraphics *param0, enum HeapID heapID)
 {
     int v0;
 
@@ -515,7 +515,7 @@ static void WiFiLobbyNewsGraphics_InitSpriteSystem(WiFiLobbyNewsGraphics *param0
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void WiFiLobbyNewsGraphics_FreeSpriteSystem(WiFiLobbyNewsGraphics *param0)
+static void WiFiLobbyQuestionnaireGraphics_FreeSpriteSystem(WiFiLobbyQuestionnaireGraphics *param0)
 {
     int v0;
 
@@ -530,7 +530,7 @@ static void WiFiLobbyNewsGraphics_FreeSpriteSystem(WiFiLobbyNewsGraphics *param0
     RenderOam_Free();
 }
 
-static void WiFiLobbyNewsMessages_Init(WiFiLobbyNewsMessages *param0, UnkStruct_ov66_0222DFF8 *param1, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireMessages_Init(WiFiLobbyQuestionnaireMessages *param0, UnkStruct_ov66_0222DFF8 *param1, enum HeapID heapID)
 {
     int v0;
     static const v1[9] = {
@@ -556,7 +556,7 @@ static void WiFiLobbyNewsMessages_Init(WiFiLobbyNewsMessages *param0, UnkStruct_
     param0->string2 = String_Init(256, heapID);
 }
 
-static void WiFiLobbyNewsMessages_Free(WiFiLobbyNewsMessages *param0)
+static void WiFiLobbyQuestionnaireMessages_Free(WiFiLobbyQuestionnaireMessages *param0)
 {
     int v0;
 
@@ -569,7 +569,7 @@ static void WiFiLobbyNewsMessages_Free(WiFiLobbyNewsMessages *param0)
     String_Free(param0->string2);
 }
 
-static String *WiFiLobbyNewsMessages_GetString(WiFiLobbyNewsMessages *param0, u32 param1, u32 param2)
+static String *WiFiLobbyQuestionnaireMessages_GetString(WiFiLobbyQuestionnaireMessages *param0, u32 param1, u32 param2)
 {
     GF_ASSERT(param1 < 9);
 
@@ -579,7 +579,7 @@ static String *WiFiLobbyNewsMessages_GetString(WiFiLobbyNewsMessages *param0, u3
     return param0->string1;
 }
 
-static String *WiFiLobbyNewsMessages_GetQuestionText(WiFiLobbyNewsMessages *param0, u32 param1)
+static String *WiFiLobbyQuestionnaireMessages_GetQuestionText(WiFiLobbyQuestionnaireMessages *param0, u32 param1)
 {
     if (param1 >= (50 + 10)) {
         GF_ASSERT(param1 >= (50 + 10));
@@ -587,13 +587,13 @@ static String *WiFiLobbyNewsMessages_GetQuestionText(WiFiLobbyNewsMessages *para
     }
 
     if (param1 < 50) {
-        return WiFiLobbyNewsMessages_GetString(param0, 1, param1);
+        return WiFiLobbyQuestionnaireMessages_GetString(param0, 1, param1);
     }
 
-    return WiFiLobbyNewsMessages_GetString(param0, 2, param1 - 50);
+    return WiFiLobbyQuestionnaireMessages_GetString(param0, 2, param1 - 50);
 }
 
-static String *WiFiLobbyNewsMessages_GetAnswerText(WiFiLobbyNewsMessages *param0, u32 param1, u32 param2)
+static String *WiFiLobbyQuestionnaireMessages_GetAnswerText(WiFiLobbyQuestionnaireMessages *param0, u32 param1, u32 param2)
 {
     if (param1 >= (50 + 10)) {
         GF_ASSERT(param1 >= (50 + 10));
@@ -601,13 +601,13 @@ static String *WiFiLobbyNewsMessages_GetAnswerText(WiFiLobbyNewsMessages *param0
     }
 
     if (param1 < 50) {
-        return WiFiLobbyNewsMessages_GetString(param0, 3 + param2, param1);
+        return WiFiLobbyQuestionnaireMessages_GetString(param0, 3 + param2, param1);
     }
 
-    return WiFiLobbyNewsMessages_GetString(param0, 6 + param2, param1 - 50);
+    return WiFiLobbyQuestionnaireMessages_GetString(param0, 6 + param2, param1 - 50);
 }
 
-static void WiFiLobbyNewsMessages_SetPlayerName(WiFiLobbyNewsMessages *param0, u32 param1, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireMessages_SetPlayerName(WiFiLobbyQuestionnaireMessages *param0, u32 param1, enum HeapID heapID)
 {
     TrainerInfo *v0 = TrainerInfo_New(heapID);
     const WiFiPlazaProfile *v1 = ov66_0222E3BC(param0->profile);
@@ -617,22 +617,22 @@ static void WiFiLobbyNewsMessages_SetPlayerName(WiFiLobbyNewsMessages *param0, u
     Heap_Free(v0);
 }
 
-static void WiFiLobbyNewsScreen_InitAnswerSelection(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4)
+static void WiFiLobbyQuestionnaireScreen_InitAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4)
 {
-    WiFiLobbyNewsAnswerSelection_Init(&param0->answerSelection, param1, param2, param4);
+    WiFiLobbyQuestionnaireAnswerSelection_Init(&param0->answerSelection, param1, param2, param4);
 }
 
-static BOOL WiFiLobbyNewsScreen_MainAnswerSelection(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
+static BOOL WiFiLobbyQuestionnaireScreen_MainAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
 {
-    return WiFiLobbyNewsAnswerSelection_Main(&param0->answerSelection, param1, param2, param3, param4, heapID);
+    return WiFiLobbyQuestionnaireAnswerSelection_Main(&param0->answerSelection, param1, param2, param3, param4, heapID);
 }
 
-static void WiFiLobbyNewsScreen_FreeAnswerSelection(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2)
+static void WiFiLobbyQuestionnaireScreen_FreeAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2)
 {
-    WiFiLobbyNewsAnswerSelection_Free(&param0->answerSelection, param1, param2);
+    WiFiLobbyQuestionnaireAnswerSelection_Free(&param0->answerSelection, param1, param2);
 }
 
-static void WiFiLobbyNewsAnswerSelection_Init(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, u32 param3)
+static void WiFiLobbyQuestionnaireAnswerSelection_Init(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3)
 {
     {
         Graphics_LoadPaletteFromOpenNARC(param2->narc, 199, 0, 0, 4 * 32, param3);
@@ -683,29 +683,29 @@ static void WiFiLobbyNewsAnswerSelection_Init(WiFiLobbyNewsAnswerSelection *para
         }
     }
 
-    WiFiLobbyNewsQuestion_Init(&param0->question, 1, param3);
+    WiFiLobbyQuestionnaireQuestion_Init(&param0->question, 1, param3);
 }
 
-static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, u32 param5)
+static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, u32 param5)
 {
     u32 v0;
     String *v1;
 
     switch (param0->state) {
     case 0:
-        v1 = WiFiLobbyNewsMessages_GetString(param1, 0, 94);
-        WiFiLobbyNewsMessageBox_Print(param3, v1);
+        v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 94);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v1);
         param0->returnState = 1;
         param0->state = 10;
         break;
     case 1:
-        WiFiLobbyNewsMessageBox_OpenYesNoMenu(param3, param2, param5);
+        WiFiLobbyQuestionnaireMessageBox_OpenYesNoMenu(param3, param2, param5);
         param0->state = 2;
         break;
     case 2: {
         u32 v2;
 
-        v2 = WiFiLobbyNewsMessageBox_ProcessMenuInput(param3, param5);
+        v2 = WiFiLobbyQuestionnaireMessageBox_ProcessMenuInput(param3, param5);
 
         switch (v2) {
         case 0:
@@ -723,19 +723,19 @@ static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *para
             v0 = 93;
         }
 
-        v1 = WiFiLobbyNewsMessages_GetString(param1, 0, v0);
-        WiFiLobbyNewsMessageBox_Print(param3, v1);
+        v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, v0);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v1);
 
         param0->returnState = 4;
         param0->state = 10;
         break;
     case 4:
-        WiFiLobbyNewsAnswerSelection_DrawQuestion(param0, param1, param2);
+        WiFiLobbyQuestionnaireAnswerSelection_DrawQuestion(param0, param1, param2);
 
-        v1 = WiFiLobbyNewsQuestion_GetText(&param0->question, param1);
-        WiFiLobbyNewsMessageBox_PrintInstant(param3, v1);
-        WiFiLobbyNewsAnswerSelection_UpdateCursor(param0);
-        WiFiLobbyNewsAnswerSelection_AnimateCursor(param0);
+        v1 = WiFiLobbyQuestionnaireQuestion_GetText(&param0->question, param1);
+        WiFiLobbyQuestionnaireMessageBox_PrintInstant(param3, v1);
+        WiFiLobbyQuestionnaireAnswerSelection_UpdateCursor(param0);
+        WiFiLobbyQuestionnaireAnswerSelection_AnimateCursor(param0);
 
         param0->state = 5;
         break;
@@ -758,17 +758,17 @@ static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *para
             }
         }
 
-        WiFiLobbyNewsAnswerSelection_UpdateCursor(param0);
+        WiFiLobbyQuestionnaireAnswerSelection_UpdateCursor(param0);
         break;
 
     case 6:
         ov66_0222E5D8(param4->unk_04, param0->question.questionSerialNo, param0->selectedAnswer);
         ov66_022333E4(param0->selectedAnswer);
 
-        v1 = WiFiLobbyNewsMessages_GetString(param1, 0, 96);
+        v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 96);
 
-        WiFiLobbyNewsMessageBox_PrintInstant(param3, v1);
-        WiFiLobbyNewsMessageBox_ShowWaitDial(param3);
+        WiFiLobbyQuestionnaireMessageBox_PrintInstant(param3, v1);
+        WiFiLobbyQuestionnaireMessageBox_ShowWaitDial(param3);
         Sound_PlayEffect(SEQ_SE_PL_BREC80_sseq);
         param0->state = 7;
         break;
@@ -778,10 +778,10 @@ static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *para
 
         if (v3 != UnkEnum_ov66_02233434_01) {
             Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
-            WiFiLobbyNewsMessageBox_HideWaitDial(param3);
+            WiFiLobbyQuestionnaireMessageBox_HideWaitDial(param3);
 
-            v1 = WiFiLobbyNewsMessages_GetString(param1, 0, 97);
-            WiFiLobbyNewsMessageBox_Print(param3, v1);
+            v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 97);
+            WiFiLobbyQuestionnaireMessageBox_Print(param3, v1);
 
             param0->returnState = 8;
             param0->state = 10;
@@ -794,16 +794,16 @@ static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *para
             v0 = 99;
         }
 
-        v1 = WiFiLobbyNewsMessages_GetString(param1, 0, v0);
-        WiFiLobbyNewsMessageBox_Print(param3, v1);
+        v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, v0);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v1);
         param0->returnState = 9;
         param0->state = 10;
         break;
     case 9:
-        WiFiLobbyNewsMessageBox_Erase(param3);
+        WiFiLobbyQuestionnaireMessageBox_Erase(param3);
         return 1;
     case 10:
-        if (WiFiLobbyNewsMessageBox_IsMessageDone(param3) == 1) {
+        if (WiFiLobbyQuestionnaireMessageBox_IsMessageDone(param3) == 1) {
             param0->state = param0->returnState;
         }
         break;
@@ -815,9 +815,9 @@ static BOOL WiFiLobbyNewsAnswerSelection_Main(WiFiLobbyNewsAnswerSelection *para
     return 0;
 }
 
-static void WiFiLobbyNewsAnswerSelection_Free(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2)
+static void WiFiLobbyQuestionnaireAnswerSelection_Free(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2)
 {
-    WiFiLobbyNewsQuestion_Free(&param0->question);
+    WiFiLobbyQuestionnaireQuestion_Free(&param0->question);
 
     {
         int v0;
@@ -843,35 +843,35 @@ static void WiFiLobbyNewsAnswerSelection_Free(WiFiLobbyNewsAnswerSelection *para
     }
 }
 
-static void WiFiLobbyNewsAnswerSelection_DrawQuestion(WiFiLobbyNewsAnswerSelection *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2)
+static void WiFiLobbyQuestionnaireAnswerSelection_DrawQuestion(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2)
 {
     String *v0;
 
     Window_FillTilemap(&param0->window[0], 0);
 
-    v0 = WiFiLobbyNewsQuestion_GetAnswerText(&param0->question, param1, 0);
+    v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(&param0->question, param1, 0);
     Text_AddPrinterWithParamsAndColor(&param0->window[0], FONT_MESSAGE, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    v0 = WiFiLobbyNewsQuestion_GetAnswerText(&param0->question, param1, 1);
+    v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(&param0->question, param1, 1);
     Text_AddPrinterWithParamsAndColor(&param0->window[0], FONT_MESSAGE, v0, 0, 24, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    v0 = WiFiLobbyNewsQuestion_GetAnswerText(&param0->question, param1, 2);
+    v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(&param0->question, param1, 2);
     Text_AddPrinterWithParamsAndColor(&param0->window[0], FONT_MESSAGE, v0, 0, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
     Window_ScheduleCopyToVRAM(&param0->window[0]);
 }
 
-static void WiFiLobbyNewsAnswerSelection_UpdateCursor(WiFiLobbyNewsAnswerSelection *param0)
+static void WiFiLobbyQuestionnaireAnswerSelection_UpdateCursor(WiFiLobbyQuestionnaireAnswerSelection *param0)
 {
     Sprite_SetDrawFlag(param0->cursorSprite, TRUE);
     Sprite_SetPosition(param0->cursorSprite, &sCursorPositions[param0->selectedAnswer]);
 }
 
-static void WiFiLobbyNewsAnswerSelection_AnimateCursor(WiFiLobbyNewsAnswerSelection *param0)
+static void WiFiLobbyQuestionnaireAnswerSelection_AnimateCursor(WiFiLobbyQuestionnaireAnswerSelection *param0)
 {
     Sprite_SetAnimateFlag(param0->cursorSprite, 1);
 }
 
-static void WiFiLobbyNewsMessageBox_Init(WiFiLobbyNewsMessageBox *param0, WiFiLobbyNewsGraphics *param1, SaveData *saveData, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireMessageBox_Init(WiFiLobbyQuestionnaireMessageBox *param0, WiFiLobbyQuestionnaireGraphics *param1, SaveData *saveData, enum HeapID heapID)
 {
     Window_Add(param1->bgConfig, &param0->window, 1, 2, 19, 27, 4, 4, (1 + (18 + 12)) + 9);
     Window_FillTilemap(&param0->window, 15);
@@ -880,21 +880,21 @@ static void WiFiLobbyNewsMessageBox_Init(WiFiLobbyNewsMessageBox *param0, WiFiLo
     param0->textFrameDelay = Options_TextFrameDelay(SaveData_GetOptions(saveData));
 }
 
-static void WiFiLobbyNewsMessageBox_Free(WiFiLobbyNewsMessageBox *param0, u32 param1)
+static void WiFiLobbyQuestionnaireMessageBox_Free(WiFiLobbyQuestionnaireMessageBox *param0, u32 param1)
 {
     if (Text_IsPrinterActive(param0->printer)) {
         Text_RemovePrinter(param0->printer);
     }
 
-    WiFiLobbyNewsMessageBox_HideWaitDial(param0);
+    WiFiLobbyQuestionnaireMessageBox_HideWaitDial(param0);
 
     String_Free(param0->string);
     Window_Remove(&param0->window);
 
-    WiFiLobbyNewsMessageBox_DestroyMenu(param0, param1);
+    WiFiLobbyQuestionnaireMessageBox_DestroyMenu(param0, param1);
 }
 
-static void WiFiLobbyNewsMessageBox_Print(WiFiLobbyNewsMessageBox *param0, const String *param1)
+static void WiFiLobbyQuestionnaireMessageBox_Print(WiFiLobbyQuestionnaireMessageBox *param0, const String *param1)
 {
     if (Text_IsPrinterActive(param0->printer)) {
         Text_RemovePrinter(param0->printer);
@@ -906,7 +906,7 @@ static void WiFiLobbyNewsMessageBox_Print(WiFiLobbyNewsMessageBox *param0, const
     Window_DrawMessageBoxWithScrollCursor(&param0->window, 1, 1, 5);
 }
 
-static void WiFiLobbyNewsMessageBox_PrintInstant(WiFiLobbyNewsMessageBox *param0, const String *param1)
+static void WiFiLobbyQuestionnaireMessageBox_PrintInstant(WiFiLobbyQuestionnaireMessageBox *param0, const String *param1)
 {
     if (Text_IsPrinterActive(param0->printer)) {
         Text_RemovePrinter(param0->printer);
@@ -919,13 +919,13 @@ static void WiFiLobbyNewsMessageBox_PrintInstant(WiFiLobbyNewsMessageBox *param0
     Window_ScheduleCopyToVRAM(&param0->window);
 }
 
-static void WiFiLobbyNewsMessageBox_ShowWaitDial(WiFiLobbyNewsMessageBox *param0)
+static void WiFiLobbyQuestionnaireMessageBox_ShowWaitDial(WiFiLobbyQuestionnaireMessageBox *param0)
 {
     GF_ASSERT(param0->waitDial == NULL);
     param0->waitDial = Window_AddWaitDial(&param0->window, 1);
 }
 
-static void WiFiLobbyNewsMessageBox_HideWaitDial(WiFiLobbyNewsMessageBox *param0)
+static void WiFiLobbyQuestionnaireMessageBox_HideWaitDial(WiFiLobbyQuestionnaireMessageBox *param0)
 {
     if (param0->waitDial != NULL) {
         DestroyWaitDial(param0->waitDial);
@@ -933,7 +933,7 @@ static void WiFiLobbyNewsMessageBox_HideWaitDial(WiFiLobbyNewsMessageBox *param0
     }
 }
 
-static BOOL WiFiLobbyNewsMessageBox_IsMessageDone(const WiFiLobbyNewsMessageBox *param0)
+static BOOL WiFiLobbyQuestionnaireMessageBox_IsMessageDone(const WiFiLobbyQuestionnaireMessageBox *param0)
 {
     if (Text_IsPrinterActive(param0->printer) == 0) {
         return 1;
@@ -942,25 +942,25 @@ static BOOL WiFiLobbyNewsMessageBox_IsMessageDone(const WiFiLobbyNewsMessageBox 
     return 0;
 }
 
-static void WiFiLobbyNewsMessageBox_Erase(WiFiLobbyNewsMessageBox *param0)
+static void WiFiLobbyQuestionnaireMessageBox_Erase(WiFiLobbyQuestionnaireMessageBox *param0)
 {
     if (Text_IsPrinterActive(param0->printer)) {
         Text_RemovePrinter(param0->printer);
     }
 
-    WiFiLobbyNewsMessageBox_HideWaitDial(param0);
+    WiFiLobbyQuestionnaireMessageBox_HideWaitDial(param0);
 
     Window_EraseMessageBox(&param0->window, 1);
     Window_ClearAndScheduleCopyToVRAM(&param0->window);
 }
 
-static void WiFiLobbyNewsMessageBox_OpenYesNoMenu(WiFiLobbyNewsMessageBox *param0, WiFiLobbyNewsGraphics *param1, u32 param2)
+static void WiFiLobbyQuestionnaireMessageBox_OpenYesNoMenu(WiFiLobbyQuestionnaireMessageBox *param0, WiFiLobbyQuestionnaireGraphics *param1, u32 param2)
 {
     GF_ASSERT(param0->menu == NULL);
     param0->menu = Menu_MakeYesNoChoice(param1->bgConfig, &sYesNoWindowTemplate, 1 + (18 + 12), 6, param2);
 }
 
-static u32 WiFiLobbyNewsMessageBox_ProcessMenuInput(WiFiLobbyNewsMessageBox *param0, u32 param1)
+static u32 WiFiLobbyQuestionnaireMessageBox_ProcessMenuInput(WiFiLobbyQuestionnaireMessageBox *param0, u32 param1)
 {
     u32 v0 = Menu_ProcessInputAndHandleExit(param0->menu, param1);
 
@@ -971,7 +971,7 @@ static u32 WiFiLobbyNewsMessageBox_ProcessMenuInput(WiFiLobbyNewsMessageBox *par
     return v0;
 }
 
-static void WiFiLobbyNewsMessageBox_DestroyMenu(WiFiLobbyNewsMessageBox *param0, u32 param1)
+static void WiFiLobbyQuestionnaireMessageBox_DestroyMenu(WiFiLobbyQuestionnaireMessageBox *param0, u32 param1)
 {
     if (param0->menu != NULL) {
         Menu_DestroyForExit(param0->menu, param1);
@@ -979,22 +979,22 @@ static void WiFiLobbyNewsMessageBox_DestroyMenu(WiFiLobbyNewsMessageBox *param0,
     }
 }
 
-static void WiFiLobbyNewsScreen_InitResults(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4)
+static void WiFiLobbyQuestionnaireScreen_InitResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4)
 {
-    WiFiLobbyNewsResults_Init(&param0->results, param1, param2, param3, param4);
+    WiFiLobbyQuestionnaireResults_Init(&param0->results, param1, param2, param3, param4);
 }
 
-static BOOL WiFiLobbyNewsScreen_MainResults(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
+static BOOL WiFiLobbyQuestionnaireScreen_MainResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
 {
-    return WiFiLobbyNewsResults_Main(&param0->results, param1, param2, param3, param4, heapID);
+    return WiFiLobbyQuestionnaireResults_Main(&param0->results, param1, param2, param3, param4, heapID);
 }
 
-static void WiFiLobbyNewsScreen_FreeResults(WiFiLobbyNewsScreen *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2)
+static void WiFiLobbyQuestionnaireScreen_FreeResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2)
 {
-    WiFiLobbyNewsResults_Free(&param0->results, param1, param2);
+    WiFiLobbyQuestionnaireResults_Free(&param0->results, param1, param2);
 }
 
-static void WiFiLobbyNewsResults_Init(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, UnkStruct_ov66_02231374 *param3, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, enum HeapID heapID)
 {
     {
         Graphics_LoadPaletteFromOpenNARC(param2->narc, 199, 0, 0, 4 * 32, heapID);
@@ -1010,26 +1010,26 @@ static void WiFiLobbyNewsResults_Init(WiFiLobbyNewsResults *param0, WiFiLobbyNew
         }
     }
 
-    WiFiLobbyNewsResults_DrawHeader(param0, param1, 109, TEXT_COLOR(3, 4, 0));
+    WiFiLobbyQuestionnaireResults_DrawHeader(param0, param1, 109, TEXT_COLOR(3, 4, 0));
 
     {
         param0->charDataRaw = Graphics_GetCharDataFromOpenNARC(param2->narc, 200, 0, &param0->charData, heapID);
     }
 
     {
-        WiFiLobbyNewsQuestion_Init(&param0->currentQuestion, 1, heapID);
-        WiFiLobbyNewsQuestion_Init(&param0->lastQuestion, 0, heapID);
+        WiFiLobbyQuestionnaireQuestion_Init(&param0->currentQuestion, 1, heapID);
+        WiFiLobbyQuestionnaireQuestion_Init(&param0->lastQuestion, 0, heapID);
 
         if (ov66_0222F144(param3->unk_04, &param0->currentTally) == 0) {
-            WiFiLobbyNewsAnswerTally_CountAnswers(&param0->currentTally, param3->unk_04);
+            WiFiLobbyQuestionnaireAnswerTally_CountAnswers(&param0->currentTally, param3->unk_04);
             ov66_0222F124(param3->unk_04, &param0->currentTally);
         }
 
-        WiFiLobbyNewsAnswerTally_Init(&param0->lastTally);
+        WiFiLobbyQuestionnaireAnswerTally_Init(&param0->lastTally);
     }
 }
 
-static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, WiFiLobbyNewsMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
+static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
 {
     String *v0;
     u32 v1;
@@ -1042,21 +1042,21 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
             v1 = 105;
         }
 
-        v0 = WiFiLobbyNewsMessages_GetString(param1, 0, v1);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, v1);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 1;
         param0->state = 22;
         break;
     case 1:
-        v0 = WiFiLobbyNewsQuestion_GetText(&param0->currentQuestion, param1);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireQuestion_GetText(&param0->currentQuestion, param1);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 2;
         param0->state = 22;
         break;
     case 2:
         if (gSystem.pressedKeys & PAD_BUTTON_A) {
-            v0 = WiFiLobbyNewsMessages_GetString(param1, 0, 104);
-            WiFiLobbyNewsMessageBox_Print(param3, v0);
+            v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 104);
+            WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
             param0->returnState = 3;
             param0->state = 22;
         }
@@ -1068,8 +1068,8 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
             v1 = 108;
         }
 
-        v0 = WiFiLobbyNewsMessages_GetString(param1, 0, v1);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, v1);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 4;
         param0->state = 22;
         break;
@@ -1082,8 +1082,8 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
         ov66_0222E908(v3, &v2);
 
         v4 = ov66_0222E924(param4->unk_04, ov66_0222E338(param4->unk_04));
-        WiFiLobbyNewsResults_DrawQuestion(param0, &param0->currentQuestion, param1, param2, &v2, heapID, TEXT_COLOR(9, 10, 0), TEXT_COLOR(13, 14, 0), v4);
-        WiFiLobbyNewsResults_InitBars(param0, &param0->currentTally, param2, 1);
+        WiFiLobbyQuestionnaireResults_DrawQuestion(param0, &param0->currentQuestion, param1, param2, &v2, heapID, TEXT_COLOR(9, 10, 0), TEXT_COLOR(13, 14, 0), v4);
+        WiFiLobbyQuestionnaireResults_InitBars(param0, &param0->currentTally, param2, 1);
 
         Sound_PlayEffect(SEQ_SE_PL_PINPON2_sseq);
     }
@@ -1093,7 +1093,7 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
     case 5: {
         BOOL v5;
 
-        v5 = WiFiLobbyNewsResults_AnimateBars(param0, param2);
+        v5 = WiFiLobbyQuestionnaireResults_AnimateBars(param0, param2);
 
         if (v5 == 1) {
             param0->state = 6;
@@ -1104,23 +1104,23 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
             if (param0->lastQuestion.questionNo != (PPW_LOBBY_INVALID_QUESTION_NO)) {
                 param0->state = 7;
             } else {
-                v0 = WiFiLobbyNewsMessages_GetString(param1, 0, 112);
-                WiFiLobbyNewsMessageBox_Print(param3, v0);
+                v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 112);
+                WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
                 param0->returnState = 20;
                 param0->state = 22;
             }
         }
         break;
     case 7:
-        v0 = WiFiLobbyNewsMessages_GetString(param1, 0, 111);
-        WiFiLobbyNewsMessageBox_PrintInstant(param3, v0);
-        WiFiLobbyNewsMessageBox_OpenYesNoMenu(param3, param2, heapID);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 111);
+        WiFiLobbyQuestionnaireMessageBox_PrintInstant(param3, v0);
+        WiFiLobbyQuestionnaireMessageBox_OpenYesNoMenu(param3, param2, heapID);
         param0->state = 8;
         break;
     case 8: {
         u32 v6;
 
-        v6 = WiFiLobbyNewsMessageBox_ProcessMenuInput(param3, heapID);
+        v6 = WiFiLobbyQuestionnaireMessageBox_ProcessMenuInput(param3, heapID);
 
         switch (v6) {
         case 0:
@@ -1137,7 +1137,7 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
         break;
     case 10:
         if (IsScreenFadeDone() == TRUE) {
-            WiFiLobbyNewsResults_DrawPage(param0, param1, param2, heapID);
+            WiFiLobbyQuestionnaireResults_DrawPage(param0, param1, param2, heapID);
             param0->state = 11;
         }
         break;
@@ -1157,21 +1157,21 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
             v1 = 115;
         }
 
-        v0 = WiFiLobbyNewsMessages_GetString(param1, 0, v1);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, v1);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 14;
         param0->state = 22;
         break;
     case 14:
-        v0 = WiFiLobbyNewsQuestion_GetText(&param0->lastQuestion, param1);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireQuestion_GetText(&param0->lastQuestion, param1);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 15;
         param0->state = 22;
         break;
     case 15:
         if (gSystem.pressedKeys & PAD_BUTTON_A) {
-            v0 = WiFiLobbyNewsMessages_GetString(param1, 0, 114);
-            WiFiLobbyNewsMessageBox_Print(param3, v0);
+            v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 114);
+            WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
             param0->returnState = 16;
             param0->state = 22;
         }
@@ -1183,8 +1183,8 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
             v1 = 118;
         }
 
-        v0 = WiFiLobbyNewsMessages_GetString(param1, 0, v1);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, v1);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 17;
         param0->state = 22;
         break;
@@ -1198,8 +1198,8 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
         v7.selectedAnswer = WiFiPlazaQuestion_GetSelectedAnswer(savedWiFiPlazaQuestion);
         v9 = ov66_0222E924(param4->unk_04, ov66_0222E338(param4->unk_04));
 
-        WiFiLobbyNewsResults_DrawQuestion(param0, &param0->lastQuestion, param1, param2, &v7, heapID, TEXT_COLOR(11, 12, 0), TEXT_COLOR(15, 14, 0), v9);
-        WiFiLobbyNewsResults_InitBars(param0, &param0->lastTally, param2, 2);
+        WiFiLobbyQuestionnaireResults_DrawQuestion(param0, &param0->lastQuestion, param1, param2, &v7, heapID, TEXT_COLOR(11, 12, 0), TEXT_COLOR(15, 14, 0), v9);
+        WiFiLobbyQuestionnaireResults_InitBars(param0, &param0->lastTally, param2, 2);
         Sound_PlayEffect(SEQ_SE_PL_PINPON2_sseq);
     }
         param0->state = 18;
@@ -1207,7 +1207,7 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
     case 18: {
         BOOL v10;
 
-        v10 = WiFiLobbyNewsResults_AnimateBars(param0, param2);
+        v10 = WiFiLobbyQuestionnaireResults_AnimateBars(param0, param2);
 
         if (v10 == 1) {
             param0->state = 19;
@@ -1219,16 +1219,16 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
         }
         break;
     case 20:
-        v0 = WiFiLobbyNewsMessages_GetString(param1, 0, 120);
-        WiFiLobbyNewsMessageBox_Print(param3, v0);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 120);
+        WiFiLobbyQuestionnaireMessageBox_Print(param3, v0);
         param0->returnState = 21;
         param0->state = 22;
         break;
     case 21:
-        WiFiLobbyNewsMessageBox_Erase(param3);
+        WiFiLobbyQuestionnaireMessageBox_Erase(param3);
         return 1;
     case 22:
-        if (WiFiLobbyNewsMessageBox_IsMessageDone(param3) == 1) {
+        if (WiFiLobbyQuestionnaireMessageBox_IsMessageDone(param3) == 1) {
             param0->state = param0->returnState;
         }
         break;
@@ -1240,11 +1240,11 @@ static BOOL WiFiLobbyNewsResults_Main(WiFiLobbyNewsResults *param0, WiFiLobbyNew
     return 0;
 }
 
-static void WiFiLobbyNewsResults_Free(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2)
+static void WiFiLobbyQuestionnaireResults_Free(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2)
 {
     {
-        WiFiLobbyNewsQuestion_Free(&param0->currentQuestion);
-        WiFiLobbyNewsQuestion_Free(&param0->lastQuestion);
+        WiFiLobbyQuestionnaireQuestion_Free(&param0->currentQuestion);
+        WiFiLobbyQuestionnaireQuestion_Free(&param0->lastQuestion);
     }
 
     Heap_Free(param0->charDataRaw);
@@ -1259,7 +1259,7 @@ static void WiFiLobbyNewsResults_Free(WiFiLobbyNewsResults *param0, WiFiLobbyNew
     }
 }
 
-static void WiFiLobbyNewsResults_DrawHeader(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, u32 param2, TextColor param3)
+static void WiFiLobbyQuestionnaireResults_DrawHeader(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, u32 param2, TextColor param3)
 {
     String *v0;
     u32 v1;
@@ -1267,7 +1267,7 @@ static void WiFiLobbyNewsResults_DrawHeader(WiFiLobbyNewsResults *param0, WiFiLo
 
     Window_FillTilemap(&param0->windows[0], 0);
 
-    v0 = WiFiLobbyNewsMessages_GetString(param1, 0, param2);
+    v0 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, param2);
     v1 = Font_CalcStringWidth(FONT_MESSAGE, v0, 0);
     v2 = ((18 * 8) - v1) / 2;
 
@@ -1275,20 +1275,20 @@ static void WiFiLobbyNewsResults_DrawHeader(WiFiLobbyNewsResults *param0, WiFiLo
     Window_ScheduleCopyToVRAM(&param0->windows[0]);
 }
 
-static void WiFiLobbyNewsResults_DrawQuestion(WiFiLobbyNewsResults *param0, const WiFiLobbyNewsQuestion *param1, WiFiLobbyNewsMessages *param2, WiFiLobbyNewsGraphics *param3, const UnkStruct_ov66_0222E908 *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8)
+static void WiFiLobbyQuestionnaireResults_DrawQuestion(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireQuestion *param1, WiFiLobbyQuestionnaireMessages *param2, WiFiLobbyQuestionnaireGraphics *param3, const UnkStruct_ov66_0222E908 *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8)
 {
     String *v0;
 
     Window_FillTilemap(&param0->windows[1], 0);
     Window_FillTilemap(&param0->windows[5], 0);
 
-    v0 = WiFiLobbyNewsQuestion_GetAnswerText(param1, param2, 0);
+    v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(param1, param2, 0);
     Text_AddPrinterWithParamsAndColor(&param0->windows[1], FONT_MESSAGE, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, param6, NULL);
 
-    v0 = WiFiLobbyNewsQuestion_GetAnswerText(param1, param2, 1);
+    v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(param1, param2, 1);
     Text_AddPrinterWithParamsAndColor(&param0->windows[1], FONT_MESSAGE, v0, 0, 24, TEXT_SPEED_NO_TRANSFER, param6, NULL);
 
-    v0 = WiFiLobbyNewsQuestion_GetAnswerText(param1, param2, 2);
+    v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(param1, param2, 2);
     Text_AddPrinterWithParamsAndColor(&param0->windows[1], FONT_MESSAGE, v0, 0, 48, TEXT_SPEED_NO_TRANSFER, param6, NULL);
 
     if ((param4->questionNumber == param1->questionSerialNo) && (param4->selectedAnswer < 3)) {
@@ -1302,15 +1302,15 @@ static void WiFiLobbyNewsResults_DrawQuestion(WiFiLobbyNewsResults *param0, cons
             v3 = param6;
         }
 
-        WiFiLobbyNewsMessages_SetPlayerName(param2, 0, heapID);
+        WiFiLobbyQuestionnaireMessages_SetPlayerName(param2, 0, heapID);
 
-        v0 = WiFiLobbyNewsMessages_GetString(param2, 0, 110);
+        v0 = WiFiLobbyQuestionnaireMessages_GetString(param2, 0, 110);
         v1 = Font_CalcStringWidth(FONT_MESSAGE, v0, 0);
         v2 = (((12 * 8) - v1) / 2);
 
         Text_AddPrinterWithParamsAndColor(&param0->windows[5], FONT_MESSAGE, v0, v2, 0, TEXT_SPEED_NO_TRANSFER, v3, NULL);
 
-        v0 = WiFiLobbyNewsQuestion_GetAnswerText(param1, param2, param4->selectedAnswer);
+        v0 = WiFiLobbyQuestionnaireQuestion_GetAnswerText(param1, param2, param4->selectedAnswer);
         v1 = Font_CalcStringWidth(FONT_MESSAGE, v0, 0);
         v2 = (((13 * 8) - v1) / 2);
 
@@ -1321,7 +1321,7 @@ static void WiFiLobbyNewsResults_DrawQuestion(WiFiLobbyNewsResults *param0, cons
     Window_ScheduleCopyToVRAM(&param0->windows[1]);
 }
 
-static void WiFiLobbyNewsResults_InitBars(WiFiLobbyNewsResults *param0, const WiFiLobbyNewsAnswerTally *param1, WiFiLobbyNewsGraphics *param2, u32 param3)
+static void WiFiLobbyQuestionnaireResults_InitBars(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireAnswerTally *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3)
 {
     int v0;
 
@@ -1329,14 +1329,14 @@ static void WiFiLobbyNewsResults_InitBars(WiFiLobbyNewsResults *param0, const Wi
 
     for (v0 = 0; v0 < 3; v0++) {
         param0->barPositions[v0] = 0;
-        param0->barTargets[v0] = WiFiLobbyNewsAnswerTally_GetBarWidth(param1, v0, 80);
+        param0->barTargets[v0] = WiFiLobbyQuestionnaireAnswerTally_GetBarWidth(param1, v0, 80);
 
         Window_SetPalette(&param0->windows[2 + v0], param3);
         Window_FillTilemap(&param0->windows[2 + v0], 0);
     }
 }
 
-static BOOL WiFiLobbyNewsResults_AnimateBars(WiFiLobbyNewsResults *param0, WiFiLobbyNewsGraphics *param1)
+static BOOL WiFiLobbyQuestionnaireResults_AnimateBars(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireGraphics *param1)
 {
     s32 v0;
     s32 v1;
@@ -1383,7 +1383,7 @@ static BOOL WiFiLobbyNewsResults_AnimateBars(WiFiLobbyNewsResults *param0, WiFiL
     return 0;
 }
 
-static void WiFiLobbyNewsResults_DrawPage(WiFiLobbyNewsResults *param0, WiFiLobbyNewsMessages *param1, WiFiLobbyNewsGraphics *param2, u32 param3)
+static void WiFiLobbyQuestionnaireResults_DrawPage(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3)
 {
     {
         Graphics_LoadTilemapToBgLayerFromOpenNARC(param2->narc, 203, param2->bgConfig, 0, 0, 0, 0, param3);
@@ -1398,10 +1398,10 @@ static void WiFiLobbyNewsResults_DrawPage(WiFiLobbyNewsResults *param0, WiFiLobb
         }
     }
 
-    WiFiLobbyNewsResults_DrawHeader(param0, param1, 119, TEXT_COLOR(5, 6, 0));
+    WiFiLobbyQuestionnaireResults_DrawHeader(param0, param1, 119, TEXT_COLOR(5, 6, 0));
 }
 
-static void WiFiLobbyNewsQuestion_Init(WiFiLobbyNewsQuestion *param0, BOOL param1, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireQuestion_Init(WiFiLobbyQuestionnaireQuestion *param0, BOOL param1, enum HeapID heapID)
 {
     u32 v0;
     u32 v1;
@@ -1440,7 +1440,7 @@ static void WiFiLobbyNewsQuestion_Init(WiFiLobbyNewsQuestion *param0, BOOL param
     }
 }
 
-static void WiFiLobbyNewsQuestion_Free(WiFiLobbyNewsQuestion *param0)
+static void WiFiLobbyQuestionnaireQuestion_Free(WiFiLobbyQuestionnaireQuestion *param0)
 {
     int v0;
 
@@ -1451,25 +1451,25 @@ static void WiFiLobbyNewsQuestion_Free(WiFiLobbyNewsQuestion *param0)
     }
 }
 
-static String *WiFiLobbyNewsQuestion_GetText(const WiFiLobbyNewsQuestion *param0, WiFiLobbyNewsMessages *param1)
+static String *WiFiLobbyQuestionnaireQuestion_GetText(const WiFiLobbyQuestionnaireQuestion *param0, WiFiLobbyQuestionnaireMessages *param1)
 {
     if (param0->isFreeQuestion == 0) {
-        return WiFiLobbyNewsMessages_GetQuestionText(param1, param0->questionNo);
+        return WiFiLobbyQuestionnaireMessages_GetQuestionText(param1, param0->questionNo);
     }
 
     return param0->questionText;
 }
 
-static String *WiFiLobbyNewsQuestion_GetAnswerText(const WiFiLobbyNewsQuestion *param0, WiFiLobbyNewsMessages *param1, u32 param2)
+static String *WiFiLobbyQuestionnaireQuestion_GetAnswerText(const WiFiLobbyQuestionnaireQuestion *param0, WiFiLobbyQuestionnaireMessages *param1, u32 param2)
 {
     if (param0->isFreeQuestion == 0) {
-        return WiFiLobbyNewsMessages_GetAnswerText(param1, param0->questionNo, param2);
+        return WiFiLobbyQuestionnaireMessages_GetAnswerText(param1, param0->questionNo, param2);
     }
 
     return param0->answerTexts[param2];
 }
 
-static void WiFiLobbyNewsAnswerTally_Init(WiFiLobbyNewsAnswerTally *param0)
+static void WiFiLobbyQuestionnaireAnswerTally_Init(WiFiLobbyQuestionnaireAnswerTally *param0)
 {
     int v0;
 
@@ -1481,7 +1481,7 @@ static void WiFiLobbyNewsAnswerTally_Init(WiFiLobbyNewsAnswerTally *param0)
     }
 }
 
-static u32 WiFiLobbyNewsAnswerTally_GetBarWidth(const WiFiLobbyNewsAnswerTally *param0, u32 param1, u32 param2)
+static u32 WiFiLobbyQuestionnaireAnswerTally_GetBarWidth(const WiFiLobbyQuestionnaireAnswerTally *param0, u32 param1, u32 param2)
 {
     u64 v0, v1;
 
@@ -1493,7 +1493,7 @@ static u32 WiFiLobbyNewsAnswerTally_GetBarWidth(const WiFiLobbyNewsAnswerTally *
     return (u32)(((u64)(v0 * v1)) / param0->totalCount);
 }
 
-static void WiFiLobbyNewsAnswerTally_CountAnswers(WiFiLobbyNewsAnswerTally *param0, const UnkStruct_ov66_0222DFF8 *param1)
+static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnaireAnswerTally *param0, const UnkStruct_ov66_0222DFF8 *param1)
 {
     const WiFiPlazaProfile *v0;
     UnkStruct_ov66_0222E908 v1;
@@ -1501,7 +1501,7 @@ static void WiFiLobbyNewsAnswerTally_CountAnswers(WiFiLobbyNewsAnswerTally *para
     u32 language;
     BOOL v4;
 
-    memset(param0, 0, sizeof(WiFiLobbyNewsAnswerTally));
+    memset(param0, 0, sizeof(WiFiLobbyQuestionnaireAnswerTally));
 
     for (v2 = 0; v2 < 20; v2++) {
         v0 = ov66_0222E374(param1, v2);
