@@ -482,7 +482,7 @@ pokeplatinum_c = files(
     'overlay007/shop_menu.c',
     'overlay008/gym_features.c',
     'overlay009/ov9_02249960.c',
-    'overlay010/ov10_0221F800.c',
+    'trainer_intro/trainer_intro.c',
     'overlay011/move_palettes.c',
     'overlay011/particle_helper.c',
     'battle_anim/is_form_symmetrical.c',

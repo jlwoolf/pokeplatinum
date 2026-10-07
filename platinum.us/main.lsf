@@ -611,10 +611,10 @@ Overlay overlay9
 	Object main.nef.p/src_overlay009_ov9_02249960.c.o
 }
 
-Overlay overlay10
+Overlay trainer_intro
 {
 	After nintendo_wfc
-	Object main.nef.p/src_overlay010_ov10_0221F800.c.o
+	Object main.nef.p/src_trainer_intro_trainer_intro.c.o
 }
 
 Overlay overlay11

@@ -31,8 +31,8 @@
 #include "battle/stop_recording_task_data.h"
 #include "battle/terrain.h"
 #include "battle_anim/battle_anim_system.h"
-#include "overlay010/ov10_0221F800.h"
 #include "overlay011/particle_helper.h"
+#include "trainer_intro/trainer_intro.h"
 
 #include "bag.h"
 #include "bg_window.h"
@@ -90,7 +90,7 @@
 
 #include "res/text/bank/battle_strings.h"
 
-FS_EXTERN_OVERLAY(overlay10);
+FS_EXTERN_OVERLAY(trainer_intro);
 FS_EXTERN_OVERLAY(overlay11);
 FS_EXTERN_OVERLAY(battle_anim);
 FS_EXTERN_OVERLAY(battle_sub_menus);
@@ -231,7 +231,7 @@ BOOL Battle_Main(ApplicationManager *appMan, int *state)
         break;
     case BATTLE_STATE_WAIT_TRAINER_INTRO:
         if (BattleMain_WaitTrainerIntro(appMan) == TRUE) {
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay10));
+            Overlay_UnloadByID(FS_OVERLAY_ID(trainer_intro));
             *state = BATTLE_STATE_SYNC_BATTLE_START;
             CommTiming_StartSync(61);
         }
@@ -263,7 +263,7 @@ BOOL Battle_Main(ApplicationManager *appMan, int *state)
         break;
     case BATTLE_STATE_LINK_BATTLE_END:
         if (BattleMain_WaitLinkBattleEnd(appMan) == TRUE) {
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay10));
+            Overlay_UnloadByID(FS_OVERLAY_ID(trainer_intro));
             Heap_Destroy(HEAP_ID_BATTLE);
             *state = BATTLE_STATE_LINK_BATTLE_FINISH;
         }
@@ -1957,7 +1957,7 @@ static BOOL BattleMain_InitPartnerIntro(ApplicationManager *appMan)
         return FALSE;
     }
 
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay10), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(trainer_intro), OVERLAY_LOAD_ASYNC);
 
     if ((battleSys->battleType & BATTLE_TYPE_2vs2) == FALSE) {
         return FALSE;
@@ -1994,7 +1994,7 @@ static BOOL BattleMain_InitPartnerIntro(ApplicationManager *appMan)
         break;
     }
 
-    ov10_0221F800(battleSys->trainerIntroData);
+    TrainerIntro_Start(battleSys->trainerIntroData);
 
     return TRUE;
 }
@@ -2053,7 +2053,7 @@ static BOOL BattleMain_InitTrainerIntro(ApplicationManager *appMan)
         battleSys->trainerIntroData->playerSide = 0;
     }
 
-    ov10_0221F800(battleSys->trainerIntroData);
+    TrainerIntro_Start(battleSys->trainerIntroData);
 
     return TRUE;
 }
@@ -2087,7 +2087,7 @@ static BOOL BattleMain_HandleLinkBattleResult(ApplicationManager *appMan)
     }
 
     u8 netID = CommSys_CurNetId();
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay10), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(trainer_intro), OVERLAY_LOAD_ASYNC);
     TrainerIntroData *trainerIntroData = Heap_Alloc(HEAP_ID_BATTLE, sizeof(TrainerIntroData));
 
     dto->postBattleData = trainerIntroData;
@@ -2152,7 +2152,7 @@ static BOOL BattleMain_HandleLinkBattleResult(ApplicationManager *appMan)
 
     trainerIntroData->recordingType = dto->recordingType;
 
-    ov10_0221F800(trainerIntroData);
+    TrainerIntro_Start(trainerIntroData);
 
     return TRUE;
 }
