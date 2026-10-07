@@ -1,0 +1,20 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_SCORE_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_SCORE_H
+
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_score_decl.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_stage.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_throw_data.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_final_scores.h"
+
+WiFiLobbyMinigameBucketScore *WiFiLobbyMinigameBucket_CreateScore(enum HeapID heapID, u32 param1, u32 param2, const WiFiLobbyMinigameBucketStage *param3);
+void WiFiLobbyMinigameBucket_FreeScore(WiFiLobbyMinigameBucketScore *param0);
+BOOL WiFiLobbyMinigameBucket_UpdateScoreTracker(WiFiLobbyMinigameBucketScore *param0);
+BOOL WiFiLobbyMinigameBucket_ScoreChanged(const WiFiLobbyMinigameBucketScore *param0);
+void WiFiLobbyMinigameBucket_ClearScoreChanged(WiFiLobbyMinigameBucketScore *param0);
+u32 WiFiLobbyMinigameBucket_GetScoreStage(const WiFiLobbyMinigameBucketScore *param0);
+void WiFiLobbyMinigameBucket_AdvanceScoreThreshold(WiFiLobbyMinigameBucketScore *param0, const WiFiLobbyMinigameBucketThrowData *param1, u32 param2);
+void WiFiLobbyMinigameBucket_SetPlayerScore(WiFiLobbyMinigameBucketScore *param0, u32 param1, u32 param2);
+BOOL WiFiLobbyMinigameBucket_AllPlayersScored(const WiFiLobbyMinigameBucketScore *param0);
+void WiFiLobbyMinigameBucket_GetFinalScores(WiFiLobbyMinigameBucketScore *param0, WiFiLobbyMinigameBucketFinalScores *param1);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_SCORE_H

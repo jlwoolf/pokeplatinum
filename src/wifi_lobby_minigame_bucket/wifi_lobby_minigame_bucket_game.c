@@ -1,5 +1,5 @@
 
-#include "overlay115/ov115_02260CEC.h"
+#include "wifi_lobby_minigame_bucket/wifi_lobby_minigame_bucket_game.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -12,11 +12,11 @@
 #include "geonet/struct_geonet_angle.h"
 #include "wifi_lobby_minigame/wifi_lobby_minigame.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_animation_decl.h"
-#include "overlay115/struct_ov115_022612BC.h"
-#include "overlay115/struct_ov115_02262DC4.h"
-#include "overlay115/struct_ov115_02262F50.h"
-#include "overlay115/struct_ov115_02265AD0.h"
-#include "overlay115/struct_ov115_02265AD4.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_mode.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_stage_data.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_stage.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_throw_data.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_final_scores.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"
@@ -58,14 +58,14 @@ typedef struct {
     fx32 unk_0C;
     int unk_10;
     int unk_14;
-} UnkStruct_ov115_02261304;
+} WiFiLobbyMinigameBucketMotion;
 
 typedef struct {
     u32 unk_00;
     s32 unk_04;
     s32 unk_08;
     Window unk_0C;
-} UnkStruct_ov115_022617E8;
+} WiFiLobbyMinigameBucketIntroWindow;
 
 typedef struct {
     u8 unk_00;
@@ -97,7 +97,7 @@ typedef struct {
     fx32 unk_D4;
     VecFx32 unk_D8;
     fx32 unk_E4;
-} UnkStruct_ov115_02261C18;
+} WiFiLobbyMinigameBucketCamera;
 
 typedef struct {
     Easy3DObject unk_00[3];
@@ -109,7 +109,7 @@ typedef struct {
     fx32 unk_228;
     u16 unk_22C;
     u16 unk_22E;
-} UnkStruct_ov115_02263DF8;
+} WiFiLobbyMinigameBucketSwalotModel;
 
 typedef struct {
     u16 unk_00;
@@ -119,19 +119,19 @@ typedef struct {
     VecFx32 unk_14;
     s32 unk_20;
     BOOL unk_24;
-} UnkStruct_ov115_02262134;
+} WiFiLobbyMinigameBucketProjectile;
 
 typedef struct {
     u8 unk_00;
     u8 unk_01;
     u16 unk_02;
-    UnkStruct_ov115_02262134 unk_04;
+    WiFiLobbyMinigameBucketProjectile unk_04;
     VecFx32 unk_2C;
     s16 unk_38;
     u16 unk_3A;
     BOOL unk_3C;
     fx32 unk_40;
-} UnkStruct_ov115_022622F8;
+} WiFiLobbyMinigameBucketProjectileState;
 
 typedef struct {
     u32 unk_00;
@@ -139,32 +139,32 @@ typedef struct {
     u16 unk_24;
     u16 unk_26;
     u32 unk_28;
-} UnkStruct_ov115_02262CA4;
+} WiFiLobbyMinigameBucketTouchBuffer;
 
 typedef struct {
     Easy3DModel unk_00[5];
     Easy3DModel unk_50;
     SpriteResource *unk_60[4];
     SpriteResourcesHeader unk_70;
-} UnkStruct_ov115_02264A40;
+} WiFiLobbyMinigameBucketBerryModels;
 
 typedef struct {
     Sprite *unk_00;
     Easy3DObject unk_04;
     Easy3DObject unk_7C;
     BOOL unk_F4;
-    const UnkStruct_ov115_022622F8 *unk_F8;
+    const WiFiLobbyMinigameBucketProjectileState *unk_F8;
     u16 unk_FC;
     u16 unk_FE;
     u16 unk_100;
     u16 unk_102;
     s16 unk_104;
-} UnkStruct_ov115_022647A0;
+} WiFiLobbyMinigameBucketBerry;
 
 typedef struct {
     BOOL unk_00;
     Sprite *unk_04;
-} UnkStruct_ov115_02264BA0;
+} WiFiLobbyMinigameBucketCursor;
 
 typedef struct {
     BOOL unk_00;
@@ -172,28 +172,28 @@ typedef struct {
     VecFx32 unk_08;
     s32 unk_14;
     BOOL unk_18;
-} UnkStruct_ov115_02264D80;
+} WiFiLobbyMinigameBucketSplashParticle;
 
 typedef struct {
-    UnkStruct_ov115_02264D80 unk_00[8];
-} UnkStruct_ov115_02264C90;
+    WiFiLobbyMinigameBucketSplashParticle unk_00[8];
+} WiFiLobbyMinigameBucketSplash;
 
 typedef struct {
     Sprite *unk_00[3];
     u32 unk_0C[3];
     VecFx32 unk_18[3];
     BOOL unk_3C;
-} UnkStruct_ov115_022615B0;
+} WiFiLobbyMinigameBucketThrowSprite;
 
 typedef struct {
-    UnkStruct_ov115_022615B0 unk_00[4];
-} UnkStruct_ov115_02261574;
+    WiFiLobbyMinigameBucketThrowSprite unk_00[4];
+} WiFiLobbyMinigameBucketThrowSprites;
 
 typedef struct {
     u32 unk_00;
     u32 unk_04;
-    UnkStruct_ov115_02261304 unk_08;
-} UnkStruct_ov115_02261ADC_sub1;
+    WiFiLobbyMinigameBucketMotion unk_08;
+} WiFiLobbyMinigameBucketSceneState;
 
 typedef struct {
     Easy3DObject unk_00[3];
@@ -205,7 +205,7 @@ typedef struct {
     s16 unk_1DA;
     fx32 unk_1DC;
     fx32 unk_1E0;
-} UnkStruct_ov115_02264FA0;
+} WiFiLobbyMinigameBucketBucketModel;
 
 typedef struct {
     u16 unk_00;
@@ -213,14 +213,14 @@ typedef struct {
     s16 unk_04;
     u8 unk_06;
     u8 unk_07;
-} UnkStruct_ov115_022653CC;
+} WiFiLobbyMinigameBucketBgFade;
 
 typedef struct {
-    UnkStruct_ov115_02262DC4 unk_00;
-    UnkStruct_ov115_02262DC4 unk_18;
-    UnkStruct_ov115_02262DC4 unk_30;
+    WiFiLobbyMinigameBucketStageData unk_00;
+    WiFiLobbyMinigameBucketStageData unk_18;
+    WiFiLobbyMinigameBucketStageData unk_30;
     s32 unk_48;
-} UnkStruct_ov115_02262E64;
+} WiFiLobbyMinigameBucketStageTransition;
 
 typedef struct {
     SpriteResource *unk_00[4];
@@ -231,13 +231,13 @@ typedef struct {
     u8 unk_3A;
     u8 unk_3B;
     s32 unk_3C;
-} UnkStruct_ov115_02263130;
+} WiFiLobbyMinigameBucketSwalot;
 
 typedef struct {
     u32 unk_00[4];
     u32 unk_10;
     u32 unk_14;
-} UnkStruct_ov115_022632C8;
+} WiFiLobbyMinigameBucketScoreBoard;
 
 typedef struct {
     SpriteResource *unk_00[4];
@@ -249,20 +249,20 @@ typedef struct {
     CharTransferAllocation unk_50;
     String *unk_5C;
     SpriteResource *unk_60;
-    UnkStruct_ov115_02261304 unk_64;
-    UnkStruct_ov115_02261304 unk_7C;
+    WiFiLobbyMinigameBucketMotion unk_64;
+    WiFiLobbyMinigameBucketMotion unk_7C;
     s16 unk_94;
     s16 unk_96;
     u16 unk_98;
     s16 unk_9A;
     enum HeapID heapID;
-} UnkStruct_ov115_02265788;
+} WiFiLobbyMinigameBucketScoreDisplay;
 
 typedef struct {
     u16 unk_00;
     u8 unk_02;
     s8 unk_03;
-} UnkStruct_ov115_022658E0;
+} WiFiLobbyMinigameBucketFinishEffect;
 
 typedef struct {
     BgConfig *unk_00;
@@ -281,22 +281,22 @@ typedef struct {
     FontOAMManager *unk_1F0;
     Camera *camera;
     VecFx32 unk_1F8;
-    UnkStruct_ov115_02264FA0 unk_204;
-    UnkStruct_ov115_02261574 unk_3E8;
-    UnkStruct_ov115_022617E8 unk_4E8;
-    UnkStruct_ov115_02261ADC_sub1 unk_504;
-    UnkStruct_ov115_02263DF8 unk_524;
+    WiFiLobbyMinigameBucketBucketModel unk_204;
+    WiFiLobbyMinigameBucketThrowSprites unk_3E8;
+    WiFiLobbyMinigameBucketIntroWindow unk_4E8;
+    WiFiLobbyMinigameBucketSceneState unk_504;
+    WiFiLobbyMinigameBucketSwalotModel unk_524;
     WiFiLobbyMinigameIntroAnimation *unk_754;
-    UnkStruct_ov115_022653CC unk_758;
-    UnkStruct_ov115_02264A40 unk_760;
-    UnkStruct_ov115_022647A0 unk_7F4[96];
-    UnkStruct_ov115_02264BA0 unk_6A34;
-    UnkStruct_ov115_02264C90 unk_6A3C;
-    UnkStruct_ov115_02265788 unk_6B1C;
+    WiFiLobbyMinigameBucketBgFade unk_758;
+    WiFiLobbyMinigameBucketBerryModels unk_760;
+    WiFiLobbyMinigameBucketBerry unk_7F4[96];
+    WiFiLobbyMinigameBucketCursor unk_6A34;
+    WiFiLobbyMinigameBucketSplash unk_6A3C;
+    WiFiLobbyMinigameBucketScoreDisplay unk_6B1C;
     NNSFndAllocator unk_6BBC;
-} UnkStruct_ov115_02261ADC;
+} WiFiLobbyMinigameBucketScene;
 
-typedef struct UnkStruct_ov115_02260D78_t {
+typedef struct WiFiLobbyMinigameBucketGame_t {
     u32 unk_00;
     BOOL unk_04;
     s32 unk_08;
@@ -305,212 +305,212 @@ typedef struct UnkStruct_ov115_02260D78_t {
     u32 unk_14;
     s32 unk_18;
     s32 unk_1C;
-    UnkStruct_ov115_02262CA4 unk_20;
-    UnkStruct_ov115_022622F8 unk_4C[96];
-    UnkStruct_ov115_02261C18 unk_19CC;
-    UnkStruct_ov115_02261ADC unk_1AB4;
-    UnkStruct_ov115_02265AD4 unk_8680;
+    WiFiLobbyMinigameBucketTouchBuffer unk_20;
+    WiFiLobbyMinigameBucketProjectileState unk_4C[96];
+    WiFiLobbyMinigameBucketCamera unk_19CC;
+    WiFiLobbyMinigameBucketScene unk_1AB4;
+    WiFiLobbyMinigameBucketFinalScores unk_8680;
     TouchPadDataBuffer unk_8690;
-    UnkStruct_ov115_02262E64 unk_86D4;
-    const UnkStruct_ov115_02262F50 *unk_8720;
+    WiFiLobbyMinigameBucketStageTransition unk_86D4;
+    const WiFiLobbyMinigameBucketStage *unk_8720;
     u16 unk_8724;
     u16 unk_8726;
-    UnkStruct_ov115_022612BC unk_8728;
+    WiFiLobbyMinigameBucketMode unk_8728;
     BOOL unk_872C;
-    UnkStruct_ov115_02263130 unk_8730;
-    UnkStruct_ov115_022632C8 unk_8770;
-    UnkStruct_ov115_022658E0 unk_8788;
-} UnkStruct_ov115_02260D78;
+    WiFiLobbyMinigameBucketSwalot unk_8730;
+    WiFiLobbyMinigameBucketScoreBoard unk_8770;
+    WiFiLobbyMinigameBucketFinishEffect unk_8788;
+} WiFiLobbyMinigameBucketGame;
 
-static void ov115_02261304(UnkStruct_ov115_02261304 *param0, fx32 param1, fx32 param2, fx32 param3, int param4);
-static BOOL ov115_02261364(UnkStruct_ov115_02261304 *param0);
-static void ov115_022613CC(u32 param0, u32 param1, u32 param2, s32 *param3, s32 *param4);
-static void ov115_022613F8(UnkStruct_ov115_02260D78 *param0, u16 param1, u16 param2, u16 param3, u16 param4, u32 param5);
-static u32 ov115_022614F8(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02261520(UnkStruct_ov115_02261574 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2, u32 param3, u32 param4);
-static void ov115_02261574(UnkStruct_ov115_02261574 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_0226158C(UnkStruct_ov115_02261574 *param0, u32 param1, u32 param2, int param3);
-static void ov115_02261598(UnkStruct_ov115_02261574 *param0);
-static void ov115_022615B0(UnkStruct_ov115_022615B0 *param0, AffineSpriteListTemplate *param1, UnkStruct_ov115_02261ADC *param2, u32 param3, u32 param4, u32 param5, u32 param6);
-static void ov115_02261648(UnkStruct_ov115_022615B0 *param0);
-static void ov115_02261660(UnkStruct_ov115_022615B0 *param0, u32 param1, u32 param2, int param3);
-static void ov115_02261744(UnkStruct_ov115_022615B0 *param0);
-static void ov115_0226177C(UnkStruct_ov115_022615B0 *param0, u32 param1);
-static void ov115_022617D8(UnkStruct_ov115_022615B0 *param0, u32 param1);
-static void ov115_02261A04(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02261A10(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1);
-static BOOL ov115_02261A3C(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02261A54(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02261A74(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1);
-static BOOL ov115_02261AA4(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02261AB8(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov115_02261C18 *param1);
-static void ov115_02261AC8(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 param2, u32 param3);
-static void ov115_02261AD8(UnkStruct_ov115_02261ADC *param0, u32 param1);
-static void ov115_02261ADC(UnkStruct_ov115_02261ADC *param0);
-static BOOL ov115_02261AEC(UnkStruct_ov115_02261ADC *param0);
-static BOOL ov115_02261B1C(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02261B34(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261C18 *param1);
-static void ov115_02261BBC(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261C18 *param1);
-static void ov115_02261C18(UnkStruct_ov115_02261C18 *param0, BOOL param1);
-static void ov115_02261C1C(UnkStruct_ov115_02261C18 *param0, u16 param1);
-static void ov115_02261C48(UnkStruct_ov115_02261C18 *param0, u16 param1);
-static u32 ov115_02261D84(const UnkStruct_ov115_02261C18 *param0, const VecFx32 *param1, const VecFx32 *param2, VecFx32 *param3);
-static BOOL ov115_02261EA8(const UnkStruct_ov115_02261C18 *param0, const VecFx32 *param1);
-static fx32 ov115_02261F3C(const UnkStruct_ov115_02261C18 *param0, u16 param1);
-static fx32 ov115_02261F68(const UnkStruct_ov115_02261C18 *param0, u16 param1);
-static void ov115_02261F94(UnkStruct_ov115_02261C18 *param0, fx32 param1);
-static void ov115_022620D8(UnkStruct_ov115_02261C18 *param0, u16 param1);
-static void ov115_022620DC(UnkStruct_ov115_02261C18 *param0, fx32 param1);
-static u16 ov115_022620E4(const UnkStruct_ov115_02261C18 *param0, s32 param1, s32 param2);
-static u16 ov115_022620EC(const UnkStruct_ov115_02261C18 *param0, s32 param1, s32 param2);
-static u16 ov115_022620F4(const UnkStruct_ov115_02261C18 *param0, s32 param1, s32 param2);
-static void ov115_02262134(const UnkStruct_ov115_02262134 *param0, UnkStruct_ov115_02265AD0 *param1);
-static void ov115_0226218C(const UnkStruct_ov115_02265AD0 *param0, UnkStruct_ov115_02262134 *param1);
-static void ov115_022621DC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02262134 *param1, u32 param2);
-static void ov115_022622EC(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022622F8 *param1, BOOL param2, u32 param3);
-static void ov115_022622F8(UnkStruct_ov115_022622F8 *param0);
-static void ov115_02262304(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262354(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022622F8 *param1);
-static void ov115_02262524(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262540(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262574(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1);
-static void ov115_022625A8(UnkStruct_ov115_02260D78 *param0);
-static BOOL ov115_022625C8(const UnkStruct_ov115_02260D78 *param0);
-static fx32 ov115_022625F0(const UnkStruct_ov115_022622F8 *param0);
-static void ov115_02262620(const UnkStruct_ov115_022622F8 *param0, VecFx32 *param1);
-static void ov115_022626BC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1, BOOL param2);
-static void ov115_022626E0(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1, BOOL param2, fx32 param3, BOOL param4);
-static void ov115_022627B4(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1);
-static BOOL ov115_02262888(const UnkStruct_ov115_022622F8 *param0);
-static BOOL ov115_022628A4(const UnkStruct_ov115_022622F8 *param0);
-static BOOL ov115_022628B8(UnkStruct_ov115_022622F8 *param0);
-static void ov115_022628DC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1);
-static void ov115_022628EC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1);
-static void ov115_0226294C(UnkStruct_ov115_022622F8 *param0, const VecFx32 *param1);
-static void ov115_02262974(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262990(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262B70(UnkStruct_ov115_02260D78 *param0);
-static BOOL ov115_02262C60(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262CA4(UnkStruct_ov115_02262CA4 *param0);
-static void ov115_02262CBC(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 param1);
-static BOOL ov115_02262D0C(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1);
-static BOOL ov115_02262D3C(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1);
-static BOOL ov115_02262D58(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1);
-static u32 ov115_02262D7C(UnkStruct_ov115_02262CA4 *param0);
-static void ov115_02262D90(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02262DB0(UnkStruct_ov115_02262E64 *param0, const UnkStruct_ov115_02262F50 *param1, const UnkStruct_ov115_022612BC *param2);
-static void ov115_02262DC4(UnkStruct_ov115_02262E64 *param0, const UnkStruct_ov115_02262F50 *param1, const UnkStruct_ov115_022612BC *param2, u16 param3, u16 param4);
-static BOOL ov115_02262E64(UnkStruct_ov115_02262E64 *param0);
-static void ov115_02262EFC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02262E64 *param1);
-static void ov115_02262F04(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02262DC4 *param1);
-static void ov115_02262F50(const UnkStruct_ov115_02262F50 *param0, const UnkStruct_ov115_022612BC *param1, u32 param2, UnkStruct_ov115_02262DC4 *param3);
-static void ov115_02262FB4(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_02261ADC *param1, u32 heapID);
-static void ov115_022630DC(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02263130(UnkStruct_ov115_02263130 *param0);
-static BOOL ov115_02263150(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_02260D78 *param1);
-static void ov115_0226327C(UnkStruct_ov115_022632C8 *param0);
-static void ov115_02263294(UnkStruct_ov115_022632C8 *param0, u32 param1, u32 param2);
-static void ov115_022632C8(UnkStruct_ov115_022632C8 *param0);
-static u32 ov115_022632D8(const UnkStruct_ov115_022632C8 *param0);
-static BOOL ov115_022632DC(const UnkStruct_ov115_022632C8 *param0, u32 param1);
-static void ov115_022633FC(UnkStruct_ov115_02260D78 *param0, u32 heapID);
-static void ov115_02263560(UnkStruct_ov115_02260D78 *param0);
-static void ov115_02263640(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_0226369C(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02263308(void);
-static void ov115_02263328(void);
-static void ov115_022633B4(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 param2, u32 heapID);
-static void ov115_022633EC(UnkStruct_ov115_02261ADC *param0);
-static void ov115_0226376C(UnkStruct_ov115_02261ADC *param0, u32 heapID);
-static void ov115_02263954(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263990(UnkStruct_ov115_02261ADC *param0, u32 heapID);
-static void ov115_02263A3C(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263BCC(UnkStruct_ov115_02261ADC *param0, u32 heapID);
-static void ov115_02263C04(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263C24(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 param2, u32 heapID);
-static void ov115_02263CC0(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263CD0(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263CD8(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 param2, u32 param3);
-static void ov115_02263DF4(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263A74(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 param2);
-static void ov115_02263B78(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02263DF8(UnkStruct_ov115_02263DF8 *param0, NARC *param1, u32 heapID, NNSFndAllocator *param3);
-static void ov115_02263FF4(UnkStruct_ov115_02263DF8 *param0, NNSFndAllocator *param1);
-static void ov115_02264044(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1, int param2);
-static void ov115_022640A4(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1, int param2);
-static void ov115_022640C0(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1);
-static void ov115_022640EC(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1);
-static void ov115_02264110(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1);
-static void ov115_02264134(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1);
-static void ov115_0226414C(UnkStruct_ov115_02263DF8 *param0, u32 param1);
-static void ov115_02264190(UnkStruct_ov115_02263DF8 *param0, u32 param1);
-static BOOL ov115_02264214(UnkStruct_ov115_02263DF8 *param0, fx32 param1);
-static void ov115_0226422C(UnkStruct_ov115_02263DF8 *param0, BOOL param1);
-static void ov115_0226425C(UnkStruct_ov115_02263DF8 *param0, BOOL param1);
-static void ov115_02264268(UnkStruct_ov115_02263DF8 *param0, u32 param1);
-static void ov115_02264270(UnkStruct_ov115_02263DF8 *param0);
-static void ov115_022642F8(s16 param0, s16 param1, VecFx32 *param2);
-static void ov115_02264324(const VecFx32 *param0, NNSG2dSVec2 *param1);
-static void ov115_02264354(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3);
-static void ov115_0226439C(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3);
-static void ov115_022643EC(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 heapID);
-static void ov115_02264564(UnkStruct_ov115_02261ADC *param0);
-static void ov115_02264620(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov115_022622F8 *param1, u32 param2, u32 param3);
-static void ov115_0226464C(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov115_022622F8 *param1);
-static void ov115_02264684(UnkStruct_ov115_02261ADC *param0, u32 param1);
-static void ov115_022646BC(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1, u32 param2);
-static void ov115_02264728(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1);
-static void ov115_02264740(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1, const UnkStruct_ov115_022622F8 *param2, u32 param3);
-static void ov115_0226477C(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1, const UnkStruct_ov115_022622F8 *param2);
-static void ov115_022647A0(UnkStruct_ov115_022647A0 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2);
-static void ov115_02264848(UnkStruct_ov115_022647A0 *param0);
-static void ov115_02264908(UnkStruct_ov115_022647A0 *param0);
-static void ov115_02264924(UnkStruct_ov115_022647A0 *param0);
-static UnkStruct_ov115_022647A0 *ov115_02264948(UnkStruct_ov115_02261ADC *param0);
-static BOOL ov115_02264980(UnkStruct_ov115_022647A0 *param0, const UnkStruct_ov115_022622F8 *param1, u32 param2);
-static void ov115_022649F0(UnkStruct_ov115_022647A0 *param0, UnkStruct_ov115_02261ADC *param1);
-static Easy3DModel *ov115_02264A40(const UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02264A40 *param1);
-static void ov115_02264A54(UnkStruct_ov115_022647A0 *param0);
-static void ov115_02264B40(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_02264BA0 *param1, u32 param2, u32 param3);
-static void ov115_02264BA0(UnkStruct_ov115_02264BA0 *param0);
-static void ov115_02264BAC(UnkStruct_ov115_02264BA0 *param0);
-static void ov115_02264BC0(UnkStruct_ov115_02264BA0 *param0);
-static void ov115_02264BF8(UnkStruct_ov115_02264BA0 *param0);
-static void ov115_02264BD8(UnkStruct_ov115_02264BA0 *param0, s32 param1, s32 param2);
-static void ov115_02264C0C(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_02264C90 *param1, u32 param2, u32 param3);
-static void ov115_02264C78(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_02264C90 *param1);
-static void ov115_02264C90(UnkStruct_ov115_02264C90 *param0);
-static void ov115_02264D80(UnkStruct_ov115_02264C90 *param0, s32 param1, s32 param2);
-static void ov115_02264DD8(int param0, int param1, int param2, int param3, int param4, s32 *param5, s32 *param6);
-static void ov115_02264E48(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_02261ADC *param1, NARC *param2, int param3, u32 param4, u32 heapID, NNSFndAllocator *param6);
-static void ov115_02264F68(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_02261ADC *param1, NNSFndAllocator *param2);
-static void ov115_02264FA0(UnkStruct_ov115_02264FA0 *param0);
-static void ov115_022650C8(UnkStruct_ov115_02264FA0 *param0);
-static void ov115_022650F8(UnkStruct_ov115_02264FA0 *param0, fx32 param1);
-static void ov115_02265100(const VecFx32 *param0, const VecFx32 *param1, const VecFx32 *param2, fx32 param3, VecFx32 *param4, fx32 *param5);
-static void ov115_02265274(UnkStruct_ov115_02261ADC *param0, fx32 param1);
-static void ov115_0226527C(UnkStruct_ov115_02261ADC *param0, u16 param1);
-static void ov115_022652A4(UnkStruct_ov115_022653CC *param0, u8 param1);
-static void ov115_022652C0(UnkStruct_ov115_022653CC *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_022653CC(UnkStruct_ov115_022653CC *param0);
-static void ov115_022653F4(UnkStruct_ov115_02261ADC *param0, s16 param1, u16 param2);
-static void ov115_02265478(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1, NARC *param2, u32 heapID);
-static void ov115_02265688(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1);
-static void ov115_02265700(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2);
-static void ov115_02265788(UnkStruct_ov115_02265788 *param0);
-static void ov115_022657A8(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2);
-static void ov115_02265820(UnkStruct_ov115_02265788 *param0);
-static void ov115_022658E0(UnkStruct_ov115_022658E0 *param0);
-static void ov115_022658F8(UnkStruct_ov115_022658E0 *param0, UnkStruct_ov115_02264FA0 *param1, UnkStruct_ov115_02263DF8 *param2);
-static void ov115_02265A08(UnkStruct_ov115_022658E0 *param0);
+static void WiFiLobbyMinigameBucket_InitMotion(WiFiLobbyMinigameBucketMotion *param0, fx32 param1, fx32 param2, fx32 param3, int param4);
+static BOOL WiFiLobbyMinigameBucket_UpdateMotion(WiFiLobbyMinigameBucketMotion *param0);
+static void WiFiLobbyMinigameBucket_GetPlayerNamePosition(u32 param0, u32 param1, u32 param2, s32 *param3, s32 *param4);
+static void WiFiLobbyMinigameBucket_SpawnThrowFromSwalot(WiFiLobbyMinigameBucketGame *param0, u16 param1, u16 param2, u16 param3, u16 param4, u32 param5);
+static u32 WiFiLobbyMinigameBucket_GetScoreForHit(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_InitThrowSprites(WiFiLobbyMinigameBucketThrowSprites *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2, u32 param3, u32 param4);
+static void WiFiLobbyMinigameBucket_FreeThrowSprites(WiFiLobbyMinigameBucketThrowSprites *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_ShowThrowSprite(WiFiLobbyMinigameBucketThrowSprites *param0, u32 param1, u32 param2, int param3);
+static void WiFiLobbyMinigameBucket_UpdateThrowSprites(WiFiLobbyMinigameBucketThrowSprites *param0);
+static void WiFiLobbyMinigameBucket_InitThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0, AffineSpriteListTemplate *param1, WiFiLobbyMinigameBucketScene *param2, u32 param3, u32 param4, u32 param5, u32 param6);
+static void WiFiLobbyMinigameBucket_FreeThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0);
+static void WiFiLobbyMinigameBucket_ShowThrowSpriteAnim(WiFiLobbyMinigameBucketThrowSprite *param0, u32 param1, u32 param2, int param3);
+static void WiFiLobbyMinigameBucket_UpdateThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0);
+static void WiFiLobbyMinigameBucket_SetThrowSpritePosition(WiFiLobbyMinigameBucketThrowSprite *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_HideThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_FreeIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_ShowIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1);
+static BOOL WiFiLobbyMinigameBucket_IsIntroAnimationRunning(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_HideIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_PlaySwalotIntroAnim(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1);
+static BOOL WiFiLobbyMinigameBucket_WaitIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_UpdateSwalotModel(WiFiLobbyMinigameBucketScene *param0, const WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_ResetIntroState(WiFiLobbyMinigameBucketScene *param0, u32 param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_Noop(WiFiLobbyMinigameBucketScene *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_ShowSwalotAnim(WiFiLobbyMinigameBucketScene *param0);
+static BOOL WiFiLobbyMinigameBucket_UpdateSwalotIntroAnim(WiFiLobbyMinigameBucketScene *param0);
+static BOOL WiFiLobbyMinigameBucket_IsIntroAnimationDone(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_InitCamera(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_UpdateCamera(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_SetCameraActive(WiFiLobbyMinigameBucketCamera *param0, BOOL param1);
+static void WiFiLobbyMinigameBucket_SetCameraPitch(WiFiLobbyMinigameBucketCamera *param0, u16 param1);
+static void WiFiLobbyMinigameBucket_SetCameraYaw(WiFiLobbyMinigameBucketCamera *param0, u16 param1);
+static u32 WiFiLobbyMinigameBucket_CheckProjectileCollision(const WiFiLobbyMinigameBucketCamera *param0, const VecFx32 *param1, const VecFx32 *param2, VecFx32 *param3);
+static BOOL WiFiLobbyMinigameBucket_IsInsideBucket(const WiFiLobbyMinigameBucketCamera *param0, const VecFx32 *param1);
+static fx32 WiFiLobbyMinigameBucket_GetCameraHeight(const WiFiLobbyMinigameBucketCamera *param0, u16 param1);
+static fx32 WiFiLobbyMinigameBucket_GetCameraDepth(const WiFiLobbyMinigameBucketCamera *param0, u16 param1);
+static void WiFiLobbyMinigameBucket_SetCameraScale(WiFiLobbyMinigameBucketCamera *param0, fx32 param1);
+static void WiFiLobbyMinigameBucket_SetCameraRoll(WiFiLobbyMinigameBucketCamera *param0, u16 param1);
+static void WiFiLobbyMinigameBucket_SetCameraDistance(WiFiLobbyMinigameBucketCamera *param0, fx32 param1);
+static u16 WiFiLobbyMinigameBucket_GetCameraAngleStage0(const WiFiLobbyMinigameBucketCamera *param0, s32 param1, s32 param2);
+static u16 WiFiLobbyMinigameBucket_GetCameraAngleStage1(const WiFiLobbyMinigameBucketCamera *param0, s32 param1, s32 param2);
+static u16 WiFiLobbyMinigameBucket_GetCameraAngleStage2(const WiFiLobbyMinigameBucketCamera *param0, s32 param1, s32 param2);
+static void WiFiLobbyMinigameBucket_ProjectileToThrowData(const WiFiLobbyMinigameBucketProjectile *param0, WiFiLobbyMinigameBucketThrowData *param1);
+static void WiFiLobbyMinigameBucket_ThrowDataToProjectile(const WiFiLobbyMinigameBucketThrowData *param0, WiFiLobbyMinigameBucketProjectile *param1);
+static void WiFiLobbyMinigameBucket_SpawnProjectile(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketProjectile *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_SetProjectileState(WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketProjectileState *param1, BOOL param2, u32 param3);
+static void WiFiLobbyMinigameBucket_ClearProjectile(WiFiLobbyMinigameBucketProjectileState *param0);
+static void WiFiLobbyMinigameBucket_UpdateProjectiles(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_UpdateProjectile(WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketProjectileState *param1);
+static void WiFiLobbyMinigameBucket_UpdateAllProjectileSprites(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_FinishProjectiles(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_FinishProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1);
+static void WiFiLobbyMinigameBucket_ResetProjectiles(WiFiLobbyMinigameBucketGame *param0);
+static BOOL WiFiLobbyMinigameBucket_HasActiveProjectiles(const WiFiLobbyMinigameBucketGame *param0);
+static fx32 WiFiLobbyMinigameBucket_GetProjectileSpeed(const WiFiLobbyMinigameBucketProjectileState *param0);
+static void WiFiLobbyMinigameBucket_GetProjectileVelocity(const WiFiLobbyMinigameBucketProjectileState *param0, VecFx32 *param1);
+static void WiFiLobbyMinigameBucket_BounceProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1, BOOL param2);
+static void WiFiLobbyMinigameBucket_ReflectProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1, BOOL param2, fx32 param3, BOOL param4);
+static void WiFiLobbyMinigameBucket_UpdateBouncingProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1);
+static BOOL WiFiLobbyMinigameBucket_IsProjectileNearBucket(const WiFiLobbyMinigameBucketProjectileState *param0);
+static BOOL WiFiLobbyMinigameBucket_IsProjectileClose(const WiFiLobbyMinigameBucketProjectileState *param0);
+static BOOL WiFiLobbyMinigameBucket_IsProjectileFar(WiFiLobbyMinigameBucketProjectileState *param0);
+static void WiFiLobbyMinigameBucket_StartProjectileSink(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1);
+static void WiFiLobbyMinigameBucket_UpdateSinkingProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1);
+static void WiFiLobbyMinigameBucket_MoveProjectile(WiFiLobbyMinigameBucketProjectileState *param0, const VecFx32 *param1);
+static void WiFiLobbyMinigameBucket_HandleTouchInput(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_HandleTouchRelease(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_HandleTouchDrag(WiFiLobbyMinigameBucketGame *param0);
+static BOOL WiFiLobbyMinigameBucket_IsTouchInPlayArea(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_ResetTouchBuffer(WiFiLobbyMinigameBucketTouchBuffer *param0);
+static void WiFiLobbyMinigameBucket_PushTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 param1);
+static BOOL WiFiLobbyMinigameBucket_PopTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 *param1);
+static BOOL WiFiLobbyMinigameBucket_PeekTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 *param1);
+static BOOL WiFiLobbyMinigameBucket_PeekLastTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 *param1);
+static u32 WiFiLobbyMinigameBucket_GetTouchPointCount(WiFiLobbyMinigameBucketTouchBuffer *param0);
+static void WiFiLobbyMinigameBucket_ResetTouch(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_InitStageTransition(WiFiLobbyMinigameBucketStageTransition *param0, const WiFiLobbyMinigameBucketStage *param1, const WiFiLobbyMinigameBucketMode *param2);
+static void WiFiLobbyMinigameBucket_StartStageTransition(WiFiLobbyMinigameBucketStageTransition *param0, const WiFiLobbyMinigameBucketStage *param1, const WiFiLobbyMinigameBucketMode *param2, u16 param3, u16 param4);
+static BOOL WiFiLobbyMinigameBucket_UpdateStageTransition(WiFiLobbyMinigameBucketStageTransition *param0);
+static void WiFiLobbyMinigameBucket_ApplyStageTransition(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketStageTransition *param1);
+static void WiFiLobbyMinigameBucket_ApplyStageData(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketStageData *param1);
+static void WiFiLobbyMinigameBucket_GetStageData(const WiFiLobbyMinigameBucketStage *param0, const WiFiLobbyMinigameBucketMode *param1, u32 param2, WiFiLobbyMinigameBucketStageData *param3);
+static void WiFiLobbyMinigameBucket_InitSwalot(WiFiLobbyMinigameBucketSwalot *param0, WiFiLobbyMinigameBucketScene *param1, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeSwalot(WiFiLobbyMinigameBucketSwalot *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_ShowSwalot(WiFiLobbyMinigameBucketSwalot *param0);
+static BOOL WiFiLobbyMinigameBucket_UpdateSwalot(WiFiLobbyMinigameBucketSwalot *param0, WiFiLobbyMinigameBucketGame *param1);
+static void WiFiLobbyMinigameBucket_InitScoreBoard(WiFiLobbyMinigameBucketScoreBoard *param0);
+static void WiFiLobbyMinigameBucket_AddScoreBoardEntry(WiFiLobbyMinigameBucketScoreBoard *param0, u32 param1, u32 param2);
+static void WiFiLobbyMinigameBucket_ResetScoreBoard(WiFiLobbyMinigameBucketScoreBoard *param0);
+static u32 WiFiLobbyMinigameBucket_GetScoreBoardLeader(const WiFiLobbyMinigameBucketScoreBoard *param0);
+static BOOL WiFiLobbyMinigameBucket_IsScoreBoardFull(const WiFiLobbyMinigameBucketScoreBoard *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_InitScene(WiFiLobbyMinigameBucketGame *param0, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeScene(WiFiLobbyMinigameBucketGame *param0);
+static void WiFiLobbyMinigameBucket_DrawScene(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_RenderScene(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_SetVramBanks(void);
+static void WiFiLobbyMinigameBucket_InitG3D(void);
+static void WiFiLobbyMinigameBucket_InitG3DPipeline(WiFiLobbyMinigameBucketScene *param0, u32 param1, u32 param2, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeG3DPipeline(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_InitBackgrounds(WiFiLobbyMinigameBucketScene *param0, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeBackgrounds(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_InitSpriteSystem(WiFiLobbyMinigameBucketScene *param0, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeSpriteSystem(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_InitText(WiFiLobbyMinigameBucketScene *param0, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeText(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_InitCamera3D(WiFiLobbyMinigameBucketScene *param0, u32 param1, u32 param2, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeCamera(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_UpdateCameraMatrix(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_LoadBackgroundTiles(WiFiLobbyMinigameBucketScene *param0, NARC *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_Noop2(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_LoadSpriteResources(WiFiLobbyMinigameBucketScene *param0, NARC *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_FreeSpriteResources(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_InitSwalotModel(WiFiLobbyMinigameBucketSwalotModel *param0, NARC *param1, u32 heapID, NNSFndAllocator *param3);
+static void WiFiLobbyMinigameBucket_FreeSwalotModel(WiFiLobbyMinigameBucketSwalotModel *param0, NNSFndAllocator *param1);
+static void WiFiLobbyMinigameBucket_SetSwalotModelState(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1, int param2);
+static void WiFiLobbyMinigameBucket_UpdateSwalotModelAnim(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1, int param2);
+static void WiFiLobbyMinigameBucket_SetSwalotModelPosition(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_SetSwalotModelRotation(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_SetSwalotModelScale(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_DrawSwalotModel(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1);
+static void WiFiLobbyMinigameBucket_SetSwalotMouthFrame(WiFiLobbyMinigameBucketSwalotModel *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_SetSwalotAnim(WiFiLobbyMinigameBucketSwalotModel *param0, u32 param1);
+static BOOL WiFiLobbyMinigameBucket_UpdateSwalotAnim(WiFiLobbyMinigameBucketSwalotModel *param0, fx32 param1);
+static void WiFiLobbyMinigameBucket_SetSwalotIdleAnim(WiFiLobbyMinigameBucketSwalotModel *param0, BOOL param1);
+static void WiFiLobbyMinigameBucket_SetSwalotMouthOpen(WiFiLobbyMinigameBucketSwalotModel *param0, BOOL param1);
+static void WiFiLobbyMinigameBucket_SetSwalotAnimIndex(WiFiLobbyMinigameBucketSwalotModel *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_UpdateSwalotMouthAnim(WiFiLobbyMinigameBucketSwalotModel *param0);
+static void WiFiLobbyMinigameBucket_ScreenToWorld(s16 param0, s16 param1, VecFx32 *param2);
+static void WiFiLobbyMinigameBucket_WorldToScreen(const VecFx32 *param0, NNSG2dSVec2 *param1);
+static void WiFiLobbyMinigameBucket_RotateWorldToPlayer(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_RotatePlayerToWorld(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_InitBerryModels(WiFiLobbyMinigameBucketScene *param0, NARC *param1, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeBerryModels(WiFiLobbyMinigameBucketScene *param0);
+static void WiFiLobbyMinigameBucket_ShowBerry(WiFiLobbyMinigameBucketScene *param0, const WiFiLobbyMinigameBucketProjectileState *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_HideBerry(WiFiLobbyMinigameBucketScene *param0, const WiFiLobbyMinigameBucketProjectileState *param1);
+static void WiFiLobbyMinigameBucket_DrawBerries(WiFiLobbyMinigameBucketScene *param0, u32 param1);
+static void WiFiLobbyMinigameBucket_InitBerry(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_FreeBerry(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1);
+static void WiFiLobbyMinigameBucket_ShowBerrySprite(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1, const WiFiLobbyMinigameBucketProjectileState *param2, u32 param3);
+static void WiFiLobbyMinigameBucket_ShowBerryModel(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1, const WiFiLobbyMinigameBucketProjectileState *param2);
+static void WiFiLobbyMinigameBucket_DrawBerry(WiFiLobbyMinigameBucketBerry *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_DrawBerryShadow(WiFiLobbyMinigameBucketBerry *param0);
+static void WiFiLobbyMinigameBucket_ResetBerryShadow(WiFiLobbyMinigameBucketBerry *param0);
+static void WiFiLobbyMinigameBucket_HideBerryModel(WiFiLobbyMinigameBucketBerry *param0);
+static WiFiLobbyMinigameBucketBerry *WiFiLobbyMinigameBucket_AllocBerry(WiFiLobbyMinigameBucketScene *param0);
+static BOOL WiFiLobbyMinigameBucket_UpdateBerrySprite(WiFiLobbyMinigameBucketBerry *param0, const WiFiLobbyMinigameBucketProjectileState *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_ShowBerryModelInternal(WiFiLobbyMinigameBucketBerry *param0, WiFiLobbyMinigameBucketScene *param1);
+static Easy3DModel *WiFiLobbyMinigameBucket_GetBerryModel(const WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketBerryModels *param1);
+static void WiFiLobbyMinigameBucket_UpdateBerryRotation(WiFiLobbyMinigameBucketBerry *param0);
+static void WiFiLobbyMinigameBucket_InitCursor(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketCursor *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_FreeCursor(WiFiLobbyMinigameBucketCursor *param0);
+static void WiFiLobbyMinigameBucket_ShowCursor(WiFiLobbyMinigameBucketCursor *param0);
+static void WiFiLobbyMinigameBucket_UpdateCursor(WiFiLobbyMinigameBucketCursor *param0);
+static void WiFiLobbyMinigameBucket_HideCursor(WiFiLobbyMinigameBucketCursor *param0);
+static void WiFiLobbyMinigameBucket_SetCursorPosition(WiFiLobbyMinigameBucketCursor *param0, s32 param1, s32 param2);
+static void WiFiLobbyMinigameBucket_InitSplash(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketSplash *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigameBucket_FreeSplash(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketSplash *param1);
+static void WiFiLobbyMinigameBucket_UpdateSplash(WiFiLobbyMinigameBucketSplash *param0);
+static void WiFiLobbyMinigameBucket_SpawnSplash(WiFiLobbyMinigameBucketSplash *param0, s32 param1, s32 param2);
+static void WiFiLobbyMinigameBucket_CalcSplashVelocity(int param0, int param1, int param2, int param3, int param4, s32 *param5, s32 *param6);
+static void WiFiLobbyMinigameBucket_InitBucketModel(WiFiLobbyMinigameBucketBucketModel *param0, WiFiLobbyMinigameBucketScene *param1, NARC *param2, int param3, u32 param4, u32 heapID, NNSFndAllocator *param6);
+static void WiFiLobbyMinigameBucket_FreeBucketModel(WiFiLobbyMinigameBucketBucketModel *param0, WiFiLobbyMinigameBucketScene *param1, NNSFndAllocator *param2);
+static void WiFiLobbyMinigameBucket_DrawBucketModel(WiFiLobbyMinigameBucketBucketModel *param0);
+static void WiFiLobbyMinigameBucket_StartBucketFill(WiFiLobbyMinigameBucketBucketModel *param0);
+static void WiFiLobbyMinigameBucket_SetBucketAnimSpeed(WiFiLobbyMinigameBucketBucketModel *param0, fx32 param1);
+static void WiFiLobbyMinigameBucket_RayIntersect(const VecFx32 *param0, const VecFx32 *param1, const VecFx32 *param2, fx32 param3, VecFx32 *param4, fx32 *param5);
+static void WiFiLobbyMinigameBucket_SetCameraTargetHeight(WiFiLobbyMinigameBucketScene *param0, fx32 param1);
+static void WiFiLobbyMinigameBucket_SetCameraAngle(WiFiLobbyMinigameBucketScene *param0, u16 param1);
+static void WiFiLobbyMinigameBucket_InitBgFade(WiFiLobbyMinigameBucketBgFade *param0, u8 param1);
+static void WiFiLobbyMinigameBucket_UpdateBgFade(WiFiLobbyMinigameBucketBgFade *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_AdvanceBgFade(WiFiLobbyMinigameBucketBgFade *param0);
+static void WiFiLobbyMinigameBucket_SetBgRotation(WiFiLobbyMinigameBucketScene *param0, s16 param1, u16 param2);
+static void WiFiLobbyMinigameBucket_InitScoreDisplay(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1, NARC *param2, u32 heapID);
+static void WiFiLobbyMinigameBucket_FreeScoreDisplay(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1);
+static void WiFiLobbyMinigameBucket_ShowScore(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_HideScore(WiFiLobbyMinigameBucketScoreDisplay *param0);
+static void WiFiLobbyMinigameBucket_UpdateScore(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2);
+static void WiFiLobbyMinigameBucket_UpdateScoreDisplay(WiFiLobbyMinigameBucketScoreDisplay *param0);
+static void WiFiLobbyMinigameBucket_StartFinishEffect(WiFiLobbyMinigameBucketFinishEffect *param0);
+static void WiFiLobbyMinigameBucket_UpdateFinishEffect(WiFiLobbyMinigameBucketFinishEffect *param0, WiFiLobbyMinigameBucketBucketModel *param1, WiFiLobbyMinigameBucketSwalotModel *param2);
+static void WiFiLobbyMinigameBucket_ResetFinishEffect(WiFiLobbyMinigameBucketFinishEffect *param0);
 
-static const u32 Unk_ov115_02265B38[3] = {
+static const u32 sStageScoreThresholds[3] = {
     0x0,
     0x294,
     0x2EE
 };
 
-static const u8 Unk_ov115_02265B0A[5][2] = {
+static const u8 sSwalotAnimFrameRanges[5][2] = {
     { 0x0, 0x0 },
     { 0x1, 0xA },
     { 0xB, 0x14 },
@@ -518,7 +518,7 @@ static const u8 Unk_ov115_02265B0A[5][2] = {
     { 0x1F, 0x28 }
 };
 
-static const NNSG3dResName Unk_ov115_022660A4[6][15] = {
+static const NNSG3dResName sSwalotAnimNodeNames[6][15] = {
     {
         "polySurface2",
         "polySurface3",
@@ -571,7 +571,7 @@ static const NNSG3dResName Unk_ov115_022660A4[6][15] = {
     },
 };
 
-static const u8 Unk_ov115_02266644[6] = {
+static const u8 sSwalotAnimModelForAnim[6] = {
     0x0,
     0x0,
     0x0,
@@ -580,43 +580,43 @@ static const u8 Unk_ov115_02266644[6] = {
     0x0,
 };
 
-static const u8 Unk_ov115_02265AE0[1] = {
+static const u8 sSwalotAnimModelIndex[1] = {
     0x0,
 };
 
-static const VecFx32 Unk_ov115_02265B20 = {
+static const VecFx32 sSwalotBasePosition = {
     (FX32_CONST(0)),
     FX32_CONST(-90),
     FX32_CONST(0),
 };
 
-static const VecFx32 Unk_ov115_02265B44 = {
+static const VecFx32 sCameraTargetOffset = {
     0x0,
     FX32_CONST(2500),
     0x0,
 };
 
-static const u32 Unk_ov115_02265B2C[3] = {
+static const u32 sScorePerHit[3] = {
     0x64,
     0xC8,
     0x12C,
 };
 
-static const u16 Unk_ov115_02265C3C[4][4] = {
+static const u16 sPlayerRotationAngles[4][4] = {
     { 0x0, 0x0, 0x0, 0x0 },
     { 0x0, 0x7FFF, 0x0, 0x0 },
     { 0x0, 0x5555, 0xAAAA, 0x0 },
     { 0x0, 0x7FFF, 0x3FFF, 0xBFFF },
 };
 
-static const u16 Unk_ov115_02265C5C[4][4] = {
+static const u16 sStageRotationAngles[4][4] = {
     { 0x0, 0x0, 0x0, 0x0 },
     { 0x7FFF, 0x0, 0x0, 0x0 },
     { 0x7FFF, 0xD554, 0x2AAA, 0x0 },
     { 0x7FFF, 0x0, 0xBFFF, 0x3FFF },
 };
 
-static const GeonetAngle Unk_ov115_02265CA4[4][4][4] = {
+static const GeonetAngle sPlayerNamePositions[4][4][4] = {
     {
         { 0x0 },
         {
@@ -687,9 +687,9 @@ static const GeonetAngle Unk_ov115_02265CA4[4][4][4] = {
     },
 };
 
-static TPData Unk_ov115_022666C0[8];
+static TPData sTouchPadBuffer[8];
 
-static const s16 Unk_ov115_02265B7C[12] = {
+static const s16 sSwalotMouthYPositions[12] = {
     0xB1,
     0xA7,
     0x93,
@@ -704,13 +704,13 @@ static const s16 Unk_ov115_02265B7C[12] = {
     0x4D
 };
 
-UnkStruct_ov115_02260D78 *ov115_02260CEC(u32 heapID, u32 param1, u32 param2, u32 param3, UnkStruct_ov115_02262F50 *param4)
+WiFiLobbyMinigameBucketGame *WiFiLobbyMinigameBucket_CreateGame(u32 heapID, u32 param1, u32 param2, u32 param3, WiFiLobbyMinigameBucketStage *param4)
 {
-    UnkStruct_ov115_02260D78 *v0;
+    WiFiLobbyMinigameBucketGame *v0;
     u32 v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov115_02260D78));
-    memset(v0, 0, sizeof(UnkStruct_ov115_02260D78));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBucketGame));
+    memset(v0, 0, sizeof(WiFiLobbyMinigameBucketGame));
 
     v0->unk_04 = 1;
     v0->unk_08 = 0;
@@ -719,28 +719,28 @@ UnkStruct_ov115_02260D78 *ov115_02260CEC(u32 heapID, u32 param1, u32 param2, u32
     v0->unk_14 = param3;
     v0->unk_8720 = param4;
 
-    ov115_02261B34(v0, &v0->unk_19CC);
-    ov115_022633FC(v0, heapID);
-    ov115_02262FB4(&v0->unk_8730, &v0->unk_1AB4, heapID);
-    ov115_0226327C(&v0->unk_8770);
+    WiFiLobbyMinigameBucket_InitCamera(v0, &v0->unk_19CC);
+    WiFiLobbyMinigameBucket_InitScene(v0, heapID);
+    WiFiLobbyMinigameBucket_InitSwalot(&v0->unk_8730, &v0->unk_1AB4, heapID);
+    WiFiLobbyMinigameBucket_InitScoreBoard(&v0->unk_8770);
 
-    v1 = InitializeTouchPadWithExternalBuffer(Unk_ov115_022666C0, 8, 4);
+    v1 = InitializeTouchPadWithExternalBuffer(sTouchPadBuffer, 8, 4);
     GF_ASSERT(v1 == 1);
 
     return v0;
 }
 
-void ov115_02260D78(UnkStruct_ov115_02260D78 *param0)
+void WiFiLobbyMinigameBucket_FreeGame(WiFiLobbyMinigameBucketGame *param0)
 {
     u32 v0 = DisableTouchPad();
     GF_ASSERT(v0 == 1);
 
-    ov115_022630DC(&param0->unk_8730, &param0->unk_1AB4);
-    ov115_02263560(param0);
+    WiFiLobbyMinigameBucket_FreeSwalot(&param0->unk_8730, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeScene(param0);
     Heap_Free(param0);
 }
 
-BOOL ov115_02260DAC(UnkStruct_ov115_02260D78 *param0, u32 param1)
+BOOL WiFiLobbyMinigameBucket_UpdateIntro(WiFiLobbyMinigameBucketGame *param0, u32 param1)
 {
     BOOL v0;
     BOOL v1 = 1;
@@ -753,20 +753,20 @@ BOOL ov115_02260DAC(UnkStruct_ov115_02260D78 *param0, u32 param1)
             v2 = 120;
         }
 
-        ov115_02261C48(&param0->unk_19CC, param0->unk_19CC.unk_02 + v2);
+        WiFiLobbyMinigameBucket_SetCameraYaw(&param0->unk_19CC, param0->unk_19CC.unk_02 + v2);
     }
 
-    ov115_02261AB8(&param0->unk_1AB4, &param0->unk_19CC);
-    ov115_022640EC(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
-    ov115_02264110(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
+    WiFiLobbyMinigameBucket_UpdateSwalotModel(&param0->unk_1AB4, &param0->unk_19CC);
+    WiFiLobbyMinigameBucket_SetSwalotModelRotation(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
+    WiFiLobbyMinigameBucket_SetSwalotModelScale(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
 
     switch (param0->unk_1AB4.unk_4E8.unk_00) {
     case 0:
-        ov115_02263130(&param0->unk_8730);
+        WiFiLobbyMinigameBucket_ShowSwalot(&param0->unk_8730);
         param0->unk_1AB4.unk_4E8.unk_00++;
         break;
     case 1:
-        v0 = ov115_02263150(&param0->unk_8730, param0);
+        v0 = WiFiLobbyMinigameBucket_UpdateSwalot(&param0->unk_8730, param0);
 
         if (v0 == 1) {
             param0->unk_1AB4.unk_4E8.unk_00++;
@@ -792,10 +792,10 @@ BOOL ov115_02260DAC(UnkStruct_ov115_02260D78 *param0, u32 param1)
             Sound_PlayEffect(SEQ_SE_DP_HAMARU_sseq);
         }
 
-        ov115_02264214(&param0->unk_1AB4.unk_524, FX32_CONST(1.0));
+        WiFiLobbyMinigameBucket_UpdateSwalotAnim(&param0->unk_1AB4.unk_524, FX32_CONST(1.0));
 
         if (param0->unk_1AB4.unk_4E8.unk_08 == 0) {
-            ov115_02261A74(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
+            WiFiLobbyMinigameBucket_PlaySwalotIntroAnim(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
             param0->unk_1AB4.unk_4E8.unk_00 = 4;
         }
         break;
@@ -805,37 +805,37 @@ BOOL ov115_02260DAC(UnkStruct_ov115_02260D78 *param0, u32 param1)
         }
         break;
     case 5:
-        ov115_02261A10(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
+        WiFiLobbyMinigameBucket_ShowIntroWindow(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
         param0->unk_1AB4.unk_4E8.unk_00 = 6;
         break;
     case 6:
-        v0 = ov115_02261A3C(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
+        v0 = WiFiLobbyMinigameBucket_IsIntroAnimationRunning(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
 
         if (v0 == 0) {
             param0->unk_1AB4.unk_4E8.unk_00 = 7;
         }
         break;
     case 7:
-        v0 = ov115_02261AA4(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
+        v0 = WiFiLobbyMinigameBucket_WaitIntroWindow(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
 
         if (v0 == 0) {
             param0->unk_1AB4.unk_4E8.unk_00 = 8;
         }
         break;
     case 8:
-        ov115_02261A54(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
-        ov115_02261C18(&param0->unk_19CC, 1);
+        WiFiLobbyMinigameBucket_HideIntroWindow(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
+        WiFiLobbyMinigameBucket_SetCameraActive(&param0->unk_19CC, 1);
         v1 = 0;
         break;
     }
 
-    ov115_022640A4(&param0->unk_1AB4.unk_524, &param0->unk_19CC, param0->unk_00);
-    ov115_0226369C(param0, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_UpdateSwalotModelAnim(&param0->unk_1AB4.unk_524, &param0->unk_19CC, param0->unk_00);
+    WiFiLobbyMinigameBucket_RenderScene(param0, &param0->unk_1AB4);
     return v1;
 }
 
-BOOL ov115_02260F70(UnkStruct_ov115_02260D78 *param0, u32 param1)
+BOOL WiFiLobbyMinigameBucket_UpdateOutro(WiFiLobbyMinigameBucketGame *param0, u32 param1)
 {
     BOOL v0;
     BOOL v1 = 1;
@@ -844,33 +844,33 @@ BOOL ov115_02260F70(UnkStruct_ov115_02260D78 *param0, u32 param1)
     switch (param0->unk_1AB4.unk_504.unk_00) {
     case 0:
 
-        ov115_022625A8(param0);
-        ov115_02262D90(param0);
+        WiFiLobbyMinigameBucket_ResetProjectiles(param0);
+        WiFiLobbyMinigameBucket_ResetTouch(param0);
 
         BrightnessController_StartTransition(24, -14, 0, GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, BRIGHTNESS_SUB_SCREEN);
 
-        ov115_02261ADC(&param0->unk_1AB4);
+        WiFiLobbyMinigameBucket_ShowSwalotAnim(&param0->unk_1AB4);
         WiFiLobbyMinigame_StartIntroAnimationPop(param0->unk_1AB4.unk_754);
-        ov115_02265A08(&param0->unk_8788);
-        ov115_02265788(&param0->unk_1AB4.unk_6B1C);
+        WiFiLobbyMinigameBucket_ResetFinishEffect(&param0->unk_8788);
+        WiFiLobbyMinigameBucket_HideScore(&param0->unk_1AB4.unk_6B1C);
 
         param0->unk_1AB4.unk_504.unk_00++;
         break;
     case 1:
         v0 = 1;
 
-        if (ov115_02261AEC(&param0->unk_1AB4) == 0) {
+        if (WiFiLobbyMinigameBucket_UpdateSwalotIntroAnim(&param0->unk_1AB4) == 0) {
             v0 = 0;
         }
 
-        ov115_02262304(param0);
-        ov115_02262540(param0);
+        WiFiLobbyMinigameBucket_UpdateProjectiles(param0);
+        WiFiLobbyMinigameBucket_FinishProjectiles(param0);
 
-        if (ov115_022625C8(param0) == 1) {
+        if (WiFiLobbyMinigameBucket_HasActiveProjectiles(param0) == 1) {
             v0 = 0;
         }
 
-        if (ov115_02261B1C(&param0->unk_1AB4) == 0) {
+        if (WiFiLobbyMinigameBucket_IsIntroAnimationDone(&param0->unk_1AB4) == 0) {
             v0 = 0;
         }
 
@@ -901,62 +901,62 @@ BOOL ov115_02260F70(UnkStruct_ov115_02260D78 *param0, u32 param1)
         v2 = 120;
     }
 
-    ov115_02261C48(&param0->unk_19CC, param0->unk_19CC.unk_02 + v2);
-    ov115_022640C0(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
-    ov115_022640EC(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
-    ov115_022640A4(&param0->unk_1AB4.unk_524, &param0->unk_19CC, param0->unk_00);
-    ov115_0226369C(param0, &param0->unk_1AB4);
-    ov115_02265820(&param0->unk_1AB4.unk_6B1C);
+    WiFiLobbyMinigameBucket_SetCameraYaw(&param0->unk_19CC, param0->unk_19CC.unk_02 + v2);
+    WiFiLobbyMinigameBucket_SetSwalotModelPosition(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
+    WiFiLobbyMinigameBucket_SetSwalotModelRotation(&param0->unk_1AB4.unk_524, &param0->unk_19CC);
+    WiFiLobbyMinigameBucket_UpdateSwalotModelAnim(&param0->unk_1AB4.unk_524, &param0->unk_19CC, param0->unk_00);
+    WiFiLobbyMinigameBucket_RenderScene(param0, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_UpdateScoreDisplay(&param0->unk_1AB4.unk_6B1C);
 
     return v1;
 }
 
-BOOL ov115_022610D4(UnkStruct_ov115_02260D78 *param0)
+BOOL WiFiLobbyMinigameBucket_UpdateGame(WiFiLobbyMinigameBucketGame *param0)
 {
     BOOL v0;
 
     if (param0->unk_00 < 3 - 1) {
-        if (Unk_ov115_02265B38[param0->unk_00 + 1] <= param0->unk_08) {
+        if (sStageScoreThresholds[param0->unk_00 + 1] <= param0->unk_08) {
             param0->unk_00++;
 
             if (param0->unk_00 == 1) {
-                ov115_022658E0(&param0->unk_8788);
+                WiFiLobbyMinigameBucket_StartFinishEffect(&param0->unk_8788);
             }
         }
     }
 
     WriteAutoSamplingDataToBuffer(&param0->unk_8690, TOUCH_PAD_EXTERNAL_BUFFER_WRITE_METHOD_ONLY_TOUCHES_WITH_WRAPPING, 0);
-    ov115_02262974(param0);
+    WiFiLobbyMinigameBucket_HandleTouchInput(param0);
 
     {
-        v0 = ov115_02262E64(&param0->unk_86D4);
+        v0 = WiFiLobbyMinigameBucket_UpdateStageTransition(&param0->unk_86D4);
 
         if (v0 == 0) {
-            ov115_02262EFC(param0, &param0->unk_86D4);
+            WiFiLobbyMinigameBucket_ApplyStageTransition(param0, &param0->unk_86D4);
         }
     }
 
     {
         u32 v1;
 
-        v0 = ov115_022632DC(&param0->unk_8770, param0->unk_10);
+        v0 = WiFiLobbyMinigameBucket_IsScoreBoardFull(&param0->unk_8770, param0->unk_10);
 
         if (v0 == 1) {
-            v1 = ov115_022632D8(&param0->unk_8770);
+            v1 = WiFiLobbyMinigameBucket_GetScoreBoardLeader(&param0->unk_8770);
 
             if (v1 != 0xffff) {
-                ov115_02264268(&param0->unk_1AB4.unk_524, v1);
+                WiFiLobbyMinigameBucket_SetSwalotAnimIndex(&param0->unk_1AB4.unk_524, v1);
             }
 
-            ov115_022632C8(&param0->unk_8770);
+            WiFiLobbyMinigameBucket_ResetScoreBoard(&param0->unk_8770);
         }
     }
 
-    ov115_02262304(param0);
-    ov115_02261BBC(param0, &param0->unk_19CC);
-    ov115_02263640(param0, &param0->unk_1AB4);
-    ov115_02262524(param0);
-    ov115_022658F8(&param0->unk_8788, &param0->unk_1AB4.unk_204, &param0->unk_1AB4.unk_524);
+    WiFiLobbyMinigameBucket_UpdateProjectiles(param0);
+    WiFiLobbyMinigameBucket_UpdateCamera(param0, &param0->unk_19CC);
+    WiFiLobbyMinigameBucket_DrawScene(param0, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_UpdateAllProjectileSprites(param0);
+    WiFiLobbyMinigameBucket_UpdateFinishEffect(&param0->unk_8788, &param0->unk_1AB4.unk_204, &param0->unk_1AB4.unk_524);
 
     if (param0->unk_04 == 1) {
         param0->unk_08++;
@@ -970,40 +970,40 @@ BOOL ov115_022610D4(UnkStruct_ov115_02260D78 *param0)
     return 0;
 }
 
-void ov115_022611C8(UnkStruct_ov115_02260D78 *param0)
+void WiFiLobbyMinigameBucket_VBlank(WiFiLobbyMinigameBucketGame *param0)
 {
     Bg_RunScheduledUpdates(param0->unk_1AB4.unk_00);
     VramTransfer_Process();
     RenderOam_Transfer();
 }
 
-s32 ov115_022611E0(const UnkStruct_ov115_02260D78 *param0)
+s32 WiFiLobbyMinigameBucket_GetElapsedTime(const WiFiLobbyMinigameBucketGame *param0)
 {
     return param0->unk_08;
 }
 
-void ov115_022611E4(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02265AD0 *param1)
+void WiFiLobbyMinigameBucket_HandleThrow(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketThrowData *param1)
 {
-    UnkStruct_ov115_02262134 v0;
+    WiFiLobbyMinigameBucketProjectile v0;
 
     if (param0->unk_14 != param1->unk_00) {
-        ov115_0226218C(param1, &v0);
-        ov115_022621DC(param0, &v0, 2);
+        WiFiLobbyMinigameBucket_ThrowDataToProjectile(param1, &v0);
+        WiFiLobbyMinigameBucket_SpawnProjectile(param0, &v0, 2);
 
         if (param1->unk_02) {
-            ov115_0226158C(&param0->unk_1AB4.unk_3E8, param1->unk_00, param1->unk_12, param0->unk_00);
+            WiFiLobbyMinigameBucket_ShowThrowSprite(&param0->unk_1AB4.unk_3E8, param1->unk_00, param1->unk_12, param0->unk_00);
         }
     }
 }
 
-BOOL ov115_02261224(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02265AD0 *param1)
+BOOL WiFiLobbyMinigameBucket_PopQueuedThrow(WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketThrowData *param1)
 {
     int v0;
 
     for (v0 = 0; v0 < 96; v0++) {
         if (param0->unk_4C[v0].unk_00 == 4) {
-            ov115_02262134(&param0->unk_4C[v0].unk_04, param1);
-            ov115_022622F8(&param0->unk_4C[v0]);
+            WiFiLobbyMinigameBucket_ProjectileToThrowData(&param0->unk_4C[v0].unk_04, param1);
+            WiFiLobbyMinigameBucket_ClearProjectile(&param0->unk_4C[v0]);
             return 1;
         }
     }
@@ -1011,39 +1011,39 @@ BOOL ov115_02261224(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02265AD0 *
     return 0;
 }
 
-void ov115_02261260(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02265AD4 *param1)
+void WiFiLobbyMinigameBucket_SetFinalScores(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketFinalScores *param1)
 {
     param0->unk_8680 = *param1;
 }
 
-u32 ov115_02261274(const UnkStruct_ov115_02260D78 *param0)
+u32 WiFiLobbyMinigameBucket_GetScore(const WiFiLobbyMinigameBucketGame *param0)
 {
     return param0->unk_18;
 }
 
-void ov115_02261278(UnkStruct_ov115_02260D78 *param0, u32 param1)
+void WiFiLobbyMinigameBucket_SetStage(WiFiLobbyMinigameBucketGame *param0, u32 param1)
 {
     param0->unk_8726 = param0->unk_8724;
     param0->unk_8724 = param1;
 
-    ov115_02262DC4(&param0->unk_86D4, param0->unk_8720, &param0->unk_8728, param0->unk_8726, param0->unk_8724);
+    WiFiLobbyMinigameBucket_StartStageTransition(&param0->unk_86D4, param0->unk_8720, &param0->unk_8728, param0->unk_8726, param0->unk_8724);
 }
 
-void ov115_022612AC(UnkStruct_ov115_02260D78 *param0, u32 param1, u32 param2)
+void WiFiLobbyMinigameBucket_AddScore(WiFiLobbyMinigameBucketGame *param0, u32 param1, u32 param2)
 {
-    ov115_02263294(&param0->unk_8770, param1, param2);
+    WiFiLobbyMinigameBucket_AddScoreBoardEntry(&param0->unk_8770, param1, param2);
 }
 
-void ov115_022612BC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_022612BC *param1)
+void WiFiLobbyMinigameBucket_SetMode(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketMode *param1)
 {
     param0->unk_8728 = *param1;
     param0->unk_872C = 1;
 
-    ov115_02262DB0(&param0->unk_86D4, param0->unk_8720, &param0->unk_8728);
-    ov115_02262EFC(param0, &param0->unk_86D4);
+    WiFiLobbyMinigameBucket_InitStageTransition(&param0->unk_86D4, param0->unk_8720, &param0->unk_8728);
+    WiFiLobbyMinigameBucket_ApplyStageTransition(param0, &param0->unk_86D4);
 }
 
-static void ov115_02261304(UnkStruct_ov115_02261304 *param0, fx32 param1, fx32 param2, fx32 param3, int param4)
+static void WiFiLobbyMinigameBucket_InitMotion(WiFiLobbyMinigameBucketMotion *param0, fx32 param1, fx32 param2, fx32 param3, int param4)
 {
     fx32 v0;
     fx32 v1;
@@ -1065,7 +1065,7 @@ static void ov115_02261304(UnkStruct_ov115_02261304 *param0, fx32 param1, fx32 p
     param0->unk_14 = param4;
 }
 
-static BOOL ov115_02261364(UnkStruct_ov115_02261304 *param0)
+static BOOL WiFiLobbyMinigameBucket_UpdateMotion(WiFiLobbyMinigameBucketMotion *param0)
 {
     fx32 v0;
     fx32 v1;
@@ -1089,7 +1089,7 @@ static BOOL ov115_02261364(UnkStruct_ov115_02261304 *param0)
     return 1;
 }
 
-static void ov115_022613CC(u32 param0, u32 param1, u32 param2, s32 *param3, s32 *param4)
+static void WiFiLobbyMinigameBucket_GetPlayerNamePosition(u32 param0, u32 param1, u32 param2, s32 *param3, s32 *param4)
 {
     static const GeonetAngle v0[4][4][4] = {
         {
@@ -1166,9 +1166,9 @@ static void ov115_022613CC(u32 param0, u32 param1, u32 param2, s32 *param3, s32 
     *param4 = v0[param1][param0 - 1][param2].y;
 }
 
-static void ov115_022613F8(UnkStruct_ov115_02260D78 *param0, u16 param1, u16 param2, u16 param3, u16 param4, u32 param5)
+static void WiFiLobbyMinigameBucket_SpawnThrowFromSwalot(WiFiLobbyMinigameBucketGame *param0, u16 param1, u16 param2, u16 param3, u16 param4, u32 param5)
 {
-    UnkStruct_ov115_02262134 v0;
+    WiFiLobbyMinigameBucketProjectile v0;
     NNSG2dSVec2 v1;
     BOOL v2;
     s32 v3;
@@ -1195,19 +1195,19 @@ static void ov115_022613F8(UnkStruct_ov115_02260D78 *param0, u16 param1, u16 par
     v0.unk_10 = FX_Mul(v0.unk_10, FX32_CONST(0.6));
 
     VEC_Normalize(&v0.unk_04, &v0.unk_04);
-    ov115_022642F8(param3, param4, &v0.unk_14);
+    WiFiLobbyMinigameBucket_ScreenToWorld(param3, param4, &v0.unk_14);
 
     v0.unk_14.y = (FX32_CONST(0));
 
-    ov115_02264354(&v0.unk_14, &v0.unk_14, v0.unk_00, param0->unk_10);
-    ov115_02264354(&v0.unk_04, &v0.unk_04, v0.unk_00, param0->unk_10);
+    WiFiLobbyMinigameBucket_RotateWorldToPlayer(&v0.unk_14, &v0.unk_14, v0.unk_00, param0->unk_10);
+    WiFiLobbyMinigameBucket_RotateWorldToPlayer(&v0.unk_04, &v0.unk_04, v0.unk_00, param0->unk_10);
 
     v0.unk_24 = 0;
 
-    ov115_022621DC(param0, &v0, param5);
+    WiFiLobbyMinigameBucket_SpawnProjectile(param0, &v0, param5);
 }
 
-static u32 ov115_022614F8(UnkStruct_ov115_02260D78 *param0)
+static u32 WiFiLobbyMinigameBucket_GetScoreForHit(WiFiLobbyMinigameBucketGame *param0)
 {
     u8 v0;
     u32 v1;
@@ -1218,7 +1218,7 @@ static u32 ov115_022614F8(UnkStruct_ov115_02260D78 *param0)
         v0 = param0->unk_1C;
     }
 
-    v1 = Unk_ov115_02265B2C[v0];
+    v1 = sScorePerHit[v0];
 
     if (param0->unk_00 == 2) {
         v1 *= 3;
@@ -1227,7 +1227,7 @@ static u32 ov115_022614F8(UnkStruct_ov115_02260D78 *param0)
     return v1;
 }
 
-static void ov115_02261520(UnkStruct_ov115_02261574 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2, u32 param3, u32 param4)
+static void WiFiLobbyMinigameBucket_InitThrowSprites(WiFiLobbyMinigameBucketThrowSprites *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2, u32 param3, u32 param4)
 {
     AffineSpriteListTemplate v0;
     int v1, v2;
@@ -1246,40 +1246,40 @@ static void ov115_02261520(UnkStruct_ov115_02261574 *param0, UnkStruct_ov115_022
     v3 = param3;
 
     for (v1 = 0; v1 < 4; v1++) {
-        ov115_022615B0(&param0->unk_00[v1], &v0, param1, param2, v1, v3, param4);
+        WiFiLobbyMinigameBucket_InitThrowSprite(&param0->unk_00[v1], &v0, param1, param2, v1, v3, param4);
     }
 }
 
-static void ov115_02261574(UnkStruct_ov115_02261574 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_FreeThrowSprites(WiFiLobbyMinigameBucketThrowSprites *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     int v0, v1;
 
     for (v0 = 0; v0 < 4; v0++) {
-        ov115_02261648(&param0->unk_00[v0]);
+        WiFiLobbyMinigameBucket_FreeThrowSprite(&param0->unk_00[v0]);
     }
 }
 
-static void ov115_0226158C(UnkStruct_ov115_02261574 *param0, u32 param1, u32 param2, int param3)
+static void WiFiLobbyMinigameBucket_ShowThrowSprite(WiFiLobbyMinigameBucketThrowSprites *param0, u32 param1, u32 param2, int param3)
 {
-    ov115_02261660(&param0->unk_00[param1], param1, param2, param3);
+    WiFiLobbyMinigameBucket_ShowThrowSpriteAnim(&param0->unk_00[param1], param1, param2, param3);
 }
 
-static void ov115_02261598(UnkStruct_ov115_02261574 *param0)
+static void WiFiLobbyMinigameBucket_UpdateThrowSprites(WiFiLobbyMinigameBucketThrowSprites *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        ov115_02261744(&param0->unk_00[v0]);
+        WiFiLobbyMinigameBucket_UpdateThrowSprite(&param0->unk_00[v0]);
     }
 }
 
-static void ov115_022615B0(UnkStruct_ov115_022615B0 *param0, AffineSpriteListTemplate *param1, UnkStruct_ov115_02261ADC *param2, u32 param3, u32 param4, u32 param5, u32 param6)
+static void WiFiLobbyMinigameBucket_InitThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0, AffineSpriteListTemplate *param1, WiFiLobbyMinigameBucketScene *param2, u32 param3, u32 param4, u32 param5, u32 param6)
 {
     int v0;
     s32 v1, v2;
 
     for (v0 = 0; v0 < 3; v0++) {
-        ov115_022613CC(param3, param5, param4, &v1, &v2);
+        WiFiLobbyMinigameBucket_GetPlayerNamePosition(param3, param5, param4, &v1, &v2);
         param1->position.x = v1 << FX32_SHIFT;
         param1->position.y = v2 << FX32_SHIFT;
         param0->unk_18[v0] = param1->position;
@@ -1300,7 +1300,7 @@ static void ov115_022615B0(UnkStruct_ov115_022615B0 *param0, AffineSpriteListTem
     }
 }
 
-static void ov115_02261648(UnkStruct_ov115_022615B0 *param0)
+static void WiFiLobbyMinigameBucket_FreeThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0)
 {
     int v0;
 
@@ -1309,7 +1309,7 @@ static void ov115_02261648(UnkStruct_ov115_022615B0 *param0)
     }
 }
 
-static void ov115_02261660(UnkStruct_ov115_022615B0 *param0, u32 param1, u32 param2, int param3)
+static void WiFiLobbyMinigameBucket_ShowThrowSpriteAnim(WiFiLobbyMinigameBucketThrowSprite *param0, u32 param1, u32 param2, int param3)
 {
     int v0;
     int v1;
@@ -1366,12 +1366,12 @@ static void ov115_02261660(UnkStruct_ov115_022615B0 *param0, u32 param1, u32 par
     Sprite_SetAnim(param0->unk_00[v1], v5);
     param0->unk_0C[v1] = 0;
     Sprite_SetDrawFlag(param0->unk_00[v1], TRUE);
-    ov115_0226177C(param0, v1);
+    WiFiLobbyMinigameBucket_SetThrowSpritePosition(param0, v1);
     Sprite_SetPriority(param0->unk_00[v1], 0);
     Sprite_SetExplicitPalette(param0->unk_00[v1], v6);
 }
 
-static void ov115_02261744(UnkStruct_ov115_022615B0 *param0)
+static void WiFiLobbyMinigameBucket_UpdateThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0)
 {
     int v0;
 
@@ -1380,15 +1380,15 @@ static void ov115_02261744(UnkStruct_ov115_022615B0 *param0)
             param0->unk_0C[v0]++;
 
             if (param0->unk_0C[v0] > 16) {
-                ov115_022617D8(param0, v0);
+                WiFiLobbyMinigameBucket_HideThrowSprite(param0, v0);
             } else {
-                ov115_0226177C(param0, v0);
+                WiFiLobbyMinigameBucket_SetThrowSpritePosition(param0, v0);
             }
         }
     }
 }
 
-static void ov115_0226177C(UnkStruct_ov115_022615B0 *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_SetThrowSpritePosition(WiFiLobbyMinigameBucketThrowSprite *param0, u32 param1)
 {
     fx32 v0;
     VecFx32 v1;
@@ -1400,17 +1400,17 @@ static void ov115_0226177C(UnkStruct_ov115_022615B0 *param0, u32 param1)
     Sprite_SetPosition(param0->unk_00[param1], &v1);
 }
 
-static void ov115_022617D8(UnkStruct_ov115_022615B0 *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_HideThrowSprite(WiFiLobbyMinigameBucketThrowSprite *param0, u32 param1)
 {
     Sprite_SetDrawFlag(param0->unk_00[param1], FALSE);
 }
 
-static void ov115_022617E8(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1, const UnkStruct_ov115_02262F50 *param2, u32 param3, u32 param4, NARC *param5, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1, const WiFiLobbyMinigameBucketStage *param2, u32 param3, u32 param4, NARC *param5, u32 heapID)
 {
     String *v0;
     AffineSpriteListTemplate v1;
 
-    memset(param0, 0, sizeof(UnkStruct_ov115_022617E8));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketIntroWindow));
 
     Window_Add(param1->unk_00, &param0->unk_0C, 1, 2, 19, 28, 4, 5, 1 + 9);
     Window_FillRectWithColor(&param0->unk_0C, 15, 0, 0, 28 * 8, 4 * 8);
@@ -1442,8 +1442,8 @@ static void ov115_022617E8(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_022
 
         for (v2 = 0; v2 < param3; v2++) {
             if (v2 != param4) {
-                v3 = Unk_ov115_02265CA4[param4][param3 - 1][v2].x;
-                v4 = Unk_ov115_02265CA4[param4][param3 - 1][v2].y;
+                v3 = sPlayerNamePositions[param4][param3 - 1][v2].x;
+                v4 = sPlayerNamePositions[param4][param3 - 1][v2].y;
 
                 Bg_ChangeTilemapRectPalette(param1->unk_00, 2, v3 - 1, v4 - 1, 10, 4, 0 + v2);
                 Window_FillTilemap(&v5, 15);
@@ -1476,12 +1476,12 @@ static void ov115_022617E8(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_022
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
-static void ov115_02261A04(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_FreeIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     Window_Remove(&param0->unk_0C);
 }
 
-static void ov115_02261A10(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_ShowIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     Window_DrawStandardFrame(&param0->unk_0C, 0, 1, 4);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 1);
@@ -1489,7 +1489,7 @@ static void ov115_02261A10(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_022
     WiFiLobbyMinigame_StartIntroAnimationRoll(param1->unk_754);
 }
 
-static BOOL ov115_02261A3C(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
+static BOOL WiFiLobbyMinigameBucket_IsIntroAnimationRunning(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     BOOL v0 = WiFiLobbyMinigame_IntroAnimationIsDone(param1->unk_754);
 
@@ -1500,21 +1500,21 @@ static BOOL ov115_02261A3C(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_022
     return 1;
 }
 
-static void ov115_02261A54(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_HideIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     Window_EraseStandardFrame(&param0->unk_0C, 1);
     Window_ClearAndScheduleCopyToVRAM(&param0->unk_0C);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
-static void ov115_02261A74(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_PlaySwalotIntroAnim(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1)
 {
-    ov115_02264190(&param1->unk_524, 1);
+    WiFiLobbyMinigameBucket_SetSwalotAnim(&param1->unk_524, 1);
     Easy3DAnim_SetFrame(&param1->unk_524.unk_198[1], FX32_CONST(180));
-    ov115_0226422C(&param1->unk_524, 1);
+    WiFiLobbyMinigameBucket_SetSwalotIdleAnim(&param1->unk_524, 1);
 }
 
-static BOOL ov115_02261AA4(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
+static BOOL WiFiLobbyMinigameBucket_WaitIntroWindow(WiFiLobbyMinigameBucketIntroWindow *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     param0->unk_04++;
 
@@ -1525,28 +1525,28 @@ static BOOL ov115_02261AA4(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_022
     return 1;
 }
 
-static void ov115_02261AB8(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_UpdateSwalotModel(WiFiLobbyMinigameBucketScene *param0, const WiFiLobbyMinigameBucketCamera *param1)
 {
-    ov115_022640C0(&param0->unk_524, param1);
+    WiFiLobbyMinigameBucket_SetSwalotModelPosition(&param0->unk_524, param1);
 }
 
-static void ov115_02261AC8(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_ResetIntroState(WiFiLobbyMinigameBucketScene *param0, u32 param1, u32 param2, u32 param3)
 {
     param0->unk_504.unk_00 = 0;
     param0->unk_504.unk_04 = 0;
 }
 
-static void ov115_02261AD8(UnkStruct_ov115_02261ADC *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_Noop(WiFiLobbyMinigameBucketScene *param0, u32 param1)
 {
     return;
 }
 
-static void ov115_02261ADC(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_ShowSwalotAnim(WiFiLobbyMinigameBucketScene *param0)
 {
-    ov115_02264190(&param0->unk_524, 5);
+    WiFiLobbyMinigameBucket_SetSwalotAnim(&param0->unk_524, 5);
 }
 
-static BOOL ov115_02261AEC(UnkStruct_ov115_02261ADC *param0)
+static BOOL WiFiLobbyMinigameBucket_UpdateSwalotIntroAnim(WiFiLobbyMinigameBucketScene *param0)
 {
     BOOL v0;
 
@@ -1563,7 +1563,7 @@ static BOOL ov115_02261AEC(UnkStruct_ov115_02261ADC *param0)
     return 0;
 }
 
-static BOOL ov115_02261B1C(UnkStruct_ov115_02261ADC *param0)
+static BOOL WiFiLobbyMinigameBucket_IsIntroAnimationDone(WiFiLobbyMinigameBucketScene *param0)
 {
     BOOL v0 = WiFiLobbyMinigame_IntroAnimationIsDone(param0->unk_754);
 
@@ -1574,32 +1574,32 @@ static BOOL ov115_02261B1C(UnkStruct_ov115_02261ADC *param0)
     return 0;
 }
 
-static void ov115_02261B34(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_InitCamera(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketCamera *param1)
 {
     param1->unk_06 = 0;
 
-    ov115_02261C48(param1, (180 * 0xffff) / 360);
-    ov115_02261C1C(param1, (20 * 0xffff) / 360);
+    WiFiLobbyMinigameBucket_SetCameraYaw(param1, (180 * 0xffff) / 360);
+    WiFiLobbyMinigameBucket_SetCameraPitch(param1, (20 * 0xffff) / 360);
 
     param1->unk_00 = 0;
     param1->unk_01 = 1;
     param1->unk_94 = (FX32_CONST(200));
     param1->unk_98 = (FX32_CONST(0.03));
     param1->unk_08 = ((FX32_CONST(50)) + (FX32_CONST(30)));
-    param1->unk_9C = Unk_ov115_02265B20;
+    param1->unk_9C = sSwalotBasePosition;
 
-    ov115_02261F94(param1, 2500);
+    WiFiLobbyMinigameBucket_SetCameraScale(param1, 2500);
 
-    param1->unk_D8 = Unk_ov115_02265B20;
+    param1->unk_D8 = sSwalotBasePosition;
     param1->unk_E4 = param1->unk_C0;
 }
 
-static void ov115_02261BBC(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_UpdateCamera(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketCamera *param1)
 {
-    static u16 (*const v0[3])(const UnkStruct_ov115_02261C18 *, s32, s32) = {
-        ov115_022620E4,
-        ov115_022620EC,
-        ov115_022620F4,
+    static u16 (*const v0[3])(const WiFiLobbyMinigameBucketCamera *, s32, s32) = {
+        WiFiLobbyMinigameBucket_GetCameraAngleStage0,
+        WiFiLobbyMinigameBucket_GetCameraAngleStage1,
+        WiFiLobbyMinigameBucket_GetCameraAngleStage2,
     };
 
     u16 v1;
@@ -1615,18 +1615,18 @@ static void ov115_02261BBC(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov1
     }
 
     v1 = v0[param0->unk_00](param1, param0->unk_08, param0->unk_0C);
-    ov115_02261C1C(param1, v1);
-    param1->unk_08 = ov115_02261F3C(param1, param1->unk_04);
-    param1->unk_E4 = ov115_02261F68(param1, param1->unk_04);
-    ov115_02261C48(param1, param1->unk_02 + param1->unk_06);
+    WiFiLobbyMinigameBucket_SetCameraPitch(param1, v1);
+    param1->unk_08 = WiFiLobbyMinigameBucket_GetCameraHeight(param1, param1->unk_04);
+    param1->unk_E4 = WiFiLobbyMinigameBucket_GetCameraDepth(param1, param1->unk_04);
+    WiFiLobbyMinigameBucket_SetCameraYaw(param1, param1->unk_02 + param1->unk_06);
 }
 
-static void ov115_02261C18(UnkStruct_ov115_02261C18 *param0, BOOL param1)
+static void WiFiLobbyMinigameBucket_SetCameraActive(WiFiLobbyMinigameBucketCamera *param0, BOOL param1)
 {
     param0->unk_00 = param1;
 }
 
-static void ov115_02261C1C(UnkStruct_ov115_02261C18 *param0, u16 param1)
+static void WiFiLobbyMinigameBucket_SetCameraPitch(WiFiLobbyMinigameBucketCamera *param0, u16 param1)
 {
     param0->unk_04 = param1;
 
@@ -1634,7 +1634,7 @@ static void ov115_02261C1C(UnkStruct_ov115_02261C18 *param0, u16 param1)
     MTX_RotX33(&param0->unk_0C, FX_SinIdx(param1), FX_CosIdx(param1));
 }
 
-static void ov115_02261C48(UnkStruct_ov115_02261C18 *param0, u16 param1)
+static void WiFiLobbyMinigameBucket_SetCameraYaw(WiFiLobbyMinigameBucketCamera *param0, u16 param1)
 {
     VecFx32 v0;
 
@@ -1644,7 +1644,7 @@ static void ov115_02261C48(UnkStruct_ov115_02261C18 *param0, u16 param1)
     MTX_Identity33(&param0->unk_30);
     MTX_RotY33(&param0->unk_30, FX_SinIdx(param1), FX_CosIdx(param1));
     MTX_Concat33(&param0->unk_0C, &param0->unk_30, &param0->unk_54);
-    MTX_MultVec33(&Unk_ov115_02265B44, &param0->unk_54, &param0->unk_78);
+    MTX_MultVec33(&sCameraTargetOffset, &param0->unk_54, &param0->unk_78);
 
     v0.x = 0;
     v0.y = 0;
@@ -1664,7 +1664,7 @@ static void ov115_02261C48(UnkStruct_ov115_02261C18 *param0, u16 param1)
     MTX_MultVec33(&param0->unk_9C, &param0->unk_30, &param0->unk_D8);
 }
 
-static u32 ov115_02261D84(const UnkStruct_ov115_02261C18 *param0, const VecFx32 *param1, const VecFx32 *param2, VecFx32 *param3)
+static u32 WiFiLobbyMinigameBucket_CheckProjectileCollision(const WiFiLobbyMinigameBucketCamera *param0, const VecFx32 *param1, const VecFx32 *param2, VecFx32 *param3)
 {
     fx32 v0;
     VecFx32 v1;
@@ -1678,7 +1678,7 @@ static u32 ov115_02261D84(const UnkStruct_ov115_02261C18 *param0, const VecFx32 
         return 0;
     }
 
-    ov115_02265100(param1, param2, &param0->unk_78, param0->unk_90, &v1, &v0);
+    WiFiLobbyMinigameBucket_RayIntersect(param1, param2, &param0->unk_78, param0->unk_90, &v1, &v0);
     VEC_Subtract(&param0->unk_84, param1, &v4);
 
     v2 = VEC_Mag(&v4);
@@ -1717,7 +1717,7 @@ static u32 ov115_02261D84(const UnkStruct_ov115_02261C18 *param0, const VecFx32 
     return v6;
 }
 
-static BOOL ov115_02261EA8(const UnkStruct_ov115_02261C18 *param0, const VecFx32 *param1)
+static BOOL WiFiLobbyMinigameBucket_IsInsideBucket(const WiFiLobbyMinigameBucketCamera *param0, const VecFx32 *param1)
 {
     VecFx32 v0;
     VecFx32 v1, v2;
@@ -1753,7 +1753,7 @@ static BOOL ov115_02261EA8(const UnkStruct_ov115_02261C18 *param0, const VecFx32
     return 0;
 }
 
-static fx32 ov115_02261F3C(const UnkStruct_ov115_02261C18 *param0, u16 param1)
+static fx32 WiFiLobbyMinigameBucket_GetCameraHeight(const WiFiLobbyMinigameBucketCamera *param0, u16 param1)
 {
     s32 v0;
     fx32 v1;
@@ -1766,7 +1766,7 @@ static fx32 ov115_02261F3C(const UnkStruct_ov115_02261C18 *param0, u16 param1)
     return v1;
 }
 
-static fx32 ov115_02261F68(const UnkStruct_ov115_02261C18 *param0, u16 param1)
+static fx32 WiFiLobbyMinigameBucket_GetCameraDepth(const WiFiLobbyMinigameBucketCamera *param0, u16 param1)
 {
     s32 v0;
     fx32 v1;
@@ -1778,7 +1778,7 @@ static fx32 ov115_02261F68(const UnkStruct_ov115_02261C18 *param0, u16 param1)
     return v1;
 }
 
-static void ov115_02261F94(UnkStruct_ov115_02261C18 *param0, fx32 param1)
+static void WiFiLobbyMinigameBucket_SetCameraScale(WiFiLobbyMinigameBucketCamera *param0, fx32 param1)
 {
     param0->unk_A8 = param1;
     param0->unk_AC = FX_Mul(FX32_CONST(30), param1);
@@ -1794,32 +1794,32 @@ static void ov115_02261F94(UnkStruct_ov115_02261C18 *param0, fx32 param1)
     param0->unk_D4 = FX_Mul(FX32_CONST(1.50f), param1);
 }
 
-static void ov115_022620D8(UnkStruct_ov115_02261C18 *param0, u16 param1)
+static void WiFiLobbyMinigameBucket_SetCameraRoll(WiFiLobbyMinigameBucketCamera *param0, u16 param1)
 {
     param0->unk_06 = param1;
 }
 
-static void ov115_022620DC(UnkStruct_ov115_02261C18 *param0, fx32 param1)
+static void WiFiLobbyMinigameBucket_SetCameraDistance(WiFiLobbyMinigameBucketCamera *param0, fx32 param1)
 {
     param0->unk_9C.z = param1;
 }
 
-static u16 ov115_022620E4(const UnkStruct_ov115_02261C18 *param0, s32 param1, s32 param2)
+static u16 WiFiLobbyMinigameBucket_GetCameraAngleStage0(const WiFiLobbyMinigameBucketCamera *param0, s32 param1, s32 param2)
 {
     return (20 * 0xffff) / 360;
 }
 
-static u16 ov115_022620EC(const UnkStruct_ov115_02261C18 *param0, s32 param1, s32 param2)
+static u16 WiFiLobbyMinigameBucket_GetCameraAngleStage1(const WiFiLobbyMinigameBucketCamera *param0, s32 param1, s32 param2)
 {
     return (90 * 0xffff) / 360;
 }
 
-static u16 ov115_022620F4(const UnkStruct_ov115_02261C18 *param0, s32 param1, s32 param2)
+static u16 WiFiLobbyMinigameBucket_GetCameraAngleStage2(const WiFiLobbyMinigameBucketCamera *param0, s32 param1, s32 param2)
 {
     s32 v0;
     s32 v1;
 
-    v0 = (param1 - Unk_ov115_02265B38[2]) % 50;
+    v0 = (param1 - sStageScoreThresholds[2]) % 50;
     v1 = (v0 * ((((90 * 0xffff) / 360) - ((20 * 0xffff) / 360)) * 2)) / 50;
 
     if (v1 > (((90 * 0xffff) / 360) - ((20 * 0xffff) / 360))) {
@@ -1829,7 +1829,7 @@ static u16 ov115_022620F4(const UnkStruct_ov115_02261C18 *param0, s32 param1, s3
     return ((20 * 0xffff) / 360) + v1;
 }
 
-static void ov115_02262134(const UnkStruct_ov115_02262134 *param0, UnkStruct_ov115_02265AD0 *param1)
+static void WiFiLobbyMinigameBucket_ProjectileToThrowData(const WiFiLobbyMinigameBucketProjectile *param0, WiFiLobbyMinigameBucketThrowData *param1)
 {
     param1->unk_00 = param0->unk_00;
     param1->unk_02 = param0->unk_02;
@@ -1844,7 +1844,7 @@ static void ov115_02262134(const UnkStruct_ov115_02262134 *param0, UnkStruct_ov1
     param1->unk_13 = param0->unk_24;
 }
 
-static void ov115_0226218C(const UnkStruct_ov115_02265AD0 *param0, UnkStruct_ov115_02262134 *param1)
+static void WiFiLobbyMinigameBucket_ThrowDataToProjectile(const WiFiLobbyMinigameBucketThrowData *param0, WiFiLobbyMinigameBucketProjectile *param1)
 {
     param1->unk_00 = param0->unk_00;
     param1->unk_02 = param0->unk_02;
@@ -1858,7 +1858,7 @@ static void ov115_0226218C(const UnkStruct_ov115_02265AD0 *param0, UnkStruct_ov1
     param1->unk_24 = param0->unk_13;
 }
 
-static void ov115_022621DC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02262134 *param1, u32 param2)
+static void WiFiLobbyMinigameBucket_SpawnProjectile(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketProjectile *param1, u32 param2)
 {
     int v0;
 
@@ -1870,7 +1870,7 @@ static void ov115_022621DC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov1
             param0->unk_4C[v0].unk_02 = 0;
             param0->unk_4C[v0].unk_3C = 0;
 
-            ov115_02264620(&param0->unk_1AB4, &param0->unk_4C[v0], param0->unk_10, param0->unk_14);
+            WiFiLobbyMinigameBucket_ShowBerry(&param0->unk_1AB4, &param0->unk_4C[v0], param0->unk_10, param0->unk_14);
 
             return;
         }
@@ -1879,8 +1879,8 @@ static void ov115_022621DC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov1
     if (param2 == 1) {
         for (v0 = 0; v0 < 96; v0++) {
             if ((param0->unk_4C[v0].unk_00 == 2) || (param0->unk_4C[v0].unk_00 == 5)) {
-                ov115_0226464C(&param0->unk_1AB4, &param0->unk_4C[v0]);
-                ov115_022622F8(&param0->unk_4C[v0]);
+                WiFiLobbyMinigameBucket_HideBerry(&param0->unk_1AB4, &param0->unk_4C[v0]);
+                WiFiLobbyMinigameBucket_ClearProjectile(&param0->unk_4C[v0]);
 
                 param0->unk_4C[v0].unk_04 = *param1;
                 param0->unk_4C[v0].unk_00 = param2;
@@ -1888,7 +1888,7 @@ static void ov115_022621DC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov1
                 param0->unk_4C[v0].unk_02 = 0;
                 param0->unk_4C[v0].unk_3C = 0;
 
-                ov115_02264620(&param0->unk_1AB4, &param0->unk_4C[v0], param0->unk_10, param0->unk_14);
+                WiFiLobbyMinigameBucket_ShowBerry(&param0->unk_1AB4, &param0->unk_4C[v0], param0->unk_10, param0->unk_14);
 
                 return;
             }
@@ -1898,34 +1898,34 @@ static void ov115_022621DC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov1
     }
 }
 
-static void ov115_022622EC(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022622F8 *param1, BOOL param2, u32 param3)
+static void WiFiLobbyMinigameBucket_SetProjectileState(WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketProjectileState *param1, BOOL param2, u32 param3)
 {
     param1->unk_01 = 1;
     param1->unk_04.unk_02 = param2;
     param1->unk_04.unk_20 = param3;
 }
 
-static void ov115_022622F8(UnkStruct_ov115_022622F8 *param0)
+static void WiFiLobbyMinigameBucket_ClearProjectile(WiFiLobbyMinigameBucketProjectileState *param0)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov115_022622F8));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketProjectileState));
 }
 
-static void ov115_02262304(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_UpdateProjectiles(WiFiLobbyMinigameBucketGame *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 96; v0++) {
         if ((param0->unk_4C[v0].unk_00 == 1) || (param0->unk_4C[v0].unk_00 == 2)) {
-            ov115_02262354(param0, &param0->unk_4C[v0]);
+            WiFiLobbyMinigameBucket_UpdateProjectile(param0, &param0->unk_4C[v0]);
         } else if (param0->unk_4C[v0].unk_00 == 5) {
-            ov115_022627B4(&param0->unk_4C[v0], param0);
+            WiFiLobbyMinigameBucket_UpdateBouncingProjectile(&param0->unk_4C[v0], param0);
         } else if (param0->unk_4C[v0].unk_00 == 3) {
-            ov115_022628EC(&param0->unk_4C[v0], param0);
+            WiFiLobbyMinigameBucket_UpdateSinkingProjectile(&param0->unk_4C[v0], param0);
         }
     }
 }
 
-static void ov115_02262354(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022622F8 *param1)
+static void WiFiLobbyMinigameBucket_UpdateProjectile(WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketProjectileState *param1)
 {
     VecFx32 v0;
     u32 v1;
@@ -1941,24 +1941,24 @@ static void ov115_02262354(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022
     v4 = param1->unk_2C.y;
     v5 = param1->unk_00;
 
-    ov115_02262620(param1, &v0);
+    WiFiLobbyMinigameBucket_GetProjectileVelocity(param1, &v0);
 
     if (param1->unk_00 == 1) {
-        v1 = ov115_02261D84(&param0->unk_19CC, &param1->unk_2C, &v0, &v2);
+        v1 = WiFiLobbyMinigameBucket_CheckProjectileCollision(&param0->unk_19CC, &param1->unk_2C, &v0, &v2);
     } else {
         v1 = 0;
     }
 
-    ov115_0226294C(param1, &v0);
+    WiFiLobbyMinigameBucket_MoveProjectile(param1, &v0);
 
     if ((v1 == 3) || (v1 == 1)) {
-        ov115_0226294C(param1, &v2);
+        WiFiLobbyMinigameBucket_MoveProjectile(param1, &v2);
     }
 
     param1->unk_02++;
 
     if (v1 == 1) {
-        param0->unk_18 += ov115_022614F8(param0);
+        param0->unk_18 += WiFiLobbyMinigameBucket_GetScoreForHit(param0);
 
         if (param0->unk_18 > 99999) {
             param0->unk_18 = 99999;
@@ -1979,21 +1979,21 @@ static void ov115_02262354(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022
             break;
         }
 
-        ov115_022628DC(param1, param0);
-        ov115_0226158C(&param0->unk_1AB4.unk_3E8, param0->unk_14, param0->unk_1C, param0->unk_00);
+        WiFiLobbyMinigameBucket_StartProjectileSink(param1, param0);
+        WiFiLobbyMinigameBucket_ShowThrowSprite(&param0->unk_1AB4.unk_3E8, param0->unk_14, param0->unk_1C, param0->unk_00);
 
         if (param0->unk_1C < 99) {
             param0->unk_1C++;
         }
 
         if (param0->unk_1C == 3) {
-            ov115_02265700(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, param0->unk_1C);
+            WiFiLobbyMinigameBucket_ShowScore(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, param0->unk_1C);
         } else {
-            ov115_022657A8(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, param0->unk_1C);
+            WiFiLobbyMinigameBucket_UpdateScore(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, param0->unk_1C);
         }
     } else {
         v3 = 0;
-        v1 = ov115_02261EA8(&param0->unk_19CC, &param1->unk_2C);
+        v1 = WiFiLobbyMinigameBucket_IsInsideBucket(&param0->unk_19CC, &param1->unk_2C);
 
         if (v1 == 1) {
             v3 = 1;
@@ -2002,50 +2002,50 @@ static void ov115_02262354(UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_022
                 Sound_PlayEffect(SEQ_SE_DP_023_sseq);
             }
 
-            ov115_022626BC(param1, param0, 1);
+            WiFiLobbyMinigameBucket_BounceProjectile(param1, param0, 1);
         } else if (param1->unk_2C.y <= (FX32_CONST(-50))) {
-            v1 = ov115_02262888(param1);
+            v1 = WiFiLobbyMinigameBucket_IsProjectileNearBucket(param1);
 
             if (v1 == 0) {
                 v3 = 1;
 
                 if (v4 <= (FX32_CONST(-50))) {
-                    ov115_022622EC(param0, param1, 0, param0->unk_1C);
+                    WiFiLobbyMinigameBucket_SetProjectileState(param0, param1, 0, param0->unk_1C);
                 } else {
-                    ov115_022626BC(param1, param0, 0);
+                    WiFiLobbyMinigameBucket_BounceProjectile(param1, param0, 0);
                 }
             } else if (param1->unk_2C.y <= (FX32_CONST(0.250f))) {
                 v3 = 1;
-                ov115_022622EC(param0, param1, 0, param0->unk_1C);
+                WiFiLobbyMinigameBucket_SetProjectileState(param0, param1, 0, param0->unk_1C);
             }
         } else {
-            v1 = ov115_022628B8(param1);
+            v1 = WiFiLobbyMinigameBucket_IsProjectileFar(param1);
 
             if (v1 == 1) {
                 v3 = 1;
 
                 VEC_Subtract(&param1->unk_2C, &v0, &param1->unk_2C);
-                ov115_022626E0(param1, param0, 1, FX32_CONST(0.250f), 0);
+                WiFiLobbyMinigameBucket_ReflectProjectile(param1, param0, 1, FX32_CONST(0.250f), 0);
             }
         }
 
         if ((v3 == 1) && (v5 == 1)) {
             param0->unk_1C = 0;
-            ov115_02265788(&param0->unk_1AB4.unk_6B1C);
+            WiFiLobbyMinigameBucket_HideScore(&param0->unk_1AB4.unk_6B1C);
         }
     }
 }
 
-static void ov115_02262524(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_UpdateAllProjectileSprites(WiFiLobbyMinigameBucketGame *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 96; v0++) {
-        ov115_02262574(&param0->unk_4C[v0], param0);
+        WiFiLobbyMinigameBucket_FinishProjectile(&param0->unk_4C[v0], param0);
     }
 }
 
-static void ov115_02262540(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_FinishProjectiles(WiFiLobbyMinigameBucketGame *param0)
 {
     int v0;
 
@@ -2054,24 +2054,24 @@ static void ov115_02262540(UnkStruct_ov115_02260D78 *param0)
             param0->unk_4C[v0].unk_00 = 2;
         }
 
-        ov115_02262574(&param0->unk_4C[v0], param0);
+        WiFiLobbyMinigameBucket_FinishProjectile(&param0->unk_4C[v0], param0);
     }
 }
 
-static void ov115_02262574(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1)
+static void WiFiLobbyMinigameBucket_FinishProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1)
 {
     if (param0->unk_01) {
         if ((param0->unk_00 == 3) && (param0->unk_04.unk_02 == 1)) {
             param0->unk_00 = 4;
         } else {
-            ov115_022622F8(param0);
+            WiFiLobbyMinigameBucket_ClearProjectile(param0);
         }
 
-        ov115_0226464C(&param1->unk_1AB4, param0);
+        WiFiLobbyMinigameBucket_HideBerry(&param1->unk_1AB4, param0);
     }
 }
 
-static void ov115_022625A8(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_ResetProjectiles(WiFiLobbyMinigameBucketGame *param0)
 {
     int v0;
 
@@ -2082,7 +2082,7 @@ static void ov115_022625A8(UnkStruct_ov115_02260D78 *param0)
     }
 }
 
-static BOOL ov115_022625C8(const UnkStruct_ov115_02260D78 *param0)
+static BOOL WiFiLobbyMinigameBucket_HasActiveProjectiles(const WiFiLobbyMinigameBucketGame *param0)
 {
     int v0;
 
@@ -2095,7 +2095,7 @@ static BOOL ov115_022625C8(const UnkStruct_ov115_02260D78 *param0)
     return 0;
 }
 
-static fx32 ov115_022625F0(const UnkStruct_ov115_022622F8 *param0)
+static fx32 WiFiLobbyMinigameBucket_GetProjectileSpeed(const WiFiLobbyMinigameBucketProjectileState *param0)
 {
     fx32 v0;
 
@@ -2108,12 +2108,12 @@ static fx32 ov115_022625F0(const UnkStruct_ov115_022622F8 *param0)
     return v0;
 }
 
-static void ov115_02262620(const UnkStruct_ov115_022622F8 *param0, VecFx32 *param1)
+static void WiFiLobbyMinigameBucket_GetProjectileVelocity(const WiFiLobbyMinigameBucketProjectileState *param0, VecFx32 *param1)
 {
     fx32 v0;
     VecFx32 v1;
 
-    v0 = ov115_022625F0(param0);
+    v0 = WiFiLobbyMinigameBucket_GetProjectileSpeed(param0);
 
     param1->x = FX_Mul(param0->unk_04.unk_04.x, v0);
     param1->y = FX_Mul(param0->unk_04.unk_04.y, v0);
@@ -2121,7 +2121,7 @@ static void ov115_02262620(const UnkStruct_ov115_022622F8 *param0, VecFx32 *para
     param1->z = FX_Mul(param0->unk_04.unk_04.z, v0);
 }
 
-static void ov115_022626BC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1, BOOL param2)
+static void WiFiLobbyMinigameBucket_BounceProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1, BOOL param2)
 {
     fx32 v0;
 
@@ -2131,10 +2131,10 @@ static void ov115_022626BC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_022
         v0 = (FX32_CONST(0.80f));
     }
 
-    ov115_022626E0(param0, param1, param2, v0, 1);
+    WiFiLobbyMinigameBucket_ReflectProjectile(param0, param1, param2, v0, 1);
 }
 
-static void ov115_022626E0(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1, BOOL param2, fx32 param3, BOOL param4)
+static void WiFiLobbyMinigameBucket_ReflectProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1, BOOL param2, fx32 param3, BOOL param4)
 {
     fx32 v0;
     fx32 v1;
@@ -2172,13 +2172,13 @@ static void ov115_022626E0(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_022
     param0->unk_02 = 0;
     param0->unk_00 = 5;
 
-    ov115_02262620(param0, &v2);
-    ov115_0226294C(param0, &v2);
+    WiFiLobbyMinigameBucket_GetProjectileVelocity(param0, &v2);
+    WiFiLobbyMinigameBucket_MoveProjectile(param0, &v2);
 
     param0->unk_02++;
 }
 
-static void ov115_022627B4(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1)
+static void WiFiLobbyMinigameBucket_UpdateBouncingProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1)
 {
     VecFx32 v0;
     BOOL v1;
@@ -2191,24 +2191,24 @@ static void ov115_022627B4(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_022
 
     v3 = param0->unk_2C.y;
 
-    ov115_02262620(param0, &v0);
-    ov115_0226294C(param0, &v0);
+    WiFiLobbyMinigameBucket_GetProjectileVelocity(param0, &v0);
+    WiFiLobbyMinigameBucket_MoveProjectile(param0, &v0);
 
     param0->unk_02++;
 
-    v1 = ov115_02261EA8(&param1->unk_19CC, &param0->unk_2C);
+    v1 = WiFiLobbyMinigameBucket_IsInsideBucket(&param1->unk_19CC, &param0->unk_2C);
 
     if (v1 == 1) {
-        ov115_022626BC(param0, param1, 1);
+        WiFiLobbyMinigameBucket_BounceProjectile(param0, param1, 1);
     } else {
         if (param0->unk_2C.y <= (FX32_CONST(-50))) {
-            v1 = ov115_02262888(param0);
+            v1 = WiFiLobbyMinigameBucket_IsProjectileNearBucket(param0);
 
             if (v1 == 0) {
                 if (v3 <= (FX32_CONST(-50))) {
                     v2 = 1;
                 } else {
-                    ov115_022626BC(param0, param1, 0);
+                    WiFiLobbyMinigameBucket_BounceProjectile(param0, param1, 0);
                 }
             } else if (param0->unk_2C.y <= (FX32_CONST(-100))) {
                 v2 = 1;
@@ -2218,11 +2218,11 @@ static void ov115_022627B4(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_022
                 v2 = 1;
             }
         } else {
-            v1 = ov115_022628B8(param0);
+            v1 = WiFiLobbyMinigameBucket_IsProjectileFar(param0);
 
             if (v1 == 1) {
                 VEC_Subtract(&param0->unk_2C, &v0, &param0->unk_2C);
-                ov115_022626E0(param0, param1, 1, FX32_CONST(0.250f), 0);
+                WiFiLobbyMinigameBucket_ReflectProjectile(param0, param1, 1, FX32_CONST(0.250f), 0);
             }
         }
     }
@@ -2232,11 +2232,11 @@ static void ov115_022627B4(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_022
     }
 
     if (v2 == 1) {
-        ov115_022622EC(param1, param0, 0, param1->unk_1C);
+        WiFiLobbyMinigameBucket_SetProjectileState(param1, param0, 0, param1->unk_1C);
     }
 }
 
-static BOOL ov115_02262888(const UnkStruct_ov115_022622F8 *param0)
+static BOOL WiFiLobbyMinigameBucket_IsProjectileNearBucket(const WiFiLobbyMinigameBucketProjectileState *param0)
 {
     if ((param0->unk_40 >= (FX32_CONST(188))) && (param0->unk_40 <= (FX32_CONST(240)))) {
         return 1;
@@ -2245,7 +2245,7 @@ static BOOL ov115_02262888(const UnkStruct_ov115_022622F8 *param0)
     return 0;
 }
 
-static BOOL ov115_022628A4(const UnkStruct_ov115_022622F8 *param0)
+static BOOL WiFiLobbyMinigameBucket_IsProjectileClose(const WiFiLobbyMinigameBucketProjectileState *param0)
 {
     if (param0->unk_40 <= (FX32_CONST(120))) {
         return 1;
@@ -2254,7 +2254,7 @@ static BOOL ov115_022628A4(const UnkStruct_ov115_022622F8 *param0)
     return 0;
 }
 
-static BOOL ov115_022628B8(UnkStruct_ov115_022622F8 *param0)
+static BOOL WiFiLobbyMinigameBucket_IsProjectileFar(WiFiLobbyMinigameBucketProjectileState *param0)
 {
     if (param0->unk_40 >= (FX32_CONST(240))) {
         if (param0->unk_3C == 1) {
@@ -2267,36 +2267,36 @@ static BOOL ov115_022628B8(UnkStruct_ov115_022622F8 *param0)
     return 0;
 }
 
-static void ov115_022628DC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1)
+static void WiFiLobbyMinigameBucket_StartProjectileSink(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1)
 {
     param0->unk_00 = 3;
     param0->unk_38 = 8;
     param0->unk_3A = param1->unk_1C;
 }
 
-static void ov115_022628EC(UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02260D78 *param1)
+static void WiFiLobbyMinigameBucket_UpdateSinkingProjectile(WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketGame *param1)
 {
     VecFx32 v0;
     u32 v1;
     VecFx32 v2;
 
-    ov115_02262620(param0, &v0);
-    v1 = ov115_02261D84(&param1->unk_19CC, &param0->unk_2C, &v0, &v2);
-    ov115_0226294C(param0, &v0);
+    WiFiLobbyMinigameBucket_GetProjectileVelocity(param0, &v0);
+    v1 = WiFiLobbyMinigameBucket_CheckProjectileCollision(&param1->unk_19CC, &param0->unk_2C, &v0, &v2);
+    WiFiLobbyMinigameBucket_MoveProjectile(param0, &v0);
 
     if ((v1 == 3) || (v1 == 1)) {
-        ov115_0226294C(param0, &v2);
+        WiFiLobbyMinigameBucket_MoveProjectile(param0, &v2);
     }
 
     param0->unk_02++;
     param0->unk_38--;
 
     if (param0->unk_38 <= 0) {
-        ov115_022622EC(param1, param0, 1, param0->unk_3A);
+        WiFiLobbyMinigameBucket_SetProjectileState(param1, param0, 1, param0->unk_3A);
     }
 }
 
-static void ov115_0226294C(UnkStruct_ov115_022622F8 *param0, const VecFx32 *param1)
+static void WiFiLobbyMinigameBucket_MoveProjectile(WiFiLobbyMinigameBucketProjectileState *param0, const VecFx32 *param1)
 {
     VecFx32 v0;
 
@@ -2309,18 +2309,18 @@ static void ov115_0226294C(UnkStruct_ov115_022622F8 *param0, const VecFx32 *para
     param0->unk_40 = VEC_Mag(&v0);
 }
 
-static void ov115_02262974(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_HandleTouchInput(WiFiLobbyMinigameBucketGame *param0)
 {
     if (gSystem.touchHeld == 0) {
-        ov115_02262990(param0);
+        WiFiLobbyMinigameBucket_HandleTouchRelease(param0);
     } else {
-        ov115_02262B70(param0);
+        WiFiLobbyMinigameBucket_HandleTouchDrag(param0);
     }
 }
 
-static void ov115_02262990(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_HandleTouchRelease(WiFiLobbyMinigameBucketGame *param0)
 {
-    UnkStruct_ov115_02262134 v0;
+    WiFiLobbyMinigameBucketProjectile v0;
     NNSG2dSVec2 v1;
     BOOL v2;
     NNSG2dSVec2 v3, v4;
@@ -2333,11 +2333,11 @@ static void ov115_02262990(UnkStruct_ov115_02260D78 *param0)
         return;
     }
 
-    v2 = ov115_02262D3C(&param0->unk_20, &v3);
+    v2 = WiFiLobbyMinigameBucket_PeekTouchPoint(&param0->unk_20, &v3);
     GF_ASSERT(v2);
-    v2 = ov115_02262D58(&param0->unk_20, &v4);
+    v2 = WiFiLobbyMinigameBucket_PeekLastTouchPoint(&param0->unk_20, &v4);
     GF_ASSERT(v2);
-    v5 = ov115_02262D7C(&param0->unk_20);
+    v5 = WiFiLobbyMinigameBucket_GetTouchPointCount(&param0->unk_20);
 
     if (v5 >= 2) {
         v0.unk_00 = param0->unk_14;
@@ -2370,12 +2370,12 @@ static void ov115_02262990(UnkStruct_ov115_02260D78 *param0)
             v0.unk_10 = FX_Mul(v0.unk_10, FX32_CONST(0.6));
 
             VEC_Normalize(&v0.unk_04, &v0.unk_04);
-            ov115_022642F8(v4.x, v4.y, &v0.unk_14);
+            WiFiLobbyMinigameBucket_ScreenToWorld(v4.x, v4.y, &v0.unk_14);
 
             v0.unk_14.y = (FX32_CONST(0));
 
-            ov115_02264354(&v0.unk_14, &v0.unk_14, v0.unk_00, param0->unk_10);
-            ov115_02264354(&v0.unk_04, &v0.unk_04, v0.unk_00, param0->unk_10);
+            WiFiLobbyMinigameBucket_RotateWorldToPlayer(&v0.unk_14, &v0.unk_14, v0.unk_00, param0->unk_10);
+            WiFiLobbyMinigameBucket_RotateWorldToPlayer(&v0.unk_04, &v0.unk_04, v0.unk_00, param0->unk_10);
 
             if (param0->unk_1C >= 5) {
                 v0.unk_24 = 1;
@@ -2383,7 +2383,7 @@ static void ov115_02262990(UnkStruct_ov115_02260D78 *param0)
                 v0.unk_24 = 0;
             }
 
-            ov115_022621DC(param0, &v0, 1);
+            WiFiLobbyMinigameBucket_SpawnProjectile(param0, &v0, 1);
             Sound_PlayEffect(SEQ_SE_DP_FW104_sseq);
         }
     } else {
@@ -2391,26 +2391,26 @@ static void ov115_02262990(UnkStruct_ov115_02260D78 *param0)
     }
 
     if (v6 == 1) {
-        ov115_02264D80(&param0->unk_1AB4.unk_6A3C, v4.x, v4.y);
+        WiFiLobbyMinigameBucket_SpawnSplash(&param0->unk_1AB4.unk_6A3C, v4.x, v4.y);
     }
 
-    ov115_02262D90(param0);
+    WiFiLobbyMinigameBucket_ResetTouch(param0);
     param0->unk_20.unk_28 = 0;
 }
 
-static void ov115_02262B70(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_HandleTouchDrag(WiFiLobbyMinigameBucketGame *param0)
 {
     NNSG2dSVec2 v0;
     BOOL v1;
 
     if (param0->unk_20.unk_00 == 0) {
-        v1 = ov115_02262C60(param0);
+        v1 = WiFiLobbyMinigameBucket_IsTouchInPlayArea(param0);
 
         if (v1 == 1) {
             param0->unk_20.unk_00 = 1;
 
-            ov115_02264BAC(&param0->unk_1AB4.unk_6A34);
-            ov115_022653CC(&param0->unk_1AB4.unk_758);
+            WiFiLobbyMinigameBucket_ShowCursor(&param0->unk_1AB4.unk_6A34);
+            WiFiLobbyMinigameBucket_AdvanceBgFade(&param0->unk_1AB4.unk_758);
         }
     }
 
@@ -2418,23 +2418,23 @@ static void ov115_02262B70(UnkStruct_ov115_02260D78 *param0)
         if (param0->unk_8690.bufferSize == 1) {
             v0.x = param0->unk_8690.buffer[0].x;
             v0.y = param0->unk_8690.buffer[0].y;
-            ov115_02262CBC(&param0->unk_20, v0);
+            WiFiLobbyMinigameBucket_PushTouchPoint(&param0->unk_20, v0);
         } else if (param0->unk_8690.bufferSize >= 2) {
             v0.x = param0->unk_8690.buffer[0].x;
             v0.y = param0->unk_8690.buffer[0].y;
-            ov115_02262CBC(&param0->unk_20, v0);
+            WiFiLobbyMinigameBucket_PushTouchPoint(&param0->unk_20, v0);
             v0.x = param0->unk_8690.buffer[param0->unk_8690.bufferSize - 1].x;
             v0.y = param0->unk_8690.buffer[param0->unk_8690.bufferSize - 1].y;
-            ov115_02262CBC(&param0->unk_20, v0);
+            WiFiLobbyMinigameBucket_PushTouchPoint(&param0->unk_20, v0);
         } else {
             v0.x = gSystem.touchX;
             v0.y = gSystem.touchY;
-            ov115_02262CBC(&param0->unk_20, v0);
+            WiFiLobbyMinigameBucket_PushTouchPoint(&param0->unk_20, v0);
         }
     }
 }
 
-static BOOL ov115_02262C60(UnkStruct_ov115_02260D78 *param0)
+static BOOL WiFiLobbyMinigameBucket_IsTouchInPlayArea(WiFiLobbyMinigameBucketGame *param0)
 {
     s32 v0;
     s32 v1;
@@ -2455,26 +2455,26 @@ static BOOL ov115_02262C60(UnkStruct_ov115_02260D78 *param0)
     return 0;
 }
 
-static void ov115_02262CA4(UnkStruct_ov115_02262CA4 *param0)
+static void WiFiLobbyMinigameBucket_ResetTouchBuffer(WiFiLobbyMinigameBucketTouchBuffer *param0)
 {
     memset(param0->unk_04, 0, sizeof(NNSG2dSVec2) * 8);
     param0->unk_24 = 0;
     param0->unk_26 = 0;
 }
 
-static void ov115_02262CBC(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 param1)
+static void WiFiLobbyMinigameBucket_PushTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 param1)
 {
     if (((param0->unk_26 + 1) % 8) == param0->unk_24) {
         NNSG2dSVec2 v0;
 
-        ov115_02262D0C(param0, &v0);
+        WiFiLobbyMinigameBucket_PopTouchPoint(param0, &v0);
     }
 
     param0->unk_04[param0->unk_26] = param1;
     param0->unk_26 = (param0->unk_26 + 1) % 8;
 }
 
-static BOOL ov115_02262D0C(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1)
+static BOOL WiFiLobbyMinigameBucket_PopTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 *param1)
 {
     if (param0->unk_26 == param0->unk_24) {
         return 0;
@@ -2486,7 +2486,7 @@ static BOOL ov115_02262D0C(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1
     return 1;
 }
 
-static BOOL ov115_02262D3C(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1)
+static BOOL WiFiLobbyMinigameBucket_PeekTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 *param1)
 {
     if (param0->unk_26 == param0->unk_24) {
         return 0;
@@ -2497,7 +2497,7 @@ static BOOL ov115_02262D3C(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1
     return 1;
 }
 
-static BOOL ov115_02262D58(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1)
+static BOOL WiFiLobbyMinigameBucket_PeekLastTouchPoint(WiFiLobbyMinigameBucketTouchBuffer *param0, NNSG2dSVec2 *param1)
 {
     s32 v0;
 
@@ -2516,7 +2516,7 @@ static BOOL ov115_02262D58(UnkStruct_ov115_02262CA4 *param0, NNSG2dSVec2 *param1
     return 1;
 }
 
-static u32 ov115_02262D7C(UnkStruct_ov115_02262CA4 *param0)
+static u32 WiFiLobbyMinigameBucket_GetTouchPointCount(WiFiLobbyMinigameBucketTouchBuffer *param0)
 {
     if (param0->unk_24 > param0->unk_26) {
         return (8 - param0->unk_24) + param0->unk_26;
@@ -2525,26 +2525,26 @@ static u32 ov115_02262D7C(UnkStruct_ov115_02262CA4 *param0)
     return param0->unk_26 - param0->unk_24;
 }
 
-static void ov115_02262D90(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_ResetTouch(WiFiLobbyMinigameBucketGame *param0)
 {
     param0->unk_20.unk_00 = 0;
 
-    ov115_02262CA4(&param0->unk_20);
-    ov115_02264BF8(&param0->unk_1AB4.unk_6A34);
+    WiFiLobbyMinigameBucket_ResetTouchBuffer(&param0->unk_20);
+    WiFiLobbyMinigameBucket_HideCursor(&param0->unk_1AB4.unk_6A34);
 }
 
-static void ov115_02262DB0(UnkStruct_ov115_02262E64 *param0, const UnkStruct_ov115_02262F50 *param1, const UnkStruct_ov115_022612BC *param2)
+static void WiFiLobbyMinigameBucket_InitStageTransition(WiFiLobbyMinigameBucketStageTransition *param0, const WiFiLobbyMinigameBucketStage *param1, const WiFiLobbyMinigameBucketMode *param2)
 {
     param0->unk_48 = 16;
-    ov115_02262F50(param1, param2, 0, &param0->unk_00);
+    WiFiLobbyMinigameBucket_GetStageData(param1, param2, 0, &param0->unk_00);
 }
 
-static void ov115_02262DC4(UnkStruct_ov115_02262E64 *param0, const UnkStruct_ov115_02262F50 *param1, const UnkStruct_ov115_022612BC *param2, u16 param3, u16 param4)
+static void WiFiLobbyMinigameBucket_StartStageTransition(WiFiLobbyMinigameBucketStageTransition *param0, const WiFiLobbyMinigameBucketStage *param1, const WiFiLobbyMinigameBucketMode *param2, u16 param3, u16 param4)
 {
-    UnkStruct_ov115_02262DC4 v0, v1;
+    WiFiLobbyMinigameBucketStageData v0, v1;
 
-    ov115_02262F50(param1, param2, param3, &v0);
-    ov115_02262F50(param1, param2, param4, &v1);
+    WiFiLobbyMinigameBucket_GetStageData(param1, param2, param3, &v0);
+    WiFiLobbyMinigameBucket_GetStageData(param1, param2, param4, &v1);
 
     param0->unk_18 = v0;
     param0->unk_00 = v0;
@@ -2568,7 +2568,7 @@ static void ov115_02262DC4(UnkStruct_ov115_02262E64 *param0, const UnkStruct_ov1
     param0->unk_48 = 0;
 }
 
-static BOOL ov115_02262E64(UnkStruct_ov115_02262E64 *param0)
+static BOOL WiFiLobbyMinigameBucket_UpdateStageTransition(WiFiLobbyMinigameBucketStageTransition *param0)
 {
     if (param0->unk_48 >= 16) {
         return 1;
@@ -2586,21 +2586,21 @@ static BOOL ov115_02262E64(UnkStruct_ov115_02262E64 *param0)
     return 0;
 }
 
-static void ov115_02262EFC(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02262E64 *param1)
+static void WiFiLobbyMinigameBucket_ApplyStageTransition(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketStageTransition *param1)
 {
-    ov115_02262F04(param0, &param1->unk_00);
+    WiFiLobbyMinigameBucket_ApplyStageData(param0, &param1->unk_00);
 }
 
-static void ov115_02262F04(UnkStruct_ov115_02260D78 *param0, const UnkStruct_ov115_02262DC4 *param1)
+static void WiFiLobbyMinigameBucket_ApplyStageData(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketStageData *param1)
 {
-    ov115_022620D8(&param0->unk_19CC, param1->unk_04);
-    ov115_02265274(&param0->unk_1AB4, param1->unk_08);
-    ov115_0226527C(&param0->unk_1AB4, param1->unk_0C);
-    ov115_022620DC(&param0->unk_19CC, param1->unk_10);
-    ov115_02261F94(&param0->unk_19CC, param1->unk_14);
+    WiFiLobbyMinigameBucket_SetCameraRoll(&param0->unk_19CC, param1->unk_04);
+    WiFiLobbyMinigameBucket_SetCameraTargetHeight(&param0->unk_1AB4, param1->unk_08);
+    WiFiLobbyMinigameBucket_SetCameraAngle(&param0->unk_1AB4, param1->unk_0C);
+    WiFiLobbyMinigameBucket_SetCameraDistance(&param0->unk_19CC, param1->unk_10);
+    WiFiLobbyMinigameBucket_SetCameraScale(&param0->unk_19CC, param1->unk_14);
 }
 
-static void ov115_02262F50(const UnkStruct_ov115_02262F50 *param0, const UnkStruct_ov115_022612BC *param1, u32 param2, UnkStruct_ov115_02262DC4 *param3)
+static void WiFiLobbyMinigameBucket_GetStageData(const WiFiLobbyMinigameBucketStage *param0, const WiFiLobbyMinigameBucketMode *param1, u32 param2, WiFiLobbyMinigameBucketStageData *param3)
 {
     u16 v0;
     s32 v1;
@@ -2630,12 +2630,12 @@ static void ov115_02262F50(const UnkStruct_ov115_02262F50 *param0, const UnkStru
     }
 }
 
-static void ov115_02262FB4(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_02261ADC *param1, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitSwalot(WiFiLobbyMinigameBucketSwalot *param0, WiFiLobbyMinigameBucketScene *param1, u32 heapID)
 {
     NARC *v0;
     BOOL v1;
 
-    memset(param0, 0, sizeof(UnkStruct_ov115_02263130));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketSwalot));
 
     v0 = NARC_ctor(NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, heapID);
 
@@ -2673,7 +2673,7 @@ static void ov115_02262FB4(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_022
     NARC_dtor(v0);
 }
 
-static void ov115_022630DC(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_FreeSwalot(WiFiLobbyMinigameBucketSwalot *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     {
         Sprite_Delete(param0->unk_34);
@@ -2688,10 +2688,10 @@ static void ov115_022630DC(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_022
         SpriteResourceCollection_Remove(param1->unk_1AC[3], param0->unk_00[3]);
     }
 
-    memset(param0, 0, sizeof(UnkStruct_ov115_02263130));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketSwalot));
 }
 
-static void ov115_02263130(UnkStruct_ov115_02263130 *param0)
+static void WiFiLobbyMinigameBucket_ShowSwalot(WiFiLobbyMinigameBucketSwalot *param0)
 {
     {
         param0->unk_38 = 1;
@@ -2702,13 +2702,13 @@ static void ov115_02263130(UnkStruct_ov115_02263130 *param0)
     Sprite_SetDrawFlag(param0->unk_34, TRUE);
 }
 
-static BOOL ov115_02263150(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_02260D78 *param1)
+static BOOL WiFiLobbyMinigameBucket_UpdateSwalot(WiFiLobbyMinigameBucketSwalot *param0, WiFiLobbyMinigameBucketGame *param1)
 {
     switch (param0->unk_3A) {
     case 0:
         Sprite_SetAnimFrame(param0->unk_34, 0);
-        ov115_02264BAC(&param1->unk_1AB4.unk_6A34);
-        ov115_02264BD8(&param1->unk_1AB4.unk_6A34, 128, Unk_ov115_02265B7C[0]);
+        WiFiLobbyMinigameBucket_ShowCursor(&param1->unk_1AB4.unk_6A34);
+        WiFiLobbyMinigameBucket_SetCursorPosition(&param1->unk_1AB4.unk_6A34, 128, sSwalotMouthYPositions[0]);
 
         param0->unk_3B = 0;
         param0->unk_3A++;
@@ -2724,7 +2724,7 @@ static BOOL ov115_02263150(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_022
             switch (v0) {
             case 10:
                 if (param0->unk_3B == 0) {
-                    ov115_022613F8(param1, 128, 96, 128, 64, 2);
+                    WiFiLobbyMinigameBucket_SpawnThrowFromSwalot(param1, 128, 96, 128, 64, 2);
                     Sound_PlayEffect(SEQ_SE_DP_FW104_sseq);
                     param0->unk_3B = 1;
                 }
@@ -2739,13 +2739,13 @@ static BOOL ov115_02263150(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_022
                     param0->unk_3C = 16;
                 }
 
-                ov115_02264BF8(&param1->unk_1AB4.unk_6A34);
+                WiFiLobbyMinigameBucket_HideCursor(&param1->unk_1AB4.unk_6A34);
                 break;
             default:
                 break;
             }
 
-            ov115_02264BD8(&param1->unk_1AB4.unk_6A34, 128, Unk_ov115_02265B7C[v0]);
+            WiFiLobbyMinigameBucket_SetCursorPosition(&param1->unk_1AB4.unk_6A34, 128, sSwalotMouthYPositions[v0]);
         }
         break;
     case 2:
@@ -2756,26 +2756,26 @@ static BOOL ov115_02263150(UnkStruct_ov115_02263130 *param0, UnkStruct_ov115_022
         }
         break;
     case 3:
-        if (ov115_022625C8(param1) == 0) {
+        if (WiFiLobbyMinigameBucket_HasActiveProjectiles(param1) == 0) {
             Sprite_SetDrawFlag(param0->unk_34, FALSE);
             return 1;
         }
         break;
     }
 
-    ov115_02262304(param1);
-    ov115_02262524(param1);
+    WiFiLobbyMinigameBucket_UpdateProjectiles(param1);
+    WiFiLobbyMinigameBucket_UpdateAllProjectileSprites(param1);
 
     return 0;
 }
 
-static void ov115_0226327C(UnkStruct_ov115_022632C8 *param0)
+static void WiFiLobbyMinigameBucket_InitScoreBoard(WiFiLobbyMinigameBucketScoreBoard *param0)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov115_022632C8));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketScoreBoard));
     param0->unk_14 = 0xffff;
 }
 
-static void ov115_02263294(UnkStruct_ov115_022632C8 *param0, u32 param1, u32 param2)
+static void WiFiLobbyMinigameBucket_AddScoreBoardEntry(WiFiLobbyMinigameBucketScoreBoard *param0, u32 param1, u32 param2)
 {
     param0->unk_00[param2] = param1;
     param0->unk_10 |= 1 << param2;
@@ -2793,18 +2793,18 @@ static void ov115_02263294(UnkStruct_ov115_022632C8 *param0, u32 param1, u32 par
     }
 }
 
-static void ov115_022632C8(UnkStruct_ov115_022632C8 *param0)
+static void WiFiLobbyMinigameBucket_ResetScoreBoard(WiFiLobbyMinigameBucketScoreBoard *param0)
 {
     param0->unk_10 = 0;
     param0->unk_14 = 0xffff;
 }
 
-static u32 ov115_022632D8(const UnkStruct_ov115_022632C8 *param0)
+static u32 WiFiLobbyMinigameBucket_GetScoreBoardLeader(const WiFiLobbyMinigameBucketScoreBoard *param0)
 {
     return param0->unk_14;
 }
 
-static BOOL ov115_022632DC(const UnkStruct_ov115_022632C8 *param0, u32 param1)
+static BOOL WiFiLobbyMinigameBucket_IsScoreBoardFull(const WiFiLobbyMinigameBucketScoreBoard *param0, u32 param1)
 {
     int v0;
     int v1 = 0;
@@ -2822,7 +2822,7 @@ static BOOL ov115_022632DC(const UnkStruct_ov115_022632C8 *param0, u32 param1)
     return 0;
 }
 
-static void ov115_02263308(void)
+static void WiFiLobbyMinigameBucket_SetVramBanks(void)
 {
     GXBanks v0 = {
         GX_VRAM_BG_32_FG,
@@ -2840,7 +2840,7 @@ static void ov115_02263308(void)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov115_02263328(void)
+static void WiFiLobbyMinigameBucket_InitG3D(void)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
 
@@ -2855,90 +2855,90 @@ static void ov115_02263328(void)
     G3_ViewPort(0, 0, 255, 191);
 }
 
-static void ov115_022633B4(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 param2, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitG3DPipeline(WiFiLobbyMinigameBucketScene *param0, u32 param1, u32 param2, u32 heapID)
 {
-    param0->unk_18 = G3DPipeline_Init(heapID, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, ov115_02263328);
-    ov115_02263C24(param0, param1, param2, heapID);
+    param0->unk_18 = G3DPipeline_Init(heapID, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, WiFiLobbyMinigameBucket_InitG3D);
+    WiFiLobbyMinigameBucket_InitCamera3D(param0, param1, param2, heapID);
 }
 
-static void ov115_022633EC(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeG3DPipeline(WiFiLobbyMinigameBucketScene *param0)
 {
-    ov115_02263CC0(param0);
+    WiFiLobbyMinigameBucket_FreeCamera(param0);
     G3DPipelineBuffers_Free(param0->unk_18);
 }
 
-static void ov115_022633FC(UnkStruct_ov115_02260D78 *param0, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitScene(WiFiLobbyMinigameBucketGame *param0, u32 heapID)
 {
     NARC *v0;
 
     HeapExp_FndInitAllocator(&param0->unk_1AB4.unk_6BBC, heapID, 32);
 
-    ov115_02263308();
-    ov115_022633B4(&param0->unk_1AB4, param0->unk_10, param0->unk_14, heapID);
-    ov115_0226376C(&param0->unk_1AB4, heapID);
-    ov115_02263990(&param0->unk_1AB4, heapID);
-    ov115_02263BCC(&param0->unk_1AB4, heapID);
+    WiFiLobbyMinigameBucket_SetVramBanks();
+    WiFiLobbyMinigameBucket_InitG3DPipeline(&param0->unk_1AB4, param0->unk_10, param0->unk_14, heapID);
+    WiFiLobbyMinigameBucket_InitBackgrounds(&param0->unk_1AB4, heapID);
+    WiFiLobbyMinigameBucket_InitSpriteSystem(&param0->unk_1AB4, heapID);
+    WiFiLobbyMinigameBucket_InitText(&param0->unk_1AB4, heapID);
 
     v0 = NARC_ctor(NARC_INDEX_GRAPHIC__BUCKET, heapID);
 
-    ov115_02263A74(&param0->unk_1AB4, v0, heapID);
-    ov115_02264E48(&param0->unk_1AB4.unk_204, &param0->unk_1AB4, v0, param0->unk_10, param0->unk_14, heapID, &param0->unk_1AB4.unk_6BBC);
-    ov115_02263DF8(&param0->unk_1AB4.unk_524, v0, heapID, &param0->unk_1AB4.unk_6BBC);
-    ov115_022643EC(&param0->unk_1AB4, v0, heapID);
-    ov115_02264B40(&param0->unk_1AB4, &param0->unk_1AB4.unk_6A34, param0->unk_14, heapID);
-    ov115_02264C0C(&param0->unk_1AB4, &param0->unk_1AB4.unk_6A3C, param0->unk_14, heapID);
-    ov115_02263CD8(&param0->unk_1AB4, v0, param0->unk_14, heapID);
-    ov115_022617E8(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4, param0->unk_8720, param0->unk_10, param0->unk_14, v0, heapID);
-    ov115_02261AC8(&param0->unk_1AB4, param0->unk_10, param0->unk_14, heapID);
-    ov115_02261520(&param0->unk_1AB4.unk_3E8, &param0->unk_1AB4, param0->unk_10, param0->unk_14, heapID);
-    ov115_022652A4(&param0->unk_1AB4.unk_758, param0->unk_14);
-    ov115_02265478(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, v0, heapID);
+    WiFiLobbyMinigameBucket_LoadSpriteResources(&param0->unk_1AB4, v0, heapID);
+    WiFiLobbyMinigameBucket_InitBucketModel(&param0->unk_1AB4.unk_204, &param0->unk_1AB4, v0, param0->unk_10, param0->unk_14, heapID, &param0->unk_1AB4.unk_6BBC);
+    WiFiLobbyMinigameBucket_InitSwalotModel(&param0->unk_1AB4.unk_524, v0, heapID, &param0->unk_1AB4.unk_6BBC);
+    WiFiLobbyMinigameBucket_InitBerryModels(&param0->unk_1AB4, v0, heapID);
+    WiFiLobbyMinigameBucket_InitCursor(&param0->unk_1AB4, &param0->unk_1AB4.unk_6A34, param0->unk_14, heapID);
+    WiFiLobbyMinigameBucket_InitSplash(&param0->unk_1AB4, &param0->unk_1AB4.unk_6A3C, param0->unk_14, heapID);
+    WiFiLobbyMinigameBucket_LoadBackgroundTiles(&param0->unk_1AB4, v0, param0->unk_14, heapID);
+    WiFiLobbyMinigameBucket_InitIntroWindow(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4, param0->unk_8720, param0->unk_10, param0->unk_14, v0, heapID);
+    WiFiLobbyMinigameBucket_ResetIntroState(&param0->unk_1AB4, param0->unk_10, param0->unk_14, heapID);
+    WiFiLobbyMinigameBucket_InitThrowSprites(&param0->unk_1AB4.unk_3E8, &param0->unk_1AB4, param0->unk_10, param0->unk_14, heapID);
+    WiFiLobbyMinigameBucket_InitBgFade(&param0->unk_1AB4.unk_758, param0->unk_14);
+    WiFiLobbyMinigameBucket_InitScoreDisplay(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, v0, heapID);
 
     NARC_dtor(v0);
     param0->unk_1AB4.unk_754 = WiFiLobbyMinigame_CreateIntroAnimation(param0->unk_1AB4.unk_1C, heapID);
 }
 
-static void ov115_02263560(UnkStruct_ov115_02260D78 *param0)
+static void WiFiLobbyMinigameBucket_FreeScene(WiFiLobbyMinigameBucketGame *param0)
 {
-    ov115_02265688(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4);
-    ov115_02261574(&param0->unk_1AB4.unk_3E8, &param0->unk_1AB4);
-    ov115_02261AD8(&param0->unk_1AB4, param0->unk_10);
-    ov115_02261A04(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
-    ov115_02263DF4(&param0->unk_1AB4);
-    ov115_02264C78(&param0->unk_1AB4, &param0->unk_1AB4.unk_6A3C);
-    ov115_02264BA0(&param0->unk_1AB4.unk_6A34);
-    ov115_02264564(&param0->unk_1AB4);
-    ov115_02263FF4(&param0->unk_1AB4.unk_524, &param0->unk_1AB4.unk_6BBC);
-    ov115_02264F68(&param0->unk_1AB4.unk_204, &param0->unk_1AB4, &param0->unk_1AB4.unk_6BBC);
-    ov115_02263B78(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeScoreDisplay(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeThrowSprites(&param0->unk_1AB4.unk_3E8, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_Noop(&param0->unk_1AB4, param0->unk_10);
+    WiFiLobbyMinigameBucket_FreeIntroWindow(&param0->unk_1AB4.unk_4E8, &param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_Noop2(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeSplash(&param0->unk_1AB4, &param0->unk_1AB4.unk_6A3C);
+    WiFiLobbyMinigameBucket_FreeCursor(&param0->unk_1AB4.unk_6A34);
+    WiFiLobbyMinigameBucket_FreeBerryModels(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeSwalotModel(&param0->unk_1AB4.unk_524, &param0->unk_1AB4.unk_6BBC);
+    WiFiLobbyMinigameBucket_FreeBucketModel(&param0->unk_1AB4.unk_204, &param0->unk_1AB4, &param0->unk_1AB4.unk_6BBC);
+    WiFiLobbyMinigameBucket_FreeSpriteResources(&param0->unk_1AB4);
     WiFiLobbyMinigame_FreeIntroAnimation(param0->unk_1AB4.unk_754);
-    ov115_02263954(&param0->unk_1AB4);
-    ov115_02263A3C(&param0->unk_1AB4);
-    ov115_02263C04(&param0->unk_1AB4);
-    ov115_022633EC(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeBackgrounds(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeSpriteSystem(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeText(&param0->unk_1AB4);
+    WiFiLobbyMinigameBucket_FreeG3DPipeline(&param0->unk_1AB4);
 
     G2_BlendNone();
     G2S_BlendNone();
 }
 
-static void ov115_02263640(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_DrawScene(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketScene *param1)
 {
-    ov115_02264044(&param1->unk_524, &param0->unk_19CC, param0->unk_00);
-    ov115_022640A4(&param1->unk_524, &param0->unk_19CC, param0->unk_00);
-    ov115_02264BC0(&param1->unk_6A34);
-    ov115_0226369C(param0, param1);
-    ov115_022652C0(&param1->unk_758, param1);
-    ov115_02265820(&param1->unk_6B1C);
+    WiFiLobbyMinigameBucket_SetSwalotModelState(&param1->unk_524, &param0->unk_19CC, param0->unk_00);
+    WiFiLobbyMinigameBucket_UpdateSwalotModelAnim(&param1->unk_524, &param0->unk_19CC, param0->unk_00);
+    WiFiLobbyMinigameBucket_UpdateCursor(&param1->unk_6A34);
+    WiFiLobbyMinigameBucket_RenderScene(param0, param1);
+    WiFiLobbyMinigameBucket_UpdateBgFade(&param1->unk_758, param1);
+    WiFiLobbyMinigameBucket_UpdateScoreDisplay(&param1->unk_6B1C);
 }
 
-static void ov115_0226369C(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_RenderScene(const WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketScene *param1)
 {
-    ov115_02264C90(&param1->unk_6A3C);
-    ov115_02261598(&param1->unk_3E8);
+    WiFiLobbyMinigameBucket_UpdateSplash(&param1->unk_6A3C);
+    WiFiLobbyMinigameBucket_UpdateThrowSprites(&param1->unk_3E8);
 
     G3_ResetG3X();
 
-    ov115_02263CD0(param1);
+    WiFiLobbyMinigameBucket_UpdateCameraMatrix(param1);
 
     NNS_G3dGlbLightVector(0, 0, -FX32_ONE, 0);
     NNS_G3dGlbLightColor(0, GX_RGB(31, 31, 31));
@@ -2947,21 +2947,21 @@ static void ov115_0226369C(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov1
     NNS_G3dGePushMtx();
 
     {
-        ov115_02264FA0(&param1->unk_204);
+        WiFiLobbyMinigameBucket_DrawBucketModel(&param1->unk_204);
     }
 
     NNS_G3dGePopMtx(1);
     NNS_G3dGePushMtx();
 
     {
-        ov115_02264134(&param1->unk_524, &param0->unk_19CC);
+        WiFiLobbyMinigameBucket_DrawSwalotModel(&param1->unk_524, &param0->unk_19CC);
     }
 
     NNS_G3dGePopMtx(1);
     NNS_G3dGePushMtx();
 
     {
-        ov115_02264684(param1, param0->unk_10);
+        WiFiLobbyMinigameBucket_DrawBerries(param1, param0->unk_10);
     }
 
     NNS_G3dGePopMtx(1);
@@ -2970,7 +2970,7 @@ static void ov115_0226369C(const UnkStruct_ov115_02260D78 *param0, UnkStruct_ov1
     SpriteList_Update(param1->unk_1C);
 }
 
-static void ov115_0226376C(UnkStruct_ov115_02261ADC *param0, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitBackgrounds(WiFiLobbyMinigameBucketScene *param0, u32 heapID)
 {
     param0->unk_00 = BgConfig_New(heapID);
 
@@ -3125,7 +3125,7 @@ static void ov115_0226376C(UnkStruct_ov115_02261ADC *param0, u32 heapID)
     LoadStandardWindowGraphics(param0->unk_00, BG_LAYER_MAIN_1, 1, 4, 0, heapID);
 }
 
-static void ov115_02263954(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeBackgrounds(WiFiLobbyMinigameBucketScene *param0)
 {
     Bg_FreeTilemapBuffer(param0->unk_00, BG_LAYER_MAIN_1);
     Bg_FreeTilemapBuffer(param0->unk_00, BG_LAYER_MAIN_2);
@@ -3136,7 +3136,7 @@ static void ov115_02263954(UnkStruct_ov115_02261ADC *param0)
     Heap_Free(param0->unk_00);
 }
 
-static void ov115_02263990(UnkStruct_ov115_02261ADC *param0, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitSpriteSystem(WiFiLobbyMinigameBucketScene *param0, u32 heapID)
 {
     int v0;
 
@@ -3169,7 +3169,7 @@ static void ov115_02263990(UnkStruct_ov115_02261ADC *param0, u32 heapID)
     param0->unk_1F0 = FontOAMManager_New(8, heapID);
 }
 
-static void ov115_02263A3C(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeSpriteSystem(WiFiLobbyMinigameBucketScene *param0)
 {
     int v0;
 
@@ -3185,7 +3185,7 @@ static void ov115_02263A3C(UnkStruct_ov115_02261ADC *param0)
     RenderOam_Free();
 }
 
-static void ov115_02263A74(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 param2)
+static void WiFiLobbyMinigameBucket_LoadSpriteResources(WiFiLobbyMinigameBucketScene *param0, NARC *param1, u32 param2)
 {
     BOOL v0;
 
@@ -3206,7 +3206,7 @@ static void ov115_02263A74(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 p
     }
 }
 
-static void ov115_02263B78(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeSpriteResources(WiFiLobbyMinigameBucketScene *param0)
 {
     {
         SpriteTransfer_ResetCharTransfer(param0->unk_1E0[0]);
@@ -3218,7 +3218,7 @@ static void ov115_02263B78(UnkStruct_ov115_02261ADC *param0)
     }
 }
 
-static void ov115_02263BCC(UnkStruct_ov115_02261ADC *param0, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitText(WiFiLobbyMinigameBucketScene *param0, u32 heapID)
 {
     param0->unk_04 = StringTemplate_Default(heapID);
     param0->unk_08 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0407, heapID);
@@ -3226,7 +3226,7 @@ static void ov115_02263BCC(UnkStruct_ov115_02261ADC *param0, u32 heapID)
     param0->unk_10 = String_Init(128, heapID);
 }
 
-static void ov115_02263C04(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeText(WiFiLobbyMinigameBucketScene *param0)
 {
     String_Free(param0->unk_10);
     String_Free(param0->unk_0C);
@@ -3234,7 +3234,7 @@ static void ov115_02263C04(UnkStruct_ov115_02261ADC *param0)
     StringTemplate_Free(param0->unk_04);
 }
 
-static void ov115_02263C24(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 param2, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitCamera3D(WiFiLobbyMinigameBucketScene *param0, u32 param1, u32 param2, u32 heapID)
 {
     CameraAngle v0;
     VecFx32 v1;
@@ -3246,7 +3246,7 @@ static void ov115_02263C24(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 par
     param0->unk_1F8.z = 0;
 
     v0.x = 0xf112;
-    v0.y = Unk_ov115_02265C5C[param1 - 1][param2];
+    v0.y = sStageRotationAngles[param1 - 1][param2];
     v0.z = ((0 * 0xffff) / 360);
 
     Camera_InitWithTarget(&param0->unk_1F8, 0x1d9000, &v0, (22 * 0xffff) / 360, 0, 1, param0->camera);
@@ -3260,17 +3260,17 @@ static void ov115_02263C24(UnkStruct_ov115_02261ADC *param0, u32 param1, u32 par
     Camera_SetClipping(FX32_CONST(200), FX32_CONST(1000), param0->camera);
 }
 
-static void ov115_02263CC0(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeCamera(WiFiLobbyMinigameBucketScene *param0)
 {
     Camera_Delete(param0->camera);
 }
 
-static void ov115_02263CD0(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_UpdateCameraMatrix(WiFiLobbyMinigameBucketScene *param0)
 {
     Camera_ComputeViewMatrix();
 }
 
-static void ov115_02263CD8(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_LoadBackgroundTiles(WiFiLobbyMinigameBucketScene *param0, NARC *param1, u32 param2, u32 param3)
 {
     static const u8 v0[4] = {
         0,
@@ -3295,12 +3295,12 @@ static void ov115_02263CD8(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 p
     Bg_CopyTilemapBufferToVRAM(param0->unk_00, 7);
 }
 
-static void ov115_02263DF4(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_Noop2(WiFiLobbyMinigameBucketScene *param0)
 {
     return;
 }
 
-static void ov115_02263DF8(UnkStruct_ov115_02263DF8 *param0, NARC *param1, u32 heapID, NNSFndAllocator *param3)
+static void WiFiLobbyMinigameBucket_InitSwalotModel(WiFiLobbyMinigameBucketSwalotModel *param0, NARC *param1, u32 heapID, NNSFndAllocator *param3)
 {
     static const u16 v0[6] = {
         26,
@@ -3321,22 +3321,22 @@ static void ov115_02263DF8(UnkStruct_ov115_02263DF8 *param0, NARC *param1, u32 h
     const NNSG3dResName *v6;
     const NNSG3dResNodeInfo *v7;
 
-    memset(param0, 0, sizeof(UnkStruct_ov115_02263DF8));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketSwalotModel));
 
     for (v2 = 0; v2 < 3; v2++) {
         Easy3DModel_LoadFrom(&param0->unk_168[v2], param1, v1[v2], heapID);
         Easy3DObject_Init(&param0->unk_00[v2], &param0->unk_168[v2]);
         Easy3DObject_SetVisible(&param0->unk_00[v2], 0);
-        Easy3DObject_SetPosition(&param0->unk_00[v2], Unk_ov115_02265B20.x, Unk_ov115_02265B20.y + (-FX32_CONST(200)), Unk_ov115_02265B20.z);
+        Easy3DObject_SetPosition(&param0->unk_00[v2], sSwalotBasePosition.x, sSwalotBasePosition.y + (-FX32_CONST(200)), sSwalotBasePosition.z);
         Easy3DObject_SetScale(&param0->unk_00[v2], FX32_CONST(1.50f), FX32_CONST(1.50f), FX32_CONST(1.50f));
     }
 
     for (v2 = 0; v2 < 6; v2++) {
-        Easy3DAnim_LoadFrom(&param0->unk_198[v2], &param0->unk_168[Unk_ov115_02266644[v2]], param1, v0[v2], heapID, param3);
+        Easy3DAnim_LoadFrom(&param0->unk_198[v2], &param0->unk_168[sSwalotAnimModelForAnim[v2]], param1, v0[v2], heapID, param3);
         Easy3DAnim_SetFrame(&param0->unk_198[v2], 0);
 
         v3 = 0;
-        v7 = NNS_G3dGetNodeInfo(param0->unk_168[Unk_ov115_02266644[v2]].model);
+        v7 = NNS_G3dGetNodeInfo(param0->unk_168[sSwalotAnimModelForAnim[v2]].model);
 
         while ((v6 = NNS_G3dGetNodeNameByIdx(v7, v3)) != NULL) {
             NNS_G3dAnmObjDisableID(param0->unk_198[v2].animObj, v3);
@@ -3344,7 +3344,7 @@ static void ov115_02263DF8(UnkStruct_ov115_02263DF8 *param0, NARC *param1, u32 h
         }
 
         for (v3 = 0; v3 < 15; v3++) {
-            v5 = NNS_G3dGetNodeIdxByName(v7, &Unk_ov115_022660A4[v2][v3]);
+            v5 = NNS_G3dGetNodeIdxByName(v7, &sSwalotAnimNodeNames[v2][v3]);
 
             if (v5 != -1) {
                 NNS_G3dAnmObjEnableID(param0->unk_198[v2].animObj, v5);
@@ -3353,14 +3353,14 @@ static void ov115_02263DF8(UnkStruct_ov115_02263DF8 *param0, NARC *param1, u32 h
     }
 
     for (v2 = 0; v2 < 1; v2++) {
-        Easy3DAnim_LoadFrom(&param0->unk_214[v2], &param0->unk_168[Unk_ov115_02265AE0[v2]], param1, 32, heapID, param3);
-        Easy3DObject_AddAnim(&param0->unk_00[Unk_ov115_02265AE0[v2]], &param0->unk_214[v2]);
+        Easy3DAnim_LoadFrom(&param0->unk_214[v2], &param0->unk_168[sSwalotAnimModelIndex[v2]], param1, 32, heapID, param3);
+        Easy3DObject_AddAnim(&param0->unk_00[sSwalotAnimModelIndex[v2]], &param0->unk_214[v2]);
     }
 
     param0->unk_22C = 4;
     param0->unk_22E = 0;
 
-    ov115_0226422C(param0, 0);
+    WiFiLobbyMinigameBucket_SetSwalotIdleAnim(param0, 0);
 
     Easy3DObject_AddAnim(&param0->unk_00[1], &param0->unk_198[4]);
     Easy3DAnim_SetFrame(&param0->unk_198[4], 0);
@@ -3369,7 +3369,7 @@ static void ov115_02263DF8(UnkStruct_ov115_02263DF8 *param0, NARC *param1, u32 h
     param0->unk_210 = 4;
 }
 
-static void ov115_02263FF4(UnkStruct_ov115_02263DF8 *param0, NNSFndAllocator *param1)
+static void WiFiLobbyMinigameBucket_FreeSwalotModel(WiFiLobbyMinigameBucketSwalotModel *param0, NNSFndAllocator *param1)
 {
     int v0;
 
@@ -3385,37 +3385,37 @@ static void ov115_02263FF4(UnkStruct_ov115_02263DF8 *param0, NNSFndAllocator *pa
         Easy3DAnim_Release(&param0->unk_214[v0], param1);
     }
 
-    memset(param0, 0, sizeof(UnkStruct_ov115_02263DF8));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketSwalotModel));
 }
 
-static void ov115_02264044(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1, int param2)
+static void WiFiLobbyMinigameBucket_SetSwalotModelState(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1, int param2)
 {
-    ov115_022640C0(param0, param1);
-    ov115_022640EC(param0, param1);
-    ov115_02264110(param0, param1);
+    WiFiLobbyMinigameBucket_SetSwalotModelPosition(param0, param1);
+    WiFiLobbyMinigameBucket_SetSwalotModelRotation(param0, param1);
+    WiFiLobbyMinigameBucket_SetSwalotModelScale(param0, param1);
 
     switch (param2) {
     case 0:
     case 2:
-        ov115_02264190(param0, 1);
-        ov115_0226414C(param0, param1->unk_04);
-        ov115_0226422C(param0, 1);
+        WiFiLobbyMinigameBucket_SetSwalotAnim(param0, 1);
+        WiFiLobbyMinigameBucket_SetSwalotMouthFrame(param0, param1->unk_04);
+        WiFiLobbyMinigameBucket_SetSwalotIdleAnim(param0, 1);
         break;
     case 1:
-        ov115_02264190(param0, 3);
-        ov115_0226422C(param0, 0);
-        ov115_02264214(param0, FX32_CONST(1.0));
+        WiFiLobbyMinigameBucket_SetSwalotAnim(param0, 3);
+        WiFiLobbyMinigameBucket_SetSwalotIdleAnim(param0, 0);
+        WiFiLobbyMinigameBucket_UpdateSwalotAnim(param0, FX32_CONST(1.0));
         break;
     }
 }
 
-static void ov115_022640A4(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1, int param2)
+static void WiFiLobbyMinigameBucket_UpdateSwalotModelAnim(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1, int param2)
 {
     Easy3DAnim_UpdateLooped(&param0->unk_198[0], FX32_CONST(1));
-    ov115_02264270(param0);
+    WiFiLobbyMinigameBucket_UpdateSwalotMouthAnim(param0);
 }
 
-static void ov115_022640C0(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_SetSwalotModelPosition(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1)
 {
     int v0;
 
@@ -3424,7 +3424,7 @@ static void ov115_022640C0(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov1
     }
 }
 
-static void ov115_022640EC(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_SetSwalotModelRotation(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1)
 {
     int v0;
     fx32 v1;
@@ -3435,7 +3435,7 @@ static void ov115_022640EC(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov1
     }
 }
 
-static void ov115_02264110(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_SetSwalotModelScale(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1)
 {
     int v0;
 
@@ -3444,7 +3444,7 @@ static void ov115_02264110(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov1
     }
 }
 
-static void ov115_02264134(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov115_02261C18 *param1)
+static void WiFiLobbyMinigameBucket_DrawSwalotModel(WiFiLobbyMinigameBucketSwalotModel *param0, const WiFiLobbyMinigameBucketCamera *param1)
 {
     int v0;
 
@@ -3453,7 +3453,7 @@ static void ov115_02264134(UnkStruct_ov115_02263DF8 *param0, const UnkStruct_ov1
     }
 }
 
-static void ov115_0226414C(UnkStruct_ov115_02263DF8 *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_SetSwalotMouthFrame(WiFiLobbyMinigameBucketSwalotModel *param0, u32 param1)
 {
     fx32 v0;
 
@@ -3465,57 +3465,57 @@ static void ov115_0226414C(UnkStruct_ov115_02263DF8 *param0, u32 param1)
     Easy3DAnim_SetFrame(&param0->unk_198[1], v0);
 }
 
-static void ov115_02264190(UnkStruct_ov115_02263DF8 *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_SetSwalotAnim(WiFiLobbyMinigameBucketSwalotModel *param0, u32 param1)
 {
     GF_ASSERT(param1 < 6);
 
     if (param0->unk_210 != param1) {
-        Easy3DObject_RemoveAnim(&param0->unk_00[Unk_ov115_02266644[param0->unk_210]], &param0->unk_198[param0->unk_210]);
-        Easy3DObject_AddAnim(&param0->unk_00[Unk_ov115_02266644[param1]], &param0->unk_198[param1]);
+        Easy3DObject_RemoveAnim(&param0->unk_00[sSwalotAnimModelForAnim[param0->unk_210]], &param0->unk_198[param0->unk_210]);
+        Easy3DObject_AddAnim(&param0->unk_00[sSwalotAnimModelForAnim[param1]], &param0->unk_198[param1]);
         Easy3DAnim_SetFrame(&param0->unk_198[param1], 0);
-        Easy3DObject_SetVisible(&param0->unk_00[Unk_ov115_02266644[param0->unk_210]], 0);
-        Easy3DObject_SetVisible(&param0->unk_00[Unk_ov115_02266644[param1]], 1);
+        Easy3DObject_SetVisible(&param0->unk_00[sSwalotAnimModelForAnim[param0->unk_210]], 0);
+        Easy3DObject_SetVisible(&param0->unk_00[sSwalotAnimModelForAnim[param1]], 1);
         param0->unk_210 = param1;
     }
 }
 
-static BOOL ov115_02264214(UnkStruct_ov115_02263DF8 *param0, fx32 param1)
+static BOOL WiFiLobbyMinigameBucket_UpdateSwalotAnim(WiFiLobbyMinigameBucketSwalotModel *param0, fx32 param1)
 {
     return Easy3DAnim_Update(&param0->unk_198[param0->unk_210], param1);
 }
 
-static void ov115_0226422C(UnkStruct_ov115_02263DF8 *param0, BOOL param1)
+static void WiFiLobbyMinigameBucket_SetSwalotIdleAnim(WiFiLobbyMinigameBucketSwalotModel *param0, BOOL param1)
 {
     if (param0->unk_212 != param1) {
         if (param1 == 1) {
-            Easy3DObject_AddAnim(&param0->unk_00[Unk_ov115_02266644[0]], &param0->unk_198[0]);
+            Easy3DObject_AddAnim(&param0->unk_00[sSwalotAnimModelForAnim[0]], &param0->unk_198[0]);
         } else {
-            Easy3DObject_RemoveAnim(&param0->unk_00[Unk_ov115_02266644[0]], &param0->unk_198[0]);
+            Easy3DObject_RemoveAnim(&param0->unk_00[sSwalotAnimModelForAnim[0]], &param0->unk_198[0]);
         }
 
         param0->unk_212 = param1;
     }
 }
 
-static void ov115_0226425C(UnkStruct_ov115_02263DF8 *param0, BOOL param1)
+static void WiFiLobbyMinigameBucket_SetSwalotMouthOpen(WiFiLobbyMinigameBucketSwalotModel *param0, BOOL param1)
 {
     param0->unk_22E = param1;
 }
 
-static void ov115_02264268(UnkStruct_ov115_02263DF8 *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_SetSwalotAnimIndex(WiFiLobbyMinigameBucketSwalotModel *param0, u32 param1)
 {
     param0->unk_22C = param1;
 }
 
-static void ov115_02264270(UnkStruct_ov115_02263DF8 *param0)
+static void WiFiLobbyMinigameBucket_UpdateSwalotMouthAnim(WiFiLobbyMinigameBucketSwalotModel *param0)
 {
     int v0;
 
     if (param0->unk_22E == 1) {
-        if ((param0->unk_228 + (FX32_CONST(2))) < (Unk_ov115_02265B0A[4][1] * FX32_ONE)) {
+        if ((param0->unk_228 + (FX32_CONST(2))) < (sSwalotAnimFrameRanges[4][1] * FX32_ONE)) {
             param0->unk_228 += (FX32_CONST(2));
         } else {
-            param0->unk_228 = (Unk_ov115_02265B0A[1][0] * FX32_ONE);
+            param0->unk_228 = (sSwalotAnimFrameRanges[1][0] * FX32_ONE);
         }
     } else {
         u32 v1;
@@ -3526,12 +3526,12 @@ static void ov115_02264270(UnkStruct_ov115_02263DF8 *param0)
             v1 = 1 + param0->unk_22C;
         }
 
-        if (param0->unk_228 < (Unk_ov115_02265B0A[v1][0] * FX32_ONE)) {
-            param0->unk_228 = Unk_ov115_02265B0A[v1][0] * FX32_ONE;
-        } else if ((param0->unk_228 + (FX32_CONST(2))) < (Unk_ov115_02265B0A[v1][1] * FX32_ONE)) {
+        if (param0->unk_228 < (sSwalotAnimFrameRanges[v1][0] * FX32_ONE)) {
+            param0->unk_228 = sSwalotAnimFrameRanges[v1][0] * FX32_ONE;
+        } else if ((param0->unk_228 + (FX32_CONST(2))) < (sSwalotAnimFrameRanges[v1][1] * FX32_ONE)) {
             param0->unk_228 += (FX32_CONST(2));
         } else {
-            param0->unk_228 = Unk_ov115_02265B0A[v1][0] * FX32_ONE;
+            param0->unk_228 = sSwalotAnimFrameRanges[v1][0] * FX32_ONE;
         }
     }
 
@@ -3540,38 +3540,38 @@ static void ov115_02264270(UnkStruct_ov115_02263DF8 *param0)
     }
 }
 
-static void ov115_022642F8(s16 param0, s16 param1, VecFx32 *param2)
+static void WiFiLobbyMinigameBucket_ScreenToWorld(s16 param0, s16 param1, VecFx32 *param2)
 {
     param2->x = (((255 - param0) * ((FX32_CONST(150)) / 256)) - ((FX32_CONST(150)) / 2));
     param2->z = (FX32_CONST(-300)) - (((param1) * ((FX32_CONST(150)) / 256)) - ((FX32_CONST(150)) / 2));
 }
 
-static void ov115_02264324(const VecFx32 *param0, NNSG2dSVec2 *param1)
+static void WiFiLobbyMinigameBucket_WorldToScreen(const VecFx32 *param0, NNSG2dSVec2 *param1)
 {
     param1->x = 255 - (((param0->x) + ((FX32_CONST(150)) / 2)) / ((FX32_CONST(150)) / 256));
     param1->y = ((((-param0->z) + ((fx32)((-300 > 0) ? (-300 * (1 << 12) + 0.5f) : (-300 * (1 << 12) - 0.5f)))) + ((FX32_CONST(150)) / 2)) / ((FX32_CONST(150)) / 256));
 }
 
-static void ov115_02264354(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_RotateWorldToPlayer(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3)
 {
     MtxFx33 v0;
 
     MTX_Identity33(&v0);
-    MTX_RotY33(&v0, FX_SinIdx(Unk_ov115_02265C3C[param3 - 1][param2]), FX_CosIdx(Unk_ov115_02265C3C[param3 - 1][param2]));
+    MTX_RotY33(&v0, FX_SinIdx(sPlayerRotationAngles[param3 - 1][param2]), FX_CosIdx(sPlayerRotationAngles[param3 - 1][param2]));
     MTX_MultVec33(param0, &v0, param1);
 }
 
-static void ov115_0226439C(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_RotatePlayerToWorld(const VecFx32 *param0, VecFx32 *param1, u32 param2, u32 param3)
 {
     MtxFx33 v0;
 
     MTX_Identity33(&v0);
-    MTX_RotY33(&v0, FX_SinIdx(Unk_ov115_02265C3C[param3 - 1][param2]), FX_CosIdx(Unk_ov115_02265C3C[param3 - 1][param2]));
+    MTX_RotY33(&v0, FX_SinIdx(sPlayerRotationAngles[param3 - 1][param2]), FX_CosIdx(sPlayerRotationAngles[param3 - 1][param2]));
     MTX_Inverse33(&v0, &v0);
     MTX_MultVec33(param0, &v0, param1);
 }
 
-static void ov115_022643EC(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitBerryModels(WiFiLobbyMinigameBucketScene *param0, NARC *param1, u32 heapID)
 {
     BOOL v0;
     int v1;
@@ -3608,16 +3608,16 @@ static void ov115_022643EC(UnkStruct_ov115_02261ADC *param0, NARC *param1, u32 h
     SpriteResourcesHeader_Init(&param0->unk_760.unk_70, 100, 100, 100, 100, 0xffffffff, 0xffffffff, 0, 0, param0->unk_1AC[0], param0->unk_1AC[1], param0->unk_1AC[2], param0->unk_1AC[3], NULL, NULL);
 
     for (v1 = 0; v1 < 96; v1++) {
-        ov115_022646BC(param0, &param0->unk_7F4[v1], heapID);
+        WiFiLobbyMinigameBucket_InitBerry(param0, &param0->unk_7F4[v1], heapID);
     }
 }
 
-static void ov115_02264564(UnkStruct_ov115_02261ADC *param0)
+static void WiFiLobbyMinigameBucket_FreeBerryModels(WiFiLobbyMinigameBucketScene *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 96; v0++) {
-        ov115_02264728(param0, &param0->unk_7F4[v0]);
+        WiFiLobbyMinigameBucket_FreeBerry(param0, &param0->unk_7F4[v0]);
     }
 
     {
@@ -3635,28 +3635,28 @@ static void ov115_02264564(UnkStruct_ov115_02261ADC *param0)
 
     Easy3DModel_Release(&param0->unk_760.unk_50);
 
-    memset(&param0->unk_760, 0, sizeof(UnkStruct_ov115_02264A40));
-    memset(&param0->unk_7F4, 0, sizeof(UnkStruct_ov115_022647A0) * 96);
+    memset(&param0->unk_760, 0, sizeof(WiFiLobbyMinigameBucketBerryModels));
+    memset(&param0->unk_7F4, 0, sizeof(WiFiLobbyMinigameBucketBerry) * 96);
 }
 
-static void ov115_02264620(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov115_022622F8 *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_ShowBerry(WiFiLobbyMinigameBucketScene *param0, const WiFiLobbyMinigameBucketProjectileState *param1, u32 param2, u32 param3)
 {
-    UnkStruct_ov115_022647A0 *v0 = ov115_02264948(param0);
+    WiFiLobbyMinigameBucketBerry *v0 = WiFiLobbyMinigameBucket_AllocBerry(param0);
 
     if (param1->unk_04.unk_00 == param3) {
-        ov115_02264740(param0, v0, param1, param2);
+        WiFiLobbyMinigameBucket_ShowBerrySprite(param0, v0, param1, param2);
     } else {
-        ov115_0226477C(param0, v0, param1);
+        WiFiLobbyMinigameBucket_ShowBerryModel(param0, v0, param1);
     }
 }
 
-static void ov115_0226464C(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov115_022622F8 *param1)
+static void WiFiLobbyMinigameBucket_HideBerry(WiFiLobbyMinigameBucketScene *param0, const WiFiLobbyMinigameBucketProjectileState *param1)
 {
     int v0;
 
     for (v0 = 0; v0 < 96; v0++) {
         if (param0->unk_7F4[v0].unk_F8 == param1) {
-            ov115_02264924(&param0->unk_7F4[v0]);
+            WiFiLobbyMinigameBucket_HideBerryModel(&param0->unk_7F4[v0]);
             return;
         }
     }
@@ -3664,18 +3664,18 @@ static void ov115_0226464C(UnkStruct_ov115_02261ADC *param0, const UnkStruct_ov1
     GF_ASSERT(FALSE);
 }
 
-static void ov115_02264684(UnkStruct_ov115_02261ADC *param0, u32 param1)
+static void WiFiLobbyMinigameBucket_DrawBerries(WiFiLobbyMinigameBucketScene *param0, u32 param1)
 {
     int v0;
 
     for (v0 = 0; v0 < 96; v0++) {
         if (param0->unk_7F4[v0].unk_F8 != NULL) {
-            ov115_022647A0(&param0->unk_7F4[v0], param0, param1);
+            WiFiLobbyMinigameBucket_DrawBerry(&param0->unk_7F4[v0], param0, param1);
         }
     }
 }
 
-static void ov115_022646BC(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1, u32 param2)
+static void WiFiLobbyMinigameBucket_InitBerry(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1, u32 param2)
 {
     {
         AffineSpriteListTemplate v0 = { 0 };
@@ -3697,47 +3697,47 @@ static void ov115_022646BC(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022
     Easy3DObject_SetVisible(&param1->unk_7C, 0);
 }
 
-static void ov115_02264728(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1)
+static void WiFiLobbyMinigameBucket_FreeBerry(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1)
 {
     Sprite_Delete(param1->unk_00);
-    memset(param1, 0, sizeof(UnkStruct_ov115_022647A0));
+    memset(param1, 0, sizeof(WiFiLobbyMinigameBucketBerry));
 }
 
-static void ov115_02264740(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1, const UnkStruct_ov115_022622F8 *param2, u32 param3)
+static void WiFiLobbyMinigameBucket_ShowBerrySprite(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1, const WiFiLobbyMinigameBucketProjectileState *param2, u32 param3)
 {
     param1->unk_F8 = param2;
     param1->unk_F4 = 1;
     param1->unk_104 = 0;
 
     Sprite_SetExplicitPalette(param1->unk_00, param2->unk_04.unk_00);
-    ov115_02264980(param1, param2, param3);
+    WiFiLobbyMinigameBucket_UpdateBerrySprite(param1, param2, param3);
     Sprite_SetDrawFlag(param1->unk_00, TRUE);
 }
 
-static void ov115_0226477C(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022647A0 *param1, const UnkStruct_ov115_022622F8 *param2)
+static void WiFiLobbyMinigameBucket_ShowBerryModel(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketBerry *param1, const WiFiLobbyMinigameBucketProjectileState *param2)
 {
     param1->unk_F8 = param2;
     param1->unk_104 = 0;
 
     Sprite_SetDrawFlag(param1->unk_00, FALSE);
-    ov115_022649F0(param1, param0);
+    WiFiLobbyMinigameBucket_ShowBerryModelInternal(param1, param0);
 }
 
-static void ov115_022647A0(UnkStruct_ov115_022647A0 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2)
+static void WiFiLobbyMinigameBucket_DrawBerry(WiFiLobbyMinigameBucketBerry *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2)
 {
     BOOL v0;
     Easy3DModel *v1;
 
     if (param0->unk_F4 == 1) {
-        v0 = ov115_02264980(param0, param0->unk_F8, param2);
+        v0 = WiFiLobbyMinigameBucket_UpdateBerrySprite(param0, param0->unk_F8, param2);
 
         if (v0 == 0) {
-            ov115_022649F0(param0, param1);
+            WiFiLobbyMinigameBucket_ShowBerryModelInternal(param0, param1);
         }
     }
 
     if (param0->unk_F4 == 0) {
-        v1 = ov115_02264A40(param0->unk_F8, &param1->unk_760);
+        v1 = WiFiLobbyMinigameBucket_GetBerryModel(param0->unk_F8, &param1->unk_760);
 
         if (param0->unk_F8->unk_00 == 5) {
             NNS_G3dMdlSetMdlAmbAll(v1->model, GX_RGB(31, 31, 31));
@@ -3745,19 +3745,19 @@ static void ov115_022647A0(UnkStruct_ov115_022647A0 *param0, UnkStruct_ov115_022
             NNS_G3dMdlSetMdlAmbAll(v1->model, GX_RGB(18, 18, 18));
         }
 
-        ov115_02264A54(param0);
+        WiFiLobbyMinigameBucket_UpdateBerryRotation(param0);
         Easy3DObject_SetPosition(&param0->unk_04, param0->unk_F8->unk_2C.x, param0->unk_F8->unk_2C.y, param0->unk_F8->unk_2C.z);
         Easy3DObject_Draw(&param0->unk_04);
 
         if (Easy3DObject_IsVisible(&param0->unk_7C) == 1) {
-            ov115_02264848(param0);
+            WiFiLobbyMinigameBucket_DrawBerryShadow(param0);
             Easy3DObject_Draw(&param0->unk_7C);
-            ov115_02264908(param0);
+            WiFiLobbyMinigameBucket_ResetBerryShadow(param0);
         }
     }
 }
 
-static void ov115_02264848(UnkStruct_ov115_022647A0 *param0)
+static void WiFiLobbyMinigameBucket_DrawBerryShadow(WiFiLobbyMinigameBucketBerry *param0)
 {
     BOOL v0;
     fx32 v1;
@@ -3765,12 +3765,12 @@ static void ov115_02264848(UnkStruct_ov115_022647A0 *param0)
     fx32 v3;
     int v4;
 
-    v0 = ov115_022628A4(param0->unk_F8);
+    v0 = WiFiLobbyMinigameBucket_IsProjectileClose(param0->unk_F8);
 
     if (v0 == 1) {
         v2 = (FX32_CONST(-300));
     } else {
-        v0 = ov115_02262888(param0->unk_F8);
+        v0 = WiFiLobbyMinigameBucket_IsProjectileNearBucket(param0->unk_F8);
 
         if (v0 == 0) {
             v2 = (FX32_CONST(-50) - FX32_CONST(1));
@@ -3792,12 +3792,12 @@ static void ov115_02264848(UnkStruct_ov115_022647A0 *param0)
     NNS_G3dGlbPolygonAttr(0, 0, 0, 0, v4, 0);
 }
 
-static void ov115_02264908(UnkStruct_ov115_022647A0 *param0)
+static void WiFiLobbyMinigameBucket_ResetBerryShadow(WiFiLobbyMinigameBucketBerry *param0)
 {
     NNS_G3dGlbPolygonAttr(0, 0, 0, 0, 31, 0);
 }
 
-static void ov115_02264924(UnkStruct_ov115_022647A0 *param0)
+static void WiFiLobbyMinigameBucket_HideBerryModel(WiFiLobbyMinigameBucketBerry *param0)
 {
     param0->unk_F8 = NULL;
     param0->unk_F4 = 0;
@@ -3806,7 +3806,7 @@ static void ov115_02264924(UnkStruct_ov115_022647A0 *param0)
     Easy3DObject_SetVisible(&param0->unk_7C, 0);
 }
 
-static UnkStruct_ov115_022647A0 *ov115_02264948(UnkStruct_ov115_02261ADC *param0)
+static WiFiLobbyMinigameBucketBerry *WiFiLobbyMinigameBucket_AllocBerry(WiFiLobbyMinigameBucketScene *param0)
 {
     int v0;
 
@@ -3820,15 +3820,15 @@ static UnkStruct_ov115_022647A0 *ov115_02264948(UnkStruct_ov115_02261ADC *param0
     return NULL;
 }
 
-static BOOL ov115_02264980(UnkStruct_ov115_022647A0 *param0, const UnkStruct_ov115_022622F8 *param1, u32 param2)
+static BOOL WiFiLobbyMinigameBucket_UpdateBerrySprite(WiFiLobbyMinigameBucketBerry *param0, const WiFiLobbyMinigameBucketProjectileState *param1, u32 param2)
 {
     VecFx32 v0;
     NNSG2dSVec2 v1;
 
     v0 = param0->unk_F8->unk_2C;
 
-    ov115_0226439C(&v0, &v0, param0->unk_F8->unk_04.unk_00, param2);
-    ov115_02264324(&v0, &v1);
+    WiFiLobbyMinigameBucket_RotatePlayerToWorld(&v0, &v0, param0->unk_F8->unk_04.unk_00, param2);
+    WiFiLobbyMinigameBucket_WorldToScreen(&v0, &v1);
 
     v0.x = v1.x << FX32_SHIFT;
     v0.y = (v1.y << FX32_SHIFT) + (512 << FX32_SHIFT);
@@ -3843,14 +3843,14 @@ static BOOL ov115_02264980(UnkStruct_ov115_022647A0 *param0, const UnkStruct_ov1
     return 1;
 }
 
-static void ov115_022649F0(UnkStruct_ov115_022647A0 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_ShowBerryModelInternal(WiFiLobbyMinigameBucketBerry *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     Easy3DModel *v0;
 
     Sprite_SetDrawFlag(param0->unk_00, FALSE);
     param0->unk_F4 = 0;
 
-    v0 = ov115_02264A40(param0->unk_F8, &param1->unk_760);
+    v0 = WiFiLobbyMinigameBucket_GetBerryModel(param0->unk_F8, &param1->unk_760);
 
     Easy3DObject_Init(&param0->unk_04, v0);
     Easy3DObject_SetVisible(&param0->unk_04, 1);
@@ -3860,7 +3860,7 @@ static void ov115_022649F0(UnkStruct_ov115_022647A0 *param0, UnkStruct_ov115_022
     }
 }
 
-static Easy3DModel *ov115_02264A40(const UnkStruct_ov115_022622F8 *param0, UnkStruct_ov115_02264A40 *param1)
+static Easy3DModel *WiFiLobbyMinigameBucket_GetBerryModel(const WiFiLobbyMinigameBucketProjectileState *param0, WiFiLobbyMinigameBucketBerryModels *param1)
 {
     u32 v0;
 
@@ -3873,7 +3873,7 @@ static Easy3DModel *ov115_02264A40(const UnkStruct_ov115_022622F8 *param0, UnkSt
     return &param1->unk_00[v0];
 }
 
-static void ov115_02264A54(UnkStruct_ov115_022647A0 *param0)
+static void WiFiLobbyMinigameBucket_UpdateBerryRotation(WiFiLobbyMinigameBucketBerry *param0)
 {
     fx32 v0;
     u16 v1;
@@ -3882,7 +3882,7 @@ static void ov115_02264A54(UnkStruct_ov115_022647A0 *param0)
     param0->unk_104--;
 
     if (param0->unk_104 < 0) {
-        v0 = ov115_022625F0(param0->unk_F8);
+        v0 = WiFiLobbyMinigameBucket_GetProjectileSpeed(param0->unk_F8);
         v2 = ((v0 * (1024 - 512)) / (0x8000 + 0x16200));
         v1 = FX_Atan2Idx(param0->unk_F8->unk_04.unk_04.z, param0->unk_F8->unk_04.unk_04.x);
 
@@ -3898,7 +3898,7 @@ static void ov115_02264A54(UnkStruct_ov115_022647A0 *param0)
     Easy3DObject_SetRotation(&param0->unk_04, param0->unk_FE, 2);
 }
 
-static void ov115_02264B40(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_02264BA0 *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_InitCursor(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketCursor *param1, u32 param2, u32 param3)
 {
     AffineSpriteListTemplate v0 = { 0 };
 
@@ -3919,18 +3919,18 @@ static void ov115_02264B40(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022
     param1->unk_00 = 0;
 }
 
-static void ov115_02264BA0(UnkStruct_ov115_02264BA0 *param0)
+static void WiFiLobbyMinigameBucket_FreeCursor(WiFiLobbyMinigameBucketCursor *param0)
 {
     Sprite_Delete(param0->unk_04);
 }
 
-static void ov115_02264BAC(UnkStruct_ov115_02264BA0 *param0)
+static void WiFiLobbyMinigameBucket_ShowCursor(WiFiLobbyMinigameBucketCursor *param0)
 {
     Sprite_SetDrawFlag(param0->unk_04, TRUE);
     param0->unk_00 = 1;
 }
 
-static void ov115_02264BC0(UnkStruct_ov115_02264BA0 *param0)
+static void WiFiLobbyMinigameBucket_UpdateCursor(WiFiLobbyMinigameBucketCursor *param0)
 {
     VecFx32 v0;
 
@@ -3938,10 +3938,10 @@ static void ov115_02264BC0(UnkStruct_ov115_02264BA0 *param0)
         return;
     }
 
-    ov115_02264BD8(param0, gSystem.touchX, gSystem.touchY);
+    WiFiLobbyMinigameBucket_SetCursorPosition(param0, gSystem.touchX, gSystem.touchY);
 }
 
-static void ov115_02264BD8(UnkStruct_ov115_02264BA0 *param0, s32 param1, s32 param2)
+static void WiFiLobbyMinigameBucket_SetCursorPosition(WiFiLobbyMinigameBucketCursor *param0, s32 param1, s32 param2)
 {
     VecFx32 v0;
 
@@ -3951,13 +3951,13 @@ static void ov115_02264BD8(UnkStruct_ov115_02264BA0 *param0, s32 param1, s32 par
     Sprite_SetPosition(param0->unk_04, &v0);
 }
 
-static void ov115_02264BF8(UnkStruct_ov115_02264BA0 *param0)
+static void WiFiLobbyMinigameBucket_HideCursor(WiFiLobbyMinigameBucketCursor *param0)
 {
     Sprite_SetDrawFlag(param0->unk_04, FALSE);
     param0->unk_00 = 0;
 }
 
-static void ov115_02264C0C(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_02264C90 *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigameBucket_InitSplash(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketSplash *param1, u32 param2, u32 param3)
 {
     int v0;
     AffineSpriteListTemplate v1 = { 0 };
@@ -3980,7 +3980,7 @@ static void ov115_02264C0C(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_02264C78(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_02264C90 *param1)
+static void WiFiLobbyMinigameBucket_FreeSplash(WiFiLobbyMinigameBucketScene *param0, WiFiLobbyMinigameBucketSplash *param1)
 {
     int v0;
 
@@ -3989,7 +3989,7 @@ static void ov115_02264C78(UnkStruct_ov115_02261ADC *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_02264C90(UnkStruct_ov115_02264C90 *param0)
+static void WiFiLobbyMinigameBucket_UpdateSplash(WiFiLobbyMinigameBucketSplash *param0)
 {
     int v0;
     s32 v1;
@@ -4001,13 +4001,13 @@ static void ov115_02264C90(UnkStruct_ov115_02264C90 *param0)
         if (param0->unk_00[v0].unk_00 == 1) {
             if (param0->unk_00[v0].unk_14 < 16) {
                 v1 = param0->unk_00[v0].unk_14;
-                ov115_02264DD8(v1, 16, 8, 190, 125, &v2, &v3);
+                WiFiLobbyMinigameBucket_CalcSplashVelocity(v1, 16, 8, 190, 125, &v2, &v3);
             } else if (param0->unk_00[v0].unk_14 < (16 + 10)) {
                 v1 = param0->unk_00[v0].unk_14 - 16;
-                ov115_02264DD8(v1, 10, 4, 182, 140, &v2, &v3);
+                WiFiLobbyMinigameBucket_CalcSplashVelocity(v1, 10, 4, 182, 140, &v2, &v3);
             } else {
                 v1 = param0->unk_00[v0].unk_14 - (16 + 10);
-                ov115_02264DD8(v1, 6, 3, 180, 160, &v2, &v3);
+                WiFiLobbyMinigameBucket_CalcSplashVelocity(v1, 6, 3, 180, 160, &v2, &v3);
             }
 
             param0->unk_00[v0].unk_14++;
@@ -4036,10 +4036,10 @@ static void ov115_02264C90(UnkStruct_ov115_02264C90 *param0)
     }
 }
 
-static void ov115_02264D80(UnkStruct_ov115_02264C90 *param0, s32 param1, s32 param2)
+static void WiFiLobbyMinigameBucket_SpawnSplash(WiFiLobbyMinigameBucketSplash *param0, s32 param1, s32 param2)
 {
     int v0;
-    UnkStruct_ov115_02264D80 *v1 = NULL;
+    WiFiLobbyMinigameBucketSplashParticle *v1 = NULL;
 
     for (v0 = 0; v0 < 8; v0++) {
         if (param0->unk_00[v0].unk_00 == 0) {
@@ -4068,7 +4068,7 @@ static void ov115_02264D80(UnkStruct_ov115_02264C90 *param0, s32 param1, s32 par
     v1->unk_14 = 0;
 }
 
-static void ov115_02264DD8(int param0, int param1, int param2, int param3, int param4, s32 *param5, s32 *param6)
+static void WiFiLobbyMinigameBucket_CalcSplashVelocity(int param0, int param1, int param2, int param3, int param4, s32 *param5, s32 *param6)
 {
     s16 v0;
     s32 v1 = param4 - param3;
@@ -4078,7 +4078,7 @@ static void ov115_02264DD8(int param0, int param1, int param2, int param3, int p
     *param6 = FX_Mul(CalcSineDegrees(v0), param2 << FX32_SHIFT) >> FX32_SHIFT;
 }
 
-static void ov115_02264E48(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_02261ADC *param1, NARC *param2, int param3, u32 param4, u32 heapID, NNSFndAllocator *param6)
+static void WiFiLobbyMinigameBucket_InitBucketModel(WiFiLobbyMinigameBucketBucketModel *param0, WiFiLobbyMinigameBucketScene *param1, NARC *param2, int param3, u32 param4, u32 heapID, NNSFndAllocator *param6)
 {
     static const u16 v0[4] = {
         35,
@@ -4118,7 +4118,7 @@ static void ov115_02264E48(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_022
         }
 
         if ((v4 == 0) || (v4 == 1)) {
-            Easy3DObject_SetRotation(&param0->unk_00[v4], Unk_ov115_02265C5C[param3 - 1][param4], 1);
+            Easy3DObject_SetRotation(&param0->unk_00[v4], sStageRotationAngles[param3 - 1][param4], 1);
         } else {
             Easy3DObject_SetRotation(&param0->unk_00[v4], CalcAngleRotationIdx(180), 1);
         }
@@ -4132,7 +4132,7 @@ static void ov115_02264E48(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_022
     param0->unk_1D4 = (FX32_CONST(1));
 }
 
-static void ov115_02264F68(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_02261ADC *param1, NNSFndAllocator *param2)
+static void WiFiLobbyMinigameBucket_FreeBucketModel(WiFiLobbyMinigameBucketBucketModel *param0, WiFiLobbyMinigameBucketScene *param1, NNSFndAllocator *param2)
 {
     int v0;
 
@@ -4145,7 +4145,7 @@ static void ov115_02264F68(UnkStruct_ov115_02264FA0 *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_02264FA0(UnkStruct_ov115_02264FA0 *param0)
+static void WiFiLobbyMinigameBucket_DrawBucketModel(WiFiLobbyMinigameBucketBucketModel *param0)
 {
     int v0;
 
@@ -4204,7 +4204,7 @@ static void ov115_02264FA0(UnkStruct_ov115_02264FA0 *param0)
     }
 }
 
-static void ov115_022650C8(UnkStruct_ov115_02264FA0 *param0)
+static void WiFiLobbyMinigameBucket_StartBucketFill(WiFiLobbyMinigameBucketBucketModel *param0)
 {
     Easy3DObject_SetVisible(&param0->unk_00[0], 0);
     Easy3DObject_SetVisible(&param0->unk_00[1], 1);
@@ -4215,12 +4215,12 @@ static void ov115_022650C8(UnkStruct_ov115_02264FA0 *param0)
     param0->unk_1D9 = 0;
 }
 
-static void ov115_022650F8(UnkStruct_ov115_02264FA0 *param0, fx32 param1)
+static void WiFiLobbyMinigameBucket_SetBucketAnimSpeed(WiFiLobbyMinigameBucketBucketModel *param0, fx32 param1)
 {
     param0->unk_1D4 = param1;
 }
 
-static void ov115_02265100(const VecFx32 *param0, const VecFx32 *param1, const VecFx32 *param2, fx32 param3, VecFx32 *param4, fx32 *param5)
+static void WiFiLobbyMinigameBucket_RayIntersect(const VecFx32 *param0, const VecFx32 *param1, const VecFx32 *param2, fx32 param3, VecFx32 *param4, fx32 *param5)
 {
     fx32 v0;
     fx32 v1;
@@ -4237,12 +4237,12 @@ static void ov115_02265100(const VecFx32 *param0, const VecFx32 *param1, const V
     *param5 = v0;
 }
 
-static void ov115_02265274(UnkStruct_ov115_02261ADC *param0, fx32 param1)
+static void WiFiLobbyMinigameBucket_SetCameraTargetHeight(WiFiLobbyMinigameBucketScene *param0, fx32 param1)
 {
     param0->unk_1F8.y = param1;
 }
 
-static void ov115_0226527C(UnkStruct_ov115_02261ADC *param0, u16 param1)
+static void WiFiLobbyMinigameBucket_SetCameraAngle(WiFiLobbyMinigameBucketScene *param0, u16 param1)
 {
     CameraAngle v0;
 
@@ -4252,27 +4252,27 @@ static void ov115_0226527C(UnkStruct_ov115_02261ADC *param0, u16 param1)
     Camera_SetAngleAroundTarget(&v0, param0->camera);
 }
 
-static void ov115_022652A4(UnkStruct_ov115_022653CC *param0, u8 param1)
+static void WiFiLobbyMinigameBucket_InitBgFade(WiFiLobbyMinigameBucketBgFade *param0, u8 param1)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov115_022653CC));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBucketBgFade));
     param0->unk_04 = 2;
     param0->unk_06 = param1;
 }
 
-static void ov115_022652C0(UnkStruct_ov115_022653CC *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_UpdateBgFade(WiFiLobbyMinigameBucketBgFade *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     switch (param0->unk_00) {
     case 0:
         break;
     case 1:
-        ov115_022653F4(param1, param0->unk_04 - 1, param0->unk_06);
+        WiFiLobbyMinigameBucket_SetBgRotation(param1, param0->unk_04 - 1, param0->unk_06);
         param0->unk_00++;
         param0->unk_02 = 0;
     case 2:
         if (param0->unk_02 >= 16) {
             param0->unk_00 = 3;
             param0->unk_02 = 0;
-            ov115_022653F4(param1, param0->unk_04, param0->unk_06);
+            WiFiLobbyMinigameBucket_SetBgRotation(param1, param0->unk_04, param0->unk_06);
             G2S_SetBlendAlpha(1 << param0->unk_04, GX_BLEND_PLANEMASK_BG3, 0, 16);
         } else {
             param0->unk_02++;
@@ -4319,7 +4319,7 @@ static void ov115_022652C0(UnkStruct_ov115_022653CC *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_022653CC(UnkStruct_ov115_022653CC *param0)
+static void WiFiLobbyMinigameBucket_AdvanceBgFade(WiFiLobbyMinigameBucketBgFade *param0)
 {
     param0->unk_07++;
 
@@ -4330,7 +4330,7 @@ static void ov115_022653CC(UnkStruct_ov115_022653CC *param0)
     }
 }
 
-static void ov115_022653F4(UnkStruct_ov115_02261ADC *param0, s16 param1, u16 param2)
+static void WiFiLobbyMinigameBucket_SetBgRotation(WiFiLobbyMinigameBucketScene *param0, s16 param1, u16 param2)
 {
     int v0;
     s32 v1;
@@ -4356,7 +4356,7 @@ static void ov115_022653F4(UnkStruct_ov115_02261ADC *param0, s16 param1, u16 par
     }
 }
 
-static void ov115_02265478(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1, NARC *param2, u32 heapID)
+static void WiFiLobbyMinigameBucket_InitScoreDisplay(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1, NARC *param2, u32 heapID)
 {
     param0->heapID = heapID;
 
@@ -4431,14 +4431,14 @@ static void ov115_02265478(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_022
         Window_Remove(&param0->unk_38);
     }
 
-    ov115_02261304(&param0->unk_64, -FX32_CONST(64), FX32_CONST(32), FX32_CONST(36), 8);
-    ov115_02261304(&param0->unk_7C, FX32_CONST(48), FX32_CONST(48), FX32_CONST(12), 4);
+    WiFiLobbyMinigameBucket_InitMotion(&param0->unk_64, -FX32_CONST(64), FX32_CONST(32), FX32_CONST(36), 8);
+    WiFiLobbyMinigameBucket_InitMotion(&param0->unk_7C, FX32_CONST(48), FX32_CONST(48), FX32_CONST(12), 4);
 
     param0->unk_94 = 0;
     param0->unk_96 = 4;
 }
 
-static void ov115_02265688(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1)
+static void WiFiLobbyMinigameBucket_FreeScoreDisplay(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1)
 {
     {
         FontOAM_Delete(param0->unk_48);
@@ -4461,7 +4461,7 @@ static void ov115_02265688(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_02265700(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2)
+static void WiFiLobbyMinigameBucket_ShowScore(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2)
 {
     {
         String_FormatInt(param0->unk_5C, param2, 2, 2, 1);
@@ -4478,7 +4478,7 @@ static void ov115_02265700(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_022
     param0->unk_9A = 0;
 }
 
-static void ov115_02265788(UnkStruct_ov115_02265788 *param0)
+static void WiFiLobbyMinigameBucket_HideScore(WiFiLobbyMinigameBucketScoreDisplay *param0)
 {
     if (param0->unk_98 != 3) {
         if (param0->unk_98 == 2) {
@@ -4489,7 +4489,7 @@ static void ov115_02265788(UnkStruct_ov115_02265788 *param0)
     }
 }
 
-static void ov115_022657A8(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_02261ADC *param1, u32 param2)
+static void WiFiLobbyMinigameBucket_UpdateScore(WiFiLobbyMinigameBucketScoreDisplay *param0, WiFiLobbyMinigameBucketScene *param1, u32 param2)
 {
     if (param0->unk_98 != 3) {
         {
@@ -4504,7 +4504,7 @@ static void ov115_022657A8(UnkStruct_ov115_02265788 *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_02265820(UnkStruct_ov115_02265788 *param0)
+static void WiFiLobbyMinigameBucket_UpdateScoreDisplay(WiFiLobbyMinigameBucketScoreDisplay *param0)
 {
     switch (param0->unk_98) {
     case 0:
@@ -4537,12 +4537,12 @@ static void ov115_02265820(UnkStruct_ov115_02265788 *param0)
     if (param0->unk_96 < 4) {
         param0->unk_96++;
         param0->unk_7C.unk_10 = param0->unk_96;
-        ov115_02261364(&param0->unk_7C);
+        WiFiLobbyMinigameBucket_UpdateMotion(&param0->unk_7C);
     }
 
     {
         param0->unk_64.unk_10 = param0->unk_94;
-        ov115_02261364(&param0->unk_64);
+        WiFiLobbyMinigameBucket_UpdateMotion(&param0->unk_64);
     }
 
     {
@@ -4556,7 +4556,7 @@ static void ov115_02265820(UnkStruct_ov115_02265788 *param0)
     }
 }
 
-static void ov115_022658E0(UnkStruct_ov115_022658E0 *param0)
+static void WiFiLobbyMinigameBucket_StartFinishEffect(WiFiLobbyMinigameBucketFinishEffect *param0)
 {
     param0->unk_00 = 0;
     param0->unk_02 = 1;
@@ -4564,7 +4564,7 @@ static void ov115_022658E0(UnkStruct_ov115_022658E0 *param0)
     Sound_PlayEffect(SEQ_SE_PL_PINPON_sseq);
 }
 
-static void ov115_022658F8(UnkStruct_ov115_022658E0 *param0, UnkStruct_ov115_02264FA0 *param1, UnkStruct_ov115_02263DF8 *param2)
+static void WiFiLobbyMinigameBucket_UpdateFinishEffect(WiFiLobbyMinigameBucketFinishEffect *param0, WiFiLobbyMinigameBucketBucketModel *param1, WiFiLobbyMinigameBucketSwalotModel *param2)
 {
     fx32 v0;
     u32 v1;
@@ -4580,7 +4580,7 @@ static void ov115_022658F8(UnkStruct_ov115_022658E0 *param0, UnkStruct_ov115_022
         v0 = (param0->unk_03 * (FX32_CONST(25))) / 58;
         v0 += (FX32_CONST(1));
 
-        ov115_022650F8(param1, v0);
+        WiFiLobbyMinigameBucket_SetBucketAnimSpeed(param1, v0);
 
         v1 = (param0->unk_03 * 150) / 58;
         v1 += 256;
@@ -4601,9 +4601,9 @@ static void ov115_022658F8(UnkStruct_ov115_022658E0 *param0, UnkStruct_ov115_022
         break;
     case 2:
         if (BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN) == TRUE) {
-            ov115_022650C8(param1);
-            ov115_022650F8(param1, FX32_CONST(2));
-            ov115_0226425C(param2, 1);
+            WiFiLobbyMinigameBucket_StartBucketFill(param1);
+            WiFiLobbyMinigameBucket_SetBucketAnimSpeed(param1, FX32_CONST(2));
+            WiFiLobbyMinigameBucket_SetSwalotMouthOpen(param2, 1);
             param0->unk_00++;
         }
         break;
@@ -4623,7 +4623,7 @@ static void ov115_022658F8(UnkStruct_ov115_022658E0 *param0, UnkStruct_ov115_022
     }
 }
 
-static void ov115_02265A08(UnkStruct_ov115_022658E0 *param0)
+static void WiFiLobbyMinigameBucket_ResetFinishEffect(WiFiLobbyMinigameBucketFinishEffect *param0)
 {
     Sound_SetTempoRatioForHandle(7, 256);
 }

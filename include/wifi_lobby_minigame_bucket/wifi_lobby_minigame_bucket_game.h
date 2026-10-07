@@ -1,0 +1,25 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_GAME_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_GAME_H
+
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_game_decl.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_mode.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_stage.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_throw_data.h"
+#include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_final_scores.h"
+
+WiFiLobbyMinigameBucketGame *WiFiLobbyMinigameBucket_CreateGame(u32 heapID, u32 param1, u32 param2, u32 param3, WiFiLobbyMinigameBucketStage *param4);
+void WiFiLobbyMinigameBucket_FreeGame(WiFiLobbyMinigameBucketGame *param0);
+BOOL WiFiLobbyMinigameBucket_UpdateIntro(WiFiLobbyMinigameBucketGame *param0, u32 param1);
+BOOL WiFiLobbyMinigameBucket_UpdateOutro(WiFiLobbyMinigameBucketGame *param0, u32 param1);
+BOOL WiFiLobbyMinigameBucket_UpdateGame(WiFiLobbyMinigameBucketGame *param0);
+void WiFiLobbyMinigameBucket_VBlank(WiFiLobbyMinigameBucketGame *param0);
+s32 WiFiLobbyMinigameBucket_GetElapsedTime(const WiFiLobbyMinigameBucketGame *param0);
+void WiFiLobbyMinigameBucket_HandleThrow(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketThrowData *param1);
+BOOL WiFiLobbyMinigameBucket_PopQueuedThrow(WiFiLobbyMinigameBucketGame *param0, WiFiLobbyMinigameBucketThrowData *param1);
+void WiFiLobbyMinigameBucket_SetFinalScores(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketFinalScores *param1);
+u32 WiFiLobbyMinigameBucket_GetScore(const WiFiLobbyMinigameBucketGame *param0);
+void WiFiLobbyMinigameBucket_SetStage(WiFiLobbyMinigameBucketGame *param0, u32 param1);
+void WiFiLobbyMinigameBucket_AddScore(WiFiLobbyMinigameBucketGame *param0, u32 param1, u32 param2);
+void WiFiLobbyMinigameBucket_SetMode(WiFiLobbyMinigameBucketGame *param0, const WiFiLobbyMinigameBucketMode *param1);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_GAME_H

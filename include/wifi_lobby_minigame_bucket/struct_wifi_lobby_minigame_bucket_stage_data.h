@@ -1,0 +1,13 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BUCKET_STAGE_DATA_H
+#define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BUCKET_STAGE_DATA_H
+
+typedef struct {
+    s32 unk_00;
+    s32 unk_04;
+    s32 unk_08;
+    s32 unk_0C;
+    s32 unk_10;
+    s32 unk_14;
+} WiFiLobbyMinigameBucketStageData;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BUCKET_STAGE_DATA_H

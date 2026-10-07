@@ -1,0 +1,9 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_COMM_CMD_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_COMM_CMD_H
+
+#include "struct_defs/comm_cmd_table.h"
+
+const CommCmdTable *WiFiLobbyMinigameBucket_GetCommCmdTable(void);
+int WiFiLobbyMinigameBucket_GetCommCmdCount(void);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BUCKET_COMM_CMD_H
