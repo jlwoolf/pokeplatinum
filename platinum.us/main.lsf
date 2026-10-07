@@ -605,10 +605,10 @@ Overlay gym_features
 	Object main.nef.p/src_overlay008_gym_features.c.o
 }
 
-Overlay overlay9
+Overlay distortion_world
 {
 	After overlay6
-	Object main.nef.p/src_overlay009_ov9_02249960.c.o
+	Object main.nef.p/src_distortion_world_distortion_world.c.o
 }
 
 Overlay trainer_intro
@@ -856,13 +856,13 @@ Overlay underground
 
 Overlay poketch_unavailable
 {
-	After overlay9
+	After distortion_world
 	Object main.nef.p/src_applications_poketch_unavailable_graphics.c.o
 }
 
 Overlay poketch
 {
-	After overlay9
+	After distortion_world
 	Object main.nef.p/src_applications_poketch_poketch_system.c.o
 	Object main.nef.p/src_applications_poketch_poketch_graphics.c.o
 	Object main.nef.p/src_applications_poketch_poketch_task.c.o

@@ -10,7 +10,7 @@
 #include "game_opening/struct_ov77_021D670C_decl.h"
 #include "game_opening/struct_ov77_021D6734_decl.h"
 #include "game_opening/struct_ov77_021D6CFC_decl.h"
-#include "overlay009/camera_configuration.h"
+#include "distortion_world/camera_configuration.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"

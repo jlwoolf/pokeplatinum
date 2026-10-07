@@ -39,7 +39,7 @@
 #include "overlay005/signpost.h"
 #include "overlay005/struct_ov5_021ED0A4.h"
 #include "overlay005/texture_resource_manager.h"
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 
 #include "berry_patch_manager.h"
 #include "bg_window.h"
@@ -88,7 +88,7 @@
 FS_EXTERN_OVERLAY(overlay6);
 FS_EXTERN_OVERLAY(overlay7);
 FS_EXTERN_OVERLAY(gym_features);
-FS_EXTERN_OVERLAY(overlay9);
+FS_EXTERN_OVERLAY(distortion_world);
 
 enum FieldExtensionOverlay {
     FIELD_EXTENSION_OVERLAY_GYM = 0,
@@ -177,7 +177,7 @@ static BOOL FieldMap_Init(ApplicationManager *appMan, int *state)
                 break;
 
             case FIELD_EXTENSION_OVERLAY_DISTORTION_WORLD:
-                Overlay_LoadByID(FS_OVERLAY_ID(overlay9), OVERLAY_LOAD_ASYNC);
+                Overlay_LoadByID(FS_OVERLAY_ID(distortion_world), OVERLAY_LOAD_ASYNC);
                 break;
             }
         }
@@ -348,7 +348,7 @@ static BOOL FieldMap_Exit(ApplicationManager *appMan, int *param1)
                 Overlay_UnloadByID(FS_OVERLAY_ID(overlay6));
                 Overlay_UnloadByID(FS_OVERLAY_ID(gym_features));
                 Overlay_UnloadByID(FS_OVERLAY_ID(overlay7));
-                Overlay_UnloadByID(FS_OVERLAY_ID(overlay9));
+                Overlay_UnloadByID(FS_OVERLAY_ID(distortion_world));
             }
 
             return TRUE;

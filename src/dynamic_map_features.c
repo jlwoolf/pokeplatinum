@@ -10,7 +10,7 @@
 #include "overlay005/villa_furniture.h"
 #include "overlay006/great_marsh_tram.h"
 #include "overlay008/gym_features.h"
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 
 #include "field_system.h"
 #include "persisted_map_features.h"

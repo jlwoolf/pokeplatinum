@@ -1,4 +1,4 @@
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -36,7 +36,7 @@
 #include "overlay005/ov5_021ECE40.h"
 #include "overlay005/ov5_021F348C.h"
 #include "overlay005/struct_ov5_021ED0A4.h"
-#include "overlay009/camera_configuration.h"
+#include "distortion_world/camera_configuration.h"
 
 #include "bg_window.h"
 #include "billboard.h"

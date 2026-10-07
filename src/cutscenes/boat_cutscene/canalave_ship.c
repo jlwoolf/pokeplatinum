@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "cutscenes/boat_cutscene.h"
-#include "overlay009/camera_configuration.h"
+#include "distortion_world/camera_configuration.h"
 
 #include "camera.h"
 #include "easy3d.h"

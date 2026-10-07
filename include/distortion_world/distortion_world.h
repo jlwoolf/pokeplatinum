@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_OV9_02249960_H
-#define POKEPLATINUM_OV9_02249960_H
+#ifndef POKEPLATINUM_DISTORTION_WORLD_H
+#define POKEPLATINUM_DISTORTION_WORLD_H
 
 #include "struct_decls/map_object.h"
 
@@ -112,4 +112,4 @@ BOOL DistWorld_GetTileBehaviorOnCurrentFloatingPlatform(FieldSystem *fieldSystem
 void DistWorld_LoadFloorOffsets(int mapHeaderID, int *offsetTileX, int *offsetAltitude, int *offsetTileZ);
 BOOL DistWorld_IsBlockedByCynthia(FieldSystem *fieldSystem, int tileX, int tileZ, int tileY);
 
-#endif // POKEPLATINUM_OV9_02249960_H
+#endif // POKEPLATINUM_DISTORTION_WORLD_H

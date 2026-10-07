@@ -85,7 +85,7 @@
 #include "overlay007/communication_club.h"
 #include "overlay007/shop_menu.h"
 #include "overlay008/gym_features.h"
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 #include "overlay098/struct_ov98_02247168.h"
 #include "overlay104/struct_ov104_02230BE4.h"
 #include "savedata/save_table.h"

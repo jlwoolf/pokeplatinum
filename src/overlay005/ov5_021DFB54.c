@@ -24,7 +24,7 @@
 #include "overlay006/hm_cut_in.h"
 #include "overlay006/ov6_02248050.h"
 #include "overlay006/wild_encounters.h"
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 
 #include "billboard.h"
 #include "encounter.h"

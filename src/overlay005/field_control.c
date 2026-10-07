@@ -25,7 +25,7 @@
 #include "overlay006/repel_step_update.h"
 #include "overlay006/wild_encounters.h"
 #include "overlay008/gym_features.h"
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 #include "underground/manager.h"
 
 #include "catching_show.h"

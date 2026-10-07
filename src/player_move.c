@@ -16,7 +16,7 @@
 #include "global/utility.h"
 #include "overlay005/land_data_manager_decl.h"
 #include "overlay005/ov5_021DFB54.h"
-#include "overlay009/ov9_02249960.h"
+#include "distortion_world/distortion_world.h"
 
 #include "dynamic_map_features.h"
 #include "game_records.h"
