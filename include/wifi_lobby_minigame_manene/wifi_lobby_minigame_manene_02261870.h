@@ -1,0 +1,45 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02261870_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02261870_H
+
+#include <nitro/fx/fx.h>
+
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_0226139C.h"
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_02262A8C.h"
+#include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_0226501C.h"
+
+#include "easy3d_object.h"
+#include "narc.h"
+#include "sprite_system.h"
+
+void WiFiLobbyMinigameManene_Draw3DObject(Easy3DObject *param0, MtxFx43 *param1, VecFx32 *param2);
+void WiFiLobbyMinigameManene_Load3DModel(WiFiLobbyMinigameManene3DObject *param0, NARC *param1, int param2);
+void WiFiLobbyMinigameManene_Init3DObject(WiFiLobbyMinigameManene3DObject *param0, int param1);
+void WiFiLobbyMinigameManene_Release3DModel(WiFiLobbyMinigameManene3DObject *param0);
+void WiFiLobbyMinigameManene_Draw3DScene(WiFiLobbyMinigameManeneApp *param0);
+void WiFiLobbyMinigameManene_SetBallAnim(WiFiLobbyMinigameManeneGame *param0, int param1);
+void WiFiLobbyMinigameManene_InitCamera(WiFiLobbyMinigameManeneApp *param0);
+void WiFiLobbyMinigameManene_CreateBackgroundSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_CreatePlayerSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreePlayerSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_SetBackgroundSpritesVisible(WiFiLobbyMinigameManeneGame *param0, BOOL param1, int param2);
+void WiFiLobbyMinigameManene_TickBackgroundSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreeBackgroundSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_SetPlayerSpriteAnim(WiFiLobbyMinigameManeneGame *param0, int param1, int param2);
+int WiFiLobbyMinigameManene_GetPlayerSpriteAnim(WiFiLobbyMinigameManeneGame *param0, int param1);
+void WiFiLobbyMinigameManene_TickPlayerRowSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreePlayerRowSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_CreateMessageWindow(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreeMessageWindow(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_LoadPlayerPalettes(WiFiLobbyMinigameManeneApp *param0, int param1);
+void WiFiLobbyMinigameManene_CreatePlayerNameWindows(WiFiLobbyMinigameManeneApp *param0, WiFiLobbyMinigameManeneGame *param1);
+void WiFiLobbyMinigameManene_FreePlayerNameWindows(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_LoadSpriteResources(WiFiLobbyMinigameManeneApp *param0);
+void WiFiLobbyMinigameManene_CreatePlayerRowSprites(WiFiLobbyMinigameManeneApp *param0, WiFiLobbyMinigameManeneGame *param1);
+ManagedSprite *WiFiLobbyMinigameManene_CreateSparkleSprite(WiFiLobbyMinigameManeneGame *param0, s16 param1, s16 param2);
+void WiFiLobbyMinigameManene_CreateResultSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreeResultSprites(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_CreateBallSprite(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_FreeBallSprite(WiFiLobbyMinigameManeneGame *param0);
+void WiFiLobbyMinigameManene_LoadBackgroundGraphics(WiFiLobbyMinigameManeneApp *param0);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_MANENE_02261870_H

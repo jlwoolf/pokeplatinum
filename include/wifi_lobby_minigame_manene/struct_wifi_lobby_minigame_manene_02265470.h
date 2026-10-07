@@ -1,0 +1,12 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02265470_H
+#define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02265470_H
+
+typedef struct {
+    int unk_00;
+    BOOL unk_04;
+    void *unk_08[8];
+    int unk_28[10];
+    BOOL unk_50[10];
+} WiFiLobbyMinigameManeneIntroStep;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02265470_H

@@ -23,7 +23,7 @@
 #include "footprint_stamp/footprint_stamp.h"
 #include "overlay115/ov115_02260440.h"
 #include "overlay115/struct_ov115_02260440.h"
-#include "overlay116/ov116_022604C4.h"
+#include "wifi_lobby_minigame_manene/wifi_lobby_minigame_manene.h"
 #include "overlay117/ov117_02260440.h"
 #include "overlay117/struct_ov117_02260440.h"
 
@@ -41,7 +41,7 @@ FS_EXTERN_OVERLAY(wifi_lobby_news);
 FS_EXTERN_OVERLAY(footprint_stamp);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 FS_EXTERN_OVERLAY(overlay115);
-FS_EXTERN_OVERLAY(overlay116);
+FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
 FS_EXTERN_OVERLAY(overlay117);
 
 typedef struct {
@@ -621,14 +621,14 @@ static void ov66_02231164(UnkStruct_ov66_02230E4C *param0)
 
 static void ov66_02231178(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4C *param1)
 {
-    FS_EXTERN_OVERLAY(overlay116);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
     FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     static const ApplicationManagerTemplate v0 = {
-        ov116_022609B4,
-        ov116_02260CF4,
-        ov116_0226126C,
-        FS_OVERLAY_ID(overlay116),
+        WiFiLobbyMinigameManene_Init,
+        WiFiLobbyMinigameManene_Main,
+        WiFiLobbyMinigameManene_Exit,
+        FS_OVERLAY_ID(wifi_lobby_minigame_manene),
     };
 
     Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);

@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02260490_H
+#define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02260490_H
+
+typedef struct {
+    u32 state; // per-player state machine value
+} WiFiLobbyMinigameManenePlayerState;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02260490_H
