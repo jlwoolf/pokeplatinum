@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AFC0_H
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AFC0_H
 
-#include "overlay062/struct_ov62_02239DA4_sub1.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02239DA4_sub1.h"
 
 #include "easy_chat_sentence.h"
 
@@ -25,7 +25,7 @@ typedef struct {
         u16 unk_20_val2[40];
     };
     u8 unk_70[12];
-    UnkStruct_ov62_02239DA4_sub1 unk_7C;
+    VsRecorderViewerBoxChecksum unk_7C;
 } GlobalTerminalPlayerProfile;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AFC0_H

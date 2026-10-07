@@ -8,7 +8,7 @@
 #include "sprite_system.h"
 
 // A ring of sprites that fly in and orbit a common center, used by the
-// Vs. Recorder viewer (overlay062). The ring is driven by a per-VBlank task
+// Vs. Recorder viewer (vs_recorder_viewer). The ring is driven by a per-VBlank task
 // started by VsRecorderRing_Init and stopped by VsRecorderRing_Shutdown.
 VsRecorderRing *VsRecorderRing_New(VsRecorderRingConfig config, SpriteSystem *spriteSystem, SpriteManager *spriteManager, PaletteData *paletteData);
 void VsRecorderRing_LoadColorPalette(VsRecorderRing *ring, int color);

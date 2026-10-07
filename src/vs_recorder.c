@@ -10,7 +10,7 @@
 #include "struct_defs/struct_0208C06C.h"
 
 #include "field/field_system.h"
-#include "overlay062/ov62_02248408.h"
+#include "vs_recorder_viewer/vs_recorder_viewer_02248408.h"
 
 #include "bag.h"
 #include "field_battle_data_transfer.h"
@@ -35,10 +35,10 @@
 #include "constdata/const_020F3060.h"
 
 FS_EXTERN_OVERLAY(global_terminal);
-FS_EXTERN_OVERLAY(overlay62);
+FS_EXTERN_OVERLAY(vs_recorder_viewer);
 
 // Private state for the Vs. Recorder application. The app runs a small state
-// machine (state) that first shows the Vs. Recorder viewer (overlay062) and,
+// machine (state) that first shows the Vs. Recorder viewer (vs_recorder_viewer) and,
 // if the viewer requests playback, then replays the recorded battle.
 typedef struct {
     // Sub-state of the current phase (viewer or battle playback).
@@ -48,9 +48,9 @@ typedef struct {
     SaveData *saveData;
     // Battle setup used while replaying a recording.
     FieldBattleDTO *battleDTO;
-    // Shared Vs. Recorder state, also used by overlay062.
+    // Shared Vs. Recorder state, also used by vs_recorder_viewer.
     UnkStruct_0208C06C *vsRecorder;
-    // Set by overlay062 when the player chooses to replay a recording.
+    // Set by vs_recorder_viewer when the player chooses to replay a recording.
     VsRecorderPlaybackRequest playbackRequest;
     FieldSystem *fieldSystem;
 } VsRecorderAppData;
@@ -69,7 +69,7 @@ static BOOL VsRecorder_RunViewer(VsRecorderAppData *param0, enum HeapID heapID);
 static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID heapID);
 static BOOL VsRecorder_IsFrontierBrain(int param0);
 
-// Returns the Vs. Recorder state shared with the overlay062 viewer app.
+// Returns the Vs. Recorder state shared with the vs_recorder_viewer app.
 UnkStruct_0208C06C *VsRecorder_GetState(ApplicationManager *appMan)
 {
     UnkStruct_0208C06C *v0;
@@ -78,7 +78,7 @@ UnkStruct_0208C06C *VsRecorder_GetState(ApplicationManager *appMan)
     return v1->vsRecorder;
 }
 
-// Called by overlay062 to tell the app whether the player asked to replay a
+// Called by vs_recorder_viewer to tell the app whether the player asked to replay a
 // recording. `requested` is read by VsRecorder_Main once the viewer exits.
 void VsRecorder_SetPlaybackRequest(VsRecorderPlaybackRequest *request, BOOL requested, int param2)
 {
@@ -236,7 +236,7 @@ static int VsRecorder_Exit(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-// Runs the overlay062 viewer app and returns TRUE once it exits. The viewer
+// Runs the vs_recorder_viewer app and returns TRUE once it exits. The viewer
 // variant differs for the Vs. Recorder (mode 0) and the online features.
 static BOOL VsRecorder_RunViewer(VsRecorderAppData *param0, enum HeapID heapID)
 {
@@ -290,9 +290,9 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
         param0->battleDTO->bagCursor = BagCursor_New(heapID);
         param0->battleDTO->records = SaveData_GetGameRecords(param0->saveData);
 
-        if (Overlay_LoadByID(FS_OVERLAY_ID(overlay62), 2) == 1) {
-            ov62_02248408(BattleRecording_Get(), param0->battleDTO, heapID);
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay62));
+        if (Overlay_LoadByID(FS_OVERLAY_ID(vs_recorder_viewer), 2) == 1) {
+            VsRecorderViewerRecording_SanitizeNames(BattleRecording_Get(), param0->battleDTO, heapID);
+            Overlay_UnloadByID(FS_OVERLAY_ID(vs_recorder_viewer));
         }
 
         param0->vsRecorder->unk_874 = 1;
@@ -433,7 +433,7 @@ const ApplicationManagerTemplate *VsRecorder_GetAppTemplate(int mode)
 }
 
 // TRUE if the player has not yet arrived at the Battle Park for the first
-// time. Used by overlay062 to gate the Battle Park introduction.
+// time. Used by vs_recorder_viewer to gate the Battle Park introduction.
 BOOL VsRecorder_CheckFirstArrivalBattlePark(UnkStruct_0208C06C *vsRecorder)
 {
     VarsFlags *v0 = SaveData_GetVarsFlags(vsRecorder->saveData);

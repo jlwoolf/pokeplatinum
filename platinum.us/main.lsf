@@ -1129,25 +1129,25 @@ Overlay global_terminal
 	Library libgds.a
 }
 
-Overlay overlay62
+Overlay vs_recorder_viewer
 {
 	After global_terminal
-	Object main.nef.p/src_overlay062_ov62_0222F2C0.c.o
-	Object main.nef.p/src_overlay062_ov62_022300D8.c.o
-	Object main.nef.p/src_overlay062_ov62_02231690.c.o
-	Object main.nef.p/src_overlay062_ov62_02234A10.c.o
-	Object main.nef.p/src_overlay062_ov62_02235278.c.o
-	Object main.nef.p/src_overlay062_ov62_02235E64.c.o
-	Object main.nef.p/src_overlay062_ov62_02236CBC.c.o
-	Object main.nef.p/src_overlay062_ov62_02237D24.c.o
-	Object main.nef.p/src_overlay062_ov62_02239D60.c.o
-	Object main.nef.p/src_overlay062_ov62_0223CAEC.c.o
-	Object main.nef.p/src_overlay062_ov62_0223DFA8.c.o
-	Object main.nef.p/src_overlay062_ov62_0224112C.c.o
-	Object main.nef.p/src_overlay062_ov62_02241204.c.o
-	Object main.nef.p/src_overlay062_ov62_02246B00.c.o
-	Object main.nef.p/src_overlay062_ov62_02247D74.c.o
-	Object main.nef.p/src_overlay062_ov62_02248408.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_022300D8.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02231690.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02234A10.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02235278.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02235E64.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02236CBC.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02237D24.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02239D60.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_0223CAEC.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_0223DFA8.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_0224112C.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02241204.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02246B00.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02247D74.c.o
+	Object main.nef.p/src_vs_recorder_viewer_vs_recorder_viewer_02248408.c.o
 }
 
 Overlay wifi_2d_char

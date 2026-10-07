@@ -3,7 +3,7 @@
 
 #include "global_terminal/struct_global_terminal_0222AE80_sub1.h"
 #include "global_terminal/struct_global_terminal_0222AE80_sub2.h"
-#include "overlay062/struct_ov62_02239DA4_sub1.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02239DA4_sub1.h"
 
 #include "easy_chat_sentence.h"
 
@@ -16,7 +16,7 @@ typedef struct {
     u8 unk_58;
     u8 language;
     u8 unk_5A[2];
-    UnkStruct_ov62_02239DA4_sub1 unk_5C;
+    VsRecorderViewerBoxChecksum unk_5C;
 } GlobalTerminalDressUpPhoto;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AE80_H

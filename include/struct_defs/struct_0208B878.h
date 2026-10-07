@@ -8,7 +8,7 @@
 #include "sys_task_manager.h"
 
 // A ring of sprites that fly in from off-screen and then orbit a common
-// center. Used by the Vs. Recorder viewer (overlay062) for its intro and
+// center. Used by the Vs. Recorder viewer (vs_recorder_viewer) for its intro and
 // menu animations.
 typedef struct {
     VsRecorderRingResources resources;

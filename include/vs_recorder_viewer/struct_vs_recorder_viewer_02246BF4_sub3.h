@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB3_H
+#define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB3_H
+
+typedef struct {
+    int unk_00;
+    int unk_04;
+    int unk_08;
+} VsRecorderViewerIdEntrySelection;
+
+#endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB3_H
