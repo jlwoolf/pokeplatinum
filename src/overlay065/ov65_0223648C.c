@@ -799,13 +799,13 @@ static void ov65_02236C7C(UnkStruct_ov65_02236840 *param0, const WiFiCommAppArgs
     case 0:
         break;
     case 1:
-        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, UnkEnum_ov66_022324D0_00);
+        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, WiFiPlazaLobbyActivity_00);
         break;
     case 2:
-        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, UnkEnum_ov66_022324D0_01);
+        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, WiFiPlazaLobbyActivity_01);
         break;
     case 3:
-        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, UnkEnum_ov66_022324D0_02);
+        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, WiFiPlazaLobbyActivity_02);
         break;
     }
 

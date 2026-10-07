@@ -573,7 +573,7 @@ void ov70_022627BC(UnkStruct_ov70_02261E10 *param0, enum PlazaMinigame param1, u
     BOOL v0;
     UnkStruct_ov70_022610B8 *v1;
     UnkStruct_ov70_022610B8 *v2;
-    u32 v3 = param1 - UnkEnum_ov66_022324D0_00;
+    u32 v3 = param1 - WiFiPlazaLobbyActivity_00;
     v2 = param0->unk_22C.unk_00[v3];
     v1 = param0->unk_22C.unk_0C[v3];
 

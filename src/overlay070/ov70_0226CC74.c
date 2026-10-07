@@ -4,8 +4,8 @@
 #include <string.h>
 
 #include "overlay063/ov63_0222BE18.h"
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C9B4.h"
 #include "overlay070/ov70_0225D9A4.h"
 #include "overlay070/ov70_02262DA8.h"
@@ -24,7 +24,7 @@ typedef struct {
 BOOL ov70_0226CC74(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *param1, u32 param2)
 {
     UnkStruct_ov70_0226CC74 *v0;
-    UnkStruct_ov66_0222DFF8 *v1;
+    WiFiPlazaLobbyState *v1;
     UnkStruct_ov70_0225CA20 *v2;
     UnkStruct_ov70_0225CC54 *v3;
     UnkStruct_ov70_0225CC54 *v4;
@@ -52,7 +52,7 @@ BOOL ov70_0226CC74(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             ov70_0225D060(v3, v6);
         }
 
-        if (ov66_0222E12C(v1)) {
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v1)) {
             v5 = ov70_0225E20C(param1, 1, 3);
             v0->unk_00 = 4;
             ov70_0225DF8C(param1, v5);
@@ -60,14 +60,14 @@ BOOL ov70_0226CC74(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             break;
         }
 
-        if (ov66_0222E19C(v1) == 1) {
+        if (WiFiPlazaLobby_State_IsNeonTransitionComplete(v1) == 1) {
             v5 = ov70_0225E20C(param1, 1, 88);
             v0->unk_00 = 4;
             ov70_0225DF8C(param1, v5);
             ov70_02262E88(param0, 5);
             break;
         } else {
-            if (ov66_0222E0DC(v1) == 1) {
+            if (WiFiPlazaLobby_State_IsQuestionAnswered(v1) == 1) {
                 v5 = ov70_0225E20C(param1, 1, 87);
                 v0->unk_00 = 4;
 

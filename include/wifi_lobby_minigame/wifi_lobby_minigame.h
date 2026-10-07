@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_H
 #define POKEPLATINUM_WIFI_LOBBY_MINIGAME_H
 
-#include "overlay066/struct_ov66_02230DBC.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02230DBC.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_animation_decl.h"
@@ -12,7 +12,7 @@
 #include "sprite.h"
 #include "trainer_info.h"
 
-void WiFiLobbyMinigame_InitPlayerContext(WiFiLobbyMinigamePlayerContext *param0, BOOL param1, SaveData *saveData, BOOL param3, UnkStruct_ov66_02230DBC *param4);
+void WiFiLobbyMinigame_InitPlayerContext(WiFiLobbyMinigamePlayerContext *param0, BOOL param1, SaveData *saveData, BOOL param3, WiFiPlazaLobbyMinigameParticipants *param4);
 u32 WiFiLobbyMinigame_GetPlayerIndex(const WiFiLobbyMinigamePlayerContext *param0, u32 param1);
 u32 WiFiLobbyMinigame_GetNetIdByIndex(const WiFiLobbyMinigamePlayerContext *param0, u32 param1);
 BOOL WiFiLobbyMinigame_IsPlayerReady(const WiFiLobbyMinigamePlayerContext *param0, u32 param1);

@@ -6,7 +6,7 @@
 #include "constants/heap.h"
 
 #include "overlay063/struct_ov63_0222CC3C.h"
-#include "overlay066/ov66_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
 #include "overlay070/funcptr_ov70_02261C60.h"
 #include "overlay070/ov70_0225C700.h"
 #include "overlay070/struct_ov70_02261418.h"
@@ -656,7 +656,7 @@ static void ov70_022614F4(UnkStruct_ov70_022615A4 *param0, NARC *param1, const U
 
     for (v0 = 0; v0 < 2; v0++) {
         ov70_02261420(&param0->unk_00[v0], param1, param2->unk_180[v0], heapID);
-        ov66_02231668(param0->unk_00[v0].data);
+        WiFiPlazaLobby_Time_SetupModelGlobalLighting(param0->unk_00[v0].data);
     }
 
     for (v0 = 0; v0 < 5; v0++) {
@@ -946,7 +946,7 @@ static void ov70_02261B24(UnkStruct_ov70_02261BB4 *param0, NARC *param1, NNSFndA
         ov70_02261420(&param0->unk_00[v0], param1, param3->unk_00[v0], heapID);
 
         if ((v0 != 11) && (v0 != 12)) {
-            ov66_02231668(param0->unk_00[v0].data);
+            WiFiPlazaLobby_Time_SetupModelGlobalLighting(param0->unk_00[v0].data);
         }
 
         for (v1 = 0; v1 < 3; v1++) {

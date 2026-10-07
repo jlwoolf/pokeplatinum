@@ -8,11 +8,11 @@
 
 #include "struct_defs/wi_fi_history.h"
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/struct_ov66_02230F50.h"
-#include "overlay066/struct_ov66_02231428.h"
-#include "overlay066/struct_ov66_02231560.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02230F50.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231560.h"
 #include "wifi_earth/struct_wifi_earth_region_entry.h"
 #include "geonet/struct_wifi_earth_place_entry.h"
 
@@ -268,7 +268,7 @@ typedef struct {
     Options *options;
     int unk_14; // country
     int unk_18; // region
-    UnkStruct_ov66_02231428 unk_1C; // localTime
+    WiFiPlazaLobbyTime unk_1C; // localTime
     WiFiEarthGraphics unk_20; // graphics
     WiFiEarthMessageLoader unk_1CC; // messageLoader
     WiFiEarthGlobeObject unk_1DC; // globeObject
@@ -279,7 +279,7 @@ typedef struct {
     WiFiEarthConfirmWindow unk_BF64; // confirmWindow
 } WiFiEarthAppData;
 
-static void WiFiEarth_AddPlaceMarker(WiFiEarthGlobe *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const UnkStruct_ov66_02231560 *param6);
+static void WiFiEarth_AddPlaceMarker(WiFiEarthGlobe *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const WiFiPlazaLobbyPlaceList *param6);
 static void WiFiEarth_BuildRotationMatrix(MtxFx33 *param0, const VecFx32 *param1);
 static void WiFiEarth_BuildMarkerRotationMatrix(MtxFx33 *param0, const VecFx32 *param1);
 static void WiFiEarth_CalcTouchDrag(int param0, int param1, int *param2, int *param3, int *param4, int *param5);
@@ -290,13 +290,13 @@ static void WiFiEarth_UpdateProfilePanelState(WiFiEarthAppData *param0);
 static void WiFiEarth_DrawFrame(WiFiEarthAppData *param0);
 static void WiFiEarth_VBlankCallback(void *param0);
 static u32 WiFiEarth_ProcessInput(WiFiEarthAppData *param0);
-static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1);
+static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const WiFiPlazaLobbyEarthAppArgs *param1);
 static BOOL WiFiEarth_GetMarkerUnderCursor(const WiFiEarthAppData *param0, WiFiEarthProfile *param1);
 static u32 WiFiEarth_FindNearestMarker(const WiFiEarthAppData *param0);
 static u32 WiFiEarth_AngleDistance(const VecFx32 *param0, const VecFx32 *param1);
-static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, UnkStruct_ov66_02231428 param2);
+static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, WiFiPlazaLobbyTime param2);
 static BOOL WiFiEarth_MoveCameraToPlace(WiFiEarthAppData *param0, u8 param1, u8 param2);
-static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1);
+static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const WiFiPlazaLobbyEarthAppArgs *param1);
 static void WiFiEarth_InitGraphics(WiFiEarthGraphics *param0, Options *options, u32 heapID);
 static void WiFiEarth_FreeGraphics(WiFiEarthGraphics *param0);
 static void WiFiEarth_UpdateSprites(WiFiEarthGraphics *param0);
@@ -315,10 +315,10 @@ static void WiFiEarth_GetGlobePosition(const WiFiEarthGlobeObject *param0, VecFx
 static void WiFiEarth_GetGlobeRotationMatrix(const WiFiEarthGlobeObject *param0, MtxFx33 *param1);
 static void WiFiEarth_GetGlobeRotation(const WiFiEarthGlobeObject *param0, VecFx32 *param1);
 static void WiFiEarth_SetGlobeRotation(WiFiEarthGlobeObject *param0, const VecFx32 *param1);
-static void WiFiEarth_InitPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_ov66_02231560 *param1, WiFiEarthGraphics *param2, WiFiEarthAppFlags param3, u32 heapID);
+static void WiFiEarth_InitPlaceMarkers(WiFiEarthGlobe *param0, const WiFiPlazaLobbyPlaceList *param1, WiFiEarthGraphics *param2, WiFiEarthAppFlags param3, u32 heapID);
 static void WiFiEarth_FreePlaceMarkers(WiFiEarthGlobe *param0);
 static void WiFiEarth_DrawPlaceMarkers(WiFiEarthGlobe *param0, const WiFiEarthGlobeObject *param1);
-static u32 WiFiEarth_GetPlaceStatus(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 param2);
+static u32 WiFiEarth_GetPlaceStatus(const WiFiPlazaLobbyPlaceList *param0, u16 param1, u16 param2);
 static u32 WiFiEarth_FindMarkerByPlace(const WiFiEarthGlobe *param0, u16 param1, u16 param2, VecFx32 *param3);
 static u32 WiFiEarth_GetMarkerIndex(const WiFiEarthGlobe *param0, u16 param1, u16 param2);
 static void WiFiEarth_GetMarkerPosition(const WiFiEarthGlobe *param0, VecFx32 *param1, int param2);
@@ -406,7 +406,7 @@ static String *WiFiEarth_GetMessage(WiFiEarthMessageLoader *param0, u32 param1);
 static String *WiFiEarth_FormatCountryName(WiFiEarthMessageLoader *param0, u32 param1);
 static String *WiFiEarth_FormatCityName(WiFiEarthMessageLoader *param0, u32 param1, u32 param2);
 static void WiFiEarth_GetMessageInto(WiFiEarthMessageLoader *param0, u32 param1, String *param2);
-static u32 WiFiEarth_GetPlayerCountryIndex(const UnkStruct_ov66_02231560 *param0);
+static u32 WiFiEarth_GetPlayerCountryIndex(const WiFiPlazaLobbyPlaceList *param0);
 
 static const u32 sGlobeModelMembers[3] = {
     0x0,
@@ -690,7 +690,7 @@ static const WiFiEarthProfileGraphicParams sProfileGraphicParams[5] = {
 int WiFiEarth_Init(ApplicationManager *appMan, int *param1)
 {
     WiFiEarthAppData *v0;
-    UnkStruct_ov66_02230F50 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyEarthAppArgs *v1 = ApplicationManager_Args(appMan);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_105, 0x50000);
 
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiEarthAppData), HEAP_ID_105);
@@ -722,7 +722,7 @@ int WiFiEarth_Init(ApplicationManager *appMan, int *param1)
 int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
 {
     WiFiEarthAppData *v0;
-    UnkStruct_ov66_02230F50 *v1;
+    WiFiPlazaLobbyEarthAppArgs *v1;
     BOOL v2;
 
     v0 = ApplicationManager_Data(appMan);
@@ -731,7 +731,7 @@ int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_105);
-        ov66_0222E31C(v1->unk_0C, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->unk_0C, 1);
         (*param1)++;
         break;
     case 1:
@@ -745,12 +745,12 @@ int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
         v2 = WiFiEarth_UpdateState(v0);
         WiFiEarth_UpdateProfilePanelState(v0);
 
-        if (ov66_0222E12C(v1->unk_0C) == 1) {
-            ov66_0222E2A4(v1->unk_0C);
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_0C) == 1) {
+            WiFiPlazaLobby_State_SetPlayerWarpPending(v1->unk_0C);
             v2 = 1;
         }
 
-        if (ov66_02231760() == 1) {
+        if (WiFiPlazaLobby_Time_HasWifiError() == 1) {
             v2 = 1;
         }
 
@@ -779,7 +779,7 @@ int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
 int WiFiEarth_Exit(ApplicationManager *appMan, int *param1)
 {
     WiFiEarthAppData *v0 = ApplicationManager_Data(appMan);
-    UnkStruct_ov66_02230F50 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyEarthAppArgs *v1 = ApplicationManager_Args(appMan);
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -799,7 +799,7 @@ int WiFiEarth_Exit(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static void WiFiEarth_LoadPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_ov66_02231560 *param1, u32 heapID)
+static void WiFiEarth_LoadPlaceMarkers(WiFiEarthGlobe *param0, const WiFiPlazaLobbyPlaceList *param1, u32 heapID)
 {
     NARC *v0 = NARC_ctor(NARC_INDEX_APPLICATION__WIFI_EARTH__WIFI_EARTH_PLACE, heapID);
 
@@ -859,7 +859,7 @@ static void WiFiEarth_LoadPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_o
     NARC_dtor(v0);
 }
 
-static void WiFiEarth_AddPlaceMarker(WiFiEarthGlobe *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const UnkStruct_ov66_02231560 *param6)
+static void WiFiEarth_AddPlaceMarker(WiFiEarthGlobe *param0, u32 param1, s16 param2, s16 param3, u16 param4, u16 param5, const WiFiPlazaLobbyPlaceList *param6)
 {
     MtxFx33 v0 = { FX32_ONE, 0, 0, 0, FX32_ONE, 0, 0, 0, FX32_ONE };
     VecFx32 v1;
@@ -1191,7 +1191,7 @@ static u32 WiFiEarth_ProcessInput(WiFiEarthAppData *param0)
     return v0;
 }
 
-static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1)
+static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const WiFiPlazaLobbyEarthAppArgs *param1)
 {
     int v0;
     int v1;
@@ -1202,8 +1202,8 @@ static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const UnkStr
         v0 = WiFiEarth_GetPlayerCountryIndex(param1->unk_00);
 
         if (v0 != 50) {
-            v1 = ov66_022315D8(param1->unk_00, v0);
-            v2 = ov66_022315FC(param1->unk_00, v0);
+            v1 = WiFiPlazaLobby_Time_GetPlaceCountry(param1->unk_00, v0);
+            v2 = WiFiPlazaLobby_Time_GetPlaceRegion(param1->unk_00, v0);
             v3 = WiFiEarth_MoveCameraToPlace(param0, v1, v2);
 
             GF_ASSERT(v3 == 1);
@@ -1297,7 +1297,7 @@ static u32 WiFiEarth_AngleDistance(const VecFx32 *param0, const VecFx32 *param1)
     return v2;
 }
 
-static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, UnkStruct_ov66_02231428 param2)
+static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, WiFiPlazaLobbyTime param2)
 {
     s32 v0;
     u16 v1;
@@ -1343,7 +1343,7 @@ static BOOL WiFiEarth_MoveCameraToPlace(WiFiEarthAppData *param0, u8 param1, u8 
     return 0;
 }
 
-static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const UnkStruct_ov66_02230F50 *param1)
+static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const WiFiPlazaLobbyEarthAppArgs *param1)
 {
     int v0;
 
@@ -1569,7 +1569,7 @@ static void WiFiEarth_SetGlobeRotation(WiFiEarthGlobeObject *param0, const VecFx
     param0->unk_18 = *param1;
 }
 
-static void WiFiEarth_InitPlaceMarkers(WiFiEarthGlobe *param0, const UnkStruct_ov66_02231560 *param1, WiFiEarthGraphics *param2, WiFiEarthAppFlags param3, u32 heapID)
+static void WiFiEarth_InitPlaceMarkers(WiFiEarthGlobe *param0, const WiFiPlazaLobbyPlaceList *param1, WiFiEarthGraphics *param2, WiFiEarthAppFlags param3, u32 heapID)
 {
     int v0;
 
@@ -1632,7 +1632,7 @@ static void WiFiEarth_DrawPlaceMarkers(WiFiEarthGlobe *param0, const WiFiEarthGl
     }
 }
 
-static u32 WiFiEarth_GetPlaceStatus(const UnkStruct_ov66_02231560 *param0, u16 param1, u16 param2)
+static u32 WiFiEarth_GetPlaceStatus(const WiFiPlazaLobbyPlaceList *param0, u16 param1, u16 param2)
 {
     int v0;
     BOOL v1;
@@ -1640,12 +1640,12 @@ static u32 WiFiEarth_GetPlaceStatus(const UnkStruct_ov66_02231560 *param0, u16 p
     u8 v3, v4;
 
     for (v0 = 0; v0 < 50; v0++) {
-        v2 = ov66_0223164C(param0, v0);
+        v2 = WiFiPlazaLobby_Time_IsPlaceActive(param0, v0);
 
         if (v2) {
-            v1 = ov66_02231624(param0, v0);
-            v3 = ov66_022315D8(param0, v0);
-            v4 = ov66_022315FC(param0, v0);
+            v1 = WiFiPlazaLobby_Time_GetPlaceIsSelf(param0, v0);
+            v3 = WiFiPlazaLobby_Time_GetPlaceCountry(param0, v0);
+            v4 = WiFiPlazaLobby_Time_GetPlaceRegion(param0, v0);
 
             if ((v3 == param1) && (v4 == param2)) {
                 if (v1 == 1) {
@@ -2926,13 +2926,13 @@ static String *WiFiEarth_FormatCityName(WiFiEarthMessageLoader *param0, u32 para
     return param0->unk_08;
 }
 
-static u32 WiFiEarth_GetPlayerCountryIndex(const UnkStruct_ov66_02231560 *param0)
+static u32 WiFiEarth_GetPlayerCountryIndex(const WiFiPlazaLobbyPlaceList *param0)
 {
     int v0;
     u8 v1;
 
     for (v0 = 0; v0 < 50; v0++) {
-        v1 = ov66_0223164C(param0, v0);
+        v1 = WiFiPlazaLobby_Time_IsPlaceActive(param0, v0);
 
         if (v1 == 1) {
             return v0;

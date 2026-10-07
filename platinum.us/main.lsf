@@ -1178,17 +1178,17 @@ Overlay overlay65
 	Object main.nef.p/src_overlay065_ov65_0223648C.c.o
 }
 
-Overlay overlay66
+Overlay wifi_plaza_lobby
 {
 	After overlay63
-	Object main.nef.p/src_overlay066_ov66_0222DCE0.c.o
-	Object main.nef.p/src_overlay066_ov66_0222DDF0.c.o
-	Object main.nef.p/src_overlay066_ov66_02230C44.c.o
-	Object main.nef.p/src_overlay066_ov66_02231428.c.o
-	Object main.nef.p/src_overlay066_ov66_0223177C.c.o
-	Object main.nef.p/src_overlay066_ov66_022324F0.c.o
-	Object main.nef.p/src_overlay066_ov66_022343A8.c.o
-	Object main.nef.p/src_overlay066_ov66_02234EA8.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_0222DDF0.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_02230C44.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_02231428.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_0223177C.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_022324F0.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_022343A8.c.o
+	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_02234EA8.c.o
 	Library	libdwcbm.a
 	Library libdwcaccount.a
 	Library libdwcppwlobby.a
@@ -1199,25 +1199,25 @@ Overlay overlay66
 
 Overlay wifi_p2p_match
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_wifi_p2p_match_wifi_p2p_match.c.o
 }
 
 Overlay wifi_lobby_questionnaire
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_wifi_lobby_questionnaire_wifi_lobby_questionnaire.c.o
 }
 
 Overlay wifi_earth
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_wifi_earth_wifi_earth.c.o
 }
 
 Overlay overlay70
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_overlay070_ov70_0225C700.c.o
 	Object main.nef.p/src_overlay070_ov70_0225C858.c.o
 	Object main.nef.p/src_overlay070_ov70_0225C9B4.c.o
@@ -1633,13 +1633,13 @@ Overlay scratch_off_cards
 
 Overlay wifi_lobby_news
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_wifi_lobby_news_wifi_lobby_news.c.o
 }
 
 Overlay footprint_stamp
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_footprint_stamp_footprint_stamp.c.o
 	Object main.nef.p/src_footprint_stamp_footprint_stamp_models.c.o
 	Object main.nef.p/src_footprint_stamp_footprint_stamp_players.c.o
@@ -1648,7 +1648,7 @@ Overlay footprint_stamp
 
 Overlay wifi_lobby_minigame
 {
-	After overlay66
+	After wifi_plaza_lobby
 	Object main.nef.p/src_wifi_lobby_minigame_wifi_lobby_minigame.c.o
 	Object main.nef.p/src_wifi_lobby_minigame_wifi_lobby_minigame_comm_cmd.c.o
 	Object main.nef.p/src_wifi_lobby_minigame_wifi_lobby_minigame_comm_cmd_handlers.c.o

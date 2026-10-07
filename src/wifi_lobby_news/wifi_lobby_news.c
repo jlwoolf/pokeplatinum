@@ -5,14 +5,14 @@
 
 #include "constants/graphics.h"
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/ov66_0223177C.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
-#include "overlay066/struct_ov66_02230FA0.h"
-#include "overlay066/struct_ov66_02231428.h"
-#include "overlay066/struct_ov66_0223177C_decl.h"
-#include "overlay066/struct_ov66_02232068.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0223177C.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02230FA0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0223177C_decl.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02232068.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -61,7 +61,7 @@ typedef struct {
 } WiFiLobbyNewsScreenData;
 
 typedef struct {
-    UnkStruct_ov66_02231428 time;
+    WiFiPlazaLobbyTime time;
     u8 active;
     u8 needsRedraw;
     u16 frame;
@@ -118,8 +118,8 @@ typedef struct {
 } WiFiLobbyNewsGraphics;
 
 typedef struct {
-    UnkStruct_ov66_0223177C *newsData;
-    const UnkStruct_ov66_02231428 *time;
+    WiFiPlazaLobbyNews *newsData;
+    const WiFiPlazaLobbyTime *time;
     WiFiLobbyNewsGraphics graphics;
     WiFiLobbyNewsScreenData screenData;
     WiFiLobbyNewsTimer timer;
@@ -129,7 +129,7 @@ typedef struct {
 } WiFiLobbyNews;
 
 static void WiFiLobbyNews_VBlankCallback(void *param0);
-static void WiFiLobbyNews_Update(WiFiLobbyNews *param0, const UnkStruct_ov66_0222DFF8 *param1);
+static void WiFiLobbyNews_Update(WiFiLobbyNews *param0, const WiFiPlazaLobbyState *param1);
 static void WiFiLobbyNews_InitGraphics(WiFiLobbyNewsGraphics *param0, enum HeapID heapID);
 static void WiFiLobbyNews_FreeGraphics(WiFiLobbyNewsGraphics *param0);
 static void WiFiLobbyNews_UpdateSprites(WiFiLobbyNewsGraphics *param0);
@@ -142,24 +142,24 @@ static void WiFiLobbyNews_LoadScreenData(WiFiLobbyNewsScreenData *param0, WiFiLo
 static void WiFiLobbyNews_FreeScreenData(WiFiLobbyNewsScreenData *param0);
 static void WiFiLobbyNews_DrawTimerTile(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, u32 param2, u8 param3, u8 param4);
 static void WiFiLobbyNews_DrawHeadlineTile(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, u8 param2, u8 param3, u32 param4, u32 param5, BOOL param6, BOOL param7, BOOL param8);
-static void WiFiLobbyNews_InitTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const UnkStruct_ov66_0223177C *param3, const UnkStruct_ov66_02231428 *param4, const UnkStruct_ov66_0222DFF8 *param5, enum HeapID heapID);
+static void WiFiLobbyNews_InitTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const WiFiPlazaLobbyNews *param3, const WiFiPlazaLobbyTime *param4, const WiFiPlazaLobbyState *param5, enum HeapID heapID);
 static void WiFiLobbyNews_FreeTimer(WiFiLobbyNewsTimer *param0);
-static BOOL WiFiLobbyNews_UpdateTimer(WiFiLobbyNewsTimer *param0, const UnkStruct_ov66_0223177C *param1, const UnkStruct_ov66_02231428 *param2);
+static BOOL WiFiLobbyNews_UpdateTimer(WiFiLobbyNewsTimer *param0, const WiFiPlazaLobbyNews *param1, const WiFiPlazaLobbyTime *param2);
 static void WiFiLobbyNews_DrawTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2);
 static void WiFiLobbyNews_AnimateTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2);
 static void WiFiLobbyNews_DrawTimerGrid(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2);
-static void WiFiLobbyNews_InitHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const UnkStruct_ov66_0223177C *param3, const UnkStruct_ov66_0222DFF8 *param4, enum HeapID heapID);
+static void WiFiLobbyNews_InitHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const WiFiPlazaLobbyNews *param3, const WiFiPlazaLobbyState *param4, enum HeapID heapID);
 static void WiFiLobbyNews_FreeHeadlines(WiFiLobbyNewsHeadlines *param0);
-static BOOL WiFiLobbyNews_UpdateHeadlines(WiFiLobbyNewsHeadlines *param0, const UnkStruct_ov66_0223177C *param1);
-static void WiFiLobbyNews_DrawHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2, const UnkStruct_ov66_0223177C *param3, const UnkStruct_ov66_0222DFF8 *param4);
-static void WiFiLobbyNews_DrawHeadlineRow(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const UnkStruct_ov66_0223177C *param2, const UnkStruct_ov66_0222DFF8 *param3, u32 param4);
-static void WiFiLobbyNews_AnimateHeadlineRowA(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const UnkStruct_ov66_0223177C *param2, const UnkStruct_ov66_0222DFF8 *param3, u32 param4);
-static void WiFiLobbyNews_AnimateHeadlineRowB(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const UnkStruct_ov66_0223177C *param2, const UnkStruct_ov66_0222DFF8 *param3, u32 param4);
-static void WiFiLobbyNews_SetTrainerColors(WiFiLobbyNewsTrainerColors *param0, const UnkStruct_ov66_0223177C *param1, int param2, const UnkStruct_ov66_0222DFF8 *param3);
+static BOOL WiFiLobbyNews_UpdateHeadlines(WiFiLobbyNewsHeadlines *param0, const WiFiPlazaLobbyNews *param1);
+static void WiFiLobbyNews_DrawHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2, const WiFiPlazaLobbyNews *param3, const WiFiPlazaLobbyState *param4);
+static void WiFiLobbyNews_DrawHeadlineRow(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const WiFiPlazaLobbyNews *param2, const WiFiPlazaLobbyState *param3, u32 param4);
+static void WiFiLobbyNews_AnimateHeadlineRowA(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const WiFiPlazaLobbyNews *param2, const WiFiPlazaLobbyState *param3, u32 param4);
+static void WiFiLobbyNews_AnimateHeadlineRowB(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const WiFiPlazaLobbyNews *param2, const WiFiPlazaLobbyState *param3, u32 param4);
+static void WiFiLobbyNews_SetTrainerColors(WiFiLobbyNewsTrainerColors *param0, const WiFiPlazaLobbyNews *param1, int param2, const WiFiPlazaLobbyState *param3);
 static void WiFiLobbyNews_LoadTrainerPalette(const WiFiLobbyNewsTrainerColors *param0, const NNSG2dPaletteData *param1, u32 param2);
 static void WiFiLobbyNews_InitTicker(WiFiLobbyNewsTicker *param0, WiFiLobbyNewsGraphics *param1, enum HeapID heapID);
 static void WiFiLobbyNews_FreeTicker(WiFiLobbyNewsTicker *param0);
-static BOOL WiFiLobbyNews_UpdateTicker(WiFiLobbyNewsTicker *param0, UnkStruct_ov66_0223177C *param1, const UnkStruct_ov66_0222DFF8 *param2, enum HeapID heapID);
+static BOOL WiFiLobbyNews_UpdateTicker(WiFiLobbyNewsTicker *param0, WiFiPlazaLobbyNews *param1, const WiFiPlazaLobbyState *param2, enum HeapID heapID);
 static void WiFiLobbyNews_DrawTicker(WiFiLobbyNewsTicker *param0);
 static void WiFiLobbyNews_InitTickerEntry(WiFiLobbyNewsTickerEntry *param0, WiFiLobbyNewsGraphics *param1, u32 param2, enum HeapID heapID);
 static void WiFiLobbyNews_FreeTickerEntry(WiFiLobbyNewsTickerEntry *param0);
@@ -327,7 +327,7 @@ static u32 sLabelSoundEffects[4] = {
 int WiFiLobbyNews_Init(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyNews *v0;
-    UnkStruct_ov66_02230FA0 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyNewsAppArgs *v1 = ApplicationManager_Args(appMan);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_107, 0x50000);
 
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyNews), HEAP_ID_107);
@@ -352,7 +352,7 @@ int WiFiLobbyNews_Init(ApplicationManager *appMan, int *param1)
 int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyNews *v0;
-    UnkStruct_ov66_02230FA0 *v1;
+    WiFiPlazaLobbyNewsAppArgs *v1;
     BOOL v2;
 
     v0 = ApplicationManager_Data(appMan);
@@ -361,7 +361,7 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_107);
-        ov66_0222E31C(v1->unk_08, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->unk_08, 1);
         (*param1)++;
         break;
     case 1:
@@ -372,9 +372,9 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 2:
-        if ((gSystem.pressedKeys & PAD_BUTTON_B) || (ov66_0222E12C(v1->unk_08) == 1) || (ov66_02231760() == 1)) {
-            if (ov66_0222E12C(v1->unk_08) == 1) {
-                ov66_0222E2A4(v1->unk_08);
+        if ((gSystem.pressedKeys & PAD_BUTTON_B) || (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_08) == 1) || (WiFiPlazaLobby_Time_HasWifiError() == 1)) {
+            if (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_08) == 1) {
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v1->unk_08);
             }
             (*param1) = 3;
         } else {
@@ -418,7 +418,7 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
 int WiFiLobbyNews_Exit(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyNews *v0 = ApplicationManager_Data(appMan);
-    UnkStruct_ov66_02230FA0 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyNewsAppArgs *v1 = ApplicationManager_Args(appMan);
 
     WiFiLobbyNews_FreeLabels(&v0->labels);
     WiFiLobbyNews_FreeTimer(&v0->timer);
@@ -443,7 +443,7 @@ static void WiFiLobbyNews_VBlankCallback(void *param0)
     WiFiLobbyNews_ProcessVBlank(&v0->graphics);
 }
 
-static void WiFiLobbyNews_Update(WiFiLobbyNews *param0, const UnkStruct_ov66_0222DFF8 *param1)
+static void WiFiLobbyNews_Update(WiFiLobbyNews *param0, const WiFiPlazaLobbyState *param1)
 {
     WiFiLobbyNews_DrawTimer(&param0->timer, &param0->screenData, &param0->graphics);
     WiFiLobbyNews_DrawHeadlines(&param0->headlines, &param0->screenData, &param0->graphics, param0->newsData, param1);
@@ -617,12 +617,12 @@ static void WiFiLobbyNews_DrawHeadlineTile(WiFiLobbyNewsScreenData *param0, WiFi
     Bg_ScheduleTilemapTransfer(param1->bgConfig, 3);
 }
 
-static void WiFiLobbyNews_InitTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const UnkStruct_ov66_0223177C *param3, const UnkStruct_ov66_02231428 *param4, const UnkStruct_ov66_0222DFF8 *param5, enum HeapID heapID)
+static void WiFiLobbyNews_InitTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const WiFiPlazaLobbyNews *param3, const WiFiPlazaLobbyTime *param4, const WiFiPlazaLobbyState *param5, enum HeapID heapID)
 {
     u32 v0;
     u32 v1;
 
-    v0 = ov66_0222EB48(param5);
+    v0 = WiFiPlazaLobby_State_GetLobbyCloseTime(param5);
     v1 = v0 / 60;
 
     param0->time.unk_00_val2_unk_00 = 0;
@@ -642,15 +642,15 @@ static void WiFiLobbyNews_FreeTimer(WiFiLobbyNewsTimer *param0)
     return;
 }
 
-static BOOL WiFiLobbyNews_UpdateTimer(WiFiLobbyNewsTimer *param0, const UnkStruct_ov66_0223177C *param1, const UnkStruct_ov66_02231428 *param2)
+static BOOL WiFiLobbyNews_UpdateTimer(WiFiLobbyNewsTimer *param0, const WiFiPlazaLobbyNews *param1, const WiFiPlazaLobbyTime *param2)
 {
     BOOL v0;
-    UnkStruct_ov66_02231428 v1;
-    UnkStruct_ov66_02231428 v2;
-    UnkStruct_ov66_02231428 v3;
+    WiFiPlazaLobbyTime v1;
+    WiFiPlazaLobbyTime v2;
+    WiFiPlazaLobbyTime v3;
     BOOL v4 = 0;
 
-    v0 = ov66_02231C10(param1, &v1);
+    v0 = WiFiPlazaLobby_News_GetPlazaInfo(param1, &v1);
 
     if (v0 == 0) {
         return v4;
@@ -662,8 +662,8 @@ static BOOL WiFiLobbyNews_UpdateTimer(WiFiLobbyNewsTimer *param0, const UnkStruc
         v4 = 1;
     }
 
-    ov66_022314BC(param2, &v1, &v2);
-    ov66_022314BC(&v2, &param0->time, &v3);
+    WiFiPlazaLobby_Time_Subtract(param2, &v1, &v2);
+    WiFiPlazaLobby_Time_Subtract(&v2, &param0->time, &v3);
 
     if ((v3.unk_00_val2_unk_02 >= param0->unitsPerTile) || (v3.unk_00_val2_unk_01 > 0) || (v3.unk_00_val2_unk_00 > 0)) {
         param0->needsRedraw = 1;
@@ -764,7 +764,7 @@ static void WiFiLobbyNews_DrawTimerGrid(WiFiLobbyNewsTimer *param0, WiFiLobbyNew
     }
 }
 
-static void WiFiLobbyNews_InitHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const UnkStruct_ov66_0223177C *param3, const UnkStruct_ov66_0222DFF8 *param4, enum HeapID heapID)
+static void WiFiLobbyNews_InitHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsGraphics *param1, WiFiLobbyNewsScreenData *param2, const WiFiPlazaLobbyNews *param3, const WiFiPlazaLobbyState *param4, enum HeapID heapID)
 {
     WiFiLobbyNews_DrawHeadlineRow(param2, param1, param3, param4, 0);
 }
@@ -774,21 +774,21 @@ static void WiFiLobbyNews_FreeHeadlines(WiFiLobbyNewsHeadlines *param0)
     return;
 }
 
-static BOOL WiFiLobbyNews_UpdateHeadlines(WiFiLobbyNewsHeadlines *param0, const UnkStruct_ov66_0223177C *param1)
+static BOOL WiFiLobbyNews_UpdateHeadlines(WiFiLobbyNewsHeadlines *param0, const WiFiPlazaLobbyNews *param1)
 {
     u32 v0;
     BOOL v1 = 0;
 
-    v0 = ov66_02231C54(param1);
+    v0 = WiFiPlazaLobby_News_GetState(param1);
 
     switch (v0) {
-    case UnkEnum_ov66_02231E6C_00:
+    case WiFiPlazaLobbyNewsState_00:
         break;
-    case UnkEnum_ov66_02231E6C_01:
+    case WiFiPlazaLobbyNewsState_01:
         param0->state = 1;
         v1 = 1;
         break;
-    case UnkEnum_ov66_02231E6C_02:
+    case WiFiPlazaLobbyNewsState_02:
         param0->state = 3;
         v1 = 1;
         break;
@@ -797,7 +797,7 @@ static BOOL WiFiLobbyNews_UpdateHeadlines(WiFiLobbyNewsHeadlines *param0, const 
     return v1;
 }
 
-static void WiFiLobbyNews_DrawHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2, const UnkStruct_ov66_0223177C *param3, const UnkStruct_ov66_0222DFF8 *param4)
+static void WiFiLobbyNews_DrawHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobbyNewsScreenData *param1, WiFiLobbyNewsGraphics *param2, const WiFiPlazaLobbyNews *param3, const WiFiPlazaLobbyState *param4)
 {
     switch (param0->state) {
     case 0:
@@ -830,7 +830,7 @@ static void WiFiLobbyNews_DrawHeadlines(WiFiLobbyNewsHeadlines *param0, WiFiLobb
     }
 }
 
-static void WiFiLobbyNews_DrawHeadlineRow(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const UnkStruct_ov66_0223177C *param2, const UnkStruct_ov66_0222DFF8 *param3, u32 param4)
+static void WiFiLobbyNews_DrawHeadlineRow(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const WiFiPlazaLobbyNews *param2, const WiFiPlazaLobbyState *param3, u32 param4)
 {
     int v0, v1;
     u32 v2;
@@ -847,14 +847,14 @@ static void WiFiLobbyNews_DrawHeadlineRow(WiFiLobbyNewsScreenData *param0, WiFiL
     for (v0 = 0; v0 < 4; v0++) {
         for (v1 = 0; v1 < 5; v1++) {
             v8 = (v0 * 5) + v1;
-            v6 = ov66_02231C18(param2, v8);
+            v6 = WiFiPlazaLobby_News_IsResultSet(param2, v8);
 
             if (v6) {
-                v2 = ov66_02231C24(param2, v8);
-                v3 = ov66_02231C30(param2, v8);
-                v4 = ov66_02231C3C(param2, v8);
-                v5 = ov66_02231C48(param2, v8);
-                v7 = ov66_0222E924(param3, v8);
+                v2 = WiFiPlazaLobby_News_GetResult(param2, v8);
+                v3 = WiFiPlazaLobby_News_HasResultFlag(param2, v8);
+                v4 = WiFiPlazaLobby_News_HasNewResultFlag(param2, v8);
+                v5 = WiFiPlazaLobby_News_IsCurrentResult(param2, v8);
+                v7 = WiFiPlazaLobby_State_IsMemberPresent(param3, v8);
 
                 if ((param4 == 2) && (v5 == 1)) {
                     v9 = 0;
@@ -868,7 +868,7 @@ static void WiFiLobbyNews_DrawHeadlineRow(WiFiLobbyNewsScreenData *param0, WiFiL
     }
 }
 
-static void WiFiLobbyNews_AnimateHeadlineRowA(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const UnkStruct_ov66_0223177C *param2, const UnkStruct_ov66_0222DFF8 *param3, u32 param4)
+static void WiFiLobbyNews_AnimateHeadlineRowA(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const WiFiPlazaLobbyNews *param2, const WiFiPlazaLobbyState *param3, u32 param4)
 {
     u32 v0;
 
@@ -885,7 +885,7 @@ static void WiFiLobbyNews_AnimateHeadlineRowA(WiFiLobbyNewsScreenData *param0, W
     }
 }
 
-static void WiFiLobbyNews_AnimateHeadlineRowB(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const UnkStruct_ov66_0223177C *param2, const UnkStruct_ov66_0222DFF8 *param3, u32 param4)
+static void WiFiLobbyNews_AnimateHeadlineRowB(WiFiLobbyNewsScreenData *param0, WiFiLobbyNewsGraphics *param1, const WiFiPlazaLobbyNews *param2, const WiFiPlazaLobbyState *param3, u32 param4)
 {
     u32 v0;
 
@@ -902,17 +902,17 @@ static void WiFiLobbyNews_AnimateHeadlineRowB(WiFiLobbyNewsScreenData *param0, W
     }
 }
 
-static void WiFiLobbyNews_SetTrainerColors(WiFiLobbyNewsTrainerColors *param0, const UnkStruct_ov66_0223177C *param1, int param2, const UnkStruct_ov66_0222DFF8 *param3)
+static void WiFiLobbyNews_SetTrainerColors(WiFiLobbyNewsTrainerColors *param0, const WiFiPlazaLobbyNews *param1, int param2, const WiFiPlazaLobbyState *param3)
 {
     int v0;
     u32 v1;
     BOOL v2;
 
     for (v0 = 0; v0 < 4; v0++) {
-        v1 = ov66_02231D00(param1, param2, v0);
+        v1 = WiFiPlazaLobby_News_GetHeadlineValue(param1, param2, v0);
 
         if (v1 != 20) {
-            v2 = ov66_0222E924(param3, v1);
+            v2 = WiFiPlazaLobby_State_IsMemberPresent(param3, v1);
 
             if (v2 == 1) {
                 param0->colors[v0] = 9;
@@ -968,15 +968,15 @@ static void WiFiLobbyNews_FreeTicker(WiFiLobbyNewsTicker *param0)
     }
 }
 
-static BOOL WiFiLobbyNews_UpdateTicker(WiFiLobbyNewsTicker *param0, UnkStruct_ov66_0223177C *param1, const UnkStruct_ov66_0222DFF8 *param2, enum HeapID heapID)
+static BOOL WiFiLobbyNews_UpdateTicker(WiFiLobbyNewsTicker *param0, WiFiPlazaLobbyNews *param1, const WiFiPlazaLobbyState *param2, enum HeapID heapID)
 {
     int v0;
     BOOL v1;
     int v2;
     WiFiLobbyNewsTrainerColors v3;
-    UnkStruct_ov66_02232068 v4;
+    WiFiPlazaLobbyNewsPlayerFlags v4;
 
-    ov66_0222E934(param2, &v4);
+    WiFiPlazaLobby_State_GetMemberPresentBitmap(param2, &v4);
 
     for (v0 = 3 - 1; v0 >= 0; v0--) {
         if (param0->entries[v0].active) {
@@ -993,18 +993,18 @@ static BOOL WiFiLobbyNews_UpdateTicker(WiFiLobbyNewsTicker *param0, UnkStruct_ov
     }
 
     if (param0->entries[0].active == 0) {
-        while (ov66_02231C60(param1) == 1) {
-            v2 = ov66_02231C78(param1);
-            v1 = ov66_02231C94(param1, &v4, v2, param0->text, heapID);
+        while (WiFiPlazaLobby_News_HasHeadline(param1) == 1) {
+            v2 = WiFiPlazaLobby_News_GetHeadlineType(param1);
+            v1 = WiFiPlazaLobby_News_FormatHeadline(param1, &v4, v2, param0->text, heapID);
 
             if (v1 == 1) {
                 WiFiLobbyNews_SetTrainerColors(&v3, param1, v2, param2);
                 WiFiLobbyNews_SetTickerEntry(&param0->entries[0], param0->text, sTickerDurations[0], &v3, param0->palette);
-                ov66_02231C04(param1);
+                WiFiPlazaLobby_News_ClearQueue(param1);
                 return 1;
             }
 
-            ov66_02231C04(param1);
+            WiFiPlazaLobby_News_ClearQueue(param1);
         }
     }
 

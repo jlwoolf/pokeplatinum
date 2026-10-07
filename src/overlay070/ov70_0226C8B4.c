@@ -3,8 +3,8 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_02261E10.h"
 #include "overlay070/struct_ov70_02261E10_decl.h"
 
@@ -34,7 +34,7 @@ typedef struct {
 } UnkStruct_ov70_0226CBB4;
 
 typedef struct UnkStruct_ov70_0226C914_t {
-    const UnkStruct_ov66_0222DFF8 *unk_00;
+    const WiFiPlazaLobbyState *unk_00;
     UnkStruct_ov70_02261E10 *unk_04;
     u8 unk_08;
     u8 unk_09;
@@ -132,7 +132,7 @@ static const UnkStruct_ov70_0226E6FC Unk_ov70_0226E6FC[3] = {
     { 0x50, FX32_HALF }
 };
 
-UnkStruct_ov70_0226C914 *ov70_0226C8B4(const UnkStruct_ov66_0222DFF8 *param0, UnkStruct_ov70_02261E10 *param1, u32 heapID)
+UnkStruct_ov70_0226C914 *ov70_0226C8B4(const WiFiPlazaLobbyState *param0, UnkStruct_ov70_02261E10 *param1, u32 heapID)
 {
     UnkStruct_ov70_0226C914 *v0;
     u32 v1;
@@ -142,8 +142,8 @@ UnkStruct_ov70_0226C914 *ov70_0226C8B4(const UnkStruct_ov66_0222DFF8 *param0, Un
 
     v0->unk_00 = param0;
     v0->unk_04 = param1;
-    v1 = ov66_0222F104(param0);
-    v0->unk_0A = ov66_0222E158(param0);
+    v1 = WiFiPlazaLobby_State_GetFireworksEventStage(param0);
+    v0->unk_0A = WiFiPlazaLobby_State_GetFireworksState(param0);
 
     if ((0 != v0->unk_0A) && (v1 != 0)) {
         u32 v2;
@@ -151,7 +151,7 @@ UnkStruct_ov70_0226C914 *ov70_0226C8B4(const UnkStruct_ov66_0222DFF8 *param0, Un
         ov70_0226251C(param1, 1);
         ov70_0226CC3C(v0);
 
-        v2 = ov66_0222F114(param0);
+        v2 = WiFiPlazaLobby_State_GetFireworksFrame(param0);
         ov70_0226CB1C(v0, v1, v2);
     }
 
@@ -170,9 +170,9 @@ void ov70_0226C924(UnkStruct_ov70_0226C914 *param0)
     u32 v1;
     u32 v2;
 
-    v1 = ov66_0222F104(param0->unk_00);
-    v2 = ov66_0222F114(param0->unk_00);
-    v0 = ov66_0222E158(param0->unk_00);
+    v1 = WiFiPlazaLobby_State_GetFireworksEventStage(param0->unk_00);
+    v2 = WiFiPlazaLobby_State_GetFireworksFrame(param0->unk_00);
+    v0 = WiFiPlazaLobby_State_GetFireworksState(param0->unk_00);
 
     if (param0->unk_0A != v0) {
         param0->unk_0A = v0;

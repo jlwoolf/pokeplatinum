@@ -165,31 +165,31 @@ typedef enum {
 } UnkEnum_ov101_021D1894;
 
 typedef enum {
-    UnkEnum_ov66_02231E54_00 = 0,
-    UnkEnum_ov66_02231E54_01 = 1 << 0,
-    UnkEnum_ov66_02231E54_02 = 1 << 1,
-} UnkEnum_ov66_02231E54;
+    WiFiPlazaLobbyNewsResultFlags_00 = 0,
+    WiFiPlazaLobbyNewsResultFlags_01 = 1 << 0,
+    WiFiPlazaLobbyNewsResultFlags_02 = 1 << 1,
+} WiFiPlazaLobbyNewsResultFlags;
 
 typedef enum {
-    UnkEnum_ov66_02231E6C_00,
-    UnkEnum_ov66_02231E6C_01,
-    UnkEnum_ov66_02231E6C_02,
-} UnkEnum_ov66_02231E6C;
+    WiFiPlazaLobbyNewsState_00,
+    WiFiPlazaLobbyNewsState_01,
+    WiFiPlazaLobbyNewsState_02,
+} WiFiPlazaLobbyNewsState;
 
 enum PlazaMinigame {
-    UnkEnum_ov66_022324D0_00,
-    UnkEnum_ov66_022324D0_01,
-    UnkEnum_ov66_022324D0_02,
-    UnkEnum_ov66_022324D0_03,
-    UnkEnum_ov66_022324D0_04,
-    UnkEnum_ov66_022324D0_05,
-    UnkEnum_ov66_022324D0_06,
-    UnkEnum_ov66_022324D0_07,
-    UnkEnum_ov66_022324D0_08,
-    UnkEnum_ov66_022324D0_09,
-    UnkEnum_ov66_022324D0_10,
-    UnkEnum_ov66_022324D0_11,
-    UnkEnum_ov66_022324D0_12 = UnkEnum_ov66_022324D0_02 + 1,
+    WiFiPlazaLobbyActivity_00,
+    WiFiPlazaLobbyActivity_01,
+    WiFiPlazaLobbyActivity_02,
+    WiFiPlazaLobbyActivity_03,
+    WiFiPlazaLobbyActivity_04,
+    WiFiPlazaLobbyActivity_05,
+    WiFiPlazaLobbyActivity_06,
+    WiFiPlazaLobbyActivity_07,
+    WiFiPlazaLobbyActivity_08,
+    WiFiPlazaLobbyActivity_09,
+    WiFiPlazaLobbyActivity_10,
+    WiFiPlazaLobbyActivity_11,
+    WiFiPlazaLobbyActivity_12 = WiFiPlazaLobbyActivity_02 + 1,
 };
 
 enum {
@@ -203,84 +203,84 @@ enum {
 };
 
 typedef enum {
-    UnkEnum_ov66_0223287C_00,
-    UnkEnum_ov66_0223287C_01,
-    UnkEnum_ov66_0223287C_02,
-    UnkEnum_ov66_0223287C_03,
-    UnkEnum_ov66_0223287C_04
-} UnkEnum_ov66_0223287C;
+    WiFiPlazaLobbyNetworkLobbyState_00,
+    WiFiPlazaLobbyNetworkLobbyState_01,
+    WiFiPlazaLobbyNetworkLobbyState_02,
+    WiFiPlazaLobbyNetworkLobbyState_03,
+    WiFiPlazaLobbyNetworkLobbyState_04
+} WiFiPlazaLobbyNetworkLobbyState;
 
 typedef enum {
-    UnkEnum_ov66_02232BEC_00,
-    UnkEnum_ov66_02232BEC_01,
-    UnkEnum_ov66_02232BEC_02,
-    UnkEnum_ov66_02232BEC_03,
-    UnkEnum_ov66_02232BEC_04,
-    UnkEnum_ov66_02232BEC_05,
-    UnkEnum_ov66_02232BEC_06,
-    UnkEnum_ov66_02232BEC_07,
-    UnkEnum_ov66_02232BEC_08,
-} UnkEnum_ov66_02232BEC;
+    WiFiPlazaLobbyNetworkScheduleField_00,
+    WiFiPlazaLobbyNetworkScheduleField_01,
+    WiFiPlazaLobbyNetworkScheduleField_02,
+    WiFiPlazaLobbyNetworkScheduleField_03,
+    WiFiPlazaLobbyNetworkScheduleField_04,
+    WiFiPlazaLobbyNetworkScheduleField_05,
+    WiFiPlazaLobbyNetworkScheduleField_06,
+    WiFiPlazaLobbyNetworkScheduleField_07,
+    WiFiPlazaLobbyNetworkScheduleField_08,
+} WiFiPlazaLobbyNetworkScheduleField;
 
 typedef enum {
-    UnkEnum_ov66_022336B8_00,
-    UnkEnum_ov66_022336B8_01,
-    UnkEnum_ov66_022336B8_02,
-    UnkEnum_ov66_022336B8_03,
-    UnkEnum_ov66_022336B8_04,
-} UnkEnum_ov66_022336B8;
+    WiFiPlazaLobbyNetworkSubChannelKind_00,
+    WiFiPlazaLobbyNetworkSubChannelKind_01,
+    WiFiPlazaLobbyNetworkSubChannelKind_02,
+    WiFiPlazaLobbyNetworkSubChannelKind_03,
+    WiFiPlazaLobbyNetworkSubChannelKind_04,
+} WiFiPlazaLobbyNetworkSubChannelKind;
 
 typedef enum {
-    UnkEnum_ov66_02232A84_00,
-    UnkEnum_ov66_02232A84_01,
-    UnkEnum_ov66_02232A84_02,
-} UnkEnum_ov66_02232A84;
+    WiFiPlazaLobbyNetworkSubChannelJoinState_00,
+    WiFiPlazaLobbyNetworkSubChannelJoinState_01,
+    WiFiPlazaLobbyNetworkSubChannelJoinState_02,
+} WiFiPlazaLobbyNetworkSubChannelJoinState;
 
 typedef enum {
-    UnkEnum_ov66_02232F38_00,
-    UnkEnum_ov66_02232F38_01,
-    UnkEnum_ov66_02232F38_02,
-    UnkEnum_ov66_02232F38_03,
-} UnkEnum_ov66_02232F38;
+    WiFiPlazaLobbyNetworkGameKind_00,
+    WiFiPlazaLobbyNetworkGameKind_01,
+    WiFiPlazaLobbyNetworkGameKind_02,
+    WiFiPlazaLobbyNetworkGameKind_03,
+} WiFiPlazaLobbyNetworkGameKind;
 
 typedef enum {
-    UnkEnum_ov66_02233434_00,
-    UnkEnum_ov66_02233434_01,
-    UnkEnum_ov66_02233434_02,
-    UnkEnum_ov66_02233434_03,
-} UnkEnum_ov66_02233434;
+    WiFiPlazaLobbyNetworkQuestionnaireSubmitState_00,
+    WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01,
+    WiFiPlazaLobbyNetworkQuestionnaireSubmitState_02,
+    WiFiPlazaLobbyNetworkQuestionnaireSubmitState_03,
+} WiFiPlazaLobbyNetworkQuestionnaireSubmitState;
 
 typedef enum {
-    UnkEnum_ov66_02233454_00,
-    UnkEnum_ov66_02233454_01,
-    UnkEnum_ov66_02233454_02,
-    UnkEnum_ov66_02233454_03,
-    UnkEnum_ov66_02233454_04,
-    UnkEnum_ov66_02233454_05,
-    UnkEnum_ov66_02233454_06,
-    UnkEnum_ov66_02233454_07,
-    UnkEnum_ov66_02233454_08,
-    UnkEnum_ov66_02233454_09,
-    UnkEnum_ov66_02233454_10,
-    UnkEnum_ov66_02233454_11,
-} UnkEnum_ov66_02233454;
+    WiFiPlazaLobbyNetworkQuestionnaireField_00,
+    WiFiPlazaLobbyNetworkQuestionnaireField_01,
+    WiFiPlazaLobbyNetworkQuestionnaireField_02,
+    WiFiPlazaLobbyNetworkQuestionnaireField_03,
+    WiFiPlazaLobbyNetworkQuestionnaireField_04,
+    WiFiPlazaLobbyNetworkQuestionnaireField_05,
+    WiFiPlazaLobbyNetworkQuestionnaireField_06,
+    WiFiPlazaLobbyNetworkQuestionnaireField_07,
+    WiFiPlazaLobbyNetworkQuestionnaireField_08,
+    WiFiPlazaLobbyNetworkQuestionnaireField_09,
+    WiFiPlazaLobbyNetworkQuestionnaireField_10,
+    WiFiPlazaLobbyNetworkQuestionnaireField_11,
+} WiFiPlazaLobbyNetworkQuestionnaireField;
 
 typedef enum {
-    UnkEnum_ov66_02233538_00,
-    UnkEnum_ov66_02233538_01,
-    UnkEnum_ov66_02233538_02,
-    UnkEnum_ov66_02233538_03,
-    UnkEnum_ov66_02233538_04,
-    UnkEnum_ov66_02233538_05,
-    UnkEnum_ov66_02233538_06,
-    UnkEnum_ov66_02233538_07,
-    UnkEnum_ov66_02233538_08,
-} UnkEnum_ov66_02233538;
+    WiFiPlazaLobbyNetworkQuestionnaireText_00,
+    WiFiPlazaLobbyNetworkQuestionnaireText_01,
+    WiFiPlazaLobbyNetworkQuestionnaireText_02,
+    WiFiPlazaLobbyNetworkQuestionnaireText_03,
+    WiFiPlazaLobbyNetworkQuestionnaireText_04,
+    WiFiPlazaLobbyNetworkQuestionnaireText_05,
+    WiFiPlazaLobbyNetworkQuestionnaireText_06,
+    WiFiPlazaLobbyNetworkQuestionnaireText_07,
+    WiFiPlazaLobbyNetworkQuestionnaireText_08,
+} WiFiPlazaLobbyNetworkQuestionnaireText;
 
 typedef enum {
-    UnkEnum_ov66_022335C0_00,
-    UnkEnum_ov66_022335C0_01,
-    UnkEnum_ov66_022335C0_02,
-} UnkEnum_ov66_022335C0;
+    WiFiPlazaLobbyNetworkQuestionnaireLanguage_00,
+    WiFiPlazaLobbyNetworkQuestionnaireLanguage_01,
+    WiFiPlazaLobbyNetworkQuestionnaireLanguage_02,
+} WiFiPlazaLobbyNetworkQuestionnaireLanguage;
 
 #endif // POKEPLATINUM_ENUMS_H

@@ -6,8 +6,8 @@
 #include "generated/species.h"
 
 #include "overlay063/struct_ov63_0222CC3C.h"
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C858.h"
 #include "overlay070/ov70_0225D9A4.h"
 #include "overlay070/ov70_02261E10.h"
@@ -35,7 +35,7 @@ typedef struct {
 
 typedef struct UnkStruct_ov70_0226CF38_t {
     UnkStruct_ov70_0225DEE8 *unk_00;
-    UnkStruct_ov66_0222DFF8 *unk_04;
+    WiFiPlazaLobbyState *unk_04;
     UnkStruct_ov70_02261E10 *unk_08;
     UnkStruct_ov70_0225C894 *unk_0C;
     u8 unk_10[9][3];
@@ -143,7 +143,7 @@ UnkStruct_ov70_0226CF38 *ov70_0226CE54(UnkStruct_ov70_0225DEE8 *param0, enum Hea
     for (v1 = 0; v1 < 9; v1++) {
         ov70_022622B0(v0->unk_08, v1, v0->unk_BC);
 
-        if (ov66_0222EB7C(v0->unk_04, v1) == 1) {
+        if (WiFiPlazaLobby_State_GetFloatState(v0->unk_04, v1) == 1) {
             ov70_0226D020(v0, v1);
             ov70_0226D46C(v0, v1);
         }
@@ -167,18 +167,18 @@ void ov70_0226CF40(UnkStruct_ov70_0226CF38 *param0)
     BOOL v5;
     BOOL v6;
 
-    v4 = ov66_0222E338(param0->unk_04);
-    v2 = ov66_0222EBA4(param0->unk_04, v4);
+    v4 = WiFiPlazaLobby_State_GetMySlotIndex(param0->unk_04);
+    v2 = WiFiPlazaLobby_State_FindFloatSlotByUserID(param0->unk_04, v4);
 
     if (v2 == 0xffffffff) {
         v5 = 0;
     } else {
-        ov66_0222EC04(v2, &v2, &v3);
+        WiFiPlazaLobby_State_FloatSlotToRowCol(v2, &v2, &v3);
         v5 = 1;
     }
 
     for (v0 = 0; v0 < 9; v0++) {
-        if (ov66_0222EB7C(param0->unk_04, v0) == 1) {
+        if (WiFiPlazaLobby_State_GetFloatState(param0->unk_04, v0) == 1) {
             ov70_022623C4(param0->unk_08, v0, 1);
             ov70_0226D020(param0, v0);
             ov70_0226D46C(param0, v0);
@@ -223,8 +223,8 @@ static void ov70_0226D020(UnkStruct_ov70_0226CF38 *param0, u32 param1)
     fx32 v2;
     fx32 v3;
 
-    v0 = ov66_0222EB8C(param0->unk_04, param1);
-    v1 = ov66_0222EB9C(param0->unk_04);
+    v0 = WiFiPlazaLobby_State_GetFloatTimer(param0->unk_04, param1);
+    v1 = WiFiPlazaLobby_State_GetFloatTimerMax(param0->unk_04);
     v3 = FX_Div(param0->unk_C0, FX32_CONST(2));
     v2 = FX_Div(FX_Mul(FX32_CONST(v0), v3), FX32_CONST(v1));
     v2 = FX_Mul(v2, FX32_CONST(2));
@@ -242,11 +242,11 @@ static void ov70_0226D0E8(UnkStruct_ov70_0226CF38 *param0, u32 param1, BOOL para
     u32 v4;
     BOOL v5;
 
-    v4 = ov66_0222EB38(param0->unk_04);
-    v3 = ov66_0222EB28(param0->unk_04);
+    v4 = WiFiPlazaLobby_State_GetLobbyRoomType(param0->unk_04);
+    v3 = WiFiPlazaLobby_State_GetLobbySeason(param0->unk_04);
 
     for (v0 = 0; v0 < 3; v0++) {
-        v1 = ov66_0222EBE4(param0->unk_04, (param1 * 3) + v0);
+        v1 = WiFiPlazaLobby_State_IsFloatSlotTriggered(param0->unk_04, (param1 * 3) + v0);
         v5 = 0;
 
         if (param3 == 1) {
@@ -275,7 +275,7 @@ static void ov70_0226D0E8(UnkStruct_ov70_0226CF38 *param0, u32 param1, BOOL para
                         }
                     }
 
-                    ov66_0222EBF4(param0->unk_04, (param1 * 3) + v0);
+                    WiFiPlazaLobby_State_ClearFloatSlotTrigger(param0->unk_04, (param1 * 3) + v0);
                 }
                 break;
             case 1: {
@@ -290,7 +290,7 @@ static void ov70_0226D0E8(UnkStruct_ov70_0226CF38 *param0, u32 param1, BOOL para
                 v2 = ov70_0226D2A0(&param0->unk_2C[param1], v6, param0->unk_08, param1);
 
                 if (v2 == 1) {
-                    ov66_0222EBF4(param0->unk_04, (param1 * 3) + v0);
+                    WiFiPlazaLobby_State_ClearFloatSlotTrigger(param0->unk_04, (param1 * 3) + v0);
                     ov70_0226D24C(param2, param3, v5, SEQ_SE_PL_FLOAT13_sseq);
                 }
             } break;
@@ -298,7 +298,7 @@ static void ov70_0226D0E8(UnkStruct_ov70_0226CF38 *param0, u32 param1, BOOL para
                 v2 = ov70_0226239C(param0->unk_08, param1);
 
                 if (v2 == 1) {
-                    ov66_0222EBF4(param0->unk_04, (param1 * 3) + v0);
+                    WiFiPlazaLobby_State_ClearFloatSlotTrigger(param0->unk_04, (param1 * 3) + v0);
 
                     if ((param1 % 3) == 2) {
                         ov70_0226D24C(param2, param3, v5, Unk_ov70_0226E774[v4].unk_0A);
@@ -437,7 +437,7 @@ static void ov70_0226D46C(UnkStruct_ov70_0226CF38 *param0, u32 param1)
 
     for (v0 = 0; v0 < 3; v0++) {
         v2 = (param1 * 3) + v0;
-        v3 = ov66_0222EC30(param0->unk_04, v2);
+        v3 = WiFiPlazaLobby_State_GetFloatSlotPosition(param0->unk_04, v2);
 
         ov70_02262318(param0->unk_08, param1, v0, &v4);
 
@@ -445,7 +445,7 @@ static void ov70_0226D46C(UnkStruct_ov70_0226CF38 *param0, u32 param1)
             v5 = ((param0->unk_AA[v1].unk_00 + 16) * (FX32_ONE));
 
             if (v5 > v4.x) {
-                ov66_0222EC20(param0->unk_04, v2, v1);
+                WiFiPlazaLobby_State_SetFloatSlotPosition(param0->unk_04, v2, v1);
             }
         }
     }

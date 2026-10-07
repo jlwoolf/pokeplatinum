@@ -6,10 +6,10 @@
 
 #include "overlay063/ov63_0222BE18.h"
 #include "overlay063/struct_ov63_0222CC3C.h"
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/ov66_022324F0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C700.h"
 #include "overlay070/ov70_0225C858.h"
 #include "overlay070/ov70_0225C9B4.h"
@@ -156,7 +156,7 @@ static BOOL ov70_02265630(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 static BOOL ov70_022657D0(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *param1, u32 param2);
 static BOOL ov70_02265840(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *param1, u32 param2);
 static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *param1, u32 param2);
-static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, UnkStruct_ov66_0222DFF8 *param1, UnkStruct_ov70_0225DEE8 *param2, UnkStruct_ov70_0225CC54 *param3, u8 param4, int param5);
+static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *param1, UnkStruct_ov70_0225DEE8 *param2, UnkStruct_ov70_0225CC54 *param3, u8 param4, int param5);
 static BOOL ov70_02265ED0(const UnkStruct_ov70_0225C894 *param0, const UnkStruct_ov70_0225CA20 *param1, const u32 *param2, u32 param3, UnkStruct_ov63_0222CC3C *param4);
 
 static const ListMenuTemplate Unk_ov70_0226DA98 = {
@@ -422,7 +422,7 @@ void ov70_022630A4(UnkStruct_ov70_0225DEE8 *param0)
     v1 = ov70_0225DF10(param0);
     v2 = ov70_0225DF2C(param0);
 
-    ov66_0222E3E4(ov70_0225DEE8(param0), 1);
+    WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param0), 1);
     GF_ASSERT(v0->unk_06 < 4);
     ov70_02262E94(v1, v2, &Unk_ov70_0226DA78[v0->unk_06], NULL);
 }
@@ -607,14 +607,14 @@ static BOOL ov70_02263344(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 {
     UnkStruct_ov70_0225CA20 *v0 = ov70_0225DEF0(param1);
     UnkStruct_ov70_0225CC54 *v1 = ov70_0225CC70(v0, param2);
-    UnkStruct_ov66_0222DFF8 *v2 = ov70_0225DEE8(param1);
+    WiFiPlazaLobbyState *v2 = ov70_0225DEE8(param1);
 
     switch (ov70_02262E84(param0)) {
     case 0:
         ov70_0225E46C(param1, param2);
         ov70_02262E88(param0, 1);
 
-        if (param2 == ov66_0222E338(v2)) {
+        if (param2 == WiFiPlazaLobby_State_GetMySlotIndex(v2)) {
             ov70_0225E43C(param1, 0);
         }
         break;
@@ -624,7 +624,7 @@ static BOOL ov70_02263344(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         }
         break;
     case 2:
-        if (param2 == ov66_0222E338(v2)) {
+        if (param2 == WiFiPlazaLobby_State_GetMySlotIndex(v2)) {
             ov70_0225CDEC(v0, v1, 1);
         } else {
             if (ov70_0225E3F0(param1) == 1) {
@@ -651,7 +651,7 @@ static BOOL ov70_02263414(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_022653DC *v0;
     UnkStruct_ov70_0225CC54 *v1;
     UnkStruct_ov70_0225CA20 *v2;
-    UnkStruct_ov66_0222DFF8 *v3;
+    WiFiPlazaLobbyState *v3;
     String *v4;
 
     v3 = ov70_0225DEE8(param1);
@@ -664,11 +664,11 @@ static BOOL ov70_02263414(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         v0 = ov70_02262E3C(param0, sizeof(UnkStruct_ov70_022653DC));
 
         ov70_022653DC(v0, param1);
-        ov66_0222E2CC(v3);
+        WiFiPlazaLobby_State_PlayLobbyBGM(v3);
 
         {
-            v0->unk_02 = ov66_0222F0DC(v3);
-            ov66_0222E528(v3, v0->unk_02);
+            v0->unk_02 = WiFiPlazaLobby_State_ChooseCosmeticID(v3);
+            WiFiPlazaLobby_State_SetAppearanceRank(v3, v0->unk_02);
         }
 
         v1 = ov70_022631F8(param1, param2);
@@ -783,7 +783,7 @@ static BOOL ov70_02263414(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         case 0:
             ov70_0225E1F8(param1);
             ov70_02262E88(param0, 12);
-            ov66_0222E56C(v3, v0->unk_28, v0->unk_2A);
+            WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->unk_28, v0->unk_2A);
             ov70_0225E390(param1);
             Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
             break;
@@ -848,7 +848,7 @@ static BOOL ov70_02263414(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         case 0:
             ov70_0225E1F8(param1);
             ov70_02262E88(param0, 20);
-            ov66_0222E56C(v3, v0->unk_28, v0->unk_2A);
+            WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->unk_28, v0->unk_2A);
             ov70_0225E390(param1);
             Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
             break;
@@ -868,7 +868,7 @@ static BOOL ov70_02263414(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         {
             BOOL v14;
 
-            v14 = ov66_0222E924(v3, param2);
+            v14 = WiFiPlazaLobby_State_IsMemberPresent(v3, param2);
 
             if (v14 == 0) {
                 v4 = ov70_0225E20C(param1, 1, 1);
@@ -899,7 +899,7 @@ static BOOL ov70_02263414(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         v0->unk_00 = 9;
         ov70_02262E88(param0, 21);
 
-        ov66_0222E56C(v3, v0->unk_28, v0->unk_2A);
+        WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->unk_28, v0->unk_2A);
         ov70_0225E328(param1, param2, 0);
         break;
     case 19:
@@ -952,7 +952,7 @@ static BOOL ov70_02263910(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 {
     UnkStruct_ov70_0225CC54 *v0;
     UnkStruct_ov70_0225CA20 *v1;
-    UnkStruct_ov66_0222DFF8 *v3 = ov70_0225DEE8(param1);
+    WiFiPlazaLobbyState *v3 = ov70_0225DEE8(param1);
     UnkStruct_ov70_02263910 *v2 = ov70_0225DEEC(param1);
     v1 = ov70_0225DEF0(param1);
     v0 = ov70_0225CCAC(v1);
@@ -961,16 +961,16 @@ static BOOL ov70_02263910(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     case 0:
         ov70_02263230(param1, param2, v2->unk_00, v2->unk_02, 1);
 
-        if (ov66_02231760() == 0) {
-            ov66_02232AA4();
+        if (WiFiPlazaLobby_Time_HasWifiError() == 0) {
+            WiFiPlazaLobby_Network_LeaveSubChannel();
         }
 
-        ov66_0222E31C(v3, 0);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v3, 0);
         ov70_02262E8C(param0);
         break;
     case 1:
-        if (ov66_02231760() == 0) {
-            if (ov66_02232AD4() == 0) {
+        if (WiFiPlazaLobby_Time_HasWifiError() == 0) {
+            if (WiFiPlazaLobby_Network_IsSubChannelInactive() == 0) {
                 break;
             }
         }
@@ -990,7 +990,7 @@ static BOOL ov70_02263910(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         if (v4 == 0) {
             ov70_0225DF18(param1, 1);
 
-            if (ov66_0222E2B4(v3) == 1) {
+            if (WiFiPlazaLobby_State_IsPlayerWarpPending(v3) == 1) {
                 ov70_02262E8C(param0);
             } else {
                 ov70_02262E88(param0, 5);
@@ -1037,7 +1037,7 @@ static BOOL ov70_02263A58(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_0225CA20 *v1;
     UnkStruct_ov70_022630A4 *v2;
     UnkStruct_ov70_02263910 *v3;
-    UnkStruct_ov66_0222DFF8 *v4;
+    WiFiPlazaLobbyState *v4;
 
     v2 = ov70_0225DF10(param1);
     v1 = ov70_0225DEF0(param1);
@@ -1050,8 +1050,8 @@ static BOOL ov70_02263A58(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         ov70_02263230(param1, param2, v3->unk_00, v3->unk_02, 1);
         ov70_02262E8C(param0);
         ov70_02262EC0(v2, param2, &Unk_ov70_0226DA00, NULL);
-        ov66_0222E2C4(v4, 0);
-        ov66_0222E2CC(v4);
+        WiFiPlazaLobby_State_SetBGMSuppressed(v4, 0);
+        WiFiPlazaLobby_State_PlayLobbyBGM(v4);
     } break;
     case 1:
 
@@ -1073,7 +1073,7 @@ static BOOL ov70_02263A58(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         if (v6 == 0) {
             ov70_0225DF18(param1, 1);
 
-            if (ov66_0222E220(v4) == 1) {
+            if (WiFiPlazaLobby_State_IsTrainerInfoValid(v4) == 1) {
                 ov70_02262E88(param0, 3);
             } else {
                 ov70_02262E88(param0, 5);
@@ -1116,7 +1116,7 @@ static BOOL ov70_02263BA4(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 {
     UnkStruct_ov70_0225CC54 *v0;
     UnkStruct_ov70_0225CA20 *v1;
-    UnkStruct_ov66_0222DFF8 *v3 = ov70_0225DEE8(param1);
+    WiFiPlazaLobbyState *v3 = ov70_0225DEE8(param1);
     UnkStruct_ov70_02263910 *v2 = ov70_0225DEEC(param1);
     v1 = ov70_0225DEF0(param1);
     v0 = ov70_0225CCAC(v1);
@@ -1124,7 +1124,7 @@ static BOOL ov70_02263BA4(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     switch (ov70_02262E84(param0)) {
     case 0:
         ov70_02263230(param1, param2, v2->unk_00, v2->unk_02, 1);
-        ov66_0222E31C(v3, 0);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v3, 0);
         ov70_02262E8C(param0);
         break;
     case 1:
@@ -1142,7 +1142,7 @@ static BOOL ov70_02263BA4(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         if (v4 == 0) {
             ov70_0225DF18(param1, 1);
 
-            if (ov66_0222E2B4(v3) == 1) {
+            if (WiFiPlazaLobby_State_IsPlayerWarpPending(v3) == 1) {
                 ov70_02262E8C(param0);
             } else {
                 ov70_02262E88(param0, 5);
@@ -1203,7 +1203,7 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             UnkStruct_ov70_0225CA20 *v8;
             UnkStruct_ov70_02261E10 *v9;
             UnkStruct_ov70_0225C894 *v10;
-            UnkStruct_ov66_0222DFF8 *v11;
+            WiFiPlazaLobbyState *v11;
             UnkStruct_ov70_022630A4 *v12;
             UnkStruct_ov70_0225CC54 *v13;
 
@@ -1215,7 +1215,7 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             v13 = ov70_0225CCB0(v8);
 
             if (v13 != NULL) {
-                if ((ov66_0222E12C(v11) == 0) && (ov66_0222E19C(v11) == 1) && (ov66_0222E0F4(v11) == 0)) {
+                if ((WiFiPlazaLobby_State_IsLobbyClosed(v11) == 0) && (WiFiPlazaLobby_State_IsNeonTransitionComplete(v11) == 1) && (WiFiPlazaLobby_State_IsQuestionAcknowledged(v11) == 0)) {
                     if (ov70_0225CE3C(v13) != 9) {
                         ov70_0225CDEC(v8, v13, 9);
                     }
@@ -1285,7 +1285,7 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                     return 0;
                 }
 
-                if (ov66_0222EE08(v11)) {
+                if (WiFiPlazaLobby_State_IsChatRequested(v11)) {
                     ov70_02262EC0(v12, param2, &Unk_ov70_0226DA08, NULL);
                     ov70_0225CDEC(v8, v3, 0);
                     ov70_0225E43C(param1, 1);
@@ -1382,7 +1382,7 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 
                 if (gSystem.pressedKeys & PAD_BUTTON_X) {
                     if (ov70_0225E3F0(param1) == 0) {
-                        ov70_0225E328(param1, ov66_0222E338(v11), 0);
+                        ov70_0225E328(param1, WiFiPlazaLobby_State_GetMySlotIndex(v11), 0);
                         Sound_PlayEffect(SE_CONFIRM_sseq_3);
                     } else {
                         u32 v25;
@@ -1433,7 +1433,7 @@ static BOOL ov70_02264150(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         ov70_0225CDEC(v0, v1, 0);
     }
 
-        ov66_0222E3E4(ov70_0225DEE8(param1), 11);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 11);
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
 
         {
@@ -1520,7 +1520,7 @@ static BOOL ov70_02264150(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         if (ov70_0225CE38(v10) == 1) {
             ov70_0225DF34(param1, 1);
             ov70_0225DF38(param1, 0);
-            ov66_0222E3E4(ov70_0225DEE8(param1), 11);
+            WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 11);
 
             return 1;
         }
@@ -1543,7 +1543,7 @@ static BOOL ov70_02264150(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         UnkStruct_ov70_022630A4 *v15;
         u32 v16;
 
-        ov66_0222E3E4(ov70_0225DEE8(param1), 1);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 1);
 
         v13 = ov70_0225DEF0(param1);
         v15 = ov70_0225DF10(param1);
@@ -1564,7 +1564,7 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 {
     UnkStruct_ov70_0225CA20 *v0;
     UnkStruct_ov70_0225CC54 *v1;
-    UnkStruct_ov66_0222DFF8 *v2;
+    WiFiPlazaLobbyState *v2;
     u32 v3;
     UnkStruct_ov70_02264324 *v4;
 
@@ -1583,33 +1583,33 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             v5 = ov70_02264B64(v3);
 
             switch (v5) {
-            case UnkEnum_ov66_022336B8_00:
-                v4->unk_08 = UnkEnum_ov66_022324D0_03;
+            case WiFiPlazaLobbyNetworkSubChannelKind_00:
+                v4->unk_08 = WiFiPlazaLobbyActivity_03;
                 break;
-            case UnkEnum_ov66_022336B8_01:
-                v4->unk_08 = UnkEnum_ov66_022324D0_04;
+            case WiFiPlazaLobbyNetworkSubChannelKind_01:
+                v4->unk_08 = WiFiPlazaLobbyActivity_04;
                 break;
-            case UnkEnum_ov66_022336B8_02:
-                v4->unk_08 = UnkEnum_ov66_022324D0_05;
+            case WiFiPlazaLobbyNetworkSubChannelKind_02:
+                v4->unk_08 = WiFiPlazaLobbyActivity_05;
                 break;
-            case UnkEnum_ov66_022336B8_03:
-                v4->unk_08 = UnkEnum_ov66_022324D0_06;
+            case WiFiPlazaLobbyNetworkSubChannelKind_03:
+                v4->unk_08 = WiFiPlazaLobbyActivity_06;
                 break;
             default:
                 GF_ASSERT(FALSE);
-                v4->unk_08 = UnkEnum_ov66_022324D0_05;
+                v4->unk_08 = WiFiPlazaLobbyActivity_05;
                 break;
             }
         }
 
-        if (ov66_0222E12C(v2) == 1) {
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v2) == 1) {
             v4->unk_04 = 22;
             v4->unk_06 = 0;
             ov70_02262E88(param0, 5);
             break;
         }
 
-        if (ov66_0222E004(v2) == 1) {
+        if (WiFiPlazaLobby_State_CheckNetworkEvent(v2) == 1) {
             v4->unk_04 = 72;
             v4->unk_06 = 1;
             ov70_02262E88(param0, 5);
@@ -1622,24 +1622,24 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 
             v7 = ov70_02264B64(v3);
 
-            if (ov66_02232B00(v7) == 0) {
+            if (WiFiPlazaLobby_Network_HasSubChannelSpace(v7) == 0) {
                 v4->unk_04 = 20;
                 v4->unk_06 = 0;
                 ov70_02262E88(param0, 3);
                 break;
             }
 
-            v6 = ov66_02232A48(v7);
+            v6 = WiFiPlazaLobby_Network_JoinSubChannel(v7);
             GF_ASSERT(v6);
             ov70_02262E8C(param0);
         }
         break;
     case 1: {
-        UnkEnum_ov66_02232A84 v8;
+        WiFiPlazaLobbyNetworkSubChannelJoinState v8;
 
-        v8 = ov66_02232A84();
+        v8 = WiFiPlazaLobby_Network_GetSubChannelJoinState();
 
-        if (v8 == UnkEnum_ov66_02232A84_01) {
+        if (v8 == WiFiPlazaLobbyNetworkSubChannelJoinState_01) {
             ov70_02262E88(param0, 2);
 
             {
@@ -1649,16 +1649,16 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                 u8 v12[4] = { 0 };
                 u32 v13;
                 u8 v14;
-                UnkStruct_ov66_0222DFF8 *v15;
+                WiFiPlazaLobbyState *v15;
 
                 v15 = ov70_0225DEE8(param1);
-                v9 = ov66_0222E964(v15);
+                v9 = WiFiPlazaLobby_State_GetSecondaryMemberCount(v15);
 
-                if ((v4->unk_08 == UnkEnum_ov66_022324D0_05) || (v4->unk_08 == UnkEnum_ov66_022324D0_06)) {
+                if ((v4->unk_08 == WiFiPlazaLobbyActivity_05) || (v4->unk_08 == WiFiPlazaLobbyActivity_06)) {
                     v14 = 0;
 
                     for (v11 = 0; v11 < 4; v11++) {
-                        v13 = ov66_0222E974(v15, v11);
+                        v13 = WiFiPlazaLobby_State_GetSecondaryMemberSlot(v15, v11);
 
                         if (v13 != 0xffffffff) {
                             if (v14 < 4) {
@@ -1672,9 +1672,9 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                     v12[0] = param2;
                 }
 
-                ov66_0222EA10(v15, v4->unk_08, v9, v12[0], v12[1], v12[2], v12[3], 0);
+                WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v15, v4->unk_08, v9, v12[0], v12[1], v12[2], v12[3], 0);
             }
-        } else if (v8 == UnkEnum_ov66_02232A84_02) {
+        } else if (v8 == WiFiPlazaLobbyNetworkSubChannelJoinState_02) {
             v4->unk_04 = 20;
             v4->unk_06 = 0;
             ov70_02262E88(param0, 3);
@@ -1691,18 +1691,18 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         ov70_0225DF34(param1, 1);
         ov70_0225DF38(param1, v16);
 
-        ov66_0222E3E4(ov70_0225DEE8(param1), v17);
-        ov66_0222EF94(v2, v4->unk_08);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), v17);
+        WiFiPlazaLobby_State_RecordMinigameJournal(v2, v4->unk_08);
 
         switch (v4->unk_08) {
-        case UnkEnum_ov66_022324D0_03:
-        case UnkEnum_ov66_022324D0_04:
+        case WiFiPlazaLobbyActivity_03:
+        case WiFiPlazaLobbyActivity_04:
             v18 = 5;
             break;
-        case UnkEnum_ov66_022324D0_05:
+        case WiFiPlazaLobbyActivity_05:
             v18 = 3;
             break;
-        case UnkEnum_ov66_022324D0_06:
+        case WiFiPlazaLobbyActivity_06:
             v18 = 4;
             break;
         default:
@@ -1710,7 +1710,7 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             break;
         }
 
-        ov66_0222F040(v2, v18);
+        WiFiPlazaLobby_State_MarkActivityDone(v2, v18);
 
         {
             UnkStruct_ov63_0222CC3C v19;
@@ -1830,7 +1830,7 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_022630A4 *v1;
     UnkStruct_ov70_0225CA20 *v2;
     UnkStruct_ov70_0225CC54 *v3;
-    UnkStruct_ov66_0222DFF8 *v4;
+    WiFiPlazaLobbyState *v4;
 
     v0 = ov70_02262E80(param0);
     v1 = ov70_0225DF10(param1);
@@ -1853,18 +1853,18 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 
             switch (v5) {
             case 30:
-                v0->unk_00.unk_01 = UnkEnum_ov66_02232F38_00;
-                v0->unk_00.unk_02 = UnkEnum_ov66_022324D0_00;
+                v0->unk_00.unk_01 = WiFiPlazaLobbyNetworkGameKind_00;
+                v0->unk_00.unk_02 = WiFiPlazaLobbyActivity_00;
                 v0->unk_00.unk_03 = 2;
                 break;
             case 31:
-                v0->unk_00.unk_01 = UnkEnum_ov66_02232F38_01;
-                v0->unk_00.unk_02 = UnkEnum_ov66_022324D0_01;
+                v0->unk_00.unk_01 = WiFiPlazaLobbyNetworkGameKind_01;
+                v0->unk_00.unk_02 = WiFiPlazaLobbyActivity_01;
                 v0->unk_00.unk_03 = 3;
                 break;
             case 32:
-                v0->unk_00.unk_01 = UnkEnum_ov66_02232F38_02;
-                v0->unk_00.unk_02 = UnkEnum_ov66_022324D0_02;
+                v0->unk_00.unk_01 = WiFiPlazaLobbyNetworkGameKind_02;
+                v0->unk_00.unk_02 = WiFiPlazaLobbyActivity_02;
                 v0->unk_00.unk_03 = 4;
                 break;
             default:
@@ -1872,7 +1872,7 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                 break;
             }
 
-            ov66_0222E3E4(ov70_0225DEE8(param1), 12);
+            WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 12);
         }
 
         ov70_02262EC0(v1, param2, &Unk_ov70_0226DA20, &v0->unk_00);
@@ -1910,9 +1910,9 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         ov70_0225DF34(param1, 1);
         ov70_0225DF38(param1, v6);
 
-        ov66_0222EF94(v4, v0->unk_00.unk_02);
-        ov66_0222F030(v4);
-        ov66_0222F040(v4, v9);
+        WiFiPlazaLobby_State_RecordMinigameJournal(v4, v0->unk_00.unk_02);
+        WiFiPlazaLobby_State_IncrementMinigameRecord(v4);
+        WiFiPlazaLobby_State_MarkActivityDone(v4, v9);
 
         {
             UnkStruct_ov63_0222CC3C v10;
@@ -1931,7 +1931,7 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             v11->unk_08 = v0->unk_00.unk_02;
         }
 
-        ov66_0222E2C4(ov70_0225DEE8(param1), 1);
+        WiFiPlazaLobby_State_SetBGMSuppressed(ov70_0225DEE8(param1), 1);
         ov70_02262E64(param0);
 
         return 1;
@@ -2006,7 +2006,7 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         break;
     case 7:
         ov70_02262E64(param0);
-        ov66_0222E3E4(ov70_0225DEE8(param1), 1);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 1);
         ov70_0225CDEC(v2, v3, 1);
 
         {
@@ -2027,7 +2027,7 @@ static BOOL ov70_02264974(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_022630A4 *v1;
     UnkStruct_ov70_0225CA20 *v2;
     UnkStruct_ov70_0225CC54 *v3;
-    UnkStruct_ov66_0222DFF8 *v4;
+    WiFiPlazaLobbyState *v4;
     String *v5;
 
     v0 = ov70_02262E80(param0);
@@ -2039,18 +2039,18 @@ static BOOL ov70_02264974(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     switch (ov70_02262E84(param0)) {
     case 0:
         v0 = ov70_02262E3C(param0, sizeof(UnkStruct_ov70_02264324));
-        ov66_0222E3E4(ov70_0225DEE8(param1), 13);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 13);
 
-        if (ov66_0222E12C(v4) == 1) {
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v4) == 1) {
             v0->unk_00 = 122;
             ov70_02262E88(param0, 2);
             break;
         }
 
-        if (ov66_0222E19C(v4) == 1) {
+        if (WiFiPlazaLobby_State_IsNeonTransitionComplete(v4) == 1) {
             v0->unk_02 = 10;
         } else {
-            if (ov66_0222E0DC(v4) == 1) {
+            if (WiFiPlazaLobby_State_IsQuestionAnswered(v4) == 1) {
                 v0->unk_00 = 98;
                 ov70_02262E88(param0, 2);
                 break;
@@ -2070,12 +2070,12 @@ static BOOL ov70_02264974(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         } else {
             v6 = 10;
 
-            ov66_0222E10C(v4);
+            WiFiPlazaLobby_State_MarkQuestionAcknowledged(v4);
         }
 
         ov70_0225DF34(param1, 1);
         ov70_0225DF38(param1, v6);
-        ov66_0222E500(v4, 23, DWC_LOBBY_INVALID_USER_ID);
+        WiFiPlazaLobby_State_SetAttendee(v4, 23, DWC_LOBBY_INVALID_USER_ID);
 
         {
             UnkStruct_ov63_0222CC3C v8;
@@ -2130,7 +2130,7 @@ static BOOL ov70_02264974(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         break;
     case 6:
         ov70_02262E64(param0);
-        ov66_0222E3E4(ov70_0225DEE8(param1), 1);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 1);
         ov70_0225CDEC(v2, v3, 1);
 
         {
@@ -2157,13 +2157,13 @@ static u32 ov70_02264B64(u32 param0)
     case 23:
     case 24:
     case 25:
-        v0 = UnkEnum_ov66_022336B8_02;
+        v0 = WiFiPlazaLobbyNetworkSubChannelKind_02;
         break;
     case 26:
     case 27:
     case 28:
     case 29:
-        v0 = UnkEnum_ov66_022336B8_03;
+        v0 = WiFiPlazaLobbyNetworkSubChannelKind_03;
         break;
     case 6:
     case 7:
@@ -2173,7 +2173,7 @@ static u32 ov70_02264B64(u32 param0)
     case 11:
     case 12:
     case 13:
-        v0 = UnkEnum_ov66_022336B8_00;
+        v0 = WiFiPlazaLobbyNetworkSubChannelKind_00;
         break;
     case 14:
     case 15:
@@ -2183,7 +2183,7 @@ static u32 ov70_02264B64(u32 param0)
     case 19:
     case 20:
     case 21:
-        v0 = UnkEnum_ov66_022336B8_01;
+        v0 = WiFiPlazaLobbyNetworkSubChannelKind_01;
         break;
     default:
         GF_ASSERT(FALSE);
@@ -2291,14 +2291,14 @@ static BOOL ov70_02264C9C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     switch (ov70_02262E84(param0)) {
     case 0: {
         String *v0;
-        UnkStruct_ov66_0222DFF8 *v1;
+        WiFiPlazaLobbyState *v1;
 
         v1 = ov70_0225DEE8(param1);
 
-        if (ov66_0222E12C(v1) == 1) {
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v1) == 1) {
             v0 = ov70_0225E20C(param1, 1, 3);
         } else {
-            if (ov66_0222E170(v1) == 1) {
+            if (WiFiPlazaLobby_State_IsParadeFinished(v1) == 1) {
                 v0 = ov70_0225E20C(param1, 1, 78);
             } else {
                 v0 = ov70_0225E20C(param1, 1, 2);
@@ -2336,7 +2336,7 @@ static BOOL ov70_02264D38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_02261E10 *v1;
     UnkStruct_ov70_0225CA20 *v2;
     UnkStruct_ov70_02260AD4 *v3;
-    UnkStruct_ov66_0222DFF8 *v4;
+    WiFiPlazaLobbyState *v4;
     BOOL v5;
     String *v6;
 
@@ -2373,15 +2373,15 @@ static BOOL ov70_02264D38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         ov70_02262E88(param0, 1);
         break;
     case 1:
-        if (ov66_0222E170(v4) == 0) {
+        if (WiFiPlazaLobby_State_IsParadeFinished(v4) == 0) {
             v0->unk_04 = 8;
             ov70_02262E88(param0, 6);
         } else {
-            if (ov66_0222E12C(v4) == 1) {
+            if (WiFiPlazaLobby_State_IsLobbyClosed(v4) == 1) {
                 v0->unk_04 = 10;
                 ov70_02262E88(param0, 6);
             } else {
-                v0->unk_00 = ov66_0222EBB4(v4, param2, v0->unk_06);
+                v0->unk_00 = WiFiPlazaLobby_State_AllocateFloatSlot(v4, param2, v0->unk_06);
 
                 if (v0->unk_00 != 0xffffffff) {
                     ov70_02262E88(param0, 2);
@@ -2397,7 +2397,7 @@ static BOOL ov70_02264D38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         break;
     case 2:
         if ((gSystem.pressedKeys & PAD_BUTTON_B) || (gSystem.pressedKeys & PAD_KEY_DOWN)) {
-            ov66_0222EBC4(v4, param2);
+            WiFiPlazaLobby_State_FreeFloatSlot(v4, param2);
             ov70_0225DFCC(param1);
             v0->unk_0A = 6;
             v0->unk_04 = 15;
@@ -2405,11 +2405,11 @@ static BOOL ov70_02264D38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         } else {
             if (ov70_02265104(v0, v1) == 1) {
                 ov70_0225DFCC(param1);
-                ov66_0222EC40(v4);
+                WiFiPlazaLobby_State_SendFloatJoinEvent(v4);
 
                 v0->unk_08 = 0;
 
-                ov66_0222E3E4(ov70_0225DEE8(param1), 10);
+                WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 10);
                 ov70_0225DF44(param1);
                 ov70_02260B3C(v3);
                 ov70_0225D030(v0->unk_0C, 0);
@@ -2420,7 +2420,7 @@ static BOOL ov70_02264D38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                 v0->unk_0A = 3;
 
                 ov70_02262E88(param0, 12);
-                ov66_0222F000(v4);
+                WiFiPlazaLobby_State_RecordParadeJournal(v4);
             }
         }
         break;
@@ -2505,7 +2505,7 @@ static BOOL ov70_02264D38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             ov70_0225DF34(param1, 1);
             ov70_0225DF38(param1, 0);
             ov70_0225DFEC(param1);
-            ov66_0222E3E4(ov70_0225DEE8(param1), 11);
+            WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), 11);
             ov70_02262E88(param0, 14);
         }
         break;
@@ -2542,7 +2542,7 @@ static BOOL ov70_02265104(const UnkStruct_ov70_02265104 *param0, const UnkStruct
     VecFx32 v1;
     u32 v2, v3;
 
-    ov66_0222EC04(param0->unk_00, &v2, &v3);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v3);
     ov70_02262318(param1, v2, v3, &v1);
     ov70_0225D054(param0->unk_0C, &v0);
 
@@ -2572,7 +2572,7 @@ static BOOL ov70_02265144(UnkStruct_ov70_02265104 *param0, UnkStruct_ov70_02261E
         v7 = 1;
     }
 
-    ov66_0222EC04(param0->unk_00, &v2, &v3);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v3);
     ov70_02262318(param1, v2, v3, &v1);
 
     v4 = ov70_0225CD34(param0->unk_0C);
@@ -2632,7 +2632,7 @@ static void ov70_02265344(UnkStruct_ov70_02265104 *param0, UnkStruct_ov70_02261E
     u32 v1;
     u32 v2;
 
-    ov66_0222EC04(param0->unk_00, &v2, &v1);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v1);
     ov70_02262318(param1, v2, v1, &v0);
     ov70_0225D048(param0->unk_0C, &v0);
 }
@@ -2643,7 +2643,7 @@ static void ov70_02265370(UnkStruct_ov70_02265104 *param0, UnkStruct_ov70_02261E
     fx32 v1;
     u32 v2, v3;
 
-    ov66_0222EC04(param0->unk_00, &v2, &v3);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v3);
 
     if (ov70_0225E420(param2, v2) == 1) {
         if (ov70_02263334(&param0->unk_10) == 0) {
@@ -2691,7 +2691,7 @@ static BOOL ov70_0226545C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 {
     UnkStruct_ov70_0226545C *v0;
     UnkStruct_ov70_0225CC54 *v1;
-    UnkStruct_ov66_0222DFF8 *v2;
+    WiFiPlazaLobbyState *v2;
     UnkStruct_ov70_0225CA20 *v3;
     UnkStruct_ov70_022630A4 *v4;
 
@@ -2708,8 +2708,8 @@ static BOOL ov70_0226545C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     case 1: {
         BOOL v5, v6;
 
-        v5 = ov66_0222E02C(v2, param2);
-        v6 = ov66_0222E34C(v2, param2);
+        v5 = WiFiPlazaLobby_State_PopPlayerJoined(v2, param2);
+        v6 = WiFiPlazaLobby_State_IsPlayerSlotOccupied(v2, param2);
 
         if ((v5 == 1) || (v6 == 1)) {
             ov70_02262E88(param0, 2);
@@ -2719,14 +2719,14 @@ static BOOL ov70_0226545C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         const WiFiPlazaProfile *v7;
         u32 v8;
 
-        v7 = ov66_0222E374(v2, param2);
+        v7 = WiFiPlazaLobby_State_GetProfileBySlot(v2, param2);
 
         if (v7 == NULL) {
             ov70_02262E88(param0, 1);
             break;
         }
 
-        if (ov66_0222E8D8(v7) == 1) {
+        if (WiFiPlazaLobby_State_IsAppearanceRankSet(v7) == 1) {
             v1 = ov70_0225CBB8(v3, param2, WiFiPlazaProfile_GetTrainerAppearanceGraphicsID(v7));
 
             if (v1) {
@@ -2741,7 +2741,7 @@ static BOOL ov70_0226545C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         const WiFiPlazaProfile *v10;
         BOOL v11;
 
-        v10 = ov66_0222E374(v2, param2);
+        v10 = WiFiPlazaLobby_State_GetProfileBySlot(v2, param2);
 
         if (v10 == NULL) {
             if (v1 != NULL) {
@@ -2752,7 +2752,7 @@ static BOOL ov70_0226545C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             break;
         }
 
-        v9 = ov66_0222E71C(v10);
+        v9 = WiFiPlazaLobby_State_GetVenueIndex(v10);
         v11 = ov70_02265CCC(&v0->unk_00, v2, param1, v1, v9, 1);
 
         if (v11) {
@@ -2796,7 +2796,7 @@ static BOOL ov70_02265630(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_0226545C *v0;
     UnkStruct_ov70_0225CC54 *v1;
     UnkStruct_ov70_0225CC54 *v2;
-    UnkStruct_ov66_0222DFF8 *v3 = ov70_0225DEE8(param1);
+    WiFiPlazaLobbyState *v3 = ov70_0225DEE8(param1);
     UnkStruct_ov70_0225CA20 *v4 = ov70_0225DEF0(param1);
     UnkStruct_ov70_022630A4 *v5 = ov70_0225DF10(param1);
     v1 = ov70_0225CC70(v4, param2);
@@ -2808,7 +2808,7 @@ static BOOL ov70_02265630(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         v0 = ov70_02262E3C(param0, sizeof(UnkStruct_ov70_0226545C));
         ov70_02262E88(param0, 1);
     case 1:
-        if (ov66_0222E058(v3, param2)) {
+        if (WiFiPlazaLobby_State_PopPlayerLeft(v3, param2)) {
             ov70_02262E64(param0);
             ov70_0225CDEC(v4, v1, 0);
             ov70_0225DF6C(param1, param2, 1);
@@ -2817,14 +2817,14 @@ static BOOL ov70_02265630(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             break;
         }
 
-        if (ov66_0222E09C(v3, param2)) {
+        if (WiFiPlazaLobby_State_PopPlayerUpdated(v3, param2)) {
             (void)0;
         }
 
-        if (ov66_0222E170(v3) == 1) {
+        if (WiFiPlazaLobby_State_IsParadeFinished(v3) == 1) {
             u32 v6;
 
-            v6 = ov66_0222EBA4(v3, param2);
+            v6 = WiFiPlazaLobby_State_FindFloatSlotByUserID(v3, param2);
 
             if (v6 != 0xffffffff) {
                 ov70_0225CDEC(v4, v1, 0);
@@ -2842,8 +2842,8 @@ static BOOL ov70_02265630(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             const WiFiPlazaProfile *v8;
             BOOL v9;
 
-            v8 = ov66_0222E374(v3, param2);
-            v7 = ov66_0222E71C(v8);
+            v8 = WiFiPlazaLobby_State_GetProfileBySlot(v3, param2);
+            v7 = WiFiPlazaLobby_State_GetVenueIndex(v8);
             v9 = ov70_02265CCC(&v0->unk_00, v3, param1, v1, v7, 0);
 
             if (v9) {
@@ -2855,7 +2855,7 @@ static BOOL ov70_02265630(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                 break;
             }
 
-            if (ov66_0222EB54(v3, param2) == 1) {
+            if (WiFiPlazaLobby_State_IsMemberCosmeticKnown(v3, param2) == 1) {
                 ov70_0225CDEC(v4, v1, 0);
                 ov70_0225DF4C(param1, param2, 1);
                 ov70_02262EC0(v5, param2, &Unk_ov70_0226DA18, NULL);
@@ -2907,7 +2907,7 @@ static BOOL ov70_02265840(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_02265840 *v0;
     UnkStruct_ov70_0225CA20 *v1;
     UnkStruct_ov70_02261E10 *v2;
-    UnkStruct_ov66_0222DFF8 *v3 = ov70_0225DEE8(param1);
+    WiFiPlazaLobbyState *v3 = ov70_0225DEE8(param1);
     v1 = ov70_0225DEF0(param1);
     v2 = ov70_0225DEF8(param1);
     v0 = ov70_02262E80(param0);
@@ -2916,11 +2916,11 @@ static BOOL ov70_02265840(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     case 0: {
         v0 = ov70_02262E3C(param0, sizeof(UnkStruct_ov70_02265840));
         v0->unk_00 = ov70_0225CC70(v1, param2);
-        v0->unk_04 = ov66_0222EBA4(v3, param2);
+        v0->unk_04 = WiFiPlazaLobby_State_FindFloatSlotByUserID(v3, param2);
 
         GF_ASSERT(v0->unk_04 != 0xffffffff);
 
-        ov66_0222EC04(v0->unk_04, &v0->unk_04, &v0->unk_08);
+        WiFiPlazaLobby_State_FloatSlotToRowCol(v0->unk_04, &v0->unk_04, &v0->unk_08);
         ov70_0225CDEC(v1, v0->unk_00, 3);
         ov70_02262E88(param0, 1);
     } break;
@@ -2996,7 +2996,7 @@ static BOOL ov70_02265840(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         v9.y += v10;
         ov70_0225D048(v0->unk_00, &v9);
 
-        if (ov66_0222EB7C(v3, v0->unk_04) == 2) {
+        if (WiFiPlazaLobby_State_GetFloatState(v3, v0->unk_04) == 2) {
             ov70_02262E88(param0, 4);
         }
     } break;
@@ -3022,7 +3022,7 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     UnkStruct_ov70_0225CA20 *v1;
     UnkStruct_ov70_0225CC54 *v2;
     UnkStruct_ov70_0225CC54 *v3;
-    UnkStruct_ov66_0222DFF8 *v4;
+    WiFiPlazaLobbyState *v4;
 
     v0 = ov70_02262E38(param0);
     v4 = ov70_0225DEE8(param1);
@@ -3086,16 +3086,16 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         const WiFiPlazaProfile *v9;
         BOOL v10 = 0;
 
-        if ((v0->unk_03 == 1) && (ov66_0222EEAC(v4) == 0)) {
+        if ((v0->unk_03 == 1) && (WiFiPlazaLobby_State_IsChatPending(v4) == 0)) {
             u32 v11;
             u32 v12;
             u32 v13;
 
-            v9 = ov66_0222E3BC(v4);
-            v13 = ov66_0222E71C(v9);
+            v9 = WiFiPlazaLobby_State_GetOwnProfile(v4);
+            v13 = WiFiPlazaLobby_State_GetVenueIndex(v9);
 
             if (v13 == 9) {
-                ov66_0222EEA0(v4);
+                WiFiPlazaLobby_State_SetChatPending(v4);
 
                 v12 = ov70_0225CD60(v2, 6);
                 v11 = ov63_0222C0AC(v12);
@@ -3104,7 +3104,7 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             }
         }
 
-        v8 = ov66_0222E374(v4, param2);
+        v8 = WiFiPlazaLobby_State_GetProfileBySlot(v4, param2);
 
         do {
             if (v8 == NULL) {
@@ -3113,16 +3113,16 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             }
 
             if (v0->unk_03 == 1) {
-                if (ov66_0222EDF4(v4) == 0) {
+                if (WiFiPlazaLobby_State_IsChatActive(v4) == 0) {
                     v10 = 1;
                     break;
                 }
             }
 
-            if (ov66_0222E09C(v4, param2)) {
+            if (WiFiPlazaLobby_State_PopPlayerUpdated(v4, param2)) {
                 u32 v14;
 
-                v14 = ov66_0222E71C(v8);
+                v14 = WiFiPlazaLobby_State_GetVenueIndex(v8);
 
                 if (v14 != v0->unk_02) {
                     v10 = 1;
@@ -3168,7 +3168,7 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     return 0;
 }
 
-static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, UnkStruct_ov66_0222DFF8 *param1, UnkStruct_ov70_0225DEE8 *param2, UnkStruct_ov70_0225CC54 *param3, u8 param4, int param5)
+static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *param1, UnkStruct_ov70_0225DEE8 *param2, UnkStruct_ov70_0225CC54 *param3, u8 param4, int param5)
 {
     u32 v0;
     u32 v1;
@@ -3242,15 +3242,15 @@ static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, UnkStruct_ov66_0222DF
     case 10:
         return 0;
     case 9:
-        if (ov66_0222EDF4(param1) == 0) {
+        if (WiFiPlazaLobby_State_IsChatActive(param1) == 0) {
             return 0;
         }
 
-        if (ov66_0222EE08(param1) == 0) {
+        if (WiFiPlazaLobby_State_IsChatRequested(param1) == 0) {
             return 0;
         }
 
-        if (ov66_0222EE1C(param1) != v0) {
+        if (WiFiPlazaLobby_State_GetChatPartner(param1) != v0) {
             return 0;
         }
 

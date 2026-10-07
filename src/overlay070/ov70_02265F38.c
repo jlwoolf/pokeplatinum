@@ -4,10 +4,10 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_022324F0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
-#include "overlay066/struct_ov66_0222E294.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222E294.h"
 #include "overlay070/ov70_0225C9B4.h"
 #include "overlay070/ov70_0225D9A4.h"
 #include "overlay070/ov70_02262DA8.h"
@@ -96,7 +96,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
 {
     UnkStruct_ov70_02266AF0 *v0;
     UnkStruct_ov70_02265F38 *v1;
-    UnkStruct_ov66_0222DFF8 *v2;
+    WiFiPlazaLobbyState *v2;
 
     v1 = ov70_02262E38(param0);
     v0 = ov70_02262E80(param0);
@@ -111,7 +111,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
     case 14:
     case 26:
     case 27:
-        if (v0->unk_08 > ov66_02233224(v1->unk_01)) {
+        if (v0->unk_08 > WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01)) {
             v1->unk_00 = 4;
             ov70_02262E88(param0, 23);
             break;
@@ -129,8 +129,8 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             break;
         }
     case 8:
-        if (ov66_02233374() == 1) {
-            if (ov66_02233224(v1->unk_01) <= 1) {
+        if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
+            if (WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01) <= 1) {
                 v1->unk_00 = 4;
                 ov70_02262E88(param0, 23);
                 break;
@@ -173,13 +173,13 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         ov70_02262E8C(param0);
         break;
     case 1:
-        if (ov66_0222E210(v2)) {
+        if (WiFiPlazaLobby_State_IsWarpTimerActive(v2)) {
             v1->unk_00 = 7;
             ov70_02262E88(param0, 28);
             break;
         }
 
-        if (ov66_0222E190(v2)) {
+        if (WiFiPlazaLobby_State_IsMinigameFinished(v2)) {
             v1->unk_00 = 2;
             ov70_02262E88(param0, 28);
             break;
@@ -232,27 +232,27 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         ov70_02266AF0(v0, param0, param1, v1->unk_02 + 34, 2);
         break;
     case 6:
-        if (ov66_0222E190(v2)) {
+        if (WiFiPlazaLobby_State_IsMinigameFinished(v2)) {
             v1->unk_00 = 2;
             ov70_02262E88(param0, 28);
             break;
         }
 
-        if (ov66_02233184(v1->unk_01) == 1) {
-            if ((ov66_022331E4(v1->unk_01) == 0) || (ov66_022331A4(v1->unk_01) == 0)) {
+        if (WiFiPlazaLobby_Network_IsGameRecruiting(v1->unk_01) == 1) {
+            if ((WiFiPlazaLobby_Network_GetRecruitOpenSlots(v1->unk_01) == 0) || (WiFiPlazaLobby_Network_IsRecruitAcceptingPlayers(v1->unk_01) == 0)) {
                 v1->unk_00 = 1;
                 ov70_02262E88(param0, 28);
                 break;
             }
 
-            if (ov66_022332F8(v1->unk_01) == 0) {
+            if (WiFiPlazaLobby_Network_GetRecruitTimeLimit(v1->unk_01) == 0) {
                 v1->unk_00 = 7;
                 ov70_02262E88(param0, 28);
                 break;
             }
         }
 
-        v0->unk_00 = ov66_022332F8(v1->unk_01);
+        v0->unk_00 = WiFiPlazaLobby_Network_GetRecruitTimeLimit(v1->unk_01);
         v0->unk_10 = (30 * 30);
 
         {
@@ -271,8 +271,8 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
 
         CommManager_StartWifiP2P(v1->unk_01);
 
-        if (ov66_02233374() == 1) {
-            ov66_0222EA10(v2, v1->unk_02, 1, param2, 0, 0, 0, 0);
+        if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
+            WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v2, v1->unk_02, 1, param2, 0, 0, 0, 0);
             v0->unk_07 = 1;
         }
 
@@ -285,8 +285,8 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         u32 v7;
 
         v6 = CommManager_GetWifiP2PConnectState();
-        v7 = ov66_02233224(v1->unk_01);
-        v0->unk_00 = ov66_022332F8(v1->unk_01);
+        v7 = WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01);
+        v0->unk_00 = WiFiPlazaLobby_Network_GetRecruitTimeLimit(v1->unk_01);
 
         ov70_02266CCC(&v0->unk_3C, v0->unk_00);
 
@@ -343,7 +343,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             if (gSystem.pressedKeys & PAD_BUTTON_B) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
 
-                if (ov66_02233374() == 0) {
+                if (WiFiPlazaLobby_Network_IsRecruiting() == 0) {
                     v1->unk_00 = 6;
                     ov70_0225DFCC(param1);
                     ov70_02262E88(param0, 23);
@@ -356,17 +356,17 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             }
         }
 
-        if (ov66_02233374() == 1) {
+        if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
             if (v0->unk_07 != v7) {
                 v0->unk_07 = v7;
 
                 if (v7 != 4) {
-                    ov66_0222EA10(v2, v1->unk_02, v7, param2, 0, 0, 0, 0);
+                    WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v2, v1->unk_02, v7, param2, 0, 0, 0, 0);
                 }
             }
 
             if (v0->unk_00 == 0) {
-                if (ov66_02233224(v1->unk_01) <= 1) {
+                if (WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01) <= 1) {
                     v1->unk_00 = 3;
                     ov70_02262E88(param0, 23);
                     break;
@@ -374,7 +374,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             }
         }
 
-        if ((ov66_02233184(v1->unk_01) == 1) && (ov66_022331A4(v1->unk_01) == 0)) {
+        if ((WiFiPlazaLobby_Network_IsGameRecruiting(v1->unk_01) == 1) && (WiFiPlazaLobby_Network_IsRecruitAcceptingPlayers(v1->unk_01) == 0)) {
             v1->unk_00 = 0;
             ov70_02262E88(param0, 23);
             break;
@@ -402,7 +402,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         ov70_02266CF0(&v0->unk_3C, param1, 0);
 
         v12 = CommManager_GetWifiP2PConnectState();
-        v13 = ov66_02233224(v1->unk_01);
+        v13 = WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01);
 
         switch (CommManager_GetMatchmakingState()) {
         case 3:
@@ -427,7 +427,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             break;
         }
 
-        if ((ov66_02233184(v1->unk_01) == 1) && (ov66_022331A4(v1->unk_01) == 0)) {
+        if ((WiFiPlazaLobby_Network_IsGameRecruiting(v1->unk_01) == 1) && (WiFiPlazaLobby_Network_IsRecruitAcceptingPlayers(v1->unk_01) == 0)) {
             v1->unk_00 = 0;
             ov70_02262E88(param0, 23);
             break;
@@ -436,11 +436,11 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
     case 9:
         ov70_02266CCC(&v0->unk_3C, 0);
         ov70_02266CF0(&v0->unk_3C, param1, 0);
-        ov66_0222E3E4(ov70_0225DEE8(param1), v1->unk_03);
+        WiFiPlazaLobby_State_SetCurrentVenue(ov70_0225DEE8(param1), v1->unk_03);
 
         CommManager_SetState_WifiPlaza();
-        CommInfo_Init(ov66_0222E0C4(ov70_0225DEE8(param1)), NULL);
-        CommInfo_SetPersonalTrainerInfo(ov66_0222E918(v2));
+        CommInfo_Init(WiFiPlazaLobby_State_GetSaveData(ov70_0225DEE8(param1)), NULL);
+        CommInfo_SetPersonalTrainerInfo(WiFiPlazaLobby_State_GetLocalTrainerInfo(v2));
         CommSys_SetRecvLimitEnabled(0);
         ov70_02266B18(v0, param0, 10, 17);
         break;
@@ -466,19 +466,19 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             }
         }
 
-        if (CommInfo_CountReceived() >= ov66_02233224(v1->unk_01)) {
-            if (ov66_02233374() == 1) {
+        if (CommInfo_CountReceived() >= WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01)) {
+            if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
                 if (v0->unk_02 == 0) {
-                    ov66_022330CC();
+                    WiFiPlazaLobby_Network_UpdateRecruitInfo();
                     v0->unk_02 = 1;
                 }
             }
 
-            if (ov66_02233128() == 1) {
+            if (WiFiPlazaLobby_Network_IsCurrentRecruitUpdated() == 1) {
                 ov70_02262E88(param0, 12);
             }
         } else {
-            if (ov66_02233128() == 1) {
+            if (WiFiPlazaLobby_Network_IsCurrentRecruitUpdated() == 1) {
                 v1->unk_00 = 4;
                 ov70_02262E88(param0, 23);
             }
@@ -490,7 +490,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
 
         CommTool_ClearReceivedTempDataAllPlayers();
 
-        ov66_0222E238(v2);
+        WiFiPlazaLobby_State_ClearUserIDTable(v2);
         ov70_02266B18(v0, param0, 13, 14);
         break;
     case 13: {
@@ -499,7 +499,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         ov70_02266CCC(&v0->unk_3C, 0);
         ov70_02266CF0(&v0->unk_3C, param1, 0);
 
-        v0->unk_0C = ov66_0222E344(v2);
+        v0->unk_0C = WiFiPlazaLobby_State_GetMyUserID(v2);
         v15 = CommTool_SendTempData(CommSys_CurNetId(), &v0->unk_0C);
 
         if (v15 == 1) {
@@ -523,14 +523,14 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             v18 = CommSys_CurNetId();
             v20 = 0;
             v21 = 0;
-            v22 = ov66_02233340();
+            v22 = WiFiPlazaLobby_Network_GetRecruitHostUserId();
 
             for (v16 = 0; v16 < v17; v16++) {
                 if (v18 != v16) {
                     v19 = CommTool_GetReceivedTempData(v16);
 
                     if (v19 != NULL) {
-                        ov66_0222E24C(v2, v19[0], v16);
+                        WiFiPlazaLobby_State_SetPlayerSlotUserID(v2, v19[0], v16);
 
                         if (v19[0] == v22) {
                             v21 = 1;
@@ -539,9 +539,9 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
                         v20++;
                     }
                 } else {
-                    ov66_0222E27C(v2, v16);
+                    WiFiPlazaLobby_State_SetMyPlayerSlot(v2, v16);
 
-                    if (ov66_02233374() == 1) {
+                    if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
                         v21 = 1;
                     }
 
@@ -562,13 +562,13 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
     case 15:
         CommManager_SetErrorHandling(0, 1);
 
-        if (ov66_02233374() == 1) {
+        if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
             int v23;
-            UnkStruct_ov66_0222E294 v24;
+            WiFiPlazaLobbyQuestionnaireData v24;
 
-            ov66_0222E294(v2, &v24);
-            v23 = ov66_02233224(v1->unk_01);
-            ov66_0222EA10(v2, v1->unk_02, v23, v24.unk_00[0], v24.unk_00[1], v24.unk_00[2], v24.unk_00[3], 1);
+            WiFiPlazaLobby_State_GetUserIDTable(v2, &v24);
+            v23 = WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01);
+            WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v2, v1->unk_02, v23, v24.unk_00[0], v24.unk_00[1], v24.unk_00[2], v24.unk_00[3], 1);
         }
 
         ov70_0225DFCC(param1);
@@ -608,7 +608,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         case 0:
             ov70_0225E1F8(param1);
             ov70_02262E88(param0, 23);
-            ov66_0222E200(v2);
+            WiFiPlazaLobby_State_StartWarpTimer(v2);
             break;
         case 1:
             ov70_0225E1F8(param1);
@@ -626,7 +626,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         }
     } break;
     case 20:
-        v0->unk_00 = ov66_022332F8(v1->unk_01);
+        v0->unk_00 = WiFiPlazaLobby_Network_GetRecruitTimeLimit(v1->unk_01);
 
         ov70_02266C68(&v0->unk_3C, param1, v1->unk_02, 1, v0->unk_00);
         ov70_02266CFC(&v0->unk_3C, param1, 1);
@@ -649,7 +649,7 @@ BOOL ov70_02265F38(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
     case 21: {
         u32 v30;
 
-        v30 = ov66_02233224(v1->unk_01);
+        v30 = WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01);
         v1->unk_00 = 8;
 
         {
@@ -778,15 +778,15 @@ BOOL ov70_022669FC(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
         switch (v2) {
         case 39:
             v3 = 42;
-            v4 = UnkEnum_ov66_022324D0_00;
+            v4 = WiFiPlazaLobbyActivity_00;
             break;
         case 40:
             v3 = 41;
-            v4 = UnkEnum_ov66_022324D0_01;
+            v4 = WiFiPlazaLobbyActivity_01;
             break;
         case 41:
             v3 = 43;
-            v4 = UnkEnum_ov66_022324D0_02;
+            v4 = WiFiPlazaLobbyActivity_02;
             break;
         default:
             GF_ASSERT(FALSE);
@@ -879,9 +879,9 @@ static BOOL ov70_02266BAC(UnkStruct_ov70_02266AF0 *param0, UnkStruct_ov70_0225DE
 {
     u32 v0;
     u32 v1;
-    UnkStruct_ov66_0222DFF8 *v2 = ov70_0225DEE8(param1);
+    WiFiPlazaLobbyState *v2 = ov70_0225DEE8(param1);
     v0 = CommManager_GetWifiP2PConnectState();
-    v1 = ov66_02233224(param2->unk_01);
+    v1 = WiFiPlazaLobby_Network_GetRecruitPlayerCount(param2->unk_01);
 
     if (v0 == 0) {
         param2->unk_00 = 4;
@@ -899,14 +899,14 @@ static BOOL ov70_02266BAC(UnkStruct_ov70_02266AF0 *param0, UnkStruct_ov70_0225DE
         param0->unk_07 = v1;
 
         if (v1 != 4) {
-            ov66_0222EA10(v2, param2->unk_02, v1, param4, 0, 0, 0, 0);
+            WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v2, param2->unk_02, v1, param4, 0, 0, 0, 0);
         }
     }
 
-    param0->unk_00 = ov66_022332F8(param2->unk_01);
+    param0->unk_00 = WiFiPlazaLobby_Network_GetRecruitTimeLimit(param2->unk_01);
 
     if (param0->unk_00 == 0) {
-        if (ov66_02233224(param2->unk_01) <= 1) {
+        if (WiFiPlazaLobby_Network_GetRecruitPlayerCount(param2->unk_01) <= 1) {
             param2->unk_00 = 3;
             ov70_02262E88(param3, 23);
             return 1;
@@ -981,30 +981,30 @@ static void ov70_02266D08(UnkStruct_ov70_02266C68 *param0, UnkStruct_ov70_0225DE
     }
 
     switch (param0->unk_03) {
-    case UnkEnum_ov66_022324D0_00:
-        v1 = UnkEnum_ov66_02232F38_00;
+    case WiFiPlazaLobbyActivity_00:
+        v1 = WiFiPlazaLobbyNetworkGameKind_00;
         break;
-    case UnkEnum_ov66_022324D0_01:
-        v1 = UnkEnum_ov66_02232F38_01;
+    case WiFiPlazaLobbyActivity_01:
+        v1 = WiFiPlazaLobbyNetworkGameKind_01;
         break;
-    case UnkEnum_ov66_022324D0_02:
-        v1 = UnkEnum_ov66_02232F38_02;
+    case WiFiPlazaLobbyActivity_02:
+        v1 = WiFiPlazaLobbyNetworkGameKind_02;
         break;
     default:
         GF_ASSERT(FALSE);
-        v1 = UnkEnum_ov66_02232F38_02;
+        v1 = WiFiPlazaLobbyNetworkGameKind_02;
         break;
     }
 
     {
-        v2 = ov66_02233184(v1);
+        v2 = WiFiPlazaLobby_Network_IsGameRecruiting(v1);
 
         if (param0->unk_00 != v2) {
             param0->unk_07 |= 4;
         }
 
         param0->unk_00 = v2;
-        v3 = ov66_022331A4(v1);
+        v3 = WiFiPlazaLobby_Network_IsRecruitAcceptingPlayers(v1);
 
         if (param0->unk_02 != v3) {
             param0->unk_07 |= 4;
@@ -1015,7 +1015,7 @@ static void ov70_02266D08(UnkStruct_ov70_02266C68 *param0, UnkStruct_ov70_0225DE
 
     {
         if (v2 == 1) {
-            v4 = ov66_022331E4(v1);
+            v4 = WiFiPlazaLobby_Network_GetRecruitOpenSlots(v1);
         } else {
             v4 = 4;
         }

@@ -11,7 +11,7 @@
 #include "field/field_system.h"
 #include "overlay065/ov65_0222DCE0.h"
 #include "overlay065/ov65_0223648C.h"
-#include "overlay066/struct_ov66_02231134.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231134.h"
 #include "gts/struct_gts_menu_args.h"
 #include "wifi_lobby_minigame_bucket/wifi_lobby_minigame_bucket.h"
 #include "wifi_lobby_minigame_bucket/struct_wifi_lobby_minigame_bucket_args.h"
@@ -69,8 +69,8 @@ static void WiFiMenu_LaunchCommApp(WiFiMenuWork *param0, FieldSystem *fieldSyste
 static u32 WiFiMenu_HandleCommAppResult(WiFiMenuWork *param0);
 static WiFiLobbyMinigameBucketArgs *WiFiMenu_LaunchSwalotMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
 static void WiFiMenu_FreeSwalotMinigame(WiFiLobbyMinigameBucketArgs *param0);
-static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
-static void WiFiMenu_FreeMimeJrMinigame(UnkStruct_ov66_02231134 *param0);
+static WiFiPlazaLobbyMinigameManeneArgs *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
+static void WiFiMenu_FreeMimeJrMinigame(WiFiPlazaLobbyMinigameManeneArgs *param0);
 static void WiFiMenu_FreeWobbuffetMinigame(WiFiLobbyMinigameBucketArgs *param0);
 static WiFiLobbyMinigameBalloonArgs *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
 static void WiFiMenu_IncrementTrainerScore(FieldSystem *fieldSystem);
@@ -455,9 +455,9 @@ static void WiFiMenu_FreeSwalotMinigame(WiFiLobbyMinigameBucketArgs *param0)
 }
 
 // Launches the Mime Jr. ball-rolling WiFi Plaza minigame (wifi_lobby_minigame_manene).
-static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2)
+static WiFiPlazaLobbyMinigameManeneArgs *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2)
 {
-    UnkStruct_ov66_02231134 *v0;
+    WiFiPlazaLobbyMinigameManeneArgs *v0;
 
     FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
     FS_EXTERN_OVERLAY(wifi_lobby_minigame);
@@ -469,8 +469,8 @@ static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *field
             FS_OVERLAY_ID(wifi_lobby_minigame_manene),
         };
 
-        v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov66_02231134));
-        memset(v0, 0, sizeof(UnkStruct_ov66_02231134));
+        v0 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
+        memset(v0, 0, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
         v0->unk_3C = param2;
         v0->unk_38 = 0;
         v0->saveData = fieldSystem->saveData;
@@ -481,7 +481,7 @@ static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *field
     return v0;
 }
 
-static void WiFiMenu_FreeMimeJrMinigame(UnkStruct_ov66_02231134 *param0)
+static void WiFiMenu_FreeMimeJrMinigame(WiFiPlazaLobbyMinigameManeneArgs *param0)
 {
     FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 

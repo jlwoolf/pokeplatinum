@@ -3557,17 +3557,17 @@ static int ov65_022315A4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     } else if (v2 == 20) {
         v0 = 84;
     } else if (v2 == 23) {
-        StringTemplate_SetPlazaMinigameName(param0->unk_164, 1, UnkEnum_ov66_022324D0_00);
+        StringTemplate_SetPlazaMinigameName(param0->unk_164, 1, WiFiPlazaLobbyActivity_00);
         v0 = 6;
     } else if (v2 == 22) {
         v0 = 85;
     } else if (v2 == 25) {
-        StringTemplate_SetPlazaMinigameName(param0->unk_164, 1, UnkEnum_ov66_022324D0_01);
+        StringTemplate_SetPlazaMinigameName(param0->unk_164, 1, WiFiPlazaLobbyActivity_01);
         v0 = 6;
     } else if (v2 == 24) {
         v0 = 85;
     } else if (v2 == 27) {
-        StringTemplate_SetPlazaMinigameName(param0->unk_164, 1, UnkEnum_ov66_022324D0_02);
+        StringTemplate_SetPlazaMinigameName(param0->unk_164, 1, WiFiPlazaLobbyActivity_02);
         v0 = 6;
     } else if (v2 == 26) {
         v0 = 85;
@@ -5570,7 +5570,7 @@ static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        StringTemplate_SetPlazaMinigameName(param0->unk_BE0.unk_00, 0, UnkEnum_ov66_022324D0_00);
+        StringTemplate_SetPlazaMinigameName(param0->unk_BE0.unk_00, 0, WiFiPlazaLobbyActivity_00);
         MessageLoader_GetString(param0->unk_168, 71, param0->unk_170);
         StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 24, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
@@ -5578,7 +5578,7 @@ static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        StringTemplate_SetPlazaMinigameName(param0->unk_BE0.unk_00, 0, UnkEnum_ov66_022324D0_01);
+        StringTemplate_SetPlazaMinigameName(param0->unk_BE0.unk_00, 0, WiFiPlazaLobbyActivity_01);
         MessageLoader_GetString(param0->unk_168, 71, param0->unk_170);
         StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
@@ -5586,7 +5586,7 @@ static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        StringTemplate_SetPlazaMinigameName(param0->unk_BE0.unk_00, 0, UnkEnum_ov66_022324D0_02);
+        StringTemplate_SetPlazaMinigameName(param0->unk_BE0.unk_00, 0, WiFiPlazaLobbyActivity_02);
         MessageLoader_GetString(param0->unk_168, 71, param0->unk_170);
         StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 72, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);

@@ -20,7 +20,7 @@
 #include "overlay005/model_attributes.h"
 #include "overlay005/ov5_021EAFA4.h"
 #include "overlay005/signpost.h"
-#include "overlay066/struct_ov66_0222DCE0_sub1.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DCE0_sub1.h"
 #include "underground/struct_underground_top_screen_context_decl.h"
 #include "union_room_chat/union_room_chat_decl.h"
 
@@ -123,7 +123,7 @@ typedef struct FieldSystem_t {
     BOOL temporaryMapChange;
     u8 *battleSubscreenCursorOn;
     u32 unk_C0;
-    UnkStruct_ov66_0222DCE0_sub1 unk_C4;
+    WiFiPlazaLobbyCooldownTimestamp unk_C4;
 } FieldSystem;
 
 #endif // POKEPLATINUM_FIELD_SYSTEM_H

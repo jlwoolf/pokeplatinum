@@ -8,8 +8,8 @@
 #include "struct_decls/wi_fi_list.h"
 
 #include "nintendo_wfc/main.h"
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/struct_ov66_02230DBC.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02230DBC.h"
 #include "wifi_lobby_minigame/wifi_lobby_minigame_comm_cmd_handlers.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
@@ -399,55 +399,55 @@ static const VecFx32 sCurtainSpritePositions[2] = {
     { FX32_CONST(128), FX32_CONST(96 + 2), 0x0 }
 };
 
-static const TextColor sGameTitleTextColors[UnkEnum_ov66_022324D0_12] = {
+static const TextColor sGameTitleTextColors[WiFiPlazaLobbyActivity_12] = {
     TEXT_COLOR(7, 8, 9),
     TEXT_COLOR(4, 5, 6),
     TEXT_COLOR(1, 2, 3),
 };
 
-static const fx32 sGameTitleSlideInStart[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideInStart[WiFiPlazaLobbyActivity_12] = {
     -FX32_CONST(200),
     FX32_CONST(200),
     FX32_CONST(160)
 };
 
-static const fx32 sGameTitleSlideInEnd[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideInEnd[WiFiPlazaLobbyActivity_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const fx32 sGameTitleSlideInAccel[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideInAccel[WiFiPlazaLobbyActivity_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const fx32 sGameTitleSlideOutStart[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideOutStart[WiFiPlazaLobbyActivity_12] = {
     -FX32_CONST(18),
     FX32_CONST(18),
     FX32_CONST(16)
 };
 
-static const fx32 sGameTitleSlideOutEnd[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideOutEnd[WiFiPlazaLobbyActivity_12] = {
     -FX32_CONST(9),
     FX32_CONST(9),
     FX32_CONST(8)
 };
 
-static const fx32 sGameTitleSlideOutAccel[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideOutAccel[WiFiPlazaLobbyActivity_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const fx32 sGameTitleHideStart[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleHideStart[WiFiPlazaLobbyActivity_12] = {
     FX32_CONST(200),
     -FX32_CONST(200),
     -FX32_CONST(160)
 };
 
-static const fx32 sGameTitleHideEnd[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleHideEnd[WiFiPlazaLobbyActivity_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
@@ -761,7 +761,7 @@ static const WiFiLobbyMinigameMessageIdRemap sMessageIdRemap[] = {
     { 0x13, 0x13 },
 };
 
-void WiFiLobbyMinigame_InitPlayerContext(WiFiLobbyMinigamePlayerContext *param0, BOOL param1, SaveData *saveData, BOOL param3, UnkStruct_ov66_02230DBC *param4)
+void WiFiLobbyMinigame_InitPlayerContext(WiFiLobbyMinigamePlayerContext *param0, BOOL param1, SaveData *saveData, BOOL param3, WiFiPlazaLobbyMinigameParticipants *param4)
 {
     int v0;
     int v1;
@@ -864,17 +864,17 @@ TrainerInfo *WiFiLobbyMinigame_GetTrainerInfo(const WiFiLobbyMinigamePlayerConte
 
 WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen0(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
 {
-    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, UnkEnum_ov66_022324D0_00, heapID);
+    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, WiFiPlazaLobbyActivity_00, heapID);
 }
 
 WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen1(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
 {
-    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, UnkEnum_ov66_022324D0_01, heapID);
+    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, WiFiPlazaLobbyActivity_01, heapID);
 }
 
 WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen2(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
 {
-    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, UnkEnum_ov66_022324D0_02, heapID);
+    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, WiFiPlazaLobbyActivity_02, heapID);
 }
 
 void WiFiLobbyMinigame_FreeIntroScreen(WiFiLobbyMinigameIntroScreen *param0)
@@ -920,17 +920,17 @@ int WiFiLobbyMinigame_IntroScreenGetResult(const WiFiLobbyMinigameIntroScreen *p
 
 WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreen0(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 heapID)
 {
-    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, UnkEnum_ov66_022324D0_00, heapID);
+    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, WiFiPlazaLobbyActivity_00, heapID);
 }
 
 WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreen1(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 heapID)
 {
-    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, UnkEnum_ov66_022324D0_01, heapID);
+    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, WiFiPlazaLobbyActivity_01, heapID);
 }
 
 WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreen2(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 heapID)
 {
-    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, UnkEnum_ov66_022324D0_02, heapID);
+    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, WiFiPlazaLobbyActivity_02, heapID);
 }
 
 void WiFiLobbyMinigame_FreeResultsScreen(WiFiLobbyMinigameResultsScreen *param0)
@@ -1812,13 +1812,13 @@ static void WiFiLobbyMinigame_IntroScreenTask(SysTask *param0, void *param1)
             u32 v8;
 
             switch (v0->unk_04) {
-            case UnkEnum_ov66_022324D0_00:
+            case WiFiPlazaLobbyActivity_00:
                 v8 = WiFiLobbyMinigame_RandomWeightedIndex(sRandomWeightsGame0, 3);
                 break;
-            case UnkEnum_ov66_022324D0_01:
+            case WiFiPlazaLobbyActivity_01:
                 v8 = WiFiLobbyMinigame_RandomWeightedIndex(sRandomWeightsGame1, 2);
                 break;
-            case UnkEnum_ov66_022324D0_02:
+            case WiFiPlazaLobbyActivity_02:
                 v8 = WiFiLobbyMinigame_RandomWeightedIndex(sRandomWeightsGame2, 3);
                 break;
             }
@@ -1909,11 +1909,11 @@ static void WiFiLobbyMinigame_InitPlayerRow(WiFiLobbyMinigamePlayerRow *param0, 
     s32 v0;
 
     switch (param2) {
-    case UnkEnum_ov66_022324D0_00:
-    case UnkEnum_ov66_022324D0_02:
+    case WiFiPlazaLobbyActivity_00:
+    case WiFiPlazaLobbyActivity_02:
         v0 = WiFiLobbyMinigame_GetPlayerRowOrder(param1, param5, param6);
         break;
-    case UnkEnum_ov66_022324D0_01:
+    case WiFiPlazaLobbyActivity_01:
         if (param6 > param5) {
             v0 = param5 + 1;
         } else if (param6 == param5) {
@@ -2387,12 +2387,12 @@ static BOOL WiFiLobbyMinigame_UpdateGameTitleHide(WiFiLobbyMinigameGameTitle *pa
 static void WiFiLobbyMinigame_SetGameTitleBgOffset(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, s32 param2)
 {
     switch (param0->unk_10) {
-    case UnkEnum_ov66_022324D0_00:
-    case UnkEnum_ov66_022324D0_01:
+    case WiFiPlazaLobbyActivity_00:
+    case WiFiPlazaLobbyActivity_01:
         Bg_SetOffset(param1->unk_00, BG_LAYER_MAIN_0, 0, param2);
         Bg_SetOffset(param1->unk_00, BG_LAYER_MAIN_1, 0, param2);
         break;
-    case UnkEnum_ov66_022324D0_02:
+    case WiFiPlazaLobbyActivity_02:
         Bg_SetOffset(param1->unk_00, BG_LAYER_MAIN_0, 3, param2);
         Bg_SetOffset(param1->unk_00, BG_LAYER_MAIN_1, 3, param2);
         break;
@@ -2405,12 +2405,12 @@ static void WiFiLobbyMinigame_SetGameTitleBgOffset(WiFiLobbyMinigameGameTitle *p
 static void WiFiLobbyMinigame_ScheduleGameTitleBgScroll(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, s32 param2)
 {
     switch (param0->unk_10) {
-    case UnkEnum_ov66_022324D0_00:
-    case UnkEnum_ov66_022324D0_01:
+    case WiFiPlazaLobbyActivity_00:
+    case WiFiPlazaLobbyActivity_01:
         Bg_ScheduleScroll(param1->unk_00, 0, 0, param2);
         Bg_ScheduleScroll(param1->unk_00, 1, 0, param2);
         break;
-    case UnkEnum_ov66_022324D0_02:
+    case WiFiPlazaLobbyActivity_02:
         Bg_ScheduleScroll(param1->unk_00, 0, 3, param2);
         Bg_ScheduleScroll(param1->unk_00, 1, 3, param2);
         break;
@@ -2425,13 +2425,13 @@ static void WiFiLobbyMinigame_LoadMinigamePalette(NARC *param0, u32 param1, u32 
     u32 v0;
 
     switch (param1) {
-    case UnkEnum_ov66_022324D0_00:
+    case WiFiPlazaLobbyActivity_00:
         v0 = 1;
         break;
-    case UnkEnum_ov66_022324D0_01:
+    case WiFiPlazaLobbyActivity_01:
         v0 = 2;
         break;
-    case UnkEnum_ov66_022324D0_02:
+    case WiFiPlazaLobbyActivity_02:
         v0 = 0;
         break;
     default:
@@ -2493,11 +2493,11 @@ static WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreenInte
     }
 
     switch (v0->unk_07) {
-    case UnkEnum_ov66_022324D0_00:
-    case UnkEnum_ov66_022324D0_01:
+    case WiFiPlazaLobbyActivity_00:
+    case WiFiPlazaLobbyActivity_01:
         v0->unk_6A8 = SysTask_Start(WiFiLobbyMinigame_ResultsScreenTask, v0, 0);
         break;
-    case UnkEnum_ov66_022324D0_02:
+    case WiFiPlazaLobbyActivity_02:
         v0->unk_6A8 = SysTask_Start(WiFiLobbyMinigame_ResultsScreenTaskGame2, v0, 0);
         break;
     default:
@@ -3458,7 +3458,7 @@ static void WiFiLobbyMinigame_InitPlayerRowWithScore(WiFiLobbyMinigameResultsScr
     WiFiLobbyMinigame_DrawPlayerRowName(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_34.unk_08[param1], 8, 0, v0);
     WiFiLobbyMinigame_DrawPlayerRowLocation(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_05, param0->unk_34.unk_00[param1], param0->unk_34.unk_04[param1], 8);
 
-    if (param0->unk_07 == UnkEnum_ov66_022324D0_00) {
+    if (param0->unk_07 == WiFiPlazaLobbyActivity_00) {
         v1 = 5;
     } else {
         v1 = 6;
@@ -3532,13 +3532,13 @@ static void WiFiLobbyMinigame_RecordFriendGameCount(WiFiLobbyMinigameResultsScre
         case 0:
         case 1:
             switch (param0->unk_07) {
-            case UnkEnum_ov66_022324D0_00:
+            case WiFiPlazaLobbyActivity_00:
                 WiFiList_AddFriendPlazaGame0Count(v0, v4, 1);
                 break;
-            case UnkEnum_ov66_022324D0_01:
+            case WiFiPlazaLobbyActivity_01:
                 WiFiList_AddFriendPlazaGame1Count(v0, v4, 1);
                 break;
-            case UnkEnum_ov66_022324D0_02:
+            case WiFiPlazaLobbyActivity_02:
                 WiFiList_AddFriendPlazaGame2Count(v0, v4, 1);
                 break;
             }
@@ -3554,13 +3554,13 @@ static u32 WiFiLobbyMinigame_GetTargetScore(const WiFiLobbyMinigameResultsScreen
     u32 v0;
 
     switch (param0->unk_07) {
-    case UnkEnum_ov66_022324D0_00:
+    case WiFiPlazaLobbyActivity_00:
         v0 = 0;
         break;
-    case UnkEnum_ov66_022324D0_01:
+    case WiFiPlazaLobbyActivity_01:
         v0 = 0;
         break;
-    case UnkEnum_ov66_022324D0_02:
+    case WiFiPlazaLobbyActivity_02:
         GF_ASSERT(FALSE);
         v0 = 0;
         break;
@@ -3587,7 +3587,7 @@ static void WiFiLobbyMinigame_SendGameResults(WiFiLobbyMinigameResultsScreen *pa
     }
 
     if (v2 > 0) {
-        ov66_0222EAB4(param0->unk_0C.unk_0C->unk_30, param0->unk_07, v2, v1[0], v1[1], v1[2], v1[3]);
+        WiFiPlazaLobby_State_SendMinigameResultMessage(param0->unk_0C.unk_0C->unk_30, param0->unk_07, v2, v1[0], v1[1], v1[2], v1[3]);
     }
 }
 
@@ -3595,7 +3595,7 @@ static void WiFiLobbyMinigame_SendGameResultsGame2(WiFiLobbyMinigameResultsScree
 {
     if (param0->unk_0C.unk_08 > 0) {
         if (param0->unk_1C.unk_14 >= 10) {
-            ov66_0222EAB4(param0->unk_0C.unk_0C->unk_30, param0->unk_07, param0->unk_0C.unk_08, param0->unk_0C.unk_0C->unk_04.unk_00[0], param0->unk_0C.unk_0C->unk_04.unk_00[1], param0->unk_0C.unk_0C->unk_04.unk_00[2], param0->unk_0C.unk_0C->unk_04.unk_00[3]);
+            WiFiPlazaLobby_State_SendMinigameResultMessage(param0->unk_0C.unk_0C->unk_30, param0->unk_07, param0->unk_0C.unk_08, param0->unk_0C.unk_0C->unk_04.unk_00[0], param0->unk_0C.unk_0C->unk_04.unk_00[1], param0->unk_0C.unk_0C->unk_04.unk_00[2], param0->unk_0C.unk_0C->unk_04.unk_00[3]);
         }
     }
 }

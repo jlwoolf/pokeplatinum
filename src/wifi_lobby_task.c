@@ -4,15 +4,15 @@
 #include <string.h>
 
 #include "field/field_system.h"
-#include "overlay066/ov66_0222DCE0.h"
-#include "overlay066/struct_ov66_0222DCE0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DCE0.h"
 
 #include "field_task.h"
 #include "heap.h"
 
-FS_EXTERN_OVERLAY(overlay66);
+FS_EXTERN_OVERLAY(wifi_plaza_lobby);
 
-// Field task that opens the Wi-Fi lobby (overlay66, the PPW / Wi-Fi Plaza
+// Field task that opens the Wi-Fi lobby (wifi_plaza_lobby, the PPW / Wi-Fi Plaza
 // lobby). It is started by the ScrCmd_2F7 script command once the player has a
 // valid Nintendo WFC login.
 typedef struct {
@@ -21,19 +21,19 @@ typedef struct {
     // Result reported by the preceding WiFi menu (ScrCmd_0B3), forwarded to the
     // lobby app arguments.
     u16 wifiMenuResult;
-    // Arguments handed to the overlay66 lobby app.
-    UnkStruct_ov66_0222DCE0 appArgs;
+    // Arguments handed to the wifi_plaza_lobby lobby app.
+    WiFiPlazaLobbyAppArgs appArgs;
 } WiFiLobbyTaskWork;
 
 static BOOL WiFiLobbyTask_Task(FieldTask *task);
 
-// The overlay66 lobby app (ov66_0222DCE0) that the task launches as a child
+// The wifi_plaza_lobby lobby app (WiFiPlazaLobby_Init) that the task launches as a child
 // process.
 static const ApplicationManagerTemplate sWiFiLobbyAppTemplate = {
-    ov66_0222DCE0,
-    ov66_0222DD6C,
-    ov66_0222DD90,
-    FS_OVERLAY_ID(overlay66)
+    WiFiPlazaLobby_Init,
+    WiFiPlazaLobby_Main,
+    WiFiPlazaLobby_Exit,
+    FS_OVERLAY_ID(wifi_plaza_lobby)
 };
 
 // Starts the Wi-Fi lobby field task. `wifiMenuResult` is the result reported by

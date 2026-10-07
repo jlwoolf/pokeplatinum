@@ -7,11 +7,11 @@
 
 #include "overlay061/struct_ov61_0222C3B0.h"
 #include "overlay065/struct_ov65_0222F6EC.h"
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/ov66_022324F0.h"
-#include "overlay066/struct_ov66_02231024.h"
-#include "overlay066/struct_ov66_02231300.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231024.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231300.h"
 
 #include "bg_window.h"
 #include "comm_manager.h"
@@ -160,7 +160,7 @@ static const WindowTemplate sYesNoWindowTemplate = {
 int WifiP2PMatch_InitConnect(ApplicationManager *appMan, int *param1)
 {
     WifiP2PMatch *v0;
-    UnkStruct_ov66_02231024 *v1;
+    WiFiPlazaLobbyP2PMatchConnectArgs *v1;
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_112, 0x20000);
 
@@ -188,7 +188,7 @@ int WifiP2PMatch_InitConnect(ApplicationManager *appMan, int *param1)
 int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
 {
     WifiP2PMatch *v0 = ApplicationManager_Data(appMan);
-    UnkStruct_ov66_02231024 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyP2PMatchConnectArgs *v1 = ApplicationManager_Args(appMan);
 
     switch (*param1) {
     case 0:
@@ -226,7 +226,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
     case 4: {
         WiFiPlazaProfile *v3;
 
-        v3 = ov66_0222E3BC(v1->unk_04);
+        v3 = WiFiPlazaLobby_State_GetOwnProfile(v1->unk_04);
         CommManager_LoginWifiPlaza(v0->saveData, v3);
     }
 
@@ -241,7 +241,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
         }
 
         if (CommManager_GetWifiPlazaLoginSuccess() == 1) {
-            ov66_0222F16C(v1->unk_04);
+            WiFiPlazaLobby_State_CreateWFCTrainerInfo(v1->unk_04);
             (*param1)++;
         }
         break;
@@ -275,15 +275,15 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
 
         if (CommManager_CheckWifiError()) {
             v5 = CommManager_GetUnk34();
-            v6 = ov66_022316F4(v5->unk_00, v5->unk_04);
+            v6 = WiFiPlazaLobby_Time_GetWFCErrorMessageID(v5->unk_00, v5->unk_04);
             v7 = v5->unk_00;
         } else {
-            v7 = ov66_022326DC();
-            v7 = ov66_0223270C(v7);
+            v7 = WiFiPlazaLobby_Network_GetLastError();
+            v7 = WiFiPlazaLobby_Network_ToErrorCode(v7);
             v6 = 32;
         }
 
-        ov66_0222F198(v1->unk_04);
+        WiFiPlazaLobby_State_FreeWFCTrainerInfo(v1->unk_04);
         WifiP2PMatch_EraseMessageBox(&v0->messageBox);
         WifiP2PMatch_EraseMessageBox(&v0->connectBox);
         WifiP2PMatch_SetMessageNumber(&v0->errorBox, v7);
@@ -298,7 +298,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
             if (CommManager_CheckWifiError()) {
                 UnkStruct_ov65_0222F6EC *v10 = CommManager_GetUnk34();
 
-                v8 = ov66_02231718(v10->unk_00, v10->unk_04);
+                v8 = WiFiPlazaLobby_Time_IsWFCErrorRetryable(v10->unk_00, v10->unk_04);
 
                 if (v8 == 0) {
                     (*param1) = 11;
@@ -395,7 +395,7 @@ int WifiP2PMatch_ExitConnect(ApplicationManager *appMan, int *param1)
 int WifiP2PMatch_InitDisconnect(ApplicationManager *appMan, int *param1)
 {
     WifiP2PMatch *v0;
-    UnkStruct_ov66_02231300 *v1;
+    WiFiPlazaLobbyP2PMatchDisconnectArgs *v1;
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_112, 0x20000);
 
@@ -421,7 +421,7 @@ int WifiP2PMatch_InitDisconnect(ApplicationManager *appMan, int *param1)
 int WifiP2PMatch_MainDisconnect(ApplicationManager *appMan, int *param1)
 {
     WifiP2PMatch *v0 = ApplicationManager_Data(appMan);
-    UnkStruct_ov66_02231300 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyP2PMatchDisconnectArgs *v1 = ApplicationManager_Args(appMan);
 
     switch (*param1) {
     case 0:
@@ -445,7 +445,7 @@ int WifiP2PMatch_MainDisconnect(ApplicationManager *appMan, int *param1)
         }
         break;
     case 3:
-        ov66_02232C8C();
+        WiFiPlazaLobby_Network_UpdateLocationChannelData();
 
         v0->timer = (30 * 30);
         (*param1) = 4;
@@ -455,7 +455,7 @@ int WifiP2PMatch_MainDisconnect(ApplicationManager *appMan, int *param1)
             v0->timer--;
         }
 
-        if (ov66_02232CB8() || (v0->timer == 0)) {
+        if (WiFiPlazaLobby_Network_IsLocationChannelDataSynced() || (v0->timer == 0)) {
             (*param1) = 5;
         }
         break;
@@ -466,7 +466,7 @@ int WifiP2PMatch_MainDisconnect(ApplicationManager *appMan, int *param1)
     case 6:
         if (CommManager_IsInitialized() == 0) {
             WifiP2PMatch_DestroyWaitDial(&v0->connectBox);
-            ov66_0222F198(v1->unk_04);
+            WiFiPlazaLobby_State_FreeWFCTrainerInfo(v1->unk_04);
             (*param1) = 7;
         }
         break;

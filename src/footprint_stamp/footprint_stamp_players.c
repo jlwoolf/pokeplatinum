@@ -6,9 +6,9 @@
 #include "constants/species.h"
 #include "generated/footprint_sizes.h"
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_022324F0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "footprint_stamp/footprint_data.h"
 #include "footprint_stamp/struct_footprint_stamp_entry.h"
 
@@ -46,7 +46,7 @@ static const TouchScreenRect sTouchRects[] = {
     { 0xFF, 0x0, 0x0, 0x0 }
 };
 
-void FootprintStampPlayers_DrawName(MessageLoader *param0, StringTemplate *param1, Window param2[], UnkStruct_ov66_0222DFF8 *param3, s32 param4)
+void FootprintStampPlayers_DrawName(MessageLoader *param0, StringTemplate *param1, Window param2[], WiFiPlazaLobbyState *param3, s32 param4)
 {
     const WiFiPlazaProfile *v0;
     TrainerInfo *v1;
@@ -58,19 +58,19 @@ void FootprintStampPlayers_DrawName(MessageLoader *param0, StringTemplate *param
     u32 v7, v8;
     TextColor v9;
 
-    v7 = ov66_02232B8C(param4);
+    v7 = WiFiPlazaLobby_Network_FindSubChannelPlayerIndex(param4);
 
     if (v7 == 0xffffffff) {
         return;
     }
 
-    v8 = ov66_02232B78(param4);
+    v8 = WiFiPlazaLobby_Network_FindMainPlayerIndex(param4);
 
     if (v8 == 0xffffffff) {
         return;
     }
 
-    v0 = ov66_0222E374(param3, v8);
+    v0 = WiFiPlazaLobby_State_GetProfileBySlot(param3, v8);
 
     if (v0 == NULL) {
         return;
@@ -82,7 +82,7 @@ void FootprintStampPlayers_DrawName(MessageLoader *param0, StringTemplate *param
     }
 
     v1 = TrainerInfo_New(HEAP_ID_118);
-    ov66_0222E640(v0, v1, HEAP_ID_118);
+    WiFiPlazaLobby_State_ApplyProfileToTrainerInfo(v0, v1, HEAP_ID_118);
 
     v4 = TrainerInfo_NameNewString(v1, HEAP_ID_118);
     v6 = TrainerInfo_Gender(v1);
@@ -95,7 +95,7 @@ void FootprintStampPlayers_DrawName(MessageLoader *param0, StringTemplate *param
     StringTemplate_Format(param1, v3, v2);
     Window_FillTilemap(&param2[v7], 0x0);
 
-    if (ov66_0222E924(param3, v8) == 1) {
+    if (WiFiPlazaLobby_State_IsMemberPresent(param3, v8) == 1) {
         v9 = TEXT_COLOR(7, 8, 0);
     } else {
         v9 = TEXT_COLOR(1, 2, 0);

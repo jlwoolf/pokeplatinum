@@ -4,7 +4,7 @@
 // clang-format off
 #include "ilobby/dwci_lobbybase.h"
 #include "ilobby/ov66_022364B0.h"
-#include "overlay066/ov66_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "ppwlobby/ov66_0225B6C4.h"
 #include "ppwlobby/ppw_parser.h"
 #include "ppwlobby/dwci_encsession.h"

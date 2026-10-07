@@ -4,8 +4,8 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/ov66_022324F0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
 #include "footprint_stamp/footprint_stamp.h"
 #include "footprint_stamp/struct_footprint_stamp_add_payload.h"
 #include "footprint_stamp/struct_footprint_stamp_app_decl.h"
@@ -17,7 +17,7 @@ static void FootprintStampComm_HandleRemove(s32 param0, const void *param1, u32 
 static void FootprintStampComm_HandleUpdate(s32 param0, const void *param1, u32 param2, void *param3);
 static BOOL FootprintStampComm_IsValid(s32 param0, FootprintStampCommState *param1);
 
-static const UnkStruct_ov66_022589B4 sCommHandlers[] = {
+static const WiFiPlazaLobbyNetworkMessageHandler sCommHandlers[] = {
     { FootprintStampComm_HandleAdd, sizeof(FootprintStampAddPayload) },
     { FootprintStampComm_HandleRemove, 0x0 },
     { FootprintStampComm_HandleUpdate, sizeof(FootprintStampEntry) }
@@ -25,7 +25,7 @@ static const UnkStruct_ov66_022589B4 sCommHandlers[] = {
 
 void FootprintStampComm_Init(FootprintStampApp *param0)
 {
-    ov66_02232D60(sCommHandlers, (NELEMS(sCommHandlers)), param0);
+    WiFiPlazaLobby_Network_SetSubChannelMessageHandler(sCommHandlers, (NELEMS(sCommHandlers)), param0);
 }
 
 static BOOL FootprintStampComm_IsValid(s32 param0, FootprintStampCommState *param1)
@@ -38,7 +38,7 @@ static BOOL FootprintStampComm_IsValid(s32 param0, FootprintStampCommState *para
         return 0;
     }
 
-    if (ov66_02232B8C(param0) == 0xffffffff) {
+    if (WiFiPlazaLobby_Network_FindSubChannelPlayerIndex(param0) == 0xffffffff) {
         return 0;
     }
 
@@ -47,11 +47,11 @@ static BOOL FootprintStampComm_IsValid(s32 param0, FootprintStampCommState *para
 
 BOOL FootprintStampComm_SendEntry(const FootprintStampEntry *param0)
 {
-    if (ov66_02231760() == 1) {
+    if (WiFiPlazaLobby_Time_HasWifiError() == 1) {
         return 0;
     }
 
-    ov66_02232EBC(2, param0, sizeof(FootprintStampEntry));
+    WiFiPlazaLobby_Network_SendSubChannelMessage(2, param0, sizeof(FootprintStampEntry));
     return 1;
 }
 
@@ -77,7 +77,7 @@ static void FootprintStampComm_HandleRemove(s32 param0, const void *param1, u32 
         return;
     }
 
-    FootprintStamp_ClearPlayerName(v0, ov66_02232B8C(param0));
+    FootprintStamp_ClearPlayerName(v0, WiFiPlazaLobby_Network_FindSubChannelPlayerIndex(param0));
 }
 
 static void FootprintStampComm_HandleUpdate(s32 param0, const void *param1, u32 param2, void *param3)

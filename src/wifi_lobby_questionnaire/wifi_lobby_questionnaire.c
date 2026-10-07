@@ -7,12 +7,12 @@
 
 #include "constants/graphics.h"
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/ov66_022324F0.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
-#include "overlay066/struct_ov66_0222E908.h"
-#include "overlay066/struct_ov66_02231374.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222E908.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231374.h"
 #include "wifi_lobby_questionnaire/struct_wifi_lobby_questionnaire_answer_tally.h"
 
 #include "bg_window.h"
@@ -99,7 +99,7 @@ typedef struct {
     StringTemplate *template;
     String *string1;
     String *string2;
-    UnkStruct_ov66_0222DFF8 *profile;
+    WiFiPlazaLobbyState *profile;
 } WiFiLobbyQuestionnaireMessages;
 
 typedef struct {
@@ -126,7 +126,7 @@ static void WiFiLobbyQuestionnaireGraphics_InitBackgrounds(WiFiLobbyQuestionnair
 static void WiFiLobbyQuestionnaireGraphics_FreeBackgrounds(WiFiLobbyQuestionnaireGraphics *param0);
 static void WiFiLobbyQuestionnaireGraphics_InitSpriteSystem(WiFiLobbyQuestionnaireGraphics *param0, enum HeapID heapID);
 static void WiFiLobbyQuestionnaireGraphics_FreeSpriteSystem(WiFiLobbyQuestionnaireGraphics *param0);
-static void WiFiLobbyQuestionnaireMessages_Init(WiFiLobbyQuestionnaireMessages *param0, UnkStruct_ov66_0222DFF8 *param1, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireMessages_Init(WiFiLobbyQuestionnaireMessages *param0, WiFiPlazaLobbyState *param1, enum HeapID heapID);
 static void WiFiLobbyQuestionnaireMessages_Free(WiFiLobbyQuestionnaireMessages *param0);
 static String *WiFiLobbyQuestionnaireMessages_GetString(WiFiLobbyQuestionnaireMessages *param0, u32 param1, u32 param2);
 static String *WiFiLobbyQuestionnaireMessages_GetQuestionText(WiFiLobbyQuestionnaireMessages *param0, u32 param1);
@@ -138,24 +138,24 @@ static String *WiFiLobbyQuestionnaireQuestion_GetText(const WiFiLobbyQuestionnai
 static String *WiFiLobbyQuestionnaireQuestion_GetAnswerText(const WiFiLobbyQuestionnaireQuestion *param0, WiFiLobbyQuestionnaireMessages *param1, u32 param2);
 static void WiFiLobbyQuestionnaireAnswerTally_Init(WiFiLobbyQuestionnaireAnswerTally *param0);
 static u32 WiFiLobbyQuestionnaireAnswerTally_GetBarWidth(const WiFiLobbyQuestionnaireAnswerTally *param0, u32 param1, u32 param2);
-static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnaireAnswerTally *param0, const UnkStruct_ov66_0222DFF8 *param1);
-static void WiFiLobbyQuestionnaireScreen_InitAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4);
-static BOOL WiFiLobbyQuestionnaireScreen_MainAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnaireAnswerTally *param0, const WiFiPlazaLobbyState *param1);
+static void WiFiLobbyQuestionnaireScreen_InitAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiPlazaLobbyQuestionnaireArgs *param3, u32 param4);
+static BOOL WiFiLobbyQuestionnaireScreen_MainAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, enum HeapID heapID);
 static void WiFiLobbyQuestionnaireScreen_FreeAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
 static void WiFiLobbyQuestionnaireAnswerSelection_Init(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3);
-static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, u32 param5);
+static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, u32 param5);
 static void WiFiLobbyQuestionnaireAnswerSelection_Free(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
 static void WiFiLobbyQuestionnaireAnswerSelection_DrawQuestion(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
 static void WiFiLobbyQuestionnaireAnswerSelection_UpdateCursor(WiFiLobbyQuestionnaireAnswerSelection *param0);
 static void WiFiLobbyQuestionnaireAnswerSelection_AnimateCursor(WiFiLobbyQuestionnaireAnswerSelection *param0);
-static void WiFiLobbyQuestionnaireScreen_InitResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4);
-static BOOL WiFiLobbyQuestionnaireScreen_MainResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireScreen_InitResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiPlazaLobbyQuestionnaireArgs *param3, u32 param4);
+static BOOL WiFiLobbyQuestionnaireScreen_MainResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, enum HeapID heapID);
 static void WiFiLobbyQuestionnaireScreen_FreeResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
-static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, enum HeapID heapID);
-static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID);
+static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiPlazaLobbyQuestionnaireArgs *param3, enum HeapID heapID);
+static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, enum HeapID heapID);
 static void WiFiLobbyQuestionnaireResults_Free(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2);
 static void WiFiLobbyQuestionnaireResults_DrawHeader(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, u32 param2, TextColor param3);
-static void WiFiLobbyQuestionnaireResults_DrawQuestion(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireQuestion *param1, WiFiLobbyQuestionnaireMessages *param2, WiFiLobbyQuestionnaireGraphics *param3, const UnkStruct_ov66_0222E908 *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8);
+static void WiFiLobbyQuestionnaireResults_DrawQuestion(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireQuestion *param1, WiFiLobbyQuestionnaireMessages *param2, WiFiLobbyQuestionnaireGraphics *param3, const WiFiPlazaLobbyQuestionnaireAnswer *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8);
 static void WiFiLobbyQuestionnaireResults_InitBars(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireAnswerTally *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3);
 static BOOL WiFiLobbyQuestionnaireResults_AnimateBars(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireGraphics *param1);
 static void WiFiLobbyQuestionnaireResults_DrawPage(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, u32 param3);
@@ -293,12 +293,12 @@ static const BgTemplate sBgTemplates[4] = {
     },
 };
 
-static void (*sScreenInitFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *, UnkStruct_ov66_02231374 *, u32) = {
+static void (*sScreenInitFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *, WiFiPlazaLobbyQuestionnaireArgs *, u32) = {
     WiFiLobbyQuestionnaireScreen_InitAnswerSelection,
     WiFiLobbyQuestionnaireScreen_InitResults
 };
 
-static BOOL (*sScreenMainFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *, WiFiLobbyQuestionnaireMessageBox *, UnkStruct_ov66_02231374 *, enum HeapID) = {
+static BOOL (*sScreenMainFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQuestionnaireMessages *, WiFiLobbyQuestionnaireGraphics *, WiFiLobbyQuestionnaireMessageBox *, WiFiPlazaLobbyQuestionnaireArgs *, enum HeapID) = {
     WiFiLobbyQuestionnaireScreen_MainAnswerSelection,
     WiFiLobbyQuestionnaireScreen_MainResults
 };
@@ -311,7 +311,7 @@ static void (*sScreenFreeFuncs[2])(WiFiLobbyQuestionnaireScreen *, WiFiLobbyQues
 int WiFiLobbyQuestionnaire_Init(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyQuestionnaire *v0;
-    UnkStruct_ov66_02231374 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyQuestionnaireArgs *v1 = ApplicationManager_Args(appMan);
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_PARTY_MENU2, 0x50000);
 
@@ -334,7 +334,7 @@ int WiFiLobbyQuestionnaire_Init(ApplicationManager *appMan, int *param1)
 int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyQuestionnaire *v0;
-    UnkStruct_ov66_02231374 *v1;
+    WiFiPlazaLobbyQuestionnaireArgs *v1;
     BOOL v2;
 
     v0 = ApplicationManager_Data(appMan);
@@ -343,7 +343,7 @@ int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_PARTY_MENU2);
-        ov66_0222E31C(v1->unk_04, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->unk_04, 1);
         (*param1)++;
         break;
     case 1:
@@ -355,13 +355,13 @@ int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
         break;
     case 2:
         if (IsScreenFadeDone() == TRUE) {
-            if (ov66_0222E12C(v1->unk_04) == 1) {
-                ov66_0222E2A4(v1->unk_04);
+            if (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_04) == 1) {
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v1->unk_04);
                 (*param1)++;
                 break;
             }
 
-            if (ov66_02231760() == 1) {
+            if (WiFiPlazaLobby_Time_HasWifiError() == 1) {
                 (*param1)++;
                 break;
             }
@@ -394,7 +394,7 @@ int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
 int WiFiLobbyQuestionnaire_Exit(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyQuestionnaire *v0 = ApplicationManager_Data(appMan);
-    UnkStruct_ov66_02231374 *v1 = ApplicationManager_Args(appMan);
+    WiFiPlazaLobbyQuestionnaireArgs *v1 = ApplicationManager_Args(appMan);
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -530,7 +530,7 @@ static void WiFiLobbyQuestionnaireGraphics_FreeSpriteSystem(WiFiLobbyQuestionnai
     RenderOam_Free();
 }
 
-static void WiFiLobbyQuestionnaireMessages_Init(WiFiLobbyQuestionnaireMessages *param0, UnkStruct_ov66_0222DFF8 *param1, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireMessages_Init(WiFiLobbyQuestionnaireMessages *param0, WiFiPlazaLobbyState *param1, enum HeapID heapID)
 {
     int v0;
     static const v1[9] = {
@@ -610,19 +610,19 @@ static String *WiFiLobbyQuestionnaireMessages_GetAnswerText(WiFiLobbyQuestionnai
 static void WiFiLobbyQuestionnaireMessages_SetPlayerName(WiFiLobbyQuestionnaireMessages *param0, u32 param1, enum HeapID heapID)
 {
     TrainerInfo *v0 = TrainerInfo_New(heapID);
-    const WiFiPlazaProfile *v1 = ov66_0222E3BC(param0->profile);
+    const WiFiPlazaProfile *v1 = WiFiPlazaLobby_State_GetOwnProfile(param0->profile);
 
-    ov66_0222E640(v1, v0, heapID);
+    WiFiPlazaLobby_State_ApplyProfileToTrainerInfo(v1, v0, heapID);
     StringTemplate_SetPlayerName(param0->template, param1, v0);
     Heap_Free(v0);
 }
 
-static void WiFiLobbyQuestionnaireScreen_InitAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4)
+static void WiFiLobbyQuestionnaireScreen_InitAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiPlazaLobbyQuestionnaireArgs *param3, u32 param4)
 {
     WiFiLobbyQuestionnaireAnswerSelection_Init(&param0->answerSelection, param1, param2, param4);
 }
 
-static BOOL WiFiLobbyQuestionnaireScreen_MainAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
+static BOOL WiFiLobbyQuestionnaireScreen_MainAnswerSelection(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, enum HeapID heapID)
 {
     return WiFiLobbyQuestionnaireAnswerSelection_Main(&param0->answerSelection, param1, param2, param3, param4, heapID);
 }
@@ -686,7 +686,7 @@ static void WiFiLobbyQuestionnaireAnswerSelection_Init(WiFiLobbyQuestionnaireAns
     WiFiLobbyQuestionnaireQuestion_Init(&param0->question, 1, param3);
 }
 
-static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, u32 param5)
+static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAnswerSelection *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, u32 param5)
 {
     u32 v0;
     String *v1;
@@ -762,8 +762,8 @@ static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAns
         break;
 
     case 6:
-        ov66_0222E5D8(param4->unk_04, param0->question.questionSerialNo, param0->selectedAnswer);
-        ov66_022333E4(param0->selectedAnswer);
+        WiFiPlazaLobby_State_SetQuestionnaireAnswer(param4->unk_04, param0->question.questionSerialNo, param0->selectedAnswer);
+        WiFiPlazaLobby_Network_SubmitQuestionnaireAnswer(param0->selectedAnswer);
 
         v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 96);
 
@@ -774,9 +774,9 @@ static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAns
         break;
     case 7: {
         u32 v3;
-        v3 = ov66_02233434();
+        v3 = WiFiPlazaLobby_Network_GetQuestionnaireSubmitState();
 
-        if (v3 != UnkEnum_ov66_02233434_01) {
+        if (v3 != WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01) {
             Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
             WiFiLobbyQuestionnaireMessageBox_HideWaitDial(param3);
 
@@ -979,12 +979,12 @@ static void WiFiLobbyQuestionnaireMessageBox_DestroyMenu(WiFiLobbyQuestionnaireM
     }
 }
 
-static void WiFiLobbyQuestionnaireScreen_InitResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, u32 param4)
+static void WiFiLobbyQuestionnaireScreen_InitResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiPlazaLobbyQuestionnaireArgs *param3, u32 param4)
 {
     WiFiLobbyQuestionnaireResults_Init(&param0->results, param1, param2, param3, param4);
 }
 
-static BOOL WiFiLobbyQuestionnaireScreen_MainResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
+static BOOL WiFiLobbyQuestionnaireScreen_MainResults(WiFiLobbyQuestionnaireScreen *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, enum HeapID heapID)
 {
     return WiFiLobbyQuestionnaireResults_Main(&param0->results, param1, param2, param3, param4, heapID);
 }
@@ -994,7 +994,7 @@ static void WiFiLobbyQuestionnaireScreen_FreeResults(WiFiLobbyQuestionnaireScree
     WiFiLobbyQuestionnaireResults_Free(&param0->results, param1, param2);
 }
 
-static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, UnkStruct_ov66_02231374 *param3, enum HeapID heapID)
+static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiPlazaLobbyQuestionnaireArgs *param3, enum HeapID heapID)
 {
     {
         Graphics_LoadPaletteFromOpenNARC(param2->narc, 199, 0, 0, 4 * 32, heapID);
@@ -1020,16 +1020,16 @@ static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *pa
         WiFiLobbyQuestionnaireQuestion_Init(&param0->currentQuestion, 1, heapID);
         WiFiLobbyQuestionnaireQuestion_Init(&param0->lastQuestion, 0, heapID);
 
-        if (ov66_0222F144(param3->unk_04, &param0->currentTally) == 0) {
+        if (WiFiPlazaLobby_State_GetQuestionnaireResult(param3->unk_04, &param0->currentTally) == 0) {
             WiFiLobbyQuestionnaireAnswerTally_CountAnswers(&param0->currentTally, param3->unk_04);
-            ov66_0222F124(param3->unk_04, &param0->currentTally);
+            WiFiPlazaLobby_State_SetQuestionnaireResult(param3->unk_04, &param0->currentTally);
         }
 
         WiFiLobbyQuestionnaireAnswerTally_Init(&param0->lastTally);
     }
 }
 
-static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, UnkStruct_ov66_02231374 *param4, enum HeapID heapID)
+static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *param0, WiFiLobbyQuestionnaireMessages *param1, WiFiLobbyQuestionnaireGraphics *param2, WiFiLobbyQuestionnaireMessageBox *param3, WiFiPlazaLobbyQuestionnaireArgs *param4, enum HeapID heapID)
 {
     String *v0;
     u32 v1;
@@ -1074,14 +1074,14 @@ static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *pa
         param0->state = 22;
         break;
     case 4: {
-        UnkStruct_ov66_0222E908 v2;
+        WiFiPlazaLobbyQuestionnaireAnswer v2;
         const WiFiPlazaProfile *v3;
         BOOL v4;
 
-        v3 = ov66_0222E3BC(param4->unk_04);
-        ov66_0222E908(v3, &v2);
+        v3 = WiFiPlazaLobby_State_GetOwnProfile(param4->unk_04);
+        WiFiPlazaLobby_State_GetQuestionnaireAnswer(v3, &v2);
 
-        v4 = ov66_0222E924(param4->unk_04, ov66_0222E338(param4->unk_04));
+        v4 = WiFiPlazaLobby_State_IsMemberPresent(param4->unk_04, WiFiPlazaLobby_State_GetMySlotIndex(param4->unk_04));
         WiFiLobbyQuestionnaireResults_DrawQuestion(param0, &param0->currentQuestion, param1, param2, &v2, heapID, TEXT_COLOR(9, 10, 0), TEXT_COLOR(13, 14, 0), v4);
         WiFiLobbyQuestionnaireResults_InitBars(param0, &param0->currentTally, param2, 1);
 
@@ -1189,14 +1189,14 @@ static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *pa
         param0->state = 22;
         break;
     case 17: {
-        UnkStruct_ov66_0222E908 v7;
+        WiFiPlazaLobbyQuestionnaireAnswer v7;
         WiFiPlazaQuestion *savedWiFiPlazaQuestion;
         BOOL v9;
 
         savedWiFiPlazaQuestion = SaveData_GetWiFiPlazaQuestion(param4->saveData);
         v7.questionNumber = WiFiPlazaQuestion_GetQuestionNumber(savedWiFiPlazaQuestion);
         v7.selectedAnswer = WiFiPlazaQuestion_GetSelectedAnswer(savedWiFiPlazaQuestion);
-        v9 = ov66_0222E924(param4->unk_04, ov66_0222E338(param4->unk_04));
+        v9 = WiFiPlazaLobby_State_IsMemberPresent(param4->unk_04, WiFiPlazaLobby_State_GetMySlotIndex(param4->unk_04));
 
         WiFiLobbyQuestionnaireResults_DrawQuestion(param0, &param0->lastQuestion, param1, param2, &v7, heapID, TEXT_COLOR(11, 12, 0), TEXT_COLOR(15, 14, 0), v9);
         WiFiLobbyQuestionnaireResults_InitBars(param0, &param0->lastTally, param2, 2);
@@ -1275,7 +1275,7 @@ static void WiFiLobbyQuestionnaireResults_DrawHeader(WiFiLobbyQuestionnaireResul
     Window_ScheduleCopyToVRAM(&param0->windows[0]);
 }
 
-static void WiFiLobbyQuestionnaireResults_DrawQuestion(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireQuestion *param1, WiFiLobbyQuestionnaireMessages *param2, WiFiLobbyQuestionnaireGraphics *param3, const UnkStruct_ov66_0222E908 *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8)
+static void WiFiLobbyQuestionnaireResults_DrawQuestion(WiFiLobbyQuestionnaireResults *param0, const WiFiLobbyQuestionnaireQuestion *param1, WiFiLobbyQuestionnaireMessages *param2, WiFiLobbyQuestionnaireGraphics *param3, const WiFiPlazaLobbyQuestionnaireAnswer *param4, enum HeapID heapID, u32 param6, u32 param7, BOOL param8)
 {
     String *v0;
 
@@ -1415,25 +1415,25 @@ static void WiFiLobbyQuestionnaireQuestion_Init(WiFiLobbyQuestionnaireQuestion *
     }
 
     if (param1 == 1) {
-        v0 = UnkEnum_ov66_02233454_00;
-        v1 = UnkEnum_ov66_02233538_00;
+        v0 = WiFiPlazaLobbyNetworkQuestionnaireField_00;
+        v1 = WiFiPlazaLobbyNetworkQuestionnaireText_00;
     } else {
-        v0 = UnkEnum_ov66_02233454_04;
-        v1 = UnkEnum_ov66_02233538_04;
+        v0 = WiFiPlazaLobbyNetworkQuestionnaireField_04;
+        v1 = WiFiPlazaLobbyNetworkQuestionnaireText_04;
     }
 
-    param0->isSpecialWeek = ov66_02233454(v0 + UnkEnum_ov66_02233454_02);
-    param0->questionNo = ov66_02233454(v0 + UnkEnum_ov66_02233454_01);
-    param0->questionSerialNo = ov66_02233454(v0 + UnkEnum_ov66_02233454_00);
-    param0->isFreeQuestion = ov66_02233454(v0 + UnkEnum_ov66_02233454_03);
+    param0->isSpecialWeek = WiFiPlazaLobby_Network_GetQuestionnaireField(v0 + WiFiPlazaLobbyNetworkQuestionnaireField_02);
+    param0->questionNo = WiFiPlazaLobby_Network_GetQuestionnaireField(v0 + WiFiPlazaLobbyNetworkQuestionnaireField_01);
+    param0->questionSerialNo = WiFiPlazaLobby_Network_GetQuestionnaireField(v0 + WiFiPlazaLobbyNetworkQuestionnaireField_00);
+    param0->isFreeQuestion = WiFiPlazaLobby_Network_GetQuestionnaireField(v0 + WiFiPlazaLobbyNetworkQuestionnaireField_03);
 
     if (param0->isFreeQuestion == 1) {
-        v2 = ov66_02233538(v1 + UnkEnum_ov66_02233538_00);
+        v2 = WiFiPlazaLobby_Network_GetQuestionnaireText(v1 + WiFiPlazaLobbyNetworkQuestionnaireText_00);
         GF_ASSERT(v2);
         String_CopyChars(param0->questionText, v2);
 
         for (v3 = 0; v3 < 3; v3++) {
-            v2 = ov66_02233538(v1 + UnkEnum_ov66_02233538_01 + v3);
+            v2 = WiFiPlazaLobby_Network_GetQuestionnaireText(v1 + WiFiPlazaLobbyNetworkQuestionnaireText_01 + v3);
             GF_ASSERT(v2);
             String_CopyChars(param0->answerTexts[v3], v2);
         }
@@ -1476,7 +1476,7 @@ static void WiFiLobbyQuestionnaireAnswerTally_Init(WiFiLobbyQuestionnaireAnswerT
     param0->totalCount = 0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        param0->answerCounts[v0] = ov66_02233454(UnkEnum_ov66_02233454_08 + v0);
+        param0->answerCounts[v0] = WiFiPlazaLobby_Network_GetQuestionnaireField(WiFiPlazaLobbyNetworkQuestionnaireField_08 + v0);
         param0->totalCount += param0->answerCounts[v0];
     }
 }
@@ -1493,10 +1493,10 @@ static u32 WiFiLobbyQuestionnaireAnswerTally_GetBarWidth(const WiFiLobbyQuestion
     return (u32)(((u64)(v0 * v1)) / param0->totalCount);
 }
 
-static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnaireAnswerTally *param0, const UnkStruct_ov66_0222DFF8 *param1)
+static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnaireAnswerTally *param0, const WiFiPlazaLobbyState *param1)
 {
     const WiFiPlazaProfile *v0;
-    UnkStruct_ov66_0222E908 v1;
+    WiFiPlazaLobbyQuestionnaireAnswer v1;
     int v2;
     u32 language;
     BOOL v4;
@@ -1504,12 +1504,12 @@ static void WiFiLobbyQuestionnaireAnswerTally_CountAnswers(WiFiLobbyQuestionnair
     memset(param0, 0, sizeof(WiFiLobbyQuestionnaireAnswerTally));
 
     for (v2 = 0; v2 < 20; v2++) {
-        v0 = ov66_0222E374(param1, v2);
+        v0 = WiFiPlazaLobby_State_GetProfileBySlot(param1, v2);
 
         if (v0 != NULL) {
             language = WiFiPlazaProfile_GetLanguage(v0);
-            ov66_0222E908(v0, &v1);
-            v4 = ov66_022335C0(UnkEnum_ov66_022335C0_00, language);
+            WiFiPlazaLobby_State_GetQuestionnaireAnswer(v0, &v1);
+            v4 = WiFiPlazaLobby_Network_GetQuestionnaireLanguageFlag(WiFiPlazaLobbyNetworkQuestionnaireLanguage_00, language);
 
             if ((v4 == 1) && (v1.selectedAnswer < 3)) {
                 param0->answerCounts[v1.selectedAnswer]++;

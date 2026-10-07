@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "overlay063/struct_ov63_0222CC3C.h"
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C700.h"
 #include "overlay070/ov70_0225C858.h"
 #include "overlay070/ov70_0225C9B4.h"
@@ -135,7 +135,7 @@ typedef struct {
 } UnkStruct_ov70_02269800;
 
 typedef struct UnkStruct_ov70_02269204_t {
-    UnkStruct_ov66_0222DFF8 *unk_00;
+    WiFiPlazaLobbyState *unk_00;
     UnkStruct_ov70_0225CA20 *unk_04;
     UnkStruct_ov70_02260AD4 *unk_08;
     UnkStruct_ov70_0225C894 *unk_0C;
@@ -625,7 +625,7 @@ static const UnkStruct_ov70_0226E5A4 Unk_ov70_0226E5A4[39] = {
     },
 };
 
-UnkStruct_ov70_02269204 *ov70_02269190(UnkStruct_ov66_0222DFF8 *param0, UnkStruct_ov70_0225C894 *param1, UnkStruct_ov70_02260AD4 *param2, UnkStruct_ov70_0225CA20 *param3, enum HeapID heapID, u32 heapID2)
+UnkStruct_ov70_02269204 *ov70_02269190(WiFiPlazaLobbyState *param0, UnkStruct_ov70_0225C894 *param1, UnkStruct_ov70_02260AD4 *param2, UnkStruct_ov70_0225CA20 *param3, enum HeapID heapID, u32 heapID2)
 {
     UnkStruct_ov70_02269204 *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov70_02269204));
     memset(v0, 0, sizeof(UnkStruct_ov70_02269204));

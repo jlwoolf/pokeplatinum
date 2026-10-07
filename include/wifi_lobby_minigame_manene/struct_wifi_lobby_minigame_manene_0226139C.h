@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_0226139C_H
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_0226139C_H
 
-#include "overlay066/struct_ov66_02231134.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231134.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
 #include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_animation_decl.h"
@@ -27,7 +27,7 @@ typedef struct {
     WiFiLobbyMinigameManeneResources unk_48;
     u32 unk_78;
     WiFiLobbyMinigameIntroAnimation *unk_7C;
-    UnkStruct_ov66_02231134 *unk_80;
+    WiFiPlazaLobbyMinigameManeneArgs *unk_80;
     WiFiLobbyMinigamePlayerContext unk_84;
     WiFiLobbyMinigameIntroScreen *unk_94;
     WiFiLobbyMinigameRanking unk_98;

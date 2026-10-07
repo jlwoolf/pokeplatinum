@@ -11,7 +11,7 @@
 
 #include "nintendo_wfc/main.h"
 #include "overlay065/struct_ov65_0222F6EC.h"
-#include "overlay066/ov66_022324F0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
 
 #include "battle_regulation.h"
 #include "bg_window.h"
@@ -2688,7 +2688,7 @@ static void CommTask_ConnectingWifiBattle(void)
         if (sCommMan->commType == COMM_TYPE_WIFI_PLAZA) {
             BOOL v1;
 
-            v1 = ov66_02232714(sCommMan->unk_5C);
+            v1 = WiFiPlazaLobby_Network_InitializeRelease(sCommMan->unk_5C);
 
             if (v1 == TRUE) {
                 sCommMan->plazaLoginSuccess = TRUE;
@@ -2834,16 +2834,16 @@ BOOL CommManager_IsWifiPlazaError(void)
 /**
  * @brief Starts the wifi p2p connection
  */
-void CommManager_StartWifiP2P(UnkEnum_ov66_02232F38 param0)
+void CommManager_StartWifiP2P(WiFiPlazaLobbyNetworkGameKind param0)
 {
     GF_ASSERT(sCommMan);
     GF_ASSERT(CommManager_IsLoginBattleMatchWifi() == 1);
 
-    if (ov66_02233184(param0) == 0) {
-        ov66_02232F38(param0, 4);
+    if (WiFiPlazaLobby_Network_IsGameRecruiting(param0) == 0) {
+        WiFiPlazaLobby_Network_StartGameRecruit(param0, 4);
         CommManager_SetTask(CommTask_WaitWifiPlazaMatchServerP2P, 0);
     } else {
-        ov66_02233260(param0);
+        WiFiPlazaLobby_Network_JoinGameRecruit(param0);
         CommManager_SetTask(CommTask_WaitWifiPlazaMatchServerP2P, 0);
     }
 }
@@ -2853,11 +2853,11 @@ void CommManager_StartWifiP2P(UnkEnum_ov66_02232F38 param0)
  */
 void CommManager_EndWifiP2P(void)
 {
-    if (ov66_02233374() == 1) {
-        ov66_02233064();
+    if (WiFiPlazaLobby_Network_IsRecruiting() == 1) {
+        WiFiPlazaLobby_Network_StopGameRecruit();
     }
 
-    ov66_0223361C();
+    WiFiPlazaLobby_Network_ResetMatchmaking();
     CommManager_SetTask(CommTask_DisconnectWifiPlazaP2P, 0);
 }
 
@@ -3214,7 +3214,7 @@ static void CommTask_LogInWifiPlaza(void)
         return;
     }
 
-    result = ov66_02232804();
+    result = WiFiPlazaLobby_Network_IsReady();
 
     if (result) {
         CommManager_SetTask(CommTask_ConnectWifiPlaza, 0);
@@ -3278,19 +3278,19 @@ static BOOL CommManager_ProcessWifiPlazaDWCError(int dwcError)
  */
 static BOOL CommManager_UpdateWifiPlaza(void)
 {
-    UnkEnum_ov66_0223287C ret;
+    WiFiPlazaLobbyNetworkLobbyState ret;
     BOOL noError = TRUE;
 
-    ret = ov66_022325D8(); // Wifi Plaza update function
+    ret = WiFiPlazaLobby_Network_Process(); // Wifi Plaza update function
 
     switch (ret) {
-    case UnkEnum_ov66_0223287C_00: // none
-    case UnkEnum_ov66_0223287C_01: // login wait
-    case UnkEnum_ov66_0223287C_02: // connect
-    case UnkEnum_ov66_0223287C_03: // logout wait
+    case WiFiPlazaLobbyNetworkLobbyState_00: // none
+    case WiFiPlazaLobbyNetworkLobbyState_01: // login wait
+    case WiFiPlazaLobbyNetworkLobbyState_02: // connect
+    case WiFiPlazaLobbyNetworkLobbyState_03: // logout wait
         break;
 
-    case UnkEnum_ov66_0223287C_04: // error
+    case WiFiPlazaLobbyNetworkLobbyState_04: // error
         CommManager_SetTask(CommTask_WifiPlazaError, 0);
         noError = FALSE;
         break;
@@ -3356,7 +3356,7 @@ static BOOL CommManager_UpdateWifiPlazaMatchmaking(u32 *matchmakingRet)
  */
 static void CommTask_LogoutWifiPlaza(void)
 {
-    ov66_0223282C();
+    WiFiPlazaLobby_Network_Shutdown();
     CommManager_SetTask(CommTask_WaitLogoutWifiPlaza, 0);
 }
 
@@ -3370,7 +3370,7 @@ static void CommTask_WaitLogoutWifiPlaza(void)
     NintendoWFC_Process(0);
     CommManager_UpdateWifiPlaza();
 
-    result = ov66_02232854();
+    result = WiFiPlazaLobby_Network_IsShutDown();
 
     if (result) {
         ResetUnlock(RESET_LOCK_0x1);
@@ -3396,10 +3396,10 @@ static void CommTask_ConnectWifiPlazaP2P(void)
     BOOL ret;
     CommManager_UpdateWifiPlazaCommon();
 
-    ret = ov66_02233164();
+    ret = WiFiPlazaLobby_Network_IsRecruitStopped();
 
     if (ret == 1) {
-        ov66_0223361C();
+        WiFiPlazaLobby_Network_ResetMatchmaking();
         CommManager_SetTask(CommTask_DisconnectWifiPlazaP2P, 0);
     }
 }
@@ -3412,10 +3412,10 @@ static void CommTask_WaitWifiPlazaMatchServerP2P(void)
     BOOL ret;
     u32 v1;
 
-    ret = ov66_02233164();
+    ret = WiFiPlazaLobby_Network_IsRecruitStopped();
 
     if (ret == 1) {
-        ov66_0223361C();
+        WiFiPlazaLobby_Network_ResetMatchmaking();
         CommManager_SetTask(CommTask_DisconnectWifiPlazaP2P, 0);
         return;
     }
@@ -3429,7 +3429,7 @@ static void CommTask_WaitWifiPlazaMatchServerP2P(void)
         CommManager_SetTask(CommTask_ConnectWifiPlazaP2P, 0);
         break;
     default:
-        ov66_0223361C();
+        WiFiPlazaLobby_Network_ResetMatchmaking();
         CommManager_SetTask(CommTask_ConnectWifiPlaza, 0);
         break;
     }

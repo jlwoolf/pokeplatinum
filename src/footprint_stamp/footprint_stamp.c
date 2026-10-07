@@ -11,12 +11,12 @@
 #include "struct_decls/struct_02012744_decl.h"
 #include "struct_defs/struct_020127E8.h"
 
-#include "overlay066/ov66_0222DDF0.h"
-#include "overlay066/ov66_02231428.h"
-#include "overlay066/ov66_022324F0.h"
-#include "overlay066/struct_ov66_0223127C.h"
-#include "overlay066/struct_ov66_02232B20.h"
-#include "overlay066/struct_ov66_022589B4.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0223127C.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02232B20.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_022589B4.h"
 #include "footprint_stamp/footprint_stamp_models.h"
 #include "footprint_stamp/footprint_stamp_players.h"
 #include "footprint_stamp/footprint_stamp_comm.h"
@@ -76,7 +76,7 @@ typedef struct {
 } FootprintStampText;
 
 typedef struct FootprintStampApp_t {
-    UnkStruct_ov66_0223127C *unk_00; // Wi-Fi lobby communication data passed in as args.
+    WiFiPlazaLobbyFootprintStampArgs *unk_00; // Wi-Fi lobby communication data passed in as args.
     SaveData *saveData;
     BgConfig *unk_08;
     PaletteData *unk_0C;
@@ -346,8 +346,8 @@ int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
     MI_CpuClear8(v0, sizeof(FootprintStampApp));
 
     v0->unk_00 = ApplicationManager_Args(appMan);
-    v0->saveData = ov66_0222E0C4(v0->unk_00->unk_00);
-    v0->unk_19E0 = ov66_0222E0C8(v0->unk_00->unk_00);
+    v0->saveData = WiFiPlazaLobby_State_GetSaveData(v0->unk_00->unk_00);
+    v0->unk_19E0 = WiFiPlazaLobby_State_IsArceusRoom(v0->unk_00->unk_00);
 
     FootprintStamp_InitCommState(v0);
     FootprintStamp_LoadPartyEntries(v0->unk_00->unk_04, v0->saveData, v0->unk_8D8);
@@ -412,7 +412,7 @@ int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_118);
 
     if (v0->unk_00->unk_00 != NULL) {
-        ov66_0222E31C(v0->unk_00->unk_00, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v0->unk_00->unk_00, 1);
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
@@ -573,7 +573,7 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     default:
-        ov66_02232DC8();
+        WiFiPlazaLobby_Network_ClearSubChannelMessageHandler();
         return 1;
     }
 
@@ -588,7 +588,7 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
             FootprintStamp_UpdatePlayerSlots(v0);
         }
 
-        if (((ov66_02231760() == 1) || (ov66_0222E12C(v0->unk_00->unk_00) == 1)) && ((*param1) != 4)) {
+        if (((WiFiPlazaLobby_Time_HasWifiError() == 1) || (WiFiPlazaLobby_State_IsLobbyClosed(v0->unk_00->unk_00) == 1)) && ((*param1) != 4)) {
             if (v0->unk_28 == 1) {
                 YesNoTouchMenu_Reset(v0->unk_24);
             }
@@ -596,11 +596,11 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
             v0->unk_168.unk_00 = 0;
             v0->unk_9BC = 3;
 
-            if (ov66_02231760() == 1) {
+            if (WiFiPlazaLobby_Time_HasWifiError() == 1) {
                 (*param1) = 9;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_PINPON_sseq);
-                ov66_0222E2A4(v0->unk_00->unk_00);
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v0->unk_00->unk_00);
                 (*param1) = 6;
             }
         }
@@ -1278,7 +1278,7 @@ static void FootprintStamp_FreePipeline(G3DPipelineBuffers *param0)
 static void FootprintStamp_InitCommState(FootprintStampApp *param0)
 {
     FootprintStampCommState *v0 = &param0->unk_168;
-    v0->unk_04 = ov66_022328F0();
+    v0->unk_04 = WiFiPlazaLobby_Network_GetMyUserId();
 }
 
 static void FootprintStamp_InitEntry(FootprintStampApp *param0, FootprintStampAddPayload *param1)
@@ -1329,7 +1329,7 @@ BOOL FootprintStamp_AddEntry(FootprintStampApp *param0, const FootprintStampEntr
     v0 = FootprintStampModels_Add(param0, &param0->unk_194, param1, param0->unk_160, param0->unk_164, param0->unk_19E0);
 
     if (v0 == 1) {
-        v1 = ov66_02232B8C(param2);
+        v1 = WiFiPlazaLobby_Network_FindSubChannelPlayerIndex(param2);
 
         if (v1 != 0xffffffff) {
             if ((param0->unk_99C[v1] != param1->species) || (param0->unk_9AC[v1] != param1->stampColor)) {
@@ -1349,13 +1349,13 @@ BOOL FootprintStamp_AddEntry(FootprintStampApp *param0, const FootprintStampEntr
 
 static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
 {
-    UnkStruct_ov66_02232B20 v0;
+    WiFiPlazaLobbyNetworkPlayerIdList v0;
     int v1, v2, v3, v4;
 
     v2 = 0;
     v3 = 0;
 
-    ov66_02232B4C(&v0);
+    WiFiPlazaLobby_Network_GetSubChannelPlayerList(&v0);
 
     for (v1 = 0; v1 < 8; v1++) {
         if (param0->unk_170[v1] != v0.unk_04[v1]) {

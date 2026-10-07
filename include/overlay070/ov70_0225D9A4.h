@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_OV70_0225D9A4_H
 #define POKEPLATINUM_OV70_0225D9A4_H
 
-#include "overlay066/struct_ov66_0222DFF8_decl.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/struct_ov70_0225C894_decl.h"
 #include "overlay070/struct_ov70_0225CA20_decl.h"
 #include "overlay070/struct_ov70_0225DEE8_decl.h"
@@ -19,7 +19,7 @@
 int ov70_0225D9A4(ApplicationManager *appMan, int *param1);
 int ov70_0225DB90(ApplicationManager *appMan, int *param1);
 int ov70_0225DDF8(ApplicationManager *appMan, int *param1);
-UnkStruct_ov66_0222DFF8 *ov70_0225DEE8(UnkStruct_ov70_0225DEE8 *param0);
+WiFiPlazaLobbyState *ov70_0225DEE8(UnkStruct_ov70_0225DEE8 *param0);
 UnkStruct_ov70_02263910 *ov70_0225DEEC(UnkStruct_ov70_0225DEE8 *param0);
 UnkStruct_ov70_0225CA20 *ov70_0225DEF0(UnkStruct_ov70_0225DEE8 *param0);
 UnkStruct_ov70_02261E10 *ov70_0225DEF8(UnkStruct_ov70_0225DEE8 *param0);

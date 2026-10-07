@@ -81,7 +81,7 @@ void CommManager_LoginWifiPlaza(SaveData *saveData, const void *param1);
 void CommManager_LogoutWifiPlaza(void);
 BOOL CommManager_GetWifiPlazaLoginSuccess(void);
 BOOL CommManager_IsWifiPlazaError(void);
-void CommManager_StartWifiP2P(UnkEnum_ov66_02232F38 param0);
+void CommManager_StartWifiP2P(WiFiPlazaLobbyNetworkGameKind param0);
 void CommManager_EndWifiP2P(void);
 u32 CommManager_GetWifiP2PConnectState(void);
 void *CommManager_GetUnk00(void);

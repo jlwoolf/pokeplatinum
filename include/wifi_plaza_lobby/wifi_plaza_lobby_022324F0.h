@@ -1,0 +1,77 @@
+#ifndef POKEPLATINUM_WIFI_PLAZA_LOBBY_022324F0_H
+#define POKEPLATINUM_WIFI_PLAZA_LOBBY_022324F0_H
+
+#include <ppwlobby/ppw_lobby.h>
+
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_022324F0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02232B20.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_022589B4.h"
+
+#include "enums.h"
+#include "savedata.h"
+
+void WiFiPlazaLobby_Network_New(u32 heapID, SaveData *saveData, u32 param2, const WiFiPlazaLobbyNetworkCallbacks *param3, void *param4);
+void WiFiPlazaLobby_Network_Free(void);
+WiFiPlazaLobbyNetworkLobbyState WiFiPlazaLobby_Network_Process(void);
+PPW_LOBBY_ERROR WiFiPlazaLobby_Network_GetLastError(void);
+s32 WiFiPlazaLobby_Network_ToErrorCode(PPW_LOBBY_ERROR param0);
+BOOL WiFiPlazaLobby_Network_InitializeRelease(const void *param0);
+BOOL WiFiPlazaLobby_Network_Initialize(const void *param0, u32 param1);
+BOOL WiFiPlazaLobby_Network_IsReady(void);
+void WiFiPlazaLobby_Network_Shutdown(void);
+BOOL WiFiPlazaLobby_Network_IsShutDown(void);
+WiFiPlazaLobbyNetworkLobbyState WiFiPlazaLobby_Network_GetState(void);
+BOOL WiFiPlazaLobby_Network_ConsumeExcessFlood(void);
+s32 WiFiPlazaLobby_Network_GetMyUserId(void);
+void WiFiPlazaLobby_Network_SetMyProfile(const void *param0);
+const void *WiFiPlazaLobby_Network_GetPlayerData(s32 param0);
+void WiFiPlazaLobby_Network_GetPlayerEnterTime(s32 param0, s64 *param1);
+s32 WiFiPlazaLobby_Network_FindFirstPlayer(void);
+s32 WiFiPlazaLobby_Network_FindFirstPlayerExcept(s32 param0);
+BOOL WiFiPlazaLobby_Network_JoinSubChannel(WiFiPlazaLobbyNetworkSubChannelKind param0);
+WiFiPlazaLobbyNetworkSubChannelJoinState WiFiPlazaLobby_Network_GetSubChannelJoinState(void);
+BOOL WiFiPlazaLobby_Network_LeaveSubChannel(void);
+BOOL WiFiPlazaLobby_Network_IsSubChannelInactive(void);
+BOOL WiFiPlazaLobby_Network_HasSubChannelSpace(WiFiPlazaLobbyNetworkSubChannelKind param0);
+void WiFiPlazaLobby_Network_GetMainPlayerList(WiFiPlazaLobbyNetworkPlayerIdList *param0);
+void WiFiPlazaLobby_Network_GetSubChannelPlayerList(WiFiPlazaLobbyNetworkPlayerIdList *param0);
+u32 WiFiPlazaLobby_Network_FindMainPlayerIndex(s32 param0);
+u32 WiFiPlazaLobby_Network_FindSubChannelPlayerIndex(s32 param0);
+s32 WiFiPlazaLobby_Network_GetMainPlayerUserId(u32 param0);
+s32 WiFiPlazaLobby_Network_GetSubChannelPlayerUserId(u32 param0);
+void WiFiPlazaLobby_Network_GetCurrentTime(s64 *param0);
+u32 WiFiPlazaLobby_Network_GetScheduleValue(WiFiPlazaLobbyNetworkScheduleField param0);
+BOOL WiFiPlazaLobby_Network_UpdateLocationChannelData(void);
+BOOL WiFiPlazaLobby_Network_IsLocationChannelDataSynced(void);
+u16 WiFiPlazaLobby_Network_GetPlayerCountry(u8 param0);
+u8 WiFiPlazaLobby_Network_GetPlayerRegion(u8 param0);
+void WiFiPlazaLobby_Network_SetMainMessageHandler(const WiFiPlazaLobbyNetworkMessageHandler *param0, u32 param1, void *param2);
+void WiFiPlazaLobby_Network_SetSubChannelMessageHandler(const WiFiPlazaLobbyNetworkMessageHandler *param0, u32 param1, void *param2);
+void WiFiPlazaLobby_Network_ClearMainMessageHandler(void);
+void WiFiPlazaLobby_Network_ClearSubChannelMessageHandler(void);
+void WiFiPlazaLobby_Network_SendMainChannelMessage(u32 param0, const void *param1, u32 param2);
+void WiFiPlazaLobby_Network_SendPlayerMessage(u32 param0, s32 param1, const void *param2, u32 param3);
+void WiFiPlazaLobby_Network_SendSubChannelMessage(u32 param0, const void *param1, u32 param2);
+BOOL WiFiPlazaLobby_Network_StartGameRecruit(WiFiPlazaLobbyNetworkGameKind param0, u32 param1);
+void WiFiPlazaLobby_Network_StopGameRecruit(void);
+void WiFiPlazaLobby_Network_UpdateRecruitInfo(void);
+BOOL WiFiPlazaLobby_Network_IsCurrentRecruitUpdated(void);
+BOOL WiFiPlazaLobby_Network_IsRecruitStopped(void);
+BOOL WiFiPlazaLobby_Network_IsGameRecruiting(WiFiPlazaLobbyNetworkGameKind param0);
+BOOL WiFiPlazaLobby_Network_IsRecruitAcceptingPlayers(WiFiPlazaLobbyNetworkGameKind param0);
+u32 WiFiPlazaLobby_Network_GetRecruitOpenSlots(WiFiPlazaLobbyNetworkGameKind param0);
+u32 WiFiPlazaLobby_Network_GetRecruitPlayerCount(WiFiPlazaLobbyNetworkGameKind param0);
+BOOL WiFiPlazaLobby_Network_JoinGameRecruit(WiFiPlazaLobbyNetworkGameKind param0);
+s32 WiFiPlazaLobby_Network_GetRecruitTimeLimit(WiFiPlazaLobbyNetworkGameKind param0);
+s32 WiFiPlazaLobby_Network_GetRecruitHostUserId(void);
+BOOL WiFiPlazaLobby_Network_IsRecruiting(void);
+BOOL WiFiPlazaLobby_Network_IsVipProfile(s32 param0);
+s32 WiFiPlazaLobby_Network_GetVipKey(s32 param0);
+void WiFiPlazaLobby_Network_SubmitQuestionnaireAnswer(s32 param0);
+WiFiPlazaLobbyNetworkQuestionnaireSubmitState WiFiPlazaLobby_Network_GetQuestionnaireSubmitState(void);
+s32 WiFiPlazaLobby_Network_GetQuestionnaireField(WiFiPlazaLobbyNetworkQuestionnaireField param0);
+u16 *WiFiPlazaLobby_Network_GetQuestionnaireText(WiFiPlazaLobbyNetworkQuestionnaireText param0);
+BOOL WiFiPlazaLobby_Network_GetQuestionnaireLanguageFlag(WiFiPlazaLobbyNetworkQuestionnaireLanguage param0, u32 language);
+void WiFiPlazaLobby_Network_ResetMatchmaking(void);
+
+#endif // POKEPLATINUM_WIFI_PLAZA_LOBBY_022324F0_H
