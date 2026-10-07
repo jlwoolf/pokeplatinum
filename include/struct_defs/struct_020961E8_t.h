@@ -6,8 +6,8 @@
 #include "struct_defs/struct_0203DE34.h"
 #include "struct_defs/struct_020961E8_sub1.h"
 
-#include "overlay059/struct_ov59_021D109C.h"
-#include "overlay059/struct_ov59_021D30E0.h"
+#include "mix_records/struct_mix_records_animation.h"
+#include "mix_records/struct_mix_records_record.h"
 
 #include "bg_window.h"
 #include "menu.h"
@@ -21,7 +21,7 @@
 #include "sys_task_manager.h"
 #include "trainer_info.h"
 
-// Communication state for the Mix Records application (overlay 059). One
+// Communication state for the Mix Records application (mix_records). One
 // instance is owned by the app and registered as the active command handler
 // via CommCmd_Init. It holds the app's UI resources plus the per-player record
 // exchange state used while mixing records in the Union Room.
@@ -29,7 +29,7 @@ struct MixRecordsComm {
     BgConfig *bgConfig; // Background configuration shared with the app.
     BOOL unk_04; // Unused.
     UnkStruct_0203DE34 *appArgs; // Application arguments (save data, options, ...).
-    UnkStruct_ov59_021D109C animation; // Rotating record-icon animation state.
+    MixRecordsAnimation animation; // Rotating record-icon animation state.
     SysTask *vBlankTask; // Per-VBlank task driving the animation.
     StringTemplate *strTemplate; // Template used to format messages.
     MessageLoader *msgLoader; // Loader for the app's message bank.
@@ -70,8 +70,8 @@ struct MixRecordsComm {
     u8 unk_410; // Unused.
     u8 unk_411; // Unused.
     int unk_414; // Written but never read.
-    UnkStruct_ov59_021D30E0 localRecord; // Local player's record, sent on command 116.
-    UnkStruct_ov59_021D30E0 receivedRecords[5]; // Records received from each player.
+    MixRecordsRecord localRecord; // Local player's record, sent on command 116.
+    MixRecordsRecord receivedRecords[5]; // Records received from each player.
     int receivedRecordCount; // Number of records received so far.
     SaveData *saveData; // Save data being mixed.
     int confirmFlag; // Local player's confirm flag (command 117).
@@ -81,7 +81,7 @@ struct MixRecordsComm {
     int playerCountExceeded; // Set when more players than expected are present.
     u32 confirmedBitmap; // Server-side bitmap of confirmed players.
     u8 confirmPending; // Set while waiting for a connection-confirm reply.
-    s8 maxConnectionsMode; // How to adjust max connections (see ov59_021D28D8).
+    s8 maxConnectionsMode; // How to adjust max connections (see MixRecords_SetMaxConnections).
     u8 recordPlayerCount; // Player count captured before sending records.
     u8 disconnectSent; // Set once the disconnect command has been sent.
     s32 connectedCountSnapshot; // Connected count captured when the exchange starts.

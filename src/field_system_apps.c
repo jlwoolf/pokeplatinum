@@ -63,7 +63,7 @@
 #include "overlay007/accessory_shop.h"
 #include "overlay022/ov22_02255D44.h"
 #include "overlay022/ov22_0225B660.h"
-#include "overlay059/ov59_021D0D80.h"
+#include "mix_records/mix_records.h"
 #include "overlay092/geonet.h"
 #include "overlay101/ov101_021D0D80.h"
 #include "savedata/save_table.h"
@@ -139,7 +139,7 @@ FS_EXTERN_OVERLAY(easy_chat);
 FS_EXTERN_OVERLAY(pokedex);
 FS_EXTERN_OVERLAY(overlay22);
 FS_EXTERN_OVERLAY(union_room_drawing);
-FS_EXTERN_OVERLAY(overlay59);
+FS_EXTERN_OVERLAY(mix_records);
 FS_EXTERN_OVERLAY(overlay61);
 FS_EXTERN_OVERLAY(wifi_note);
 FS_EXTERN_OVERLAY(trainer_case);
@@ -1108,10 +1108,10 @@ const ApplicationManagerTemplate gUnionRoomDrawingAppTemplate = {
 
 // Union Room "mix records" app, launched from the Union Room scripts.
 const ApplicationManagerTemplate gMixRecordsAppTemplate = {
-    ov59_021D0D80,
-    ov59_021D0F00,
-    ov59_021D0FF4,
-    FS_OVERLAY_ID(overlay59)
+    MixRecords_Init,
+    MixRecords_Main,
+    MixRecords_Exit,
+    FS_OVERLAY_ID(mix_records)
 };
 
 void FieldSystem_OpenUnionRoomDrawingApp(FieldSystem *fieldSystem)
