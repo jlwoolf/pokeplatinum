@@ -1,14 +1,14 @@
-#ifndef POKEPLATINUM_STRUCT_OV109_021D5140_H
-#define POKEPLATINUM_STRUCT_OV109_021D5140_H
+#ifndef POKEPLATINUM_STRUCT_SPIN_TRADE_GROUP_H
+#define POKEPLATINUM_STRUCT_SPIN_TRADE_GROUP_H
 
 #include <nnsys.h>
 
 #include "struct_decls/struct_0209C194_decl.h"
 #include "struct_defs/struct_0209BDF8.h"
 
-#include "overlay109/struct_ov109_021D5140_sub1.h"
-#include "overlay109/struct_ov109_021D5140_sub2.h"
-#include "overlay109/struct_ov109_021D5140_sub3.h"
+#include "spin_trade/struct_spin_trade_group_palette_anim.h"
+#include "spin_trade/struct_spin_trade_group_save_buffer.h"
+#include "spin_trade/struct_spin_trade_group_trainer_id.h"
 
 #include "bg_window.h"
 #include "menu.h"
@@ -21,7 +21,7 @@
 #include "sys_task_manager.h"
 #include "trainer_info.h"
 
-typedef struct UnkStruct_ov109_021D5140_t {
+typedef struct SpinTradeGroup_t {
     int unk_00;
     int unk_04;
     int unk_08;
@@ -29,7 +29,7 @@ typedef struct UnkStruct_ov109_021D5140_t {
     UnionRoomComm *unk_10;
     BgConfig *unk_14;
     BOOL unk_18;
-    UnkStruct_ov109_021D5140_sub1 unk_1C;
+    SpinTradeGroupPaletteAnim unk_1C;
     SysTask *unk_30;
     StringTemplate *unk_34;
     MessageLoader *unk_38;
@@ -69,8 +69,8 @@ typedef struct UnkStruct_ov109_021D5140_t {
     u16 *unk_41C;
     u8 unk_420;
     u8 unk_421;
-    UnkStruct_ov109_021D5140_sub2 unk_424;
-    UnkStruct_ov109_021D5140_sub2 unk_FE4[5];
+    SpinTradeGroupSaveBuffer unk_424;
+    SpinTradeGroupSaveBuffer unk_FE4[5];
     u8 unk_4AA4;
     volatile int unk_4AA8;
     int unk_4AAC;
@@ -82,7 +82,7 @@ typedef struct UnkStruct_ov109_021D5140_t {
     int unk_4AB8;
     s32 unk_4ABC;
     s16 unk_4AC0;
-    UnkStruct_ov109_021D5140_sub3 unk_4AC4[5][2];
-} UnkStruct_ov109_021D5140;
+    SpinTradeGroupTrainerId unk_4AC4[5][2];
+} SpinTradeGroup;
 
-#endif // POKEPLATINUM_STRUCT_OV109_021D5140_H
+#endif // POKEPLATINUM_STRUCT_SPIN_TRADE_GROUP_H
