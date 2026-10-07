@@ -10,12 +10,12 @@
 #include "struct_defs/struct_0207E060.h"
 
 #include "nintendo_wfc/main.h"
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/ov63_0222CCE4.h"
-#include "overlay063/struct_ov63_0222BE18_decl.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CD2C.h"
-#include "overlay063/struct_ov63_0222CE44.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222CCE4.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BE18_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CD2C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CE44.h"
 #include "overlay065/struct_ov65_022366E4.h"
 #include "overlay065/struct_ov65_02236744_decl.h"
 #include "overlay065/struct_ov65_02236760.h"
@@ -58,7 +58,7 @@
 #include "wifi_comm.h"
 #include "vram_transfer.h"
 
-FS_EXTERN_OVERLAY(overlay63);
+FS_EXTERN_OVERLAY(wifi_2d_char);
 
 typedef struct {
     WFCStatusBuffer *unk_00;
@@ -86,8 +86,8 @@ typedef struct {
 } UnkStruct_ov65_02236794;
 
 typedef struct {
-    UnkStruct_ov63_0222BEC0 *unk_00;
-    UnkStruct_ov63_0222CE44 *unk_04;
+    WiFi2DCharObject *unk_00;
+    WiFi2DCharRenderObject *unk_04;
     u16 unk_08;
     s16 unk_0A;
 } UnkStruct_ov65_02237908;
@@ -104,8 +104,8 @@ typedef struct {
     SpriteList *unk_18;
     G2dRenderer unk_1C;
     SpriteResourceCollection *unk_1A8[4];
-    UnkStruct_ov63_0222BE18 *unk_1B8;
-    UnkStruct_ov63_0222CD2C *unk_1BC;
+    WiFi2DCharObjectManager *unk_1B8;
+    WiFi2DCharRenderer *unk_1BC;
     UnkStruct_ov65_02237908 unk_1C0[4];
     Window unk_1F0;
     Window unk_200;
@@ -386,7 +386,7 @@ int ov65_0223648C(ApplicationManager *appMan, int *param1)
     WiFiCommAppArgs *v1 = ApplicationManager_Args(appMan);
     BOOL v2;
 
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay63), 2);
+    Overlay_LoadByID(FS_OVERLAY_ID(wifi_2d_char), 2);
 
     v2 = CommManager_IsConnectedToWifi();
     GF_ASSERT(v2 == 1);
@@ -503,7 +503,7 @@ int ov65_0223668C(ApplicationManager *appMan, int *param1)
     ApplicationManager_FreeData(appMan);
     Heap_Destroy(HEAP_ID_97);
     Heap_Destroy(HEAP_ID_96);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay63));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
 
     return 1;
 }
@@ -848,16 +848,16 @@ static void ov65_02236D50(UnkStruct_ov65_02236840 *param0, u32 heapID)
         param0->unk_1A8[v0] = SpriteResourceCollection_New(4, v0, heapID);
     }
 
-    param0->unk_1B8 = ov63_0222BE18(4, heapID);
-    param0->unk_1BC = ov63_0222CCE4(param0->unk_18, NULL, 4, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
+    param0->unk_1B8 = WiFi2DCharObjectManager_New(4, heapID);
+    param0->unk_1BC = WiFi2DCharRenderer_New(param0->unk_18, NULL, 4, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
 }
 
 static void ov65_02236E04(UnkStruct_ov65_02236840 *param0)
 {
     int v0;
 
-    ov63_0222CD9C(param0->unk_1BC);
-    ov63_0222BE58(param0->unk_1B8);
+    WiFi2DCharRenderer_Free(param0->unk_1BC);
+    WiFi2DCharObjectManager_Free(param0->unk_1B8);
 
     SpriteList_Delete(param0->unk_18);
 
@@ -1402,14 +1402,14 @@ static void ov65_022376D0(UnkStruct_ov65_022367A8 *param0, u32 param1, u32 heapI
         }
     }
 
-    param0->unk_30.unk_1C0[param1].unk_00 = ov63_0222BEC0(param0->unk_30.unk_1B8, &v0);
+    param0->unk_30.unk_1C0[param1].unk_00 = WiFi2DCharObjectManager_AddObject(param0->unk_30.unk_1B8, &v0);
 
-    if (ov63_0222CE18(param0->unk_30.unk_1BC, v0.unk_0A) == 0) {
-        ov63_0222CDE8(param0->unk_30.unk_1BC, v0.unk_0A, 2, heapID);
+    if (WiFi2DCharRenderer_IsSpeciesLoaded(param0->unk_30.unk_1BC, v0.unk_0A) == 0) {
+        WiFi2DCharRenderer_LoadSpecies(param0->unk_30.unk_1BC, v0.unk_0A, 2, heapID);
     }
 
-    param0->unk_30.unk_1C0[param1].unk_04 = ov63_0222CE44(param0->unk_30.unk_1BC, param0->unk_30.unk_1C0[param1].unk_00, 0, heapID);
-    ov63_0222D008(param0->unk_30.unk_1C0[param1].unk_04, 0);
+    param0->unk_30.unk_1C0[param1].unk_04 = WiFi2DCharRenderer_AddObject(param0->unk_30.unk_1BC, param0->unk_30.unk_1C0[param1].unk_00, 0, heapID);
+    WiFi2DCharRenderer_SetObjectVisible(param0->unk_30.unk_1C0[param1].unk_04, 0);
     param0->unk_30.unk_1C0[param1].unk_08++;
 }
 
@@ -1421,13 +1421,13 @@ static void ov65_022377A4(UnkStruct_ov65_022367A8 *param0)
         Unk_ov65_02239A2C[param0->unk_30.unk_1C0[v0].unk_08](param0, &param0->unk_30.unk_1C0[v0]);
     }
 
-    ov63_0222BE84(param0->unk_30.unk_1B8);
-    ov63_0222CEE4(param0->unk_30.unk_1BC);
+    WiFi2DCharObjectManager_Update(param0->unk_30.unk_1B8);
+    WiFi2DCharRenderer_UpdateAll(param0->unk_30.unk_1BC);
 }
 
 static void ov65_022377E8(UnkStruct_ov65_022367A8 *param0)
 {
-    ov63_0222CE24(param0->unk_30.unk_1BC);
+    WiFi2DCharRenderer_UnloadAllSpecies(param0->unk_30.unk_1BC);
     memset(param0->unk_30.unk_1C0, 0, sizeof(UnkStruct_ov65_02237908) * 4);
 }
 
@@ -1503,24 +1503,24 @@ static void ov65_0223790C(UnkStruct_ov65_022367A8 *param0, UnkStruct_ov65_022379
 {
     u32 v0;
 
-    ov63_0222CFA4(param1->unk_04, 0);
-    ov63_0222CFA8(param1->unk_04);
-    ov63_0222D008(param1->unk_04, 1);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 0);
+    WiFi2DCharRenderer_ResetObjectAnim(param1->unk_04);
+    WiFi2DCharRenderer_SetObjectVisible(param1->unk_04, 1);
 
     param1->unk_08 = 2;
-    v0 = ov63_0222BF90(param1->unk_00, 6);
+    v0 = WiFi2DCharObject_GetField(param1->unk_00, 6);
     param1->unk_0A = 16 + Unk_ov65_02239A20[v0];
 }
 
 static void ov65_02237940(UnkStruct_ov65_022367A8 *param0, UnkStruct_ov65_02237908 *param1)
 {
-    ov63_0222CFB4(param1->unk_04);
+    WiFi2DCharRenderer_UpdateObjectAnim(param1->unk_04);
 
     param1->unk_0A--;
 
     if (param1->unk_0A <= 0) {
-        ov63_0222CFC0(param1->unk_04);
-        ov63_0222CFA4(param1->unk_04, 1);
+        WiFi2DCharRenderer_RefreshObject(param1->unk_04);
+        WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 1);
         param1->unk_08 = 3;
     }
 }

@@ -3,7 +3,7 @@
 
 #include <nitro/fx/fx.h>
 
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "overlay070/funcptr_ov70_02261C60.h"
 #include "overlay070/struct_ov70_02260BB8_decl.h"
 #include "overlay070/struct_ov70_02260E8C_decl.h"
@@ -32,8 +32,8 @@ BOOL ov70_02260F88(const UnkStruct_ov70_02260E8C *param0);
 UnkStruct_ov70_022610B8 *ov70_02260F90(UnkStruct_ov70_02260BB8 *param0, int param1, u32 param2, u32 param3);
 void ov70_02261058(UnkStruct_ov70_02260BB8 *param0, UnkStruct_ov70_022610B8 *param1);
 int ov70_022610B8(const UnkStruct_ov70_022610B8 *param0);
-void ov70_022610BC(UnkStruct_ov70_022610B8 *param0, UnkStruct_ov63_0222CC3C param1);
-UnkStruct_ov63_0222CC3C ov70_022610E4(const UnkStruct_ov70_022610B8 *param0);
+void ov70_022610BC(UnkStruct_ov70_022610B8 *param0, WiFi2DCharPosition param1);
+WiFi2DCharPosition ov70_022610E4(const UnkStruct_ov70_022610B8 *param0);
 void ov70_0226110C(UnkStruct_ov70_02260BB8 *param0, UnkStruct_ov70_022610B8 *param1, int param2, int param3);
 void ov70_0226111C(UnkStruct_ov70_02260BB8 *param0, UnkStruct_ov70_022610B8 *param1, int param2, int param3, UnkFuncPtr_ov70_02261C60 param4);
 void ov70_02261220(UnkStruct_ov70_02260BB8 *param0, UnkStruct_ov70_022610B8 *param1, int param2);

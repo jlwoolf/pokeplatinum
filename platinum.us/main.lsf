@@ -1150,28 +1150,28 @@ Overlay overlay62
 	Object main.nef.p/src_overlay062_ov62_02248408.c.o
 }
 
-Overlay overlay63
+Overlay wifi_2d_char
 {
 	After http
-	Object main.nef.p/src_overlay063_ov63_0222AE60.c.o
-	Object main.nef.p/src_overlay063_ov63_0222BCE8.c.o
-	Object main.nef.p/src_overlay063_ov63_0222BE18.c.o
-	Object main.nef.p/src_overlay063_ov63_0222CA88.c.o
-	Object main.nef.p/src_overlay063_ov63_0222CCE4.c.o
-	Object main.nef.p/src_overlay063_ov63_0222D160.c.o
-	Object main.nef.p/src_overlay063_ov63_0222D1C0.c.o
-	Object main.nef.p/src_overlay063_ov63_0222D77C.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222BCE8.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222BE18.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222CA88.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222CCE4.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222D160.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222D1C0.c.o
+	Object main.nef.p/src_wifi_2d_char_wifi_2d_char_0222D77C.c.o
 }
 
 Overlay wifi_note
 {
-	After overlay63
+	After wifi_2d_char
 	Object main.nef.p/src_wifi_note_wifi_note.c.o
 }
 
 Overlay overlay65
 {
-	After overlay63
+	After wifi_2d_char
 	Object main.nef.p/src_overlay065_ov65_0222DCE0.c.o
 	Object main.nef.p/src_overlay065_ov65_02235060.c.o
 	Object main.nef.p/src_overlay065_ov65_02236474.c.o
@@ -1180,7 +1180,7 @@ Overlay overlay65
 
 Overlay wifi_plaza_lobby
 {
-	After overlay63
+	After wifi_2d_char
 	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby.c.o
 	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_0222DDF0.c.o
 	Object main.nef.p/src_wifi_plaza_lobby_wifi_plaza_lobby_02230C44.c.o
@@ -1526,12 +1526,12 @@ Overlay diploma
 
 Overlay dummy7
 {
-	After overlay63
+	After wifi_2d_char
 }
 
 Overlay overlay104
 {
-	After overlay63
+	After wifi_2d_char
 	Object main.nef.p/src_overlay104_frontier_opponents.c.o
 	Object main.nef.p/src_overlay104_frontier_script_manager.c.o
 	Object main.nef.p/src_overlay104_frontier_script_context.c.o

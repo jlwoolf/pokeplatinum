@@ -3,7 +3,7 @@
 
 #include "constants/heap.h"
 
-#include "overlay063/struct_ov63_0222BCE8_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BCE8_decl.h"
 #include "overlay070/struct_ov70_0225C894_decl.h"
 
 UnkStruct_ov70_0225C894 *ov70_0225C858(enum HeapID heapID);
@@ -17,6 +17,6 @@ BOOL ov70_0225C930(u32 param0);
 BOOL ov70_0225C950(u32 param0);
 BOOL ov70_0225C970(u32 param0);
 BOOL ov70_0225C990(u32 param0);
-const UnkStruct_ov63_0222BCE8 *ov70_0225C9B0(const UnkStruct_ov70_0225C894 *param0);
+const WiFi2DCharGrid *ov70_0225C9B0(const UnkStruct_ov70_0225C894 *param0);
 
 #endif // POKEPLATINUM_OV70_0225C858_H

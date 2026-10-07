@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 
 #include "easy3d.h"
 #include "easy3d_object.h"
@@ -13,17 +13,17 @@
 #include "narc.h"
 #include "resource_collection.h"
 
-void ov70_0225C700(const UnkStruct_ov63_0222CC3C *param0, VecFx32 *param1)
+void ov70_0225C700(const WiFi2DCharPosition *param0, VecFx32 *param1)
 {
-    param1->x = param0->unk_00 * (FX32_ONE);
-    param1->z = param0->unk_02 * (FX32_ONE);
+    param1->x = param0->x * (FX32_ONE);
+    param1->z = param0->y * (FX32_ONE);
     param1->y = (FX32_CONST(0));
 }
 
-void ov70_0225C714(const VecFx32 *param0, UnkStruct_ov63_0222CC3C *param1)
+void ov70_0225C714(const VecFx32 *param0, WiFi2DCharPosition *param1)
 {
-    param1->unk_00 = param0->x / (FX32_ONE);
-    param1->unk_02 = param0->z / (FX32_ONE);
+    param1->x = param0->x / (FX32_ONE);
+    param1->y = param0->z / (FX32_ONE);
 }
 
 void ov70_0225C730(void **param0, NARC *param1, u32 param2, u32 heapID)

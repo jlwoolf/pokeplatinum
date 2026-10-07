@@ -4,7 +4,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/ov63_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231428.h"
@@ -557,7 +557,7 @@ BOOL ov70_02266E9C(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
 
             v11 = ov70_0225CD60(v8, 4);
             v12 = ov70_0225CD60(v10, 6);
-            v12 = ov63_0222C0AC(v12);
+            v12 = WiFi2DChar_DirectionOpposite(v12);
 
             WiFiPlazaLobby_State_ResetChat(v1);
 

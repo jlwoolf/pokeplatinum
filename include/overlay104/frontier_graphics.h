@@ -3,15 +3,15 @@
 
 #include "struct_decls/battle_frontier_decl.h"
 
-#include "overlay063/struct_ov63_0222BCE8_decl.h"
-#include "overlay063/struct_ov63_0222BE18_decl.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CD2C.h"
-#include "overlay063/struct_ov63_0222CE44.h"
-#include "overlay063/struct_ov63_0222D160.h"
-#include "overlay063/struct_ov63_0222D1C0_decl.h"
-#include "overlay063/struct_ov63_0222D77C_decl.h"
-#include "overlay063/struct_ov63_0222D848_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BCE8_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BE18_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CD2C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CE44.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D160.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D1C0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D77C_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D848_decl.h"
 #include "overlay104/frontier_particle_system.h"
 #include "overlay104/struct_ov104_0223319C.h"
 #include "overlay104/struct_ov104_022331E8.h"
@@ -33,14 +33,14 @@ typedef struct FrontierGraphics {
     BattleFrontier *frontier;
     G3DPipelineBuffers *g3dPipeline;
     FrontierParticleSystem *particleSys;
-    UnkStruct_ov63_0222BE18 *unk_14;
-    UnkStruct_ov63_0222BCE8 *unk_18;
-    UnkStruct_ov63_0222D160 unk_1C;
-    UnkStruct_ov63_0222CD2C *unk_20;
-    UnkStruct_ov63_0222D1C0 *unk_24;
-    UnkStruct_ov63_0222D1C0 *unk_28;
-    UnkStruct_ov63_0222D848 *unk_2C;
-    UnkStruct_ov63_0222D77C *unk_30;
+    WiFi2DCharObjectManager *unk_14;
+    WiFi2DCharGrid *unk_18;
+    WiFi2DCharViewOffset unk_1C;
+    WiFi2DCharRenderer *unk_20;
+    WiFi2DCharBackground *unk_24;
+    WiFi2DCharBackground *unk_28;
+    WiFi2DCharEventQueue *unk_2C;
+    WiFi2DCharMoveQueue *unk_30;
     SpriteSystem *spriteSystem;
     SpriteManager *spriteMan;
     UnkStruct_ov104_0223D3B0_1 unk_3C;
@@ -66,9 +66,9 @@ void ov104_0223C634(FrontierGraphics *param0);
 void ov104_0223C688(FrontierGraphics *param0);
 void ov104_0223D0EC(FrontierGraphics *param0, const FrontierObjectGfx *param1);
 void ov104_0223D148(FrontierGraphics *param0, int param1);
-UnkStruct_ov63_0222BEC0 *ov104_0223D180(FrontierGraphics *param0, const FrontierObjectParams *param1, int param2);
-void ov104_0223D200(FrontierGraphics *param0, UnkStruct_ov63_0222BEC0 *param1);
-void ov104_0223D258(FrontierGraphics *param0, u16 param1, UnkStruct_ov63_0222BEC0 **param2, UnkStruct_ov63_0222CE44 **param3);
+WiFi2DCharObject *ov104_0223D180(FrontierGraphics *param0, const FrontierObjectParams *param1, int param2);
+void ov104_0223D200(FrontierGraphics *param0, WiFi2DCharObject *param1);
+void ov104_0223D258(FrontierGraphics *param0, u16 param1, WiFi2DCharObject **param2, WiFi2DCharRenderObject **param3);
 void ov104_0223D29C(FrontierGraphics *param0, u16 param1);
 void ov104_0223D2CC(FrontierGraphics *param0, u16 param1);
 ManagedSprite *ov104_0223D2FC(FrontierGraphics *param0, u16 param1, u16 param2);

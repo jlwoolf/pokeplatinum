@@ -3,17 +3,17 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/ov63_0222BCE8.h"
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/ov63_0222CA88.h"
-#include "overlay063/ov63_0222CCE4.h"
-#include "overlay063/ov63_0222D160.h"
-#include "overlay063/ov63_0222D1C0.h"
-#include "overlay063/ov63_0222D77C.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CC3C.h"
-#include "overlay063/struct_ov63_0222CCB8.h"
-#include "overlay063/struct_ov63_0222D894.h"
+#include "wifi_2d_char/wifi_2d_char_0222BCE8.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222CA88.h"
+#include "wifi_2d_char/wifi_2d_char_0222CCE4.h"
+#include "wifi_2d_char/wifi_2d_char_0222D160.h"
+#include "wifi_2d_char/wifi_2d_char_0222D1C0.h"
+#include "wifi_2d_char/wifi_2d_char_0222D77C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D894.h"
 #include "overlay065/ov65_02236474.h"
 #include "overlay065/struct_ov65_02235130.h"
 #include "overlay065/struct_ov65_022354D8.h"
@@ -75,7 +75,7 @@ static void ov65_02235A94(UnkStruct_ov65_022358CC *param0, u32 param1);
 static void ov65_02235B14(UnkStruct_ov65_022358CC *param0);
 static void ov65_02235B30(UnkStruct_ov65_02235130 *param0);
 static void ov65_02235B78(UnkStruct_ov65_02235130 *param0);
-static void ov65_02235B88(UnkStruct_ov65_02235130 *param0, UnkStruct_ov63_0222CC3C param1, u32 param2);
+static void ov65_02235B88(UnkStruct_ov65_02235130 *param0, WiFi2DCharPosition param1, u32 param2);
 static void ov65_02235BD8(UnkStruct_ov65_02235130 *param0);
 static void ov65_02235C64(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_02235C64 *param1, u32 param2);
 static void ov65_02235D08(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_02235C64 *param1);
@@ -129,7 +129,7 @@ static const u16 Unk_ov65_02238BC8[2] = {
 
 void ov65_02235060(UnkStruct_ov65_02235130 *param0, enum HeapID heapID, NARC *param2, BgConfig *param3, u32 param4, u32 param5)
 {
-    UnkStruct_ov63_0222CC3C v0;
+    WiFi2DCharPosition v0;
     u32 v1;
 
     memset(param0, 0, sizeof(UnkStruct_ov65_02235130));
@@ -143,29 +143,29 @@ void ov65_02235060(UnkStruct_ov65_02235130 *param0, enum HeapID heapID, NARC *pa
     ov65_02235918(param0->unk_10, heapID);
 
     v0 = ov65_02236474(v1);
-    param0->unk_748 = ov63_0222BCE8(v0.unk_00, v0.unk_02, heapID);
-    ov63_0222BD50(param0->unk_748, ov65_02236480(v1));
-    param0->unk_74C = ov63_0222BE18(48, heapID);
+    param0->unk_748 = WiFi2DCharGrid_New(v0.x, v0.y, heapID);
+    WiFi2DCharGrid_SetTiles(param0->unk_748, ov65_02236480(v1));
+    param0->unk_74C = WiFi2DCharObjectManager_New(48, heapID);
 
     ov65_022357E8(param0, param4, heapID);
-    ov63_0222D19C(&param0->unk_754);
+    WiFi2DCharViewOffset_Reset(&param0->unk_754);
     ov65_0223582C(param0, heapID, param2, v1);
     ov65_02235920(param0->unk_10, heapID, param2);
     ov65_022362B0(param0, &param0->unk_734, param2);
 
-    param0->unk_75C = ov63_0222D848(128, heapID);
+    param0->unk_75C = WiFi2DCharEventQueue_New(128, heapID);
     param0->unk_00 = 1;
 }
 
 void ov65_02235130(UnkStruct_ov65_02235130 *param0)
 {
-    ov63_0222D880(param0->unk_75C);
+    WiFi2DCharEventQueue_Free(param0->unk_75C);
     ov65_0223586C(param0);
     ov65_022362EC(param0, &param0->unk_734);
     ov65_0223560C(param0);
     ov65_0223581C(param0);
-    ov63_0222BE58(param0->unk_74C);
-    ov63_0222BD30(param0->unk_748);
+    WiFi2DCharObjectManager_Free(param0->unk_74C);
+    WiFi2DCharGrid_Free(param0->unk_748);
     ov65_022358CC(&param0->unk_14);
     ov65_0223591C(param0->unk_10);
 
@@ -181,12 +181,12 @@ u32 ov65_02235198(UnkStruct_ov65_02235130 *param0)
 {
     BOOL v0;
 
-    ov63_0222BE84(param0->unk_74C);
+    WiFi2DCharObjectManager_Update(param0->unk_74C);
     ov65_0223573C(param0);
     ov65_022356E8(param0);
-    ov63_0222D160(&param0->unk_754, param0->unk_730->unk_00);
-    ov63_0222D228(param0->unk_758, &param0->unk_754);
-    ov63_0222CEE4(param0->unk_750);
+    WiFi2DCharViewOffset_SetFromObject(&param0->unk_754, param0->unk_730->unk_00);
+    WiFi2DCharBackground_Update(param0->unk_758, &param0->unk_754);
+    WiFi2DCharRenderer_UpdateAll(param0->unk_750);
     ov65_02235778(param0);
     ov65_02235B78(param0);
 
@@ -228,31 +228,31 @@ u8 ov65_02235254(const UnkStruct_ov65_02235130 *param0)
 
 u32 ov65_02235270(const UnkStruct_ov65_02235130 *param0)
 {
-    UnkStruct_ov63_0222CC3C v0;
+    WiFi2DCharPosition v0;
 
     GF_ASSERT(param0->unk_730 != NULL);
 
-    v0 = ov63_0222C0E4(param0->unk_730->unk_00);
-    return ov63_0222BDE4(param0->unk_748, (v0.unk_00) / 16, (v0.unk_02) / 16);
+    v0 = WiFi2DCharObject_GetPosition(param0->unk_730->unk_00);
+    return WiFi2DCharGrid_GetTileFlags(param0->unk_748, (v0.x) / 16, (v0.y) / 16);
 }
 
 u32 ov65_022352CC(const UnkStruct_ov65_02235130 *param0)
 {
-    UnkStruct_ov63_0222CC3C v0;
+    WiFi2DCharPosition v0;
 
     GF_ASSERT(param0->unk_730 != NULL);
 
-    v0 = ov63_0222C0E4(param0->unk_730->unk_00);
-    return ov63_0222BDE4(param0->unk_748, (v0.unk_00) / 16, ((v0.unk_02) / 16) + 1);
+    v0 = WiFi2DCharObject_GetPosition(param0->unk_730->unk_00);
+    return WiFi2DCharGrid_GetTileFlags(param0->unk_748, (v0.x) / 16, ((v0.y) / 16) + 1);
 }
 
 void ov65_0223532C(UnkStruct_ov65_02235130 *param0, const UnkStruct_ov65_022354D8 *param1)
 {
-    UnkStruct_ov63_0222CC3C v0;
+    WiFi2DCharPosition v0;
     u32 v1;
 
-    v0 = ov63_0222C0E4(param1->unk_00);
-    v1 = ov63_0222D014(param1->unk_04);
+    v0 = WiFi2DCharObject_GetPosition(param1->unk_00);
+    v1 = WiFi2DCharRenderer_GetObjectPriority(param1->unk_04);
     v1--;
 
     ov65_02235B88(param0, v0, v1 - 1);
@@ -286,8 +286,8 @@ UnkStruct_ov65_022354D8 *ov65_02235380(UnkStruct_ov65_02235130 *param0, u32 para
     ov65_02235DE4(param0, v0, &v1, 0, param1, 0, 0);
     ov65_02235E48(param0, v0);
     ov65_02235DAC(param0, v0, 1);
-    ov63_0222D160(&param0->unk_754, param0->unk_730->unk_00);
-    ov63_0222D228(param0->unk_758, &param0->unk_754);
+    WiFi2DCharViewOffset_SetFromObject(&param0->unk_754, param0->unk_730->unk_00);
+    WiFi2DCharBackground_Update(param0->unk_758, &param0->unk_754);
 
     return v0;
 }
@@ -296,16 +296,16 @@ UnkStruct_ov65_022354D8 *ov65_022353EC(UnkStruct_ov65_02235130 *param0, u32 para
 {
     UnkStruct_ov65_022354D8 *v0;
     UnkStruct_ov65_02235C64 v1;
-    UnkStruct_ov63_0222CC3C v2;
+    WiFi2DCharPosition v2;
 
     v0 = ov65_02235D7C(param0);
 
     ov65_02235C64(param0, &v1, param2 - 1);
 
     if (param0->unk_730) {
-        v2 = ov63_0222C0E4(param0->unk_730->unk_00);
+        v2 = WiFi2DCharObject_GetPosition(param0->unk_730->unk_00);
 
-        if ((v2.unk_00 == v1.unk_00) && (v2.unk_02 == v1.unk_02)) {
+        if ((v2.x == v1.unk_00) && (v2.y == v1.unk_02)) {
             return NULL;
         }
     }
@@ -319,57 +319,57 @@ UnkStruct_ov65_022354D8 *ov65_022353EC(UnkStruct_ov65_02235130 *param0, u32 para
 
 void ov65_02235478(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
 {
-    s32 v0 = ov63_0222BF90(param1->unk_00, 6);
+    s32 v0 = WiFi2DCharObject_GetField(param1->unk_00, 6);
 
     param1->unk_10 = ov65_022361B0;
     param1->unk_18 = ov65_02235EF8;
     param1->unk_0C = 2;
     param1->unk_08 = 0;
 
-    ov63_0222CFA4(param1->unk_04, 0);
-    ov63_0222CFA8(param1->unk_04);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 0);
+    WiFi2DCharRenderer_ResetObjectAnim(param1->unk_04);
     ov65_02236250(param0, 4, param1);
 }
 
 void ov65_022354B8(UnkStruct_ov65_022354D8 *param0)
 {
-    ov63_0222CECC(param0->unk_04);
-    ov63_0222BF08(param0->unk_00);
+    WiFi2DCharRenderer_RemoveObject(param0->unk_04);
+    WiFi2DCharObject_Reset(param0->unk_00);
 
     memset(param0, 0, sizeof(UnkStruct_ov65_022354D8));
 }
 
 u8 ov65_022354D8(const UnkStruct_ov65_022354D8 *param0)
 {
-    return ov63_0222BF90(param0->unk_00, 4);
+    return WiFi2DCharObject_GetField(param0->unk_00, 4);
 }
 
 int ov65_022354E8(const UnkStruct_ov65_022354D8 *param0)
 {
-    int v0 = ov63_0222BF90(param0->unk_00, 6);
-    return ov63_0222C0AC(v0);
+    int v0 = WiFi2DCharObject_GetField(param0->unk_00, 6);
+    return WiFi2DChar_DirectionOpposite(v0);
 }
 
 void ov65_022354F8(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1, int param2)
 {
     u32 v0;
-    UnkStruct_ov63_0222CC3C v1;
+    WiFi2DCharPosition v1;
 
     param1->unk_14 = param1->unk_10;
     param1->unk_10 = ov65_0223622C;
     param1->unk_0E = param1->unk_0C;
     param1->unk_0C = 5;
 
-    v0 = ov63_0222BF90(param1->unk_00, 4);
+    v0 = WiFi2DCharObject_GetField(param1->unk_00, 4);
 
     ov65_02236230(param0, 0, param2, v0);
-    ov63_0222CFA4(param1->unk_04, 0);
-    ov63_0222D020(param1->unk_04, param2);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 0);
+    WiFi2DCharRenderer_SetObjectAnim(param1->unk_04, param2);
 
-    v1.unk_00 = ov63_0222BF90(param1->unk_00, 0);
-    v1.unk_02 = ov63_0222BF90(param1->unk_00, 1);
+    v1.x = WiFi2DCharObject_GetField(param1->unk_00, 0);
+    v1.y = WiFi2DCharObject_GetField(param1->unk_00, 1);
 
-    ov63_0222CFE0(param1->unk_04, v1);
+    WiFi2DCharRenderer_SetObjectPosition(param1->unk_04, v1);
 }
 
 void ov65_0223556C(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
@@ -386,7 +386,7 @@ void ov65_0223556C(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *par
     param1->unk_14 = NULL;
     param1->unk_0C = param1->unk_0E;
 
-    ov63_0222CFA4(param1->unk_04, 1);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 1);
 }
 
 void ov65_0223558C(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1, int param2)
@@ -440,7 +440,7 @@ static void ov65_0223560C(UnkStruct_ov65_02235130 *param0)
 
 static BOOL ov65_02235634(const UnkStruct_ov65_02235130 *param0)
 {
-    s32 v0 = ov63_0222BF90(param0->unk_730->unk_00, 5);
+    s32 v0 = WiFi2DCharObject_GetField(param0->unk_730->unk_00, 5);
 
     if (v0 == 0) {
         return 1;
@@ -452,13 +452,13 @@ static BOOL ov65_02235634(const UnkStruct_ov65_02235130 *param0)
 static BOOL ov65_02235654(const UnkStruct_ov65_02235130 *param0)
 {
     u32 v0;
-    UnkStruct_ov63_0222CC3C v1;
+    WiFi2DCharPosition v1;
     int v2;
 
-    v1 = ov63_0222C0E4(param0->unk_730->unk_00);
-    v2 = ov63_0222BF90(param0->unk_730->unk_00, 6);
-    v1 = ov63_0222C078(v1, v2);
-    v0 = ov63_0222BDE4(param0->unk_748, (v1.unk_00) / 16, (v1.unk_02) / 16);
+    v1 = WiFi2DCharObject_GetPosition(param0->unk_730->unk_00);
+    v2 = WiFi2DCharObject_GetField(param0->unk_730->unk_00, 6);
+    v1 = WiFi2DCharPosition_OffsetByDirection(v1, v2);
+    v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_748, (v1.x) / 16, (v1.y) / 16);
 
     if (v2 == 0) {
         if (v0 == 2) {
@@ -471,15 +471,15 @@ static BOOL ov65_02235654(const UnkStruct_ov65_02235130 *param0)
 
 static void ov65_022356E8(UnkStruct_ov65_02235130 *param0)
 {
-    UnkStruct_ov63_0222D894 v0;
-    UnkStruct_ov63_0222CCB8 v1;
+    WiFi2DCharEvent v0;
+    WiFi2DCharMoveRequest v1;
     BOOL v2;
 
-    while (ov63_0222D8D0(param0->unk_75C, &v0) == 1) {
-        v2 = ov63_0222CA88(param0->unk_748, param0->unk_74C, &v0, &v1);
+    while (WiFi2DCharEventQueue_Pop(param0->unk_75C, &v0) == 1) {
+        v2 = WiFi2DCharAI_ChooseMove(param0->unk_748, param0->unk_74C, &v0, &v1);
 
         if (v2 == 1) {
-            ov63_0222BE70(param0->unk_74C, &v1);
+            WiFi2DCharObjectManager_StartMove(param0->unk_74C, &v1);
         }
     }
 }
@@ -513,10 +513,10 @@ static void ov65_02235778(UnkStruct_ov65_02235130 *param0)
 
 static const UnkStruct_ov65_022354D8 *ov65_022357A8(const UnkStruct_ov65_02235130 *param0, const UnkStruct_ov65_022354D8 *param1, int param2)
 {
-    const UnkStruct_ov63_0222BEC0 *v0;
+    const WiFi2DCharObject *v0;
     int v1;
 
-    v0 = ov63_0222C1C4(param1->unk_00, param0->unk_74C, param2);
+    v0 = WiFi2DCharObjectManager_FindObjectAtOffset(param1->unk_00, param0->unk_74C, param2);
 
     if (v0 != NULL) {
         for (v1 = 0; v1 < 48; v1++) {
@@ -533,14 +533,14 @@ static void ov65_022357E8(UnkStruct_ov65_02235130 *param0, u32 param1, enum Heap
 {
     int v0;
 
-    param0->unk_750 = ov63_0222CD2C(param0->unk_14.unk_00, NULL, 48, param1, 0, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
+    param0->unk_750 = WiFi2DCharRenderer_NewWithShadow(param0->unk_14.unk_00, NULL, 48, param1, 0, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
 
-    ov63_0222CE30(param0->unk_750, 2, heapID);
+    WiFi2DCharRenderer_LoadShadowResources(param0->unk_750, 2, heapID);
 }
 
 static void ov65_0223581C(UnkStruct_ov65_02235130 *param0)
 {
-    ov63_0222CD9C(param0->unk_750);
+    WiFi2DCharRenderer_Free(param0->unk_750);
 }
 
 static void ov65_0223582C(UnkStruct_ov65_02235130 *param0, enum HeapID heapID, NARC *param2, u32 param3)
@@ -560,12 +560,12 @@ static void ov65_0223582C(UnkStruct_ov65_02235130 *param0, enum HeapID heapID, N
     };
 
     v0.unk_09 += param3;
-    param0->unk_758 = ov63_0222D1C0(&param0->unk_14.unk_04, param0->unk_10, &v0, heapID);
+    param0->unk_758 = WiFi2DCharBackground_New(&param0->unk_14.unk_04, param0->unk_10, &v0, heapID);
 }
 
 static void ov65_0223586C(UnkStruct_ov65_02235130 *param0)
 {
-    ov63_0222D214(param0->unk_758);
+    WiFi2DCharBackground_Free(param0->unk_758);
 }
 
 static void ov65_0223587C(UnkStruct_ov65_022358CC *param0, enum HeapID heapID, NARC *param2)
@@ -717,15 +717,15 @@ static void ov65_02235B78(UnkStruct_ov65_02235130 *param0)
     Sprite_SetDrawFlag(param0->unk_14.unk_1A0.unk_34, FALSE);
 }
 
-static void ov65_02235B88(UnkStruct_ov65_02235130 *param0, UnkStruct_ov63_0222CC3C param1, u32 param2)
+static void ov65_02235B88(UnkStruct_ov65_02235130 *param0, WiFi2DCharPosition param1, u32 param2)
 {
     VecFx32 v0;
 
-    param1.unk_00 += 8;
-    param1.unk_02 += 0;
+    param1.x += 8;
+    param1.y += 0;
 
-    v0.x = param1.unk_00 << FX32_SHIFT;
-    v0.y = param1.unk_02 << FX32_SHIFT;
+    v0.x = param1.x << FX32_SHIFT;
+    v0.y = param1.y << FX32_SHIFT;
 
     Sprite_SetPosition(param0->unk_14.unk_1A0.unk_38, &v0);
     Sprite_SetPriority(param0->unk_14.unk_1A0.unk_38, param2);
@@ -739,7 +739,7 @@ static void ov65_02235BD8(UnkStruct_ov65_02235130 *param0)
 
 static BOOL ov65_02235BE8(UnkStruct_ov65_02235130 *param0)
 {
-    UnkStruct_ov63_0222CC3C v0;
+    WiFi2DCharPosition v0;
     u32 v1;
     int v2;
 
@@ -747,9 +747,9 @@ static BOOL ov65_02235BE8(UnkStruct_ov65_02235130 *param0)
         return 0;
     }
 
-    v0 = ov63_0222C0E4(param0->unk_730->unk_00);
-    v2 = ov63_0222BF90(param0->unk_730->unk_00, 6);
-    v1 = ov63_0222BDE4(param0->unk_748, (v0.unk_00) / 16, (v0.unk_02) / 16);
+    v0 = WiFi2DCharObject_GetPosition(param0->unk_730->unk_00);
+    v2 = WiFi2DCharObject_GetField(param0->unk_730->unk_00, 6);
+    v1 = WiFi2DCharGrid_GetTileFlags(param0->unk_748, (v0.x) / 16, (v0.y) / 16);
 
     if ((v1 == 15) && (v2 == 1)) {
         return 1;
@@ -769,15 +769,15 @@ static void ov65_02235C64(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_02235C
 
     v0 = param2 / 8;
     v1 = param2 % 8;
-    v4 = ov63_0222BD48(param0->unk_748);
-    v5 = ov63_0222BD4C(param0->unk_748);
+    v4 = WiFi2DCharGrid_GetWidth(param0->unk_748);
+    v5 = WiFi2DCharGrid_GetHeight(param0->unk_748);
 
     for (v2 = 0; v2 < v5; v2++) {
         for (v3 = 0; v3 < v4; v3++) {
-            v6 = ov63_0222BDE4(param0->unk_748, v3, v2);
+            v6 = WiFi2DCharGrid_GetTileFlags(param0->unk_748, v3, v2);
 
             if (v6 == 7 + v1) {
-                v7 = ov63_0222BDE4(param0->unk_748, v3, v2 + 1);
+                v7 = WiFi2DCharGrid_GetTileFlags(param0->unk_748, v3, v2 + 1);
 
                 if (v7 == v0 + 3) {
                     param1->unk_00 = (v3) * 16;
@@ -797,12 +797,12 @@ static void ov65_02235D08(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_02235C
     u32 v2, v3;
     u32 v4;
 
-    v2 = ov63_0222BD48(param0->unk_748);
-    v3 = ov63_0222BD4C(param0->unk_748);
+    v2 = WiFi2DCharGrid_GetWidth(param0->unk_748);
+    v3 = WiFi2DCharGrid_GetHeight(param0->unk_748);
 
     for (v0 = 0; v0 < v3; v0++) {
         for (v1 = 0; v1 < v2; v1++) {
-            v4 = ov63_0222BDE4(param0->unk_748, v1, v0);
+            v4 = WiFi2DCharGrid_GetTileFlags(param0->unk_748, v1, v0);
 
             if (v4 == 15) {
                 param1->unk_00 = (v1) * 16;
@@ -832,12 +832,12 @@ static UnkStruct_ov65_022354D8 *ov65_02235D7C(UnkStruct_ov65_02235130 *param0)
 
 static void ov65_02235DAC(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1, BOOL param2)
 {
-    param1->unk_04 = ov63_0222CE44(param0->unk_750, param1->unk_00, param2, param0->heapID);
+    param1->unk_04 = WiFi2DCharRenderer_AddObject(param0->unk_750, param1->unk_00, param2, param0->heapID);
 
     if (param2 == 0) {
-        ov63_0222CFA4(param1->unk_04, 0);
-        ov63_0222CFA8(param1->unk_04);
-        ov63_0222D008(param1->unk_04, 0);
+        WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 0);
+        WiFi2DCharRenderer_ResetObjectAnim(param1->unk_04);
+        WiFi2DCharRenderer_SetObjectVisible(param1->unk_04, 0);
     }
 }
 
@@ -852,7 +852,7 @@ static void ov65_02235DE4(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
     v0.unk_08 = param5;
     v0.unk_0A = param4;
 
-    param1->unk_00 = ov63_0222BEC0(param0->unk_74C, &v0);
+    param1->unk_00 = WiFi2DCharObjectManager_AddObject(param0->unk_74C, &v0);
 }
 
 static BOOL ov65_02235E1C(const UnkStruct_ov65_022354D8 *param0)
@@ -898,7 +898,7 @@ static void ov65_02235E84(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
     param1->unk_0C = 3;
 
     ov65_02236250(param0, 0, param1);
-    ov63_0222CFA4(param1->unk_04, 1);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 1);
 }
 
 static void ov65_02235EC8(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
@@ -909,7 +909,7 @@ static void ov65_02235EC8(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
     param1->unk_0C = 4;
 
     ov65_02236250(param0, 4, param1);
-    ov63_0222CFA4(param1->unk_04, 0);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 0);
 }
 
 static void ov65_02235EF4(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
@@ -919,32 +919,32 @@ static void ov65_02235EF4(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
 
 static void ov65_02235EF8(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
 {
-    UnkStruct_ov63_0222CC3C v0, v1;
+    WiFi2DCharPosition v0, v1;
 
-    ov63_0222CFB4(param1->unk_04);
+    WiFi2DCharRenderer_UpdateObjectAnim(param1->unk_04);
 
-    if (ov63_0222CFFC(param1->unk_04) == 0) {
-        ov63_0222D008(param1->unk_04, 1);
+    if (WiFi2DCharRenderer_IsObjectVisible(param1->unk_04) == 0) {
+        WiFi2DCharRenderer_SetObjectVisible(param1->unk_04, 1);
     }
 
-    v0.unk_00 = ov63_0222BF90(param1->unk_00, 0);
-    v0.unk_02 = ov63_0222BF90(param1->unk_00, 1);
+    v0.x = WiFi2DCharObject_GetField(param1->unk_00, 0);
+    v0.y = WiFi2DCharObject_GetField(param1->unk_00, 1);
 
     v1 = v0;
-    v0.unk_02 += FX_Mul(CalcSineDegrees(param1->unk_08), -192 * FX32_ONE) >> FX32_SHIFT;
+    v0.y += FX_Mul(CalcSineDegrees(param1->unk_08), -192 * FX32_ONE) >> FX32_SHIFT;
 
-    ov63_0222CFE0(param1->unk_04, v0);
-    ov63_0222D060(param1->unk_04, v1);
+    WiFi2DCharRenderer_SetObjectPosition(param1->unk_04, v0);
+    WiFi2DCharRenderer_SetObjectShadowPosition(param1->unk_04, v1);
 }
 
 static void ov65_02235F94(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
 {
     u32 v0;
-    UnkStruct_ov63_0222CC3C v1, v2;
+    WiFi2DCharPosition v1, v2;
     s16 v3;
 
-    v1.unk_00 = ov63_0222BF90(param1->unk_00, 0);
-    v1.unk_02 = ov63_0222BF90(param1->unk_00, 1);
+    v1.x = WiFi2DCharObject_GetField(param1->unk_00, 0);
+    v1.y = WiFi2DCharObject_GetField(param1->unk_00, 1);
 
     v2 = v1;
     v3 = param1->unk_08 - 16;
@@ -952,12 +952,12 @@ static void ov65_02235F94(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
     if (v3 > 0) {
         v3 = v3 % 6;
         v0 = (180 * v3) / 6;
-        v1.unk_02 -= FX_Mul(CalcSineDegrees(v0), 4 * FX32_ONE) >> FX32_SHIFT;
+        v1.y -= FX_Mul(CalcSineDegrees(v0), 4 * FX32_ONE) >> FX32_SHIFT;
     }
 
-    ov63_0222CFE0(param1->unk_04, v1);
-    ov63_0222D060(param1->unk_04, v2);
-    ov63_0222D020(param1->unk_04, 1);
+    WiFi2DCharRenderer_SetObjectPosition(param1->unk_04, v1);
+    WiFi2DCharRenderer_SetObjectShadowPosition(param1->unk_04, v2);
+    WiFi2DCharRenderer_SetObjectAnim(param1->unk_04, 1);
 }
 
 static BOOL ov65_02236044(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354D8 *param1)
@@ -968,9 +968,9 @@ static BOOL ov65_02236044(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
     s32 v3;
     const UnkStruct_ov65_022354D8 *v4;
 
-    v0 = ov63_0222BF90(param1->unk_00, 6);
-    v1 = ov63_0222BF90(param1->unk_00, 4);
-    v2 = ov63_0222BF90(param1->unk_00, 5);
+    v0 = WiFi2DCharObject_GetField(param1->unk_00, 6);
+    v1 = WiFi2DCharObject_GetField(param1->unk_00, 4);
+    v2 = WiFi2DCharObject_GetField(param1->unk_00, 5);
 
     if (v2 != 0) {
         return 0;
@@ -981,7 +981,7 @@ static BOOL ov65_02236044(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
 
         if (v4 != NULL) {
             if (ov65_02235E1C(v4) == 1) {
-                param1->unk_0A = ov63_0222BF90(v4->unk_00, 4);
+                param1->unk_0A = WiFi2DCharObject_GetField(v4->unk_00, 4);
             } else {
                 param1->unk_0A = 0;
             }
@@ -1037,11 +1037,11 @@ static BOOL ov65_02236158(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
     param1->unk_08--;
 
     if (param1->unk_08 <= 0) {
-        ov63_0222CFC0(param1->unk_04);
-        ov63_0222CFA4(param1->unk_04, 1);
+        WiFi2DCharRenderer_RefreshObject(param1->unk_04);
+        WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 1);
 
-        v1 = ov63_0222BF90(param0->unk_730->unk_00, 4);
-        v2 = ov63_0222BF90(param1->unk_00, 4);
+        v1 = WiFi2DCharObject_GetField(param0->unk_730->unk_00, 4);
+        v2 = WiFi2DCharObject_GetField(param1->unk_00, 4);
 
         if (v2 == v1) {
             ov65_02235E48(param0, param1);
@@ -1075,7 +1075,7 @@ static BOOL ov65_022361C8(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
         param1->unk_08 = 256 + (MTRNG_Next() % 1024);
 
         v0 = MTRNG_Next() % 4;
-        v1 = ov63_0222BF90(param1->unk_00, 4);
+        v1 = WiFi2DCharObject_GetField(param1->unk_00, 4);
 
         ov65_02236230(param0, 0, v0, v1);
     }
@@ -1101,13 +1101,13 @@ static BOOL ov65_0223622C(UnkStruct_ov65_02235130 *param0, UnkStruct_ov65_022354
 
 static void ov65_02236230(UnkStruct_ov65_02235130 *param0, s32 param1, s32 param2, s32 param3)
 {
-    UnkStruct_ov63_0222D894 v0;
+    WiFi2DCharEvent v0;
 
     v0.unk_00 = param1;
     v0.unk_02 = param2;
     v0.unk_03 = param3;
 
-    ov63_0222D894(param0->unk_75C, &v0);
+    WiFi2DCharEventQueue_Push(param0->unk_75C, &v0);
 }
 
 static void ov65_02236250(UnkStruct_ov65_02235130 *param0, s32 param1, const UnkStruct_ov65_022354D8 *param2)
@@ -1115,8 +1115,8 @@ static void ov65_02236250(UnkStruct_ov65_02235130 *param0, s32 param1, const Unk
     s32 v0;
     s32 v1;
 
-    v0 = ov63_0222BF90(param2->unk_00, 6);
-    v1 = ov63_0222BF90(param2->unk_00, 4);
+    v0 = WiFi2DCharObject_GetField(param2->unk_00, 6);
+    v1 = WiFi2DCharObject_GetField(param2->unk_00, 4);
 
     ov65_02236230(param0, param1, v0, v1);
 }

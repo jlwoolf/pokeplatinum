@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/ov63_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C9B4.h"
@@ -45,7 +45,7 @@ BOOL ov70_0226CC74(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *par
             u32 v6;
 
             v6 = ov70_0225CD60(v4, 6);
-            v6 = ov63_0222C0AC(v6);
+            v6 = WiFi2DChar_DirectionOpposite(v6);
 
             ov70_0225CDEC(v2, v3, 0);
             ov70_0225D030(v3, 0);

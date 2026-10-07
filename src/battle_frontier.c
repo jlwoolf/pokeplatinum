@@ -36,7 +36,7 @@
 // object graphics and the state of its managed sprites and restores them when
 // the sub-app returns.
 
-FS_EXTERN_OVERLAY(overlay63);
+FS_EXTERN_OVERLAY(wifi_2d_char);
 FS_EXTERN_OVERLAY(overlay104);
 FS_EXTERN_OVERLAY(battle_factory_app);
 
@@ -247,14 +247,14 @@ static void LoadBattleFrontierOverlays(void)
 {
     Overlay_LoadByID(FS_OVERLAY_ID(overlay104), OVERLAY_LOAD_ASYNC);
     Overlay_LoadByID(FS_OVERLAY_ID(battle_factory_app), OVERLAY_LOAD_ASYNC);
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay63), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(wifi_2d_char), OVERLAY_LOAD_ASYNC);
 }
 
 static void UnloadBattleFrontierOverlays(void)
 {
     Overlay_UnloadByID(FS_OVERLAY_ID(overlay104));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_factory_app));
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay63));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
 }
 
 FieldFrontierDTO *BattleFrontier_GetFieldData(BattleFrontier *frontier)

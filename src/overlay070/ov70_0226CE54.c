@@ -5,7 +5,7 @@
 
 #include "generated/species.h"
 
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C858.h"
@@ -41,7 +41,7 @@ typedef struct UnkStruct_ov70_0226CF38_t {
     u8 unk_10[9][3];
     u8 unk_2B;
     UnkStruct_ov70_0226D2A0 unk_2C[9];
-    UnkStruct_ov63_0222CC3C unk_AA[3];
+    WiFi2DCharPosition unk_AA[3];
     u16 unk_B6;
     u16 unk_B8;
     fx32 unk_BC;
@@ -136,8 +136,8 @@ UnkStruct_ov70_0226CF38 *ov70_0226CE54(UnkStruct_ov70_0225DEE8 *param0, enum Hea
 
     for (v1 = 0; v1 < 3; v1++) {
         ov70_0225C8D8(v0->unk_0C, v4[v1], &v2, &v3, 0);
-        v0->unk_AA[v1].unk_00 = (v2) * 16;
-        v0->unk_AA[v1].unk_02 = (v3) * 16;
+        v0->unk_AA[v1].x = (v2) * 16;
+        v0->unk_AA[v1].y = (v3) * 16;
     }
 
     for (v1 = 0; v1 < 9; v1++) {
@@ -442,7 +442,7 @@ static void ov70_0226D46C(UnkStruct_ov70_0226CF38 *param0, u32 param1)
         ov70_02262318(param0->unk_08, param1, v0, &v4);
 
         for (v1 = v3; v1 < 3; v1++) {
-            v5 = ((param0->unk_AA[v1].unk_00 + 16) * (FX32_ONE));
+            v5 = ((param0->unk_AA[v1].x + 16) * (FX32_ONE));
 
             if (v5 > v4.x) {
                 WiFiPlazaLobby_State_SetFloatSlotPosition(param0->unk_04, v2, v1);

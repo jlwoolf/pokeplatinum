@@ -3,8 +3,8 @@
 
 #include "struct_defs/pokemon.h"
 
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CCB8.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
 #include "overlay104/defs.h"
 #include "overlay104/frontier_graphics.h"
 #include "overlay104/struct_ov104_0222FEDC.h"
@@ -26,7 +26,7 @@ typedef struct FrontierAnimData {
     u16 localID;
     u8 *totalMovementCount;
     const FrontierAnimCmd *animCmd;
-    UnkStruct_ov63_0222D77C *unk_10;
+    WiFi2DCharMoveQueue *unk_10;
     FrontierObject *frontierObj;
 } FrontierAnimData;
 
@@ -40,7 +40,7 @@ void FrontierMenuManager_AddListMenuEntry(FrontierMenuManager *menuManager, u32 
 void FrontierMenuManager_ShowListMenu(FrontierMenuManager *menuManager);
 void FrontierMenuManager_FreeListMenu(FrontierMenuManager *menuManager);
 void FrontierObject_DoAnimation(SysTask *task, void *data);
-void ov104_02232C80(UnkStruct_ov63_0222CCB8 *param0, UnkStruct_ov63_0222BEC0 *param1, int param2, int action);
+void ov104_02232C80(WiFi2DCharMoveRequest *param0, WiFi2DCharObject *param1, int param2, int action);
 void ov104_02232CE0(FrontierGraphics *param0, Pokemon *param1, enum HeapID heapID, int param3, int param4, int param5, int param6, int param7, int param8, u16 param9);
 void ov104_02232E80(FrontierGraphics *param0, int param1);
 void BattleFrontier_LoadMonSpriteData(FrontierGraphics *graphics);

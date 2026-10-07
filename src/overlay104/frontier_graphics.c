@@ -8,18 +8,18 @@
 #include "struct_decls/battle_frontier_decl.h"
 
 #include "global/utility.h"
-#include "overlay063/ov63_0222BCE8.h"
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/ov63_0222CA88.h"
-#include "overlay063/ov63_0222CCE4.h"
-#include "overlay063/ov63_0222D160.h"
-#include "overlay063/ov63_0222D1C0.h"
-#include "overlay063/ov63_0222D77C.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CCB8.h"
-#include "overlay063/struct_ov63_0222CE44.h"
-#include "overlay063/struct_ov63_0222D894.h"
-#include "overlay063/union_ov63_0222BDAC.h"
+#include "wifi_2d_char/wifi_2d_char_0222BCE8.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222CA88.h"
+#include "wifi_2d_char/wifi_2d_char_0222CCE4.h"
+#include "wifi_2d_char/wifi_2d_char_0222D160.h"
+#include "wifi_2d_char/wifi_2d_char_0222D1C0.h"
+#include "wifi_2d_char/wifi_2d_char_0222D77C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CE44.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D894.h"
+#include "wifi_2d_char/union_wifi_2d_char_0222BDAC.h"
 #include "overlay065/struct_ov65_0223582C.h"
 #include "overlay065/struct_ov65_022376D0.h"
 #include "overlay104/frontier_opponents.h"
@@ -79,7 +79,7 @@ static void FreeG3DPipeline(G3DPipelineBuffers *g3dPipeline);
 static void ov104_0223D3B0(FrontierGraphics *param0);
 static void ov104_0223D498(FrontierGraphics *param0);
 static void ov104_0223D570(FrontierObject *param0, FrontierObjectParams *param1);
-static void ov104_0223D584(BattleFrontier *param0, int param1, UnkStruct_ov63_0222BEC0 *param2, UnkStruct_ov63_0222CE44 *param3, const FrontierObjectParams *param4);
+static void ov104_0223D584(BattleFrontier *param0, int param1, WiFi2DCharObject *param2, WiFi2DCharRenderObject *param3, const FrontierObjectParams *param4);
 static void ov104_0223C798(FrontierGraphics *param0);
 static void ov104_0223C7EC(FrontierGraphics *param0);
 
@@ -113,7 +113,7 @@ static const SpriteResourceCapacities sCapacities = {
     }
 };
 
-static const UnkUnion_ov63_0222BDAC Unk_ov104_022413D8[256] = { 0 };
+static const WiFi2DCharTile Unk_ov104_022413D8[256] = { 0 };
 
 FrontierGraphics *FrontierGraphics_New(BattleFrontier *frontier)
 {
@@ -264,11 +264,11 @@ void ov104_0223C634(FrontierGraphics *param0)
             v1 = BattleFrontier_GetObject(param0->frontier, v0);
 
             if (v1->object != NULL) {
-                v1->params.unk_0A = ov63_0222BF90(v1->object, 6);
-                v1->params.unk_02 = ov63_0222BF90(v1->object, 5);
-                v1->params.unk_06 = ov63_0222BF90(v1->object, 0);
-                v1->params.unk_08 = ov63_0222BF90(v1->object, 1);
-                v1->params.unk_0B = ov63_0222CFFC(v1->sprite);
+                v1->params.unk_0A = WiFi2DCharObject_GetField(v1->object, 6);
+                v1->params.unk_02 = WiFi2DCharObject_GetField(v1->object, 5);
+                v1->params.unk_06 = WiFi2DCharObject_GetField(v1->object, 0);
+                v1->params.unk_08 = WiFi2DCharObject_GetField(v1->object, 1);
+                v1->params.unk_0B = WiFi2DCharRenderer_IsObjectVisible(v1->sprite);
             }
         }
     }
@@ -287,7 +287,7 @@ void ov104_0223C688(FrontierGraphics *param0)
 
         for (v0 = 0; v0 < 24; v0++) {
             if (v1[v0].gfxID != 0xffff) {
-                ov63_0222CDE8(param0->unk_20, v1[v0].gfxID, v1[v0].unk_02, HEAP_ID_94);
+                WiFi2DCharRenderer_LoadSpecies(param0->unk_20, v1[v0].gfxID, v1[v0].unk_02, HEAP_ID_94);
             }
         }
     }
@@ -328,7 +328,7 @@ static void DummyExecuteOnVBlank(SysTask *task, void *data)
 static void ov104_0223C720(SysTask *param0, void *param1)
 {
     FrontierGraphics *v0 = param1;
-    ov63_0222BE84(v0->unk_14);
+    WiFi2DCharObjectManager_Update(v0->unk_14);
 }
 
 static void ov104_0223C72C(SysTask *param0, void *param1)
@@ -347,13 +347,13 @@ static void ov104_0223C738(SysTask *param0, void *param1)
         v1 = BattleFrontier_GetObject(v0->frontier, 32 - 1);
 
         if (v1->object != NULL) {
-            ov63_0222D160(&v0->unk_1C, v1->object);
+            WiFi2DCharViewOffset_SetFromObject(&v0->unk_1C, v1->object);
         }
 
         ov104_0223C798(v0);
     }
 
-    ov63_0222CEE4(v0->unk_20);
+    WiFi2DCharRenderer_UpdateAll(v0->unk_20);
 
     {
         u32 v2 = v0->unk_3C.unk_30;
@@ -386,11 +386,11 @@ static void ov104_0223C798(FrontierGraphics *param0)
     case 0:
     default:
         if (param0->unk_24 != NULL) {
-            ov63_0222D228(param0->unk_24, &param0->unk_1C);
+            WiFi2DCharBackground_Update(param0->unk_24, &param0->unk_1C);
         }
 
         if ((param0->unk_28 != NULL) && (FrontierScene_GetParam(fieldData->sceneID, FR_SCENE_FLAG_2) == 1)) {
-            ov63_0222D228(param0->unk_28, &param0->unk_1C);
+            WiFi2DCharBackground_Update(param0->unk_28, &param0->unk_1C);
         }
         break;
     case 1:
@@ -405,8 +405,8 @@ static void ov104_0223C7EC(FrontierGraphics *param0)
     s16 v1;
     FieldFrontierDTO *fieldData = BattleFrontier_GetFieldData(param0->frontier);
 
-    v1 = ov63_0222D1B0(&param0->unk_1C) + param0->unk_A4.unk_06;
-    v0 = ov63_0222D1B8(&param0->unk_1C) + param0->unk_A4.unk_04;
+    v1 = WiFi2DCharViewOffset_GetX(&param0->unk_1C) + param0->unk_A4.unk_06;
+    v0 = WiFi2DCharViewOffset_GetY(&param0->unk_1C) + param0->unk_A4.unk_04;
 
     SetMainScreenViewRect(SpriteSystem_GetRenderer(param0->spriteSystem), FX32_CONST(v0), FX32_CONST(v1));
     Bg_ScheduleScroll(param0->bgConfig, 3, 0, v0);
@@ -420,19 +420,19 @@ static void ov104_0223C7EC(FrontierGraphics *param0)
 
 static void ov104_0223C8E8(FrontierGraphics *param0)
 {
-    UnkStruct_ov63_0222D894 v0;
-    UnkStruct_ov63_0222CCB8 v1;
+    WiFi2DCharEvent v0;
+    WiFi2DCharMoveRequest v1;
     BOOL v2;
 
-    while (ov63_0222D810(param0->unk_30, &v1) == 1) {
-        ov63_0222BE70(param0->unk_14, &v1);
+    while (WiFi2DCharMoveQueue_Pop(param0->unk_30, &v1) == 1) {
+        WiFi2DCharObjectManager_StartMove(param0->unk_14, &v1);
     }
 
-    while (ov63_0222D8D0(param0->unk_2C, &v0) == 1) {
-        v2 = ov63_0222CA88(param0->unk_18, param0->unk_14, &v0, &v1);
+    while (WiFi2DCharEventQueue_Pop(param0->unk_2C, &v0) == 1) {
+        v2 = WiFi2DCharAI_ChooseMove(param0->unk_18, param0->unk_14, &v0, &v1);
 
         if (v2 == 1) {
-            ov63_0222BE70(param0->unk_14, &v1);
+            WiFi2DCharObjectManager_StartMove(param0->unk_14, &v1);
         }
     }
 }
@@ -611,12 +611,12 @@ static void LoadSubScreenBackground(FrontierGraphics *graphics)
 
 static void ov104_0223CC74(FrontierGraphics *param0, int sceneID, const TrainerInfo *playerInfo)
 {
-    param0->unk_14 = ov63_0222BE18(32, HEAP_ID_94);
-    param0->unk_18 = ov63_0222BCE8(256 / 16, 256 / 16, HEAP_ID_94);
+    param0->unk_14 = WiFi2DCharObjectManager_New(32, HEAP_ID_94);
+    param0->unk_18 = WiFi2DCharGrid_New(256 / 16, 256 / 16, HEAP_ID_94);
 
-    ov63_0222D19C(&param0->unk_1C);
+    WiFi2DCharViewOffset_Reset(&param0->unk_1C);
 
-    param0->unk_20 = ov63_0222CD2C(SpriteManager_GetSpriteList(param0->spriteMan), param0->plttData, 32, BattleFrontier_GetPlayerObjEventGfx(playerInfo), 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_94);
+    param0->unk_20 = WiFi2DCharRenderer_NewWithShadow(SpriteManager_GetSpriteList(param0->spriteMan), param0->plttData, 32, BattleFrontier_GetPlayerObjEventGfx(playerInfo), 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_94);
 
     {
         UnkStruct_ov65_0223582C v0 = {
@@ -639,7 +639,7 @@ static void ov104_0223CC74(FrontierGraphics *param0, int sceneID, const TrainerI
         v1 = FrontierScene_GetParam(sceneID, FR_SCENE_FLAG_1);
 
         if (v1 == 0) {
-            param0->unk_24 = ov63_0222D1C0(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
+            param0->unk_24 = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
         }
 
         if (FrontierScene_GetParam(sceneID, FR_SCENE_SUB_TILEMAP_IDX) != 0xffff) {
@@ -650,15 +650,15 @@ static void ov104_0223CC74(FrontierGraphics *param0, int sceneID, const TrainerI
             v0.unk_06 = 1;
 
             if (v1 == 0) {
-                param0->unk_28 = ov63_0222D1C0(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
+                param0->unk_28 = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
             }
         }
     }
 
-    param0->unk_2C = ov63_0222D848(128, HEAP_ID_94);
-    param0->unk_30 = ov63_0222D77C(128, HEAP_ID_94);
+    param0->unk_2C = WiFi2DCharEventQueue_New(128, HEAP_ID_94);
+    param0->unk_30 = WiFi2DCharMoveQueue_New(128, HEAP_ID_94);
 
-    ov63_0222BD50(param0->unk_18, Unk_ov104_022413D8);
+    WiFi2DCharGrid_SetTiles(param0->unk_18, Unk_ov104_022413D8);
 
     {
         GXBGMode bgMode = FrontierScene_GetParam(sceneID, FR_SCENE_BGMODE);
@@ -720,26 +720,26 @@ static void ov104_0223CEEC(FrontierGraphics *param0)
 
         for (v0 = 0; v0 < 32; v0++) {
             if (v1[v0].object != NULL) {
-                ov63_0222BF08(v1[v0].object);
+                WiFi2DCharObject_Reset(v1[v0].object);
                 GF_ASSERT(v1[v0].movementTask == NULL);
             }
         }
     }
 
-    ov63_0222BE58(param0->unk_14);
-    ov63_0222BD30(param0->unk_18);
-    ov63_0222CD9C(param0->unk_20);
+    WiFi2DCharObjectManager_Free(param0->unk_14);
+    WiFi2DCharGrid_Free(param0->unk_18);
+    WiFi2DCharRenderer_Free(param0->unk_20);
 
     if (param0->unk_24 != NULL) {
-        ov63_0222D214(param0->unk_24);
+        WiFi2DCharBackground_Free(param0->unk_24);
     }
 
     if (param0->unk_28 != NULL) {
-        ov63_0222D214(param0->unk_28);
+        WiFi2DCharBackground_Free(param0->unk_28);
     }
 
-    ov63_0222D880(param0->unk_2C);
-    ov63_0222D7B4(param0->unk_30);
+    WiFi2DCharEventQueue_Free(param0->unk_2C);
+    WiFi2DCharMoveQueue_Free(param0->unk_30);
 }
 
 static G3DPipelineBuffers *InitG3DPipeline(enum HeapID heapID)
@@ -835,7 +835,7 @@ void ov104_0223D0EC(FrontierGraphics *param0, const FrontierObjectGfx *param1)
     v2 = v1;
     v0[v2] = *param1;
 
-    ov63_0222CDE8(param0->unk_20, param1->gfxID, param1->unk_02, HEAP_ID_94);
+    WiFi2DCharRenderer_LoadSpecies(param0->unk_20, param1->gfxID, param1->unk_02, HEAP_ID_94);
 }
 
 void ov104_0223D148(FrontierGraphics *param0, int param1)
@@ -845,20 +845,20 @@ void ov104_0223D148(FrontierGraphics *param0, int param1)
 
     for (v0 = 0; v0 < 24; v0++) {
         if (v1[v0].gfxID == param1) {
-            ov63_0222CE0C(param0->unk_20, param1);
+            WiFi2DCharRenderer_UnloadSpecies(param0->unk_20, param1);
             v1[v0].gfxID = 0xffff;
             return;
         }
     }
 }
 
-UnkStruct_ov63_0222BEC0 *ov104_0223D180(FrontierGraphics *param0, const FrontierObjectParams *param1, int param2)
+WiFi2DCharObject *ov104_0223D180(FrontierGraphics *param0, const FrontierObjectParams *param1, int param2)
 {
     FrontierObject *v0;
     int v1, v2;
     UnkStruct_ov65_022376D0 v3;
-    UnkStruct_ov63_0222BEC0 *v4;
-    UnkStruct_ov63_0222CE44 *v5;
+    WiFi2DCharObject *v4;
+    WiFi2DCharRenderObject *v5;
 
     v0 = BattleFrontier_GetObjects(param0->frontier);
 
@@ -882,24 +882,24 @@ UnkStruct_ov63_0222BEC0 *ov104_0223D180(FrontierGraphics *param0, const Frontier
     v3.unk_08 = param1->unk_0A;
     v3.unk_0A = param1->unk_00;
 
-    v4 = ov63_0222BEC0(param0->unk_14, &v3);
-    v5 = ov63_0222CE44(param0->unk_20, v4, 0, HEAP_ID_94);
+    v4 = WiFi2DCharObjectManager_AddObject(param0->unk_14, &v3);
+    v5 = WiFi2DCharRenderer_AddObject(param0->unk_20, v4, 0, HEAP_ID_94);
 
-    ov63_0222D008(v5, param1->unk_0B);
+    WiFi2DCharRenderer_SetObjectVisible(v5, param1->unk_0B);
     ov104_0223D584(param0->frontier, v2, v4, v5, param1);
 
     return v4;
 }
 
-void ov104_0223D200(FrontierGraphics *param0, UnkStruct_ov63_0222BEC0 *param1)
+void ov104_0223D200(FrontierGraphics *param0, WiFi2DCharObject *param1)
 {
     int v0;
     FrontierObject *v1 = BattleFrontier_GetObjects(param0->frontier);
 
     for (v0 = 0; v0 < 32; v0++) {
         if (v1[v0].object == param1) {
-            ov63_0222BF08(v1[v0].object);
-            ov63_0222CECC(v1[v0].sprite);
+            WiFi2DCharObject_Reset(v1[v0].object);
+            WiFi2DCharRenderer_RemoveObject(v1[v0].sprite);
 
             GF_ASSERT(v1[v0].movementTask == NULL);
             MI_CpuClear8(&v1[v0], sizeof(FrontierObject));
@@ -910,7 +910,7 @@ void ov104_0223D200(FrontierGraphics *param0, UnkStruct_ov63_0222BEC0 *param1)
     }
 }
 
-void ov104_0223D258(FrontierGraphics *param0, u16 param1, UnkStruct_ov63_0222BEC0 **param2, UnkStruct_ov63_0222CE44 **param3)
+void ov104_0223D258(FrontierGraphics *param0, u16 param1, WiFi2DCharObject **param2, WiFi2DCharRenderObject **param3)
 {
     int v0;
     FrontierObject *v1 = BattleFrontier_GetObjects(param0->frontier);
@@ -1066,8 +1066,8 @@ static void ov104_0223D498(FrontierGraphics *param0)
 
 void ov104_0223D554(FrontierGraphics *param0, s16 *param1, s16 *param2)
 {
-    *param2 = ov63_0222D1B0(&param0->unk_1C);
-    *param1 = ov63_0222D1B8(&param0->unk_1C);
+    *param2 = WiFi2DCharViewOffset_GetX(&param0->unk_1C);
+    *param1 = WiFi2DCharViewOffset_GetY(&param0->unk_1C);
 }
 
 static void ov104_0223D570(FrontierObject *param0, FrontierObjectParams *param1)
@@ -1075,7 +1075,7 @@ static void ov104_0223D570(FrontierObject *param0, FrontierObjectParams *param1)
     *param1 = param0->params;
 }
 
-static void ov104_0223D584(BattleFrontier *param0, int param1, UnkStruct_ov63_0222BEC0 *param2, UnkStruct_ov63_0222CE44 *param3, const FrontierObjectParams *param4)
+static void ov104_0223D584(BattleFrontier *param0, int param1, WiFi2DCharObject *param2, WiFi2DCharRenderObject *param3, const FrontierObjectParams *param4)
 {
     FrontierObject *v0 = BattleFrontier_GetObject(param0, param1);
 

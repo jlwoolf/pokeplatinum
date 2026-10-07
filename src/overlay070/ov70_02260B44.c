@@ -5,7 +5,7 @@
 
 #include "constants/heap.h"
 
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
 #include "overlay070/funcptr_ov70_02261C60.h"
 #include "overlay070/ov70_0225C700.h"
@@ -353,10 +353,10 @@ UnkStruct_ov70_022610B8 *ov70_02260F90(UnkStruct_ov70_02260BB8 *param0, int para
     Easy3DObject_SetVisible(&v0->unk_04, 1);
 
     {
-        UnkStruct_ov63_0222CC3C v2;
+        WiFi2DCharPosition v2;
 
-        v2.unk_00 = (param2) * 16;
-        v2.unk_02 = (param3) * 16;
+        v2.x = (param2) * 16;
+        v2.y = (param3) * 16;
 
         ov70_022610BC(v0, v2);
     }
@@ -392,7 +392,7 @@ int ov70_022610B8(const UnkStruct_ov70_022610B8 *param0)
     return param0->unk_02;
 }
 
-void ov70_022610BC(UnkStruct_ov70_022610B8 *param0, UnkStruct_ov63_0222CC3C param1)
+void ov70_022610BC(UnkStruct_ov70_022610B8 *param0, WiFi2DCharPosition param1)
 {
     VecFx32 v0;
 
@@ -400,10 +400,10 @@ void ov70_022610BC(UnkStruct_ov70_022610B8 *param0, UnkStruct_ov63_0222CC3C para
     Easy3DObject_SetPosition(&param0->unk_04, v0.x, v0.y, v0.z);
 }
 
-UnkStruct_ov63_0222CC3C ov70_022610E4(const UnkStruct_ov70_022610B8 *param0)
+WiFi2DCharPosition ov70_022610E4(const UnkStruct_ov70_022610B8 *param0)
 {
     VecFx32 v0;
-    UnkStruct_ov63_0222CC3C v1;
+    WiFi2DCharPosition v1;
 
     Easy3DObject_GetPosition(&param0->unk_04, &v0.x, &v0.y, &v0.z);
     ov70_0225C714(&v0, &v1);

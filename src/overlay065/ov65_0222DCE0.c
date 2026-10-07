@@ -90,7 +90,7 @@
 #include "wifi_list.h"
 #include "wifi_overlays.h"
 
-FS_EXTERN_OVERLAY(overlay63);
+FS_EXTERN_OVERLAY(wifi_2d_char);
 
 typedef struct {
     u32 unk_00;
@@ -745,7 +745,7 @@ int ov65_0222E2A8(ApplicationManager *appMan, int *param1)
             Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_PARTY_MENU1, 0x10000);
         }
 
-        Overlay_LoadByID(FS_OVERLAY_ID(overlay63), 2);
+        Overlay_LoadByID(FS_OVERLAY_ID(wifi_2d_char), 2);
 
         if (v1->unk_04 == 1) {
             Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_54, 0x70000);
@@ -869,7 +869,7 @@ static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
     MessageLoader_Free(param0->unk_16C);
     MessageLoader_Free(param0->unk_168);
     StringTemplate_Free(param0->unk_164);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay63));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
 }
 
 int ov65_0222E548(ApplicationManager *appMan, int *param1)

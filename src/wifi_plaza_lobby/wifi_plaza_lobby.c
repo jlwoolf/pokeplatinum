@@ -19,7 +19,7 @@
 #include "system.h"
 #include "wifi_overlays.h"
 
-FS_EXTERN_OVERLAY(overlay63);
+FS_EXTERN_OVERLAY(wifi_2d_char);
 
 typedef struct {
     SaveData *saveData;
@@ -36,8 +36,8 @@ int WiFiPlazaLobby_Init(ApplicationManager *appMan, int *param1)
     WiFiPlazaLobbyAppArgs *v1;
 
     {
-        FS_EXTERN_OVERLAY(overlay63);
-        Overlay_LoadByID(FS_OVERLAY_ID(overlay63), 2);
+        FS_EXTERN_OVERLAY(wifi_2d_char);
+        Overlay_LoadByID(FS_OVERLAY_ID(wifi_2d_char), 2);
         Overlay_LoadWFCOverlay();
         Overlay_LoadHttpOverlay();
     }
@@ -95,8 +95,8 @@ int WiFiPlazaLobby_Exit(ApplicationManager *appMan, int *param1)
     Heap_Destroy(HEAP_ID_104);
 
     {
-        FS_EXTERN_OVERLAY(overlay63);
-        Overlay_UnloadByID(FS_OVERLAY_ID(overlay63));
+        FS_EXTERN_OVERLAY(wifi_2d_char);
+        Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
         Overlay_UnloadHttpOverlay();
         Overlay_UnloadWFCOverlay();
     }
