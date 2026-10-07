@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_CONTEST_COMPETITION_02247A48_H
+#define POKEPLATINUM_CONTEST_COMPETITION_02247A48_H
+
+#include "contest_competition/struct_contest_competition_02247A48.h"
+
+void contest_competition_02247A48(UnkStruct_contest_competition_02247A48 *param0);
+
+#endif // POKEPLATINUM_CONTEST_COMPETITION_02247A48_H
