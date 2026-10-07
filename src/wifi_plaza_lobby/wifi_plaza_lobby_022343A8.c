@@ -7,7 +7,7 @@
 #include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
-#include "overlay070/ov70_0225C700.h"
+#include "wifi_lobby_map/wifi_lobby_map_0225C700.h"
 
 #include "billboard.h"
 #include "easy3d.h"
@@ -355,7 +355,7 @@ WiFiPlazaLobbyObject *WiFiPlazaLobby_Object_New(WiFiPlazaLobbyObjectManager *par
             WiFi2DCharPosition v17;
 
             v17 = WiFi2DCharObject_GetPosition(param1);
-            ov70_0225C700(&v17, &v13);
+            wifi_lobby_map_0225C700(&v17, &v13);
             v13.z += (FX32_CONST(16));
         }
 
@@ -403,7 +403,7 @@ void WiFiPlazaLobby_Object_SetPositionFromTileCoords(WiFiPlazaLobbyObject *param
 {
     VecFx32 v0;
 
-    ov70_0225C700(param1, &v0);
+    wifi_lobby_map_0225C700(param1, &v0);
     v0.z += (FX32_CONST(16));
     WiFiPlazaLobby_Object_SetPosition(param0, &v0);
 }
@@ -496,7 +496,7 @@ static void WiFiPlazaLobby_Object_ModelLoad(WiFiPlazaLobbyObjectModel *param0, N
 {
     void *v0;
 
-    ov70_0225C730(&v0, param1, param2, heapID);
+    wifi_lobby_map_0225C730(&v0, param1, param2, heapID);
 
     param0->unk_00.data = v0;
     param0->unk_00.set = NNS_G3dGetMdlSet(param0->unk_00.data);

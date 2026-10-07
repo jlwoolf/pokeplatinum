@@ -1,0 +1,135 @@
+#include "wifi_lobby_map/wifi_lobby_map_0226CC74.h"
+
+#include <nitro.h>
+#include <string.h>
+
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
+#include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
+#include "wifi_lobby_map/wifi_lobby_map_0225C9B4.h"
+#include "wifi_lobby_map/wifi_lobby_map_0225D9A4.h"
+#include "wifi_lobby_map/wifi_lobby_map_02262DA8.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_0225CA20_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_0225CC54_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_0225DEE8_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_02263344_decl.h"
+
+#include "sound_playback.h"
+#include "string_gf.h"
+
+typedef struct {
+    u32 unk_00;
+} UnkStruct_wifi_lobby_map_0226CC74;
+
+BOOL wifi_lobby_map_0226CC74(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2)
+{
+    UnkStruct_wifi_lobby_map_0226CC74 *v0;
+    WiFiPlazaLobbyState *v1;
+    UnkStruct_wifi_lobby_map_0225CA20 *v2;
+    UnkStruct_wifi_lobby_map_0225CC54 *v3;
+    UnkStruct_wifi_lobby_map_0225CC54 *v4;
+    String *v5;
+
+    v0 = wifi_lobby_map_02262E80(param0);
+    v1 = wifi_lobby_map_0225DEE8(param1);
+    v2 = wifi_lobby_map_0225DEF0(param1);
+    v3 = wifi_lobby_map_0225CCB0(v2);
+    v4 = wifi_lobby_map_0225CCAC(v2);
+
+    switch (wifi_lobby_map_02262E84(param0)) {
+    case 0:
+        v0 = wifi_lobby_map_02262E3C(param0, sizeof(UnkStruct_wifi_lobby_map_0226CC74));
+        Sound_PlayEffect(SE_CONFIRM_sseq_3);
+
+        {
+            u32 v6;
+
+            v6 = wifi_lobby_map_0225CD60(v4, 6);
+            v6 = WiFi2DChar_DirectionOpposite(v6);
+
+            wifi_lobby_map_0225CDEC(v2, v3, 0);
+            wifi_lobby_map_0225D030(v3, 0);
+            wifi_lobby_map_0225D060(v3, v6);
+        }
+
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v1)) {
+            v5 = wifi_lobby_map_0225E20C(param1, 1, 3);
+            v0->unk_00 = 4;
+            wifi_lobby_map_0225DF8C(param1, v5);
+            wifi_lobby_map_02262E88(param0, 5);
+            break;
+        }
+
+        if (WiFiPlazaLobby_State_IsNeonTransitionComplete(v1) == 1) {
+            v5 = wifi_lobby_map_0225E20C(param1, 1, 88);
+            v0->unk_00 = 4;
+            wifi_lobby_map_0225DF8C(param1, v5);
+            wifi_lobby_map_02262E88(param0, 5);
+            break;
+        } else {
+            if (WiFiPlazaLobby_State_IsQuestionAnswered(v1) == 1) {
+                v5 = wifi_lobby_map_0225E20C(param1, 1, 87);
+                v0->unk_00 = 4;
+
+                wifi_lobby_map_0225DF8C(param1, v5);
+                wifi_lobby_map_02262E88(param0, 5);
+                break;
+            } else {
+                v5 = wifi_lobby_map_0225E20C(param1, 1, 81);
+                v0->unk_00 = 1;
+
+                wifi_lobby_map_0225DF8C(param1, v5);
+                wifi_lobby_map_02262E88(param0, 5);
+            }
+        }
+        break;
+    case 1:
+        wifi_lobby_map_0225E164(param1);
+        wifi_lobby_map_02262E88(param0, 2);
+        break;
+    case 2: {
+        int v7;
+
+        v7 = wifi_lobby_map_0225E1C4(param1);
+
+        switch (v7) {
+        case 0:
+            wifi_lobby_map_02262E88(param0, 3);
+            wifi_lobby_map_0225E1F8(param1);
+            break;
+        case 1:
+            wifi_lobby_map_02262E88(param0, 4);
+            wifi_lobby_map_0225E1F8(param1);
+            break;
+        default:
+        case 2:
+            break;
+        }
+    } break;
+    case 3:
+        v5 = wifi_lobby_map_0225E20C(param1, 1, 85);
+        v0->unk_00 = 4;
+
+        wifi_lobby_map_0225DF8C(param1, v5);
+        wifi_lobby_map_02262E88(param0, 5);
+        break;
+    case 4:
+        wifi_lobby_map_0225DFEC(param1);
+        wifi_lobby_map_0225E1F8(param1);
+        wifi_lobby_map_0225CDEC(v2, v4, 1);
+        wifi_lobby_map_02262E64(param0);
+        wifi_lobby_map_0225D030(v3, 1);
+        wifi_lobby_map_0225CDAC(v2, v3, 0, 1);
+        return 1;
+    case 5:
+        if (wifi_lobby_map_0225DFAC(param1) == 1) {
+            wifi_lobby_map_02262E88(param0, v0->unk_00);
+        }
+        break;
+    default:
+        GF_ASSERT(FALSE);
+        break;
+    }
+
+    return 0;
+}
