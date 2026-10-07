@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "nintendo_wfc/main.h"
-#include "overlay114/ov114_0225C700.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
 #include "overlay117/ov117_02260668.h"
 #include "overlay117/ov117_02266498.h"
 #include "overlay117/struct_ov117_02260440.h"
@@ -158,13 +158,13 @@ static void ov117_022605D8(UnkStruct_ov117_022605C0 *param0, UnkStruct_ov117_022
     param0->unk_30 = v1;
     param0->unk_3C = param1->unk_38;
 
-    ov114_0225C700(&param0->unk_00, param1->unk_39, param1->saveData, param1->unk_38, &param1->unk_00);
+    WiFiLobbyMinigame_InitPlayerContext(&param0->unk_00, param1->unk_39, param1->saveData, param1->unk_38, &param1->unk_00);
 }
 
 static BOOL ov117_02260630(UnkStruct_ov117_022605C0 *param0)
 {
     if (param0->unk_3D == 0) {
-        if (ov114_0225CA54(&param0->unk_00) == 1) {
+        if (WiFiLobbyMinigame_CheckDisconnected(&param0->unk_00) == 1) {
             param0->unk_3D = 1;
         }
     }

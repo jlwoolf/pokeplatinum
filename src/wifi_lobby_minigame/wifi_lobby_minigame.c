@@ -1,4 +1,4 @@
-#include "overlay114/ov114_0225C700.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -10,9 +10,9 @@
 #include "nintendo_wfc/main.h"
 #include "overlay066/ov66_0222DDF0.h"
 #include "overlay066/struct_ov66_02230DBC.h"
-#include "overlay114/ov114_02260044.h"
-#include "overlay114/struct_ov114_0225C76C.h"
-#include "overlay114/struct_ov114_0225C9A8.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame_comm_cmd_handlers.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
 
 #include "bg_window.h"
 #include "buffer_manager.h"
@@ -62,42 +62,42 @@ typedef struct {
     fx32 unk_08;
     fx32 unk_0C;
     int unk_10;
-} UnkStruct_ov114_0225CBF0;
+} WiFiLobbyMinigameMotion;
 
 typedef struct {
     BOOL unk_00;
     SpriteResource *unk_04[4];
     SpriteResourcesHeader unk_14;
-} UnkStruct_ov114_0225CDB4;
+} WiFiLobbyMinigameSpriteResource;
 
 typedef struct {
     SpriteResourceCollection *unk_00[4];
-    UnkStruct_ov114_0225CDB4 *unk_10;
+    WiFiLobbyMinigameSpriteResource *unk_10;
     u32 unk_14;
-} UnkStruct_ov114_0225CCD0;
+} WiFiLobbyMinigameSpriteResources;
 
 typedef struct {
     SpriteList *unk_00;
     G2dRenderer unk_04;
-} UnkStruct_ov114_0225CFCC;
+} WiFiLobbyMinigameSpriteSystem;
 
 typedef struct {
     u32 unk_00;
     BgTemplate unk_04;
-} UnkStruct_ov114_02260284;
+} WiFiLobbyMinigameBgTemplate;
 
 typedef struct {
     BgConfig *unk_00;
-    const UnkStruct_ov114_02260284 *unk_04;
+    const WiFiLobbyMinigameBgTemplate *unk_04;
     u32 unk_08;
-} UnkStruct_ov114_0225CEF0;
+} WiFiLobbyMinigameBackgrounds;
 
 typedef struct {
     MessageLoader *unk_00;
     StringTemplate *unk_04;
     String *unk_08;
     String *unk_0C;
-} UnkStruct_ov114_0225D084;
+} WiFiLobbyMinigameMessages;
 
 typedef struct {
     Window unk_00[2];
@@ -105,13 +105,13 @@ typedef struct {
     String *unk_24[2];
     void *unk_2C[2];
     BOOL unk_34;
-} UnkStruct_ov114_0225D338;
+} WiFiLobbyMinigameMessageBox;
 
 typedef struct {
     u8 unk_00[4];
     u8 unk_04[4];
     u8 unk_08[4];
-} UnkStruct_ov114_02260204;
+} WiFiLobbyMinigamePlayerRowLayout;
 
 typedef struct {
     Window unk_00;
@@ -120,56 +120,56 @@ typedef struct {
     u16 unk_18;
     u8 unk_1A;
     u8 unk_1B;
-    UnkStruct_ov114_0225CBF0 unk_1C;
+    WiFiLobbyMinigameMotion unk_1C;
     s16 unk_30;
     s16 unk_32;
     s32 unk_34;
-} UnkStruct_ov114_0225DAC0;
+} WiFiLobbyMinigamePlayerRow;
 
 typedef struct {
     u8 unk_00[4];
     u8 unk_04[4];
     const TrainerInfo *unk_08[4];
-} UnkStruct_ov114_0225E0F8;
+} WiFiLobbyMinigamePlayerInfo;
 
 typedef struct {
     Window unk_00;
     u32 unk_10;
     String *unk_14;
-    UnkStruct_ov114_0225CBF0 unk_18;
+    WiFiLobbyMinigameMotion unk_18;
     s16 unk_2C;
     s16 unk_2E;
-} UnkStruct_ov114_0225E1A4;
+} WiFiLobbyMinigameGameTitle;
 
 typedef struct {
-    UnkStruct_ov114_0225CEF0 *unk_00;
+    WiFiLobbyMinigameBackgrounds *unk_00;
     s16 unk_04[2][192];
     BufferManager *bufferManager;
-} UnkStruct_ov114_0225DFFC;
+} WiFiLobbyMinigameScrollEffect;
 
-typedef struct UnkStruct_ov114_0225D678_t {
+typedef struct WiFiLobbyMinigameIntroScreen_t {
     u8 unk_00;
     u8 unk_01;
     u16 heapID;
     u16 unk_04;
     u8 unk_06;
     u8 unk_07;
-    UnkStruct_ov114_0225C76C unk_08;
-    UnkStruct_ov114_0225E0F8 unk_18;
-    UnkStruct_ov114_0225CEF0 unk_30;
-    UnkStruct_ov114_0225D084 unk_3C;
-    UnkStruct_ov114_0225D338 unk_4C;
-    UnkStruct_ov114_0225CFCC unk_84;
-    UnkStruct_ov114_0225CCD0 unk_214;
-    UnkStruct_ov114_0225CDB4 *unk_22C;
-    UnkStruct_ov114_0225E1A4 unk_230;
+    WiFiLobbyMinigamePlayerContext unk_08;
+    WiFiLobbyMinigamePlayerInfo unk_18;
+    WiFiLobbyMinigameBackgrounds unk_30;
+    WiFiLobbyMinigameMessages unk_3C;
+    WiFiLobbyMinigameMessageBox unk_4C;
+    WiFiLobbyMinigameSpriteSystem unk_84;
+    WiFiLobbyMinigameSpriteResources unk_214;
+    WiFiLobbyMinigameSpriteResource *unk_22C;
+    WiFiLobbyMinigameGameTitle unk_230;
     void *unk_260;
     NNSG2dScreenData *unk_264;
-    UnkStruct_ov114_0225DAC0 unk_268[4];
-    UnkStruct_ov114_0225DFFC unk_348;
+    WiFiLobbyMinigamePlayerRow unk_268[4];
+    WiFiLobbyMinigameScrollEffect unk_348;
     SysTask *unk_650;
     SysTask *unk_654;
-} UnkStruct_ov114_0225D678;
+} WiFiLobbyMinigameIntroScreen;
 
 typedef struct {
     u8 unk_00;
@@ -181,20 +181,20 @@ typedef struct {
     u8 unk_1D;
     u8 unk_1E;
     u8 unk_1F;
-} UnkStruct_ov114_0225F270;
+} WiFiLobbyMinigameReplayMenu;
 
 typedef struct {
     void *unk_00;
     NNSG2dScreenData *unk_04;
     Sprite *unk_08[15];
-    UnkStruct_ov114_0225CDB4 *unk_44;
+    WiFiLobbyMinigameSpriteResource *unk_44;
     u8 unk_48;
     u8 unk_49;
     u8 unk_4A;
     u8 unk_4B;
-} UnkStruct_ov114_0225F578;
+} WiFiLobbyMinigameBalloonGrid;
 
-typedef struct UnkStruct_ov114_0225E854_t {
+typedef struct WiFiLobbyMinigameResultsScreen_t {
     u16 unk_00;
     u16 heapID;
     u8 unk_04;
@@ -204,21 +204,21 @@ typedef struct UnkStruct_ov114_0225E854_t {
     u8 unk_08;
     u8 unk_09;
     u8 unk_0A[2];
-    UnkStruct_ov114_0225C76C unk_0C;
-    UnkStruct_ov114_0225C9A8 unk_1C;
-    UnkStruct_ov114_0225E0F8 unk_34;
-    UnkStruct_ov114_0225CEF0 unk_4C;
-    UnkStruct_ov114_0225D084 unk_58;
-    UnkStruct_ov114_0225D338 unk_68;
-    UnkStruct_ov114_0225CFCC unk_A0;
-    UnkStruct_ov114_0225CCD0 unk_230;
-    UnkStruct_ov114_0225CDB4 *unk_248;
-    UnkStruct_ov114_0225F270 unk_24C;
-    UnkStruct_ov114_0225F578 unk_26C;
+    WiFiLobbyMinigamePlayerContext unk_0C;
+    WiFiLobbyMinigameRanking unk_1C;
+    WiFiLobbyMinigamePlayerInfo unk_34;
+    WiFiLobbyMinigameBackgrounds unk_4C;
+    WiFiLobbyMinigameMessages unk_58;
+    WiFiLobbyMinigameMessageBox unk_68;
+    WiFiLobbyMinigameSpriteSystem unk_A0;
+    WiFiLobbyMinigameSpriteResources unk_230;
+    WiFiLobbyMinigameSpriteResource *unk_248;
+    WiFiLobbyMinigameReplayMenu unk_24C;
+    WiFiLobbyMinigameBalloonGrid unk_26C;
     void *unk_2B8[1];
     NNSG2dScreenData *unk_2BC[1];
-    UnkStruct_ov114_0225DAC0 unk_2C0[4];
-    UnkStruct_ov114_0225DFFC unk_3A0;
+    WiFiLobbyMinigamePlayerRow unk_2C0[4];
+    WiFiLobbyMinigameScrollEffect unk_3A0;
     SysTask *unk_6A8;
     SysTask *unk_6AC;
     u32 unk_6B0;
@@ -229,7 +229,7 @@ typedef struct UnkStruct_ov114_0225E854_t {
     u16 unk_6C0;
     u16 unk_6C2;
     BOOL unk_6C4;
-} UnkStruct_ov114_0225E854;
+} WiFiLobbyMinigameResultsScreen;
 
 typedef struct {
     Sprite *unk_00[2];
@@ -240,242 +240,242 @@ typedef struct {
     GXWndPlane unk_190;
     GXWndPlane battlerType;
     int unk_194;
-} UnkStruct_ov114_0225FAB8;
+} WiFiLobbyMinigameCurtain;
 
-typedef struct UnkStruct_ov114_02025CAD4_t {
+typedef struct WiFiLobbyMinigameIntroAnimation_t {
     u32 unk_00;
     u16 unk_04;
     s16 unk_06;
     SpriteList *unk_08;
     NARC *unk_0C;
-    UnkStruct_ov114_0225CCD0 unk_10;
-    UnkStruct_ov114_0225CDB4 *unk_28;
+    WiFiLobbyMinigameSpriteResources unk_10;
+    WiFiLobbyMinigameSpriteResource *unk_28;
     SysTask *unk_2C;
     Sprite *unk_30;
-    UnkStruct_ov114_0225FAB8 unk_34;
-} UnkStruct_ov114_0225CAD4;
+    WiFiLobbyMinigameCurtain unk_34;
+} WiFiLobbyMinigameIntroAnimation;
 
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-} UnkStruct_ov114_02260234;
+} WiFiLobbyMinigameMessageIdRemap;
 
-static void ov114_0225CBF0(UnkStruct_ov114_0225CBF0 *param0, fx32 param1, fx32 param2, fx32 param3, int param4);
-static BOOL ov114_0225CC4C(UnkStruct_ov114_0225CBF0 *param0, s32 param1);
-static void ov114_0225CCB0(NNSG2dScreenData *param0, u32 param1);
-static void ov114_0225CCD0(UnkStruct_ov114_0225CCD0 *param0, u32 param1, u32 heapID);
-static void ov114_0225CD10(UnkStruct_ov114_0225CCD0 *param0);
-static UnkStruct_ov114_0225CDB4 *ov114_0225CD54(UnkStruct_ov114_0225CCD0 *param0, NARC *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8);
-static Sprite *ov114_0225CDB4(UnkStruct_ov114_0225CDB4 *param0, SpriteList *param1, s16 param2, s16 param3, u16 param4, u32 param5);
-static void ov114_0225CDE0(UnkStruct_ov114_0225CCD0 *param0, UnkStruct_ov114_0225CDB4 *param1, NARC *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9);
-static void ov114_0225CEB8(UnkStruct_ov114_0225CCD0 *param0, UnkStruct_ov114_0225CDB4 *param1);
-static void ov114_0225CF84(UnkStruct_ov114_0225CEF0 *param0);
-static void ov114_0225CFC0(UnkStruct_ov114_0225CEF0 *param0);
-static void ov114_0225CFCC(UnkStruct_ov114_0225CFCC *param0, u32 param1, u32 param2, u32 param3, u32 param4);
-static void ov114_0225D058(UnkStruct_ov114_0225CFCC *param0);
-static void ov114_0225D070(UnkStruct_ov114_0225CFCC *param0);
-static void ov114_0225D07C(UnkStruct_ov114_0225CFCC *param0);
-static void ov114_0225D084(UnkStruct_ov114_0225D084 *param0, u32 heapID);
-static void ov114_0225D0D8(UnkStruct_ov114_0225D084 *param0);
-static void ov114_0225D0F8(UnkStruct_ov114_0225D084 *param0);
-static void ov114_0225D104(UnkStruct_ov114_0225D084 *param0, const TrainerInfo *param1);
-static void ov114_0225D114(UnkStruct_ov114_0225D084 *param0, u32 param1);
-static void ov114_0225D124(UnkStruct_ov114_0225D084 *param0, u32 param1, u32 param2);
-static void ov114_0225D138(UnkStruct_ov114_0225D084 *param0, u32 param1, u32 param2);
-static void ov114_0225D154(UnkStruct_ov114_0225D084 *param0, u32 param1);
-static void ov114_0225D170(UnkStruct_ov114_0225D084 *param0, u32 param1);
-static void ov114_0225D180(UnkStruct_ov114_0225D084 *param0, u32 param1);
-static void ov114_0225D190(UnkStruct_ov114_0225D084 *param0, String *param1, u32 param2);
-static void ov114_0225D1AC(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, u8 param3, u8 param4);
-static void ov114_0225D1C8(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, u8 param3, u8 param4);
-static u32 ov114_0225D218(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, String *param3, u32 param4);
-static void ov114_0225D254(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, u8 param3, u8 param4, TextColor param5);
-static void ov114_0225D290(UnkStruct_ov114_0225D338 *param0, UnkStruct_ov114_0225CEF0 *param1, SaveData *saveData, BOOL param3, u32 heapID);
-static void ov114_0225D338(UnkStruct_ov114_0225D338 *param0);
-static void ov114_0225D368(UnkStruct_ov114_0225D338 *param0, UnkStruct_ov114_0225D084 *param1, u32 param2, u32 param3);
-static void ov114_0225D400(UnkStruct_ov114_0225D338 *param0, u32 param1);
-static BOOL ov114_0225D43C(const UnkStruct_ov114_0225D338 *param0, u32 param1);
-static void ov114_0225D458(UnkStruct_ov114_0225D338 *param0, u32 param1);
-static void ov114_0225D474(UnkStruct_ov114_0225D338 *param0, u32 param1);
-static void ov114_0225DAC0(UnkStruct_ov114_0225DAC0 *param0, u32 param1, u32 param2, NNSG2dScreenData *param3, UnkStruct_ov114_0225CEF0 *param4, u32 param5, u32 param6, UnkStruct_ov114_0225CFCC *param7, UnkStruct_ov114_0225CDB4 *param8, u32 heapID);
-static void ov114_0225DC44(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225D084 *param1, const TrainerInfo *param2, s16 param3, s16 param4, u32 param5);
-static void ov114_0225DCA0(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225D084 *param1, BOOL param2, u32 param3, u32 param4, s16 param5);
-static void ov114_0225DD0C(UnkStruct_ov114_0225DAC0 *param0, u32 param1);
-static void ov114_0225DD2C(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225D084 *param1, u32 param2, s16 param3, s16 param4, u32 param5);
-static void ov114_0225DD80(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225CEF0 *param1);
-static void ov114_0225DD94(UnkStruct_ov114_0225DAC0 *param0);
-static void ov114_0225DDA0(UnkStruct_ov114_0225DAC0 *param0);
-static void ov114_0225DDD4(UnkStruct_ov114_0225DAC0 *param0, s16 param1, s16 param2);
-static void ov114_0225DE38(UnkStruct_ov114_0225DAC0 *param0, s16 param1);
-static BOOL ov114_0225DE70(UnkStruct_ov114_0225DAC0 *param0);
-static void ov114_0225DEBC(UnkStruct_ov114_0225DAC0 *param0, s32 param1);
-static u32 ov114_0225DF44(u32 param0, u32 param1, u32 param2);
-static void ov114_0225DF7C(UnkStruct_ov114_0225DFFC *param0, UnkStruct_ov114_0225CEF0 *param1, u32 heapID);
-static void ov114_0225DFFC(UnkStruct_ov114_0225DFFC *param0);
-static void ov114_0225E028(UnkStruct_ov114_0225DFFC *param0, const UnkStruct_ov114_0225DAC0 *param1);
-static void ov114_0225E08C(UnkStruct_ov114_0225DFFC *param0);
-static void ov114_0225E0AC(void *param0);
-static void ov114_0225E0F8(UnkStruct_ov114_0225E0F8 *param0, const UnkStruct_ov114_0225C76C *param1);
-static BOOL ov114_0225E14C(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225E0F8 *param1);
-u32 ov114_0225E180(u32 param0);
-static void ov114_0225E1A4(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, UnkStruct_ov114_0225D084 *param2, u32 param3, NARC *param4, u32 heapID);
-static void ov114_0225E234(UnkStruct_ov114_0225E1A4 *param0);
-static void ov114_0225E244(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, u32 heapID);
-static void ov114_0225E2D4(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1);
-static BOOL ov114_0225E31C(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1);
-static BOOL ov114_0225E438(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1);
-static void ov114_0225E4B0(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, s32 param2);
-static void ov114_0225E500(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, s32 param2);
-static void ov114_0225E550(NARC *param0, u32 param1, u32 param2);
-static UnkStruct_ov114_0225D678 *ov114_0225D48C(const UnkStruct_ov114_0225C76C *param0, u32 param1, u32 heapID);
-static void ov114_0225D5BC(UnkStruct_ov114_0225D678 *param0, u32 heapID);
-static void ov114_0225D678(UnkStruct_ov114_0225D678 *param0);
-static void ov114_0225D688(SysTask *param0, void *param1);
-static void ov114_0225DA0C(SysTask *param0, void *param1);
-static int ov114_0225DA2C(const u8 *param0, u32 param1);
-static BOOL ov114_0225DA5C(UnkStruct_ov114_0225D678 *param0);
-static UnkStruct_ov114_0225E854 *ov114_0225E5A8(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225C9A8 *param1, u32 param2, u32 heapID);
-static void ov114_0225E744(UnkStruct_ov114_0225E854 *param0, u32 heapID);
-static void ov114_0225E854(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225E874(SysTask *param0, void *param1);
-static void ov114_0225ED40(SysTask *param0, void *param1);
-static void ov114_0225F124(SysTask *param0, void *param1);
-static void ov114_0225F148(UnkStruct_ov114_0225E854 *param0, NARC *param1, u32 param2);
-static void ov114_0225F168(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F19C(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F224(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F234(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_0225CEF0 *param1, u32 param2, u32 heapID);
-static void ov114_0225F270(UnkStruct_ov114_0225F270 *param0);
-static BOOL ov114_0225F27C(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_0225D338 *param1, UnkStruct_ov114_0225D084 *param2, u32 param3, u32 heapID);
-static BOOL ov114_0225F420(const UnkStruct_ov114_0225F270 *param0);
-static void ov114_0225F424(UnkStruct_ov114_0225F270 *param0, u32 param1, BOOL param2, u32 param3);
-static void ov114_0225F47C(UnkStruct_ov114_0225F270 *param0, BOOL param1);
-static void ov114_0225F484(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_0225CEF0 *param1, UnkStruct_ov114_0225CFCC *param2, UnkStruct_ov114_0225CCD0 *param3, NARC *param4, u32 param5);
-static void ov114_0225F578(UnkStruct_ov114_0225F578 *param0);
-static void ov114_0225F598(UnkStruct_ov114_0225F578 *param0, u32 param1);
-static BOOL ov114_0225F5AC(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_0225CEF0 *param1);
-static void ov114_0225F6E4(UnkStruct_ov114_0225E854 *param0, u32 param1, u32 param2);
-static u32 ov114_0225F8FC(const UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F920(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F988(UnkStruct_ov114_0225E854 *param0);
-static BOOL ov114_0225F7D8(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F83C(UnkStruct_ov114_0225E854 *param0);
-static BOOL ov114_0225F860(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F890(UnkStruct_ov114_0225E854 *param0);
-static void ov114_0225F9B8(UnkStruct_ov114_0225FAB8 *param0, UnkStruct_ov114_0225CDB4 *param1, SpriteList *param2, u32 param3);
-static BOOL ov114_0225FAB8(UnkStruct_ov114_0225FAB8 *param0);
-static BOOL ov114_0225FAD8(UnkStruct_ov114_0225FAB8 *param0);
-static void ov114_0225FB10(UnkStruct_ov114_0225FAB8 *param0, s32 param1);
-static void ov114_0225FBF0(UnkStruct_ov114_0225FAB8 *param0);
-static void ov114_0225FC6C(UnkStruct_ov114_0225FAB8 *param0);
-static void ov114_0225FCCC(SysTask *param0, void *param1);
-static void ov114_0225FCF0(void *param0);
-static void ov114_0225FDC8(SysTask *param0, void *param1);
-static void ov114_0225FF54(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_InitMotion(WiFiLobbyMinigameMotion *param0, fx32 param1, fx32 param2, fx32 param3, int param4);
+static BOOL WiFiLobbyMinigame_UpdateMotion(WiFiLobbyMinigameMotion *param0, s32 param1);
+static void WiFiLobbyMinigame_OffsetScreenData(NNSG2dScreenData *param0, u32 param1);
+static void WiFiLobbyMinigame_InitSpriteResources(WiFiLobbyMinigameSpriteResources *param0, u32 param1, u32 heapID);
+static void WiFiLobbyMinigame_FreeSpriteResources(WiFiLobbyMinigameSpriteResources *param0);
+static WiFiLobbyMinigameSpriteResource *WiFiLobbyMinigame_AllocSpriteResource(WiFiLobbyMinigameSpriteResources *param0, NARC *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8);
+static Sprite *WiFiLobbyMinigame_AddSprite(WiFiLobbyMinigameSpriteResource *param0, SpriteList *param1, s16 param2, s16 param3, u16 param4, u32 param5);
+static void WiFiLobbyMinigame_LoadSpriteResource(WiFiLobbyMinigameSpriteResources *param0, WiFiLobbyMinigameSpriteResource *param1, NARC *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9);
+static void WiFiLobbyMinigame_UnloadSpriteResource(WiFiLobbyMinigameSpriteResources *param0, WiFiLobbyMinigameSpriteResource *param1);
+static void WiFiLobbyMinigame_FreeBackgrounds(WiFiLobbyMinigameBackgrounds *param0);
+static void WiFiLobbyMinigame_RunBackgroundUpdates(WiFiLobbyMinigameBackgrounds *param0);
+static void WiFiLobbyMinigame_InitSpriteSystem(WiFiLobbyMinigameSpriteSystem *param0, u32 param1, u32 param2, u32 param3, u32 param4);
+static void WiFiLobbyMinigame_FreeSpriteSystem(WiFiLobbyMinigameSpriteSystem *param0);
+static void WiFiLobbyMinigame_UpdateSprites(WiFiLobbyMinigameSpriteSystem *param0);
+static void WiFiLobbyMinigame_TransferOam(WiFiLobbyMinigameSpriteSystem *param0);
+static void WiFiLobbyMinigame_InitMessages(WiFiLobbyMinigameMessages *param0, u32 heapID);
+static void WiFiLobbyMinigame_FreeMessages(WiFiLobbyMinigameMessages *param0);
+static void WiFiLobbyMinigame_ClearMessageArgs(WiFiLobbyMinigameMessages *param0);
+static void WiFiLobbyMinigame_SetMessagePlayerName(WiFiLobbyMinigameMessages *param0, const TrainerInfo *param1);
+static void WiFiLobbyMinigame_SetMessageCountryName(WiFiLobbyMinigameMessages *param0, u32 param1);
+static void WiFiLobbyMinigame_SetMessageCityName(WiFiLobbyMinigameMessages *param0, u32 param1, u32 param2);
+static void WiFiLobbyMinigame_SetMessageNumber(WiFiLobbyMinigameMessages *param0, u32 param1, u32 param2);
+static void WiFiLobbyMinigame_SetMessageRankNumber(WiFiLobbyMinigameMessages *param0, u32 param1);
+static void WiFiLobbyMinigame_SetMessagePlazaItemName(WiFiLobbyMinigameMessages *param0, u32 param1);
+static void WiFiLobbyMinigame_SetMessageMinigameName(WiFiLobbyMinigameMessages *param0, u32 param1);
+static void WiFiLobbyMinigame_DrawMessage(WiFiLobbyMinigameMessages *param0, String *param1, u32 param2);
+static void WiFiLobbyMinigame_DrawMessageLeft(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, u8 param3, u8 param4);
+static void WiFiLobbyMinigame_DrawMessageRightAligned(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, u8 param3, u8 param4);
+static u32 WiFiLobbyMinigame_PrintMessage(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, String *param3, u32 param4);
+static void WiFiLobbyMinigame_DrawMessageWithColor(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, u8 param3, u8 param4, TextColor param5);
+static void WiFiLobbyMinigame_InitMessageBox(WiFiLobbyMinigameMessageBox *param0, WiFiLobbyMinigameBackgrounds *param1, SaveData *saveData, BOOL param3, u32 heapID);
+static void WiFiLobbyMinigame_FreeMessageBox(WiFiLobbyMinigameMessageBox *param0);
+static void WiFiLobbyMinigame_ShowMessage(WiFiLobbyMinigameMessageBox *param0, WiFiLobbyMinigameMessages *param1, u32 param2, u32 param3);
+static void WiFiLobbyMinigame_HideMessage(WiFiLobbyMinigameMessageBox *param0, u32 param1);
+static BOOL WiFiLobbyMinigame_IsMessageDone(const WiFiLobbyMinigameMessageBox *param0, u32 param1);
+static void WiFiLobbyMinigame_ShowWaitDial(WiFiLobbyMinigameMessageBox *param0, u32 param1);
+static void WiFiLobbyMinigame_HideWaitDial(WiFiLobbyMinigameMessageBox *param0, u32 param1);
+static void WiFiLobbyMinigame_InitPlayerRow(WiFiLobbyMinigamePlayerRow *param0, u32 param1, u32 param2, NNSG2dScreenData *param3, WiFiLobbyMinigameBackgrounds *param4, u32 param5, u32 param6, WiFiLobbyMinigameSpriteSystem *param7, WiFiLobbyMinigameSpriteResource *param8, u32 heapID);
+static void WiFiLobbyMinigame_DrawPlayerRowName(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameMessages *param1, const TrainerInfo *param2, s16 param3, s16 param4, u32 param5);
+static void WiFiLobbyMinigame_DrawPlayerRowLocation(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameMessages *param1, BOOL param2, u32 param3, u32 param4, s16 param5);
+static void WiFiLobbyMinigame_ShowPlayerRowRankIcon(WiFiLobbyMinigamePlayerRow *param0, u32 param1);
+static void WiFiLobbyMinigame_DrawPlayerRowScore(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameMessages *param1, u32 param2, s16 param3, s16 param4, u32 param5);
+static void WiFiLobbyMinigame_TransferPlayerRow(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameBackgrounds *param1);
+static void WiFiLobbyMinigame_ShowPlayerRowSprite(WiFiLobbyMinigamePlayerRow *param0);
+static void WiFiLobbyMinigame_FreePlayerRow(WiFiLobbyMinigamePlayerRow *param0);
+static void WiFiLobbyMinigame_StartPlayerRowSlideIn(WiFiLobbyMinigamePlayerRow *param0, s16 param1, s16 param2);
+static void WiFiLobbyMinigame_StartPlayerRowSlideOut(WiFiLobbyMinigamePlayerRow *param0, s16 param1);
+static BOOL WiFiLobbyMinigame_UpdatePlayerRowMotion(WiFiLobbyMinigamePlayerRow *param0);
+static void WiFiLobbyMinigame_SetPlayerRowSpritePos(WiFiLobbyMinigamePlayerRow *param0, s32 param1);
+static u32 WiFiLobbyMinigame_GetPlayerRowOrder(u32 param0, u32 param1, u32 param2);
+static void WiFiLobbyMinigame_InitScrollEffect(WiFiLobbyMinigameScrollEffect *param0, WiFiLobbyMinigameBackgrounds *param1, u32 heapID);
+static void WiFiLobbyMinigame_FreeScrollEffect(WiFiLobbyMinigameScrollEffect *param0);
+static void WiFiLobbyMinigame_UpdateScrollEffect(WiFiLobbyMinigameScrollEffect *param0, const WiFiLobbyMinigamePlayerRow *param1);
+static void WiFiLobbyMinigame_SwapScrollBuffers(WiFiLobbyMinigameScrollEffect *param0);
+static void WiFiLobbyMinigame_ScrollEffectHBlank(void *param0);
+static void WiFiLobbyMinigame_InitPlayerInfo(WiFiLobbyMinigamePlayerInfo *param0, const WiFiLobbyMinigamePlayerContext *param1);
+static BOOL WiFiLobbyMinigame_ArePlayersFromDifferentCountries(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigamePlayerInfo *param1);
+u32 WiFiLobbyMinigame_GetNextMinigame(u32 param0);
+static void WiFiLobbyMinigame_InitGameTitle(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, WiFiLobbyMinigameMessages *param2, u32 param3, NARC *param4, u32 heapID);
+static void WiFiLobbyMinigame_FreeGameTitle(WiFiLobbyMinigameGameTitle *param0);
+static void WiFiLobbyMinigame_ShowGameTitle(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, u32 heapID);
+static void WiFiLobbyMinigame_HideGameTitle(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1);
+static BOOL WiFiLobbyMinigame_UpdateGameTitleShow(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1);
+static BOOL WiFiLobbyMinigame_UpdateGameTitleHide(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1);
+static void WiFiLobbyMinigame_SetGameTitleBgOffset(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, s32 param2);
+static void WiFiLobbyMinigame_ScheduleGameTitleBgScroll(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, s32 param2);
+static void WiFiLobbyMinigame_LoadMinigamePalette(NARC *param0, u32 param1, u32 param2);
+static WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreenInternal(const WiFiLobbyMinigamePlayerContext *param0, u32 param1, u32 heapID);
+static void WiFiLobbyMinigame_LoadIntroScreenGraphics(WiFiLobbyMinigameIntroScreen *param0, u32 heapID);
+static void WiFiLobbyMinigame_FreeIntroScreenGraphics(WiFiLobbyMinigameIntroScreen *param0);
+static void WiFiLobbyMinigame_IntroScreenTask(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_IntroScreenVBlankTask(SysTask *param0, void *param1);
+static int WiFiLobbyMinigame_RandomWeightedIndex(const u8 *param0, u32 param1);
+static BOOL WiFiLobbyMinigame_UpdatePlayerRows(WiFiLobbyMinigameIntroScreen *param0);
+static WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreenInternal(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 param2, u32 heapID);
+static void WiFiLobbyMinigame_LoadResultsScreenGraphics(WiFiLobbyMinigameResultsScreen *param0, u32 heapID);
+static void WiFiLobbyMinigame_FreeResultsScreenGraphics(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_ResultsScreenTask(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_ResultsScreenTaskGame2(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_ResultsScreenVBlankTask(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_LoadResultsPalette(WiFiLobbyMinigameResultsScreen *param0, NARC *param1, u32 param2);
+static void WiFiLobbyMinigame_CheckLocalPlayerWon(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_UpdateRankPalette(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_FreeResultsPalette(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_InitReplayMenu(WiFiLobbyMinigameReplayMenu *param0, WiFiLobbyMinigameBackgrounds *param1, u32 param2, u32 heapID);
+static void WiFiLobbyMinigame_FreeReplayMenu(WiFiLobbyMinigameReplayMenu *param0);
+static BOOL WiFiLobbyMinigame_UpdateReplayMenu(WiFiLobbyMinigameReplayMenu *param0, WiFiLobbyMinigameMessageBox *param1, WiFiLobbyMinigameMessages *param2, u32 param3, u32 heapID);
+static BOOL WiFiLobbyMinigame_ReplayMenuGetResult(const WiFiLobbyMinigameReplayMenu *param0);
+static void WiFiLobbyMinigame_ReplayMenuSetPlayerReady(WiFiLobbyMinigameReplayMenu *param0, u32 param1, BOOL param2, u32 param3);
+static void WiFiLobbyMinigame_ReplayMenuSetAllReady(WiFiLobbyMinigameReplayMenu *param0, BOOL param1);
+static void WiFiLobbyMinigame_InitBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0, WiFiLobbyMinigameBackgrounds *param1, WiFiLobbyMinigameSpriteSystem *param2, WiFiLobbyMinigameSpriteResources *param3, NARC *param4, u32 param5);
+static void WiFiLobbyMinigame_FreeBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0);
+static void WiFiLobbyMinigame_StartBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0, u32 param1);
+static BOOL WiFiLobbyMinigame_UpdateBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0, WiFiLobbyMinigameBackgrounds *param1);
+static void WiFiLobbyMinigame_InitPlayerRowWithScore(WiFiLobbyMinigameResultsScreen *param0, u32 param1, u32 param2);
+static u32 WiFiLobbyMinigame_GetTargetScore(const WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_SendGameResults(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_SendGameResultsGame2(WiFiLobbyMinigameResultsScreen *param0);
+static BOOL WiFiLobbyMinigame_UpdatePlayerRowsMotion(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_PlayWinFanfare(WiFiLobbyMinigameResultsScreen *param0);
+static BOOL WiFiLobbyMinigame_IsWinFanfareDone(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_RecordFriendGameCount(WiFiLobbyMinigameResultsScreen *param0);
+static void WiFiLobbyMinigame_InitCurtain(WiFiLobbyMinigameCurtain *param0, WiFiLobbyMinigameSpriteResource *param1, SpriteList *param2, u32 param3);
+static BOOL WiFiLobbyMinigame_OpenCurtain(WiFiLobbyMinigameCurtain *param0);
+static BOOL WiFiLobbyMinigame_CloseCurtain(WiFiLobbyMinigameCurtain *param0);
+static void WiFiLobbyMinigame_SetCurtainPosition(WiFiLobbyMinigameCurtain *param0, s32 param1);
+static void WiFiLobbyMinigame_FreeCurtain(WiFiLobbyMinigameCurtain *param0);
+static void WiFiLobbyMinigame_UpdateCurtainWindow(WiFiLobbyMinigameCurtain *param0);
+static void WiFiLobbyMinigame_CurtainWindowTask(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_CurtainHBlank(void *param0);
+static void WiFiLobbyMinigame_IntroAnimationRollTask(SysTask *param0, void *param1);
+static void WiFiLobbyMinigame_IntroAnimationPopTask(SysTask *param0, void *param1);
 
-static const s16 Unk_ov114_0226015C[4][2] = {
+static const s16 sPlayerRowSpriteOffsets[4][2] = {
     { 0x80, 0x2C },
     { 0xEC, 0x18 },
     { 0x4, 0x18 },
     { 0x80, 0x4 }
 };
 
-static const u8 Unk_ov114_022600D4[4] = {
+static const u8 sPlayerRowPaletteOrder[4] = {
     0x0,
     0x1,
     0x3,
     0x2
 };
 
-static const s16 Unk_ov114_022600D8[4] = {
+static const s16 sPlayerRowSlideOffsets[4] = {
     0x0,
     0xFFFFFFFFFFFFFFF6,
     0xFFFFFFFFFFFFFFF0,
     0xFFFFFFFFFFFFFFE8
 };
 
-static const VecFx32 Unk_ov114_0226019C[2] = {
+static const VecFx32 sCurtainSpritePositions[2] = {
     { FX32_CONST(128), FX32_CONST(96), 0x0 },
     { FX32_CONST(128), FX32_CONST(96 + 2), 0x0 }
 };
 
-static const TextColor Unk_ov114_022600F8[UnkEnum_ov66_022324D0_12] = {
+static const TextColor sGameTitleTextColors[UnkEnum_ov66_022324D0_12] = {
     TEXT_COLOR(7, 8, 9),
     TEXT_COLOR(4, 5, 6),
     TEXT_COLOR(1, 2, 3),
 };
 
-static const fx32 Unk_ov114_02260140[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideInStart[UnkEnum_ov66_022324D0_12] = {
     -FX32_CONST(200),
     FX32_CONST(200),
     FX32_CONST(160)
 };
 
-static const fx32 Unk_ov114_02260110[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideInEnd[UnkEnum_ov66_022324D0_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const fx32 Unk_ov114_02260104[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideInAccel[UnkEnum_ov66_022324D0_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const fx32 Unk_ov114_0226011C[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideOutStart[UnkEnum_ov66_022324D0_12] = {
     -FX32_CONST(18),
     FX32_CONST(18),
     FX32_CONST(16)
 };
 
-static const fx32 Unk_ov114_02260128[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideOutEnd[UnkEnum_ov66_022324D0_12] = {
     -FX32_CONST(9),
     FX32_CONST(9),
     FX32_CONST(8)
 };
 
-static const fx32 Unk_ov114_02260134[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleSlideOutAccel[UnkEnum_ov66_022324D0_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const fx32 Unk_ov114_022600E0[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleHideStart[UnkEnum_ov66_022324D0_12] = {
     FX32_CONST(200),
     -FX32_CONST(200),
     -FX32_CONST(160)
 };
 
-static const fx32 Unk_ov114_022600EC[UnkEnum_ov66_022324D0_12] = {
+static const fx32 sGameTitleHideEnd[UnkEnum_ov66_022324D0_12] = {
     FX32_CONST(0),
     FX32_CONST(0),
     FX32_CONST(0)
 };
 
-static const u8 Unk_ov114_022600D0[3] = {
+static const u8 sRandomWeightsGame0[3] = {
     0x4B,
     0xF,
     0xA
 };
-static const u8 Unk_ov114_022600C8[2] = {
+static const u8 sRandomWeightsGame1[2] = {
     0x55,
     0xF
 };
-static const u8 Unk_ov114_022600CC[3] = {
+static const u8 sRandomWeightsGame2[3] = {
     0x55,
     0xF,
     0x0
 };
 
-static const CharTransferTemplate Unk_ov114_0226017C = {
+static const CharTransferTemplate sCharTransferTemplate = {
     0x0,
     0x4000,
     0x4000,
     0x0
 };
 
-static const GXBanks Unk_ov114_022601B4 = {
+static const GXBanks sIntroScreenGXBanks = {
     GX_VRAM_BG_256_AB,
     GX_VRAM_BGEXTPLTT_NONE,
     GX_VRAM_SUB_BG_32_H,
@@ -488,14 +488,14 @@ static const GXBanks Unk_ov114_022601B4 = {
     GX_VRAM_TEXPLTT_NONE
 };
 
-static const GraphicsModes Unk_ov114_0226018C = {
+static const GraphicsModes sIntroScreenGraphicsModes = {
     GX_DISPMODE_GRAPHICS,
     GX_BGMODE_0,
     GX_BGMODE_0,
     GX_BG0_AS_2D
 };
 
-static const UnkStruct_ov114_02260284 Unk_ov114_02260284[5] = {
+static const WiFiLobbyMinigameBgTemplate sIntroScreenBgTemplates[5] = {
     {
         0x3,
         {
@@ -583,7 +583,7 @@ static const UnkStruct_ov114_02260284 Unk_ov114_02260284[5] = {
     },
 };
 
-static const UnkStruct_ov114_02260204 Unk_ov114_02260204[4] = {
+static const WiFiLobbyMinigamePlayerRowLayout sPlayerRowLayouts[4] = {
     {
         { 0x0, 0x0, 0x0, 0x0 },
         { 0x0, 0x0, 0x0, 0x0 },
@@ -606,14 +606,14 @@ static const UnkStruct_ov114_02260204 Unk_ov114_02260204[4] = {
     },
 };
 
-static const u8 Unk_ov114_0226016C[4][4] = {
+static const u8 sPlayerRowOrder[4][4] = {
     { 0x0, 0x0, 0x0, 0x0 },
     { 0x0, 0x1, 0x0, 0x0 },
     { 0x0, 0x2, 0x1, 0x0 },
     { 0x0, 0x3, 0x1, 0x2 }
 };
 
-static const GXBanks Unk_ov114_022601DC = {
+static const GXBanks sResultsScreenGXBanks = {
     GX_VRAM_BG_256_AB,
     GX_VRAM_BGEXTPLTT_NONE,
     GX_VRAM_SUB_BG_32_H,
@@ -626,14 +626,14 @@ static const GXBanks Unk_ov114_022601DC = {
     GX_VRAM_TEXPLTT_NONE
 };
 
-static const GraphicsModes Unk_ov114_0226014C = {
+static const GraphicsModes sResultsScreenGraphicsModes = {
     GX_DISPMODE_GRAPHICS,
     GX_BGMODE_0,
     GX_BGMODE_0,
     GX_BG0_AS_2D
 };
 
-static const UnkStruct_ov114_02260284 Unk_ov114_02260324[6] = {
+static const WiFiLobbyMinigameBgTemplate sResultsScreenBgTemplates[6] = {
     {
         0x3,
         {
@@ -738,7 +738,7 @@ static const UnkStruct_ov114_02260284 Unk_ov114_02260324[6] = {
     },
 };
 
-static const UnkStruct_ov114_02260234 Unk_ov114_02260234[] = {
+static const WiFiLobbyMinigameMessageIdRemap sMessageIdRemap[] = {
     { 0x0, 0x0 },
     { 0x1, 0x1 },
     { 0x2, 0x14 },
@@ -761,14 +761,14 @@ static const UnkStruct_ov114_02260234 Unk_ov114_02260234[] = {
     { 0x13, 0x13 },
 };
 
-void ov114_0225C700(UnkStruct_ov114_0225C76C *param0, BOOL param1, SaveData *saveData, BOOL param3, UnkStruct_ov66_02230DBC *param4)
+void WiFiLobbyMinigame_InitPlayerContext(WiFiLobbyMinigamePlayerContext *param0, BOOL param1, SaveData *saveData, BOOL param3, UnkStruct_ov66_02230DBC *param4)
 {
     int v0;
     int v1;
     u32 v2;
     TrainerInfo *v3;
 
-    memset(param0, 0, sizeof(UnkStruct_ov114_0225C76C));
+    memset(param0, 0, sizeof(WiFiLobbyMinigamePlayerContext));
 
     param0->unk_08 = CommInfo_CountReceived();
     v2 = CommSys_CurNetId();
@@ -798,7 +798,7 @@ void ov114_0225C700(UnkStruct_ov114_0225C76C *param0, BOOL param1, SaveData *sav
     param0->unk_0C = param4;
 }
 
-u32 ov114_0225C76C(const UnkStruct_ov114_0225C76C *param0, u32 param1)
+u32 WiFiLobbyMinigame_GetPlayerIndex(const WiFiLobbyMinigamePlayerContext *param0, u32 param1)
 {
     int v0;
 
@@ -811,14 +811,14 @@ u32 ov114_0225C76C(const UnkStruct_ov114_0225C76C *param0, u32 param1)
     return 4;
 }
 
-u32 ov114_0225C78C(const UnkStruct_ov114_0225C76C *param0, u32 param1)
+u32 WiFiLobbyMinigame_GetNetIdByIndex(const WiFiLobbyMinigamePlayerContext *param0, u32 param1)
 {
     GF_ASSERT(param1 < param0->unk_08);
 
     return param0->unk_04[param1];
 }
 
-BOOL ov114_0225C7A4(const UnkStruct_ov114_0225C76C *param0, u32 param1)
+BOOL WiFiLobbyMinigame_IsPlayerReady(const WiFiLobbyMinigamePlayerContext *param0, u32 param1)
 {
     u32 v0;
     BOOL v1;
@@ -839,7 +839,7 @@ BOOL ov114_0225C7A4(const UnkStruct_ov114_0225C76C *param0, u32 param1)
     return v1;
 }
 
-TrainerInfo *ov114_0225C7CC(const UnkStruct_ov114_0225C76C *param0, u32 param1)
+TrainerInfo *WiFiLobbyMinigame_GetTrainerInfo(const WiFiLobbyMinigamePlayerContext *param0, u32 param1)
 {
     u32 v0;
 
@@ -849,7 +849,7 @@ TrainerInfo *ov114_0225C7CC(const UnkStruct_ov114_0225C76C *param0, u32 param1)
     }
 
     if (param0->unk_0B == 1) {
-        v0 = ov114_0225C76C(param0, param1);
+        v0 = WiFiLobbyMinigame_GetPlayerIndex(param0, param1);
 
         if (v0 == param0->unk_09) {
             return SaveData_GetTrainerInfo(param0->saveData);
@@ -862,48 +862,48 @@ TrainerInfo *ov114_0225C7CC(const UnkStruct_ov114_0225C76C *param0, u32 param1)
     return param0->unk_0C->unk_20[param1];
 }
 
-UnkStruct_ov114_0225D678 *ov114_0225C814(const UnkStruct_ov114_0225C76C *param0, u32 heapID)
+WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen0(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
 {
-    return ov114_0225D48C(param0, UnkEnum_ov66_022324D0_00, heapID);
+    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, UnkEnum_ov66_022324D0_00, heapID);
 }
 
-UnkStruct_ov114_0225D678 *ov114_0225C820(const UnkStruct_ov114_0225C76C *param0, u32 heapID)
+WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen1(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
 {
-    return ov114_0225D48C(param0, UnkEnum_ov66_022324D0_01, heapID);
+    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, UnkEnum_ov66_022324D0_01, heapID);
 }
 
-UnkStruct_ov114_0225D678 *ov114_0225C82C(const UnkStruct_ov114_0225C76C *param0, u32 heapID)
+WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen2(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
 {
-    return ov114_0225D48C(param0, UnkEnum_ov66_022324D0_02, heapID);
+    return WiFiLobbyMinigame_CreateIntroScreenInternal(param0, UnkEnum_ov66_022324D0_02, heapID);
 }
 
-void ov114_0225C838(UnkStruct_ov114_0225D678 *param0)
+void WiFiLobbyMinigame_FreeIntroScreen(WiFiLobbyMinigameIntroScreen *param0)
 {
     SysTask_Done(param0->unk_650);
     SysTask_Done(param0->unk_654);
 
-    ov114_0225DFFC(&param0->unk_348);
-    ov114_0225E234(&param0->unk_230);
+    WiFiLobbyMinigame_FreeScrollEffect(&param0->unk_348);
+    WiFiLobbyMinigame_FreeGameTitle(&param0->unk_230);
 
     {
         int v0;
 
         for (v0 = 0; v0 < param0->unk_08.unk_08; v0++) {
-            ov114_0225DDA0(&param0->unk_268[v0]);
+            WiFiLobbyMinigame_FreePlayerRow(&param0->unk_268[v0]);
         }
     }
 
-    ov114_0225D338(&param0->unk_4C);
-    ov114_0225D678(param0);
-    ov114_0225D0D8(&param0->unk_3C);
-    ov114_0225CD10(&param0->unk_214);
-    ov114_0225D058(&param0->unk_84);
-    ov114_0225CF84(&param0->unk_30);
+    WiFiLobbyMinigame_FreeMessageBox(&param0->unk_4C);
+    WiFiLobbyMinigame_FreeIntroScreenGraphics(param0);
+    WiFiLobbyMinigame_FreeMessages(&param0->unk_3C);
+    WiFiLobbyMinigame_FreeSpriteResources(&param0->unk_214);
+    WiFiLobbyMinigame_FreeSpriteSystem(&param0->unk_84);
+    WiFiLobbyMinigame_FreeBackgrounds(&param0->unk_30);
 
     Heap_Free(param0);
 }
 
-BOOL ov114_0225C8BC(const UnkStruct_ov114_0225D678 *param0)
+BOOL WiFiLobbyMinigame_IntroScreenIsDone(const WiFiLobbyMinigameIntroScreen *param0)
 {
     if (param0->unk_00 >= 16) {
         return 1;
@@ -912,49 +912,49 @@ BOOL ov114_0225C8BC(const UnkStruct_ov114_0225D678 *param0)
     return 0;
 }
 
-int ov114_0225C8CC(const UnkStruct_ov114_0225D678 *param0)
+int WiFiLobbyMinigame_IntroScreenGetResult(const WiFiLobbyMinigameIntroScreen *param0)
 {
     GF_ASSERT(param0->unk_07 == 1);
     return param0->unk_06;
 }
 
-UnkStruct_ov114_0225E854 *ov114_0225C8E0(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225C9A8 *param1, u32 heapID)
+WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreen0(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 heapID)
 {
-    return ov114_0225E5A8(param0, param1, UnkEnum_ov66_022324D0_00, heapID);
+    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, UnkEnum_ov66_022324D0_00, heapID);
 }
 
-UnkStruct_ov114_0225E854 *ov114_0225C8EC(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225C9A8 *param1, u32 heapID)
+WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreen1(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 heapID)
 {
-    return ov114_0225E5A8(param0, param1, UnkEnum_ov66_022324D0_01, heapID);
+    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, UnkEnum_ov66_022324D0_01, heapID);
 }
 
-UnkStruct_ov114_0225E854 *ov114_0225C8F8(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225C9A8 *param1, u32 heapID)
+WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreen2(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 heapID)
 {
-    return ov114_0225E5A8(param0, param1, UnkEnum_ov66_022324D0_02, heapID);
+    return WiFiLobbyMinigame_CreateResultsScreenInternal(param0, param1, UnkEnum_ov66_022324D0_02, heapID);
 }
 
-void ov114_0225C904(UnkStruct_ov114_0225E854 *param0)
+void WiFiLobbyMinigame_FreeResultsScreen(WiFiLobbyMinigameResultsScreen *param0)
 {
     SysTask_Done(param0->unk_6A8);
     SysTask_Done(param0->unk_6AC);
 
-    ov114_0225DFFC(&param0->unk_3A0);
+    WiFiLobbyMinigame_FreeScrollEffect(&param0->unk_3A0);
 
     {
         int v0;
 
         for (v0 = 0; v0 < param0->unk_0C.unk_08; v0++) {
-            ov114_0225DDA0(&param0->unk_2C0[v0]);
+            WiFiLobbyMinigame_FreePlayerRow(&param0->unk_2C0[v0]);
         }
     }
 
-    ov114_0225F270(&param0->unk_24C);
-    ov114_0225E854(param0);
-    ov114_0225D338(&param0->unk_68);
-    ov114_0225D0D8(&param0->unk_58);
-    ov114_0225CD10(&param0->unk_230);
-    ov114_0225D058(&param0->unk_A0);
-    ov114_0225CF84(&param0->unk_4C);
+    WiFiLobbyMinigame_FreeReplayMenu(&param0->unk_24C);
+    WiFiLobbyMinigame_FreeResultsScreenGraphics(param0);
+    WiFiLobbyMinigame_FreeMessageBox(&param0->unk_68);
+    WiFiLobbyMinigame_FreeMessages(&param0->unk_58);
+    WiFiLobbyMinigame_FreeSpriteResources(&param0->unk_230);
+    WiFiLobbyMinigame_FreeSpriteSystem(&param0->unk_A0);
+    WiFiLobbyMinigame_FreeBackgrounds(&param0->unk_4C);
 
     G2_BlendNone();
     G2S_BlendNone();
@@ -963,17 +963,17 @@ void ov114_0225C904(UnkStruct_ov114_0225E854 *param0)
     Heap_Free(param0);
 }
 
-BOOL ov114_0225C9A0(const UnkStruct_ov114_0225E854 *param0)
+BOOL WiFiLobbyMinigame_ResultsScreenIsDone(const WiFiLobbyMinigameResultsScreen *param0)
 {
     return param0->unk_06;
 }
 
-BOOL ov114_0225C9A4(const UnkStruct_ov114_0225E854 *param0)
+BOOL WiFiLobbyMinigame_ResultsScreenGetResult(const WiFiLobbyMinigameResultsScreen *param0)
 {
     return param0->unk_08;
 }
 
-void ov114_0225C9A8(UnkStruct_ov114_0225C9A8 *param0, u32 param1)
+void WiFiLobbyMinigame_InitRanking(WiFiLobbyMinigameRanking *param0, u32 param1)
 {
     u8 v0[4];
     int v1, v2;
@@ -1013,25 +1013,25 @@ void ov114_0225C9A8(UnkStruct_ov114_0225C9A8 *param0, u32 param1)
     }
 }
 
-void ov114_0225CA24(UnkStruct_ov114_0225D678 *param0, int param1)
+void WiFiLobbyMinigame_IntroScreenSetResult(WiFiLobbyMinigameIntroScreen *param0, int param1)
 {
     param0->unk_06 = param1;
     param0->unk_07 = 1;
 }
 
-void ov114_0225CA2C(UnkStruct_ov114_0225E854 *param0, u32 param1, BOOL param2)
+void WiFiLobbyMinigame_ResultsScreenSetPlayerReady(WiFiLobbyMinigameResultsScreen *param0, u32 param1, BOOL param2)
 {
     if (param0->unk_0C.unk_09 == 0) {
-        ov114_0225F424(&param0->unk_24C, param1, param2, param0->unk_0C.unk_08);
+        WiFiLobbyMinigame_ReplayMenuSetPlayerReady(&param0->unk_24C, param1, param2, param0->unk_0C.unk_08);
     }
 }
 
-void ov114_0225CA44(UnkStruct_ov114_0225E854 *param0, BOOL param1)
+void WiFiLobbyMinigame_ResultsScreenSetAllReady(WiFiLobbyMinigameResultsScreen *param0, BOOL param1)
 {
-    ov114_0225F47C(&param0->unk_24C, param1);
+    WiFiLobbyMinigame_ReplayMenuSetAllReady(&param0->unk_24C, param1);
 }
 
-BOOL ov114_0225CA54(UnkStruct_ov114_0225C76C *param0)
+BOOL WiFiLobbyMinigame_CheckDisconnected(WiFiLobbyMinigamePlayerContext *param0)
 {
     BOOL v0 = 0;
 
@@ -1060,7 +1060,7 @@ BOOL ov114_0225CA54(UnkStruct_ov114_0225C76C *param0)
     return v0;
 }
 
-BOOL ov114_0225CA98(const UnkStruct_ov114_0225C76C *param0)
+BOOL WiFiLobbyMinigame_HandleDisconnect(const WiFiLobbyMinigamePlayerContext *param0)
 {
     GF_ASSERT(param0->unk_0C != NULL);
     GF_ASSERT(param0->unk_0C->unk_1C == 1);
@@ -1077,22 +1077,22 @@ BOOL ov114_0225CA98(const UnkStruct_ov114_0225C76C *param0)
     return 0;
 }
 
-UnkStruct_ov114_0225CAD4 *ov114_0225CAD4(SpriteList *param0, u32 heapID)
+WiFiLobbyMinigameIntroAnimation *WiFiLobbyMinigame_CreateIntroAnimation(SpriteList *param0, u32 heapID)
 {
-    UnkStruct_ov114_0225CAD4 *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov114_0225CAD4));
-    memset(v0, 0, sizeof(UnkStruct_ov114_0225CAD4));
+    WiFiLobbyMinigameIntroAnimation *v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameIntroAnimation));
+    memset(v0, 0, sizeof(WiFiLobbyMinigameIntroAnimation));
 
     v0->unk_08 = param0;
     v0->unk_0C = NARC_ctor(NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, heapID);
 
-    ov114_0225CCD0(&v0->unk_10, 1, heapID);
+    WiFiLobbyMinigame_InitSpriteResources(&v0->unk_10, 1, heapID);
 
-    v0->unk_28 = ov114_0225CD54(&v0->unk_10, v0->unk_0C, 3, 3, 2, 1, 0, 5000, heapID);
+    v0->unk_28 = WiFiLobbyMinigame_AllocSpriteResource(&v0->unk_10, v0->unk_0C, 3, 3, 2, 1, 0, 5000, heapID);
 
     return v0;
 }
 
-void ov114_0225CB38(UnkStruct_ov114_0225CAD4 *param0)
+void WiFiLobbyMinigame_FreeIntroAnimation(WiFiLobbyMinigameIntroAnimation *param0)
 {
     if (param0->unk_2C != NULL) {
         SysTask_Done(param0->unk_2C);
@@ -1103,36 +1103,36 @@ void ov114_0225CB38(UnkStruct_ov114_0225CAD4 *param0)
         Sprite_Delete(param0->unk_30);
     }
 
-    ov114_0225FBF0(&param0->unk_34);
-    ov114_0225CD10(&param0->unk_10);
+    WiFiLobbyMinigame_FreeCurtain(&param0->unk_34);
+    WiFiLobbyMinigame_FreeSpriteResources(&param0->unk_10);
 
     NARC_dtor(param0->unk_0C);
     Heap_Free(param0);
 }
 
-int ov114_0225CB74(UnkStruct_ov114_0225CAD4 *param0)
+int WiFiLobbyMinigame_GetIntroAnimationPaletteOffset(WiFiLobbyMinigameIntroAnimation *param0)
 {
     SpriteResource *v0 = SpriteResourceCollection_Find(param0->unk_10.unk_00[1], 5000);
     return SpriteTransfer_GetPlttOffset(v0, NNS_G2D_VRAM_TYPE_2DMAIN);
 }
 
-void ov114_0225CB8C(UnkStruct_ov114_0225CAD4 *param0)
+void WiFiLobbyMinigame_StartIntroAnimationRoll(WiFiLobbyMinigameIntroAnimation *param0)
 {
     GF_ASSERT(param0->unk_2C == NULL);
-    param0->unk_2C = SysTask_Start(ov114_0225FDC8, param0, 0);
+    param0->unk_2C = SysTask_Start(WiFiLobbyMinigame_IntroAnimationRollTask, param0, 0);
     param0->unk_04 = 1;
 }
 
-void ov114_0225CBB0(UnkStruct_ov114_0225CAD4 *param0)
+void WiFiLobbyMinigame_StartIntroAnimationPop(WiFiLobbyMinigameIntroAnimation *param0)
 {
     GF_ASSERT(param0->unk_2C == NULL);
-    param0->unk_2C = SysTask_Start(ov114_0225FF54, param0, 0);
+    param0->unk_2C = SysTask_Start(WiFiLobbyMinigame_IntroAnimationPopTask, param0, 0);
     param0->unk_04 = 1;
 
     Sound_PlayEffect(SEQ_SE_DP_PINPON_sseq);
 }
 
-BOOL ov114_0225CBE0(const UnkStruct_ov114_0225CAD4 *param0)
+BOOL WiFiLobbyMinigame_IntroAnimationIsDone(const WiFiLobbyMinigameIntroAnimation *param0)
 {
     if (param0->unk_04 == 0) {
         return 1;
@@ -1141,7 +1141,7 @@ BOOL ov114_0225CBE0(const UnkStruct_ov114_0225CAD4 *param0)
     return 0;
 }
 
-static void ov114_0225CBF0(UnkStruct_ov114_0225CBF0 *param0, fx32 param1, fx32 param2, fx32 param3, int param4)
+static void WiFiLobbyMinigame_InitMotion(WiFiLobbyMinigameMotion *param0, fx32 param1, fx32 param2, fx32 param3, int param4)
 {
     fx32 v0;
     fx32 v1;
@@ -1162,7 +1162,7 @@ static void ov114_0225CBF0(UnkStruct_ov114_0225CBF0 *param0, fx32 param1, fx32 p
     param0->unk_10 = param4;
 }
 
-static BOOL ov114_0225CC4C(UnkStruct_ov114_0225CBF0 *param0, s32 param1)
+static BOOL WiFiLobbyMinigame_UpdateMotion(WiFiLobbyMinigameMotion *param0, s32 param1)
 {
     fx32 v0;
     fx32 v1;
@@ -1188,7 +1188,7 @@ static BOOL ov114_0225CC4C(UnkStruct_ov114_0225CBF0 *param0, s32 param1)
     return v4;
 }
 
-static void ov114_0225CCB0(NNSG2dScreenData *param0, u32 param1)
+static void WiFiLobbyMinigame_OffsetScreenData(NNSG2dScreenData *param0, u32 param1)
 {
     int v0;
     u16 *v1;
@@ -1200,7 +1200,7 @@ static void ov114_0225CCB0(NNSG2dScreenData *param0, u32 param1)
     }
 }
 
-static void ov114_0225CCD0(UnkStruct_ov114_0225CCD0 *param0, u32 param1, u32 heapID)
+static void WiFiLobbyMinigame_InitSpriteResources(WiFiLobbyMinigameSpriteResources *param0, u32 param1, u32 heapID)
 {
     int v0;
 
@@ -1208,18 +1208,18 @@ static void ov114_0225CCD0(UnkStruct_ov114_0225CCD0 *param0, u32 param1, u32 hea
         param0->unk_00[v0] = SpriteResourceCollection_New(param1, v0, heapID);
     }
 
-    param0->unk_10 = Heap_Alloc(heapID, sizeof(UnkStruct_ov114_0225CDB4) * param1);
-    memset(param0->unk_10, 0, sizeof(UnkStruct_ov114_0225CDB4) * param1);
+    param0->unk_10 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameSpriteResource) * param1);
+    memset(param0->unk_10, 0, sizeof(WiFiLobbyMinigameSpriteResource) * param1);
     param0->unk_14 = param1;
 }
 
-static void ov114_0225CD10(UnkStruct_ov114_0225CCD0 *param0)
+static void WiFiLobbyMinigame_FreeSpriteResources(WiFiLobbyMinigameSpriteResources *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < param0->unk_14; v0++) {
         if (param0->unk_10[v0].unk_00 == 1) {
-            ov114_0225CEB8(param0, &param0->unk_10[v0]);
+            WiFiLobbyMinigame_UnloadSpriteResource(param0, &param0->unk_10[v0]);
         }
     }
 
@@ -1230,10 +1230,10 @@ static void ov114_0225CD10(UnkStruct_ov114_0225CCD0 *param0)
     Heap_Free(param0->unk_10);
 }
 
-static UnkStruct_ov114_0225CDB4 *ov114_0225CD54(UnkStruct_ov114_0225CCD0 *param0, NARC *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
+static WiFiLobbyMinigameSpriteResource *WiFiLobbyMinigame_AllocSpriteResource(WiFiLobbyMinigameSpriteResources *param0, NARC *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
 {
     int v0;
-    UnkStruct_ov114_0225CDB4 *v1 = NULL;
+    WiFiLobbyMinigameSpriteResource *v1 = NULL;
 
     for (v0 = 0; v0 < param0->unk_14; v0++) {
         if (param0->unk_10[v0].unk_00 == 0) {
@@ -1244,12 +1244,12 @@ static UnkStruct_ov114_0225CDB4 *ov114_0225CD54(UnkStruct_ov114_0225CCD0 *param0
 
     GF_ASSERT(v1);
 
-    ov114_0225CDE0(param0, v1, param1, param2, param3, param4, param5, param6, param7, param8);
+    WiFiLobbyMinigame_LoadSpriteResource(param0, v1, param1, param2, param3, param4, param5, param6, param7, param8);
 
     return v1;
 }
 
-static Sprite *ov114_0225CDB4(UnkStruct_ov114_0225CDB4 *param0, SpriteList *param1, s16 param2, s16 param3, u16 param4, u32 param5)
+static Sprite *WiFiLobbyMinigame_AddSprite(WiFiLobbyMinigameSpriteResource *param0, SpriteList *param1, s16 param2, s16 param3, u16 param4, u32 param5)
 {
     SpriteListTemplate v0;
 
@@ -1264,7 +1264,7 @@ static Sprite *ov114_0225CDB4(UnkStruct_ov114_0225CDB4 *param0, SpriteList *para
     return SpriteList_Add(&v0);
 }
 
-static void ov114_0225CDE0(UnkStruct_ov114_0225CCD0 *param0, UnkStruct_ov114_0225CDB4 *param1, NARC *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9)
+static void WiFiLobbyMinigame_LoadSpriteResource(WiFiLobbyMinigameSpriteResources *param0, WiFiLobbyMinigameSpriteResource *param1, NARC *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9)
 {
     BOOL v0;
 
@@ -1288,7 +1288,7 @@ static void ov114_0225CDE0(UnkStruct_ov114_0225CCD0 *param0, UnkStruct_ov114_022
     SpriteResourcesHeader_Init(&param1->unk_14, param8, param8, param8, param8, 0xffffffff, 0xffffffff, 0, 1, param0->unk_00[0], param0->unk_00[1], param0->unk_00[2], param0->unk_00[3], NULL, NULL);
 }
 
-static void ov114_0225CEB8(UnkStruct_ov114_0225CCD0 *param0, UnkStruct_ov114_0225CDB4 *param1)
+static void WiFiLobbyMinigame_UnloadSpriteResource(WiFiLobbyMinigameSpriteResources *param0, WiFiLobbyMinigameSpriteResource *param1)
 {
     int v0;
 
@@ -1304,7 +1304,7 @@ static void ov114_0225CEB8(UnkStruct_ov114_0225CCD0 *param0, UnkStruct_ov114_022
     }
 }
 
-static void ov114_0225CEF0(UnkStruct_ov114_0225CEF0 *param0, const GraphicsModes *param1, const UnkStruct_ov114_02260284 *param2, u32 param3, enum HeapID heapID)
+static void WiFiLobbyMinigame_InitBackgrounds(WiFiLobbyMinigameBackgrounds *param0, const GraphicsModes *param1, const WiFiLobbyMinigameBgTemplate *param2, u32 param3, enum HeapID heapID)
 {
     SetAllGraphicsModes(param1);
 
@@ -1328,7 +1328,7 @@ static void ov114_0225CEF0(UnkStruct_ov114_0225CEF0 *param0, const GraphicsModes
     }
 }
 
-static void ov114_0225CF84(UnkStruct_ov114_0225CEF0 *param0)
+static void WiFiLobbyMinigame_FreeBackgrounds(WiFiLobbyMinigameBackgrounds *param0)
 {
     Bg_SetOffset(param0->unk_00, BG_LAYER_MAIN_3, 3, 0);
 
@@ -1343,12 +1343,12 @@ static void ov114_0225CF84(UnkStruct_ov114_0225CEF0 *param0)
     Heap_Free(param0->unk_00);
 }
 
-static void ov114_0225CFC0(UnkStruct_ov114_0225CEF0 *param0)
+static void WiFiLobbyMinigame_RunBackgroundUpdates(WiFiLobbyMinigameBackgrounds *param0)
 {
     Bg_RunScheduledUpdates(param0->unk_00);
 }
 
-static void ov114_0225CFCC(UnkStruct_ov114_0225CFCC *param0, u32 param1, u32 param2, u32 param3, u32 param4)
+static void WiFiLobbyMinigame_InitSpriteSystem(WiFiLobbyMinigameSpriteSystem *param0, u32 param1, u32 param2, u32 param3, u32 param4)
 {
     int v0;
 
@@ -1356,7 +1356,7 @@ static void ov114_0225CFCC(UnkStruct_ov114_0225CFCC *param0, u32 param1, u32 par
     RenderOam_Init(0, 126, 0, 31, 0, 126, 0, 31, param4);
 
     {
-        CharTransferTemplate v1 = Unk_ov114_0226017C;
+        CharTransferTemplate v1 = sCharTransferTemplate;
 
         v1.maxTasks = param2;
         v1.heapID = param4;
@@ -1377,7 +1377,7 @@ static void ov114_0225CFCC(UnkStruct_ov114_0225CFCC *param0, u32 param1, u32 par
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void ov114_0225D058(UnkStruct_ov114_0225CFCC *param0)
+static void WiFiLobbyMinigame_FreeSpriteSystem(WiFiLobbyMinigameSpriteSystem *param0)
 {
     SpriteList_Delete(param0->unk_00);
     CharTransfer_Free();
@@ -1385,17 +1385,17 @@ static void ov114_0225D058(UnkStruct_ov114_0225CFCC *param0)
     RenderOam_Free();
 }
 
-static void ov114_0225D070(UnkStruct_ov114_0225CFCC *param0)
+static void WiFiLobbyMinigame_UpdateSprites(WiFiLobbyMinigameSpriteSystem *param0)
 {
     SpriteList_Update(param0->unk_00);
 }
 
-static void ov114_0225D07C(UnkStruct_ov114_0225CFCC *param0)
+static void WiFiLobbyMinigame_TransferOam(WiFiLobbyMinigameSpriteSystem *param0)
 {
     RenderOam_Transfer();
 }
 
-static void ov114_0225D084(UnkStruct_ov114_0225D084 *param0, u32 heapID)
+static void WiFiLobbyMinigame_InitMessages(WiFiLobbyMinigameMessages *param0, u32 heapID)
 {
     param0->unk_00 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0411, heapID);
     param0->unk_04 = StringTemplate_New(8, 64, heapID);
@@ -1406,7 +1406,7 @@ static void ov114_0225D084(UnkStruct_ov114_0225D084 *param0, u32 heapID)
     Font_LoadScreenIndicatorsPalette(PAL_LOAD_SUB_BG, PLTT_OFFSET(12), heapID);
 }
 
-static void ov114_0225D0D8(UnkStruct_ov114_0225D084 *param0)
+static void WiFiLobbyMinigame_FreeMessages(WiFiLobbyMinigameMessages *param0)
 {
     String_Free(param0->unk_0C);
     String_Free(param0->unk_08);
@@ -1414,58 +1414,58 @@ static void ov114_0225D0D8(UnkStruct_ov114_0225D084 *param0)
     MessageLoader_Free(param0->unk_00);
 }
 
-static void ov114_0225D0F8(UnkStruct_ov114_0225D084 *param0)
+static void WiFiLobbyMinigame_ClearMessageArgs(WiFiLobbyMinigameMessages *param0)
 {
     StringTemplate_ClearArgs(param0->unk_04);
 }
 
-static void ov114_0225D104(UnkStruct_ov114_0225D084 *param0, const TrainerInfo *param1)
+static void WiFiLobbyMinigame_SetMessagePlayerName(WiFiLobbyMinigameMessages *param0, const TrainerInfo *param1)
 {
     StringTemplate_SetPlayerName(param0->unk_04, 0, param1);
 }
 
-static void ov114_0225D114(UnkStruct_ov114_0225D084 *param0, u32 param1)
+static void WiFiLobbyMinigame_SetMessageCountryName(WiFiLobbyMinigameMessages *param0, u32 param1)
 {
     StringTemplate_SetCountryName(param0->unk_04, 0, param1);
 }
 
-static void ov114_0225D124(UnkStruct_ov114_0225D084 *param0, u32 param1, u32 param2)
+static void WiFiLobbyMinigame_SetMessageCityName(WiFiLobbyMinigameMessages *param0, u32 param1, u32 param2)
 {
     StringTemplate_SetCityName(param0->unk_04, 0, param1, param2);
 }
 
-static void ov114_0225D138(UnkStruct_ov114_0225D084 *param0, u32 param1, u32 param2)
+static void WiFiLobbyMinigame_SetMessageNumber(WiFiLobbyMinigameMessages *param0, u32 param1, u32 param2)
 {
     StringTemplate_SetNumber(param0->unk_04, 0, param1, param2, 1, 1);
 }
 
-static void ov114_0225D154(UnkStruct_ov114_0225D084 *param0, u32 param1)
+static void WiFiLobbyMinigame_SetMessageRankNumber(WiFiLobbyMinigameMessages *param0, u32 param1)
 {
     StringTemplate_SetNumber(param0->unk_04, 0, param1, 2, 1, 1);
 }
 
-static void ov114_0225D170(UnkStruct_ov114_0225D084 *param0, u32 param1)
+static void WiFiLobbyMinigame_SetMessagePlazaItemName(WiFiLobbyMinigameMessages *param0, u32 param1)
 {
     StringTemplate_SetPlazaItemName(param0->unk_04, 1, param1);
 }
 
-static void ov114_0225D180(UnkStruct_ov114_0225D084 *param0, u32 param1)
+static void WiFiLobbyMinigame_SetMessageMinigameName(WiFiLobbyMinigameMessages *param0, u32 param1)
 {
     StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, param1);
 }
 
-static void ov114_0225D190(UnkStruct_ov114_0225D084 *param0, String *param1, u32 param2)
+static void WiFiLobbyMinigame_DrawMessage(WiFiLobbyMinigameMessages *param0, String *param1, u32 param2)
 {
     MessageLoader_GetString(param0->unk_00, param2, param0->unk_0C);
     StringTemplate_Format(param0->unk_04, param1, param0->unk_0C);
 }
 
-static void ov114_0225D1AC(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, u8 param3, u8 param4)
+static void WiFiLobbyMinigame_DrawMessageLeft(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, u8 param3, u8 param4)
 {
-    ov114_0225D254(param0, param1, param2, param3, param4, TEXT_COLOR(15, 14, 0));
+    WiFiLobbyMinigame_DrawMessageWithColor(param0, param1, param2, param3, param4, TEXT_COLOR(15, 14, 0));
 }
 
-static void ov114_0225D1C8(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, u8 param3, u8 param4)
+static void WiFiLobbyMinigame_DrawMessageRightAligned(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, u8 param3, u8 param4)
 {
     u32 v0;
     s32 v1;
@@ -1483,7 +1483,7 @@ static void ov114_0225D1C8(UnkStruct_ov114_0225D084 *param0, u32 param1, Window 
     Text_AddPrinterWithParamsAndColor(param2, FONT_SYSTEM, param0->unk_08, v1, param4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 14, 0), NULL);
 }
 
-static u32 ov114_0225D218(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, String *param3, u32 param4)
+static u32 WiFiLobbyMinigame_PrintMessage(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, String *param3, u32 param4)
 {
     MessageLoader_GetString(param0->unk_00, param1, param0->unk_0C);
     StringTemplate_Format(param0->unk_04, param3, param0->unk_0C);
@@ -1491,14 +1491,14 @@ static u32 ov114_0225D218(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *
     return Text_AddPrinterWithParamsAndColor(param2, FONT_MESSAGE, param3, 0, 0, param4, TEXT_COLOR(1, 2, 15), NULL);
 }
 
-static void ov114_0225D254(UnkStruct_ov114_0225D084 *param0, u32 param1, Window *param2, u8 param3, u8 param4, TextColor param5)
+static void WiFiLobbyMinigame_DrawMessageWithColor(WiFiLobbyMinigameMessages *param0, u32 param1, Window *param2, u8 param3, u8 param4, TextColor param5)
 {
     MessageLoader_GetString(param0->unk_00, param1, param0->unk_0C);
     StringTemplate_Format(param0->unk_04, param0->unk_08, param0->unk_0C);
     Text_AddPrinterWithParamsAndColor(param2, FONT_SYSTEM, param0->unk_08, param3, param4, TEXT_SPEED_NO_TRANSFER, param5, NULL);
 }
 
-static void ov114_0225D290(UnkStruct_ov114_0225D338 *param0, UnkStruct_ov114_0225CEF0 *param1, SaveData *saveData, BOOL param3, u32 heapID)
+static void WiFiLobbyMinigame_InitMessageBox(WiFiLobbyMinigameMessageBox *param0, WiFiLobbyMinigameBackgrounds *param1, SaveData *saveData, BOOL param3, u32 heapID)
 {
     u32 v0 = Options_Frame(SaveData_GetOptions(saveData));
     u32 v1;
@@ -1527,12 +1527,12 @@ static void ov114_0225D290(UnkStruct_ov114_0225D338 *param0, UnkStruct_ov114_022
     param0->unk_34 = param3;
 }
 
-static void ov114_0225D338(UnkStruct_ov114_0225D338 *param0)
+static void WiFiLobbyMinigame_FreeMessageBox(WiFiLobbyMinigameMessageBox *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 2; v0++) {
-        ov114_0225D400(param0, v0);
+        WiFiLobbyMinigame_HideMessage(param0, v0);
         String_Free(param0->unk_24[v0]);
         Window_Remove(&param0->unk_00[v0]);
     }
@@ -1540,14 +1540,14 @@ static void ov114_0225D338(UnkStruct_ov114_0225D338 *param0)
     LockTextSpeed();
 }
 
-static void ov114_0225D368(UnkStruct_ov114_0225D338 *param0, UnkStruct_ov114_0225D084 *param1, u32 param2, u32 param3)
+static void WiFiLobbyMinigame_ShowMessage(WiFiLobbyMinigameMessageBox *param0, WiFiLobbyMinigameMessages *param1, u32 param2, u32 param3)
 {
     int v0;
 
     if (param0->unk_34 == 1) {
-        for (v0 = 0; v0 < NELEMS(Unk_ov114_02260234); v0++) {
-            if (Unk_ov114_02260234[v0].unk_00 == param2) {
-                param2 = Unk_ov114_02260234[v0].unk_02;
+        for (v0 = 0; v0 < NELEMS(sMessageIdRemap); v0++) {
+            if (sMessageIdRemap[v0].unk_00 == param2) {
+                param2 = sMessageIdRemap[v0].unk_02;
             }
         }
     }
@@ -1556,16 +1556,16 @@ static void ov114_0225D368(UnkStruct_ov114_0225D338 *param0, UnkStruct_ov114_022
         Text_RemovePrinter(param0->unk_20[param3]);
     }
 
-    ov114_0225D474(param0, param3);
+    WiFiLobbyMinigame_HideWaitDial(param0, param3);
     Window_FillTilemap(&param0->unk_00[param3], 15);
-    param0->unk_20[param3] = ov114_0225D218(param1, param2, &param0->unk_00[param3], param0->unk_24[param3], TEXT_SPEED_FAST);
+    param0->unk_20[param3] = WiFiLobbyMinigame_PrintMessage(param1, param2, &param0->unk_00[param3], param0->unk_24[param3], TEXT_SPEED_FAST);
     Window_DrawMessageBoxWithScrollCursor(&param0->unk_00[param3], 1, 1, 13);
     Window_ScheduleCopyToVRAM(&param0->unk_00[param3]);
 }
 
-static void ov114_0225D400(UnkStruct_ov114_0225D338 *param0, u32 param1)
+static void WiFiLobbyMinigame_HideMessage(WiFiLobbyMinigameMessageBox *param0, u32 param1)
 {
-    ov114_0225D474(param0, param1);
+    WiFiLobbyMinigame_HideWaitDial(param0, param1);
 
     if (Text_IsPrinterActive(param0->unk_20[param1])) {
         Text_RemovePrinter(param0->unk_20[param1]);
@@ -1575,7 +1575,7 @@ static void ov114_0225D400(UnkStruct_ov114_0225D338 *param0, u32 param1)
     Window_ClearAndScheduleCopyToVRAM(&param0->unk_00[param1]);
 }
 
-static BOOL ov114_0225D43C(const UnkStruct_ov114_0225D338 *param0, u32 param1)
+static BOOL WiFiLobbyMinigame_IsMessageDone(const WiFiLobbyMinigameMessageBox *param0, u32 param1)
 {
     u32 v0 = Text_IsPrinterActive(param0->unk_20[param1]);
 
@@ -1586,14 +1586,14 @@ static BOOL ov114_0225D43C(const UnkStruct_ov114_0225D338 *param0, u32 param1)
     return 0;
 }
 
-static void ov114_0225D458(UnkStruct_ov114_0225D338 *param0, u32 param1)
+static void WiFiLobbyMinigame_ShowWaitDial(WiFiLobbyMinigameMessageBox *param0, u32 param1)
 {
     if (param0->unk_2C[param1] == NULL) {
         param0->unk_2C[param1] = Window_AddWaitDial(&param0->unk_00[param1], 1);
     }
 }
 
-static void ov114_0225D474(UnkStruct_ov114_0225D338 *param0, u32 param1)
+static void WiFiLobbyMinigame_HideWaitDial(WiFiLobbyMinigameMessageBox *param0, u32 param1)
 {
     if (param0->unk_2C[param1]) {
         DestroyWaitDialTaskOnly(param0->unk_2C[param1]);
@@ -1601,16 +1601,16 @@ static void ov114_0225D474(UnkStruct_ov114_0225D338 *param0, u32 param1)
     }
 }
 
-static UnkStruct_ov114_0225D678 *ov114_0225D48C(const UnkStruct_ov114_0225C76C *param0, u32 param1, u32 heapID)
+static WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreenInternal(const WiFiLobbyMinigamePlayerContext *param0, u32 param1, u32 heapID)
 {
-    UnkStruct_ov114_0225D678 *v0;
+    WiFiLobbyMinigameIntroScreen *v0;
     int v1;
 
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_19, SEQ_PL_WIFIGAME_sseq, 0);
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov114_0225D678));
-    memset(v0, 0, sizeof(UnkStruct_ov114_0225D678));
-    memcpy(&v0->unk_08, param0, sizeof(UnkStruct_ov114_0225C76C));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameIntroScreen));
+    memset(v0, 0, sizeof(WiFiLobbyMinigameIntroScreen));
+    memcpy(&v0->unk_08, param0, sizeof(WiFiLobbyMinigamePlayerContext));
 
     v0->unk_04 = param1;
 
@@ -1619,30 +1619,30 @@ static UnkStruct_ov114_0225D678 *ov114_0225D48C(const UnkStruct_ov114_0225C76C *
     GX_SetVisibleWnd(0);
     GXS_SetVisibleWnd(0);
 
-    GXLayers_SetBanks(&Unk_ov114_022601B4);
+    GXLayers_SetBanks(&sIntroScreenGXBanks);
 
     v0->heapID = heapID;
 
-    ov114_02260060(v0);
-    ov114_0225E0F8(&v0->unk_18, &v0->unk_08);
-    ov114_0225CEF0(&v0->unk_30, &Unk_ov114_0226018C, Unk_ov114_02260284, 5, heapID);
-    ov114_0225CFCC(&v0->unk_84, 16, 1, 1, heapID);
-    ov114_0225CCD0(&v0->unk_214, 1, heapID);
-    ov114_0225D084(&v0->unk_3C, heapID);
-    ov114_0225D5BC(v0, heapID);
+    WiFiLobbyMinigame_InitCommCmdIntro(v0);
+    WiFiLobbyMinigame_InitPlayerInfo(&v0->unk_18, &v0->unk_08);
+    WiFiLobbyMinigame_InitBackgrounds(&v0->unk_30, &sIntroScreenGraphicsModes, sIntroScreenBgTemplates, 5, heapID);
+    WiFiLobbyMinigame_InitSpriteSystem(&v0->unk_84, 16, 1, 1, heapID);
+    WiFiLobbyMinigame_InitSpriteResources(&v0->unk_214, 1, heapID);
+    WiFiLobbyMinigame_InitMessages(&v0->unk_3C, heapID);
+    WiFiLobbyMinigame_LoadIntroScreenGraphics(v0, heapID);
 
     {
         BOOL v2;
         u32 v3;
 
-        v3 = ov114_0225C78C(&v0->unk_08, v0->unk_08.unk_09);
-        v2 = ov114_0225C7A4(&v0->unk_08, v3);
+        v3 = WiFiLobbyMinigame_GetNetIdByIndex(&v0->unk_08, v0->unk_08.unk_09);
+        v2 = WiFiLobbyMinigame_IsPlayerReady(&v0->unk_08, v3);
 
-        ov114_0225D290(&v0->unk_4C, &v0->unk_30, v0->unk_08.saveData, v2, heapID);
+        WiFiLobbyMinigame_InitMessageBox(&v0->unk_4C, &v0->unk_30, v0->unk_08.saveData, v2, heapID);
     }
 
-    v0->unk_650 = SysTask_Start(ov114_0225D688, v0, 0);
-    v0->unk_654 = SysTask_ExecuteAfterVBlank(ov114_0225DA0C, v0, 0);
+    v0->unk_650 = SysTask_Start(WiFiLobbyMinigame_IntroScreenTask, v0, 0);
+    v0->unk_654 = SysTask_ExecuteAfterVBlank(WiFiLobbyMinigame_IntroScreenVBlankTask, v0, 0);
 
     if (v0->unk_08.unk_0A) {
         NintendoWFC_StartVoiceChat(heapID);
@@ -1651,7 +1651,7 @@ static UnkStruct_ov114_0225D678 *ov114_0225D48C(const UnkStruct_ov114_0225C76C *
     return v0;
 }
 
-static void ov114_0225D5BC(UnkStruct_ov114_0225D678 *param0, u32 heapID)
+static void WiFiLobbyMinigame_LoadIntroScreenGraphics(WiFiLobbyMinigameIntroScreen *param0, u32 heapID)
 {
     NARC *v0 = NARC_ctor(NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, heapID);
 
@@ -1661,32 +1661,32 @@ static void ov114_0225D5BC(UnkStruct_ov114_0225D678 *param0, u32 heapID)
     param0->unk_260 = Graphics_GetScrnDataFromOpenNARC(v0, 9, 0, &param0->unk_264, heapID);
 
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 8, param0->unk_30.unk_00, 3, 0, 0, 0, heapID);
-    ov114_0225E550(v0, param0->unk_04, heapID);
+    WiFiLobbyMinigame_LoadMinigamePalette(v0, param0->unk_04, heapID);
 
-    param0->unk_22C = ov114_0225CD54(&param0->unk_214, v0, 11, 5, 12, 13, 14, 5000, heapID);
+    param0->unk_22C = WiFiLobbyMinigame_AllocSpriteResource(&param0->unk_214, v0, 11, 5, 12, 13, 14, 5000, heapID);
 
-    ov114_0225E1A4(&param0->unk_230, &param0->unk_30, &param0->unk_3C, param0->unk_04, v0, heapID);
+    WiFiLobbyMinigame_InitGameTitle(&param0->unk_230, &param0->unk_30, &param0->unk_3C, param0->unk_04, v0, heapID);
     NARC_dtor(v0);
 }
 
-static void ov114_0225D678(UnkStruct_ov114_0225D678 *param0)
+static void WiFiLobbyMinigame_FreeIntroScreenGraphics(WiFiLobbyMinigameIntroScreen *param0)
 {
     Heap_Free(param0->unk_260);
 }
 
-static void ov114_0225D688(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_IntroScreenTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225D678 *v0 = param1;
+    WiFiLobbyMinigameIntroScreen *v0 = param1;
     BOOL v1;
 
     switch (v0->unk_00) {
     case 0:
         StartScreenFade(FADE_MAIN_ONLY, 1, 1, 0xffff, 6, 1, v0->heapID);
-        ov114_0225E244(&v0->unk_230, &v0->unk_30, v0->heapID);
+        WiFiLobbyMinigame_ShowGameTitle(&v0->unk_230, &v0->unk_30, v0->heapID);
         v0->unk_00++;
         break;
     case 1:
-        ov114_0225E31C(&v0->unk_230, &v0->unk_30);
+        WiFiLobbyMinigame_UpdateGameTitleShow(&v0->unk_230, &v0->unk_30);
         v1 = IsScreenFadeDone();
 
         if (v1 == 1) {
@@ -1694,18 +1694,18 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         }
         break;
     case 2:
-        v1 = ov114_0225E31C(&v0->unk_230, &v0->unk_30);
+        v1 = WiFiLobbyMinigame_UpdateGameTitleShow(&v0->unk_230, &v0->unk_30);
 
         if (v1 == 1) {
             v0->unk_00++;
         }
         break;
     case 3:
-        ov114_0225D368(&v0->unk_4C, &v0->unk_3C, 0, 0);
+        WiFiLobbyMinigame_ShowMessage(&v0->unk_4C, &v0->unk_3C, 0, 0);
         v0->unk_00++;
         break;
     case 4:
-        v1 = ov114_0225D43C(&v0->unk_4C, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_4C, 0);
 
         if (v1) {
             v0->unk_00++;
@@ -1717,14 +1717,14 @@ static void ov114_0225D688(SysTask *param0, void *param1)
             v0->unk_01--;
 
             if (v0->unk_01 == 0) {
-                ov114_0225D400(&v0->unk_4C, 0);
-                ov114_0225E2D4(&v0->unk_230, &v0->unk_30);
+                WiFiLobbyMinigame_HideMessage(&v0->unk_4C, 0);
+                WiFiLobbyMinigame_HideGameTitle(&v0->unk_230, &v0->unk_30);
                 v0->unk_00++;
             }
         }
         break;
     case 6:
-        v1 = ov114_0225E438(&v0->unk_230, &v0->unk_30);
+        v1 = WiFiLobbyMinigame_UpdateGameTitleHide(&v0->unk_230, &v0->unk_30);
 
         if (v1 == 1) {
             v0->unk_00++;
@@ -1736,19 +1736,19 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         BOOL v4;
         u32 v5;
 
-        ov114_0225DF7C(&v0->unk_348, &v0->unk_30, v0->heapID);
+        WiFiLobbyMinigame_InitScrollEffect(&v0->unk_348, &v0->unk_30, v0->heapID);
 
-        v3 = ov114_0225E14C(&v0->unk_08, &v0->unk_18);
+        v3 = WiFiLobbyMinigame_ArePlayersFromDifferentCountries(&v0->unk_08, &v0->unk_18);
 
         for (v2 = 0; v2 < v0->unk_08.unk_08; v2++) {
-            ov114_0225DAC0(&v0->unk_268[v2], v0->unk_08.unk_08, v0->unk_04, v0->unk_264, &v0->unk_30, v2, v0->unk_08.unk_09, &v0->unk_84, v0->unk_22C, v0->heapID);
+            WiFiLobbyMinigame_InitPlayerRow(&v0->unk_268[v2], v0->unk_08.unk_08, v0->unk_04, v0->unk_264, &v0->unk_30, v2, v0->unk_08.unk_09, &v0->unk_84, v0->unk_22C, v0->heapID);
 
-            v5 = ov114_0225C78C(&v0->unk_08, v2);
-            v4 = ov114_0225C7A4(&v0->unk_08, v5);
+            v5 = WiFiLobbyMinigame_GetNetIdByIndex(&v0->unk_08, v2);
+            v4 = WiFiLobbyMinigame_IsPlayerReady(&v0->unk_08, v5);
 
-            ov114_0225DC44(&v0->unk_268[v2], &v0->unk_3C, v0->unk_18.unk_08[v2], 8, 0, v4);
-            ov114_0225DCA0(&v0->unk_268[v2], &v0->unk_3C, v3, v0->unk_18.unk_00[v2], v0->unk_18.unk_04[v2], 8);
-            ov114_0225DDD4(&v0->unk_268[v2], -8, 3 * v2);
+            WiFiLobbyMinigame_DrawPlayerRowName(&v0->unk_268[v2], &v0->unk_3C, v0->unk_18.unk_08[v2], 8, 0, v4);
+            WiFiLobbyMinigame_DrawPlayerRowLocation(&v0->unk_268[v2], &v0->unk_3C, v3, v0->unk_18.unk_00[v2], v0->unk_18.unk_04[v2], 8);
+            WiFiLobbyMinigame_StartPlayerRowSlideIn(&v0->unk_268[v2], -8, 3 * v2);
         }
     }
 
@@ -1756,8 +1756,8 @@ static void ov114_0225D688(SysTask *param0, void *param1)
             int v6;
 
             for (v6 = 0; v6 < v0->unk_08.unk_08; v6++) {
-                ov114_0225DD80(&v0->unk_268[v6], &v0->unk_30);
-                ov114_0225DD94(&v0->unk_268[v6]);
+                WiFiLobbyMinigame_TransferPlayerRow(&v0->unk_268[v6], &v0->unk_30);
+                WiFiLobbyMinigame_ShowPlayerRowSprite(&v0->unk_268[v6]);
             }
         }
 
@@ -1765,7 +1765,7 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         v0->unk_00++;
         break;
     case 8:
-        if (ov114_0225DA5C(v0) == 1) {
+        if (WiFiLobbyMinigame_UpdatePlayerRows(v0) == 1) {
             v0->unk_00++;
         }
         break;
@@ -1790,7 +1790,7 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         int v7;
 
         for (v7 = 0; v7 < v0->unk_08.unk_08; v7++) {
-            ov114_0225DE38(&v0->unk_268[v7], v7 * 3);
+            WiFiLobbyMinigame_StartPlayerRowSlideOut(&v0->unk_268[v7], v7 * 3);
         }
 
         v0->unk_00++;
@@ -1798,7 +1798,7 @@ static void ov114_0225D688(SysTask *param0, void *param1)
     } break;
     case 12:
         v0->unk_01--;
-        ov114_0225DA5C(v0);
+        WiFiLobbyMinigame_UpdatePlayerRows(v0);
 
         if (v0->unk_01 <= 0) {
             v0->unk_00++;
@@ -1806,20 +1806,20 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         break;
     case 13:
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, v0->heapID);
-        ov114_0225DA5C(v0);
+        WiFiLobbyMinigame_UpdatePlayerRows(v0);
 
         if (v0->unk_08.unk_09 == 0) {
             u32 v8;
 
             switch (v0->unk_04) {
             case UnkEnum_ov66_022324D0_00:
-                v8 = ov114_0225DA2C(Unk_ov114_022600D0, 3);
+                v8 = WiFiLobbyMinigame_RandomWeightedIndex(sRandomWeightsGame0, 3);
                 break;
             case UnkEnum_ov66_022324D0_01:
-                v8 = ov114_0225DA2C(Unk_ov114_022600C8, 2);
+                v8 = WiFiLobbyMinigame_RandomWeightedIndex(sRandomWeightsGame1, 2);
                 break;
             case UnkEnum_ov66_022324D0_02:
-                v8 = ov114_0225DA2C(Unk_ov114_022600CC, 3);
+                v8 = WiFiLobbyMinigame_RandomWeightedIndex(sRandomWeightsGame2, 3);
                 break;
             }
 
@@ -1829,11 +1829,11 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         v0->unk_00++;
         break;
     case 14:
-        ov114_0225DA5C(v0);
+        WiFiLobbyMinigame_UpdatePlayerRows(v0);
         v1 = IsScreenFadeDone();
 
         if (v1 == 1) {
-            ov114_0225DFFC(&v0->unk_348);
+            WiFiLobbyMinigame_FreeScrollEffect(&v0->unk_348);
             v0->unk_00++;
         }
         break;
@@ -1846,22 +1846,22 @@ static void ov114_0225D688(SysTask *param0, void *param1)
         break;
     }
 
-    ov114_0225D070(&v0->unk_84);
+    WiFiLobbyMinigame_UpdateSprites(&v0->unk_84);
 
     Bg_ScheduleScroll(v0->unk_30.unk_00, 3, 4, 2);
     Bg_ScheduleScroll(v0->unk_30.unk_00, 5, 4, 2);
 }
 
-static void ov114_0225DA0C(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_IntroScreenVBlankTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225D678 *v0 = param1;
+    WiFiLobbyMinigameIntroScreen *v0 = param1;
 
-    ov114_0225CFC0(&v0->unk_30);
-    ov114_0225D07C(&v0->unk_84);
-    ov114_0225E08C(&v0->unk_348);
+    WiFiLobbyMinigame_RunBackgroundUpdates(&v0->unk_30);
+    WiFiLobbyMinigame_TransferOam(&v0->unk_84);
+    WiFiLobbyMinigame_SwapScrollBuffers(&v0->unk_348);
 }
 
-static int ov114_0225DA2C(const u8 *param0, u32 param1)
+static int WiFiLobbyMinigame_RandomWeightedIndex(const u8 *param0, u32 param1)
 {
     u32 v0;
     u32 v1;
@@ -1882,7 +1882,7 @@ static int ov114_0225DA2C(const u8 *param0, u32 param1)
     return param1 - 1;
 }
 
-static BOOL ov114_0225DA5C(UnkStruct_ov114_0225D678 *param0)
+static BOOL WiFiLobbyMinigame_UpdatePlayerRows(WiFiLobbyMinigameIntroScreen *param0)
 {
     int v0;
     BOOL v1;
@@ -1890,8 +1890,8 @@ static BOOL ov114_0225DA5C(UnkStruct_ov114_0225D678 *param0)
 
     for (v0 = 0; v0 < param0->unk_08.unk_08; v0++) {
         if (param0->unk_268[v0].unk_10 != NULL) {
-            v1 = ov114_0225DE70(&param0->unk_268[v0]);
-            ov114_0225E028(&param0->unk_348, &param0->unk_268[v0]);
+            v1 = WiFiLobbyMinigame_UpdatePlayerRowMotion(&param0->unk_268[v0]);
+            WiFiLobbyMinigame_UpdateScrollEffect(&param0->unk_348, &param0->unk_268[v0]);
 
             if (v1 == 0) {
                 v2 = 0;
@@ -1904,14 +1904,14 @@ static BOOL ov114_0225DA5C(UnkStruct_ov114_0225D678 *param0)
     return v2;
 }
 
-static void ov114_0225DAC0(UnkStruct_ov114_0225DAC0 *param0, u32 param1, u32 param2, NNSG2dScreenData *param3, UnkStruct_ov114_0225CEF0 *param4, u32 param5, u32 param6, UnkStruct_ov114_0225CFCC *param7, UnkStruct_ov114_0225CDB4 *param8, u32 heapID)
+static void WiFiLobbyMinigame_InitPlayerRow(WiFiLobbyMinigamePlayerRow *param0, u32 param1, u32 param2, NNSG2dScreenData *param3, WiFiLobbyMinigameBackgrounds *param4, u32 param5, u32 param6, WiFiLobbyMinigameSpriteSystem *param7, WiFiLobbyMinigameSpriteResource *param8, u32 heapID)
 {
     s32 v0;
 
     switch (param2) {
     case UnkEnum_ov66_022324D0_00:
     case UnkEnum_ov66_022324D0_02:
-        v0 = ov114_0225DF44(param1, param5, param6);
+        v0 = WiFiLobbyMinigame_GetPlayerRowOrder(param1, param5, param6);
         break;
     case UnkEnum_ov66_022324D0_01:
         if (param6 > param5) {
@@ -1929,19 +1929,19 @@ static void ov114_0225DAC0(UnkStruct_ov114_0225DAC0 *param0, u32 param1, u32 par
 
     Bg_SetPriority(BG_LAYER_MAIN_1, 2);
     Bg_SetPriority(BG_LAYER_MAIN_0, 1);
-    Window_Add(param4->unk_00, &param0->unk_00, 0, 5, 1 + Unk_ov114_02260204[param1 - 1].unk_00[v0], 26, 4, 12, 513 + ((26 * 4) * param5));
+    Window_Add(param4->unk_00, &param0->unk_00, 0, 5, 1 + sPlayerRowLayouts[param1 - 1].unk_00[v0], 26, 4, 12, 513 + ((26 * 4) * param5));
     Window_FillTilemap(&param0->unk_00, 0);
-    Bg_CopyToTilemapRect(param4->unk_00, 1, 0, Unk_ov114_02260204[param1 - 1].unk_00[v0], 32, 6, param3->rawData, 0, Unk_ov114_02260204[param1 - 1].unk_04[param5], param3->screenWidth / 8, param3->screenHeight / 8);
+    Bg_CopyToTilemapRect(param4->unk_00, 1, 0, sPlayerRowLayouts[param1 - 1].unk_00[v0], 32, 6, param3->rawData, 0, sPlayerRowLayouts[param1 - 1].unk_04[param5], param3->screenWidth / 8, param3->screenHeight / 8);
 
     {
         u8 v1;
         u8 v2, v3;
 
-        v1 = Unk_ov114_02260204[param1 - 1].unk_08[v0];
-        v2 = Unk_ov114_0226015C[v1][0];
-        v3 = (Unk_ov114_02260204[param1 - 1].unk_00[v0] * 8) + Unk_ov114_0226015C[v1][1];
+        v1 = sPlayerRowLayouts[param1 - 1].unk_08[v0];
+        v2 = sPlayerRowSpriteOffsets[v1][0];
+        v3 = (sPlayerRowLayouts[param1 - 1].unk_00[v0] * 8) + sPlayerRowSpriteOffsets[v1][1];
 
-        param0->unk_10 = ov114_0225CDB4(param8, param7->unk_00, v2, v3, 0, heapID);
+        param0->unk_10 = WiFiLobbyMinigame_AddSprite(param8, param7->unk_00, v2, v3, 0, heapID);
 
         Sprite_SetAnim(param0->unk_10, v1);
         Sprite_SetExplicitPaletteOffset(param0->unk_10, param5);
@@ -1953,9 +1953,9 @@ static void ov114_0225DAC0(UnkStruct_ov114_0225DAC0 *param0, u32 param1, u32 par
         u8 v4, v5;
 
         v4 = 24;
-        v5 = (Unk_ov114_02260204[param1 - 1].unk_00[v0] * 8) + 21;
+        v5 = (sPlayerRowLayouts[param1 - 1].unk_00[v0] * 8) + 21;
 
-        param0->unk_14 = ov114_0225CDB4(param8, param7->unk_00, v4, v5, 0, heapID);
+        param0->unk_14 = WiFiLobbyMinigame_AddSprite(param8, param7->unk_00, v4, v5, 0, heapID);
 
         Sprite_SetAnim(param0->unk_14, 0);
         Sprite_SetDrawFlag(param0->unk_14, FALSE);
@@ -1966,64 +1966,64 @@ static void ov114_0225DAC0(UnkStruct_ov114_0225DAC0 *param0, u32 param1, u32 par
     param0->unk_18 = param1;
 }
 
-static void ov114_0225DC44(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225D084 *param1, const TrainerInfo *param2, s16 param3, s16 param4, u32 param5)
+static void WiFiLobbyMinigame_DrawPlayerRowName(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameMessages *param1, const TrainerInfo *param2, s16 param3, s16 param4, u32 param5)
 {
-    ov114_0225D104(param1, param2);
+    WiFiLobbyMinigame_SetMessagePlayerName(param1, param2);
 
     if (param5 == 1) {
-        ov114_0225D254(param1, 10, &param0->unk_00, param3, param4, TEXT_COLOR(5, 6, 0));
+        WiFiLobbyMinigame_DrawMessageWithColor(param1, 10, &param0->unk_00, param3, param4, TEXT_COLOR(5, 6, 0));
     } else {
-        ov114_0225D1AC(param1, 10, &param0->unk_00, param3, param4);
+        WiFiLobbyMinigame_DrawMessageLeft(param1, 10, &param0->unk_00, param3, param4);
     }
 }
 
-static void ov114_0225DCA0(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225D084 *param1, BOOL param2, u32 param3, u32 param4, s16 param5)
+static void WiFiLobbyMinigame_DrawPlayerRowLocation(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameMessages *param1, BOOL param2, u32 param3, u32 param4, s16 param5)
 {
     if (param2) {
         if (param3 != 0) {
-            ov114_0225D0F8(param1);
-            ov114_0225D114(param1, param3);
-            ov114_0225D1AC(param1, 11, &param0->unk_00, param5, 16);
+            WiFiLobbyMinigame_ClearMessageArgs(param1);
+            WiFiLobbyMinigame_SetMessageCountryName(param1, param3);
+            WiFiLobbyMinigame_DrawMessageLeft(param1, 11, &param0->unk_00, param5, 16);
         }
     } else {
         if (param3 != 0) {
-            ov114_0225D0F8(param1);
-            ov114_0225D124(param1, param3, param4);
-            ov114_0225D1AC(param1, 12, &param0->unk_00, param5, 16);
+            WiFiLobbyMinigame_ClearMessageArgs(param1);
+            WiFiLobbyMinigame_SetMessageCityName(param1, param3, param4);
+            WiFiLobbyMinigame_DrawMessageLeft(param1, 12, &param0->unk_00, param5, 16);
         }
     }
 }
 
-static void ov114_0225DD0C(UnkStruct_ov114_0225DAC0 *param0, u32 param1)
+static void WiFiLobbyMinigame_ShowPlayerRowRankIcon(WiFiLobbyMinigamePlayerRow *param0, u32 param1)
 {
     Sprite_SetDrawFlag(param0->unk_14, TRUE);
     Sprite_SetAnim(param0->unk_14, 4 + param1);
     Sprite_SetAnimateFlag(param0->unk_14, 1);
 }
 
-static void ov114_0225DD2C(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225D084 *param1, u32 param2, s16 param3, s16 param4, u32 param5)
+static void WiFiLobbyMinigame_DrawPlayerRowScore(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameMessages *param1, u32 param2, s16 param3, s16 param4, u32 param5)
 {
-    ov114_0225D138(param1, param2, param5);
+    WiFiLobbyMinigame_SetMessageNumber(param1, param2, param5);
 
     if (param5 == 5) {
-        ov114_0225D1C8(param1, 14, &param0->unk_00, param3, param4);
+        WiFiLobbyMinigame_DrawMessageRightAligned(param1, 14, &param0->unk_00, param3, param4);
     } else {
-        ov114_0225D1C8(param1, 13, &param0->unk_00, param3, param4);
+        WiFiLobbyMinigame_DrawMessageRightAligned(param1, 13, &param0->unk_00, param3, param4);
     }
 }
 
-static void ov114_0225DD80(UnkStruct_ov114_0225DAC0 *param0, UnkStruct_ov114_0225CEF0 *param1)
+static void WiFiLobbyMinigame_TransferPlayerRow(WiFiLobbyMinigamePlayerRow *param0, WiFiLobbyMinigameBackgrounds *param1)
 {
     Window_ScheduleCopyToVRAM(&param0->unk_00);
     Bg_ScheduleTilemapTransfer(param1->unk_00, 1);
 }
 
-static void ov114_0225DD94(UnkStruct_ov114_0225DAC0 *param0)
+static void WiFiLobbyMinigame_ShowPlayerRowSprite(WiFiLobbyMinigamePlayerRow *param0)
 {
     Sprite_SetDrawFlag(param0->unk_10, TRUE);
 }
 
-static void ov114_0225DDA0(UnkStruct_ov114_0225DAC0 *param0)
+static void WiFiLobbyMinigame_FreePlayerRow(WiFiLobbyMinigamePlayerRow *param0)
 {
     if (param0->unk_10) {
         Sprite_Delete(param0->unk_10);
@@ -2040,29 +2040,29 @@ static void ov114_0225DDA0(UnkStruct_ov114_0225DAC0 *param0)
     }
 }
 
-static void ov114_0225DDD4(UnkStruct_ov114_0225DAC0 *param0, s16 param1, s16 param2)
+static void WiFiLobbyMinigame_StartPlayerRowSlideIn(WiFiLobbyMinigamePlayerRow *param0, s16 param1, s16 param2)
 {
-    ov114_0225CBF0(&param0->unk_1C, FX32_CONST(-255), FX32_CONST(param1), FX32_CONST(28), 8);
+    WiFiLobbyMinigame_InitMotion(&param0->unk_1C, FX32_CONST(-255), FX32_CONST(param1), FX32_CONST(28), 8);
 
     param0->unk_30 = 0;
     param0->unk_32 = param2;
     param0->unk_34 = 1382;
 
-    ov114_0225DEBC(param0, -(param0->unk_1C.unk_00 >> FX32_SHIFT));
+    WiFiLobbyMinigame_SetPlayerRowSpritePos(param0, -(param0->unk_1C.unk_00 >> FX32_SHIFT));
 }
 
-static void ov114_0225DE38(UnkStruct_ov114_0225DAC0 *param0, s16 param1)
+static void WiFiLobbyMinigame_StartPlayerRowSlideOut(WiFiLobbyMinigamePlayerRow *param0, s16 param1)
 {
-    ov114_0225CBF0(&param0->unk_1C, param0->unk_1C.unk_00, FX32_CONST(-255), 0, 8);
+    WiFiLobbyMinigame_InitMotion(&param0->unk_1C, param0->unk_1C.unk_00, FX32_CONST(-255), 0, 8);
 
     param0->unk_30 = 0;
     param0->unk_32 = param1;
     param0->unk_34 = 1383;
 
-    ov114_0225DEBC(param0, -(param0->unk_1C.unk_00 >> FX32_SHIFT));
+    WiFiLobbyMinigame_SetPlayerRowSpritePos(param0, -(param0->unk_1C.unk_00 >> FX32_SHIFT));
 }
 
-static BOOL ov114_0225DE70(UnkStruct_ov114_0225DAC0 *param0)
+static BOOL WiFiLobbyMinigame_UpdatePlayerRowMotion(WiFiLobbyMinigamePlayerRow *param0)
 {
     BOOL v0;
     u8 v1, v2;
@@ -2073,9 +2073,9 @@ static BOOL ov114_0225DE70(UnkStruct_ov114_0225DAC0 *param0)
         }
 
         param0->unk_30++;
-        v0 = ov114_0225CC4C(&param0->unk_1C, param0->unk_30);
+        v0 = WiFiLobbyMinigame_UpdateMotion(&param0->unk_1C, param0->unk_30);
 
-        ov114_0225DEBC(param0, -(param0->unk_1C.unk_00 >> FX32_SHIFT));
+        WiFiLobbyMinigame_SetPlayerRowSpritePos(param0, -(param0->unk_1C.unk_00 >> FX32_SHIFT));
         return v0;
     }
 
@@ -2083,15 +2083,15 @@ static BOOL ov114_0225DE70(UnkStruct_ov114_0225DAC0 *param0)
     return 0;
 }
 
-static void ov114_0225DEBC(UnkStruct_ov114_0225DAC0 *param0, s32 param1)
+static void WiFiLobbyMinigame_SetPlayerRowSpritePos(WiFiLobbyMinigamePlayerRow *param0, s32 param1)
 {
     u8 v0;
     u8 v1, v2;
     VecFx32 v3;
 
-    v0 = Unk_ov114_02260204[param0->unk_18 - 1].unk_08[param0->unk_1B];
-    v1 = Unk_ov114_0226015C[v0][0];
-    v2 = (Unk_ov114_02260204[param0->unk_18 - 1].unk_00[param0->unk_1B] * 8) + Unk_ov114_0226015C[v0][1];
+    v0 = sPlayerRowLayouts[param0->unk_18 - 1].unk_08[param0->unk_1B];
+    v1 = sPlayerRowSpriteOffsets[v0][0];
+    v2 = (sPlayerRowLayouts[param0->unk_18 - 1].unk_00[param0->unk_1B] * 8) + sPlayerRowSpriteOffsets[v0][1];
 
     v3.x = (v1 + param1) << FX32_SHIFT;
     v3.y = v2 << FX32_SHIFT;
@@ -2099,7 +2099,7 @@ static void ov114_0225DEBC(UnkStruct_ov114_0225DAC0 *param0, s32 param1)
     Sprite_SetPosition(param0->unk_10, &v3);
 
     v1 = 24;
-    v2 = (Unk_ov114_02260204[param0->unk_18 - 1].unk_00[param0->unk_1B] * 8) + 21;
+    v2 = (sPlayerRowLayouts[param0->unk_18 - 1].unk_00[param0->unk_1B] * 8) + 21;
 
     v3.x = (v1 + param1) << FX32_SHIFT;
     v3.y = v2 << FX32_SHIFT;
@@ -2107,17 +2107,17 @@ static void ov114_0225DEBC(UnkStruct_ov114_0225DAC0 *param0, s32 param1)
     Sprite_SetPosition(param0->unk_14, &v3);
 }
 
-static u32 ov114_0225DF44(u32 param0, u32 param1, u32 param2)
+static u32 WiFiLobbyMinigame_GetPlayerRowOrder(u32 param0, u32 param1, u32 param2)
 {
     s32 v0, v1, v2;
     int v3;
 
     for (v3 = 0; v3 < param0; v3++) {
-        if (Unk_ov114_0226016C[param0 - 1][v3] == param1) {
+        if (sPlayerRowOrder[param0 - 1][v3] == param1) {
             v1 = v3;
         }
 
-        if (Unk_ov114_0226016C[param0 - 1][v3] == param2) {
+        if (sPlayerRowOrder[param0 - 1][v3] == param2) {
             v0 = v3;
         }
     }
@@ -2131,7 +2131,7 @@ static u32 ov114_0225DF44(u32 param0, u32 param1, u32 param2)
     return v2;
 }
 
-static void ov114_0225DF7C(UnkStruct_ov114_0225DFFC *param0, UnkStruct_ov114_0225CEF0 *param1, u32 heapID)
+static void WiFiLobbyMinigame_InitScrollEffect(WiFiLobbyMinigameScrollEffect *param0, WiFiLobbyMinigameBackgrounds *param1, u32 heapID)
 {
     int v0, v1;
 
@@ -2149,10 +2149,10 @@ static void ov114_0225DF7C(UnkStruct_ov114_0225DFFC *param0, UnkStruct_ov114_022
     param0->bufferManager = BufferManager_New(heapID, &param0->unk_04[0], &param0->unk_04[1]);
 
     BufferManager_SetMode(param0->bufferManager, 0);
-    SetHBlankCallback(ov114_0225E0AC, param0);
+    SetHBlankCallback(WiFiLobbyMinigame_ScrollEffectHBlank, param0);
 }
 
-static void ov114_0225DFFC(UnkStruct_ov114_0225DFFC *param0)
+static void WiFiLobbyMinigame_FreeScrollEffect(WiFiLobbyMinigameScrollEffect *param0)
 {
     if (param0->bufferManager != NULL) {
         SetHBlankCallback(NULL, NULL);
@@ -2161,7 +2161,7 @@ static void ov114_0225DFFC(UnkStruct_ov114_0225DFFC *param0)
     }
 }
 
-static void ov114_0225E028(UnkStruct_ov114_0225DFFC *param0, const UnkStruct_ov114_0225DAC0 *param1)
+static void WiFiLobbyMinigame_UpdateScrollEffect(WiFiLobbyMinigameScrollEffect *param0, const WiFiLobbyMinigamePlayerRow *param1)
 {
     s16 *v0;
     int v1;
@@ -2173,7 +2173,7 @@ static void ov114_0225E028(UnkStruct_ov114_0225DFFC *param0, const UnkStruct_ov1
 
     for (v1 = 0; v1 < 6 * 8; v1++) {
         v2 = v1 - 1;
-        v2 += Unk_ov114_02260204[param1->unk_18 - 1].unk_00[param1->unk_1B] * 8;
+        v2 += sPlayerRowLayouts[param1->unk_18 - 1].unk_00[param1->unk_1B] * 8;
 
         if (v2 < 0) {
             v2 += 192;
@@ -2185,7 +2185,7 @@ static void ov114_0225E028(UnkStruct_ov114_0225DFFC *param0, const UnkStruct_ov1
     BufferManager_SetMode(param0->bufferManager, 1);
 }
 
-static void ov114_0225E08C(UnkStruct_ov114_0225DFFC *param0)
+static void WiFiLobbyMinigame_SwapScrollBuffers(WiFiLobbyMinigameScrollEffect *param0)
 {
     if (param0->bufferManager == NULL) {
         return;
@@ -2195,9 +2195,9 @@ static void ov114_0225E08C(UnkStruct_ov114_0225DFFC *param0)
     BufferManager_SetMode(param0->bufferManager, 0);
 }
 
-static void ov114_0225E0AC(void *param0)
+static void WiFiLobbyMinigame_ScrollEffectHBlank(void *param0)
 {
-    UnkStruct_ov114_0225DFFC *v0 = param0;
+    WiFiLobbyMinigameScrollEffect *v0 = param0;
     int v1;
     const s16 *v2;
 
@@ -2215,19 +2215,19 @@ static void ov114_0225E0AC(void *param0)
     }
 }
 
-static void ov114_0225E0F8(UnkStruct_ov114_0225E0F8 *param0, const UnkStruct_ov114_0225C76C *param1)
+static void WiFiLobbyMinigame_InitPlayerInfo(WiFiLobbyMinigamePlayerInfo *param0, const WiFiLobbyMinigamePlayerContext *param1)
 {
     int v0;
 
     for (v0 = 0; v0 < param1->unk_08; v0++) {
-        param0->unk_08[v0] = ov114_0225C7CC(param1, param1->unk_04[v0]);
+        param0->unk_08[v0] = WiFiLobbyMinigame_GetTrainerInfo(param1, param1->unk_04[v0]);
         GF_ASSERT(param0->unk_08[v0]);
         param0->unk_00[v0] = CommInfo_PlayerCountry(param1->unk_04[v0]);
         param0->unk_04[v0] = CommInfo_PlayerRegion(param1->unk_04[v0]);
     }
 }
 
-static BOOL ov114_0225E14C(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225E0F8 *param1)
+static BOOL WiFiLobbyMinigame_ArePlayersFromDifferentCountries(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigamePlayerInfo *param1)
 {
     int v0;
     BOOL v1 = 0;
@@ -2241,7 +2241,7 @@ static BOOL ov114_0225E14C(const UnkStruct_ov114_0225C76C *param0, const UnkStru
     return v1;
 }
 
-u32 ov114_0225E180(u32 param0)
+u32 WiFiLobbyMinigame_GetNextMinigame(u32 param0)
 {
     u32 v0;
     u32 v1;
@@ -2260,14 +2260,14 @@ u32 ov114_0225E180(u32 param0)
     return v2;
 }
 
-static void ov114_0225E1A4(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, UnkStruct_ov114_0225D084 *param2, u32 param3, NARC *param4, u32 heapID)
+static void WiFiLobbyMinigame_InitGameTitle(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, WiFiLobbyMinigameMessages *param2, u32 param3, NARC *param4, u32 heapID)
 {
     Window_Add(param1->unk_00, &param0->unk_00, 1, 6, 11, 20, 10, 8, 513);
     Window_FillTilemap(&param0->unk_00, 0);
 
     param0->unk_14 = String_Init(128, heapID);
-    ov114_0225D180(param2, param3);
-    ov114_0225D190(param2, param0->unk_14, 16);
+    WiFiLobbyMinigame_SetMessageMinigameName(param2, param3);
+    WiFiLobbyMinigame_DrawMessage(param2, param0->unk_14, 16);
     param0->unk_10 = param3;
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
@@ -2275,13 +2275,13 @@ static void ov114_0225E1A4(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param4, 10, param1->unk_00, 0, 0, 0, 0, heapID);
 }
 
-static void ov114_0225E234(UnkStruct_ov114_0225E1A4 *param0)
+static void WiFiLobbyMinigame_FreeGameTitle(WiFiLobbyMinigameGameTitle *param0)
 {
     Window_Remove(&param0->unk_00);
     String_Free(param0->unk_14);
 }
 
-static void ov114_0225E244(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, u32 heapID)
+static void WiFiLobbyMinigame_ShowGameTitle(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, u32 heapID)
 {
     u32 v0;
     u32 v1;
@@ -2289,59 +2289,59 @@ static void ov114_0225E244(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
     param0->unk_2C = 0;
     param0->unk_2E = 0;
 
-    ov114_0225CBF0(&param0->unk_18, Unk_ov114_02260140[param0->unk_10], Unk_ov114_02260110[param0->unk_10], Unk_ov114_02260104[param0->unk_10], 16);
-    ov114_0225E4B0(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
+    WiFiLobbyMinigame_InitMotion(&param0->unk_18, sGameTitleSlideInStart[param0->unk_10], sGameTitleSlideInEnd[param0->unk_10], sGameTitleSlideInAccel[param0->unk_10], 16);
+    WiFiLobbyMinigame_SetGameTitleBgOffset(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
     Font_InitManager(FONT_SUBSCREEN, heapID);
 
     v0 = Font_CalcStringWidth(FONT_SUBSCREEN, param0->unk_14, 0);
     v1 = ((20 * 8) / 2) - (v0 / 2);
 
-    Text_AddPrinterWithParamsAndColor(&param0->unk_00, FONT_SUBSCREEN, param0->unk_14, v1, 0, TEXT_SPEED_INSTANT, Unk_ov114_022600F8[param0->unk_10], NULL);
+    Text_AddPrinterWithParamsAndColor(&param0->unk_00, FONT_SUBSCREEN, param0->unk_14, v1, 0, TEXT_SPEED_INSTANT, sGameTitleTextColors[param0->unk_10], NULL);
     Font_Free(FONT_SUBSCREEN);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
 }
 
-static void ov114_0225E2D4(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1)
+static void WiFiLobbyMinigame_HideGameTitle(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1)
 {
     param0->unk_2C = 0;
     param0->unk_2E = 0;
 
-    ov114_0225CBF0(&param0->unk_18, Unk_ov114_02260110[param0->unk_10], Unk_ov114_022600E0[param0->unk_10], Unk_ov114_022600EC[param0->unk_10], 8);
-    ov114_0225E500(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
+    WiFiLobbyMinigame_InitMotion(&param0->unk_18, sGameTitleSlideInEnd[param0->unk_10], sGameTitleHideStart[param0->unk_10], sGameTitleHideEnd[param0->unk_10], 8);
+    WiFiLobbyMinigame_ScheduleGameTitleBgScroll(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
 }
 
-static BOOL ov114_0225E31C(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1)
+static BOOL WiFiLobbyMinigame_UpdateGameTitleShow(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1)
 {
     BOOL v0;
 
     switch (param0->unk_2E) {
     case 0:
-        v0 = ov114_0225CC4C(&param0->unk_18, param0->unk_2C);
-        ov114_0225E500(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
+        v0 = WiFiLobbyMinigame_UpdateMotion(&param0->unk_18, param0->unk_2C);
+        WiFiLobbyMinigame_ScheduleGameTitleBgScroll(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
         param0->unk_2C++;
 
         if (v0 == 1) {
             Sound_PlayEffect(SEQ_SE_PL_FCALL_sseq);
 
-            ov114_0225CBF0(&param0->unk_18, Unk_ov114_02260110[param0->unk_10], Unk_ov114_0226011C[param0->unk_10], Unk_ov114_02260128[param0->unk_10], 4);
+            WiFiLobbyMinigame_InitMotion(&param0->unk_18, sGameTitleSlideInEnd[param0->unk_10], sGameTitleSlideOutStart[param0->unk_10], sGameTitleSlideOutEnd[param0->unk_10], 4);
             param0->unk_2E++;
             param0->unk_2C = 0;
         }
         break;
     case 1:
-        v0 = ov114_0225CC4C(&param0->unk_18, param0->unk_2C);
-        ov114_0225E500(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
+        v0 = WiFiLobbyMinigame_UpdateMotion(&param0->unk_18, param0->unk_2C);
+        WiFiLobbyMinigame_ScheduleGameTitleBgScroll(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
         param0->unk_2C++;
 
         if (v0 == 1) {
-            ov114_0225CBF0(&param0->unk_18, Unk_ov114_0226011C[param0->unk_10], Unk_ov114_02260110[param0->unk_10], Unk_ov114_02260134[param0->unk_10], 4);
+            WiFiLobbyMinigame_InitMotion(&param0->unk_18, sGameTitleSlideOutStart[param0->unk_10], sGameTitleSlideInEnd[param0->unk_10], sGameTitleSlideOutAccel[param0->unk_10], 4);
             param0->unk_2E++;
             param0->unk_2C = 0;
         }
         break;
     case 2:
-        v0 = ov114_0225CC4C(&param0->unk_18, param0->unk_2C);
-        ov114_0225E500(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
+        v0 = WiFiLobbyMinigame_UpdateMotion(&param0->unk_18, param0->unk_2C);
+        WiFiLobbyMinigame_ScheduleGameTitleBgScroll(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
         param0->unk_2C++;
 
         if (v0 == 1) {
@@ -2355,14 +2355,14 @@ static BOOL ov114_0225E31C(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
     return 0;
 }
 
-static BOOL ov114_0225E438(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1)
+static BOOL WiFiLobbyMinigame_UpdateGameTitleHide(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1)
 {
     BOOL v0;
 
     switch (param0->unk_2E) {
     case 0:
-        v0 = ov114_0225CC4C(&param0->unk_18, param0->unk_2C);
-        ov114_0225E500(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
+        v0 = WiFiLobbyMinigame_UpdateMotion(&param0->unk_18, param0->unk_2C);
+        WiFiLobbyMinigame_ScheduleGameTitleBgScroll(param0, param1, param0->unk_18.unk_00 >> FX32_SHIFT);
         param0->unk_2C++;
 
         if (v0 == 1) {
@@ -2373,7 +2373,7 @@ static BOOL ov114_0225E438(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
         Window_ClearAndCopyToVRAM(&param0->unk_00);
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
 
-        ov114_0225E4B0(param0, param1, 0);
+        WiFiLobbyMinigame_SetGameTitleBgOffset(param0, param1, 0);
 
         Bg_ClearTilemap(param1->unk_00, BG_LAYER_MAIN_0);
         Bg_ClearTilemap(param1->unk_00, BG_LAYER_MAIN_1);
@@ -2384,7 +2384,7 @@ static BOOL ov114_0225E438(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
     return 0;
 }
 
-static void ov114_0225E4B0(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, s32 param2)
+static void WiFiLobbyMinigame_SetGameTitleBgOffset(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, s32 param2)
 {
     switch (param0->unk_10) {
     case UnkEnum_ov66_022324D0_00:
@@ -2402,7 +2402,7 @@ static void ov114_0225E4B0(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
     }
 }
 
-static void ov114_0225E500(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_0225CEF0 *param1, s32 param2)
+static void WiFiLobbyMinigame_ScheduleGameTitleBgScroll(WiFiLobbyMinigameGameTitle *param0, WiFiLobbyMinigameBackgrounds *param1, s32 param2)
 {
     switch (param0->unk_10) {
     case UnkEnum_ov66_022324D0_00:
@@ -2420,7 +2420,7 @@ static void ov114_0225E500(UnkStruct_ov114_0225E1A4 *param0, UnkStruct_ov114_022
     }
 }
 
-static void ov114_0225E550(NARC *param0, u32 param1, u32 param2)
+static void WiFiLobbyMinigame_LoadMinigamePalette(NARC *param0, u32 param1, u32 param2)
 {
     u32 v0;
 
@@ -2443,70 +2443,70 @@ static void ov114_0225E550(NARC *param0, u32 param1, u32 param2)
     Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(param0, 5, 4, v0 * 32, 5 * 32, 32, param2);
 }
 
-static UnkStruct_ov114_0225E854 *ov114_0225E5A8(const UnkStruct_ov114_0225C76C *param0, const UnkStruct_ov114_0225C9A8 *param1, u32 param2, u32 heapID)
+static WiFiLobbyMinigameResultsScreen *WiFiLobbyMinigame_CreateResultsScreenInternal(const WiFiLobbyMinigamePlayerContext *param0, const WiFiLobbyMinigameRanking *param1, u32 param2, u32 heapID)
 {
-    UnkStruct_ov114_0225E854 *v0;
+    WiFiLobbyMinigameResultsScreen *v0;
     int v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov114_0225E854));
-    memset(v0, 0, sizeof(UnkStruct_ov114_0225E854));
-    memcpy(&v0->unk_1C, param1, sizeof(UnkStruct_ov114_0225C9A8));
-    memcpy(&v0->unk_0C, param0, sizeof(UnkStruct_ov114_0225C76C));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameResultsScreen));
+    memset(v0, 0, sizeof(WiFiLobbyMinigameResultsScreen));
+    memcpy(&v0->unk_1C, param1, sizeof(WiFiLobbyMinigameRanking));
+    memcpy(&v0->unk_0C, param0, sizeof(WiFiLobbyMinigamePlayerContext));
 
     v0->unk_07 = param2;
 
-    ov114_02260044(v0);
+    WiFiLobbyMinigame_InitCommCmdResults(v0);
 
     G2_BlendNone();
     G2S_BlendNone();
     GX_SetVisibleWnd(0);
     GXS_SetVisibleWnd(0);
 
-    GXLayers_SetBanks(&Unk_ov114_022601DC);
+    GXLayers_SetBanks(&sResultsScreenGXBanks);
 
     v0->heapID = heapID;
 
-    ov114_0225E0F8(&v0->unk_34, &v0->unk_0C);
+    WiFiLobbyMinigame_InitPlayerInfo(&v0->unk_34, &v0->unk_0C);
     VramTransfer_New(16, heapID);
 
-    ov114_0225CEF0(&v0->unk_4C, &Unk_ov114_0226014C, Unk_ov114_02260324, 6, heapID);
-    ov114_0225CFCC(&v0->unk_A0, 32, 2, 2, heapID);
-    ov114_0225CCD0(&v0->unk_230, 2, heapID);
-    ov114_0225D084(&v0->unk_58, heapID);
-    ov114_0225E744(v0, heapID);
+    WiFiLobbyMinigame_InitBackgrounds(&v0->unk_4C, &sResultsScreenGraphicsModes, sResultsScreenBgTemplates, 6, heapID);
+    WiFiLobbyMinigame_InitSpriteSystem(&v0->unk_A0, 32, 2, 2, heapID);
+    WiFiLobbyMinigame_InitSpriteResources(&v0->unk_230, 2, heapID);
+    WiFiLobbyMinigame_InitMessages(&v0->unk_58, heapID);
+    WiFiLobbyMinigame_LoadResultsScreenGraphics(v0, heapID);
 
     {
         BOOL v2;
         u32 v3;
 
-        v3 = ov114_0225C78C(&v0->unk_0C, v0->unk_0C.unk_09);
-        v2 = ov114_0225C7A4(&v0->unk_0C, v3);
-        ov114_0225D290(&v0->unk_68, &v0->unk_4C, v0->unk_0C.saveData, v2, heapID);
+        v3 = WiFiLobbyMinigame_GetNetIdByIndex(&v0->unk_0C, v0->unk_0C.unk_09);
+        v2 = WiFiLobbyMinigame_IsPlayerReady(&v0->unk_0C, v3);
+        WiFiLobbyMinigame_InitMessageBox(&v0->unk_68, &v0->unk_4C, v0->unk_0C.saveData, v2, heapID);
     }
 
-    ov114_0225F234(&v0->unk_24C, &v0->unk_4C, v0->unk_0C.unk_0A, heapID);
+    WiFiLobbyMinigame_InitReplayMenu(&v0->unk_24C, &v0->unk_4C, v0->unk_0C.unk_0A, heapID);
 
     {
         int v4;
 
-        v0->unk_05 = ov114_0225E14C(&v0->unk_0C, &v0->unk_34);
+        v0->unk_05 = WiFiLobbyMinigame_ArePlayersFromDifferentCountries(&v0->unk_0C, &v0->unk_34);
     }
 
     switch (v0->unk_07) {
     case UnkEnum_ov66_022324D0_00:
     case UnkEnum_ov66_022324D0_01:
-        v0->unk_6A8 = SysTask_Start(ov114_0225E874, v0, 0);
+        v0->unk_6A8 = SysTask_Start(WiFiLobbyMinigame_ResultsScreenTask, v0, 0);
         break;
     case UnkEnum_ov66_022324D0_02:
-        v0->unk_6A8 = SysTask_Start(ov114_0225ED40, v0, 0);
+        v0->unk_6A8 = SysTask_Start(WiFiLobbyMinigame_ResultsScreenTaskGame2, v0, 0);
         break;
     default:
         GF_ASSERT(FALSE);
-        v0->unk_6A8 = SysTask_Start(ov114_0225E874, v0, 0);
+        v0->unk_6A8 = SysTask_Start(WiFiLobbyMinigame_ResultsScreenTask, v0, 0);
         break;
     }
 
-    v0->unk_6AC = SysTask_ExecuteAfterVBlank(ov114_0225F124, v0, 0);
+    v0->unk_6AC = SysTask_ExecuteAfterVBlank(WiFiLobbyMinigame_ResultsScreenVBlankTask, v0, 0);
 
     if (v0->unk_0C.unk_0A) {
         NintendoWFC_StartVoiceChat(heapID);
@@ -2515,7 +2515,7 @@ static UnkStruct_ov114_0225E854 *ov114_0225E5A8(const UnkStruct_ov114_0225C76C *
     return v0;
 }
 
-static void ov114_0225E744(UnkStruct_ov114_0225E854 *param0, u32 heapID)
+static void WiFiLobbyMinigame_LoadResultsScreenGraphics(WiFiLobbyMinigameResultsScreen *param0, u32 heapID)
 {
     NARC *v0 = NARC_ctor(NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, heapID);
 
@@ -2535,19 +2535,19 @@ static void ov114_0225E744(UnkStruct_ov114_0225E854 *param0, u32 heapID)
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 8, param0->unk_4C.unk_00, 3, 0, 0, 0, heapID);
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 8, param0->unk_4C.unk_00, 5, 0, 0, 0, heapID);
 
-    ov114_0225E550(v0, param0->unk_07, heapID);
+    WiFiLobbyMinigame_LoadMinigamePalette(v0, param0->unk_07, heapID);
 
-    param0->unk_248 = ov114_0225CD54(&param0->unk_230, v0, 11, 5, 12, 13, 14, 5000, heapID);
+    param0->unk_248 = WiFiLobbyMinigame_AllocSpriteResource(&param0->unk_230, v0, 11, 5, 12, 13, 14, 5000, heapID);
 
-    ov114_0225F148(param0, v0, heapID);
-    ov114_0225F484(&param0->unk_26C, &param0->unk_4C, &param0->unk_A0, &param0->unk_230, v0, heapID);
+    WiFiLobbyMinigame_LoadResultsPalette(param0, v0, heapID);
+    WiFiLobbyMinigame_InitBalloonGrid(&param0->unk_26C, &param0->unk_4C, &param0->unk_A0, &param0->unk_230, v0, heapID);
 
     NARC_dtor(v0);
 }
 
-static void ov114_0225E854(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_FreeResultsScreenGraphics(WiFiLobbyMinigameResultsScreen *param0)
 {
-    ov114_0225F578(&param0->unk_26C);
+    WiFiLobbyMinigame_FreeBalloonGrid(&param0->unk_26C);
 
     {
         int v0;
@@ -2557,12 +2557,12 @@ static void ov114_0225E854(UnkStruct_ov114_0225E854 *param0)
         }
     }
 
-    ov114_0225F224(param0);
+    WiFiLobbyMinigame_FreeResultsPalette(param0);
 }
 
-static void ov114_0225E874(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_ResultsScreenTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225E854 *v0 = param1;
+    WiFiLobbyMinigameResultsScreen *v0 = param1;
     BOOL v1;
 
     switch (v0->unk_04) {
@@ -2575,17 +2575,17 @@ static void ov114_0225E874(SysTask *param0, void *param1)
         } else {
             u32 v2;
 
-            v2 = ov114_0225F8FC(v0);
+            v2 = WiFiLobbyMinigame_GetTargetScore(v0);
 
             if ((v0->unk_1C.unk_10[v0->unk_0C.unk_09] == 0) && (v0->unk_1C.unk_00[v0->unk_0C.unk_09] > v2)) {
-                v0->unk_0C.unk_0C->unk_00 = ov114_0225E180(v0->unk_0C.unk_0C->unk_00);
+                v0->unk_0C.unk_0C->unk_00 = WiFiLobbyMinigame_GetNextMinigame(v0->unk_0C.unk_0C->unk_00);
                 v0->unk_09 = 1;
             } else {
                 v0->unk_09 = 0;
             }
 
             if (v0->unk_0C.unk_09 == 0) {
-                ov114_0225F920(v0);
+                WiFiLobbyMinigame_SendGameResults(v0);
             }
         }
 
@@ -2600,11 +2600,11 @@ static void ov114_0225E874(SysTask *param0, void *param1)
         }
         break;
     case 2:
-        ov114_0225D368(&v0->unk_68, &v0->unk_58, 1, 0);
+        WiFiLobbyMinigame_ShowMessage(&v0->unk_68, &v0->unk_58, 1, 0);
         v0->unk_04++;
         break;
     case 3:
-        v1 = ov114_0225D43C(&v0->unk_68, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_68, 0);
 
         if (v1) {
             v0->unk_00 = 64;
@@ -2620,10 +2620,10 @@ static void ov114_0225E874(SysTask *param0, void *param1)
                 BOOL v4 = 1;
                 u32 v5;
 
-                ov114_0225D400(&v0->unk_68, 0);
-                ov114_0225DF7C(&v0->unk_3A0, &v0->unk_4C, v0->heapID);
+                WiFiLobbyMinigame_HideMessage(&v0->unk_68, 0);
+                WiFiLobbyMinigame_InitScrollEffect(&v0->unk_3A0, &v0->unk_4C, v0->heapID);
 
-                v5 = ov114_0225F8FC(v0);
+                v5 = WiFiLobbyMinigame_GetTargetScore(v0);
 
                 for (v3 = 0; v3 < v0->unk_0C.unk_08; v3++) {
                     if (v0->unk_1C.unk_00[v3] > v5) {
@@ -2671,12 +2671,12 @@ static void ov114_0225E874(SysTask *param0, void *param1)
             break;
         }
 
-        ov114_0225F7D8(v0);
+        WiFiLobbyMinigame_UpdatePlayerRowsMotion(v0);
         v0->unk_04++;
     } break;
     case 6:
         v0->unk_6B6--;
-        ov114_0225F7D8(v0);
+        WiFiLobbyMinigame_UpdatePlayerRowsMotion(v0);
 
         if (v0->unk_6B6 > 0) {
             break;
@@ -2698,7 +2698,7 @@ static void ov114_0225E874(SysTask *param0, void *param1)
                 }
 
                 if (v9) {
-                    ov114_0225F6E4(v0, v8, v0->unk_1C.unk_10[v8]);
+                    WiFiLobbyMinigame_InitPlayerRowWithScore(v0, v8, v0->unk_1C.unk_10[v8]);
                 }
             }
         }
@@ -2710,13 +2710,13 @@ static void ov114_0225E874(SysTask *param0, void *param1)
         }
         break;
     case 7:
-        if (ov114_0225F7D8(v0)) {
+        if (WiFiLobbyMinigame_UpdatePlayerRowsMotion(v0)) {
             v0->unk_04++;
         }
         break;
     case 8:
         v0->unk_04++;
-        ov114_0225F168(v0);
+        WiFiLobbyMinigame_CheckLocalPlayerWon(v0);
         v0->unk_00 = 30;
         break;
     case 9:
@@ -2738,16 +2738,16 @@ static void ov114_0225E874(SysTask *param0, void *param1)
             v10 = 18;
         }
 
-        ov114_0225D104(&v0->unk_58, v0->unk_34.unk_08[v0->unk_0C.unk_09]);
-        ov114_0225D368(&v0->unk_68, &v0->unk_58, v10, 0);
+        WiFiLobbyMinigame_SetMessagePlayerName(&v0->unk_58, v0->unk_34.unk_08[v0->unk_0C.unk_09]);
+        WiFiLobbyMinigame_ShowMessage(&v0->unk_68, &v0->unk_58, v10, 0);
     }
         v0->unk_04++;
         break;
     case 11:
-        v1 = ov114_0225D43C(&v0->unk_68, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_68, 0);
 
         if (v1) {
-            if (ov114_0225F860(v0) == 1) {
+            if (WiFiLobbyMinigame_IsWinFanfareDone(v0) == 1) {
                 if (v0->unk_0C.unk_0B == 1) {
                     v0->unk_00 = 102;
                     v0->unk_04 = 14;
@@ -2768,7 +2768,7 @@ static void ov114_0225E874(SysTask *param0, void *param1)
             u32 v11;
 
             if (v0->unk_09) {
-                ov114_0225D170(&v0->unk_58, v0->unk_0C.unk_0C->unk_00);
+                WiFiLobbyMinigame_SetMessagePlazaItemName(&v0->unk_58, v0->unk_0C.unk_0C->unk_00);
 
                 if (v0->unk_6B0 == v0->unk_0C.unk_0C->unk_00) {
                     v11 = 19;
@@ -2779,13 +2779,13 @@ static void ov114_0225E874(SysTask *param0, void *param1)
                 v11 = 9;
             }
 
-            ov114_0225D104(&v0->unk_58, v0->unk_34.unk_08[v0->unk_0C.unk_09]);
-            ov114_0225D368(&v0->unk_68, &v0->unk_58, v11, 0);
+            WiFiLobbyMinigame_SetMessagePlayerName(&v0->unk_58, v0->unk_34.unk_08[v0->unk_0C.unk_09]);
+            WiFiLobbyMinigame_ShowMessage(&v0->unk_68, &v0->unk_58, v11, 0);
         }
         v0->unk_04 = 13;
         break;
     case 13:
-        v1 = ov114_0225D43C(&v0->unk_68, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_68, 0);
 
         if (v1) {
             v0->unk_00 = 102;
@@ -2797,7 +2797,7 @@ static void ov114_0225E874(SysTask *param0, void *param1)
             v0->unk_00--;
 
             if (v0->unk_00 == 0) {
-                ov114_0225D400(&v0->unk_68, 0);
+                WiFiLobbyMinigame_HideMessage(&v0->unk_68, 0);
                 v0->unk_00 = 30;
                 v0->unk_04++;
             }
@@ -2837,19 +2837,19 @@ static void ov114_0225E874(SysTask *param0, void *param1)
         }
         break;
     case 19:
-        ov114_0225F890(v0);
+        WiFiLobbyMinigame_RecordFriendGameCount(v0);
         v0->unk_04++;
         break;
     case 20:
-        v1 = ov114_0225F27C(&v0->unk_24C, &v0->unk_68, &v0->unk_58, v0->unk_07, v0->heapID);
+        v1 = WiFiLobbyMinigame_UpdateReplayMenu(&v0->unk_24C, &v0->unk_68, &v0->unk_58, v0->unk_07, v0->heapID);
 
         if (v1) {
-            v0->unk_08 = ov114_0225F420(&v0->unk_24C);
+            v0->unk_08 = WiFiLobbyMinigame_ReplayMenuGetResult(&v0->unk_24C);
             v0->unk_04++;
         }
         break;
     case 21:
-        ov114_0225DFFC(&v0->unk_3A0);
+        WiFiLobbyMinigame_FreeScrollEffect(&v0->unk_3A0);
         v0->unk_06 = 1;
         break;
     case 22:
@@ -2864,23 +2864,23 @@ static void ov114_0225E874(SysTask *param0, void *param1)
 
         for (v12 = 0; v12 < v0->unk_0C.unk_08; v12++) {
             v0->unk_1C.unk_10[v12] = v0->unk_0C.unk_08 - 1;
-            ov114_0225F6E4(v0, v12, v0->unk_1C.unk_10[v12]);
+            WiFiLobbyMinigame_InitPlayerRowWithScore(v0, v12, v0->unk_1C.unk_10[v12]);
         }
 
         v0->unk_04 = 7;
     } break;
     }
 
-    ov114_0225F19C(v0);
-    ov114_0225D070(&v0->unk_A0);
+    WiFiLobbyMinigame_UpdateRankPalette(v0);
+    WiFiLobbyMinigame_UpdateSprites(&v0->unk_A0);
 
     Bg_ScheduleScroll(v0->unk_4C.unk_00, 3, 4, 2);
     Bg_ScheduleScroll(v0->unk_4C.unk_00, 5, 4, 2);
 }
 
-static void ov114_0225ED40(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_ResultsScreenTaskGame2(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225E854 *v0 = param1;
+    WiFiLobbyMinigameResultsScreen *v0 = param1;
     BOOL v1;
 
     switch (v0->unk_04) {
@@ -2889,14 +2889,14 @@ static void ov114_0225ED40(SysTask *param0, void *param1)
             v0->unk_09 = 0;
         } else {
             if (v0->unk_1C.unk_14 >= 10) {
-                v0->unk_0C.unk_0C->unk_00 = ov114_0225E180(v0->unk_0C.unk_0C->unk_00);
+                v0->unk_0C.unk_0C->unk_00 = WiFiLobbyMinigame_GetNextMinigame(v0->unk_0C.unk_0C->unk_00);
                 v0->unk_09 = 1;
             } else {
                 v0->unk_09 = 0;
             }
 
             if (v0->unk_0C.unk_09 == 0) {
-                ov114_0225F988(v0);
+                WiFiLobbyMinigame_SendGameResultsGame2(v0);
             }
         }
 
@@ -2913,11 +2913,11 @@ static void ov114_0225ED40(SysTask *param0, void *param1)
         }
         break;
     case 2:
-        ov114_0225D368(&v0->unk_68, &v0->unk_58, 1, 0);
+        WiFiLobbyMinigame_ShowMessage(&v0->unk_68, &v0->unk_58, 1, 0);
         v0->unk_04++;
         break;
     case 3:
-        v1 = ov114_0225D43C(&v0->unk_68, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_68, 0);
 
         if (v1) {
             v0->unk_00 = 102;
@@ -2929,7 +2929,7 @@ static void ov114_0225ED40(SysTask *param0, void *param1)
             v0->unk_00--;
 
             if (v0->unk_00 == 0) {
-                ov114_0225D400(&v0->unk_68, 0);
+                WiFiLobbyMinigame_HideMessage(&v0->unk_68, 0);
                 v0->unk_04++;
             }
         }
@@ -2939,59 +2939,59 @@ static void ov114_0225ED40(SysTask *param0, void *param1)
         BOOL v3;
         u32 v4;
 
-        ov114_0225DF7C(&v0->unk_3A0, &v0->unk_4C, v0->heapID);
+        WiFiLobbyMinigame_InitScrollEffect(&v0->unk_3A0, &v0->unk_4C, v0->heapID);
 
         for (v2 = 0; v2 < v0->unk_0C.unk_08; v2++) {
-            ov114_0225DAC0(&v0->unk_2C0[v2], v0->unk_0C.unk_08, v0->unk_07, v0->unk_2BC[0], &v0->unk_4C, v2, v0->unk_0C.unk_09, &v0->unk_A0, v0->unk_248, v0->heapID);
+            WiFiLobbyMinigame_InitPlayerRow(&v0->unk_2C0[v2], v0->unk_0C.unk_08, v0->unk_07, v0->unk_2BC[0], &v0->unk_4C, v2, v0->unk_0C.unk_09, &v0->unk_A0, v0->unk_248, v0->heapID);
 
-            v4 = ov114_0225C78C(&v0->unk_0C, v2);
-            v3 = ov114_0225C7A4(&v0->unk_0C, v4);
+            v4 = WiFiLobbyMinigame_GetNetIdByIndex(&v0->unk_0C, v2);
+            v3 = WiFiLobbyMinigame_IsPlayerReady(&v0->unk_0C, v4);
 
-            ov114_0225DC44(&v0->unk_2C0[v2], &v0->unk_58, v0->unk_34.unk_08[v2], 8, 0, v3);
-            ov114_0225DCA0(&v0->unk_2C0[v2], &v0->unk_58, v0->unk_05, v0->unk_34.unk_00[v2], v0->unk_34.unk_04[v2], 8);
-            ov114_0225DD80(&v0->unk_2C0[v2], &v0->unk_4C);
-            ov114_0225DD94(&v0->unk_2C0[v2]);
-            ov114_0225DDD4(&v0->unk_2C0[v2], -8, 3 * v2);
+            WiFiLobbyMinigame_DrawPlayerRowName(&v0->unk_2C0[v2], &v0->unk_58, v0->unk_34.unk_08[v2], 8, 0, v3);
+            WiFiLobbyMinigame_DrawPlayerRowLocation(&v0->unk_2C0[v2], &v0->unk_58, v0->unk_05, v0->unk_34.unk_00[v2], v0->unk_34.unk_04[v2], 8);
+            WiFiLobbyMinigame_TransferPlayerRow(&v0->unk_2C0[v2], &v0->unk_4C);
+            WiFiLobbyMinigame_ShowPlayerRowSprite(&v0->unk_2C0[v2]);
+            WiFiLobbyMinigame_StartPlayerRowSlideIn(&v0->unk_2C0[v2], -8, 3 * v2);
         }
     }
         v0->unk_04++;
         v0->unk_00 = 16;
         break;
     case 6:
-        v1 = ov114_0225F7D8(v0);
+        v1 = WiFiLobbyMinigame_UpdatePlayerRowsMotion(v0);
 
         if (v1 == 1) {
             v0->unk_00--;
 
             if (v0->unk_00 <= 0) {
-                ov114_0225F598(&v0->unk_26C, v0->unk_1C.unk_14);
+                WiFiLobbyMinigame_StartBalloonGrid(&v0->unk_26C, v0->unk_1C.unk_14);
                 v0->unk_04++;
             }
         }
         break;
     case 7:
-        v1 = ov114_0225F5AC(&v0->unk_26C, &v0->unk_4C);
+        v1 = WiFiLobbyMinigame_UpdateBalloonGrid(&v0->unk_26C, &v0->unk_4C);
 
         if (v1 == 1) {
             if (v0->unk_09 == 1) {
-                ov114_0225F83C(v0);
+                WiFiLobbyMinigame_PlayWinFanfare(v0);
             }
 
             v0->unk_04++;
         }
         break;
     case 8:
-        ov114_0225D154(&v0->unk_58, v0->unk_1C.unk_14);
-        ov114_0225D368(&v0->unk_68, &v0->unk_58, 7, 0);
+        WiFiLobbyMinigame_SetMessageRankNumber(&v0->unk_58, v0->unk_1C.unk_14);
+        WiFiLobbyMinigame_ShowMessage(&v0->unk_68, &v0->unk_58, 7, 0);
         v0->unk_00 = 102;
         v0->unk_04++;
         break;
     case 9:
-        v1 = ov114_0225D43C(&v0->unk_68, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_68, 0);
 
         if (v1 == 1) {
             if (v0->unk_00 <= 0) {
-                if (ov114_0225F860(v0) == 1) {
+                if (WiFiLobbyMinigame_IsWinFanfareDone(v0) == 1) {
                     if (v0->unk_0C.unk_0B == 1) {
                         v0->unk_00 = 102;
                         v0->unk_04 = 12;
@@ -3013,12 +3013,12 @@ static void ov114_0225ED40(SysTask *param0, void *param1)
             v5 = 9;
         }
 
-        ov114_0225D368(&v0->unk_68, &v0->unk_58, v5, 0);
+        WiFiLobbyMinigame_ShowMessage(&v0->unk_68, &v0->unk_58, v5, 0);
     }
         v0->unk_04++;
         break;
     case 11:
-        v1 = ov114_0225D43C(&v0->unk_68, 0);
+        v1 = WiFiLobbyMinigame_IsMessageDone(&v0->unk_68, 0);
 
         if (v1) {
             v0->unk_00 = 102;
@@ -3077,47 +3077,47 @@ static void ov114_0225ED40(SysTask *param0, void *param1)
         }
         break;
     case 18:
-        ov114_0225F890(v0);
+        WiFiLobbyMinigame_RecordFriendGameCount(v0);
         v0->unk_04++;
         break;
     case 19:
-        v1 = ov114_0225F27C(&v0->unk_24C, &v0->unk_68, &v0->unk_58, v0->unk_07, v0->heapID);
+        v1 = WiFiLobbyMinigame_UpdateReplayMenu(&v0->unk_24C, &v0->unk_68, &v0->unk_58, v0->unk_07, v0->heapID);
 
         if (v1) {
-            v0->unk_08 = ov114_0225F420(&v0->unk_24C);
+            v0->unk_08 = WiFiLobbyMinigame_ReplayMenuGetResult(&v0->unk_24C);
             v0->unk_04++;
         }
         break;
     case 20:
-        ov114_0225DFFC(&v0->unk_3A0);
+        WiFiLobbyMinigame_FreeScrollEffect(&v0->unk_3A0);
         v0->unk_06 = 1;
         break;
     }
 
-    ov114_0225F19C(v0);
-    ov114_0225D070(&v0->unk_A0);
+    WiFiLobbyMinigame_UpdateRankPalette(v0);
+    WiFiLobbyMinigame_UpdateSprites(&v0->unk_A0);
 
     Bg_ScheduleScroll(v0->unk_4C.unk_00, 3, 4, 2);
     Bg_ScheduleScroll(v0->unk_4C.unk_00, 5, 4, 2);
 }
 
-static void ov114_0225F124(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_ResultsScreenVBlankTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225E854 *v0 = param1;
+    WiFiLobbyMinigameResultsScreen *v0 = param1;
 
     VramTransfer_Process();
 
-    ov114_0225CFC0(&v0->unk_4C);
-    ov114_0225D07C(&v0->unk_A0);
-    ov114_0225E08C(&v0->unk_3A0);
+    WiFiLobbyMinigame_RunBackgroundUpdates(&v0->unk_4C);
+    WiFiLobbyMinigame_TransferOam(&v0->unk_A0);
+    WiFiLobbyMinigame_SwapScrollBuffers(&v0->unk_3A0);
 }
 
-static void ov114_0225F148(UnkStruct_ov114_0225E854 *param0, NARC *param1, u32 param2)
+static void WiFiLobbyMinigame_LoadResultsPalette(WiFiLobbyMinigameResultsScreen *param0, NARC *param1, u32 param2)
 {
     param0->unk_6B8 = Graphics_GetPlttDataFromOpenNARC(param1, 5, &param0->unk_6BC, param2);
 }
 
-static void ov114_0225F168(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_CheckLocalPlayerWon(WiFiLobbyMinigameResultsScreen *param0)
 {
     int v0;
 
@@ -3126,14 +3126,14 @@ static void ov114_0225F168(UnkStruct_ov114_0225E854 *param0)
     for (v0 = 0; v0 < param0->unk_0C.unk_08; v0++) {
         if (param0->unk_1C.unk_10[v0] == 0) {
             if (param0->unk_0C.unk_09 == v0) {
-                ov114_0225F83C(param0);
+                WiFiLobbyMinigame_PlayWinFanfare(param0);
                 break;
             }
         }
     }
 }
 
-static void ov114_0225F19C(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_UpdateRankPalette(WiFiLobbyMinigameResultsScreen *param0)
 {
     int v0;
     u32 v1;
@@ -3147,13 +3147,13 @@ static void ov114_0225F19C(UnkStruct_ov114_0225E854 *param0)
     if ((param0->unk_6C0 == 0) || (param0->unk_6C0 == 8)) {
         for (v0 = 0; v0 < param0->unk_0C.unk_08; v0++) {
             if (param0->unk_1C.unk_10[v0] == 0) {
-                v1 = (Unk_ov114_022600D4[v0] * 32);
+                v1 = (sPlayerRowPaletteOrder[v0] * 32);
                 v2 = param0->unk_6BC->pRawData;
 
                 if (param0->unk_6C0 == 0) {
-                    v2 += ((3 + Unk_ov114_022600D4[v0]) * 32);
+                    v2 += ((3 + sPlayerRowPaletteOrder[v0]) * 32);
                 } else {
-                    v2 += ((7 + Unk_ov114_022600D4[v0]) * 32);
+                    v2 += ((7 + sPlayerRowPaletteOrder[v0]) * 32);
                 }
 
                 v3 = VramTransfer_Request(NNS_GFD_DST_2D_BG_PLTT_MAIN, v1, v2, 32);
@@ -3165,14 +3165,14 @@ static void ov114_0225F19C(UnkStruct_ov114_0225E854 *param0)
     param0->unk_6C0 = (param0->unk_6C0 + 1) % (8 * 2);
 }
 
-static void ov114_0225F224(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_FreeResultsPalette(WiFiLobbyMinigameResultsScreen *param0)
 {
     Heap_Free(param0->unk_6B8);
 }
 
-static void ov114_0225F234(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_0225CEF0 *param1, u32 param2, u32 heapID)
+static void WiFiLobbyMinigame_InitReplayMenu(WiFiLobbyMinigameReplayMenu *param0, WiFiLobbyMinigameBackgrounds *param1, u32 param2, u32 heapID)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov114_0225F270));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameReplayMenu));
 
     param0->unk_08.bgConfig = param1->unk_00;
     param0->unk_08.bgLayer = BG_LAYER_SUB_0;
@@ -3185,12 +3185,12 @@ static void ov114_0225F234(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_022
     param0->unk_1D = 1;
 }
 
-static void ov114_0225F270(UnkStruct_ov114_0225F270 *param0)
+static void WiFiLobbyMinigame_FreeReplayMenu(WiFiLobbyMinigameReplayMenu *param0)
 {
     YesNoTouchMenu_Free(param0->unk_04);
 }
 
-static BOOL ov114_0225F27C(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_0225D338 *param1, UnkStruct_ov114_0225D084 *param2, u32 param3, u32 heapID)
+static BOOL WiFiLobbyMinigame_UpdateReplayMenu(WiFiLobbyMinigameReplayMenu *param0, WiFiLobbyMinigameMessageBox *param1, WiFiLobbyMinigameMessages *param2, u32 param3, u32 heapID)
 {
     u32 v0;
 
@@ -3211,12 +3211,12 @@ static BOOL ov114_0225F27C(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_022
         }
         break;
     case 2:
-        ov114_0225D180(param2, param3);
-        ov114_0225D368(param1, param2, 3, 1);
+        WiFiLobbyMinigame_SetMessageMinigameName(param2, param3);
+        WiFiLobbyMinigame_ShowMessage(param1, param2, 3, 1);
         param0->unk_00++;
         break;
     case 3:
-        v0 = ov114_0225D43C(param1, 1);
+        v0 = WiFiLobbyMinigame_IsMessageDone(param1, 1);
 
         if (v0 == 1) {
             param0->unk_00++;
@@ -3236,8 +3236,8 @@ static BOOL ov114_0225F27C(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_022
                 CommSys_SendData(23, NULL, 0);
             }
 
-            ov114_0225D368(param1, param2, 15, 1);
-            ov114_0225D458(param1, 1);
+            WiFiLobbyMinigame_ShowMessage(param1, param2, 15, 1);
+            WiFiLobbyMinigame_ShowWaitDial(param1, 1);
 
             param0->unk_00++;
         }
@@ -3253,11 +3253,11 @@ static BOOL ov114_0225F27C(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_022
         }
         break;
     case 7:
-        ov114_0225D368(param1, param2, 6, 1);
+        WiFiLobbyMinigame_ShowMessage(param1, param2, 6, 1);
         param0->unk_00++;
         break;
     case 8:
-        v0 = ov114_0225D43C(param1, 1);
+        v0 = WiFiLobbyMinigame_IsMessageDone(param1, 1);
 
         if (v0 == 1) {
             param0->unk_00++;
@@ -3293,12 +3293,12 @@ static BOOL ov114_0225F27C(UnkStruct_ov114_0225F270 *param0, UnkStruct_ov114_022
     return 0;
 }
 
-static BOOL ov114_0225F420(const UnkStruct_ov114_0225F270 *param0)
+static BOOL WiFiLobbyMinigame_ReplayMenuGetResult(const WiFiLobbyMinigameReplayMenu *param0)
 {
     return param0->unk_1F;
 }
 
-static void ov114_0225F424(UnkStruct_ov114_0225F270 *param0, u32 param1, BOOL param2, u32 param3)
+static void WiFiLobbyMinigame_ReplayMenuSetPlayerReady(WiFiLobbyMinigameReplayMenu *param0, u32 param1, BOOL param2, u32 param3)
 {
     if ((param0->unk_1C & (1 << param1)) == 0) {
         if (param2 == 0) {
@@ -3330,15 +3330,15 @@ static void ov114_0225F424(UnkStruct_ov114_0225F270 *param0, u32 param1, BOOL pa
     }
 }
 
-static void ov114_0225F47C(UnkStruct_ov114_0225F270 *param0, BOOL param1)
+static void WiFiLobbyMinigame_ReplayMenuSetAllReady(WiFiLobbyMinigameReplayMenu *param0, BOOL param1)
 {
     param0->unk_1E = 1;
     param0->unk_1F = param1;
 }
 
-static void ov114_0225F484(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_0225CEF0 *param1, UnkStruct_ov114_0225CFCC *param2, UnkStruct_ov114_0225CCD0 *param3, NARC *param4, u32 param5)
+static void WiFiLobbyMinigame_InitBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0, WiFiLobbyMinigameBackgrounds *param1, WiFiLobbyMinigameSpriteSystem *param2, WiFiLobbyMinigameSpriteResources *param3, NARC *param4, u32 param5)
 {
-    memset(param0, 0, sizeof(UnkStruct_ov114_0225F578));
+    memset(param0, 0, sizeof(WiFiLobbyMinigameBalloonGrid));
 
     {
         Graphics_LoadPaletteFromOpenNARC(param4, 24, 0, (13 + 1) * 32, 32, param5);
@@ -3351,7 +3351,7 @@ static void ov114_0225F484(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_022
         int v2;
         int v3, v4;
 
-        param0->unk_44 = ov114_0225CD54(param3, param4, 15, 1, 16, 17, 18, 5000 + 1, param5);
+        param0->unk_44 = WiFiLobbyMinigame_AllocSpriteResource(param3, param4, 15, 1, 16, 17, 18, 5000 + 1, param5);
 
         v4 = 40;
 
@@ -3360,7 +3360,7 @@ static void ov114_0225F484(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_022
 
             for (v1 = 0; v1 < 5; v1++) {
                 v2 = (v0 * 5) + v1;
-                param0->unk_08[v2] = ov114_0225CDB4(param0->unk_44, param2->unk_00, v3, v4, 0, param5);
+                param0->unk_08[v2] = WiFiLobbyMinigame_AddSprite(param0->unk_44, param2->unk_00, v3, v4, 0, param5);
                 Sprite_SetDrawFlag(param0->unk_08[v2], FALSE);
                 Sprite_SetAnim(param0->unk_08[v2], v0);
                 Sprite_SetExplicitPriority(param0->unk_08[v2], 0);
@@ -3373,7 +3373,7 @@ static void ov114_0225F484(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_022
     }
 }
 
-static void ov114_0225F578(UnkStruct_ov114_0225F578 *param0)
+static void WiFiLobbyMinigame_FreeBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0)
 {
     {
         int v0;
@@ -3388,19 +3388,19 @@ static void ov114_0225F578(UnkStruct_ov114_0225F578 *param0)
     }
 }
 
-static void ov114_0225F598(UnkStruct_ov114_0225F578 *param0, u32 param1)
+static void WiFiLobbyMinigame_StartBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0, u32 param1)
 {
     param0->unk_4B = param1;
     param0->unk_48 = 0;
     param0->unk_4A = 0;
 }
 
-static BOOL ov114_0225F5AC(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_0225CEF0 *param1)
+static BOOL WiFiLobbyMinigame_UpdateBalloonGrid(WiFiLobbyMinigameBalloonGrid *param0, WiFiLobbyMinigameBackgrounds *param1)
 {
     switch (param0->unk_48) {
     case 0:
 
-        ov114_0225CCB0(param0->unk_04, (1 + (18 + 12)) + (27 * 4));
+        WiFiLobbyMinigame_OffsetScreenData(param0->unk_04, (1 + (18 + 12)) + (27 * 4));
         Bg_LoadToTilemapRect(param1->unk_00, 2, param0->unk_04->rawData, 0, 0, 32, 20);
         Bg_ChangeTilemapRectPalette(param1->unk_00, 2, 0, 0, 32, 20, 13 + 1);
         Bg_ScheduleTilemapTransfer(param1->unk_00, 2);
@@ -3444,19 +3444,19 @@ static BOOL ov114_0225F5AC(UnkStruct_ov114_0225F578 *param0, UnkStruct_ov114_022
     return 0;
 }
 
-static void ov114_0225F6E4(UnkStruct_ov114_0225E854 *param0, u32 param1, u32 param2)
+static void WiFiLobbyMinigame_InitPlayerRowWithScore(WiFiLobbyMinigameResultsScreen *param0, u32 param1, u32 param2)
 {
     BOOL v0;
     u32 v1;
     u32 v2;
 
-    ov114_0225DAC0(&param0->unk_2C0[param1], param0->unk_0C.unk_08, param0->unk_07, param0->unk_2BC[0], &param0->unk_4C, param1, param0->unk_0C.unk_09, &param0->unk_A0, param0->unk_248, param0->heapID);
+    WiFiLobbyMinigame_InitPlayerRow(&param0->unk_2C0[param1], param0->unk_0C.unk_08, param0->unk_07, param0->unk_2BC[0], &param0->unk_4C, param1, param0->unk_0C.unk_09, &param0->unk_A0, param0->unk_248, param0->heapID);
 
-    v2 = ov114_0225C78C(&param0->unk_0C, param1);
-    v0 = ov114_0225C7A4(&param0->unk_0C, v2);
+    v2 = WiFiLobbyMinigame_GetNetIdByIndex(&param0->unk_0C, param1);
+    v0 = WiFiLobbyMinigame_IsPlayerReady(&param0->unk_0C, v2);
 
-    ov114_0225DC44(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_34.unk_08[param1], 8, 0, v0);
-    ov114_0225DCA0(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_05, param0->unk_34.unk_00[param1], param0->unk_34.unk_04[param1], 8);
+    WiFiLobbyMinigame_DrawPlayerRowName(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_34.unk_08[param1], 8, 0, v0);
+    WiFiLobbyMinigame_DrawPlayerRowLocation(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_05, param0->unk_34.unk_00[param1], param0->unk_34.unk_04[param1], 8);
 
     if (param0->unk_07 == UnkEnum_ov66_022324D0_00) {
         v1 = 5;
@@ -3464,13 +3464,13 @@ static void ov114_0225F6E4(UnkStruct_ov114_0225E854 *param0, u32 param1, u32 par
         v1 = 6;
     }
 
-    ov114_0225DD2C(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_1C.unk_00[param1], 176 + (-Unk_ov114_022600D8[4 - (param2 + 1)]), 0, v1);
-    ov114_0225DD80(&param0->unk_2C0[param1], &param0->unk_4C);
-    ov114_0225DD0C(&param0->unk_2C0[param1], param2);
-    ov114_0225DDD4(&param0->unk_2C0[param1], Unk_ov114_022600D8[param2], 0);
+    WiFiLobbyMinigame_DrawPlayerRowScore(&param0->unk_2C0[param1], &param0->unk_58, param0->unk_1C.unk_00[param1], 176 + (-sPlayerRowSlideOffsets[4 - (param2 + 1)]), 0, v1);
+    WiFiLobbyMinigame_TransferPlayerRow(&param0->unk_2C0[param1], &param0->unk_4C);
+    WiFiLobbyMinigame_ShowPlayerRowRankIcon(&param0->unk_2C0[param1], param2);
+    WiFiLobbyMinigame_StartPlayerRowSlideIn(&param0->unk_2C0[param1], sPlayerRowSlideOffsets[param2], 0);
 }
 
-static BOOL ov114_0225F7D8(UnkStruct_ov114_0225E854 *param0)
+static BOOL WiFiLobbyMinigame_UpdatePlayerRowsMotion(WiFiLobbyMinigameResultsScreen *param0)
 {
     int v0;
     BOOL v1;
@@ -3478,8 +3478,8 @@ static BOOL ov114_0225F7D8(UnkStruct_ov114_0225E854 *param0)
 
     for (v0 = 0; v0 < param0->unk_0C.unk_08; v0++) {
         if (param0->unk_2C0[v0].unk_10 != NULL) {
-            v1 = ov114_0225DE70(&param0->unk_2C0[v0]);
-            ov114_0225E028(&param0->unk_3A0, &param0->unk_2C0[v0]);
+            v1 = WiFiLobbyMinigame_UpdatePlayerRowMotion(&param0->unk_2C0[v0]);
+            WiFiLobbyMinigame_UpdateScrollEffect(&param0->unk_3A0, &param0->unk_2C0[v0]);
 
             if (v1 == 0) {
                 v2 = 0;
@@ -3492,7 +3492,7 @@ static BOOL ov114_0225F7D8(UnkStruct_ov114_0225E854 *param0)
     return v2;
 }
 
-static void ov114_0225F83C(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_PlayWinFanfare(WiFiLobbyMinigameResultsScreen *param0)
 {
     if (param0->unk_6C4 == 0) {
         Sound_PlayFanfare(SEQ_PL_WINMINI2_sseq);
@@ -3500,7 +3500,7 @@ static void ov114_0225F83C(UnkStruct_ov114_0225E854 *param0)
     }
 }
 
-static BOOL ov114_0225F860(UnkStruct_ov114_0225E854 *param0)
+static BOOL WiFiLobbyMinigame_IsWinFanfareDone(WiFiLobbyMinigameResultsScreen *param0)
 {
     if (param0->unk_6C4 == 1) {
         if (Sound_IsBGMPausedByFanfare() == 0) {
@@ -3515,7 +3515,7 @@ static BOOL ov114_0225F860(UnkStruct_ov114_0225E854 *param0)
     }
 }
 
-static void ov114_0225F890(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_RecordFriendGameCount(WiFiLobbyMinigameResultsScreen *param0)
 {
     WiFiList *v0 = SaveData_GetWiFiList(param0->unk_0C.saveData);
     int v1;
@@ -3549,7 +3549,7 @@ static void ov114_0225F890(UnkStruct_ov114_0225E854 *param0)
     }
 }
 
-static u32 ov114_0225F8FC(const UnkStruct_ov114_0225E854 *param0)
+static u32 WiFiLobbyMinigame_GetTargetScore(const WiFiLobbyMinigameResultsScreen *param0)
 {
     u32 v0;
 
@@ -3569,7 +3569,7 @@ static u32 ov114_0225F8FC(const UnkStruct_ov114_0225E854 *param0)
     return v0;
 }
 
-static void ov114_0225F920(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_SendGameResults(WiFiLobbyMinigameResultsScreen *param0)
 {
     int v0;
     u32 v1[4] = { 0 };
@@ -3577,7 +3577,7 @@ static void ov114_0225F920(UnkStruct_ov114_0225E854 *param0)
     u32 v3;
 
     v2 = 0;
-    v3 = ov114_0225F8FC(param0);
+    v3 = WiFiLobbyMinigame_GetTargetScore(param0);
 
     for (v0 = 0; v0 < param0->unk_0C.unk_08; v0++) {
         if ((param0->unk_1C.unk_10[v0] == 0) && (param0->unk_1C.unk_00[v0] != v3)) {
@@ -3591,7 +3591,7 @@ static void ov114_0225F920(UnkStruct_ov114_0225E854 *param0)
     }
 }
 
-static void ov114_0225F988(UnkStruct_ov114_0225E854 *param0)
+static void WiFiLobbyMinigame_SendGameResultsGame2(WiFiLobbyMinigameResultsScreen *param0)
 {
     if (param0->unk_0C.unk_08 > 0) {
         if (param0->unk_1C.unk_14 >= 10) {
@@ -3600,7 +3600,7 @@ static void ov114_0225F988(UnkStruct_ov114_0225E854 *param0)
     }
 }
 
-static void ov114_0225F9B8(UnkStruct_ov114_0225FAB8 *param0, UnkStruct_ov114_0225CDB4 *param1, SpriteList *param2, u32 param3)
+static void WiFiLobbyMinigame_InitCurtain(WiFiLobbyMinigameCurtain *param0, WiFiLobbyMinigameSpriteResource *param1, SpriteList *param2, u32 param3)
 {
     int v0;
     int v1;
@@ -3613,7 +3613,7 @@ static void ov114_0225F9B8(UnkStruct_ov114_0225FAB8 *param0, UnkStruct_ov114_022
     param0->unk_18C = NULL;
 
     for (v0 = 0; v0 < 2; v0++) {
-        param0->unk_00[v0] = ov114_0225CDB4(param1, param2, Unk_ov114_0226019C[v0].x >> FX32_SHIFT, Unk_ov114_0226019C[v0].y >> FX32_SHIFT, 0, param3);
+        param0->unk_00[v0] = WiFiLobbyMinigame_AddSprite(param1, param2, sCurtainSpritePositions[v0].x >> FX32_SHIFT, sCurtainSpritePositions[v0].y >> FX32_SHIFT, 0, param3);
         Sprite_SetAnim(param0->unk_00[v0], 5);
         Sprite_SetExplicitPriority(param0->unk_00[v0], 0);
     }
@@ -3630,13 +3630,13 @@ static void ov114_0225F9B8(UnkStruct_ov114_0225FAB8 *param0, UnkStruct_ov114_022
     param0->battlerType.planeMask = GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3;
     param0->battlerType.effect = 1;
 
-    SetHBlankCallback(ov114_0225FCF0, param0);
+    SetHBlankCallback(WiFiLobbyMinigame_CurtainHBlank, param0);
     Sprite_SetFlipMode(param0->unk_00[1], 2);
 
-    ov114_0225FC6C(param0);
+    WiFiLobbyMinigame_UpdateCurtainWindow(param0);
 }
 
-static BOOL ov114_0225FAB8(UnkStruct_ov114_0225FAB8 *param0)
+static BOOL WiFiLobbyMinigame_OpenCurtain(WiFiLobbyMinigameCurtain *param0)
 {
     BOOL v0 = 0;
 
@@ -3647,12 +3647,12 @@ static BOOL ov114_0225FAB8(UnkStruct_ov114_0225FAB8 *param0)
         v0 = 1;
     }
 
-    ov114_0225FB10(param0, 1);
+    WiFiLobbyMinigame_SetCurtainPosition(param0, 1);
 
     return v0;
 }
 
-static BOOL ov114_0225FAD8(UnkStruct_ov114_0225FAB8 *param0)
+static BOOL WiFiLobbyMinigame_CloseCurtain(WiFiLobbyMinigameCurtain *param0)
 {
     BOOL v0 = 0;
 
@@ -3666,12 +3666,12 @@ static BOOL ov114_0225FAD8(UnkStruct_ov114_0225FAB8 *param0)
         Sprite_SetDrawFlag(param0->unk_00[1], FALSE);
     }
 
-    ov114_0225FB10(param0, -1);
+    WiFiLobbyMinigame_SetCurtainPosition(param0, -1);
 
     return v0;
 }
 
-static void ov114_0225FB10(UnkStruct_ov114_0225FAB8 *param0, s32 param1)
+static void WiFiLobbyMinigame_SetCurtainPosition(WiFiLobbyMinigameCurtain *param0, s32 param1)
 {
     VecFx32 v0;
     int v1;
@@ -3686,7 +3686,7 @@ static void ov114_0225FB10(UnkStruct_ov114_0225FAB8 *param0, s32 param1)
     }
 
     for (v1 = 0; v1 < 2; v1++) {
-        v0 = Unk_ov114_0226019C[v1];
+        v0 = sCurtainSpritePositions[v1];
 
         if (v1 == 0) {
             v0.y -= FX32_CONST(v2);
@@ -3697,10 +3697,10 @@ static void ov114_0225FB10(UnkStruct_ov114_0225FAB8 *param0, s32 param1)
         Sprite_SetPosition(param0->unk_00[v1], &v0);
     }
 
-    ov114_0225FC6C(param0);
+    WiFiLobbyMinigame_UpdateCurtainWindow(param0);
 }
 
-static void ov114_0225FBF0(UnkStruct_ov114_0225FAB8 *param0)
+static void WiFiLobbyMinigame_FreeCurtain(WiFiLobbyMinigameCurtain *param0)
 {
     int v0;
 
@@ -3722,7 +3722,7 @@ static void ov114_0225FBF0(UnkStruct_ov114_0225FAB8 *param0)
     G2_SetWndOutsidePlane(param0->unk_190.planeMask, param0->unk_190.effect);
 }
 
-static void ov114_0225FC6C(UnkStruct_ov114_0225FAB8 *param0)
+static void WiFiLobbyMinigame_UpdateCurtainWindow(WiFiLobbyMinigameCurtain *param0)
 {
     int v0;
 
@@ -3734,13 +3734,13 @@ static void ov114_0225FC6C(UnkStruct_ov114_0225FAB8 *param0)
     }
 
     if (param0->unk_18C == NULL) {
-        param0->unk_18C = SysTask_ExecuteAfterVBlank(ov114_0225FCCC, param0, 0);
+        param0->unk_18C = SysTask_ExecuteAfterVBlank(WiFiLobbyMinigame_CurtainWindowTask, param0, 0);
     }
 }
 
-static void ov114_0225FCCC(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_CurtainWindowTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225FAB8 *v0 = param1;
+    WiFiLobbyMinigameCurtain *v0 = param1;
 
     memcpy(v0->unk_0C[0], v0->unk_0C[1], 192);
     SysTask_Done(v0->unk_18C);
@@ -3748,9 +3748,9 @@ static void ov114_0225FCCC(SysTask *param0, void *param1)
     v0->unk_18C = NULL;
 }
 
-static void ov114_0225FCF0(void *param0)
+static void WiFiLobbyMinigame_CurtainHBlank(void *param0)
 {
-    UnkStruct_ov114_0225FAB8 *v0 = param0;
+    WiFiLobbyMinigameCurtain *v0 = param0;
     s32 v1;
     int v2;
 
@@ -3779,9 +3779,9 @@ static void ov114_0225FCF0(void *param0)
     }
 }
 
-static void ov114_0225FDC8(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_IntroAnimationRollTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225CAD4 *v0 = param1;
+    WiFiLobbyMinigameIntroAnimation *v0 = param1;
     BOOL v1;
     u16 v2;
     u16 v3;
@@ -3790,13 +3790,13 @@ static void ov114_0225FDC8(SysTask *param0, void *param1)
     case 0:
         break;
     case 1:
-        ov114_0225F9B8(&v0->unk_34, v0->unk_28, v0->unk_08, v0->unk_00);
-        v0->unk_30 = ov114_0225CDB4(v0->unk_28, v0->unk_08, 128, 97, 64, v0->unk_00);
+        WiFiLobbyMinigame_InitCurtain(&v0->unk_34, v0->unk_28, v0->unk_08, v0->unk_00);
+        v0->unk_30 = WiFiLobbyMinigame_AddSprite(v0->unk_28, v0->unk_08, 128, 97, 64, v0->unk_00);
         Sprite_SetExplicitPriority(v0->unk_30, 0);
         v0->unk_04++;
         break;
     case 2:
-        v1 = ov114_0225FAB8(&v0->unk_34);
+        v1 = WiFiLobbyMinigame_OpenCurtain(&v0->unk_34);
 
         if (v1 == 1) {
             v0->unk_04++;
@@ -3852,7 +3852,7 @@ static void ov114_0225FDC8(SysTask *param0, void *param1)
         }
         break;
     case 4:
-        v1 = ov114_0225FAD8(&v0->unk_34);
+        v1 = WiFiLobbyMinigame_CloseCurtain(&v0->unk_34);
 
         if (v1 == 1) {
             Sprite_Delete(v0->unk_30);
@@ -3870,7 +3870,7 @@ static void ov114_0225FDC8(SysTask *param0, void *param1)
 
         v0->unk_04 = 0;
 
-        ov114_0225FBF0(&v0->unk_34);
+        WiFiLobbyMinigame_FreeCurtain(&v0->unk_34);
         SysTask_Done(v0->unk_2C);
         v0->unk_2C = NULL;
         break;
@@ -3879,23 +3879,23 @@ static void ov114_0225FDC8(SysTask *param0, void *param1)
     }
 }
 
-static void ov114_0225FF54(SysTask *param0, void *param1)
+static void WiFiLobbyMinigame_IntroAnimationPopTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov114_0225CAD4 *v0 = param1;
+    WiFiLobbyMinigameIntroAnimation *v0 = param1;
     BOOL v1;
 
     switch (v0->unk_04) {
     case 0:
         break;
     case 1:
-        ov114_0225F9B8(&v0->unk_34, v0->unk_28, v0->unk_08, v0->unk_00);
-        v0->unk_30 = ov114_0225CDB4(v0->unk_28, v0->unk_08, 128, 97, 64, v0->unk_00);
+        WiFiLobbyMinigame_InitCurtain(&v0->unk_34, v0->unk_28, v0->unk_08, v0->unk_00);
+        v0->unk_30 = WiFiLobbyMinigame_AddSprite(v0->unk_28, v0->unk_08, 128, 97, 64, v0->unk_00);
         Sprite_SetAnim(v0->unk_30, 1);
         Sprite_SetExplicitPriority(v0->unk_30, 0);
         v0->unk_04++;
         break;
     case 2:
-        v1 = ov114_0225FAB8(&v0->unk_34);
+        v1 = WiFiLobbyMinigame_OpenCurtain(&v0->unk_34);
 
         if (v1 == 1) {
             Sprite_SetAnimateFlag(v0->unk_30, 1);
@@ -3911,7 +3911,7 @@ static void ov114_0225FF54(SysTask *param0, void *param1)
         }
         break;
     case 4:
-        v1 = ov114_0225FAD8(&v0->unk_34);
+        v1 = WiFiLobbyMinigame_CloseCurtain(&v0->unk_34);
 
         if (v1 == 1) {
             Sprite_Delete(v0->unk_30);
@@ -3929,7 +3929,7 @@ static void ov114_0225FF54(SysTask *param0, void *param1)
 
         v0->unk_04 = 0;
 
-        ov114_0225FBF0(&v0->unk_34);
+        WiFiLobbyMinigame_FreeCurtain(&v0->unk_34);
         SysTask_Done(v0->unk_2C);
         v0->unk_2C = NULL;
         break;

@@ -7,7 +7,7 @@
 #include "constants/graphics.h"
 
 #include "nintendo_wfc/main.h"
-#include "overlay114/ov114_0225C700.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
 #include "overlay117/ov117_022626B0.h"
 #include "overlay117/ov117_02263AF0.h"
 #include "overlay117/ov117_022665FC.h"
@@ -268,9 +268,9 @@ int ov117_02260668(ApplicationManager *appMan, int *param1)
         RenderControlFlags_SetSpeedUpOnTouch(FALSE);
     }
 
-    v0->unk_1C = ov114_0225CAD4(SpriteManager_GetSpriteList(v0->unk_28), HEAP_ID_110);
+    v0->unk_1C = WiFiLobbyMinigame_CreateIntroAnimation(SpriteManager_GetSpriteList(v0->unk_28), HEAP_ID_110);
 
-    int v2 = ov114_0225CB74(v0->unk_1C);
+    int v2 = WiFiLobbyMinigame_GetIntroAnimationPaletteOffset(v0->unk_1C);
     PaletteData_LoadBufferFromHardware(v0->unk_8C, PLTTBUF_MAIN_OBJ, PLTT_DEST(v2), 3 * PALETTE_SIZE_BYTES);
 
     SetVBlankCallback(ov117_02260DA0, v0);
@@ -301,7 +301,7 @@ int ov117_0226098C(ApplicationManager *appMan, int *param1)
 
         default:
         case 1:
-            if (ov114_0225CA98(&v0->unk_00->unk_00) == 1) {
+            if (WiFiLobbyMinigame_HandleDisconnect(&v0->unk_00->unk_00) == 1) {
                 return 1;
             }
             break;
@@ -360,11 +360,11 @@ int ov117_0226098C(ApplicationManager *appMan, int *param1)
             }
             break;
         case 3:
-            ov114_0225CB8C(v0->unk_1C);
+            WiFiLobbyMinigame_StartIntroAnimationRoll(v0->unk_1C);
             v0->unk_20 = 4;
             break;
         case 4:
-            if (ov114_0225CBE0(v0->unk_1C) == 1) {
+            if (WiFiLobbyMinigame_IntroAnimationIsDone(v0->unk_1C) == 1) {
                 v0->unk_2FB8 = 1;
                 v0->unk_1468.unk_F1 = 0;
                 v0->unk_20 = 5;
@@ -373,11 +373,11 @@ int ov117_0226098C(ApplicationManager *appMan, int *param1)
             }
             break;
         case 6:
-            ov114_0225CBB0(v0->unk_1C);
+            WiFiLobbyMinigame_StartIntroAnimationPop(v0->unk_1C);
             v0->unk_20 = 7;
             break;
         case 7:
-            if (ov114_0225CBE0(v0->unk_1C) == 1) {
+            if (WiFiLobbyMinigame_IntroAnimationIsDone(v0->unk_1C) == 1) {
                 v0->unk_20 = 8;
             }
             break;
@@ -422,7 +422,7 @@ int ov117_02260C10(ApplicationManager *appMan, int *param1)
 
     v0->unk_00->unk_10.unk_14 = v0->unk_2FD0;
 
-    ov114_0225CB38(v0->unk_1C);
+    WiFiLobbyMinigame_FreeIntroAnimation(v0->unk_1C);
     ov117_022641E4(v0);
     ov117_02264508(v0);
 
@@ -845,11 +845,11 @@ static void ov117_022613EC(UnkStruct_ov117_02261280 *param0)
 
     for (v0 = 0; v0 < param0->unk_00->unk_30; v0++) {
         if (v4 != param0->unk_00->unk_2C[v0]) {
-            v2 = ov114_0225C7CC(&param0->unk_00->unk_00, param0->unk_00->unk_2C[v0]);
+            v2 = WiFiLobbyMinigame_GetTrainerInfo(&param0->unk_00->unk_00, param0->unk_00->unk_2C[v0]);
             v3 = TrainerInfo_NameNewString(v2, HEAP_ID_110);
             v1 = ov117_022622C4(param0, param0->unk_00->unk_2C[v0]);
 
-            if (ov114_0225C7A4(&param0->unk_00->unk_00, param0->unk_00->unk_2C[v0]) == 1) {
+            if (WiFiLobbyMinigame_IsPlayerReady(&param0->unk_00->unk_00, param0->unk_00->unk_2C[v0]) == 1) {
                 v5 = TEXT_COLOR(7, 8, 15);
             } else {
                 v5 = TEXT_COLOR(1, 2, 15);

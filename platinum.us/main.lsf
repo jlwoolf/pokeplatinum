@@ -1646,17 +1646,17 @@ Overlay overlay113
 	Object main.nef.p/src_overlay113_ov113_022607D8.c.o
 }
 
-Overlay overlay114
+Overlay wifi_lobby_minigame
 {
 	After overlay66
-	Object main.nef.p/src_overlay114_ov114_0225C700.c.o
-	Object main.nef.p/src_overlay114_ov114_02260038.c.o
-	Object main.nef.p/src_overlay114_ov114_02260044.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_wifi_lobby_minigame.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_wifi_lobby_minigame_comm_cmd.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_wifi_lobby_minigame_comm_cmd_handlers.c.o
 }
 
 Overlay overlay115
 {
-	After overlay114
+	After wifi_lobby_minigame
 	Object main.nef.p/src_overlay115_ov115_02260440.c.o
 	Object main.nef.p/src_overlay115_ov115_02260BBC.c.o
 	Object main.nef.p/src_overlay115_ov115_02260CEC.c.o
@@ -1666,7 +1666,7 @@ Overlay overlay115
 
 Overlay overlay116
 {
-	After overlay114
+	After wifi_lobby_minigame
 	Object main.nef.p/src_overlay116_ov116_02260440.c.o
 	Object main.nef.p/src_overlay116_ov116_022604C4.c.o
 	Object main.nef.p/src_overlay116_ov116_02261870.c.o
@@ -1678,7 +1678,7 @@ Overlay overlay116
 
 Overlay overlay117
 {
-	After overlay114
+	After wifi_lobby_minigame
 	Object main.nef.p/src_overlay117_ov117_02260440.c.o
 	Object main.nef.p/src_overlay117_ov117_02260668.c.o
 	Object main.nef.p/src_overlay117_ov117_022626B0.c.o

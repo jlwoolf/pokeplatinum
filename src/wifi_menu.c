@@ -36,7 +36,7 @@
 #include "wifi_overlays.h"
 
 FS_EXTERN_OVERLAY(overlay65);
-FS_EXTERN_OVERLAY(overlay114);
+FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 FS_EXTERN_OVERLAY(overlay115);
 FS_EXTERN_OVERLAY(overlay116);
 FS_EXTERN_OVERLAY(overlay117);
@@ -423,7 +423,7 @@ static UnkStruct_ov115_02260440 *WiFiMenu_LaunchSwalotMinigame(FieldSystem *fiel
     UnkStruct_ov115_02260440 *v0;
 
     FS_EXTERN_OVERLAY(overlay115);
-    FS_EXTERN_OVERLAY(overlay114);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     {
         static const ApplicationManagerTemplate v1 = {
@@ -440,7 +440,7 @@ static UnkStruct_ov115_02260440 *WiFiMenu_LaunchSwalotMinigame(FieldSystem *fiel
         v0->unk_39 = 0;
         v0->saveData = fieldSystem->saveData;
 
-        Overlay_LoadByID(FS_OVERLAY_ID(overlay114), 2);
+        Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);
         FieldSystem_StartChildProcess(fieldSystem, &v1, v0);
     }
     return v0;
@@ -448,10 +448,10 @@ static UnkStruct_ov115_02260440 *WiFiMenu_LaunchSwalotMinigame(FieldSystem *fiel
 
 static void WiFiMenu_FreeSwalotMinigame(UnkStruct_ov115_02260440 *param0)
 {
-    FS_EXTERN_OVERLAY(overlay114);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     Heap_Free(param0);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay114));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_lobby_minigame));
 }
 
 // Launches the Mime Jr. ball-rolling WiFi Plaza minigame (overlay116).
@@ -460,7 +460,7 @@ static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *field
     UnkStruct_ov66_02231134 *v0;
 
     FS_EXTERN_OVERLAY(overlay116);
-    FS_EXTERN_OVERLAY(overlay114);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame);
     {
         static const ApplicationManagerTemplate v1 = {
             ov116_022609B4,
@@ -475,7 +475,7 @@ static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *field
         v0->unk_38 = 0;
         v0->saveData = fieldSystem->saveData;
 
-        Overlay_LoadByID(FS_OVERLAY_ID(overlay114), 2);
+        Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);
         FieldSystem_StartChildProcess(fieldSystem, &v1, v0);
     }
     return v0;
@@ -483,10 +483,10 @@ static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *field
 
 static void WiFiMenu_FreeMimeJrMinigame(UnkStruct_ov66_02231134 *param0)
 {
-    FS_EXTERN_OVERLAY(overlay114);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     Heap_Free(param0);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay114));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_lobby_minigame));
 }
 
 // Launches the Wobbuffet balloon-popping WiFi Plaza minigame (overlay117).
@@ -495,7 +495,7 @@ static UnkStruct_ov117_02260440 *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *f
     UnkStruct_ov117_02260440 *v0;
 
     FS_EXTERN_OVERLAY(overlay117);
-    FS_EXTERN_OVERLAY(overlay114);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     {
         static const ApplicationManagerTemplate v1 = {
@@ -512,7 +512,7 @@ static UnkStruct_ov117_02260440 *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *f
         v0->unk_39 = 0;
         v0->saveData = fieldSystem->saveData;
 
-        Overlay_LoadByID(FS_OVERLAY_ID(overlay114), 2);
+        Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);
         FieldSystem_StartChildProcess(fieldSystem, &v1, v0);
     }
 
@@ -521,10 +521,10 @@ static UnkStruct_ov117_02260440 *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *f
 
 static void WiFiMenu_FreeWobbuffetMinigame(UnkStruct_ov115_02260440 *param0)
 {
-    FS_EXTERN_OVERLAY(overlay114);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     Heap_Free(param0);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay114));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_lobby_minigame));
 }
 
 // Records that the player took part in a WiFi Plaza minigame.

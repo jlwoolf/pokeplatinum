@@ -4,11 +4,11 @@
 #include <string.h>
 
 #include "nintendo_wfc/main.h"
-#include "overlay114/ov114_0225C700.h"
-#include "overlay114/struct_ov114_0225C76C.h"
-#include "overlay114/struct_ov114_0225C9A8.h"
-#include "overlay114/struct_ov114_0225D678_decl.h"
-#include "overlay114/struct_ov114_0225E854_decl.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_screen_decl.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_results_screen_decl.h"
 #include "overlay115/ov115_02260BBC.h"
 #include "overlay115/ov115_02260CEC.h"
 #include "overlay115/ov115_02265A24.h"
@@ -35,10 +35,10 @@
 #include "vram_transfer.h"
 
 typedef struct UnkStruct_ov115_0226095C_t {
-    UnkStruct_ov114_0225D678 *unk_00;
-    UnkStruct_ov114_0225E854 *unk_04;
-    UnkStruct_ov114_0225C76C unk_08;
-    UnkStruct_ov114_0225C9A8 unk_18;
+    WiFiLobbyMinigameIntroScreen *unk_00;
+    WiFiLobbyMinigameResultsScreen *unk_04;
+    WiFiLobbyMinigamePlayerContext unk_08;
+    WiFiLobbyMinigameRanking unk_18;
     UnkStruct_ov115_02260BE4 *unk_30;
     UnkStruct_ov115_02260D78 *unk_34;
     BOOL unk_38;
@@ -74,7 +74,7 @@ int ov115_02260440(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov115_0226095C), HEAP_ID_99);
     memset(v0, 0, sizeof(UnkStruct_ov115_0226095C));
 
-    ov114_0225C700(&v0->unk_08, v1->unk_39, v1->saveData, v1->unk_38, &v1->unk_00);
+    WiFiLobbyMinigame_InitPlayerContext(&v0->unk_08, v1->unk_39, v1->saveData, v1->unk_38, &v1->unk_00);
     ov115_02260ADC(v0, 99);
 
     return 1;
@@ -87,7 +87,7 @@ int ov115_0226048C(ApplicationManager *appMan, int *param1)
     BOOL v2;
     u32 v3;
 
-    if (ov114_0225CA54(&v0->unk_08) == 1) {
+    if (WiFiLobbyMinigame_CheckDisconnected(&v0->unk_08) == 1) {
         switch (v0->unk_78) {
         case 0:
 
@@ -99,7 +99,7 @@ int ov115_0226048C(ApplicationManager *appMan, int *param1)
             v0->unk_78++;
             break;
         case 1:
-            if (ov114_0225CA98(&v0->unk_08) == 1) {
+            if (WiFiLobbyMinigame_HandleDisconnect(&v0->unk_08) == 1) {
                 v0->unk_78++;
             }
             break;
@@ -116,15 +116,15 @@ int ov115_0226048C(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
 
-        v0->unk_00 = ov114_0225C814(&v0->unk_08, HEAP_ID_99);
+        v0->unk_00 = WiFiLobbyMinigame_CreateIntroScreen0(&v0->unk_08, HEAP_ID_99);
 
         (*param1)++;
         break;
 
     case 1:
-        if (ov114_0225C8BC(v0->unk_00) == 1) {
-            v0->unk_70 = ov114_0225C8CC(v0->unk_00);
-            ov114_0225C838(v0->unk_00);
+        if (WiFiLobbyMinigame_IntroScreenIsDone(v0->unk_00) == 1) {
+            v0->unk_70 = WiFiLobbyMinigame_IntroScreenGetResult(v0->unk_00);
+            WiFiLobbyMinigame_FreeIntroScreen(v0->unk_00);
             v0->unk_00 = NULL;
             (*param1)++;
         }
@@ -151,7 +151,7 @@ int ov115_0226048C(ApplicationManager *appMan, int *param1)
         GF_ASSERT(v0->unk_74 > 1);
 
         v0->unk_44 = CommSys_CurNetId();
-        v0->unk_46 = ov114_0225C76C(&v0->unk_08, v0->unk_44);
+        v0->unk_46 = WiFiLobbyMinigame_GetPlayerIndex(&v0->unk_08, v0->unk_44);
 
         if (v0->unk_44 == 0) {
             v0->unk_30 = ov115_02260BBC(HEAP_ID_99, (30 * 40), v0->unk_74, &v0->unk_48);
@@ -338,19 +338,19 @@ int ov115_0226048C(ApplicationManager *appMan, int *param1)
     case 14: {
         u32 v9;
 
-        ov114_0225C9A8(&v0->unk_18, v0->unk_08.unk_08);
+        WiFiLobbyMinigame_InitRanking(&v0->unk_18, v0->unk_08.unk_08);
         v9 = v0->unk_18.unk_10[v0->unk_46];
     }
-        v0->unk_04 = ov114_0225C8E0(&v0->unk_08, &v0->unk_18, HEAP_ID_99);
+        v0->unk_04 = WiFiLobbyMinigame_CreateResultsScreen0(&v0->unk_08, &v0->unk_18, HEAP_ID_99);
         (*param1)++;
         break;
     case 15: {
         BOOL v10;
 
-        if (ov114_0225C9A0(v0->unk_04) == 1) {
-            v10 = ov114_0225C9A4(v0->unk_04);
+        if (WiFiLobbyMinigame_ResultsScreenIsDone(v0->unk_04) == 1) {
+            v10 = WiFiLobbyMinigame_ResultsScreenGetResult(v0->unk_04);
 
-            ov114_0225C904(v0->unk_04);
+            WiFiLobbyMinigame_FreeResultsScreen(v0->unk_04);
             v0->unk_04 = NULL;
 
             if (v10 == 0) {
@@ -373,7 +373,7 @@ int ov115_022608E4(ApplicationManager *appMan, int *param1)
 
     switch (*param1) {
     case 0:
-        v2 = ov114_0225CA54(&v0->unk_08);
+        v2 = WiFiLobbyMinigame_CheckDisconnected(&v0->unk_08);
 
         ov115_02260B30(v0);
 
@@ -412,7 +412,7 @@ void ov115_02260964(UnkStruct_ov115_0226095C *param0)
 
 void ov115_0226096C(UnkStruct_ov115_0226095C *param0, const UnkStruct_ov115_02265AD0 *param1, u32 param2)
 {
-    u32 v0 = ov114_0225C76C(&param0->unk_08, param2);
+    u32 v0 = WiFiLobbyMinigame_GetPlayerIndex(&param0->unk_08, param2);
     ov115_02260C6C(param0->unk_30, param1, v0);
 }
 
@@ -423,7 +423,7 @@ void ov115_02260988(UnkStruct_ov115_0226095C *param0, const UnkStruct_ov115_0226
 
 void ov115_02260994(UnkStruct_ov115_0226095C *param0, u32 param1, u32 param2)
 {
-    u32 v0 = ov114_0225C76C(&param0->unk_08, param2);
+    u32 v0 = WiFiLobbyMinigame_GetPlayerIndex(&param0->unk_08, param2);
 
     if (param0->unk_30 != NULL) {
         ov115_02260C7C(param0->unk_30, param1, v0);
@@ -454,7 +454,7 @@ void ov115_022609E4(UnkStruct_ov115_0226095C *param0, u32 param1, u32 param2)
     u32 v0;
     int v1;
 
-    v0 = ov114_0225C76C(&param0->unk_08, param2);
+    v0 = WiFiLobbyMinigame_GetPlayerIndex(&param0->unk_08, param2);
     ov115_022612AC(param0->unk_34, param1, v0);
 
     param0->unk_84[v0]++;
@@ -528,8 +528,8 @@ static void ov115_02260ADC(UnkStruct_ov115_0226095C *param0, u32 param1)
     param0->unk_48.unk_00 = v0 / sizeof(UnkStruct_ov115_02262DC4);
 
     for (v1 = 0; v1 < param0->unk_08.unk_08; v1++) {
-        param0->unk_48.unk_08[v1] = ov114_0225C7CC(&param0->unk_08, v1);
-        param0->unk_48.unk_18[v1] = ov114_0225C7A4(&param0->unk_08, v1);
+        param0->unk_48.unk_08[v1] = WiFiLobbyMinigame_GetTrainerInfo(&param0->unk_08, v1);
+        param0->unk_48.unk_18[v1] = WiFiLobbyMinigame_IsPlayerReady(&param0->unk_08, v1);
     }
 }
 
@@ -546,7 +546,7 @@ static void ov115_02260B44(UnkStruct_ov115_0226095C *param0, UnkStruct_ov115_022
     DisableHBlank();
 
     if (param0->unk_00 != NULL) {
-        ov114_0225C838(param0->unk_00);
+        WiFiLobbyMinigame_FreeIntroScreen(param0->unk_00);
         param0->unk_00 = NULL;
     }
 
@@ -564,7 +564,7 @@ static void ov115_02260B44(UnkStruct_ov115_0226095C *param0, UnkStruct_ov115_022
     }
 
     if (param0->unk_04 != NULL) {
-        ov114_0225C904(param0->unk_04);
+        WiFiLobbyMinigame_FreeResultsScreen(param0->unk_04);
         param0->unk_04 = NULL;
     }
 }

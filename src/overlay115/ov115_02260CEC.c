@@ -10,8 +10,8 @@
 #include "struct_defs/struct_020127E8.h"
 
 #include "overlay092/struct_ov92_021D28C0.h"
-#include "overlay114/ov114_0225C700.h"
-#include "overlay114/struct_ov114_0225CAD4_decl.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_animation_decl.h"
 #include "overlay115/struct_ov115_022612BC.h"
 #include "overlay115/struct_ov115_02262DC4.h"
 #include "overlay115/struct_ov115_02262F50.h"
@@ -286,7 +286,7 @@ typedef struct {
     UnkStruct_ov115_022617E8 unk_4E8;
     UnkStruct_ov115_02261ADC_sub1 unk_504;
     UnkStruct_ov115_02263DF8 unk_524;
-    UnkStruct_ov114_0225CAD4 *unk_754;
+    WiFiLobbyMinigameIntroAnimation *unk_754;
     UnkStruct_ov115_022653CC unk_758;
     UnkStruct_ov115_02264A40 unk_760;
     UnkStruct_ov115_022647A0 unk_7F4[96];
@@ -850,7 +850,7 @@ BOOL ov115_02260F70(UnkStruct_ov115_02260D78 *param0, u32 param1)
         BrightnessController_StartTransition(24, -14, 0, GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, BRIGHTNESS_SUB_SCREEN);
 
         ov115_02261ADC(&param0->unk_1AB4);
-        ov114_0225CBB0(param0->unk_1AB4.unk_754);
+        WiFiLobbyMinigame_StartIntroAnimationPop(param0->unk_1AB4.unk_754);
         ov115_02265A08(&param0->unk_8788);
         ov115_02265788(&param0->unk_1AB4.unk_6B1C);
 
@@ -1486,12 +1486,12 @@ static void ov115_02261A10(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_022
     Window_DrawStandardFrame(&param0->unk_0C, 0, 1, 4);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 1);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
-    ov114_0225CB8C(param1->unk_754);
+    WiFiLobbyMinigame_StartIntroAnimationRoll(param1->unk_754);
 }
 
 static BOOL ov115_02261A3C(UnkStruct_ov115_022617E8 *param0, UnkStruct_ov115_02261ADC *param1)
 {
-    BOOL v0 = ov114_0225CBE0(param1->unk_754);
+    BOOL v0 = WiFiLobbyMinigame_IntroAnimationIsDone(param1->unk_754);
 
     if (v0 == 1) {
         return 0;
@@ -1565,7 +1565,7 @@ static BOOL ov115_02261AEC(UnkStruct_ov115_02261ADC *param0)
 
 static BOOL ov115_02261B1C(UnkStruct_ov115_02261ADC *param0)
 {
-    BOOL v0 = ov114_0225CBE0(param0->unk_754);
+    BOOL v0 = WiFiLobbyMinigame_IntroAnimationIsDone(param0->unk_754);
 
     if (v0 == 1) {
         return 1;
@@ -2895,7 +2895,7 @@ static void ov115_022633FC(UnkStruct_ov115_02260D78 *param0, u32 heapID)
     ov115_02265478(&param0->unk_1AB4.unk_6B1C, &param0->unk_1AB4, v0, heapID);
 
     NARC_dtor(v0);
-    param0->unk_1AB4.unk_754 = ov114_0225CAD4(param0->unk_1AB4.unk_1C, heapID);
+    param0->unk_1AB4.unk_754 = WiFiLobbyMinigame_CreateIntroAnimation(param0->unk_1AB4.unk_1C, heapID);
 }
 
 static void ov115_02263560(UnkStruct_ov115_02260D78 *param0)
@@ -2911,7 +2911,7 @@ static void ov115_02263560(UnkStruct_ov115_02260D78 *param0)
     ov115_02263FF4(&param0->unk_1AB4.unk_524, &param0->unk_1AB4.unk_6BBC);
     ov115_02264F68(&param0->unk_1AB4.unk_204, &param0->unk_1AB4, &param0->unk_1AB4.unk_6BBC);
     ov115_02263B78(&param0->unk_1AB4);
-    ov114_0225CB38(param0->unk_1AB4.unk_754);
+    WiFiLobbyMinigame_FreeIntroAnimation(param0->unk_1AB4.unk_754);
     ov115_02263954(&param0->unk_1AB4);
     ov115_02263A3C(&param0->unk_1AB4);
     ov115_02263C04(&param0->unk_1AB4);

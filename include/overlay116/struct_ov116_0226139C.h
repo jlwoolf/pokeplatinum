@@ -2,11 +2,11 @@
 #define POKEPLATINUM_STRUCT_OV116_0226139C_H
 
 #include "overlay066/struct_ov66_02231134.h"
-#include "overlay114/struct_ov114_0225C76C.h"
-#include "overlay114/struct_ov114_0225C9A8.h"
-#include "overlay114/struct_ov114_0225CAD4_decl.h"
-#include "overlay114/struct_ov114_0225D678_decl.h"
-#include "overlay114/struct_ov114_0225E854_decl.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_animation_decl.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_screen_decl.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_results_screen_decl.h"
 #include "overlay116/struct_ov116_0226048C.h"
 #include "overlay116/struct_ov116_02260494.h"
 #include "overlay116/struct_ov116_02260498.h"
@@ -26,12 +26,12 @@ typedef struct {
     u32 unk_44;
     UnkStruct_ov116_022649E4 unk_48;
     u32 unk_78;
-    UnkStruct_ov114_0225CAD4 *unk_7C;
+    WiFiLobbyMinigameIntroAnimation *unk_7C;
     UnkStruct_ov66_02231134 *unk_80;
-    UnkStruct_ov114_0225C76C unk_84;
-    UnkStruct_ov114_0225D678 *unk_94;
-    UnkStruct_ov114_0225C9A8 unk_98;
-    UnkStruct_ov114_0225E854 *unk_B0;
+    WiFiLobbyMinigamePlayerContext unk_84;
+    WiFiLobbyMinigameIntroScreen *unk_94;
+    WiFiLobbyMinigameRanking unk_98;
+    WiFiLobbyMinigameResultsScreen *unk_B0;
     int unk_B4[4];
     BOOL unk_C4;
 } UnkStruct_ov116_0226139C;
