@@ -1,0 +1,9 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_NEWS_ANSWER_TALLY_H
+#define POKEPLATINUM_STRUCT_WIFI_LOBBY_NEWS_ANSWER_TALLY_H
+
+typedef struct {
+    u32 answerCounts[3];
+    u64 totalCount;
+} WiFiLobbyNewsAnswerTally;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_NEWS_ANSWER_TALLY_H

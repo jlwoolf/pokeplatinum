@@ -16,7 +16,7 @@
 #include "overlay066/struct_ov66_02231300.h"
 #include "overlay066/struct_ov66_02231374.h"
 #include "wifi_p2p_match/wifi_p2p_match.h"
-#include "overlay068/ov68_0225C700.h"
+#include "wifi_lobby_news/wifi_lobby_news.h"
 #include "overlay069/ov69_0225C700.h"
 #include "overlay070/ov70_0225D9A4.h"
 #include "overlay112/ov112_0225C700.h"
@@ -34,7 +34,7 @@
 #include "trainer_info.h"
 
 FS_EXTERN_OVERLAY(wifi_p2p_match);
-FS_EXTERN_OVERLAY(overlay68);
+FS_EXTERN_OVERLAY(wifi_lobby_news);
 FS_EXTERN_OVERLAY(overlay69);
 FS_EXTERN_OVERLAY(overlay70);
 FS_EXTERN_OVERLAY(overlay112);
@@ -876,10 +876,10 @@ static void ov66_022313E8(UnkStruct_ov66_02230E4C *param0)
 
 static void ov66_022313F4(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4C *param1)
 {
-    FS_EXTERN_OVERLAY(overlay68);
+    FS_EXTERN_OVERLAY(wifi_lobby_news);
 
     static const ApplicationManagerTemplate v0 = {
-        ov68_0225C700, ov68_0225C798, ov68_0225C8A8, FS_OVERLAY_ID(overlay68)
+        WiFiLobbyNews_Init, WiFiLobbyNews_Main, WiFiLobbyNews_Exit, FS_OVERLAY_ID(wifi_lobby_news)
     };
 
     ov66_02230CEC(param0, param1, &v0);
