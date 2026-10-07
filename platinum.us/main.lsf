@@ -1100,13 +1100,13 @@ Overlay union_room_drawing
 	Object main.nef.p/src_union_room_drawing_union_room_drawing.c.o
 }
 
-Overlay overlay59
+Overlay mix_records
 {
 	After main
-	Object main.nef.p/src_overlay059_ov59_021D0D80.c.o
-	Object main.nef.p/src_overlay059_ov59_021D2A2C.c.o
-	Object main.nef.p/src_overlay059_ov59_021D2B44.c.o
-	Object main.nef.p/src_overlay059_ov59_021D2F88.c.o
+	Object main.nef.p/src_mix_records_mix_records.c.o
+	Object main.nef.p/src_mix_records_mix_records_rng.c.o
+	Object main.nef.p/src_mix_records_mix_records_tv.c.o
+	Object main.nef.p/src_mix_records_mix_records_exchange.c.o
 }
 
 Overlay http

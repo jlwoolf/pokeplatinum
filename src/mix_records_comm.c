@@ -7,8 +7,8 @@
 #include "struct_defs/struct_020961E8_t.h"
 #include "struct_defs/struct_02096274.h"
 
-#include "overlay059/ov59_021D0D80.h"
-#include "overlay059/struct_ov59_021D30E0.h"
+#include "mix_records/mix_records.h"
+#include "mix_records/struct_mix_records_record.h"
 
 #include "comm_manager.h"
 #include "communication_system.h"
@@ -28,7 +28,7 @@ static void MixRecordsComm_SendRecord(MixRecordsComm *param0, int param1);
 void MixRecordsComm_HandleRecordData(int param0, int param1, void *param2, void *param3);
 void MixRecordsComm_HandleConfirm(int param0, int param1, void *param2, void *param3);
 
-// Command table for the Mix Records app (overlay 059). CommCmd_Init indexes
+// Command table for the Mix Records app (mix_records). CommCmd_Init indexes
 // this table by (command - 22), so the first 86 entries cover commands 22..107,
 // which the app does not use. The initialized entries are:
 //   108, 109 - unused (never sent)
@@ -206,8 +206,8 @@ void MixRecordsComm_HandleDisconnect(int param0, int param1, void *param2, void 
 
     MixRecordsComm_SendRecord(v0, CommSys_CurNetId());
 
-    ov59_021D1D40(v0);
-    ov59_021D2204(v0, 25, param0);
+    MixRecords_ShowDisconnectMessage(v0);
+    MixRecords_HandleCommState(v0, 25, param0);
 
     CommManager_SetErrorHandling(1, 1);
     Sound_PlayEffect(SEQ_SE_DP_F209_sseq);
@@ -218,7 +218,7 @@ void MixRecordsComm_HandleDisconnect(int param0, int param1, void *param2, void 
 void MixRecordsComm_HandleEraseMessage(int param0, int param1, void *param2, void *param3)
 {
     MixRecordsComm *v0 = (MixRecordsComm *)param3;
-    ov59_021D2204(v0, 2, 0);
+    MixRecords_HandleCommState(v0, 2, 0);
 }
 
 // Command 112: connection-confirm handshake. A client asks the server to
@@ -238,7 +238,7 @@ void MixRecordsComm_HandleConnectionConfirm(int param0, int param1, void *param2
 
             switch (v2->type) {
             case 0:
-                if ((v0->expectedPlayerCount != CommSys_ConnectedCount()) || (v0->expectedPlayerCount != ov59_021D2544()) || (v0->expectedPlayerCount != MATH_CountPopulation(WirelessManager_GetConnectedBitmap()))) {
+                if ((v0->expectedPlayerCount != CommSys_ConnectedCount()) || (v0->expectedPlayerCount != MixRecords_GetConnectedPlayerCount()) || (v0->expectedPlayerCount != MATH_CountPopulation(WirelessManager_GetConnectedBitmap()))) {
                     v1.accepted = 0;
                 } else {
                     v0->confirmedBitmap |= 1 << param0;
@@ -258,15 +258,15 @@ void MixRecordsComm_HandleConnectionConfirm(int param0, int param1, void *param2
         case 0:
             if (v2->netId == CommSys_CurNetId()) {
                 if (v2->accepted == 0) {
-                    ov59_021D2204(v0, 8, v2->netId);
+                    MixRecords_HandleCommState(v0, 8, v2->netId);
                 } else {
                     v0->serverPlayerCount = v2->playerCount;
-                    ov59_021D2204(v0, 7, v2->netId);
+                    MixRecords_HandleCommState(v0, 7, v2->netId);
                 }
             }
             break;
         case 1:
-            ov59_021D2204(v0, 19, v2->netId);
+            MixRecords_HandleCommState(v0, 19, v2->netId);
             break;
         }
     }
@@ -279,7 +279,7 @@ void MixRecordsComm_HandlePlayerReady(int param0, int param1, void *param2, void
     MixRecordsComm *v0 = (MixRecordsComm *)param3;
     u8 v1 = *(u8 *)param2;
 
-    ov59_021D22EC(v0, 1, v1);
+    MixRecords_HandlePlayerReady(v0, 1, v1);
 
     if (CommSys_CurNetId() == 0) {
         v0->unk_414 = 0;
@@ -304,7 +304,7 @@ void MixRecordsComm_HandleCancelTrade(int param0, int param1, void *param2, void
     MixRecordsComm *v0 = (MixRecordsComm *)param3;
 
     if (CommSys_CurNetId() != 0) {
-        ov59_021D2204(v0, 13, 0);
+        MixRecords_HandleCommState(v0, 13, 0);
     }
 }
 
@@ -328,17 +328,17 @@ static void MixRecordsComm_SendRecord(MixRecordsComm *param0, int param1)
         int v0;
         u32 *v1, v2;
 
-        v1 = (u32 *)param0->localRecord.unk_00;
+        v1 = (u32 *)param0->localRecord.data;
 
         for (v2 = 0, v0 = 0; v0 < 3000 / 4; v0++) {
             v2 ^= v1[v0];
         }
 
-        param0->localRecord.unk_BB8 = v2;
+        param0->localRecord.checksum = v2;
     }
 
-    param0->localRecord.unk_BBC = LCRNG_Next();
-    CommSys_SendDataHuge(116, &param0->localRecord, sizeof(UnkStruct_ov59_021D30E0));
+    param0->localRecord.seed = LCRNG_Next();
+    CommSys_SendDataHuge(116, &param0->localRecord, sizeof(MixRecordsRecord));
 }
 
 // Packet size for commands with no payload.
