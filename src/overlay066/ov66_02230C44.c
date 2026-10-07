@@ -24,8 +24,8 @@
 #include "overlay115/ov115_02260440.h"
 #include "overlay115/struct_ov115_02260440.h"
 #include "overlay116/ov116_022604C4.h"
-#include "overlay117/ov117_02260440.h"
-#include "overlay117/struct_ov117_02260440.h"
+#include "wifi_lobby_minigame_balloon/wifi_lobby_minigame_balloon.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_args.h"
 
 #include "game_overlay.h"
 #include "heap.h"
@@ -42,7 +42,7 @@ FS_EXTERN_OVERLAY(footprint_stamp);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 FS_EXTERN_OVERLAY(overlay115);
 FS_EXTERN_OVERLAY(overlay116);
-FS_EXTERN_OVERLAY(overlay117);
+FS_EXTERN_OVERLAY(wifi_lobby_minigame_balloon);
 
 typedef struct {
     void *unk_00;
@@ -664,10 +664,10 @@ static int ov66_022311A4(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4
 
 static void ov66_022311D4(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4C *param1, u32 heapID)
 {
-    UnkStruct_ov117_02260440 *v0;
+    WiFiLobbyMinigameBalloonArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(UnkStruct_ov117_02260440));
-    memset(param1->unk_00, 0, sizeof(UnkStruct_ov117_02260440));
+    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBalloonArgs));
+    memset(param1->unk_00, 0, sizeof(WiFiLobbyMinigameBalloonArgs));
 
     v0 = param1->unk_00;
     v0->unk_38 = 0;
@@ -679,7 +679,7 @@ static void ov66_022311D4(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E
 
 static void ov66_0223120C(UnkStruct_ov66_02230E4C *param0)
 {
-    UnkStruct_ov117_02260440 *v0 = param0->unk_00;
+    WiFiLobbyMinigameBalloonArgs *v0 = param0->unk_00;
 
     ov66_02230DBC(&v0->unk_00);
     Heap_Free(param0->unk_00);
@@ -687,20 +687,20 @@ static void ov66_0223120C(UnkStruct_ov66_02230E4C *param0)
 
 static void ov66_02231220(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4C *param1)
 {
-    FS_EXTERN_OVERLAY(overlay117);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame_balloon);
     FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     static const ApplicationManagerTemplate v0 = {
-        ov117_02260440,
-        ov117_02260474,
-        ov117_022605C0,
-        FS_OVERLAY_ID(overlay117),
+        WiFiLobbyMinigameBalloon_Init,
+        WiFiLobbyMinigameBalloon_Main,
+        WiFiLobbyMinigameBalloon_Exit,
+        FS_OVERLAY_ID(wifi_lobby_minigame_balloon),
     };
 
     Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);
 
     {
-        UnkStruct_ov117_02260440 *v1;
+        WiFiLobbyMinigameBalloonArgs *v1;
 
         v1 = param1->unk_00;
         ov66_02230DD8(&v1->unk_00, param0->unk_3C, param0->heapID);
@@ -715,7 +715,7 @@ static int ov66_0223124C(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4
     Overlay_UnloadByID(FS_OVERLAY_ID(wifi_lobby_minigame));
 
     {
-        UnkStruct_ov117_02260440 *v0;
+        WiFiLobbyMinigameBalloonArgs *v0;
 
         v0 = param1->unk_00;
 

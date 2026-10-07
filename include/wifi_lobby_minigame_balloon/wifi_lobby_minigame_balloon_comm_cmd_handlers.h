@@ -1,0 +1,17 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_COMM_CMD_HANDLERS_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_COMM_CMD_HANDLERS_H
+
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_game_decl.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_packet.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_score_packet.h"
+
+BOOL WiFiLobbyMinigameBalloon_HandlePacket(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPacket *param1);
+void WiFiLobbyMinigameBalloon_SendScorePacket(WiFiLobbyMinigameBalloonGame *param0, const WiFiLobbyMinigameBalloonScorePacket *param1);
+void WiFiLobbyMinigameBalloon_SendBalloonLevel(WiFiLobbyMinigameBalloonGame *param0, int param1, u8 param2);
+void WiFiLobbyMinigameBalloon_SendBalloonPop(WiFiLobbyMinigameBalloonGame *param0, int param1, int param2, u8 param3);
+void WiFiLobbyMinigameBalloon_SendPlayerState(WiFiLobbyMinigameBalloonGame *param0, u8 param1);
+void WiFiLobbyMinigameBalloon_SendGameState(WiFiLobbyMinigameBalloonGame *param0, u8 param1);
+void WiFiLobbyMinigameBalloon_SendSync(WiFiLobbyMinigameBalloonGame *param0, int param1, u8 param2);
+void WiFiLobbyMinigameBalloon_SendSync2(WiFiLobbyMinigameBalloonGame *param0, u8 param1);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_COMM_CMD_HANDLERS_H

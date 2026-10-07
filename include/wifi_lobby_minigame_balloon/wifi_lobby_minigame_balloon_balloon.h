@@ -1,0 +1,12 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_BALLOON_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_BALLOON_H
+
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_game_decl.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_balloon_decl.h"
+
+WiFiLobbyMinigameBalloonBalloon *WiFiLobbyMinigameBalloonBalloon_New(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloonBalloon_Free(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1);
+void WiFiLobbyMinigameBalloonBalloon_Update(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1);
+void WiFiLobbyMinigameBalloonBalloon_CommitPalette(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_BALLOON_H

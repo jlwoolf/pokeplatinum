@@ -1,0 +1,12 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PACKET_SCORE_EX_H
+#define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PACKET_SCORE_EX_H
+
+typedef struct {
+    u16 unk_00;
+    u8 unk_02;
+    u8 unk_03;
+    u8 unk_04;
+    u8 padding_05[3];
+} WiFiLobbyMinigameBalloonPacketScoreEx;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PACKET_SCORE_EX_H

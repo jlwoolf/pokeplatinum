@@ -1,0 +1,65 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_GRAPHICS_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_GRAPHICS_H
+
+#include "struct_decls/struct_02012744_decl.h"
+
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_game_decl.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_score_gauge.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_score_packet.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_player_balloon_sprites.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_player_balloons.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_opponent_balloons.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_text_oam.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_score_display.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_intro_banner.h"
+
+#include "bg_window.h"
+#include "font.h"
+#include "sprite_system.h"
+#include "string_gf.h"
+#include "text.h"
+
+void WiFiLobbyMinigameBalloon_StartScoreGauge(BgConfig *param0, int param1, int param2, WiFiLobbyMinigameBalloonScoreGauge *param3);
+int WiFiLobbyMinigameBalloon_GetGaugeLevel(int param0);
+void WiFiLobbyMinigameBalloon_DrawScoreGauge(WiFiLobbyMinigameBalloonGame *param0, BgConfig *param1, WiFiLobbyMinigameBalloonScoreGauge *param2);
+BOOL WiFiLobbyMinigameBalloon_SpawnPopEffect(WiFiLobbyMinigameBalloonGame *param0, const WiFiLobbyMinigameBalloonScorePacket *param1);
+void WiFiLobbyMinigameBalloon_UpdatePopEffects(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_FreePopEffects(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_FreeConfetti(WiFiLobbyMinigameBalloonGame *param0);
+BOOL WiFiLobbyMinigameBalloon_UpdateConfetti(WiFiLobbyMinigameBalloonGame *param0);
+BOOL WiFiLobbyMinigameBalloon_StartConfetti(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_CreateRankIcons(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_FreeRankIcons(WiFiLobbyMinigameBalloonGame *param0);
+BOOL WiFiLobbyMinigameBalloon_UpdateRankIcons(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_ApplyPlayerPalettes(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_ApplyMainPlayerPalettes(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes2(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_InitScorePacket(WiFiLobbyMinigameBalloonGame *param0, int param1, s32 param2, WiFiLobbyMinigameBalloonScorePacket *param3);
+BOOL WiFiLobbyMinigameBalloon_QueueScorePacket(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonScorePacket *param1);
+WiFiLobbyMinigameBalloonScorePacket *WiFiLobbyMinigameBalloon_DequeueScorePacket(WiFiLobbyMinigameBalloonGame *param0);
+BOOL WiFiLobbyMinigameBalloon_ApplyScoreMultiplier(WiFiLobbyMinigameBalloonGame *param0, int param1);
+void WiFiLobbyMinigameBalloon_CreatePlayerBalloonSprites(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloonSprites *param1);
+void WiFiLobbyMinigameBalloon_FreePlayerBalloonSprites(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloonSprites *param1);
+void WiFiLobbyMinigameBalloon_CreatePlayerBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1);
+void WiFiLobbyMinigameBalloon_FreePlayerBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1);
+void WiFiLobbyMinigameBalloon_InitPlayerBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1);
+void WiFiLobbyMinigameBalloon_UpdatePlayerBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1);
+void WiFiLobbyMinigameBalloon_CreateOpponentBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonOpponentBalloons *param1);
+void WiFiLobbyMinigameBalloon_FreeOpponentBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonOpponentBalloons *param1);
+void WiFiLobbyMinigameBalloon_SpawnOpponentBalloon(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonOpponentBalloons *param1, int param2, int param3, int param4);
+void WiFiLobbyMinigameBalloon_UpdateOpponentBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonOpponentBalloons *param1);
+void WiFiLobbyMinigameBalloon_CreateTextOAM(BgConfig *param0, SpriteManager *param1, FontOAMManager *param2, WiFiLobbyMinigameBalloonTextOAM *param3, const String *param4, enum Font param5, TextColor param6, int param7, int param8, int param9, int param10, int param11, int param12, int param13, int param14);
+void WiFiLobbyMinigameBalloon_FreeTextOAM(WiFiLobbyMinigameBalloonTextOAM *param0);
+void WiFiLobbyMinigameBalloon_LayoutScoreDigits(WiFiLobbyMinigameBalloonScoreDisplay *param0);
+void WiFiLobbyMinigameBalloon_UpdateScoreDisplay(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonScoreDisplay *param1);
+void WiFiLobbyMinigameBalloon_SetScoreDigits(WiFiLobbyMinigameBalloonScoreDisplay *param0, int param1);
+ManagedSprite *WiFiLobbyMinigameBalloon_CreateScoreSprite(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_CreateScoreDigits(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_FreeScoreDigits(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_FreeScoreSprite(WiFiLobbyMinigameBalloonGame *param0, ManagedSprite *param1);
+ManagedSprite *WiFiLobbyMinigameBalloon_CreateIntroBannerSprite(WiFiLobbyMinigameBalloonGame *param0);
+void WiFiLobbyMinigameBalloon_FreeIntroBannerSprite(WiFiLobbyMinigameBalloonGame *param0, ManagedSprite *param1);
+BOOL WiFiLobbyMinigameBalloon_UpdateIntroBanner(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonIntroBanner *param1);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_GRAPHICS_H

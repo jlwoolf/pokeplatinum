@@ -16,8 +16,8 @@
 #include "overlay115/ov115_02260440.h"
 #include "overlay115/struct_ov115_02260440.h"
 #include "overlay116/ov116_022604C4.h"
-#include "overlay117/ov117_02260440.h"
-#include "overlay117/struct_ov117_02260440.h"
+#include "wifi_lobby_minigame_balloon/wifi_lobby_minigame_balloon.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_args.h"
 #include "wfc_settings/wfc_settings.h"
 
 #include "battle_frontier.h"
@@ -39,7 +39,7 @@ FS_EXTERN_OVERLAY(overlay65);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 FS_EXTERN_OVERLAY(overlay115);
 FS_EXTERN_OVERLAY(overlay116);
-FS_EXTERN_OVERLAY(overlay117);
+FS_EXTERN_OVERLAY(wifi_lobby_minigame_balloon);
 
 // Field task that drives the Nintendo WFC menu. It runs the overlay065 menu
 // app, then dispatches to the activity the player picked: a WiFi battle, a
@@ -71,7 +71,7 @@ static UnkStruct_ov115_02260440 *WiFiMenu_LaunchSwalotMinigame(FieldSystem *fiel
 static void WiFiMenu_FreeSwalotMinigame(UnkStruct_ov115_02260440 *param0);
 static UnkStruct_ov66_02231134 *WiFiMenu_LaunchMimeJrMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
 static void WiFiMenu_FreeMimeJrMinigame(UnkStruct_ov66_02231134 *param0);
-static UnkStruct_ov117_02260440 *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
+static WiFiLobbyMinigameBalloonArgs *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
 static void WiFiMenu_FreeWobbuffetMinigame(UnkStruct_ov115_02260440 *param0);
 static void WiFiMenu_IncrementTrainerScore(FieldSystem *fieldSystem);
 
@@ -489,24 +489,24 @@ static void WiFiMenu_FreeMimeJrMinigame(UnkStruct_ov66_02231134 *param0)
     Overlay_UnloadByID(FS_OVERLAY_ID(wifi_lobby_minigame));
 }
 
-// Launches the Wobbuffet balloon-popping WiFi Plaza minigame (overlay117).
-static UnkStruct_ov117_02260440 *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2)
+// Launches the Wobbuffet balloon-popping WiFi Plaza minigame (wifi_lobby_minigame_balloon).
+static WiFiLobbyMinigameBalloonArgs *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2)
 {
-    UnkStruct_ov117_02260440 *v0;
+    WiFiLobbyMinigameBalloonArgs *v0;
 
-    FS_EXTERN_OVERLAY(overlay117);
+    FS_EXTERN_OVERLAY(wifi_lobby_minigame_balloon);
     FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 
     {
         static const ApplicationManagerTemplate v1 = {
-            ov117_02260440,
-            ov117_02260474,
-            ov117_022605C0,
-            FS_OVERLAY_ID(overlay117),
+            WiFiLobbyMinigameBalloon_Init,
+            WiFiLobbyMinigameBalloon_Main,
+            WiFiLobbyMinigameBalloon_Exit,
+            FS_OVERLAY_ID(wifi_lobby_minigame_balloon),
         };
 
-        v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov117_02260440));
-        MI_CpuClear8(v0, sizeof(UnkStruct_ov117_02260440));
+        v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBalloonArgs));
+        MI_CpuClear8(v0, sizeof(WiFiLobbyMinigameBalloonArgs));
 
         v0->unk_38 = param2;
         v0->unk_39 = 0;
