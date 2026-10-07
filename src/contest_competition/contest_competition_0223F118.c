@@ -38,7 +38,7 @@
 
 FS_EXTERN_OVERLAY(overlay11);
 FS_EXTERN_OVERLAY(battle_anim);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 static void contest_competition_0223F6E8(SysTask *param0, void *param1);
 static void contest_competition_0223F15C(void);
@@ -75,7 +75,7 @@ static void NitroStaticInit(void)
 {
     Overlay_LoadByID(FS_OVERLAY_ID(overlay11), 2);
     Overlay_LoadByID(FS_OVERLAY_ID(battle_anim), 2);
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay22), 2);
+    Overlay_LoadByID(FS_OVERLAY_ID(image_clip_app), 2);
 }
 
 G3DPipelineBuffers *contest_competition_0223F140(enum HeapID heapID)

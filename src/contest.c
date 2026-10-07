@@ -25,7 +25,7 @@
 #include "contest_competition/contest_competition_0223CB1C.h"
 #include "contest_competition/contest_competition_0223DAD0.h"
 #include "contest_competition/contest_competition_0224F4D4.h"
-#include "overlay022/ov22_02255D44.h"
+#include "image_clip_app/image_clip_app_02255D44.h"
 #include "pch/global_pch.h"
 #include "savedata/save_table.h"
 
@@ -62,7 +62,7 @@
 #include "vars_flags.h"
 
 FS_EXTERN_OVERLAY(contest_competition);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 typedef struct ContestTaskEnv {
     Contest *contest;
@@ -119,7 +119,7 @@ const ApplicationManagerTemplate VisualCompetitionAppTemplate = {
     VisualCompetition_Init,
     VisualCompetition_Main,
     VisualCompetition_Exit,
-    FS_OVERLAY_ID(overlay22)
+    FS_OVERLAY_ID(image_clip_app)
 };
 
 // Frame delays between camera shutter flashes, indexed by the contestant's

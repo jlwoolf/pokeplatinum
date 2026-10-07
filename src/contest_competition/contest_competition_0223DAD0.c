@@ -16,7 +16,7 @@
 #include "contest_competition/struct_contest_competition_0224DF54.h"
 #include "contest_competition/struct_contest_competition_02252FC4.h"
 #include "contest_competition/struct_contest_competition_02253084.h"
-#include "overlay022/ov22_0225AF8C.h"
+#include "image_clip_app/image_clip_app_0225AF8C.h"
 
 #include "bg_window.h"
 #include "camera.h"
@@ -54,7 +54,7 @@
 
 FS_EXTERN_OVERLAY(overlay11);
 FS_EXTERN_OVERLAY(battle_anim);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 static void contest_competition_0223E09C(void *param0);
 static void contest_competition_0223E1FC(SysTask *param0, void *param1);
@@ -446,7 +446,7 @@ int DanceCompetition_Exit(ApplicationManager *appMan, int *param1)
     NetworkIcon_Destroy();
     Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+    Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
 
     return 1;
 }
@@ -485,7 +485,7 @@ static void contest_competition_0223E09C(void *param0)
 
         for (v3 = 0; v3 < 4; v3++) {
             if (v0->unk_14.unk_04[v3].unk_00 != NULL) {
-                ov22_0225B06C(v0->unk_14.unk_04[v3].unk_00);
+                PhotoSprite_UpdateGraphics(v0->unk_14.unk_04[v3].unk_00);
             }
         }
     }
@@ -545,7 +545,7 @@ static void contest_competition_0223E1FC(SysTask *param0, void *param1)
 
             for (v1 = 0; v1 < 4; v1++) {
                 if (v0->unk_14.unk_04[v1].unk_00 != NULL) {
-                    ov22_0225AFF8(v0->unk_14.unk_04[v1].unk_00);
+                    PhotoSprite_Update(v0->unk_14.unk_04[v1].unk_00);
                 }
             }
         }

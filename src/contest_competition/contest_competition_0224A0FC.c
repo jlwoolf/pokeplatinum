@@ -24,9 +24,9 @@
 #include "contest_competition/struct_contest_competition_0224EDE0.h"
 #include "contest_competition/struct_contest_competition_02253084.h"
 #include "contest_competition/struct_contest_competition_0225470C.h"
-#include "overlay022/ov22_0225AF8C.h"
-#include "overlay022/struct_ov22_0225AF8C.h"
-#include "overlay022/struct_ov22_0225B1BC_decl.h"
+#include "image_clip_app/image_clip_app_0225AF8C.h"
+#include "image_clip_app/struct_image_clip_app_0225AF8C.h"
+#include "image_clip_app/struct_image_clip_app_0225B1BC_decl.h"
 
 #include "assert.h"
 #include "bg_window.h"
@@ -72,7 +72,7 @@ typedef struct {
 } UnkStruct_contest_competition_0224C6B0;
 
 typedef struct {
-    UnkStruct_ov22_0225B1BC *unk_00;
+    PhotoSprite *unk_00;
     u8 *unk_04;
     GXRgb unk_08;
     GXRgb unk_0A;
@@ -339,14 +339,14 @@ s16 contest_competition_0224A120(int contestantID)
 void contest_competition_0224A134(UnkStruct_contest_competition_0224DF54 *param0)
 {
     int i;
-    UnkStruct_ov22_0225AF8C v1;
+    PhotoSpriteConfig v1;
     int v2;
 
     for (i = 0; i < CONTEST_NUM_PARTICIPANTS; i++) {
         GF_ASSERT(param0->unk_14.pokemonSpriteDataArray[i].tiles == NULL);
     }
 
-    MI_CpuClear8(&v1, sizeof(UnkStruct_ov22_0225AF8C));
+    MI_CpuClear8(&v1, sizeof(PhotoSpriteConfig));
     v1.heapID = HEAP_ID_23;
 
     for (i = 0; i < CONTEST_NUM_PARTICIPANTS; i++) {
@@ -361,13 +361,13 @@ void contest_competition_0224A134(UnkStruct_contest_competition_0224DF54 *param0
         param0->unk_14.unk_04[v3].unk_04 = v1.unk_04;
         param0->unk_14.unk_04[v3].unk_08 = v1.unk_08;
         param0->unk_14.unk_04[v3].unk_0C = Unk_contest_competition_022546F4[i][2];
-        param0->unk_14.unk_04[v3].unk_00 = ov22_0225AFD4(&v1, param0->unk_00->data.photos[v3]);
+        param0->unk_14.unk_04[v3].unk_00 = PhotoSprite_CreateForContestNoBackdrop(&v1, param0->unk_00->data.photos[v3]);
 
-        ov22_0225B100(param0->unk_14.unk_04[v3].unk_00, param0->unk_14.unk_04[v3].unk_04, param0->unk_14.unk_04[v3].unk_08);
+        PhotoSprite_MoveTo(param0->unk_14.unk_04[v3].unk_00, param0->unk_14.unk_04[v3].unk_04, param0->unk_14.unk_04[v3].unk_08);
 
         if (i > 0) {
-            ov22_0225B07C(param0->unk_14.unk_04[v3].unk_00, 0);
-            ov22_0225B1AC(param0->unk_14.unk_04[v3].unk_00, -100);
+            PhotoSprite_SetVisible(param0->unk_14.unk_04[v3].unk_00, 0);
+            PhotoSprite_AdjustPriority(param0->unk_14.unk_04[v3].unk_00, -100);
         }
     }
 }
@@ -377,7 +377,7 @@ void contest_competition_0224A1EC(UnkStruct_contest_competition_0224A1EC *param0
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        ov22_0225B020(param0->unk_04[v0].unk_00);
+        PhotoSprite_Free(param0->unk_04[v0].unk_00);
 
         param0->pokemonSpriteDataArray[v0].tiles = NULL;
     }
@@ -1117,7 +1117,7 @@ void contest_competition_0224B09C(PokemonSprite *param0, UnkStruct_contest_compe
             v2 = FX32_ONE * v1 / 0x100;
         }
 
-        ov22_0225B0EC(param1->unk_00, v2, v2, FX32_ONE);
+        PhotoSprite_SetScale(param1->unk_00, v2, v2, FX32_ONE);
     }
 }
 
@@ -1457,7 +1457,7 @@ static inline void inline_contest_competition_0224B7BC(UnkStruct_contest_competi
     param2->unk_04 = v2 / 0x100;
     param2->unk_08 = v3 / 0x100;
 
-    ov22_0225B100(param2->unk_00, param2->unk_04, param2->unk_08);
+    PhotoSprite_MoveTo(param2->unk_00, param2->unk_04, param2->unk_08);
 }
 
 static BOOL contest_competition_0224B7BC(UnkStruct_contest_competition_0224B7BC *param0, PokemonSprite *param1, UnkStruct_contest_competition_0224B09C *param2, int param3, int param4, int param5, UnkStruct_contest_competition_0224ABFC *param6, u32 param7)
@@ -1649,7 +1649,7 @@ static BOOL contest_competition_0224BA50(UnkStruct_contest_competition_0224B7BC 
         return 1;
     }
 
-    ov22_0225B0E4(param2->unk_00, param0->unk_14_val3.unk_00 / 0x100);
+    PhotoSprite_SetRotation(param2->unk_00, param0->unk_14_val3.unk_00 / 0x100);
     inline_contest_competition_0224B7BC(param0, param1, param2, param3, param5, param4);
     return v0;
 }
@@ -1860,7 +1860,7 @@ static void contest_competition_0224BF58(UnkStruct_contest_competition_0224BE50 
     v1 = CalcCosineDegrees(param0->unk_14 >> 8) * v2 / FX32_ONE;
 
     param0->unk_0C->unk_04 = v1 + Unk_contest_competition_022546F4[param0->unk_19][0] - v2;
-    ov22_0225B100(param0->unk_0C->unk_00, param0->unk_0C->unk_04, param0->unk_0C->unk_08);
+    PhotoSprite_MoveTo(param0->unk_0C->unk_00, param0->unk_0C->unk_04, param0->unk_0C->unk_08);
 }
 
 static void contest_competition_0224C0C0(UnkStruct_contest_competition_0224DF54 *param0, int param1, const UnkStruct_contest_competition_0224C0C0 *param2)
@@ -2168,7 +2168,7 @@ static void contest_competition_0224C718(SysTask *param0, void *param1)
         }
 
         v0->unk_04->unk_08 = v0->unk_18 / 0x100;
-        ov22_0225B100(v0->unk_04->unk_00, v0->unk_04->unk_04, v0->unk_04->unk_08);
+        PhotoSprite_MoveTo(v0->unk_04->unk_00, v0->unk_04->unk_04, v0->unk_04->unk_08);
         break;
     default:
         *(v0->unk_0C) = 1;
@@ -2206,7 +2206,7 @@ static void contest_competition_0224C7B8(SysTask *param0, void *param1)
         }
 
         v0->unk_04->unk_04 = v0->unk_24 / 0x100 + v1;
-        ov22_0225B100(v0->unk_04->unk_00, v0->unk_04->unk_04, v0->unk_04->unk_08);
+        PhotoSprite_MoveTo(v0->unk_04->unk_00, v0->unk_04->unk_04, v0->unk_04->unk_08);
         break;
     default:
         *(v0->unk_0C) = 1;
@@ -2456,9 +2456,9 @@ void contest_competition_0224CDC0(UnkStruct_contest_competition_0224DF54 *param0
 
     for (v0 = 0; v0 < 4; v0++) {
         if (v0 == param1) {
-            ov22_0225B198(param0->unk_14.unk_04[v0].unk_00, v1);
+            PhotoSprite_SetTint(param0->unk_14.unk_04[v0].unk_00, v1);
         } else {
-            ov22_0225B198(param0->unk_14.unk_04[v0].unk_00, v2);
+            PhotoSprite_SetTint(param0->unk_14.unk_04[v0].unk_00, v2);
         }
     }
 
@@ -2470,7 +2470,7 @@ void contest_competition_0224CE08(UnkStruct_contest_competition_0224DF54 *param0
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        ov22_0225B198(param0->unk_14.unk_04[v0].unk_00, 0x7fff);
+        PhotoSprite_SetTint(param0->unk_14.unk_04[v0].unk_00, 0x7fff);
     }
 }
 
@@ -2531,7 +2531,7 @@ void contest_competition_0224CEE4(UnkStruct_contest_competition_0224DF54 *param0
         *param6 = 0;
     }
 
-    ov22_0225B198(v0->unk_00, param2);
+    PhotoSprite_SetTint(v0->unk_00, param2);
     SysTask_Start(contest_competition_0224CF4C, v0, (30000 + 10000));
 }
 
@@ -2549,7 +2549,7 @@ static void contest_competition_0224CF4C(SysTask *param0, void *param1)
     }
 
     BlendPalette(&v0->unk_08, &v1, 1, v2, v0->unk_0A);
-    ov22_0225B198(v0->unk_00, v1);
+    PhotoSprite_SetTint(v0->unk_00, v1);
 
     if (v2 >= v0->unk_10) {
         if (v0->unk_04 != NULL) {

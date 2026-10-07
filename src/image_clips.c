@@ -11,8 +11,8 @@
 #include "struct_defs/image_clips.h"
 #include "struct_defs/struct_020298D8.h"
 
-#include "overlay022/ov22_02259098.h"
-#include "overlay022/struct_ov22_02255040.h"
+#include "image_clip_app/image_clip_app_02259098.h"
+#include "image_clip_app/struct_image_clip_app_02255040.h"
 #include "global_terminal/struct_global_terminal_0222AE80.h"
 #include "global_terminal/struct_global_terminal_0222AE80_sub2.h"
 
@@ -67,8 +67,8 @@ static void PhotoSprite_GetPositionAndPriority(UnkStruct_020298D8 *sprite, u8 *x
     int spriteX, spriteY;
     int spritePriority;
 
-    ov22_02259250(sprite, &spriteX, &spriteY);
-    spritePriority = ov22_022591E0(sprite);
+    ImageClipPokemonSprite_GetCenter(sprite, &spriteX, &spriteY);
+    spritePriority = ImageClipPokemonSprite_GetZ(sprite);
 
     GF_ASSERT(spriteX < 256);
     GF_ASSERT(spriteY < 256);
@@ -531,7 +531,7 @@ void DressUpPhoto_SetPhotoMonFromSprite(DressUpPhoto *photo, Pokemon *mon, UnkSt
     PhotoPokemon_SetDataFromMonAndSprite(&photo->photoMon, mon, sprite);
 }
 
-void DressUpPhoto_AddAccessory(DressUpPhoto *photo, const UnkStruct_ov22_02255040 *sprite, int slot)
+void DressUpPhoto_AddAccessory(DressUpPhoto *photo, const ImageClipSprite *sprite, int slot)
 {
     NNSG2dSVec2 position = SoftwareSprite_GetPosition(sprite->unk_04);
     int priority = SoftwareSprite_GetPriority(sprite->unk_04);
@@ -661,7 +661,7 @@ void ContestPhoto_SetPhotoMonFromSprite(ContestPhoto *photo, Pokemon *mon, UnkSt
     PhotoPokemon_SetDataFromMonAndSprite(&photo->photoMon, mon, sprite);
 }
 
-void ContestPhoto_AddAccessory(ContestPhoto *photo, const UnkStruct_ov22_02255040 *sprite, int slot)
+void ContestPhoto_AddAccessory(ContestPhoto *photo, const ImageClipSprite *sprite, int slot)
 {
     NNSG2dSVec2 position = SoftwareSprite_GetPosition(sprite->unk_04);
     int priority = SoftwareSprite_GetPriority(sprite->unk_04);

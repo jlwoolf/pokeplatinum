@@ -7,9 +7,9 @@
 #include "struct_defs/struct_02030A80.h"
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay022/ov22_0225AF8C.h"
-#include "overlay022/struct_ov22_0225AF8C.h"
-#include "overlay022/struct_ov22_0225B1BC_decl.h"
+#include "image_clip_app/image_clip_app_0225AF8C.h"
+#include "image_clip_app/struct_image_clip_app_0225AF8C.h"
+#include "image_clip_app/struct_image_clip_app_0225B1BC_decl.h"
 #include "global_terminal/global_terminal_0222AE60.h"
 #include "global_terminal/global_terminal_0222B008.h"
 #include "global_terminal/global_terminal_0222BC4C.h"
@@ -51,7 +51,7 @@
 #include "vs_recorder_ring.h"
 #include "vram_transfer.h"
 
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 typedef struct {
     int unk_00;
@@ -74,8 +74,8 @@ typedef struct {
     UnkStruct_ov62_0223E01C_sub1 unk_1D4;
     UnkStruct_ov62_02249380 *unk_1E8;
     UnkStruct_ov62_02248CDC unk_1EC;
-    UnkStruct_ov22_0225AF8C unk_218;
-    UnkStruct_ov22_0225B1BC *unk_228;
+    PhotoSpriteConfig unk_218;
+    PhotoSprite *unk_228;
     DressUpPhoto *photo;
     UnkStruct_ov62_02237D24_sub1 unk_230;
     UnkStruct_ov62_022323B8 unk_250;
@@ -206,7 +206,7 @@ static BOOL ov62_02237D24(UnkStruct_0208C06C *param0)
 
     memset(v0, 0, sizeof(UnkStruct_ov62_02237D24));
     param0->unk_860 = v0;
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay22), 2);
+    Overlay_LoadByID(FS_OVERLAY_ID(image_clip_app), 2);
 
     {
         v0->unk_218.unk_00 = param0->unk_14.unk_10;
@@ -297,8 +297,8 @@ static BOOL ov62_02237F08(UnkStruct_0208C06C *param0)
         v0->photo = ImageClips_GetDressUpPhoto(SaveData_GetImageClips(param0->saveData), 0);
 
         if (v0->unk_228 == NULL) {
-            v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->photo);
-            ov22_0225B074(v0->unk_228, 1);
+            v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->photo);
+            PhotoSprite_SetTransformEnabled(v0->unk_228, 1);
         }
 
         ov62_02234540(param0, 0);
@@ -329,7 +329,7 @@ static BOOL ov62_02237F08(UnkStruct_0208C06C *param0)
     }
     if (v0->unk_228) {
         G3_ResetG3X();
-        ov22_0225AFF8(v0->unk_228);
+        PhotoSprite_Update(v0->unk_228);
         G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
     }
 
@@ -352,7 +352,7 @@ static BOOL ov62_02238048(UnkStruct_0208C06C *param0)
 
     if (v0->unk_228) {
         G3_ResetG3X();
-        ov22_0225AFF8(v0->unk_228);
+        PhotoSprite_Update(v0->unk_228);
         G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
     }
 
@@ -460,7 +460,7 @@ static BOOL ov62_022380B0(UnkStruct_0208C06C *param0)
 
         if (ov62_02231664(&v0->unk_08, 0)) {
             if (v0->unk_228) {
-                ov22_0225B020(v0->unk_228);
+                PhotoSprite_Free(v0->unk_228);
                 ov62_0222F834(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 ov62_0223956C();
@@ -475,7 +475,7 @@ static BOOL ov62_022380B0(UnkStruct_0208C06C *param0)
             ov62_0222FB60(param0, 5);
 
             Heap_Free(v0);
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+            Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
             SetVBlankCallback(ov62_0222F8E4, param0);
         } else {
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
@@ -548,7 +548,7 @@ static BOOL ov62_022383E4(UnkStruct_0208C06C *param0)
             ov62_02234540(param0, 1);
 
             if (v0->unk_228) {
-                ov22_0225B020(v0->unk_228);
+                PhotoSprite_Free(v0->unk_228);
                 ov62_0222F834(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 ov62_0223956C();
@@ -564,7 +564,7 @@ static BOOL ov62_022383E4(UnkStruct_0208C06C *param0)
             ov62_0222FB60(param0, 5);
 
             Heap_Free(v0);
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+            Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
             SetVBlankCallback(ov62_0222F8E4, param0);
         } else {
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
@@ -798,7 +798,7 @@ static BOOL ov62_0223896C(UnkStruct_0208C06C *param0)
             ov62_02234540(param0, 1);
 
             if (v0->unk_228) {
-                ov22_0225B020(v0->unk_228);
+                PhotoSprite_Free(v0->unk_228);
                 ov62_0222F834(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 ov62_0223956C();
@@ -814,7 +814,7 @@ static BOOL ov62_0223896C(UnkStruct_0208C06C *param0)
             ov62_0222FB60(param0, 5);
 
             Heap_Free(v0);
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+            Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
             SetVBlankCallback(ov62_0222F8E4, param0);
         } else {
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
@@ -906,9 +906,9 @@ static BOOL ov62_02238D04(UnkStruct_0208C06C *param0)
 
         v0->unk_0C = 0;
         GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
-        v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->unk_230.photo);
+        v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
 
-        ov22_0225B074(v0->unk_228, 0);
+        PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
         ov62_02239518();
         ov62_022343B8(param0, 35, 3);
         ov62_022343B8(param0, 36, 7);
@@ -929,7 +929,7 @@ static BOOL ov62_02238D04(UnkStruct_0208C06C *param0)
         ov62_02231664(&v0->unk_08, 0);
 
         if (ov62_022315E0(&v0->unk_00, &v0->unk_04, 0, 0)) {
-            ov22_0225B074(v0->unk_228, 1);
+            PhotoSprite_SetTransformEnabled(v0->unk_228, 1);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
             ov62_02239854(param0, v0->unk_230.unk_04);
@@ -946,7 +946,7 @@ static BOOL ov62_02238D04(UnkStruct_0208C06C *param0)
 
     if (v0->unk_228) {
         G3_ResetG3X();
-        ov22_0225AFF8(v0->unk_228);
+        PhotoSprite_Update(v0->unk_228);
         G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
     }
 
@@ -987,7 +987,7 @@ static BOOL ov62_02238E54(UnkStruct_0208C06C *param0)
 
     if (v0->unk_228) {
         G3_ResetG3X();
-        ov22_0225AFF8(v0->unk_228);
+        PhotoSprite_Update(v0->unk_228);
         G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
     }
 
@@ -1018,7 +1018,7 @@ static BOOL ov62_02238F24(UnkStruct_0208C06C *param0)
 
         if (ov62_022315E0(&v0->unk_00, &v0->unk_04, 1, 0)) {
             if (v0->unk_228) {
-                ov22_0225B020(v0->unk_228);
+                PhotoSprite_Free(v0->unk_228);
                 ov62_0222F834(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 v0->unk_228 = NULL;
@@ -1063,7 +1063,7 @@ static BOOL ov62_0223900C(UnkStruct_0208C06C *param0)
         if (ov62_022315E0(&v0->unk_00, &v0->unk_04, 1, 1)) {
             if (v0->unk_0C == 0) {
                 if (v0->unk_228) {
-                    ov22_0225B020(v0->unk_228);
+                    PhotoSprite_Free(v0->unk_228);
                     ov62_0222F834(param0);
                     Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                     v0->unk_228 = NULL;
@@ -1088,8 +1088,8 @@ static BOOL ov62_0223900C(UnkStruct_0208C06C *param0)
             ov62_022343B8(param0, 80, 3);
         } else {
             GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
-            v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->unk_230.photo);
-            ov22_0225B074(v0->unk_228, 0);
+            v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
+            PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
             ov62_02239518();
             ov62_022343B8(param0, 35, 3);
             GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
@@ -1116,7 +1116,7 @@ static BOOL ov62_0223900C(UnkStruct_0208C06C *param0)
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
             } else {
                 ov62_02239854(param0, v0->unk_230.unk_04);
-                ov22_0225B074(v0->unk_228, 1);
+                PhotoSprite_SetTransformEnabled(v0->unk_228, 1);
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
             }
@@ -1155,7 +1155,7 @@ static BOOL ov62_0223921C(UnkStruct_0208C06C *param0)
         if (ov62_022315E0(&v0->unk_00, &v0->unk_04, 1, 1)) {
             if (v0->unk_0C == 0) {
                 if (v0->unk_228) {
-                    ov22_0225B020(v0->unk_228);
+                    PhotoSprite_Free(v0->unk_228);
                     ov62_0222F834(param0);
                     Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                     v0->unk_228 = NULL;
@@ -1175,8 +1175,8 @@ static BOOL ov62_0223921C(UnkStruct_0208C06C *param0)
 
         if (v0->unk_0C == 0) {
             GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
-            v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->unk_230.photo);
-            ov22_0225B074(v0->unk_228, 0);
+            v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
+            PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
             ov62_02239518();
             ov62_022343B8(param0, 35, 3);
             GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
@@ -1207,7 +1207,7 @@ static BOOL ov62_0223921C(UnkStruct_0208C06C *param0)
         if (ov62_022315E0(&v0->unk_00, &v0->unk_04, 0, 1)) {
             if (v0->unk_0C == 0) {
                 ov62_02239854(param0, v0->unk_230.unk_04);
-                ov22_0225B074(v0->unk_228, 1);
+                PhotoSprite_SetTransformEnabled(v0->unk_228, 1);
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
             } else {
@@ -1272,7 +1272,7 @@ static void ov62_022394D8(void *param0)
     UnkStruct_ov62_02237D24 *v1 = v0->unk_860;
 
     if (v1->unk_228) {
-        ov22_0225B06C(v1->unk_228);
+        PhotoSprite_UpdateGraphics(v1->unk_228);
     }
 
     VramTransfer_Process();

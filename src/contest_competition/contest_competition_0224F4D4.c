@@ -42,7 +42,7 @@
 
 FS_EXTERN_OVERLAY(overlay11);
 FS_EXTERN_OVERLAY(battle_anim);
-FS_EXTERN_OVERLAY(overlay22);
+FS_EXTERN_OVERLAY(image_clip_app);
 
 static void contest_competition_0224FA24(void *param0);
 static void contest_competition_0224FAAC(void *param0);
@@ -339,7 +339,7 @@ int ContestFinalScoring_Exit(ApplicationManager *appMan, int *param1)
 
     Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay22));
+    Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
 
     return 1;
 }
