@@ -13,8 +13,8 @@
 
 #include "overlay022/ov22_02259098.h"
 #include "overlay022/struct_ov22_02255040.h"
-#include "overlay061/struct_ov61_0222AE80.h"
-#include "overlay061/struct_ov61_0222AE80_sub2.h"
+#include "global_terminal/struct_global_terminal_0222AE80.h"
+#include "global_terminal/struct_global_terminal_0222AE80_sub2.h"
 
 #include "easy_chat_sentence.h"
 #include "heap.h"
@@ -946,11 +946,11 @@ ImageClips *SaveData_GetImageClips(SaveData *saveData)
 
 // Copies a DressUpPhoto into the fixed-layout photo record used by the PC
 // storage system. The record omits the nickname and trainer gender.
-void DressUpPhoto_Serialize(const DressUpPhoto *photo, UnkStruct_ov61_0222AE80 *photoData)
+void DressUpPhoto_Serialize(const DressUpPhoto *photo, GlobalTerminalDressUpPhoto *photoData)
 {
     int i;
 
-    MI_CpuClear8(photoData, sizeof(UnkStruct_ov61_0222AE80));
+    MI_CpuClear8(photoData, sizeof(GlobalTerminalDressUpPhoto));
 
     photoData->integrity = photo->integrity;
 
@@ -971,7 +971,7 @@ void DressUpPhoto_Serialize(const DressUpPhoto *photo, UnkStruct_ov61_0222AE80 *
     photoData->title = photo->title;
 
     for (i = 0; i < PHOTO_ACCESSORY_COUNT; i++) {
-        photoData->unk_30[i] = *((UnkStruct_ov61_0222AE80_sub2 *)(&photo->accessories[i]));
+        photoData->unk_30[i] = *((GlobalTerminalPhotoAccessory *)(&photo->accessories[i]));
     }
 
     photoData->unk_58 = photo->backdrop;
@@ -980,7 +980,7 @@ void DressUpPhoto_Serialize(const DressUpPhoto *photo, UnkStruct_ov61_0222AE80 *
 
 // Restores a DressUpPhoto from the PC storage record. The nickname and
 // trainer gender are not stored, so they are reset here.
-void DressUpPhoto_Deserialize(const UnkStruct_ov61_0222AE80 *photoData, DressUpPhoto *photo)
+void DressUpPhoto_Deserialize(const GlobalTerminalDressUpPhoto *photoData, DressUpPhoto *photo)
 {
     int size;
     int i;

@@ -702,7 +702,7 @@ static void ov65_0222E01C(UnkStruct_ov65_0222EBE0 *param0)
     ov65_0222E638(param0->unk_15C);
     ov65_0222ECA8(param0, v0);
 
-    inline_ov61_0222C3B0(&param0->unk_E2C, v0, 4, 54);
+    GlobalTerminal_InitPaletteBlend(&param0->unk_E2C, v0, 4, 54);
 
     SetVBlankCallback(ov65_0222E5E0, param0);
 
@@ -830,7 +830,7 @@ int ov65_0222E3FC(ApplicationManager *appMan, int *param1)
         ov65_02235244(&v0->unk_3EC);
     }
 
-    inline_ov61_0222C0F8(&v0->unk_E2C);
+    GlobalTerminal_PaletteBlendNoop(&v0->unk_E2C);
 
     return 0;
 }
@@ -841,7 +841,7 @@ static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
 
     SetVBlankCallback(NULL, NULL);
 
-    inline_ov61_0222C160(&param0->unk_E2C);
+    GlobalTerminal_FreePaletteBlend(&param0->unk_E2C);
 
     if (ov65_02235194(&param0->unk_3EC) == 1) {
         ov65_02235130(&param0->unk_3EC);
@@ -928,7 +928,7 @@ static void ov65_0222E5E0(void *param0)
     VramTransfer_Process();
     RenderOam_Transfer();
 
-    inline_ov61_0222C1FC(&v0->unk_E2C);
+    GlobalTerminal_PaletteBlendNoop2(&v0->unk_E2C);
 
     if (v0->unk_1158 == 1) {
         ResetScreenMasterBrightness(DS_SCREEN_MAIN);

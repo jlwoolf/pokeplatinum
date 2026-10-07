@@ -9,10 +9,10 @@
 #include "struct_defs/struct_02030A80.h"
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay061/ov61_0222AE60.h"
-#include "overlay061/ov61_0222B008.h"
-#include "overlay061/ov61_0222BC4C.h"
-#include "overlay061/struct_ov61_0222BCF8_sub1_sub1.h"
+#include "global_terminal/global_terminal_0222AE60.h"
+#include "global_terminal/global_terminal_0222B008.h"
+#include "global_terminal/global_terminal_0222BC4C.h"
+#include "global_terminal/struct_global_terminal_0222BCF8_sub1_sub1.h"
 #include "overlay062/ov62_0222F2C0.h"
 #include "overlay062/ov62_022300D8.h"
 #include "overlay062/ov62_02231690.h"
@@ -71,8 +71,8 @@ typedef struct {
     TouchScreenActions *unk_344;
     UnkStruct_ov62_022312B0 unk_348[2];
     UnkStruct_ov62_02239DBC_sub1 unk_380;
-    UnkStruct_ov61_0222BCF8_sub1_sub1 *unk_38C[20];
-    UnkStruct_ov61_0222BCF8_sub1_sub1 unk_3DC[20];
+    GlobalTerminalProfileBox *unk_38C[20];
+    GlobalTerminalProfileBox unk_3DC[20];
     String *unk_2E0C[20][2];
     UnkStruct_ov62_02248CDC unk_2EAC;
     UnkStruct_ov62_022323B8 unk_2ED8;
@@ -163,7 +163,7 @@ static void ov62_02239D60(UnkStruct_0208C06C *param0, int param1)
     UnkStruct_ov62_02239DBC *v0 = param0->unk_860;
 
     v0->unk_2ED8.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    ov61_0222AFC0(&v0->unk_38C[param1]->unk_00, v0->unk_2ED8.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&v0->unk_38C[param1]->unk_00, v0->unk_2ED8.unk_00);
 }
 
 static void ov62_02239D8C(UnkStruct_0208C06C *param0)
@@ -439,7 +439,7 @@ static void ov62_0223A138(UnkStruct_ov62_02239DBC *param0)
 static void ov62_0223A154(SaveData *saveData, const PCBoxes *pcBoxes, int boxID, UnkStruct_ov62_02239DA4 *param3)
 {
     memset(param3, 0, sizeof(UnkStruct_ov62_02239DA4));
-    ov61_0222AE88(saveData, pcBoxes, boxID, param3, HEAP_ID_102);
+    GlobalTerminal_SerializePCBox(saveData, pcBoxes, boxID, param3, HEAP_ID_102);
 }
 
 static BOOL ov62_0223A17C(UnkStruct_0208C06C *param0)
@@ -671,14 +671,14 @@ static BOOL ov62_0223A64C(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 5:
-        if (ov61_0222B224(ov62_0224112C(param0), v0->unk_380.unk_00, v0->unk_380.unk_04, v0->pcBoxes, v0->unk_1A0) == 1) {
+        if (GlobalTerminalTransfer_UploadProfileBox(ov62_0224112C(param0), v0->unk_380.unk_00, v0->unk_380.unk_04, v0->pcBoxes, v0->unk_1A0) == 1) {
             param0->unk_08++;
         }
         break;
     case 6:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 2, v1->unk_0C, v1->unk_04);
             param0->unk_08++;
@@ -1647,14 +1647,14 @@ static BOOL ov62_0223B980(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 3:
-        if (ov61_0222B290(ov62_0224112C(param0), v0->unk_380.unk_00) == 1) {
+        if (GlobalTerminalTransfer_UploadBox(ov62_0224112C(param0), v0->unk_380.unk_00) == 1) {
             param0->unk_08++;
         }
         break;
     case 4:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 3, v1->unk_0C, v1->unk_04);
 
@@ -2246,7 +2246,7 @@ void ov62_0223CAA8(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
     if (param1->unk_00 == 1) {
         v1->unk_380.unk_08 = 0;
     } else {
-        v1->unk_380.unk_08 = ov61_0222BD18(ov62_0224112C(v0), v1->unk_38C, 20);
-        MI_CpuCopy8(v1->unk_38C, &v1->unk_3DC, sizeof(UnkStruct_ov61_0222BCF8_sub1_sub1) * 20);
+        v1->unk_380.unk_08 = GlobalTerminalGds_GetBoxList(ov62_0224112C(v0), v1->unk_38C, 20);
+        MI_CpuCopy8(v1->unk_38C, &v1->unk_3DC, sizeof(GlobalTerminalProfileBox) * 20);
     }
 }

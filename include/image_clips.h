@@ -11,7 +11,7 @@
 #include "struct_defs/struct_02029C88.h"
 
 #include "overlay022/struct_ov22_02255040.h"
-#include "overlay061/struct_ov61_0222AE80.h"
+#include "global_terminal/struct_global_terminal_0222AE80.h"
 
 #include "pokemon.h"
 #include "savedata.h"
@@ -88,7 +88,7 @@ u8 PhotoAccessory_GetYPos(const PhotoAccessory *accessory);
 s8 PhotoAccessory_GetPriority(const PhotoAccessory *accessory);
 void ImageClips_AddUniquePhotos(u8 count, int skipIndex, ImageClips *imageClips, const void **photos);
 ImageClips *SaveData_GetImageClips(SaveData *saveData);
-void DressUpPhoto_Serialize(const DressUpPhoto *photo, UnkStruct_ov61_0222AE80 *photoData);
-void DressUpPhoto_Deserialize(const UnkStruct_ov61_0222AE80 *photoData, DressUpPhoto *photo);
+void DressUpPhoto_Serialize(const DressUpPhoto *photo, GlobalTerminalDressUpPhoto *photoData);
+void DressUpPhoto_Deserialize(const GlobalTerminalDressUpPhoto *photoData, DressUpPhoto *photo);
 
 #endif // POKEPLATINUM_IMAGE_CLIPS_H

@@ -5,7 +5,7 @@
 #include "struct_decls/wi_fi_list.h"
 #include "struct_defs/struct_0207DFAC.h"
 
-#include "overlay061/struct_ov61_0222C3B0.h"
+#include "global_terminal/struct_global_terminal_0222C3B0.h"
 #include "overlay065/struct_ov65_0222E99C.h"
 #include "overlay065/struct_ov65_02234E50.h"
 #include "overlay065/struct_ov65_02235130.h"
@@ -86,7 +86,7 @@ struct UnkStruct_ov65_0222EBE0_t {
     UnkStruct_ov65_0222E99C unk_BD0;
     UnkStruct_ov65_02234E50 unk_BE0;
     BOOL unk_E28;
-    UnkStruct_ov61_0222C3B0 unk_E2C;
+    GlobalTerminalPaletteBlend unk_E2C;
     u16 unk_1158;
     u16 unk_115A;
 };

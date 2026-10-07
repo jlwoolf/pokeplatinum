@@ -5,10 +5,10 @@
 #include "struct_defs/struct_02030A80.h"
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay061/ov61_0222AE60.h"
-#include "overlay061/ov61_0222B008.h"
-#include "overlay061/struct_ov61_0222BED8.h"
-#include "overlay061/struct_ov61_0222BED8_sub1.h"
+#include "global_terminal/global_terminal_0222AE60.h"
+#include "global_terminal/global_terminal_0222B008.h"
+#include "global_terminal/struct_global_terminal_0222BED8.h"
+#include "global_terminal/struct_global_terminal_0222BED8_sub1.h"
 #include "overlay062/ov62_0222F2C0.h"
 #include "overlay062/ov62_022300D8.h"
 #include "overlay062/ov62_02231690.h"
@@ -54,11 +54,11 @@ typedef struct {
     Window unk_14[8];
     Window unk_94[8];
     UnkStruct_ov62_022312B0 unk_114[4];
-    UnkStruct_ov61_0222BED8 *unk_184;
+    GlobalTerminalRecordAlt *unk_184;
     TouchScreenActions *unk_188[3];
     UnkStruct_ov62_022323B8 unk_194;
     UnkStruct_ov62_02233F74 unk_220;
-    UnkStruct_ov61_0222BED8 unk_2DC;
+    GlobalTerminalRecordAlt unk_2DC;
     int unk_1FB0;
     int unk_1FB4;
     int unk_1FB8;
@@ -320,14 +320,14 @@ static BOOL ov62_0223E22C(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 3:
-        if (ov61_0222B524(ov62_0224112C(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80.unk_58) == 1) {
+        if (GlobalTerminalTransfer_UploadId(ov62_0224112C(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80.unk_58) == 1) {
             param0->unk_08++;
         }
         break;
     case 4:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 8, v1->unk_0C, v1->unk_04);
             param0->unk_08++;
@@ -338,7 +338,7 @@ static BOOL ov62_0223E22C(UnkStruct_0208C06C *param0)
             v0->unk_1FC0 = 1;
             param0->unk_878 = &param0->unk_8B4.unk_3904[param0->unk_14.unk_48C.unk_38.unk_00];
             v0->unk_184 = param0->unk_8B4.unk_00;
-            MI_CpuCopy8(v0->unk_184, &param0->unk_8B4.unk_04, sizeof(UnkStruct_ov61_0222BED8));
+            MI_CpuCopy8(v0->unk_184, &param0->unk_8B4.unk_04, sizeof(GlobalTerminalRecordAlt));
         }
 
         VsRecorderRing_SetVisible(param0->unk_6F0, 0);
@@ -455,7 +455,7 @@ static BOOL ov62_0223E510(UnkStruct_0208C06C *param0)
         {
             u64 v2 = BattleRecording_GetSummaryValue(BattleRecording_GetSummary(), 4, 0);
 
-            if (ov61_0222B550(ov62_0224112C(param0), v2) == 1) {
+            if (GlobalTerminalTransfer_UploadId2(ov62_0224112C(param0), v2) == 1) {
                 param0->unk_08++;
             }
         }
@@ -465,7 +465,7 @@ static BOOL ov62_0223E510(UnkStruct_0208C06C *param0)
             return 0;
         }
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
 
             param0->unk_08++;
@@ -1049,22 +1049,22 @@ static BOOL ov62_0223F348(UnkStruct_0208C06C *param0)
     case 1:
         if (param0->unk_86C == 300) {
             v0->unk_0C = 0;
-            if (ov61_0222B4A8(ov62_0224112C(param0)) == 1) {
+            if (GlobalTerminalTransfer_UploadRecordAlt(ov62_0224112C(param0)) == 1) {
                 param0->unk_08++;
             }
         } else if (param0->unk_86C == 301) {
             v0->unk_0C = 1;
-            if (ov61_0222B4E4(ov62_0224112C(param0)) == 1) {
+            if (GlobalTerminalTransfer_UploadRecordAlt2(ov62_0224112C(param0)) == 1) {
                 param0->unk_08++;
             }
         } else if (param0->unk_86C == 200) {
             v0->unk_0C = 2;
             if (VsRecorder_CheckFirstArrivalBattlePark(param0) == 1) {
-                if (ov61_0222B44C(ov62_0224112C(param0)) == 1) {
+                if (GlobalTerminalTransfer_UploadEmptyRecord(ov62_0224112C(param0)) == 1) {
                     param0->unk_08++;
                 }
             } else {
-                if (ov61_0222B3EC(ov62_0224112C(param0)) == 1) {
+                if (GlobalTerminalTransfer_UploadRecordDefault(ov62_0224112C(param0)) == 1) {
                     param0->unk_08++;
                 }
             }
@@ -1076,7 +1076,7 @@ static BOOL ov62_0223F348(UnkStruct_0208C06C *param0)
     case 2:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 7, v1->unk_0C, v1->unk_04);
             param0->unk_08++;
@@ -2026,10 +2026,10 @@ static void ov62_02240B94(UnkStruct_0208C06C *param0)
     UnkStruct_ov62_0223E01C *v0 = param0->unk_860;
 
     v0->unk_194.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    ov61_0222AFC0(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00, v0->unk_194.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00, v0->unk_194.unk_00);
     v0->unk_220.unk_00 = v0->unk_194.unk_00;
     v0->unk_220.unk_04 = BattleRecording_NewSummary(HEAP_ID_102);
-    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_220.unk_04, sizeof(UnkStruct_ov61_0222BED8_sub1));
+    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_220.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
 static void ov62_02240BF4(UnkStruct_0208C06C *param0)

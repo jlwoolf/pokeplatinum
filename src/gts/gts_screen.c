@@ -11,7 +11,7 @@
 
 #include "gts_application/networking.h"
 #include "nintendo_wfc/main.h"
-#include "overlay061/struct_ov61_0222C3B0.h"
+#include "global_terminal/struct_global_terminal_0222C3B0.h"
 #include "gts/gts.h"
 #include "gts/gts_email.h"
 #include "gts/struct_gts.h"
@@ -92,7 +92,7 @@ typedef struct {
     Window unk_D4;
     ColoredArrow *unk_E4;
     s32 unk_E8;
-    UnkStruct_ov61_0222C3B0 unk_EC;
+    GlobalTerminalPaletteBlend unk_EC;
 } GTSScreen;
 
 typedef struct {
@@ -395,7 +395,7 @@ int GTSScreen_Main(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    inline_ov61_0222C0F8(&v0->unk_EC);
+    GlobalTerminal_PaletteBlendNoop(&v0->unk_EC);
 
     return 0;
 }
@@ -404,7 +404,7 @@ int GTSScreen_Exit(ApplicationManager *appMan, int *param1)
 {
     GTSScreen *v0 = ApplicationManager_Data(appMan);
 
-    inline_ov61_0222C160(&v0->unk_EC);
+    GlobalTerminal_FreePaletteBlend(&v0->unk_EC);
 
     MessageLoader_Free(v0->unk_34);
     MessageLoader_Free(v0->unk_28);
@@ -440,7 +440,7 @@ static void GTSScreen_VBlankCallback(void *param0)
     RenderOam_Transfer();
 
     Bg_RunScheduledUpdates(v0->unk_04);
-    inline_ov61_0222C1FC(&v0->unk_EC);
+    GlobalTerminal_PaletteBlendNoop2(&v0->unk_EC);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
@@ -640,7 +640,7 @@ static void GTSScreen_LoadGraphics(GTSScreen *param0)
     Bg_MaskPalette(BG_LAYER_MAIN_0, 0);
     Bg_MaskPalette(BG_LAYER_SUB_0, 0);
 
-    inline_ov61_0222C3B0(&param0->unk_EC, v1, 4, 109);
+    GlobalTerminal_InitPaletteBlend(&param0->unk_EC, v1, 4, 109);
 
     NARC_dtor(v1);
 

@@ -144,14 +144,14 @@ int GTSApplication_WFCInit_Main(GTSApplicationState *appState, int unused)
         appState->wfcDisconnectMessageFrameDelay = 0;
     }
 
-    inline_ov61_0222C0F8(&appState->unk_11B4);
+    GlobalTerminal_PaletteBlendNoop(&appState->unk_11B4);
 
     return parentStateCode;
 }
 
 int GTSApplication_WFCInit_Exit(GTSApplicationState *appState, int unused)
 {
-    inline_ov61_0222C160(&appState->unk_11B4);
+    GlobalTerminal_FreePaletteBlend(&appState->unk_11B4);
 
     GTSWFCInit_CleanupStrings(appState);
     GTSWFCInit_CleanupWindows(appState);
@@ -275,7 +275,7 @@ static void GTSWFCInit_InitGraphics(GTSApplicationState *appState)
     Bg_MaskPalette(BG_LAYER_MAIN_0, 0);
     Bg_MaskPalette(BG_LAYER_SUB_0, 0);
 
-    inline_ov61_0222C3B0(&appState->unk_11B4, narc, 4, HEAP_ID_62);
+    GlobalTerminal_InitPaletteBlend(&appState->unk_11B4, narc, 4, HEAP_ID_62);
 
     NARC_dtor(narc);
 }

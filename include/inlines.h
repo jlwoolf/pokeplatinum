@@ -4,7 +4,7 @@
 #include <nitro/rtc.h>
 
 #include "field/field_system.h"
-#include "overlay061/struct_ov61_0222C3B0.h"
+#include "global_terminal/struct_global_terminal_0222C3B0.h"
 
 #include "assert.h"
 #include "field_overworld_state.h"
@@ -20,28 +20,28 @@
 #include "sys_task.h"
 #include "sys_task_manager.h"
 
-static inline void inline_ov61_0222C3B0_sub_1(UnkStruct_ov61_0222C3B0 *);
-static inline void inline_ov61_0222C3B0_sub(SysTask *, void *);
+static inline void GlobalTerminal_BuildBlendTable(GlobalTerminalPaletteBlend *);
+static inline void GlobalTerminal_UpdatePaletteBlend(SysTask *, void *);
 
-static inline void inline_ov61_0222C3B0(UnkStruct_ov61_0222C3B0 *param0, NARC *param1, int param2, enum HeapID heapID)
+static inline void GlobalTerminal_InitPaletteBlend(GlobalTerminalPaletteBlend *param0, NARC *param1, int param2, enum HeapID heapID)
 {
     NNSG2dPaletteData *v0;
     void *v1;
 
-    MI_CpuClear8(param0, sizeof(UnkStruct_ov61_0222C3B0));
+    MI_CpuClear8(param0, sizeof(GlobalTerminalPaletteBlend));
 
     v1 = Graphics_GetPlttDataFromOpenNARC(param1, param2, &v0, heapID);
 
     MI_CpuCopy16(&((u16 *)(v0->pRawData))[0 * 16], param0->unk_08, 4 * 0x20);
     MI_CpuCopy16(&((u16 *)(v0->pRawData))[0 * 16], param0->unk_88, 4 * 0x20);
     Heap_Free(v1);
-    inline_ov61_0222C3B0_sub_1(param0);
+    GlobalTerminal_BuildBlendTable(param0);
 
     param0->unk_04 = 1;
-    param0->unk_00 = SysTask_ExecuteOnVBlank(inline_ov61_0222C3B0_sub, param0, 20);
+    param0->unk_00 = SysTask_ExecuteOnVBlank(GlobalTerminal_UpdatePaletteBlend, param0, 20);
 }
 
-static inline void inline_ov61_0222C160(UnkStruct_ov61_0222C3B0 *param0)
+static inline void GlobalTerminal_FreePaletteBlend(GlobalTerminalPaletteBlend *param0)
 {
     if (param0->unk_00 != NULL) {
         SysTask_Done(param0->unk_00);
@@ -50,22 +50,22 @@ static inline void inline_ov61_0222C160(UnkStruct_ov61_0222C3B0 *param0)
     }
 }
 
-static inline void inline_ov61_0222C0F8(UnkStruct_ov61_0222C3B0 *param0)
+static inline void GlobalTerminal_PaletteBlendNoop(GlobalTerminalPaletteBlend *param0)
 {
     return;
 }
 
-static inline void inline_ov61_0222C1FC(UnkStruct_ov61_0222C3B0 *param0)
+static inline void GlobalTerminal_PaletteBlendNoop2(GlobalTerminalPaletteBlend *param0)
 {
     return;
 }
 
-static inline void inline_ov96_0223BDEC(UnkStruct_ov61_0222C3B0 *param0, BOOL param1)
+static inline void inline_ov96_0223BDEC(GlobalTerminalPaletteBlend *param0, BOOL param1)
 {
     param0->unk_04 = param1;
 }
 
-static inline void inline_ov61_0222C3B0_sub_1(UnkStruct_ov61_0222C3B0 *param0)
+static inline void GlobalTerminal_BuildBlendTable(GlobalTerminalPaletteBlend *param0)
 {
     int v0, v1, v2, v3, v4, v5;
     v1 = 0;
@@ -93,9 +93,9 @@ static inline void inline_ov61_0222C3B0_sub_1(UnkStruct_ov61_0222C3B0 *param0)
     DC_FlushRange(param0->unk_88, (((16 << 8) / 0x300 + 2) * (4 - 1)) * 16 * sizeof(u16));
 }
 
-static inline void inline_ov61_0222C3B0_sub(SysTask *param0, void *param1)
+static inline void GlobalTerminal_UpdatePaletteBlend(SysTask *param0, void *param1)
 {
-    UnkStruct_ov61_0222C3B0 *v0 = param1;
+    GlobalTerminalPaletteBlend *v0 = param1;
 
     if (v0->unk_04 == 0) {
         return;

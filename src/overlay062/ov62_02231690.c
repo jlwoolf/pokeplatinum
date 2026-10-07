@@ -13,9 +13,9 @@
 #include "struct_defs/struct_0208B878.h"
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay061/ov61_0222B008.h"
-#include "overlay061/ov61_0222BC4C.h"
-#include "overlay061/struct_ov61_0222BE20.h"
+#include "global_terminal/global_terminal_0222B008.h"
+#include "global_terminal/global_terminal_0222BC4C.h"
+#include "global_terminal/struct_global_terminal_0222BE20.h"
 #include "overlay062/ov62_0222F2C0.h"
 #include "overlay062/ov62_022300D8.h"
 #include "overlay062/ov62_0224112C.h"
@@ -1790,14 +1790,14 @@ void ov62_02233828(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
     if (param1->unk_00 == 1) {
         (void)0;
     } else {
-        v1->unk_3900 = ov61_0222BE20(ov62_0224112C(v0), v1->unk_1D58, 30);
+        v1->unk_3900 = GlobalTerminalGds_GetRecordList(ov62_0224112C(v0), v1->unk_1D58, 30);
 
         {
             int v2;
 
             for (v2 = 0; v2 < v1->unk_3900; v2++) {
                 GF_ASSERT(v0->unk_8B4.unk_1D58[v2] != NULL);
-                MI_CpuCopy8(v0->unk_8B4.unk_1D58[v2], &v0->unk_8B4.unk_1DD0[v2], sizeof(UnkStruct_ov61_0222BE20));
+                MI_CpuCopy8(v0->unk_8B4.unk_1D58[v2], &v0->unk_8B4.unk_1DD0[v2], sizeof(GlobalTerminalRecord));
                 v0->unk_8B4.unk_3904[v2] = v0->unk_8B4.unk_1D58[v2]->unk_80.unk_27;
             }
         }

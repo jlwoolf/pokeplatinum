@@ -5,7 +5,7 @@
 
 #include "generated/trainer_score_events.h"
 
-#include "overlay061/struct_ov61_0222C3B0.h"
+#include "global_terminal/struct_global_terminal_0222C3B0.h"
 #include "overlay065/struct_ov65_0222F6EC.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
@@ -60,7 +60,7 @@ typedef struct {
     WifiP2PMatchMessageBox connectBox;
     WifiP2PMatchMessageBox errorBox;
     Menu *menu;
-    UnkStruct_ov61_0222C3B0 paletteBlend;
+    GlobalTerminalPaletteBlend paletteBlend;
 } WifiP2PMatch;
 
 static void WifiP2PMatch_VBlankCallback(void *param0);
@@ -364,7 +364,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    inline_ov61_0222C0F8(&v0->paletteBlend);
+    GlobalTerminal_PaletteBlendNoop(&v0->paletteBlend);
 
     return 0;
 }
@@ -376,7 +376,7 @@ int WifiP2PMatch_ExitConnect(ApplicationManager *appMan, int *param1)
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
 
-    inline_ov61_0222C160(&v0->paletteBlend);
+    GlobalTerminal_FreePaletteBlend(&v0->paletteBlend);
 
     WifiP2PMatch_FreeMessageBox(&v0->messageBox);
     WifiP2PMatch_FreeMessageBox(&v0->connectBox);
@@ -496,7 +496,7 @@ int WifiP2PMatch_MainDisconnect(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    inline_ov61_0222C0F8(&v0->paletteBlend);
+    GlobalTerminal_PaletteBlendNoop(&v0->paletteBlend);
 
     return 0;
 }
@@ -508,7 +508,7 @@ int WifiP2PMatch_ExitDisconnect(ApplicationManager *appMan, int *param1)
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
 
-    inline_ov61_0222C160(&v0->paletteBlend);
+    GlobalTerminal_FreePaletteBlend(&v0->paletteBlend);
 
     WifiP2PMatch_FreeMessageBox(&v0->messageBox);
     WifiP2PMatch_FreeMessageBox(&v0->errorBox);
@@ -528,7 +528,7 @@ static void WifiP2PMatch_VBlankCallback(void *param0)
     WifiP2PMatch *v0 = param0;
 
     WifiP2PMatch_UpdateBackgrounds(v0);
-    inline_ov61_0222C1FC(&v0->paletteBlend);
+    GlobalTerminal_PaletteBlendNoop2(&v0->paletteBlend);
 }
 
 static void WifiP2PMatch_InitGraphics(WifiP2PMatch *param0, enum HeapID heapID)
@@ -581,7 +581,7 @@ static void WifiP2PMatch_InitGraphics(WifiP2PMatch *param0, enum HeapID heapID)
 
         v3 = NARC_ctor(NARC_INDEX_DATA__WIFIP2PMATCH, heapID);
 
-        inline_ov61_0222C3B0(&param0->paletteBlend, v3, 4, heapID);
+        GlobalTerminal_InitPaletteBlend(&param0->paletteBlend, v3, 4, heapID);
 
         NARC_dtor(v3);
     }

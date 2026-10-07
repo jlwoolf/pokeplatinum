@@ -6,7 +6,7 @@
 
 #include "struct_defs/struct_02017498.h"
 
-#include "overlay061/ov61_0222BF44.h"
+#include "global_terminal/global_terminal_0222BF44.h"
 
 #include "gx_layers.h"
 #include "heap.h"
@@ -27,11 +27,11 @@ static void WiFiLobby_FreeDwcHeap(WiFiLobbyAppState *appState);
 static void *WiFiLobby_DwcAlloc(DWCAllocType allocType, u32 size, int alignment);
 static void WiFiLobby_DwcFree(DWCAllocType allocType, void *ptr, u32 size);
 
-// Global Terminal (overlay061) application template.
+// Global Terminal (global_terminal) application template.
 static const ApplicationManagerTemplate sWiFiLobbyAppTemplate = {
-    ov61_0222BF44,
-    ov61_0222C0F8,
-    ov61_0222C160,
+    GlobalTerminal_Init,
+    GlobalTerminal_Main,
+    GlobalTerminal_Exit,
     0xffffffff,
 };
 
@@ -84,7 +84,7 @@ int WiFiLobby_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 2:
-        // Run the Global Terminal (overlay061).
+        // Run the Global Terminal (global_terminal).
         appState->appMan = ApplicationManager_New(&sWiFiLobbyAppTemplate, appState, HEAP_ID_116);
         (*param1)++;
         break;
