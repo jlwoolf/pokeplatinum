@@ -1,10 +1,10 @@
 #ifndef POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BD64_H
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BD64_H
 
-#include "overlay062/struct_ov62_0223DF10.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_0223DF10.h"
 
 typedef struct {
-    UnkStruct_ov62_0223DF10 unk_00;
+    VsRecorderViewerRankingsPlayTime unk_00;
 } GlobalTerminalPlayTimeResult;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BD64_H

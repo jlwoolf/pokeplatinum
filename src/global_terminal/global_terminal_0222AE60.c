@@ -10,8 +10,8 @@
 #include "global_terminal/struct_global_terminal_0222AE80.h"
 #include "global_terminal/struct_global_terminal_0222AFC0.h"
 #include "global_terminal/struct_global_terminal_0222AFCC.h"
-#include "overlay062/struct_ov62_02239DA4.h"
-#include "overlay062/struct_ov62_02239DA4_sub1.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02239DA4.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02239DA4_sub1.h"
 
 #include "pc_boxes.h"
 #include "savedata.h"
@@ -21,7 +21,7 @@
 void GlobalTerminal_SerializeDressUpPhoto(SaveData *saveData, const DressUpPhoto *photo, GlobalTerminalDressUpPhoto *param2)
 {
     DressUpPhoto_Serialize(photo, param2);
-    param2->unk_5C.unk_00 = SaveData_CalculateChecksum(saveData, param2, sizeof(GlobalTerminalDressUpPhoto) - (sizeof(UnkStruct_ov62_02239DA4_sub1)));
+    param2->unk_5C.unk_00 = SaveData_CalculateChecksum(saveData, param2, sizeof(GlobalTerminalDressUpPhoto) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
 void GlobalTerminal_DeserializeDressUpPhoto(const GlobalTerminalDressUpPhoto *param0, DressUpPhoto *photo)
@@ -29,12 +29,12 @@ void GlobalTerminal_DeserializeDressUpPhoto(const GlobalTerminalDressUpPhoto *pa
     DressUpPhoto_Deserialize(param0, photo);
 }
 
-void GlobalTerminal_SerializePCBox(SaveData *saveData, const PCBoxes *pcBoxes, int boxID, UnkStruct_ov62_02239DA4 *param3, enum HeapID heapID)
+void GlobalTerminal_SerializePCBox(SaveData *saveData, const PCBoxes *pcBoxes, int boxID, VsRecorderViewerBoxData *param3, enum HeapID heapID)
 {
     String *v0;
     int v1;
 
-    MI_CpuClear8(param3, sizeof(UnkStruct_ov62_02239DA4));
+    MI_CpuClear8(param3, sizeof(VsRecorderViewerBoxData));
 
     v0 = String_Init(20 * 3, heapID);
     PCBoxes_BufferBoxName(pcBoxes, boxID, v0);
@@ -55,13 +55,13 @@ void GlobalTerminal_SerializePCBox(SaveData *saveData, const PCBoxes *pcBoxes, i
 
     param3->unk_176 = PCBoxes_GetWallpaper(pcBoxes, boxID);
     param3->unk_177 = 0;
-    param3->unk_198.unk_00 = SaveData_CalculateChecksum(saveData, param3, sizeof(UnkStruct_ov62_02239DA4) - (sizeof(UnkStruct_ov62_02239DA4_sub1)));
+    param3->unk_198.unk_00 = SaveData_CalculateChecksum(saveData, param3, sizeof(VsRecorderViewerBoxData) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
-void GlobalTerminal_UpdatePCBoxChecksum(SaveData *saveData, UnkStruct_ov62_02239DA4 *param1, int param2)
+void GlobalTerminal_UpdatePCBoxChecksum(SaveData *saveData, VsRecorderViewerBoxData *param1, int param2)
 {
     param1->unk_177 = param2;
-    param1->unk_198.unk_00 = SaveData_CalculateChecksum(saveData, param1, sizeof(UnkStruct_ov62_02239DA4) - (sizeof(UnkStruct_ov62_02239DA4_sub1)));
+    param1->unk_198.unk_00 = SaveData_CalculateChecksum(saveData, param1, sizeof(VsRecorderViewerBoxData) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
 void GlobalTerminal_SerializePlayerProfile(SaveData *saveData, const PlayerProfile *param1, GlobalTerminalPlayerProfile *param2)

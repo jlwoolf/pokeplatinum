@@ -6,7 +6,7 @@
 
 #include "overlay_manager.h"
 
-// Vs. Recorder application. Hosts the overlay062 viewer for the Vs. Recorder
+// Vs. Recorder application. Hosts the vs_recorder_viewer overlay for the Vs. Recorder
 // and the Global Terminal's online features (Battle Videos, Rankings,
 // Dress-Up Data and Box Data), and replays recorded battles on request.
 UnkStruct_0208C06C *VsRecorder_GetState(ApplicationManager *appMan);

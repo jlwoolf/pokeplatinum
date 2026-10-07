@@ -9,11 +9,11 @@
 #include "struct_defs/struct_0208C06C_sub2.h"
 #include "struct_defs/struct_020F3DCC.h"
 
-#include "overlay062/struct_ov62_022307C0.h"
-#include "overlay062/struct_ov62_02230C28.h"
-#include "overlay062/struct_ov62_0223118C.h"
-#include "overlay062/struct_ov62_02233750.h"
-#include "overlay062/struct_ov62_02233828.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_022307C0.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02230C28.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_0223118C.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02233750.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02233828.h"
 
 #include "bg_window.h"
 #include "savedata.h"
@@ -25,12 +25,12 @@ typedef struct {
     int unk_08;
     int unk_0C;
     int *unk_10;
-    UnkStruct_ov62_0223118C unk_14;
-    UnkStruct_ov62_02233750 unk_52C;
-    UnkStruct_ov62_022307C0 unk_534;
+    VsRecorderViewerMenuContext unk_14;
+    VsRecorderViewerListNetworkTask unk_52C;
+    VsRecorderViewerMenu unk_534;
     VsRecorderRing *unk_6F0;
     VsRecorderRing *unk_6F4;
-    UnkStruct_ov62_02230C28 unk_6F8[6];
+    VsRecorderViewerMenuAnimatedSprite unk_6F8[6];
     const VsRecorderMenuEntry *unk_818;
     const VsRecorderMenuEntry *unk_81C[5];
     SaveData *saveData;
@@ -49,7 +49,7 @@ typedef struct {
     BOOL unk_89C;
     BOOL unk_8A0;
     Window unk_8A4;
-    UnkStruct_ov62_02233828 unk_8B4;
+    VsRecorderViewerListRecordStore unk_8B4;
     UnkStruct_0208C06C_sub2 unk_41D8;
     SysTask *unk_41E8;
 } UnkStruct_0208C06C;

@@ -7,7 +7,7 @@
 #include "gds.h"
 
 typedef struct {
-    UnkStruct_ov62_022349A8_sub1 unk_00;
+    VsRecorderViewerTransferConnection unk_00;
     int unk_138;
     int unk_13C;
     char unk_140[0x100];
@@ -37,13 +37,13 @@ typedef struct {
 
 typedef struct {
     long unk_00;
-    UnkStruct_ov62_022349A8_sub3_sub2 unk_04;
+    VsRecorderViewerTransferBoxData unk_04;
 } UnkStruct_ov61_0222DDCC;
 
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-    UnkStruct_ov62_022349A8_sub3_sub4 unk_04;
+    VsRecorderViewerTransferPlayTime unk_04;
     int unk_14;
     int unk_18;
 } UnkStruct_ov61_0222DF60;
@@ -67,14 +67,14 @@ typedef struct {
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-    UnkStruct_ov62_022349A8_sub1 unk_04;
+    VsRecorderViewerTransferConnection unk_04;
     void *unk_136;
 } UnkStruct_ov61_0222D1FC;
 
 UnkStruct_ov61_0222E764 Unk_ov61_0222E764;
 
 void ov61_0222CEDC(void);
-BOOL ov61_0222CF40(char *url, int port, UnkStruct_ov62_022349A8_sub1 *param2);
+BOOL ov61_0222CF40(char *url, int port, VsRecorderViewerTransferConnection *param2);
 void ov61_0222D040(void);
 BOOL ov61_0222D1FC(int param0, void *param1, void *param2, int param3);
 int ov61_0222D3E8(void);

@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_FUNCPTR_VS_RECORDER_VIEWER_022349A8_H
+#define POKEPLATINUM_FUNCPTR_VS_RECORDER_VIEWER_022349A8_H
+
+#include "string_gf.h"
+
+typedef void (*VsRecorderViewerTransferStringFunc)(void *, String *);
+
+#endif // POKEPLATINUM_FUNCPTR_VS_RECORDER_VIEWER_022349A8_H

@@ -16,13 +16,13 @@
 #include "global_terminal/struct_global_terminal_0222B920.h"
 #include "global_terminal/struct_global_terminal_0222B960.h"
 #include "global_terminal/struct_global_terminal_0222BDC8.h"
-#include "overlay062/ov62_02248408.h"
-#include "overlay062/struct_ov62_022349A8_sub3_sub3.h"
-#include "overlay062/struct_ov62_022349A8_sub3_sub4.h"
-#include "overlay062/struct_ov62_022349A8_sub3_sub5.h"
-#include "overlay062/struct_ov62_0223CAA4.h"
-#include "overlay062/struct_ov62_0223D518_sub1_sub1.h"
-#include "overlay062/struct_ov62_02241130.h"
+#include "vs_recorder_viewer/vs_recorder_viewer_02248408.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_022349A8_sub3_sub3.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_022349A8_sub3_sub4.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_022349A8_sub3_sub5.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_0223CAA4.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_0223D518_sub1_sub1.h"
+#include "vs_recorder_viewer/struct_vs_recorder_viewer_02241130.h"
 
 #include "comm_manager.h"
 #include "gds.h"
@@ -36,18 +36,18 @@
 #include "system.h"
 #include "battle_recording.h"
 
-typedef int (*GlobalTerminalTransferHandler)(UnkStruct_ov62_022349A8 *, GlobalTerminalTaskState *);
+typedef int (*GlobalTerminalTransferHandler)(VsRecorderViewerTransferContext *, GlobalTerminalTaskState *);
 
-static int GlobalTerminalTransfer_StateCleanup(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1);
-static int GlobalTerminalTransfer_StateDisconnect(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1);
-static int GlobalTerminalTransfer_StateError(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1);
-static int GlobalTerminalTransfer_StateWaitInput(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1);
-static int GlobalTerminalTransfer_ProcessRequest(UnkStruct_ov62_022349A8 *param0);
-static int GlobalTerminalTransfer_ProcessConnection(UnkStruct_ov62_022349A8 *param0);
-static int GlobalTerminalTransfer_GetConnectionState(UnkStruct_ov62_022349A8 *param0);
-static void GlobalTerminalTransfer_ReportMessage(UnkStruct_ov62_022349A8 *param0, String *param1);
-static void GlobalTerminalTransfer_FormatError(UnkStruct_ov62_022349A8 *param0, int param1, int param2);
-static int GlobalTerminalTransfer_Dispatch(UnkStruct_ov62_022349A8 *param0);
+static int GlobalTerminalTransfer_StateCleanup(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1);
+static int GlobalTerminalTransfer_StateDisconnect(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1);
+static int GlobalTerminalTransfer_StateError(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1);
+static int GlobalTerminalTransfer_StateWaitInput(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1);
+static int GlobalTerminalTransfer_ProcessRequest(VsRecorderViewerTransferContext *param0);
+static int GlobalTerminalTransfer_ProcessConnection(VsRecorderViewerTransferContext *param0);
+static int GlobalTerminalTransfer_GetConnectionState(VsRecorderViewerTransferContext *param0);
+static void GlobalTerminalTransfer_ReportMessage(VsRecorderViewerTransferContext *param0, String *param1);
+static void GlobalTerminalTransfer_FormatError(VsRecorderViewerTransferContext *param0, int param1, int param2);
+static int GlobalTerminalTransfer_Dispatch(VsRecorderViewerTransferContext *param0);
 static void *GlobalTerminalTransfer_InitHeap(enum HeapID heapID);
 static void GlobalTerminalTransfer_ClearHeap(void);
 static BOOL GlobalTerminalTransfer_OnComplete(void *param0, void *param1);
@@ -75,11 +75,11 @@ static const GlobalTerminalTransferHandler *const sGlobalTerminalTransferHandler
     sGlobalTerminalTransferHandlersEmpty
 };
 
-int GlobalTerminalTransfer_Init(UnkStruct_ov62_022349A8 *param0, const UnkStruct_ov62_02241130 *param1)
+int GlobalTerminalTransfer_Init(VsRecorderViewerTransferContext *param0, const VsRecorderViewerTransferInitParams *param1)
 {
     int v0;
 
-    MI_CpuClear8(param0, sizeof(UnkStruct_ov62_022349A8));
+    MI_CpuClear8(param0, sizeof(VsRecorderViewerTransferContext));
 
     param0->heapID = param1->heapID;
     param0->saveData = param1->saveData;
@@ -110,7 +110,7 @@ int GlobalTerminalTransfer_Init(UnkStruct_ov62_022349A8 *param0, const UnkStruct
     return 1;
 }
 
-void GlobalTerminalTransfer_Free(UnkStruct_ov62_022349A8 *param0)
+void GlobalTerminalTransfer_Free(VsRecorderViewerTransferContext *param0)
 {
     ov61_0222DCFC();
 
@@ -124,14 +124,14 @@ void GlobalTerminalTransfer_Free(UnkStruct_ov62_022349A8 *param0)
     Heap_Free(param0->unk_18C);
 }
 
-static int GlobalTerminalTransfer_StateCleanup(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1)
+static int GlobalTerminalTransfer_StateCleanup(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1)
 {
     ov61_0222DCFC();
     param0->unk_3C4 = 0;
     return 1;
 }
 
-static int GlobalTerminalTransfer_StateDisconnect(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1)
+static int GlobalTerminalTransfer_StateDisconnect(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1)
 {
     DWC_ClearError();
     DWC_CleanupInet();
@@ -142,7 +142,7 @@ static int GlobalTerminalTransfer_StateDisconnect(UnkStruct_ov62_022349A8 *param
     return 1;
 }
 
-static int GlobalTerminalTransfer_StateError(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1)
+static int GlobalTerminalTransfer_StateError(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1)
 {
     int v0, v1;
 
@@ -152,7 +152,7 @@ static int GlobalTerminalTransfer_StateError(UnkStruct_ov62_022349A8 *param0, Gl
     return 1;
 }
 
-static int GlobalTerminalTransfer_StateWaitInput(UnkStruct_ov62_022349A8 *param0, GlobalTerminalTaskState *param1)
+static int GlobalTerminalTransfer_StateWaitInput(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1)
 {
     if ((gSystem.pressedKeys & PAD_BUTTON_A) || (gSystem.pressedKeys & PAD_BUTTON_B)) {
         GlobalTerminalTransfer_ReportMessage(param0, NULL);
@@ -162,7 +162,7 @@ static int GlobalTerminalTransfer_StateWaitInput(UnkStruct_ov62_022349A8 *param0
     return 0;
 }
 
-int GlobalTerminalTransfer_UploadProfilePhoto(UnkStruct_ov62_022349A8 *param0, PlayerProfile *param1, DressUpPhoto *photo)
+int GlobalTerminalTransfer_UploadProfilePhoto(VsRecorderViewerTransferContext *param0, PlayerProfile *param1, DressUpPhoto *photo)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -177,7 +177,7 @@ int GlobalTerminalTransfer_UploadProfilePhoto(UnkStruct_ov62_022349A8 *param0, P
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadProfile(UnkStruct_ov62_022349A8 *param0, int param1)
+int GlobalTerminalTransfer_UploadProfile(VsRecorderViewerTransferContext *param0, int param1)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -189,7 +189,7 @@ int GlobalTerminalTransfer_UploadProfile(UnkStruct_ov62_022349A8 *param0, int pa
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadProfileBox(UnkStruct_ov62_022349A8 *param0, int param1, PlayerProfile *param2, const PCBoxes *pcBoxes, int param4)
+int GlobalTerminalTransfer_UploadProfileBox(VsRecorderViewerTransferContext *param0, int param1, PlayerProfile *param2, const PCBoxes *pcBoxes, int param4)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -208,7 +208,7 @@ int GlobalTerminalTransfer_UploadProfileBox(UnkStruct_ov62_022349A8 *param0, int
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadBox(UnkStruct_ov62_022349A8 *param0, int param1)
+int GlobalTerminalTransfer_UploadBox(VsRecorderViewerTransferContext *param0, int param1)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -220,7 +220,7 @@ int GlobalTerminalTransfer_UploadBox(UnkStruct_ov62_022349A8 *param0, int param1
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadPlayTime(UnkStruct_ov62_022349A8 *param0)
+int GlobalTerminalTransfer_UploadPlayTime(VsRecorderViewerTransferContext *param0)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -230,7 +230,7 @@ int GlobalTerminalTransfer_UploadPlayTime(UnkStruct_ov62_022349A8 *param0)
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadPlayTimeProfile(UnkStruct_ov62_022349A8 *param0, PlayerProfile *param1, GlobalTerminalPlayTimeEntry param2[])
+int GlobalTerminalTransfer_UploadPlayTimeProfile(VsRecorderViewerTransferContext *param0, PlayerProfile *param1, GlobalTerminalPlayTimeEntry param2[])
 {
     PlayTime *playTime;
     int v1;
@@ -240,7 +240,7 @@ int GlobalTerminalTransfer_UploadPlayTimeProfile(UnkStruct_ov62_022349A8 *param0
     }
 
     playTime = SaveData_GetPlayTime(param0->saveData);
-    MI_CpuCopy8(playTime, &param0->unk_190.unk_00_val3.unk_08, sizeof(UnkStruct_ov62_0223D518_sub1_sub1));
+    MI_CpuCopy8(playTime, &param0->unk_190.unk_00_val3.unk_08, sizeof(VsRecorderViewerRankingsPlayTimeStamp));
     GlobalTerminal_SerializeProfileSummary(param0->saveData, param1, &param0->unk_190.unk_00_val3.unk_00);
 
     for (v1 = 0; v1 < 3; v1++) {
@@ -251,7 +251,7 @@ int GlobalTerminalTransfer_UploadPlayTimeProfile(UnkStruct_ov62_022349A8 *param0
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadBattleRecording(UnkStruct_ov62_022349A8 *param0, PlayerProfile *param1)
+int GlobalTerminalTransfer_UploadBattleRecording(VsRecorderViewerTransferContext *param0, PlayerProfile *param1)
 {
     PlayerProfile *v0;
 
@@ -259,12 +259,12 @@ int GlobalTerminalTransfer_UploadBattleRecording(UnkStruct_ov62_022349A8 *param0
         return 0;
     }
 
-    GF_ASSERT((BattleRecording_SaveSize() - sizeof(u32)) == sizeof(UnkStruct_ov62_022349A8_sub3_sub3));
+    GF_ASSERT((BattleRecording_SaveSize() - sizeof(u32)) == sizeof(VsRecorderViewerTransferRecordData));
     GF_ASSERT(sizeof(GlobalTerminalPlayerProfile) == sizeof(PlayerProfile));
 
-    param0->unk_190.unk_00_val4 = (UnkStruct_ov62_022349A8_sub3_sub3 *)BattleRecording_GetData();
+    param0->unk_190.unk_00_val4 = (VsRecorderViewerTransferRecordData *)BattleRecording_GetData();
 
-    ov62_02248624(param0->saveData);
+    VsRecorderViewerRecording_EncodeData(param0->saveData);
 
     v0 = BattleRecording_GetHeader();
     MI_CpuCopy8(param1, v0, sizeof(GlobalTerminalPlayerProfile));
@@ -275,13 +275,13 @@ int GlobalTerminalTransfer_UploadBattleRecording(UnkStruct_ov62_022349A8 *param0
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadRecord(UnkStruct_ov62_022349A8 *param0, u16 param1, u8 param2, u8 param3, u8 param4)
+int GlobalTerminalTransfer_UploadRecord(VsRecorderViewerTransferContext *param0, u16 param1, u8 param2, u8 param3, u8 param4)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
     }
 
-    MI_CpuClear8(&param0->unk_190.unk_00_val5, sizeof(UnkStruct_ov62_022349A8_sub3_sub4));
+    MI_CpuClear8(&param0->unk_190.unk_00_val5, sizeof(VsRecorderViewerTransferPlayTime));
 
     param0->unk_190.unk_00_val5.unk_00 = param1;
     param0->unk_190.unk_00_val5.unk_02 = param2;
@@ -294,13 +294,13 @@ int GlobalTerminalTransfer_UploadRecord(UnkStruct_ov62_022349A8 *param0, u16 par
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadRecordDefault(UnkStruct_ov62_022349A8 *param0)
+int GlobalTerminalTransfer_UploadRecordDefault(VsRecorderViewerTransferContext *param0)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
     }
 
-    MI_CpuClear8(&param0->unk_190.unk_00_val5, sizeof(UnkStruct_ov62_022349A8_sub3_sub4));
+    MI_CpuClear8(&param0->unk_190.unk_00_val5, sizeof(VsRecorderViewerTransferPlayTime));
 
     param0->unk_190.unk_00_val5.unk_00 = 0xffff;
     param0->unk_190.unk_00_val5.unk_02 = UnkEnum_0202F510_37;
@@ -313,13 +313,13 @@ int GlobalTerminalTransfer_UploadRecordDefault(UnkStruct_ov62_022349A8 *param0)
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadEmptyRecord(UnkStruct_ov62_022349A8 *param0)
+int GlobalTerminalTransfer_UploadEmptyRecord(VsRecorderViewerTransferContext *param0)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
     }
 
-    MI_CpuClear8(&param0->unk_190.unk_00_val5, sizeof(UnkStruct_ov62_022349A8_sub3_sub4));
+    MI_CpuClear8(&param0->unk_190.unk_00_val5, sizeof(VsRecorderViewerTransferPlayTime));
 
     param0->unk_190.unk_00_val5.unk_00 = 0xffff;
     param0->unk_190.unk_00_val5.unk_02 = 0xff;
@@ -332,13 +332,13 @@ int GlobalTerminalTransfer_UploadEmptyRecord(UnkStruct_ov62_022349A8 *param0)
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadRecordAlt(UnkStruct_ov62_022349A8 *param0)
+int GlobalTerminalTransfer_UploadRecordAlt(VsRecorderViewerTransferContext *param0)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
     }
 
-    MI_CpuClear8(&param0->unk_190.unk_00_val6, sizeof(UnkStruct_ov62_022349A8_sub3_sub5));
+    MI_CpuClear8(&param0->unk_190.unk_00_val6, sizeof(VsRecorderViewerTransferValue));
     param0->unk_190.unk_00_val6.unk_00 = 0x140;
     param0->unk_3F0 = 1;
     param0->unk_3E8 = 23001;
@@ -346,13 +346,13 @@ int GlobalTerminalTransfer_UploadRecordAlt(UnkStruct_ov62_022349A8 *param0)
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadRecordAlt2(UnkStruct_ov62_022349A8 *param0)
+int GlobalTerminalTransfer_UploadRecordAlt2(VsRecorderViewerTransferContext *param0)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
     }
 
-    MI_CpuClear8(&param0->unk_190.unk_00_val6, sizeof(UnkStruct_ov62_022349A8_sub3_sub5));
+    MI_CpuClear8(&param0->unk_190.unk_00_val6, sizeof(VsRecorderViewerTransferValue));
 
     param0->unk_190.unk_00_val6.unk_00 = 0x140;
     param0->unk_3F0 = 2;
@@ -361,7 +361,7 @@ int GlobalTerminalTransfer_UploadRecordAlt2(UnkStruct_ov62_022349A8 *param0)
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadId(UnkStruct_ov62_022349A8 *param0, u64 param1)
+int GlobalTerminalTransfer_UploadId(VsRecorderViewerTransferContext *param0, u64 param1)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -373,7 +373,7 @@ int GlobalTerminalTransfer_UploadId(UnkStruct_ov62_022349A8 *param0, u64 param1)
     return 1;
 }
 
-int GlobalTerminalTransfer_UploadId2(UnkStruct_ov62_022349A8 *param0, u64 param1)
+int GlobalTerminalTransfer_UploadId2(VsRecorderViewerTransferContext *param0, u64 param1)
 {
     if (GlobalTerminalTransfer_IsIdle(param0) == 0) {
         return 0;
@@ -385,7 +385,7 @@ int GlobalTerminalTransfer_UploadId2(UnkStruct_ov62_022349A8 *param0, u64 param1
     return 1;
 }
 
-int GlobalTerminalTransfer_Main(UnkStruct_ov62_022349A8 *param0)
+int GlobalTerminalTransfer_Main(VsRecorderViewerTransferContext *param0)
 {
     int v0;
 
@@ -456,7 +456,7 @@ int GlobalTerminalTransfer_Main(UnkStruct_ov62_022349A8 *param0)
     return 1;
 }
 
-static int GlobalTerminalTransfer_ProcessRequest(UnkStruct_ov62_022349A8 *param0)
+static int GlobalTerminalTransfer_ProcessRequest(VsRecorderViewerTransferContext *param0)
 {
     int v0 = 0;
 
@@ -548,7 +548,7 @@ static int GlobalTerminalTransfer_ProcessRequest(UnkStruct_ov62_022349A8 *param0
     return v0;
 }
 
-static int GlobalTerminalTransfer_ProcessConnection(UnkStruct_ov62_022349A8 *param0)
+static int GlobalTerminalTransfer_ProcessConnection(VsRecorderViewerTransferContext *param0)
 {
     if (param0->unk_3EC == 23004) {
         return 1;
@@ -600,7 +600,7 @@ static int GlobalTerminalTransfer_ProcessConnection(UnkStruct_ov62_022349A8 *par
 
 static BOOL GlobalTerminalTransfer_OnComplete(void *param0, void *param1)
 {
-    UnkStruct_ov62_022349A8 *v0 = param0;
+    VsRecorderViewerTransferContext *v0 = param0;
     GlobalTerminalTransferCallback *v1 = param1;
     return 1;
 }
@@ -612,7 +612,7 @@ static BOOL GlobalTerminalTransfer_OnCompleteAlt(void *param0, void *param1)
 
 static BOOL GlobalTerminalTransfer_OnCompleteSave(void *param0, void *param1)
 {
-    UnkStruct_ov62_022349A8 *v0 = param0;
+    VsRecorderViewerTransferContext *v0 = param0;
     GlobalTerminalTransferCallback *v1 = param1;
     GlobalTerminalGdsResponse *v2;
     GlobalTerminalBattleRecordingResult *v3;
@@ -620,7 +620,7 @@ static BOOL GlobalTerminalTransfer_OnCompleteSave(void *param0, void *param1)
 
     v2 = ov61_0222DE80();
     v3 = (GlobalTerminalBattleRecordingResult *)(v2->unk_04);
-    v4 = ov62_02248658(v0->saveData, v3->unk_00, &v1->unk_04, &v1->unk_06);
+    v4 = VsRecorderViewerRecording_SaveWithIdStep(v0->saveData, v3->unk_00, &v1->unk_04, &v1->unk_06);
 
     if ((v4 == 2) || (v4 == 3)) {
         return 1;
@@ -641,13 +641,13 @@ static BOOL GlobalTerminalTransfer_OnFailAlt(void *param0, void *param1)
 
 static BOOL GlobalTerminalTransfer_OnFailReport(void *param0, void *param1)
 {
-    UnkStruct_ov62_022349A8 *v0 = param0;
+    VsRecorderViewerTransferContext *v0 = param0;
     GlobalTerminalTransferCallback *v1 = param1;
 
     return 1;
 }
 
-static int GlobalTerminalTransfer_Dispatch(UnkStruct_ov62_022349A8 *param0)
+static int GlobalTerminalTransfer_Dispatch(VsRecorderViewerTransferContext *param0)
 {
     GlobalTerminalGdsResponse *v0;
     int v1;
@@ -732,18 +732,18 @@ static int GlobalTerminalTransfer_Dispatch(UnkStruct_ov62_022349A8 *param0)
     return v2;
 }
 
-BOOL GlobalTerminalTransfer_GetState(UnkStruct_ov62_022349A8 *param0, UnkStruct_ov62_0223CAA4 **param1)
+BOOL GlobalTerminalTransfer_GetState(VsRecorderViewerTransferContext *param0, VsRecorderViewerTransferStatus **param1)
 {
     *param1 = &param0->unk_17C;
     return param0->unk_17C.unk_00;
 }
 
-static void GlobalTerminalTransfer_ReportMessage(UnkStruct_ov62_022349A8 *param0, String *param1)
+static void GlobalTerminalTransfer_ReportMessage(VsRecorderViewerTransferContext *param0, String *param1)
 {
     param0->unk_04(param0->unk_08, param1);
 }
 
-static void GlobalTerminalTransfer_FormatError(UnkStruct_ov62_022349A8 *param0, int param1, int param2)
+static void GlobalTerminalTransfer_FormatError(VsRecorderViewerTransferContext *param0, int param1, int param2)
 {
     int v0;
     String *v1;
@@ -761,7 +761,7 @@ static void GlobalTerminalTransfer_FormatError(UnkStruct_ov62_022349A8 *param0, 
     GlobalTerminalTransfer_ReportMessage(param0, param0->unk_3FC);
 }
 
-BOOL GlobalTerminalTransfer_IsIdle(UnkStruct_ov62_022349A8 *param0)
+BOOL GlobalTerminalTransfer_IsIdle(VsRecorderViewerTransferContext *param0)
 {
     if ((GlobalTerminalTransfer_GetConnectionState(param0) == 0) && (param0->unk_3E8 == 23004) && (param0->unk_3EC == 23004)) {
         return 1;
@@ -770,7 +770,7 @@ BOOL GlobalTerminalTransfer_IsIdle(UnkStruct_ov62_022349A8 *param0)
     return 0;
 }
 
-static int GlobalTerminalTransfer_GetConnectionState(UnkStruct_ov62_022349A8 *param0)
+static int GlobalTerminalTransfer_GetConnectionState(VsRecorderViewerTransferContext *param0)
 {
     return param0->unk_3BC;
 }

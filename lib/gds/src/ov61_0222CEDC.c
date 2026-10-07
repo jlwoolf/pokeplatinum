@@ -8,7 +8,7 @@ static void ov61_0222CFD4(void);
 void ov61_0222CEDC(void)
 {
     ov61_0222CFD4();
-    memset(&Unk_ov61_0222E764.unk_00, 0, sizeof(UnkStruct_ov62_022349A8_sub1));
+    memset(&Unk_ov61_0222E764.unk_00, 0, sizeof(VsRecorderViewerTransferConnection));
     Unk_ov61_0222E764.unk_138 = 0;
     Unk_ov61_0222E764.unk_140[0] = 0;
     Unk_ov61_0222E764.unk_240 = 0;
@@ -16,7 +16,7 @@ void ov61_0222CEDC(void)
     ov61_0222D53C();
 }
 
-BOOL ov61_0222CF40(char *url, int port, UnkStruct_ov62_022349A8_sub1 *param2)
+BOOL ov61_0222CF40(char *url, int port, VsRecorderViewerTransferConnection *param2)
 {
     if (param2) {
         Unk_ov61_0222E764.unk_00 = *param2;

@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_CONST_VS_RECORDER_VIEWER_022491F0_H
+#define POKEPLATINUM_CONST_VS_RECORDER_VIEWER_022491F0_H
+
+#include "touch_screen.h"
+
+extern const TouchScreenRect sVsRecorderViewerRecord_TouchRectsPokedexGrid[9];
+
+#endif // POKEPLATINUM_CONST_VS_RECORDER_VIEWER_022491F0_H
