@@ -15,7 +15,7 @@
 #include "overlay066/struct_ov66_0223127C.h"
 #include "overlay066/struct_ov66_02231300.h"
 #include "overlay066/struct_ov66_02231374.h"
-#include "overlay067/ov67_0225C700.h"
+#include "wifi_p2p_match/wifi_p2p_match.h"
 #include "overlay068/ov68_0225C700.h"
 #include "overlay069/ov69_0225C700.h"
 #include "overlay070/ov70_0225D9A4.h"
@@ -33,7 +33,7 @@
 #include "savedata.h"
 #include "trainer_info.h"
 
-FS_EXTERN_OVERLAY(overlay67);
+FS_EXTERN_OVERLAY(wifi_p2p_match);
 FS_EXTERN_OVERLAY(overlay68);
 FS_EXTERN_OVERLAY(overlay69);
 FS_EXTERN_OVERLAY(overlay70);
@@ -507,10 +507,10 @@ static void ov66_02231058(UnkStruct_ov66_02230E4C *param0)
 
 static void ov66_02231064(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4C *param1)
 {
-    FS_EXTERN_OVERLAY(overlay67);
+    FS_EXTERN_OVERLAY(wifi_p2p_match);
 
     static const ApplicationManagerTemplate v0 = {
-        ov67_0225C700, ov67_0225C820, ov67_0225CB1C, FS_OVERLAY_ID(overlay67)
+        WifiP2PMatch_InitConnect, WifiP2PMatch_MainConnect, WifiP2PMatch_ExitConnect, FS_OVERLAY_ID(wifi_p2p_match)
     };
 
     ov66_02230CEC(param0, param1, &v0);
@@ -822,10 +822,10 @@ static void ov66_02231350(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E
 
 static void ov66_0223135C(UnkStruct_ov66_02230C90 *param0, UnkStruct_ov66_02230E4C *param1, BOOL param2)
 {
-    FS_EXTERN_OVERLAY(overlay67);
+    FS_EXTERN_OVERLAY(wifi_p2p_match);
 
     static const ApplicationManagerTemplate v0 = {
-        ov67_0225CB8C, ov67_0225CC6C, ov67_0225CDC0, FS_OVERLAY_ID(overlay67)
+        WifiP2PMatch_InitDisconnect, WifiP2PMatch_MainDisconnect, WifiP2PMatch_ExitDisconnect, FS_OVERLAY_ID(wifi_p2p_match)
     };
 
     {
