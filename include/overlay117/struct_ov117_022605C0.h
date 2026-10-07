@@ -1,14 +1,14 @@
 #ifndef POKEPLATINUM_STRUCT_OV117_022605C0_H
 #define POKEPLATINUM_STRUCT_OV117_022605C0_H
 
-#include "overlay114/struct_ov114_0225C76C.h"
-#include "overlay114/struct_ov114_0225C9A8.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_player_context.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_ranking.h"
 
 #include "overlay_manager.h"
 
 typedef struct {
-    UnkStruct_ov114_0225C76C unk_00;
-    UnkStruct_ov114_0225C9A8 unk_10;
+    WiFiLobbyMinigamePlayerContext unk_00;
+    WiFiLobbyMinigameRanking unk_10;
     ApplicationManager *appMan;
     u8 unk_2C[4];
     u8 unk_30;

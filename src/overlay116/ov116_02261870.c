@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay114/ov114_0225C700.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
 #include "overlay116/ov116_0226432C.h"
 #include "overlay116/struct_ov116_0226139C.h"
 #include "overlay116/struct_ov116_02262A8C.h"
@@ -505,9 +505,9 @@ void ov116_022620AC(UnkStruct_ov116_0226139C *param0, UnkStruct_ov116_02262A8C *
             continue;
         }
 
-        v10 = ov114_0225C7A4(&param0->unk_84, v0);
+        v10 = WiFiLobbyMinigame_IsPlayerReady(&param0->unk_84, v0);
         v3 = &param1->unk_1FD8[v1];
-        v9 = ov114_0225C7CC(&param0->unk_84, v0);
+        v9 = WiFiLobbyMinigame_GetTrainerInfo(&param0->unk_84, v0);
 
         Window_Init(v3);
 

@@ -4,9 +4,9 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay114/ov114_0225C700.h"
-#include "overlay114/struct_ov114_0225D678_decl.h"
-#include "overlay114/struct_ov114_0225E854_decl.h"
+#include "wifi_lobby_minigame/wifi_lobby_minigame.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_screen_decl.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_results_screen_decl.h"
 #include "overlay117/struct_ov117_022605C0.h"
 
 #include "overlay_manager.h"
@@ -14,8 +14,8 @@
 
 typedef struct {
     UnkStruct_ov117_022605C0 *unk_00;
-    UnkStruct_ov114_0225D678 *unk_04;
-    UnkStruct_ov114_0225E854 *unk_08;
+    WiFiLobbyMinigameIntroScreen *unk_04;
+    WiFiLobbyMinigameResultsScreen *unk_08;
 } UnkStruct_ov117_02266498;
 
 int ov117_02266498(ApplicationManager *appMan, int *param1)
@@ -42,19 +42,19 @@ int ov117_022664BC(ApplicationManager *appMan, int *param1)
             v0->unk_00->unk_3E++;
             break;
         case 1:
-            if (ov114_0225CA98(&v0->unk_00->unk_00) == 1) {
+            if (WiFiLobbyMinigame_HandleDisconnect(&v0->unk_00->unk_00) == 1) {
                 v0->unk_00->unk_3E++;
             }
             break;
         default:
         case 2:
             if (v0->unk_04 != NULL) {
-                ov114_0225C838(v0->unk_04);
+                WiFiLobbyMinigame_FreeIntroScreen(v0->unk_04);
                 v0->unk_04 = NULL;
             }
 
             if (v0->unk_08 != NULL) {
-                ov114_0225C904(v0->unk_08);
+                WiFiLobbyMinigame_FreeResultsScreen(v0->unk_08);
                 v0->unk_08 = NULL;
             }
 
@@ -73,25 +73,25 @@ int ov117_022664BC(ApplicationManager *appMan, int *param1)
         }
         break;
     case 1:
-        v0->unk_04 = ov114_0225C82C(&v0->unk_00->unk_00, HEAP_ID_110);
+        v0->unk_04 = WiFiLobbyMinigame_CreateIntroScreen2(&v0->unk_00->unk_00, HEAP_ID_110);
         (*param1)++;
         break;
     case 2:
-        if (ov114_0225C8BC(v0->unk_04) == 1) {
-            v0->unk_00->unk_34 = ov114_0225C8CC(v0->unk_04);
-            ov114_0225C838(v0->unk_04);
+        if (WiFiLobbyMinigame_IntroScreenIsDone(v0->unk_04) == 1) {
+            v0->unk_00->unk_34 = WiFiLobbyMinigame_IntroScreenGetResult(v0->unk_04);
+            WiFiLobbyMinigame_FreeIntroScreen(v0->unk_04);
             v0->unk_04 = NULL;
             (*param1) = 5;
         }
         break;
     case 3:
-        v0->unk_08 = ov114_0225C8F8(&v0->unk_00->unk_00, &v0->unk_00->unk_10, HEAP_ID_110);
+        v0->unk_08 = WiFiLobbyMinigame_CreateResultsScreen2(&v0->unk_00->unk_00, &v0->unk_00->unk_10, HEAP_ID_110);
         (*param1)++;
         break;
     case 4:
-        if (ov114_0225C9A0(v0->unk_08) == 1) {
-            v0->unk_00->unk_38 = ov114_0225C9A4(v0->unk_08);
-            ov114_0225C904(v0->unk_08);
+        if (WiFiLobbyMinigame_ResultsScreenIsDone(v0->unk_08) == 1) {
+            v0->unk_00->unk_38 = WiFiLobbyMinigame_ResultsScreenGetResult(v0->unk_08);
+            WiFiLobbyMinigame_FreeResultsScreen(v0->unk_08);
             v0->unk_08 = NULL;
             (*param1) = 5;
         }

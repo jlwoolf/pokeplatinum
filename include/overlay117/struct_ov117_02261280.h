@@ -5,7 +5,7 @@
 
 #include "struct_decls/struct_02012744_decl.h"
 
-#include "overlay114/struct_ov114_0225CAD4_decl.h"
+#include "wifi_lobby_minigame/struct_wifi_lobby_minigame_intro_animation_decl.h"
 #include "overlay117/struct_ov117_022605C0.h"
 #include "overlay117/struct_ov117_02261280_sub1.h"
 #include "overlay117/struct_ov117_02261C2C.h"
@@ -40,7 +40,7 @@ typedef struct UnkStruct_ov117_02261280_t {
     int unk_04;
     u32 unk_08;
     u32 unk_0C[4];
-    UnkStruct_ov114_0225CAD4 *unk_1C;
+    WiFiLobbyMinigameIntroAnimation *unk_1C;
     int unk_20;
     SpriteSystem *unk_24;
     SpriteManager *unk_28;
