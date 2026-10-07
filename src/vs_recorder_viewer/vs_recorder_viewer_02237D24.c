@@ -460,8 +460,8 @@ static BOOL VsRecorderViewerProfile_UploadPhoto(UnkStruct_0208C06C *param0)
 
         if (VsRecorderViewerMenu_StepFadeValue(&v0->unk_08, 0)) {
             if (v0->unk_228) {
-                VsRecorderViewerMain_InitBg2(param0);
                 PhotoSprite_Free(v0->unk_228);
+                VsRecorderViewerMain_InitBg2(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 VsRecorderViewerProfile_ResetClipWindow();
             }
@@ -475,8 +475,8 @@ static BOOL VsRecorderViewerProfile_UploadPhoto(UnkStruct_0208C06C *param0)
             VsRecorderViewerMain_SetState(param0, 5);
 
             Heap_Free(v0);
-            SetVBlankCallback(VsRecorderViewerMain_VBlankCallback, param0);
             Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
+            SetVBlankCallback(VsRecorderViewerMain_VBlankCallback, param0);
         } else {
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
@@ -548,8 +548,8 @@ static BOOL VsRecorderViewerProfile_ExitPhotoMode(UnkStruct_0208C06C *param0)
             VsRecorderViewerList_SetDrawSuspended(param0, 1);
 
             if (v0->unk_228) {
-                VsRecorderViewerMain_InitBg2(param0);
                 PhotoSprite_Free(v0->unk_228);
+                VsRecorderViewerMain_InitBg2(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 VsRecorderViewerProfile_ResetClipWindow();
             }
@@ -564,8 +564,8 @@ static BOOL VsRecorderViewerProfile_ExitPhotoMode(UnkStruct_0208C06C *param0)
             VsRecorderViewerMain_SetState(param0, 5);
 
             Heap_Free(v0);
-            SetVBlankCallback(VsRecorderViewerMain_VBlankCallback, param0);
             Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
+            SetVBlankCallback(VsRecorderViewerMain_VBlankCallback, param0);
         } else {
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
@@ -798,8 +798,8 @@ static BOOL VsRecorderViewerProfile_CloseCategoryRecords(UnkStruct_0208C06C *par
             VsRecorderViewerList_SetDrawSuspended(param0, 1);
 
             if (v0->unk_228) {
-                VsRecorderViewerMain_InitBg2(param0);
                 PhotoSprite_Free(v0->unk_228);
+                VsRecorderViewerMain_InitBg2(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 VsRecorderViewerProfile_ResetClipWindow();
             }
@@ -814,8 +814,8 @@ static BOOL VsRecorderViewerProfile_CloseCategoryRecords(UnkStruct_0208C06C *par
             VsRecorderViewerMain_SetState(param0, 5);
 
             Heap_Free(v0);
-            SetVBlankCallback(VsRecorderViewerMain_VBlankCallback, param0);
             Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
+            SetVBlankCallback(VsRecorderViewerMain_VBlankCallback, param0);
         } else {
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
             PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
@@ -908,10 +908,10 @@ static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(UnkStruct_0208C06C *para
         GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
         v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
 
+        PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
         VsRecorderViewerProfile_SetPhotoClipWindow();
         VsRecorderViewerList_LoadBgTilemap(param0, 35, 3);
         VsRecorderViewerList_LoadBgTilemap(param0, 36, 7);
-        PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
 
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 1);
@@ -1018,8 +1018,8 @@ static BOOL VsRecorderViewerProfile_CloseProfileView(UnkStruct_0208C06C *param0)
 
         if (VsRecorderViewerMenu_StepBlendAlpha(&v0->unk_00, &v0->unk_04, 1, 0)) {
             if (v0->unk_228) {
-                VsRecorderViewerMain_InitBg2(param0);
                 PhotoSprite_Free(v0->unk_228);
+                VsRecorderViewerMain_InitBg2(param0);
                 Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                 v0->unk_228 = NULL;
                 VsRecorderViewerProfile_ResetClipWindow();
@@ -1063,8 +1063,8 @@ static BOOL VsRecorderViewerProfile_SwitchToProfileView(UnkStruct_0208C06C *para
         if (VsRecorderViewerMenu_StepBlendAlpha(&v0->unk_00, &v0->unk_04, 1, 1)) {
             if (v0->unk_0C == 0) {
                 if (v0->unk_228) {
-                    VsRecorderViewerMain_InitBg2(param0);
                     PhotoSprite_Free(v0->unk_228);
+                    VsRecorderViewerMain_InitBg2(param0);
                     Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                     v0->unk_228 = NULL;
                     VsRecorderViewerProfile_ResetClipWindow();
@@ -1088,10 +1088,10 @@ static BOOL VsRecorderViewerProfile_SwitchToProfileView(UnkStruct_0208C06C *para
             VsRecorderViewerList_LoadBgTilemap(param0, 80, 3);
         } else {
             GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
-            VsRecorderViewerProfile_SetPhotoClipWindow();
-            VsRecorderViewerList_LoadBgTilemap(param0, 35, 3);
             v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
             PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
+            VsRecorderViewerProfile_SetPhotoClipWindow();
+            VsRecorderViewerList_LoadBgTilemap(param0, 35, 3);
             GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG3, 1);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
@@ -1155,8 +1155,8 @@ static BOOL VsRecorderViewerProfile_SwitchToPhotoView(UnkStruct_0208C06C *param0
         if (VsRecorderViewerMenu_StepBlendAlpha(&v0->unk_00, &v0->unk_04, 1, 1)) {
             if (v0->unk_0C == 0) {
                 if (v0->unk_228) {
-                    VsRecorderViewerMain_InitBg2(param0);
                     PhotoSprite_Free(v0->unk_228);
+                    VsRecorderViewerMain_InitBg2(param0);
                     Bg_SetPriority(BG_LAYER_MAIN_2, 0);
                     v0->unk_228 = NULL;
                     VsRecorderViewerProfile_ResetClipWindow();
@@ -1175,10 +1175,10 @@ static BOOL VsRecorderViewerProfile_SwitchToPhotoView(UnkStruct_0208C06C *param0
 
         if (v0->unk_0C == 0) {
             GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
-            VsRecorderViewerProfile_SetPhotoClipWindow();
-            VsRecorderViewerList_LoadBgTilemap(param0, 35, 3);
             v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
             PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
+            VsRecorderViewerProfile_SetPhotoClipWindow();
+            VsRecorderViewerList_LoadBgTilemap(param0, 35, 3);
             GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG3, 1);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
