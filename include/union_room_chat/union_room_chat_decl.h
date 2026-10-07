@@ -1,0 +1,6 @@
+#ifndef POKEPLATINUM_UNION_ROOM_CHAT_DECL_H
+#define POKEPLATINUM_UNION_ROOM_CHAT_DECL_H
+
+typedef struct UnionRoomChat_t UnionRoomChat;
+
+#endif // POKEPLATINUM_UNION_ROOM_CHAT_DECL_H

@@ -5,12 +5,12 @@
 
 #include "field/field_system.h"
 #include "overlay005/ov5_021EA714.h"
-#include "overlay056/ov56_022561C0.h"
+#include "union_room_chat/union_room_chat.h"
 
 #include "field_comm_manager.h"
 #include "game_overlay.h"
 
-FS_EXTERN_OVERLAY(overlay56);
+FS_EXTERN_OVERLAY(union_room_chat);
 
 typedef struct BottomScreenHandlers {
     // clang-format off
@@ -90,8 +90,8 @@ static void ov5_021D5C54(FieldSystem *fieldSystem)
 
 static void ov5_021D5C5C(FieldSystem *fieldSystem)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay56), 2);
-    fieldSystem->unk_84 = ov56_02256410(fieldSystem);
+    Overlay_LoadByID(FS_OVERLAY_ID(union_room_chat), 2);
+    fieldSystem->unk_84 = UnionRoomChat_New(fieldSystem);
 }
 
 static void ov5_021D5C78(FieldSystem *fieldSystem)
@@ -106,8 +106,8 @@ static void ov5_021D5C80(FieldSystem *fieldSystem)
 
 static void ov5_021D5C88(FieldSystem *fieldSystem)
 {
-    ov56_02256468(fieldSystem->unk_84);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay56));
+    UnionRoomChat_Free(fieldSystem->unk_84);
+    Overlay_UnloadByID(FS_OVERLAY_ID(union_room_chat));
 }
 
 static BOOL ov5_021D5CA0(FieldSystem *fieldSystem)
