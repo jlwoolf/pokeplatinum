@@ -10,7 +10,7 @@
 #include "overlay063/struct_ov63_0222CC3C.h"
 #include "overlay063/struct_ov63_0222CD2C.h"
 #include "overlay063/struct_ov63_0222CE44.h"
-#include "overlay064/struct_ov64_022302EC.h"
+#include "wifi_note/struct_wifi_note_sprite_params.h"
 
 #include "heap.h"
 #include "palette.h"
@@ -103,7 +103,7 @@ void ov63_0222CE30(UnkStruct_ov63_0222CD2C *param0, int param1, u32 heapID)
 UnkStruct_ov63_0222CE44 *ov63_0222CE44(UnkStruct_ov63_0222CD2C *param0, const UnkStruct_ov63_0222BEC0 *param1, BOOL param2, u32 heapID)
 {
     UnkStruct_ov63_0222CE44 *v0;
-    UnkStruct_ov64_022302EC v1;
+    WiFiNoteSpriteParams v1;
     s32 v2;
 
     v0 = ov63_0222D08C(param0);
@@ -117,10 +117,10 @@ UnkStruct_ov63_0222CE44 *ov63_0222CE44(UnkStruct_ov63_0222CD2C *param0, const Un
     v0->unk_0E = 0;
     v0->unk_10 = 0;
 
-    v1.unk_00 = ov63_0222BF90(param1, 0);
-    v1.unk_02 = ov63_0222BF90(param1, 1);
-    v1.unk_04 = ov63_0222D034(v1.unk_02, v0->unk_12);
-    v1.unk_06 = param0->unk_0A;
+    v1.x = ov63_0222BF90(param1, 0);
+    v1.y = ov63_0222BF90(param1, 1);
+    v1.priority = ov63_0222D034(v1.y, v0->unk_12);
+    v1.explicitPriority = param0->unk_0A;
 
     v2 = ov63_0222BF90(param1, 7);
     v0->unk_04 = ov63_0222B0C0(param0->unk_00, &v1, v2, heapID);
