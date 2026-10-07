@@ -1,0 +1,11 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_3D_OBJECT_H
+#define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_3D_OBJECT_H
+
+#include "easy3d_object.h"
+
+typedef struct {
+    Easy3DModel unk_00;
+    Easy3DObject unk_10;
+} WiFiLobbyMinigameBalloon3DObject;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_3D_OBJECT_H

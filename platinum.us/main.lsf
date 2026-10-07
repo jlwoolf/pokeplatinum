@@ -1676,16 +1676,16 @@ Overlay wifi_lobby_minigame_manene
 	Object main.nef.p/src_wifi_lobby_minigame_manene_wifi_lobby_minigame_manene_02266FEC.c.o
 }
 
-Overlay overlay117
+Overlay wifi_lobby_minigame_balloon
 {
 	After wifi_lobby_minigame
-	Object main.nef.p/src_overlay117_ov117_02260440.c.o
-	Object main.nef.p/src_overlay117_ov117_02260668.c.o
-	Object main.nef.p/src_overlay117_ov117_022626B0.c.o
-	Object main.nef.p/src_overlay117_ov117_02263AF0.c.o
-	Object main.nef.p/src_overlay117_ov117_02266498.c.o
-	Object main.nef.p/src_overlay117_ov117_022665FC.c.o
-	Object main.nef.p/src_overlay117_ov117_022666C0.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon_app.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon_balloon.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon_graphics.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon_screens.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon_comm_cmd.c.o
+	Object main.nef.p/src_wifi_lobby_minigame_balloon_wifi_lobby_minigame_balloon_comm_cmd_handlers.c.o
 }
 
 Overlay party_menu_form_change

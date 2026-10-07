@@ -1,0 +1,12 @@
+#ifndef POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_COMM_CMD_H
+#define POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_COMM_CMD_H
+
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_game_decl.h"
+#include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_packet.h"
+
+void WiFiLobbyMinigameBalloon_InitCommCmd(void *param0);
+BOOL WiFiLobbyMinigameBalloon_SendPacket(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPacket *param1);
+BOOL WiFiLobbyMinigameBalloon_SendReady(WiFiLobbyMinigameBalloonGame *param0);
+BOOL WiFiLobbyMinigameBalloon_SendScore(WiFiLobbyMinigameBalloonGame *param0);
+
+#endif // POKEPLATINUM_WIFI_LOBBY_MINIGAME_BALLOON_COMM_CMD_H
