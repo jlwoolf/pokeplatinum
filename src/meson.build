@@ -978,7 +978,7 @@ pokeplatinum_c = files(
     'applications/scratch_off_cards/sprite_manager.c',
     'applications/scratch_off_cards/sprites.c',
     'applications/scratch_off_cards/windows.c',
-    'overlay112/ov112_0225C700.c',
+    'wifi_lobby_news/wifi_lobby_news.c',
     'overlay113/ov113_0225C700.c',
     'overlay113/ov113_0225E368.c',
     'overlay113/ov113_02260620.c',
