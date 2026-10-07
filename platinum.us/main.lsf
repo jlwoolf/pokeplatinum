@@ -1329,16 +1329,16 @@ Overlay poffin_berry_selection
 	Object main.nef.p/src_applications_poffin_berry_selection_callbacks.c.o
 }
 
-Overlay overlay83
+Overlay poffin_cooking
 {
 	After poffin_berry_selection
-	Object main.nef.p/src_overlay083_ov83_0223B5A0.c.o
-	Object main.nef.p/src_overlay083_ov83_0223C958.c.o
-	Object main.nef.p/src_overlay083_ov83_0223D144.c.o
-	Object main.nef.p/src_overlay083_ov83_0223D150.c.o
-	Object main.nef.p/src_overlay083_ov83_0223D4CC.c.o
-	Object main.nef.p/src_overlay083_ov83_0223D6A8.c.o
-	Object main.nef.p/src_overlay083_ov83_0223F7F4.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking_0223C958.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking_0223D144.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking_0223D150.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking_0223D4CC.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking_0223D6A8.c.o
+	Object main.nef.p/src_poffin_cooking_poffin_cooking_0223F7F4.c.o
 }
 
 Overlay bag

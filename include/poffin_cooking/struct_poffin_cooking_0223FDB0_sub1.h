@@ -1,0 +1,11 @@
+#ifndef POKEPLATINUM_STRUCT_POFFIN_COOKING_0223FDB0_SUB1_H
+#define POKEPLATINUM_STRUCT_POFFIN_COOKING_0223FDB0_SUB1_H
+
+typedef struct {
+    int unk_00;
+    int unk_04;
+    BOOL unk_08;
+    BOOL unk_0C;
+} UnkStruct_poffin_cooking_0223FDB0_sub1;
+
+#endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_0223FDB0_SUB1_H

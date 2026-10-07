@@ -4,7 +4,7 @@
 #include "applications/bag/application.h"
 #include "applications/berry_tag.h"
 #include "applications/poffin_berry_selection.h"
-#include "overlay083/ov83_0223B5A0.h"
+#include "poffin_cooking/poffin_cooking.h"
 
 #include "bag.h"
 #include "bag_context.h"
@@ -44,13 +44,13 @@ int PoffinBerrySelection_GetBerrySelection(PoffinBerrySelectionData *data, int *
 
 int PoffinBerrySelection_LoadPoffinCookingApp(PoffinBerrySelectionData *data, int *subState)
 {
-    FS_EXTERN_OVERLAY(overlay83);
+    FS_EXTERN_OVERLAY(poffin_cooking);
 
     const ApplicationManagerTemplate appTemplate = {
-        ov83_0223B5B0,
-        ov83_0223B65C,
-        ov83_0223B710,
-        FS_OVERLAY_ID(overlay83)
+        PoffinCooking_Init,
+        PoffinCooking_Main,
+        PoffinCooking_Exit,
+        FS_OVERLAY_ID(poffin_cooking)
     };
 
     data->appMan = ApplicationManager_New(&appTemplate, data, data->heapID);
