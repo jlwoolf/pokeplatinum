@@ -722,7 +722,7 @@ pokeplatinum_c = files(
     'applications/poketch/unused/4/graphics.c',
     'overlay056/ov56_022561C0.c',
     'game_start.c',
-    'overlay058/ov58_021D0D80.c',
+    'union_room_drawing/union_room_drawing.c',
     'overlay059/ov59_021D0D80.c',
     'overlay059/ov59_021D2A2C.c',
     'overlay059/ov59_021D2B44.c',

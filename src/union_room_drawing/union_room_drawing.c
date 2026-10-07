@@ -1,4 +1,4 @@
-#include "overlay058/ov58_021D0D80.h"
+#include "union_room_drawing/union_room_drawing.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -8,8 +8,8 @@
 #include "struct_defs/struct_02095EAC_t.h"
 #include "struct_defs/struct_02095FE4.h"
 
-#include "overlay058/struct_ov58_021D2754.h"
-#include "overlay058/struct_ov58_021D2820.h"
+#include "union_room_drawing/struct_union_room_drawing_prev_point.h"
+#include "union_room_drawing/struct_union_room_drawing_status.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -53,102 +53,104 @@
 #include "wireless_manager.h"
 #include "yes_no_touch_menu.h"
 
+// One entry of the drawing app's state machine. `handler` is invoked while the
+// app is in this state; `runInState2` also allows it to run in app state 2.
 typedef struct {
-    int (*unk_00)(UnionRoomDrawing *, int);
-    int unk_04;
-} UnkStruct_ov58_021D3180;
+    int (*handler)(UnionRoomDrawing *, int);
+    int runInState2;
+} UnionRoomDrawingStateHandler;
 
-static void ov58_021D115C(void *param0);
-static void ov58_021D1184(void);
-static void ov58_021D11A4(BgConfig *param0);
-static void ov58_021D12C4(UnionRoomDrawing *param0);
-static void ov58_021D13B4(UnionRoomDrawing *param0);
-static void ov58_021D13F0(BgConfig *param0);
-static void ov58_021D142C(UnionRoomDrawing *param0, NARC *param1);
-static void ov58_021D1524(void);
-static void ov58_021D1554(UnionRoomDrawing *param0, NARC *param1);
-static void ov58_021D16D8(UnionRoomDrawing *param0);
-static void ov58_021D18AC(UnionRoomDrawing *param0, ApplicationManager *appMan);
-static void ov58_021D19D4(UnionRoomDrawing *param0);
-static void ov58_021D1A10(Sprite *param0, int param1, int param2);
-static void ov58_021D1A80(UnionRoomDrawing *param0);
-static int ov58_021D1CF4(UnionRoomDrawing *param0, int param1);
-static void ov58_021D1D40(UnionRoomDrawing *param0);
-static int ov58_021D1DFC(UnionRoomDrawing *param0, int param1);
-static int ov58_021D1E4C(UnionRoomDrawing *param0, int param1);
-static int ov58_021D1FB0(UnionRoomDrawing *param0, int param1);
-static int ov58_021D1FD4(UnionRoomDrawing *param0, int param1);
-static int ov58_021D206C(UnionRoomDrawing *param0, int param1);
-static int ov58_021D20A8(UnionRoomDrawing *param0, int param1);
-static int ov58_021D20C8(UnionRoomDrawing *param0, int param1);
-static int ov58_021D20F4(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2130(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2180(UnionRoomDrawing *param0, int param1);
-static int ov58_021D223C(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2270(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2298(UnionRoomDrawing *param0, int param1);
-static int ov58_021D22DC(UnionRoomDrawing *param0, int param1);
-static int ov58_021D22FC(UnionRoomDrawing *param0, int param1);
-static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int param3, int *param4, int *param5, int param6, int param7);
-static void ov58_021D2720(UnkStruct_ov58_021D2820 *param0, UnkStruct_ov58_021D2754 *param1);
-static void ov58_021D2754(Window *param0, UnkStruct_ov58_021D2820 *param1, UnkStruct_ov58_021D2754 *param2, int param3);
-static void ov58_021D2820(UnionRoomDrawing *param0);
-static void ov58_021D2888(u16 *param0);
-static void ov58_021D28E4(Window *param0, int param1, u32 param2, UnionRoomDrawing *param3);
-static void ov58_021D29C8(UnionRoomDrawing *param0);
-static int ov58_021D2A54(UnionRoomDrawing *param0);
-static void ov58_021D2A98(UnionRoomDrawing *param0, int param1, int param2);
-static int ov58_021D2B0C(int param0);
-static void ov58_021D2B2C(UnionRoomDrawing *param0);
-static int ov58_021D28C8(void);
-static int ov58_021D2320(UnionRoomDrawing *param0, int param1);
-static int ov58_021D23C8(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2380(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2A30(void);
-static int ov58_021D1DBC(UnionRoomDrawing *param0, int param1);
-static int ov58_021D1D64(UnionRoomDrawing *param0, int param1);
-static int ov58_021D1DC8(UnionRoomDrawing *param0, int param1);
-static void ov58_021D1CAC(Sprite **param0, int param1);
-static void ov58_021D1CDC(Sprite **param0, BOOL param1);
-static void ov58_021D2528(Window *param0, void *param1, int param2, int param3, int param4, int param5, int param6, int param7, int param8, int param9);
-static void ov58_021D2B3C(UnionRoomDrawing *param0, int param1);
-static int ov58_021D2B5C(UnionRoomDrawing *param0);
-static int ov58_021D22D8(UnionRoomDrawing *param0, int param1);
-static void ov58_021D2CB0(UnionRoomDrawing *param0, int param1);
-static void ov58_021D2CB8(UnionRoomDrawing *param0, int param1);
-static BOOL ov58_021D2CEC(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1);
-static void ov58_021D2D10(UnionRoomDrawing *param0);
-static int ov58_021D2D30(UnionRoomDrawing *param0);
-static void ov58_021D2D4C(UnkStruct_ov58_021D2820 *param0, TouchPadDataBuffer *param1, int param2, int param3);
+static void UnionRoomDrawing_VBlankCallback(void *param0);
+static void UnionRoomDrawing_SetGXBanks(void);
+static void UnionRoomDrawing_InitBgLayers(BgConfig *param0);
+static void UnionRoomDrawing_InitState(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_FreeState(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_FreeBgLayers(BgConfig *param0);
+static void UnionRoomDrawing_LoadGraphics(UnionRoomDrawing *param0, NARC *param1);
+static void UnionRoomDrawing_InitTransfers(void);
+static void UnionRoomDrawing_InitSprites(UnionRoomDrawing *param0, NARC *param1);
+static void UnionRoomDrawing_CreateSprites(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_CreateWindows(UnionRoomDrawing *param0, ApplicationManager *appMan);
+static void UnionRoomDrawing_RemoveWindows(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_SetSpritePosition(Sprite *param0, int param1, int param2);
+static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0);
+static int UnionRoomDrawing_StateDrawing(UnionRoomDrawing *param0, int param1);
+static void UnionRoomDrawing_RedrawDrawingWindow(UnionRoomDrawing *param0);
+static int UnionRoomDrawing_StatePromptStopDrawing(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateHandleStopDrawing(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateClientAck(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateWaitAllAcked(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateRejoinDrawing(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateShowSessionEnded(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateWaitSessionEnded(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateFadeOut(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StatePromptLeaderLeave(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateHandleLeaderLeave(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateShowLeaderLeft(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateWaitLeaderLeft(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateWaitDisbandSync(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateShowNoMembers(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateWaitNoMembers(UnionRoomDrawing *param0, int param1);
+static void UnionRoomDrawing_DrawLine(Window *param0, const u8 *param1, int param2, int param3, int *param4, int *param5, int param6, int param7);
+static void UnionRoomDrawing_CopyPrevPoint(UnionRoomDrawingStatus *param0, UnionRoomDrawingPrevPoint *param1);
+static void UnionRoomDrawing_DrawStrokes(Window *param0, UnionRoomDrawingStatus *param1, UnionRoomDrawingPrevPoint *param2, int param3);
+static void UnionRoomDrawing_UpdateRemoteCursors(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_AnimateCursorColor(u16 *param0);
+static void UnionRoomDrawing_DrawPlayerNames(Window *param0, int param1, u32 param2, UnionRoomDrawing *param3);
+static void UnionRoomDrawing_SendDrawingStatus(UnionRoomDrawing *param0);
+static int UnionRoomDrawing_UpdateTrainerInfo(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_ShowMessage(UnionRoomDrawing *param0, int param1, int param2);
+static int UnionRoomDrawing_IsMessageDone(int param0);
+static void UnionRoomDrawing_EraseMessageBox(UnionRoomDrawing *param0);
+static int UnionRoomDrawing_CountConnectedTrainers(void);
+static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StatePlayerLeftDone(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateWaitPlayerLeft(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_CountConnected(void);
+static int UnionRoomDrawing_StateRedraw(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StatePlayerEntered(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_StateResumeDrawing(UnionRoomDrawing *param0, int param1);
+static void UnionRoomDrawing_SetPenColorSprite(Sprite **param0, int param1);
+static void UnionRoomDrawing_SetEraserSprite(Sprite **param0, BOOL param1);
+static void UnionRoomDrawing_BlitBitmapRectClipped(Window *param0, void *param1, int param2, int param3, int param4, int param5, int param6, int param7, int param8, int param9);
+static void UnionRoomDrawing_SetMaxConnections(UnionRoomDrawing *param0, int param1);
+static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0);
+static int UnionRoomDrawing_StateNoOp(UnionRoomDrawing *param0, int param1);
+static void UnionRoomDrawing_SetNextState(UnionRoomDrawing *param0, int param1);
+static void UnionRoomDrawing_ApplyNextState(UnionRoomDrawing *param0, int param1);
+static BOOL UnionRoomDrawing_InitYesNoMenu(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1);
+static void UnionRoomDrawing_ResetYesNoMenu(UnionRoomDrawing *param0);
+static int UnionRoomDrawing_IsCancelPressed(UnionRoomDrawing *param0);
+static void UnionRoomDrawing_UpdateLocalStatus(UnionRoomDrawingStatus *param0, TouchPadDataBuffer *param1, int param2, int param3);
 
-static UnkStruct_ov58_021D3180 Unk_ov58_021D3180[] = {
+static UnionRoomDrawingStateHandler sStateHandlers[] = {
     { NULL, 0x1 },
-    { ov58_021D1D64, 0x0 },
-    { ov58_021D1DBC, 0x0 },
-    { ov58_021D1DC8, 0x0 },
-    { ov58_021D1CF4, 0x0 },
-    { ov58_021D1DFC, 0x1 },
-    { ov58_021D1E4C, 0x1 },
-    { ov58_021D1FB0, 0x1 },
-    { ov58_021D1FD4, 0x1 },
-    { ov58_021D206C, 0x1 },
-    { ov58_021D20A8, 0x1 },
-    { ov58_021D20C8, 0x1 },
-    { ov58_021D20F4, 0x1 },
-    { ov58_021D2130, 0x1 },
-    { ov58_021D2180, 0x1 },
-    { ov58_021D223C, 0x1 },
-    { ov58_021D2270, 0x1 },
-    { ov58_021D2298, 0x1 },
-    { ov58_021D22D8, 0x1 },
-    { ov58_021D22DC, 0x1 },
-    { ov58_021D22FC, 0x1 },
-    { ov58_021D2320, 0x1 },
-    { ov58_021D2380, 0x1 },
-    { ov58_021D23C8, 0x1 }
+    { UnionRoomDrawing_StatePlayerEntered, 0x0 },
+    { UnionRoomDrawing_StateRedraw, 0x0 },
+    { UnionRoomDrawing_StateResumeDrawing, 0x0 },
+    { UnionRoomDrawing_StateDrawing, 0x0 },
+    { UnionRoomDrawing_StatePromptStopDrawing, 0x1 },
+    { UnionRoomDrawing_StateHandleStopDrawing, 0x1 },
+    { UnionRoomDrawing_StateClientAck, 0x1 },
+    { UnionRoomDrawing_StateWaitAllAcked, 0x1 },
+    { UnionRoomDrawing_StateRejoinDrawing, 0x1 },
+    { UnionRoomDrawing_StateShowSessionEnded, 0x1 },
+    { UnionRoomDrawing_StateWaitSessionEnded, 0x1 },
+    { UnionRoomDrawing_StateFadeOut, 0x1 },
+    { UnionRoomDrawing_StatePromptLeaderLeave, 0x1 },
+    { UnionRoomDrawing_StateHandleLeaderLeave, 0x1 },
+    { UnionRoomDrawing_StateShowLeaderLeft, 0x1 },
+    { UnionRoomDrawing_StateWaitLeaderLeft, 0x1 },
+    { UnionRoomDrawing_StateWaitDisbandSync, 0x1 },
+    { UnionRoomDrawing_StateNoOp, 0x1 },
+    { UnionRoomDrawing_StateShowNoMembers, 0x1 },
+    { UnionRoomDrawing_StateWaitNoMembers, 0x1 },
+    { UnionRoomDrawing_StateShowPlayerLeft, 0x1 },
+    { UnionRoomDrawing_StateWaitPlayerLeft, 0x1 },
+    { UnionRoomDrawing_StatePlayerLeftDone, 0x1 }
 };
 
-int ov58_021D0D80(ApplicationManager *appMan, int *param1)
+int UnionRoomDrawing_Init(ApplicationManager *appMan, int *param1)
 {
     UnionRoomDrawing *v0;
     NARC *v1;
@@ -174,8 +176,8 @@ int ov58_021D0D80(ApplicationManager *appMan, int *param1)
 
         SetAutorepeat(4, 8);
 
-        ov58_021D1184();
-        ov58_021D11A4(v0->unk_00);
+        UnionRoomDrawing_SetGXBanks();
+        UnionRoomDrawing_InitBgLayers(v0->unk_00);
 
         SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
         SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
@@ -188,17 +190,17 @@ int ov58_021D0D80(ApplicationManager *appMan, int *param1)
 
         v1 = NARC_ctor(NARC_INDEX_GRAPHIC__OEKAKI, HEAP_ID_DRAWING);
 
-        ov58_021D142C(v0, v1);
+        UnionRoomDrawing_LoadGraphics(v0, v1);
 
         EnableTouchPad();
         InitializeTouchPad(2);
-        SetVBlankCallback(ov58_021D115C, v0->unk_00);
+        SetVBlankCallback(UnionRoomDrawing_VBlankCallback, v0->unk_00);
 
-        ov58_021D12C4(v0);
-        ov58_021D1524();
-        ov58_021D1554(v0, v1);
-        ov58_021D16D8(v0);
-        ov58_021D18AC(v0, appMan);
+        UnionRoomDrawing_InitState(v0);
+        UnionRoomDrawing_InitTransfers();
+        UnionRoomDrawing_InitSprites(v0, v1);
+        UnionRoomDrawing_CreateSprites(v0);
+        UnionRoomDrawing_CreateWindows(v0, appMan);
 
         Sound_SetSceneAndPlayBGM(SOUND_SCENE_SUB_52, SEQ_NONE, 0);
 
@@ -231,7 +233,7 @@ int ov58_021D0D80(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-int ov58_021D0F08(ApplicationManager *appMan, int *param1)
+int UnionRoomDrawing_Main(ApplicationManager *appMan, int *param1)
 {
     UnionRoomDrawing *v0 = ApplicationManager_Data(appMan);
 
@@ -241,13 +243,13 @@ int ov58_021D0F08(ApplicationManager *appMan, int *param1)
 
     v0->appState = *param1;
 
-    ov58_021D2CB8(v0, *param1);
+    UnionRoomDrawing_ApplyNextState(v0, *param1);
 
     switch (*param1) {
     case 0:
         if (IsScreenFadeDone()) {
             if (CommSys_CurNetId() != 0) {
-                if (ov58_021D2A30() >= 2) {
+                if (UnionRoomDrawing_CountConnected() >= 2) {
                     CommSys_SendData(128, NULL, 0);
                     *param1 = 1;
                 }
@@ -258,25 +260,25 @@ int ov58_021D0F08(ApplicationManager *appMan, int *param1)
         }
         break;
     case 1:
-        if (Unk_ov58_021D3180[v0->unk_368].unk_00 != NULL) {
-            *param1 = Unk_ov58_021D3180[v0->unk_368].unk_00(v0, *param1);
+        if (sStateHandlers[v0->unk_368].handler != NULL) {
+            *param1 = sStateHandlers[v0->unk_368].handler(v0, *param1);
         }
 
-        ov58_021D28E4(v0->unk_2DC, 0, TEXT_COLOR(14, 13, 15), v0);
+        UnionRoomDrawing_DrawPlayerNames(v0->unk_2DC, 0, TEXT_COLOR(14, 13, 15), v0);
 
         if (CommSys_CurNetId() == 0) {
-            int v1 = ov58_021D2B5C(v0);
+            int v1 = UnionRoomDrawing_UpdateConnectionState(v0);
 
             if (*param1 == 1) {
                 *param1 = v1;
             }
         }
 
-        ov58_021D2888(&v0->unk_43D8);
+        UnionRoomDrawing_AnimateCursorColor(&v0->unk_43D8);
         break;
     case 2:
-        if ((Unk_ov58_021D3180[v0->unk_368].unk_00 != NULL) && Unk_ov58_021D3180[v0->unk_368].unk_04) {
-            *param1 = Unk_ov58_021D3180[v0->unk_368].unk_00(v0, *param1);
+        if ((sStateHandlers[v0->unk_368].handler != NULL) && sStateHandlers[v0->unk_368].runInState2) {
+            *param1 = sStateHandlers[v0->unk_368].handler(v0, *param1);
         }
         break;
     case 3:
@@ -291,7 +293,7 @@ int ov58_021D0F08(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-int ov58_021D1018(ApplicationManager *appMan, int *param1)
+int UnionRoomDrawing_Exit(ApplicationManager *appMan, int *param1)
 {
     UnionRoomDrawing *v0 = ApplicationManager_Data(appMan);
     UnkStruct_0203DDFC *v1 = (UnkStruct_0203DDFC *)ApplicationManager_Args(appMan);
@@ -318,8 +320,8 @@ int ov58_021D1018(ApplicationManager *appMan, int *param1)
         CharTransfer_Free();
         PlttTransfer_Free();
 
-        ov58_021D19D4(v0);
-        ov58_021D13F0(v0->unk_00);
+        UnionRoomDrawing_RemoveWindows(v0);
+        UnionRoomDrawing_FreeBgLayers(v0->unk_00);
 
         DisableTouchPad();
         MessageLoader_Free(v0->unk_10);
@@ -349,7 +351,7 @@ int ov58_021D1018(ApplicationManager *appMan, int *param1)
     case 3:
         CommManager_SetMaxNumConnections(2);
 
-        ov58_021D13B4(v0);
+        UnionRoomDrawing_FreeState(v0);
 
         Heap_Free(v0->unk_08);
         ApplicationManager_FreeData(appMan);
@@ -363,7 +365,7 @@ int ov58_021D1018(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-static void ov58_021D115C(void *param0)
+static void UnionRoomDrawing_VBlankCallback(void *param0)
 {
     VramTransfer_Process();
     RenderOam_Transfer();
@@ -372,7 +374,7 @@ static void ov58_021D115C(void *param0)
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
-static void ov58_021D1184(void)
+static void UnionRoomDrawing_SetGXBanks(void)
 {
     GXBanks v0 = {
         GX_VRAM_BG_128_A,
@@ -390,7 +392,7 @@ static void ov58_021D1184(void)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov58_021D11A4(BgConfig *param0)
+static void UnionRoomDrawing_InitBgLayers(BgConfig *param0)
 {
     {
         GraphicsModes v0 = {
@@ -507,14 +509,14 @@ static void ov58_021D11A4(BgConfig *param0)
     Bg_ClearTilesRange(5, 32, 0, HEAP_ID_DRAWING);
 }
 
-static void ov58_021D12C4(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_InitState(UnionRoomDrawing *param0)
 {
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
         param0->unk_14[v0] = String_Init(7 + 1, HEAP_ID_DRAWING);
-        param0->drawingStatus[v0].unk_08_3 = 0;
-        param0->unk_4418[v0].unk_02 = 0;
+        param0->drawingStatus[v0].pointCount = 0;
+        param0->prevPoints[v0].hasPrev = 0;
         param0->unk_398[v0][0] = NULL;
         param0->unk_398[v0][1] = NULL;
     }
@@ -534,9 +536,9 @@ static void ov58_021D12C4(UnionRoomDrawing *param0)
     param0->unk_946C = 0;
 
     if (CommSys_CurNetId() == 0) {
-        ov58_021D2CB0(param0, 4);
+        UnionRoomDrawing_SetNextState(param0, 4);
     } else {
-        ov58_021D2CB0(param0, 4);
+        UnionRoomDrawing_SetNextState(param0, 4);
     }
 
     MessageLoader_GetString(param0->unk_10, 7, param0->unk_28);
@@ -546,7 +548,7 @@ static void ov58_021D12C4(UnionRoomDrawing *param0)
     param0->unk_378 = 0;
 }
 
-static void ov58_021D13B4(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_FreeState(UnionRoomDrawing *param0)
 {
     int v0;
 
@@ -561,7 +563,7 @@ static void ov58_021D13B4(UnionRoomDrawing *param0)
     String_Free(param0->unk_28);
 }
 
-static void ov58_021D13F0(BgConfig *param0)
+static void UnionRoomDrawing_FreeBgLayers(BgConfig *param0)
 {
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_1);
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_0);
@@ -572,7 +574,7 @@ static void ov58_021D13F0(BgConfig *param0)
     Heap_Free(param0);
 }
 
-static void ov58_021D142C(UnionRoomDrawing *param0, NARC *param1)
+static void UnionRoomDrawing_LoadGraphics(UnionRoomDrawing *param0, NARC *param1)
 {
     BgConfig *v0 = param0->unk_00;
 
@@ -588,7 +590,7 @@ static void ov58_021D142C(UnionRoomDrawing *param0, NARC *param1)
     LoadStandardWindowGraphics(v0, BG_LAYER_MAIN_0, 1 + (18 + 12), 11, 0, HEAP_ID_DRAWING);
 }
 
-static void ov58_021D1524(void)
+static void UnionRoomDrawing_InitTransfers(void)
 {
     {
         CharTransferTemplate v0 = {
@@ -603,7 +605,7 @@ static void ov58_021D1524(void)
     PlttTransfer_Clear();
 }
 
-static void ov58_021D1554(UnionRoomDrawing *param0, NARC *param1)
+static void UnionRoomDrawing_InitSprites(UnionRoomDrawing *param0, NARC *param1)
 {
     int v0;
 
@@ -633,7 +635,7 @@ static void ov58_021D1554(UnionRoomDrawing *param0, NARC *param1)
     SpriteTransfer_RequestPlttWholeRange(param0->unk_1D4[1][1]);
 }
 
-static const u16 Unk_ov58_021D2EEC[][3] = {
+static const u16 sPenColorSpriteData[][3] = {
     { 0xD, 0xAB, 0x5 },
     { 0x25, 0xAB, 0x7 },
     { 0x3D, 0xAB, 0x9 },
@@ -648,7 +650,7 @@ static const u16 Unk_ov58_021D2EEC[][3] = {
     { 0x34, 0x9, 0x21 }
 };
 
-static void ov58_021D16D8(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_CreateSprites(UnionRoomDrawing *param0)
 {
     int v0;
 
@@ -684,13 +686,13 @@ static void ov58_021D16D8(UnionRoomDrawing *param0)
 
         for (v0 = 0; v0 < 9 + 3; v0++) {
             v1.resourceData = &param0->unk_218;
-            v1.position.x = FX32_ONE * (Unk_ov58_021D2EEC[v0][0]);
-            v1.position.y = FX32_ONE * (Unk_ov58_021D2EEC[v0][1]);
+            v1.position.x = FX32_ONE * (sPenColorSpriteData[v0][0]);
+            v1.position.y = FX32_ONE * (sPenColorSpriteData[v0][1]);
 
             param0->unk_2AC[v0] = SpriteList_AddAffine(&v1);
 
             Sprite_SetAnimateFlag(param0->unk_2AC[v0], 1);
-            Sprite_SetAnim(param0->unk_2AC[v0], Unk_ov58_021D2EEC[v0][2]);
+            Sprite_SetAnim(param0->unk_2AC[v0], sPenColorSpriteData[v0][2]);
 
             if (v0 >= 8) {
                 Sprite_SetExplicitPriority(param0->unk_2AC[v0], 2);
@@ -715,7 +717,7 @@ static void ov58_021D16D8(UnionRoomDrawing *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void ov58_021D18AC(UnionRoomDrawing *param0, ApplicationManager *appMan)
+static void UnionRoomDrawing_CreateWindows(UnionRoomDrawing *param0, ApplicationManager *appMan)
 {
     Window_Add(param0->unk_00, &param0->unk_33C, 0, 2, 1, 27, 4, 13, 1 + (18 + 12) + 9);
     Window_FillTilemap(&param0->unk_33C, 0xf0f);
@@ -737,11 +739,11 @@ static void ov58_021D18AC(UnionRoomDrawing *param0, ApplicationManager *appMan)
             Window_FillTilemap(&param0->unk_2DC[v1], 0);
         }
 
-        ov58_021D28E4(param0->unk_2DC, 0, TEXT_COLOR(14, 13, 15), param0);
+        UnionRoomDrawing_DrawPlayerNames(param0->unk_2DC, 0, TEXT_COLOR(14, 13, 15), param0);
     }
 }
 
-static void ov58_021D19D4(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_RemoveWindows(UnionRoomDrawing *param0)
 {
     int v0;
 
@@ -754,7 +756,7 @@ static void ov58_021D19D4(UnionRoomDrawing *param0)
     Window_Remove(&param0->unk_33C);
 }
 
-static void ov58_021D1A10(Sprite *param0, int param1, int param2)
+static void UnionRoomDrawing_SetSpritePosition(Sprite *param0, int param1, int param2)
 {
     VecFx32 v0;
 
@@ -765,7 +767,7 @@ static void ov58_021D1A10(Sprite *param0, int param1, int param2)
     Sprite_SetPosition(param0, &v0);
 }
 
-static const TouchScreenRect Unk_ov58_021D2EB8[] = {
+static const TouchScreenRect sDrawingTouchRects[] = {
     { 0x96, 0xBD, 0x0, 0x17 },
     { 0x96, 0xBD, 0x18, 0x2F },
     { 0x96, 0xBD, 0x30, 0x47 },
@@ -781,22 +783,22 @@ static const TouchScreenRect Unk_ov58_021D2EB8[] = {
     { 0xFF, 0x0, 0x0, 0x0 }
 };
 
-static const TouchScreenRect Unk_ov58_021D2DD4[] = {
+static const TouchScreenRect sCancelButtonTouchRect[] = {
     { 0x30, 0x70, 0xC8, 0xF8 },
     { 0xFF, 0x0, 0x0, 0x0 }
 };
 
-static const TouchScreenRect Unk_ov58_021D2DDC[] = {
+static const TouchScreenRect sCanvasTouchRect[] = {
     { 0x10, 0x88, 0x8, 0xF8 },
     { 0xFF, 0x0, 0x0, 0x0 }
 };
 
-static void ov58_021D1A80(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
 {
     int v0 = -1, v1;
     int v2 = 0;
 
-    v0 = TouchScreen_CheckRectanglePressed(Unk_ov58_021D2EB8);
+    v0 = TouchScreen_CheckRectanglePressed(sDrawingTouchRects);
 
     if (v0 != 0xffffffff) {
         switch (v0) {
@@ -810,7 +812,7 @@ static void ov58_021D1A80(UnionRoomDrawing *param0)
         case 7:
             if (param0->unk_43DA != v0) {
                 param0->unk_43DA = v0;
-                ov58_021D1CAC(param0->unk_2AC, v0);
+                UnionRoomDrawing_SetPenColorSprite(param0->unk_2AC, v0);
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
             }
             break;
@@ -824,18 +826,18 @@ static void ov58_021D1A80(UnionRoomDrawing *param0)
 
                     CommManager_SetMaxNumConnections(CommSys_ConnectedCount());
                     param0->drawingState = 2;
-                    ov58_021D2A98(param0, 1, TEXT_SPEED_FAST);
-                    ov58_021D2CB0(param0, 5);
-                    ov58_021D1CDC(param0->unk_2AC, 1);
+                    UnionRoomDrawing_ShowMessage(param0, 1, TEXT_SPEED_FAST);
+                    UnionRoomDrawing_SetNextState(param0, 5);
+                    UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 1);
                     v2 = 1;
                     Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 } else {
-                    if (param0->drawingStatus[0].unk_09 == 2) {
+                    if (param0->drawingStatus[0].state == 2) {
                         Sound_PlayEffect(SEQ_SE_DP_CUSTOM06_sseq);
                     } else {
-                        ov58_021D2A98(param0, 1, TEXT_SPEED_FAST);
-                        ov58_021D2CB0(param0, 5);
-                        ov58_021D1CDC(param0->unk_2AC, 1);
+                        UnionRoomDrawing_ShowMessage(param0, 1, TEXT_SPEED_FAST);
+                        UnionRoomDrawing_SetNextState(param0, 5);
+                        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 1);
                         v2 = 1;
                         Sound_PlayEffect(SE_CONFIRM_sseq_3);
                     }
@@ -863,11 +865,11 @@ static void ov58_021D1A80(UnionRoomDrawing *param0)
         }
     }
 
-    v1 = TouchScreen_CheckRectangleHeld(Unk_ov58_021D2DDC);
+    v1 = TouchScreen_CheckRectangleHeld(sCanvasTouchRect);
     Sprite_SetDrawFlag(param0->unk_23C[CommSys_CurNetId()], FALSE);
 
     if (v1 != 0xffffffff) {
-        ov58_021D1A10(param0->unk_23C[CommSys_CurNetId()], gSystem.touchX, gSystem.touchY);
+        UnionRoomDrawing_SetSpritePosition(param0->unk_23C[CommSys_CurNetId()], gSystem.touchX, gSystem.touchY);
         Sprite_SetDrawFlag(param0->unk_23C[CommSys_CurNetId()], TRUE);
     }
 
@@ -876,101 +878,101 @@ static void ov58_021D1A80(UnionRoomDrawing *param0)
         int v5;
 
         if (WriteAutoSamplingDataToBuffer(&v4, TOUCH_PAD_EXTERNAL_BUFFER_WRITE_METHOD_ALL_DATA_WITHOUT_WRAPPING, 64) == 1) {
-            ov58_021D2D4C(&param0->localDrawingStatus, &v4, param0->unk_43DA, param0->unk_43DB);
+            UnionRoomDrawing_UpdateLocalStatus(&param0->localDrawingStatus, &v4, param0->unk_43DA, param0->unk_43DB);
 
             if (v2 == 1) {
-                param0->localDrawingStatus.unk_08_3 = 0;
+                param0->localDrawingStatus.pointCount = 0;
             }
         }
     }
 }
 
-static void ov58_021D1CAC(Sprite **param0, int param1)
+static void UnionRoomDrawing_SetPenColorSprite(Sprite **param0, int param1)
 {
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
         if (v0 == param1) {
-            Sprite_SetAnim(param0[v0], Unk_ov58_021D2EEC[v0][2] + 1);
+            Sprite_SetAnim(param0[v0], sPenColorSpriteData[v0][2] + 1);
         } else {
-            Sprite_SetAnim(param0[v0], Unk_ov58_021D2EEC[v0][2]);
+            Sprite_SetAnim(param0[v0], sPenColorSpriteData[v0][2]);
         }
     }
 }
 
-static void ov58_021D1CDC(Sprite **param0, BOOL param1)
+static void UnionRoomDrawing_SetEraserSprite(Sprite **param0, BOOL param1)
 {
     if (param1 == 1) {
-        Sprite_SetAnim(param0[8], Unk_ov58_021D2EEC[8][2] + 1);
+        Sprite_SetAnim(param0[8], sPenColorSpriteData[8][2] + 1);
     } else {
-        Sprite_SetAnim(param0[8], Unk_ov58_021D2EEC[8][2]);
+        Sprite_SetAnim(param0[8], sPenColorSpriteData[8][2]);
     }
 }
 
-static int ov58_021D1CF4(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateDrawing(UnionRoomDrawing *param0, int param1)
 {
-    ov58_021D1A80(param0);
+    UnionRoomDrawing_HandleTouchInput(param0);
 
     if (CommSys_CurNetId() == 0) {
-        if (ov58_021D28C8() != 1) {
-            ov58_021D29C8(param0);
+        if (UnionRoomDrawing_CountConnectedTrainers() != 1) {
+            UnionRoomDrawing_SendDrawingStatus(param0);
         }
     } else {
-        ov58_021D29C8(param0);
+        UnionRoomDrawing_SendDrawingStatus(param0);
     }
 
-    ov58_021D2820(param0);
-    ov58_021D2754(&param0->drawingWindow, param0->drawingStatus, param0->unk_4418, 1);
+    UnionRoomDrawing_UpdateRemoteCursors(param0);
+    UnionRoomDrawing_DrawStrokes(&param0->drawingWindow, param0->drawingStatus, param0->prevPoints, 1);
 
     return param1;
 }
 
-static void ov58_021D1D40(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_RedrawDrawingWindow(UnionRoomDrawing *param0)
 {
-    ov58_021D2820(param0);
-    ov58_021D2754(&param0->drawingWindow, param0->drawingStatus, param0->unk_4418, 0);
+    UnionRoomDrawing_UpdateRemoteCursors(param0);
+    UnionRoomDrawing_DrawStrokes(&param0->drawingWindow, param0->drawingStatus, param0->prevPoints, 0);
 }
 
-static int ov58_021D1D64(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StatePlayerEntered(UnionRoomDrawing *param0, int param1)
 {
     if (CommSys_CurNetId() == param0->drawingPlayerNetId) {
-        ov58_021D2A98(param0, 13, TEXT_SPEED_INSTANT);
+        UnionRoomDrawing_ShowMessage(param0, 13, TEXT_SPEED_INSTANT);
     } else {
-        ov58_021D2A98(param0, 0, TEXT_SPEED_INSTANT);
+        UnionRoomDrawing_ShowMessage(param0, 0, TEXT_SPEED_INSTANT);
     }
 
-    ov58_021D2CB0(param0, 2);
+    UnionRoomDrawing_SetNextState(param0, 2);
     Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
 
     G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ, -6);
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D1DBC(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateRedraw(UnionRoomDrawing *param0, int param1)
 {
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D1DC8(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateResumeDrawing(UnionRoomDrawing *param0, int param1)
 {
     G2_BlendNone();
 
-    ov58_021D2B3C(param0, 1);
-    ov58_021D2CB0(param0, 4);
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_SetMaxConnections(param0, 1);
+    UnionRoomDrawing_SetNextState(param0, 4);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     param0->unk_9468 = 0;
 
     return param1;
 }
 
-static int ov58_021D1DFC(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StatePromptStopDrawing(UnionRoomDrawing *param0, int param1)
 {
-    if (ov58_021D2B0C(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
         YesNoTouchMenuParams v0;
         BOOL v1;
 
@@ -981,26 +983,26 @@ static int ov58_021D1DFC(UnionRoomDrawing *param0, int param1)
         v0.tilemapLeft = 25;
         v0.tilemapTop = 6;
 
-        v1 = ov58_021D2CEC(param0, &v0);
+        v1 = UnionRoomDrawing_InitYesNoMenu(param0, &v0);
         GF_ASSERT(v1);
 
-        ov58_021D2CB0(param0, 6);
+        UnionRoomDrawing_SetNextState(param0, 6);
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D1E4C(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateHandleStopDrawing(UnionRoomDrawing *param0, int param1)
 {
     int v0;
 
-    param0->localDrawingStatus.unk_08_3 = 0;
+    param0->localDrawingStatus.pointCount = 0;
 
-    if ((param0->drawingStatus[0].unk_09 == 2) && (CommSys_CurNetId() != 0)) {
-        ov58_021D1D40(param0);
+    if ((param0->drawingStatus[0].state == 2) && (CommSys_CurNetId() != 0)) {
+        UnionRoomDrawing_RedrawDrawingWindow(param0);
 
-        if (ov58_021D2D30(param0)) {
+        if (UnionRoomDrawing_IsCancelPressed(param0)) {
             Sound_PlayEffect(SEQ_SE_DP_CUSTOM06_sseq);
         }
 
@@ -1008,12 +1010,12 @@ static int ov58_021D1E4C(UnionRoomDrawing *param0, int param1)
     }
 
     if ((CommSys_CurNetId() == 0) && (param0->ackedNetIds != 0)) {
-        ov58_021D1D40(param0);
+        UnionRoomDrawing_RedrawDrawingWindow(param0);
         return param1;
     }
 
-    if (ov58_021D2A30() != CommSys_ConnectedCount()) {
-        ov58_021D1D40(param0);
+    if (UnionRoomDrawing_CountConnected() != CommSys_ConnectedCount()) {
+        UnionRoomDrawing_RedrawDrawingWindow(param0);
         return param1;
     }
 
@@ -1022,8 +1024,8 @@ static int ov58_021D1E4C(UnionRoomDrawing *param0, int param1)
     switch (v0) {
     case YES_NO_TOUCH_MENU_YES:
         if (CommSys_CurNetId() == 0) {
-            ov58_021D2CB0(param0, 13);
-            ov58_021D2A98(param0, 4, TEXT_SPEED_FAST);
+            UnionRoomDrawing_SetNextState(param0, 13);
+            UnionRoomDrawing_ShowMessage(param0, 4, TEXT_SPEED_FAST);
         } else {
             UnionRoomDrawingConnAck v1;
 
@@ -1034,20 +1036,20 @@ static int ov58_021D1E4C(UnionRoomDrawing *param0, int param1)
             param0->unk_9420 = 1;
             param0->unk_941E = 0;
 
-            ov58_021D2CB0(param0, 7);
+            UnionRoomDrawing_SetNextState(param0, 7);
 
             CommSys_SendData(126, &v1, sizeof(UnionRoomDrawingConnAck));
             Window_EraseMessageBox(&param0->unk_33C, 1);
         }
 
-        ov58_021D2D10(param0);
+        UnionRoomDrawing_ResetYesNoMenu(param0);
         Window_CopyToVRAM(&param0->drawingWindow);
         break;
     case YES_NO_TOUCH_MENU_NO:
-        ov58_021D2CB0(param0, 4);
-        ov58_021D1CDC(param0->unk_2AC, 0);
+        UnionRoomDrawing_SetNextState(param0, 4);
+        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
         Window_EraseMessageBox(&param0->unk_33C, 1);
-        ov58_021D2D10(param0);
+        UnionRoomDrawing_ResetYesNoMenu(param0);
         Window_CopyToVRAM(&param0->drawingWindow);
 
         if (CommSys_CurNetId() == 0) {
@@ -1057,30 +1059,30 @@ static int ov58_021D1E4C(UnionRoomDrawing *param0, int param1)
         break;
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D1FB0(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateClientAck(UnionRoomDrawing *param0, int param1)
 {
-    param0->localDrawingStatus.unk_08_3 = 0;
+    param0->localDrawingStatus.pointCount = 0;
     param0->unk_941E = 0;
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D1FD4(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateWaitAllAcked(UnionRoomDrawing *param0, int param1)
 {
-    param0->localDrawingStatus.unk_08_3 = 0;
+    param0->localDrawingStatus.pointCount = 0;
 
-    if ((param0->ackedCount != CommSys_ConnectedCount()) || (param0->ackedCount != ov58_021D2A30())) {
+    if ((param0->ackedCount != CommSys_ConnectedCount()) || (param0->ackedCount != UnionRoomDrawing_CountConnected())) {
         param0->unk_941E = 0;
 
-        ov58_021D2CB0(param0, 9);
-        ov58_021D1D40(param0);
+        UnionRoomDrawing_SetNextState(param0, 9);
+        UnionRoomDrawing_RedrawDrawingWindow(param0);
 
         return param1;
     }
@@ -1097,63 +1099,63 @@ static int ov58_021D1FD4(UnionRoomDrawing *param0, int param1)
 
         CommSys_SendData(126, &v0, sizeof(UnionRoomDrawingConnAck));
         param0->unk_941E = 0;
-        ov58_021D2CB0(param0, 10);
+        UnionRoomDrawing_SetNextState(param0, 10);
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D206C(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateRejoinDrawing(UnionRoomDrawing *param0, int param1)
 {
-    param0->localDrawingStatus.unk_08_3 = 0;
+    param0->localDrawingStatus.pointCount = 0;
     param0->unk_9420 = 0;
 
-    ov58_021D2CB0(param0, 4);
-    ov58_021D1CDC(param0->unk_2AC, 0);
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_SetNextState(param0, 4);
+    UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D20A8(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateShowSessionEnded(UnionRoomDrawing *param0, int param1)
 {
     u8 v0;
 
-    ov58_021D2A98(param0, 6, TEXT_SPEED_FAST);
-    ov58_021D2CB0(param0, 11);
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_ShowMessage(param0, 6, TEXT_SPEED_FAST);
+    UnionRoomDrawing_SetNextState(param0, 11);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D20C8(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateWaitSessionEnded(UnionRoomDrawing *param0, int param1)
 {
-    if (ov58_021D2B0C(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
         param0->unk_374 = 0;
-        ov58_021D2CB0(param0, 12);
+        UnionRoomDrawing_SetNextState(param0, 12);
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D20F4(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateFadeOut(UnionRoomDrawing *param0, int param1)
 {
     if (++param0->unk_374 > 60) {
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_CIRCLE_OUT, FADE_TYPE_CIRCLE_OUT, COLOR_BLACK, 16, 1, HEAP_ID_DRAWING);
         param1 = 3;
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D2130(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StatePromptLeaderLeave(UnionRoomDrawing *param0, int param1)
 {
-    if (ov58_021D2B0C(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
         YesNoTouchMenuParams v0;
         BOOL v1;
 
@@ -1164,38 +1166,38 @@ static int ov58_021D2130(UnionRoomDrawing *param0, int param1)
         v0.tilemapLeft = 25;
         v0.tilemapTop = 6;
 
-        v1 = ov58_021D2CEC(param0, &v0);
+        v1 = UnionRoomDrawing_InitYesNoMenu(param0, &v0);
         GF_ASSERT(v1);
-        ov58_021D2CB0(param0, 14);
+        UnionRoomDrawing_SetNextState(param0, 14);
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D2180(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateHandleLeaderLeave(UnionRoomDrawing *param0, int param1)
 {
     int v0 = YesNoTouchMenu_ProcessInput(param0->unk_9454);
 
-    if ((param0->connectedCount != ov58_021D2A30()) || (param0->ackedNetIds != 0)) {
-        ov58_021D1D40(param0);
+    if ((param0->connectedCount != UnionRoomDrawing_CountConnected()) || (param0->ackedNetIds != 0)) {
+        UnionRoomDrawing_RedrawDrawingWindow(param0);
         return param1;
     }
 
     switch (v0) {
     case YES_NO_TOUCH_MENU_YES:
-        ov58_021D2CB0(param0, 15);
+        UnionRoomDrawing_SetNextState(param0, 15);
         CommSys_SendDataServer(127, NULL, 0);
         StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(0));
         param1 = 2;
-        ov58_021D2D10(param0);
+        UnionRoomDrawing_ResetYesNoMenu(param0);
         break;
     case YES_NO_TOUCH_MENU_NO:
-        ov58_021D2CB0(param0, 4);
-        ov58_021D1CDC(param0->unk_2AC, 0);
+        UnionRoomDrawing_SetNextState(param0, 4);
+        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
         Window_EraseMessageBox(&param0->unk_33C, 1);
-        ov58_021D2D10(param0);
+        UnionRoomDrawing_ResetYesNoMenu(param0);
 
         if (CommSys_CurNetId() == 0) {
             CommManager_SetMaxNumConnections(CommSys_ConnectedCount() + 1);
@@ -1204,138 +1206,138 @@ static int ov58_021D2180(UnionRoomDrawing *param0, int param1)
         break;
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D223C(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateShowLeaderLeft(UnionRoomDrawing *param0, int param1)
 {
     StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(0));
 
-    ov58_021D2A98(param0, 3, TEXT_SPEED_FAST);
-    ov58_021D2CB0(param0, 16);
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_ShowMessage(param0, 3, TEXT_SPEED_FAST);
+    UnionRoomDrawing_SetNextState(param0, 16);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D2270(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateWaitLeaderLeft(UnionRoomDrawing *param0, int param1)
 {
-    if (ov58_021D2B0C(param0->unk_30)) {
-        ov58_021D2CB0(param0, 17);
+    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+        UnionRoomDrawing_SetNextState(param0, 17);
         CommTiming_StartSync(200);
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D2298(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateWaitDisbandSync(UnionRoomDrawing *param0, int param1)
 {
     if (CommTiming_IsSyncState(200) || (CommSys_ConnectedCount() == 1)) {
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_CIRCLE_OUT, FADE_TYPE_CIRCLE_OUT, COLOR_BLACK, 16, 1, HEAP_ID_DRAWING);
         param1 = 3;
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D22D8(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateNoOp(UnionRoomDrawing *param0, int param1)
 {
     return param1;
 }
 
-static int ov58_021D22DC(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateShowNoMembers(UnionRoomDrawing *param0, int param1)
 {
-    ov58_021D2A98(param0, 5, TEXT_SPEED_FAST);
-    ov58_021D2CB0(param0, 20);
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_ShowMessage(param0, 5, TEXT_SPEED_FAST);
+    UnionRoomDrawing_SetNextState(param0, 20);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D22FC(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateWaitNoMembers(UnionRoomDrawing *param0, int param1)
 {
-    if (ov58_021D2B0C(param0->unk_30)) {
-        ov58_021D2CB0(param0, 12);
+    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+        UnionRoomDrawing_SetNextState(param0, 12);
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D2320(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int param1)
 {
-    if ((param0->unk_30 != 0xff) && (ov58_021D2B0C(param0->unk_30) == 0)) {
+    if ((param0->unk_30 != 0xff) && (UnionRoomDrawing_IsMessageDone(param0->unk_30) == 0)) {
         Text_RemovePrinter(param0->unk_30);
     }
 
-    ov58_021D2A98(param0, 2, TEXT_SPEED_FAST);
-    ov58_021D2CB0(param0, 22);
+    UnionRoomDrawing_ShowMessage(param0, 2, TEXT_SPEED_FAST);
+    UnionRoomDrawing_SetNextState(param0, 22);
     Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
 
     if (CommSys_CurNetId() == 0) {
-        ov58_021D2B3C(param0, 0);
+        UnionRoomDrawing_SetMaxConnections(param0, 0);
     }
 
     param0->unk_9414 = CommSys_ConnectedCount();
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
 }
 
-static int ov58_021D2380(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StateWaitPlayerLeft(UnionRoomDrawing *param0, int param1)
 {
     if ((param0->unk_9414 != 0) && (CommSys_ConnectedCount() != param0->unk_9414)) {
         param0->unk_9414 = 0;
     }
 
-    if (ov58_021D2B0C(param0->unk_30)) {
-        ov58_021D2CB0(param0, 23);
+    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+        UnionRoomDrawing_SetNextState(param0, 23);
         param0->unk_374 = 0;
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-static int ov58_021D23C8(UnionRoomDrawing *param0, int param1)
+static int UnionRoomDrawing_StatePlayerLeftDone(UnionRoomDrawing *param0, int param1)
 {
     if ((param0->unk_9414 != 0) && (CommSys_ConnectedCount() != param0->unk_9414)) {
         param0->unk_9414 = 0;
     }
 
     if ((++param0->unk_374 > 60) && (param0->unk_9414 == 0)) {
-        ov58_021D2B2C(param0);
-        ov58_021D2CB0(param0, 4);
+        UnionRoomDrawing_EraseMessageBox(param0);
+        UnionRoomDrawing_SetNextState(param0, 4);
 
         if (CommSys_CurNetId() == 0) {
             param0->drawingState = 1;
-            ov58_021D2B3C(param0, 1);
+            UnionRoomDrawing_SetMaxConnections(param0, 1);
         }
     }
 
-    ov58_021D1D40(param0);
+    UnionRoomDrawing_RedrawDrawingWindow(param0);
     return param1;
 }
 
-void ov58_021D2434(UnionRoomDrawing *param0, int param1, u8 param2)
+void UnionRoomDrawing_HandleCommState(UnionRoomDrawing *param0, int param1, u8 param2)
 {
     switch (param1) {
     case 1:
         if ((param0->unk_368 == 6) || (param0->unk_368 == 14)) {
-            ov58_021D2D10(param0);
+            UnionRoomDrawing_ResetYesNoMenu(param0);
         }
 
-        ov58_021D1CDC(param0->unk_2AC, 0);
+        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
         StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(param2));
 
         param0->drawingPlayerNetId = param2;
         param0->ackedNetIds = 0;
         break;
     case 3:
-        ov58_021D2B2C(param0);
+        UnionRoomDrawing_EraseMessageBox(param0);
         break;
     case 21:
         if (param0->unk_9420 == 1) {
@@ -1353,12 +1355,12 @@ void ov58_021D2434(UnionRoomDrawing *param0, int param1, u8 param2)
         }
 
         if ((param0->unk_368 == 6) || (param0->unk_368 == 14)) {
-            ov58_021D2D10(param0);
+            UnionRoomDrawing_ResetYesNoMenu(param0);
 
             Window_CopyToVRAM(&param0->drawingWindow);
         }
 
-        ov58_021D1CDC(param0->unk_2AC, 0);
+        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
         break;
     case 15:
         break;
@@ -1371,10 +1373,10 @@ void ov58_021D2434(UnionRoomDrawing *param0, int param1, u8 param2)
         return;
     }
 
-    ov58_021D2CB0(param0, param1);
+    UnionRoomDrawing_SetNextState(param0, param1);
 }
 
-static const u8 Unk_ov58_021D2F34[3][8][24] = {
+static const u8 sBrushPatterns[3][8][24] = {
     {
         { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x11, 0x0, 0x0, 0x0, 0x11, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 },
         { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x22, 0x0, 0x0, 0x0, 0x22, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 },
@@ -1407,7 +1409,7 @@ static const u8 Unk_ov58_021D2F34[3][8][24] = {
     },
 };
 
-static void ov58_021D2528(Window *param0, void *param1, int param2, int param3, int param4, int param5, int param6, int param7, int param8, int param9)
+static void UnionRoomDrawing_BlitBitmapRectClipped(Window *param0, void *param1, int param2, int param3, int param4, int param5, int param6, int param7, int param8, int param9)
 {
     if (param6 < 0) {
         int v0;
@@ -1442,7 +1444,7 @@ static void ov58_021D2528(Window *param0, void *param1, int param2, int param3, 
     Window_BlitBitmapRect(param0, param1, param2, param3, param4, param5, param6, param7, param8, param9);
 }
 
-static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int param3, int *param4, int *param5, int param6, int param7)
+static void UnionRoomDrawing_DrawLine(Window *param0, const u8 *param1, int param2, int param3, int *param4, int *param5, int param6, int param7)
 {
     int v0, v1, v2, v3;
     int v4 = *param4;
@@ -1470,7 +1472,7 @@ static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int para
             v3 = (v5 < v7) ? 1 : -1;
         }
 
-        ov58_021D2528(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
+        UnionRoomDrawing_BlitBitmapRectClipped(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
         v2 = v0 >> 1;
 
         while (++v4 <= v6) {
@@ -1479,7 +1481,7 @@ static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int para
                 v5 += v3;
             }
 
-            ov58_021D2528(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
+            UnionRoomDrawing_BlitBitmapRectClipped(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
         }
     } else {
         if (v5 > v7) {
@@ -1492,7 +1494,7 @@ static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int para
             v3 = (v4 < v6) ? 1 : -1;
         }
 
-        ov58_021D2528(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
+        UnionRoomDrawing_BlitBitmapRectClipped(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
         v2 = v1 >> 1;
 
         while (++v5 <= v7) {
@@ -1501,7 +1503,7 @@ static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int para
                 v4 += v3;
             }
 
-            ov58_021D2528(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
+            UnionRoomDrawing_BlitBitmapRectClipped(param0, (void *)param1, 0, 0, 6, 6, v4, v5, 6, 6);
         }
     }
 
@@ -1509,37 +1511,37 @@ static void ov58_021D25A8(Window *param0, const u8 *param1, int param2, int para
     *param5 = param3;
 }
 
-static void ov58_021D2720(UnkStruct_ov58_021D2820 *param0, UnkStruct_ov58_021D2754 *param1)
+static void UnionRoomDrawing_CopyPrevPoint(UnionRoomDrawingStatus *param0, UnionRoomDrawingPrevPoint *param1)
 {
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        param1[v0].unk_02 = param0[v0].unk_08_3;
+        param1[v0].hasPrev = param0[v0].pointCount;
 
-        if (param0[v0].unk_08_3 != 0) {
-            param1[v0].unk_00 = param0[v0].unk_00[param0[v0].unk_08_3 - 1];
-            param1[v0].unk_01 = param0[v0].unk_04[param0[v0].unk_08_3 - 1];
+        if (param0[v0].pointCount != 0) {
+            param1[v0].x = param0[v0].x[param0[v0].pointCount - 1];
+            param1[v0].y = param0[v0].y[param0[v0].pointCount - 1];
         }
     }
 }
 
-static void ov58_021D2754(Window *param0, UnkStruct_ov58_021D2820 *param1, UnkStruct_ov58_021D2754 *param2, int param3)
+static void UnionRoomDrawing_DrawStrokes(Window *param0, UnionRoomDrawingStatus *param1, UnionRoomDrawingPrevPoint *param2, int param3)
 {
     int v0, v1, v2, v3, v4 = 0, v5, v6;
     u32 v7;
 
     for (v2 = 0; v2 < 5; v2++) {
-        if (param1[v2].unk_08_3 != 0) {
-            if (param2[v2].unk_02) {
-                v5 = param2[v2].unk_00 - 9;
-                v6 = param2[v2].unk_01 - 17;
+        if (param1[v2].pointCount != 0) {
+            if (param2[v2].hasPrev) {
+                v5 = param2[v2].x - 9;
+                v6 = param2[v2].y - 17;
             }
 
-            for (v3 = 0; v3 < param1[v2].unk_08_3; v3++) {
-                v0 = param1[v2].unk_00[v3] - 9;
-                v1 = param1[v2].unk_04[v3] - 17;
+            for (v3 = 0; v3 < param1[v2].pointCount; v3++) {
+                v0 = param1[v2].x[v3] - 9;
+                v1 = param1[v2].y[v3] - 17;
 
-                ov58_021D25A8(param0, Unk_ov58_021D2F34[param1[v2].unk_08_6][param1[v2].unk_08_0], v0, v1, &v5, &v6, v3, param2[v2].unk_02);
+                UnionRoomDrawing_DrawLine(param0, sBrushPatterns[param1[v2].brushSize][param1[v2].penColor], v0, v1, &v5, &v6, v3, param2[v2].hasPrev);
 
                 v4 = 1;
             }
@@ -1550,23 +1552,23 @@ static void ov58_021D2754(Window *param0, UnkStruct_ov58_021D2820 *param1, UnkSt
         Window_CopyToVRAM(param0);
     }
 
-    ov58_021D2720(param1, param2);
+    UnionRoomDrawing_CopyPrevPoint(param1, param2);
 
     for (v2 = 0; v2 < 5; v2++) {
-        param1[v2].unk_08_3 = 0;
+        param1[v2].pointCount = 0;
     }
 }
 
-static void ov58_021D2820(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_UpdateRemoteCursors(UnionRoomDrawing *param0)
 {
     int v0;
-    UnkStruct_ov58_021D2820 *v1 = param0->drawingStatus;
+    UnionRoomDrawingStatus *v1 = param0->drawingStatus;
 
     for (v0 = 0; v0 < 5; v0++) {
         if (v0 != CommSys_CurNetId()) {
-            if ((v1[v0].unk_08_3 != 0) && (CommInfo_TrainerInfo(v0) != NULL)) {
+            if ((v1[v0].pointCount != 0) && (CommInfo_TrainerInfo(v0) != NULL)) {
                 Sprite_SetDrawFlag(param0->unk_23C[v0], TRUE);
-                ov58_021D1A10(param0->unk_23C[v0], v1[v0].unk_00[v1[v0].unk_08_3 - 1], v1[v0].unk_04[v1[v0].unk_08_3 - 1]);
+                UnionRoomDrawing_SetSpritePosition(param0->unk_23C[v0], v1[v0].x[v1[v0].pointCount - 1], v1[v0].y[v1[v0].pointCount - 1]);
             } else {
                 Sprite_SetDrawFlag(param0->unk_23C[v0], FALSE);
             }
@@ -1574,7 +1576,7 @@ static void ov58_021D2820(UnionRoomDrawing *param0)
     }
 }
 
-static void ov58_021D2888(u16 *param0)
+static void UnionRoomDrawing_AnimateCursorColor(u16 *param0)
 {
     fx32 v0;
     GXRgb v1;
@@ -1593,7 +1595,7 @@ static void ov58_021D2888(u16 *param0)
     GX_LoadOBJPltt((u16 *)&v1, 12 * 2, 2);
 }
 
-static int ov58_021D28C8(void)
+static int UnionRoomDrawing_CountConnectedTrainers(void)
 {
     int v0, v1;
     TrainerInfo *v2;
@@ -1611,12 +1613,12 @@ static int ov58_021D28C8(void)
     return v1;
 }
 
-static void ov58_021D28E4(Window *param0, int param1, u32 param2, UnionRoomDrawing *param3)
+static void UnionRoomDrawing_DrawPlayerNames(Window *param0, int param1, u32 param2, UnionRoomDrawing *param3)
 {
     int v0, v1 = CommSys_CurNetId();
     int v2;
 
-    if (!ov58_021D2A54(param3)) {
+    if (!UnionRoomDrawing_UpdateTrainerInfo(param3)) {
         return;
     }
 
@@ -1647,11 +1649,11 @@ static void ov58_021D28E4(Window *param0, int param1, u32 param2, UnionRoomDrawi
     }
 }
 
-static void ov58_021D29C8(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_SendDrawingStatus(UnionRoomDrawing *param0)
 {
     if (CommSys_CurNetId() == 0) {
         if (CommSys_IsServerQueueEmpty()) {
-            param0->localDrawingStatus.unk_09 = param0->drawingState;
+            param0->localDrawingStatus.state = param0->drawingState;
             param0->drawingStatusBroadcast[0] = param0->localDrawingStatus;
             CommSys_SendDataServer(120, param0->drawingStatusBroadcast, 10 * 5);
         }
@@ -1662,7 +1664,7 @@ static void ov58_021D29C8(UnionRoomDrawing *param0)
     }
 }
 
-static int ov58_021D2A30(void)
+static int UnionRoomDrawing_CountConnected(void)
 {
     int i, v0;
 
@@ -1675,12 +1677,12 @@ static int ov58_021D2A30(void)
     return v0;
 }
 
-int ov58_021D2A4C(void)
+int UnionRoomDrawing_GetConnectedCount(void)
 {
-    return ov58_021D2A30();
+    return UnionRoomDrawing_CountConnected();
 }
 
-static int ov58_021D2A54(UnionRoomDrawing *param0)
+static int UnionRoomDrawing_UpdateTrainerInfo(UnionRoomDrawing *param0)
 {
     int v0, v1 = 0;
 
@@ -1698,7 +1700,7 @@ static int ov58_021D2A54(UnionRoomDrawing *param0)
     return v1;
 }
 
-static void ov58_021D2A98(UnionRoomDrawing *param0, int param1, int param2)
+static void UnionRoomDrawing_ShowMessage(UnionRoomDrawing *param0, int param1, int param2)
 {
     String *v0 = String_Init(40 * 2, HEAP_ID_DRAWING);
 
@@ -1720,7 +1722,7 @@ static void ov58_021D2A98(UnionRoomDrawing *param0, int param1, int param2)
     }
 }
 
-static int ov58_021D2B0C(int param0)
+static int UnionRoomDrawing_IsMessageDone(int param0)
 {
     if (param0 == 0xff) {
         return 1;
@@ -1733,12 +1735,12 @@ static int ov58_021D2B0C(int param0)
     return 0;
 }
 
-static void ov58_021D2B2C(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_EraseMessageBox(UnionRoomDrawing *param0)
 {
     Window_EraseMessageBox(&param0->unk_33C, 0);
 }
 
-static void ov58_021D2B3C(UnionRoomDrawing *param0, int param1)
+static void UnionRoomDrawing_SetMaxConnections(UnionRoomDrawing *param0, int param1)
 {
     if (CommSys_CurNetId() == 0) {
         int v0 = CommSys_ConnectedCount() + param1;
@@ -1751,9 +1753,9 @@ static void ov58_021D2B3C(UnionRoomDrawing *param0, int param1)
     }
 }
 
-static int ov58_021D2B5C(UnionRoomDrawing *param0)
+static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0)
 {
-    int v0 = ov58_021D2A30();
+    int v0 = UnionRoomDrawing_CountConnected();
 
     switch (v0) {
     case 1:
@@ -1766,8 +1768,8 @@ static int ov58_021D2B5C(UnionRoomDrawing *param0)
             CommManager_SetMaxNumConnections(1);
 
             if (param0->unk_945C) {
-                ov58_021D2D10(param0);
-                Sprite_SetAnim(param0->unk_2AC[8], Unk_ov58_021D2EEC[8][2]);
+                UnionRoomDrawing_ResetYesNoMenu(param0);
+                Sprite_SetAnim(param0->unk_2AC[8], sPenColorSpriteData[8][2]);
             }
 
             return 2;
@@ -1780,9 +1782,9 @@ static int ov58_021D2B5C(UnionRoomDrawing *param0)
 
         if (v0 < param0->unk_378) {
             if (param0->drawingState == 2) {
-                ov58_021D2B3C(param0, 0);
+                UnionRoomDrawing_SetMaxConnections(param0, 0);
             } else {
-                ov58_021D2B3C(param0, 1);
+                UnionRoomDrawing_SetMaxConnections(param0, 1);
             }
         }
         break;
@@ -1797,7 +1799,7 @@ static int ov58_021D2B5C(UnionRoomDrawing *param0)
 
         if (param0->unk_9468) {
             if (!(param0->connectedBitmap & param0->unk_946C)) {
-                ov58_021D2B3C(param0, 1);
+                UnionRoomDrawing_SetMaxConnections(param0, 1);
 
                 param0->drawingState = 1;
                 param0->unk_9468 = 0;
@@ -1806,7 +1808,7 @@ static int ov58_021D2B5C(UnionRoomDrawing *param0)
         }
     }
 
-    param0->unk_378 = ov58_021D2A30();
+    param0->unk_378 = UnionRoomDrawing_CountConnected();
 
     if (param0->connectedCount < CommSys_ConnectedCount()) {
         param0->drawingState = 2;
@@ -1818,25 +1820,25 @@ static int ov58_021D2B5C(UnionRoomDrawing *param0)
     return 1;
 }
 
-static void ov58_021D2CB0(UnionRoomDrawing *param0, int param1)
+static void UnionRoomDrawing_SetNextState(UnionRoomDrawing *param0, int param1)
 {
     param0->unk_36C = param1;
 }
 
-static void ov58_021D2CB8(UnionRoomDrawing *param0, int param1)
+static void UnionRoomDrawing_ApplyNextState(UnionRoomDrawing *param0, int param1)
 {
     if (param0->unk_368 != param0->unk_36C) {
         if (param1 != 2) {
             param0->unk_368 = param0->unk_36C;
         } else {
-            if (Unk_ov58_021D3180[param0->unk_36C].unk_04) {
+            if (sStateHandlers[param0->unk_36C].runInState2) {
                 param0->unk_368 = param0->unk_36C;
             }
         }
     }
 }
 
-static BOOL ov58_021D2CEC(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1)
+static BOOL UnionRoomDrawing_InitYesNoMenu(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1)
 {
     if (!param0->unk_945C) {
         YesNoTouchMenu_InitWithParams(param0->unk_9454, param1);
@@ -1847,7 +1849,7 @@ static BOOL ov58_021D2CEC(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1
     }
 }
 
-static void ov58_021D2D10(UnionRoomDrawing *param0)
+static void UnionRoomDrawing_ResetYesNoMenu(UnionRoomDrawing *param0)
 {
     if (param0->unk_945C) {
         YesNoTouchMenu_Reset(param0->unk_9454);
@@ -1855,9 +1857,9 @@ static void ov58_021D2D10(UnionRoomDrawing *param0)
     }
 }
 
-static int ov58_021D2D30(UnionRoomDrawing *param0)
+static int UnionRoomDrawing_IsCancelPressed(UnionRoomDrawing *param0)
 {
-    int v0 = TouchScreen_CheckRectanglePressed(Unk_ov58_021D2DD4);
+    int v0 = TouchScreen_CheckRectanglePressed(sCancelButtonTouchRect);
 
     if (v0 != 0xffffffff) {
         return 1;
@@ -1866,32 +1868,32 @@ static int ov58_021D2D30(UnionRoomDrawing *param0)
     return 0;
 }
 
-static void ov58_021D2D4C(UnkStruct_ov58_021D2820 *param0, TouchPadDataBuffer *param1, int param2, int param3)
+static void UnionRoomDrawing_UpdateLocalStatus(UnionRoomDrawingStatus *param0, TouchPadDataBuffer *param1, int param2, int param3)
 {
     int v0, v1;
 
     if (param1->bufferSize != 0) {
-        param0->unk_00[0] = param1->buffer[0].x;
-        param0->unk_04[0] = param1->buffer[0].y;
+        param0->x[0] = param1->buffer[0].x;
+        param0->y[0] = param1->buffer[0].y;
 
         v1 = param1->bufferSize - 1;
 
-        param0->unk_00[1] = param1->buffer[v1].x;
-        param0->unk_04[1] = param1->buffer[v1].y;
+        param0->x[1] = param1->buffer[v1].x;
+        param0->y[1] = param1->buffer[v1].y;
 
         for (v0 = 0; v0 < 2; v0++) {
-            if ((param0->unk_00[v0] + param0->unk_04[v0]) == 0) {
+            if ((param0->x[v0] + param0->y[v0]) == 0) {
                 param1->bufferSize = 0;
             }
         }
     }
 
     if (param1->bufferSize >= 2) {
-        param0->unk_08_3 = 2;
+        param0->pointCount = 2;
     } else {
-        param0->unk_08_3 = param1->bufferSize;
+        param0->pointCount = param1->bufferSize;
     }
 
-    param0->unk_08_0 = param2;
-    param0->unk_08_6 = param3;
+    param0->penColor = param2;
+    param0->brushSize = param3;
 }
