@@ -22,7 +22,7 @@
 #include "overlay065/struct_ov65_0222F6EC.h"
 #include "overlay065/struct_ov65_02234E50.h"
 #include "overlay065/struct_ov65_022354D8.h"
-#include "overlay098/struct_ov98_02247168.h"
+#include "gts/struct_gts_menu_args.h"
 
 #include "assert.h"
 #include "bag.h"
@@ -716,7 +716,7 @@ static void ov65_0222E01C(UnkStruct_ov65_0222EBE0 *param0)
 int ov65_0222E2A8(ApplicationManager *appMan, int *param1)
 {
     UnkStruct_ov65_0222EBE0 *v0;
-    UnkStruct_ov98_02247168 *v1;
+    GTSMenuArgs *v1;
     u32 v2;
 
     switch (*param1) {
@@ -875,7 +875,7 @@ static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
 int ov65_0222E548(ApplicationManager *appMan, int *param1)
 {
     UnkStruct_ov65_0222EBE0 *v0 = ApplicationManager_Data(appMan);
-    UnkStruct_ov98_02247168 *v1;
+    GTSMenuArgs *v1;
 
     ov65_0222E47C(v0);
 

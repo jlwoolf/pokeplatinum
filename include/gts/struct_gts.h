@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV98_02246E88_H
-#define POKEPLATINUM_STRUCT_OV98_02246E88_H
+#ifndef POKEPLATINUM_STRUCT_GTS_STATE_H
+#define POKEPLATINUM_STRUCT_GTS_STATE_H
 
 #include <dwc.h>
 #include <nnsys.h>
@@ -37,6 +37,6 @@ typedef struct {
     String *unk_114;
     String *unk_118;
     BOOL unk_11C;
-} UnkStruct_ov98_02246E88;
+} GTSState;
 
-#endif // POKEPLATINUM_STRUCT_OV98_02246E88_H
+#endif // POKEPLATINUM_STRUCT_GTS_STATE_H

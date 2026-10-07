@@ -1,4 +1,4 @@
-#include "overlay098/ov98_02246C20.h"
+#include "gts/gts.h"
 
 #include <dwc.h>
 #include <nitro.h>
@@ -9,10 +9,10 @@
 #include "applications/title_screen.h"
 #include "gts_application/networking.h"
 #include "overlay065/ov65_0222DCE0.h"
-#include "overlay098/ov98_022471C8.h"
-#include "overlay098/ov98_022499C8.h"
-#include "overlay098/struct_ov98_02246E88.h"
-#include "overlay098/struct_ov98_02247168.h"
+#include "gts/gts_screen.h"
+#include "gts/gts_email.h"
+#include "gts/struct_gts.h"
+#include "gts/struct_gts_menu_args.h"
 
 #include "error_handling.h"
 #include "game_overlay.h"
@@ -37,43 +37,43 @@
 FS_EXTERN_OVERLAY(overlay65);
 FS_EXTERN_OVERLAY(game_opening);
 FS_EXTERN_OVERLAY(gts_application);
-FS_EXTERN_OVERLAY(overlay98);
+FS_EXTERN_OVERLAY(gts);
 
-typedef void *(*UnkFuncPtr_ov98_02249B4C)(UnkStruct_ov98_02246E88 *);
-typedef void (*UnkFuncPtr_ov98_02249B4C_1)(UnkStruct_ov98_02246E88 *);
+typedef void *(*GTSAppNewFunc)(GTSState *);
+typedef void (*GTSAppFreeFunc)(GTSState *);
 
-static void ov98_02246E08(UnkStruct_ov98_02246E88 *param0);
-static void ov98_02246E54(UnkStruct_ov98_02246E88 *param0);
-static void *ov98_02246EAC(DWCAllocType param0, u32 param1, int param2);
-static void ov98_02246ED4(DWCAllocType param0, void *param1, u32 param2);
-static void *ov98_02246FBC(UnkStruct_ov98_02246E88 *param0);
-static void ov98_02246FC0(UnkStruct_ov98_02246E88 *param0);
-static void *ov98_02247168(UnkStruct_ov98_02246E88 *param0);
-static void ov98_02247198(UnkStruct_ov98_02246E88 *param0);
-static void *ov98_02246FC4(UnkStruct_ov98_02246E88 *param0);
-static void ov98_02246FFC(UnkStruct_ov98_02246E88 *param0);
-static void *ov98_02247070(UnkStruct_ov98_02246E88 *param0);
-static void ov98_022470B8(UnkStruct_ov98_02246E88 *param0);
-static void *ov98_022470F8(UnkStruct_ov98_02246E88 *param0);
-static void ov98_02247134(UnkStruct_ov98_02246E88 *param0);
+static void GTS_LoadNetworking(GTSState *param0);
+static void GTS_UnloadNetworking(GTSState *param0);
+static void *GTS_DWCAlloc(DWCAllocType param0, u32 param1, int param2);
+static void GTS_DWCFree(DWCAllocType param0, void *param1, u32 param2);
+static void *GTS_NewState(GTSState *param0);
+static void GTS_FreeState(GTSState *param0);
+static void *GTS_NewMenuArgs(GTSState *param0);
+static void GTS_FreeMenuArgs(GTSState *param0);
+static void *GTS_NewEmailEntry(GTSState *param0);
+static void GTS_ProcessEmailEntry(GTSState *param0);
+static void *GTS_NewCodeEntry(GTSState *param0);
+static void GTS_ProcessCodeEntry(GTSState *param0);
+static void *GTS_NewNumberEntry(GTSState *param0);
+static void GTS_ProcessNumberEntry(GTSState *param0);
 
-static NNSFndHeapHandle Unk_ov98_02249E20;
+static NNSFndHeapHandle sDWCHeap;
 
 const ApplicationManagerTemplate gWiiMessageAppTemplate = {
-    ov98_02246C20,
-    ov98_02246C98,
-    ov98_02246DC0,
+    GTS_Init,
+    GTS_Main,
+    GTS_Exit,
     0xFFFFFFFF
 };
 
-static const ApplicationManagerTemplate Unk_ov98_02249B3C = {
-    ov98_022471C8,
-    ov98_022473D8,
-    ov98_02247440,
+static const ApplicationManagerTemplate sGTSMenuAppTemplate = {
+    GTSScreen_Init,
+    GTSScreen_Main,
+    GTSScreen_Exit,
     0xFFFFFFFF
 };
 
-static const ApplicationManagerTemplate Unk_ov98_02249B2C = {
+static const ApplicationManagerTemplate sOverlay65AppTemplate = {
     ov65_0222E2A8,
     ov65_0222E3FC,
     ov65_0222E548,
@@ -81,28 +81,28 @@ static const ApplicationManagerTemplate Unk_ov98_02249B2C = {
 };
 
 static const struct {
-    UnkFuncPtr_ov98_02249B4C unk_00;
-    UnkFuncPtr_ov98_02249B4C_1 unk_04;
+    GTSAppNewFunc unk_00;
+    GTSAppFreeFunc unk_04;
     const ApplicationManagerTemplate *unk_08;
     int unk_0C;
-} Unk_ov98_02249B4C[] = {
-    { ov98_02246FBC, ov98_02246FC0, &Unk_ov98_02249B3C, 0x0 },
-    { ov98_02246FC4, ov98_02246FFC, &gNumberEntryAppTemplate, 0x0 },
-    { ov98_02247070, ov98_022470B8, &gNumberEntryAppTemplate, 0x0 },
-    { ov98_022470F8, ov98_02247134, &gNumberEntryAppTemplate, 0x0 },
-    { ov98_022470F8, ov98_02247134, &gNumberEntryAppTemplate, 0x0 },
-    { ov98_02247168, ov98_02247198, &Unk_ov98_02249B2C, 0x1 }
+} sAppTable[] = {
+    { GTS_NewState, GTS_FreeState, &sGTSMenuAppTemplate, 0x0 },
+    { GTS_NewEmailEntry, GTS_ProcessEmailEntry, &gNumberEntryAppTemplate, 0x0 },
+    { GTS_NewCodeEntry, GTS_ProcessCodeEntry, &gNumberEntryAppTemplate, 0x0 },
+    { GTS_NewNumberEntry, GTS_ProcessNumberEntry, &gNumberEntryAppTemplate, 0x0 },
+    { GTS_NewNumberEntry, GTS_ProcessNumberEntry, &gNumberEntryAppTemplate, 0x0 },
+    { GTS_NewMenuArgs, GTS_FreeMenuArgs, &sOverlay65AppTemplate, 0x1 }
 };
 
-int ov98_02246C20(ApplicationManager *appMan, int *param1)
+int GTS_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov98_02246E88 *v0;
+    GTSState *v0;
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_108, 0x28000);
     Heap_Create(HEAP_ID_SYSTEM, HEAP_ID_NETWORK_ICON, HEAP_SIZE_NETWORK_ICON);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov98_02246E88), HEAP_ID_108);
-    MI_CpuClear8(v0, sizeof(UnkStruct_ov98_02246E88));
+    v0 = ApplicationManager_NewData(appMan, sizeof(GTSState), HEAP_ID_108);
+    MI_CpuClear8(v0, sizeof(GTSState));
     v0->saveData = ((ApplicationArgs *)ApplicationManager_Args(appMan))->saveData;
     v0->options = SaveData_GetOptions(v0->saveData);
     v0->unk_114 = String_Init(100, HEAP_ID_108);
@@ -113,9 +113,9 @@ int ov98_02246C20(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-int ov98_02246C98(ApplicationManager *appMan, int *param1)
+int GTS_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov98_02246E88 *v0 = ApplicationManager_Data(appMan);
+    GTSState *v0 = ApplicationManager_Data(appMan);
     BOOL v1;
 
     if (v0->unk_80 == 1) {
@@ -126,33 +126,33 @@ int ov98_02246C98(ApplicationManager *appMan, int *param1)
 
     switch (*param1) {
     case 0:
-        ov98_02246E08(v0);
+        GTS_LoadNetworking(v0);
         *param1 = 1;
         break;
     case 1:
         if (WirelessDriver_IsReady()) {
-            Unk_ov98_02249E20 = v0->unk_10;
-            DWC_SetMemFunc(ov98_02246EAC, ov98_02246ED4);
+            sDWCHeap = v0->unk_10;
+            DWC_SetMemFunc(GTS_DWCAlloc, GTS_DWCFree);
             v0->unk_80 = 1;
             *param1 = 2;
         }
         break;
     case 2:
-        v0->appMan = ApplicationManager_New(Unk_ov98_02249B4C[v0->unk_8C].unk_08, Unk_ov98_02249B4C[v0->unk_8C].unk_00(v0), HEAP_ID_108);
+        v0->appMan = ApplicationManager_New(sAppTable[v0->unk_8C].unk_08, sAppTable[v0->unk_8C].unk_00(v0), HEAP_ID_108);
         v0->unk_84 = v0->unk_8C;
         v0->unk_8C = 6;
         *param1 = 3;
         break;
     case 3:
         if (ApplicationManager_Exec(v0->appMan) == 1) {
-            Unk_ov98_02249B4C[v0->unk_84].unk_04(v0);
+            sAppTable[v0->unk_84].unk_04(v0);
             ApplicationManager_Free(v0->appMan);
 
             if (v0->unk_8C == 6) {
                 *param1 = 4;
             } else {
-                if (Unk_ov98_02249B4C[v0->unk_8C].unk_0C == 1) {
-                    ov98_02246E54(v0);
+                if (sAppTable[v0->unk_8C].unk_0C == 1) {
+                    GTS_UnloadNetworking(v0);
                     *param1 = 2;
                 } else if (v0->unk_80 == 1) {
                     *param1 = 2;
@@ -169,11 +169,11 @@ int ov98_02246C98(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-int ov98_02246DC0(ApplicationManager *appMan, int *param1)
+int GTS_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov98_02246E88 *v0 = ApplicationManager_Data(appMan);
+    GTSState *v0 = ApplicationManager_Data(appMan);
 
-    ov98_02246E54(v0);
+    GTS_UnloadNetworking(v0);
 
     String_Free(v0->unk_118);
     String_Free(v0->unk_114);
@@ -185,7 +185,7 @@ int ov98_02246DC0(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static void ov98_02246E08(UnkStruct_ov98_02246E88 *param0)
+static void GTS_LoadNetworking(GTSState *param0)
 {
     if (param0->unk_80 == 0) {
         Overlay_LoadByID(FS_OVERLAY_ID(gts_application), 2);
@@ -200,7 +200,7 @@ static void ov98_02246E08(UnkStruct_ov98_02246E88 *param0)
     }
 }
 
-static void ov98_02246E54(UnkStruct_ov98_02246E88 *param0)
+static void GTS_UnloadNetworking(GTSState *param0)
 {
     if (param0->unk_80 == 1) {
         NNS_FndDestroyExpHeap(param0->unk_10);
@@ -215,34 +215,34 @@ static void ov98_02246E54(UnkStruct_ov98_02246E88 *param0)
     }
 }
 
-void ov98_02246E88(UnkStruct_ov98_02246E88 *param0, int param1, int param2)
+void GTS_SetNextApp(GTSState *param0, int param1, int param2)
 {
     param0->unk_8C = param1;
     param0->unk_90 = param2;
 }
 
-void ov98_02246E94(UnkStruct_ov98_02246E88 *param0)
+void GTS_RequestExit(GTSState *param0)
 {
     param0->unk_8C = 6;
 }
 
-void ov98_02246E9C(UnkStruct_ov98_02246E88 *param0, int param1)
+void GTS_SetNextScreen(GTSState *param0, int param1)
 {
     param0->unk_7E = param1;
 }
 
-int ov98_02246EA4(UnkStruct_ov98_02246E88 *param0)
+int GTS_GetNextScreen(GTSState *param0)
 {
     return param0->unk_7E;
 }
 
-static void *ov98_02246EAC(DWCAllocType param0, u32 param1, int param2)
+static void *GTS_DWCAlloc(DWCAllocType param0, u32 param1, int param2)
 {
 #pragma unused(param0)
     void *v0;
     OSIntrMode v1;
     v1 = OS_DisableInterrupts();
-    v0 = NNS_FndAllocFromExpHeapEx(Unk_ov98_02249E20, param1, param2);
+    v0 = NNS_FndAllocFromExpHeapEx(sDWCHeap, param1, param2);
 
     OS_RestoreInterrupts(v1);
 
@@ -253,7 +253,7 @@ static void *ov98_02246EAC(DWCAllocType param0, u32 param1, int param2)
     return v0;
 }
 
-static void ov98_02246ED4(DWCAllocType param0, void *param1, u32 param2)
+static void GTS_DWCFree(DWCAllocType param0, void *param1, u32 param2)
 {
 #pragma unused(param0, param2)
     OSIntrMode v0;
@@ -264,82 +264,82 @@ static void ov98_02246ED4(DWCAllocType param0, void *param1, u32 param2)
 
     v0 = OS_DisableInterrupts();
 
-    NNS_FndFreeToExpHeap(Unk_ov98_02249E20, param1);
+    NNS_FndFreeToExpHeap(sDWCHeap, param1);
     OS_RestoreInterrupts(v0);
 }
 
-void ov98_02246EF8(UnkStruct_ov98_02246E88 *param0)
+void GTS_SaveEmailString(GTSState *param0)
 {
     char *v0 = Heap_Alloc(HEAP_ID_108, sizeof(char) * 100);
 
-    ov98_022499C8(param0->unk_114, v0, HEAP_ID_108);
+    GTSEmail_ConvertString(param0->unk_114, v0, HEAP_ID_108);
     Email_SetEmailString(param0->saveData, v0);
     Heap_Free(v0);
 }
 
-void ov98_02246F24(UnkStruct_ov98_02246E88 *param0)
+void GTS_SaveRegistrationValues(GTSState *param0)
 {
     Email_SetValue(param0->saveData, 1, param0->unk_7C);
     Email_SetValue(param0->saveData, 2, param0->unk_10C);
 }
 
-void ov98_02246F48(UnkStruct_ov98_02246E88 *param0)
+void GTS_SaveEmailValue(GTSState *param0)
 {
     Email_SetValue(param0->saveData, 3, param0->unk_108);
 }
 
-void ov98_02246F5C(UnkStruct_ov98_02246E88 *param0)
+void GTS_InitTrainer(GTSState *param0)
 {
     u32 v0 = WorldExchange_InitTrainer(param0->saveData, &param0->unk_9C);
-    ov98_02246F94(param0, v0);
+    GTS_SetTrainerId(param0, v0);
 }
 
-void ov98_02246F74(UnkStruct_ov98_02246E88 *param0)
+void GTS_LoadTrainerEmail(GTSState *param0)
 {
-    ov98_022499C8(param0->unk_114, param0->unk_9C.email, HEAP_ID_108);
+    GTSEmail_ConvertString(param0->unk_114, param0->unk_9C.email, HEAP_ID_108);
 }
 
-void ov98_02246F88(UnkStruct_ov98_02246E88 *param0)
+void GTS_SetRegistrationCode(GTSState *param0)
 {
     param0->unk_9C.registrationCode = param0->unk_10C;
 }
 
-void ov98_02246F94(UnkStruct_ov98_02246E88 *param0, u32 param1)
+void GTS_SetTrainerId(GTSState *param0, u32 param1)
 {
     param0->unk_7C = param1;
 }
 
-u32 ov98_02246F9C(UnkStruct_ov98_02246E88 *param0)
+u32 GTS_GetRegistrationCode(GTSState *param0)
 {
     return param0->unk_10C;
 }
 
-u32 ov98_02246FA4(UnkStruct_ov98_02246E88 *param0)
+u32 GTS_GetEmailValue(GTSState *param0)
 {
     return param0->unk_108;
 }
 
-void ov98_02246FAC(UnkStruct_ov98_02246E88 *param0, int param1)
+void GTS_SetResult(GTSState *param0, int param1)
 {
     param0->unk_110 = param1;
 }
 
-int ov98_02246FB4(UnkStruct_ov98_02246E88 *param0)
+int GTS_GetResult(GTSState *param0)
 {
     return param0->unk_110;
 }
 
-static void *ov98_02246FBC(UnkStruct_ov98_02246E88 *param0)
+static void *GTS_NewState(GTSState *param0)
 {
     return param0;
 }
 
-static void ov98_02246FC0(UnkStruct_ov98_02246E88 *param0)
+static void GTS_FreeState(GTSState *param0)
 {
     return;
 }
 
-void *ov98_02246FC4(UnkStruct_ov98_02246E88 *param0)
+void *GTS_NewEmailEntry(GTSState *param0)
 {
     int v0[4];
 
@@ -352,27 +352,27 @@ void *ov98_02246FC4(UnkStruct_ov98_02246E88 *param0)
     return param0->unk_98;
 }
 
-void ov98_02246FFC(UnkStruct_ov98_02246E88 *param0)
+void GTS_ProcessEmailEntry(GTSState *param0)
 {
     NumberEntryArgs *v0 = param0->unk_98;
-    if (ov98_02249A80(v0->numberString, HEAP_ID_108)) {
-        ov98_02246FAC(param0, 1);
-    } else if (ov98_02246FB4(param0) == 2) {
+    if (GTSEmail_IsAllZeros(v0->numberString, HEAP_ID_108)) {
+        GTS_SetResult(param0, 1);
+    } else if (GTS_GetResult(param0) == 2) {
         if (String_Compare(param0->unk_114, v0->numberString) != 0) {
-            ov98_02246FAC(param0, 3);
+            GTS_SetResult(param0, 3);
         } else {
-            ov98_02246FAC(param0, 0);
+            GTS_SetResult(param0, 0);
         }
     } else {
         String_Copy(param0->unk_114, v0->numberString);
-        ov98_02246FAC(param0, 2);
+        GTS_SetResult(param0, 2);
     }
 
     NumberEntryArgs_Free(v0);
-    ov98_02246E88(param0, 0, 0);
+    GTS_SetNextApp(param0, 0, 0);
 }
 
-void *ov98_02247070(UnkStruct_ov98_02246E88 *param0)
+void *GTS_NewCodeEntry(GTSState *param0)
 {
     int v0[4];
 
@@ -385,17 +385,17 @@ void *ov98_02247070(UnkStruct_ov98_02246E88 *param0)
     return param0->unk_98;
 }
 
-void ov98_022470B8(UnkStruct_ov98_02246E88 *param0)
+void GTS_ProcessCodeEntry(GTSState *param0)
 {
     NumberEntryArgs *v0 = param0->unk_98;
     BOOL v1;
     param0->unk_10C = String_AtoI(v0->numberString, &v1) % 10000;
     GF_ASSERT(v1);
     NumberEntryArgs_Free(v0);
-    ov98_02246E88(param0, 0, 0);
+    GTS_SetNextApp(param0, 0, 0);
 }
 
-void *ov98_022470F8(UnkStruct_ov98_02246E88 *param0)
+void *GTS_NewNumberEntry(GTSState *param0)
 {
     int v0[4];
 
@@ -408,20 +408,20 @@ void *ov98_022470F8(UnkStruct_ov98_02246E88 *param0)
     return param0->unk_98;
 }
 
-void ov98_02247134(UnkStruct_ov98_02246E88 *param0)
+void GTS_ProcessNumberEntry(GTSState *param0)
 {
     NumberEntryArgs *v0 = param0->unk_98;
     BOOL v1;
     param0->unk_108 = String_AtoI(v0->numberString, &v1);
     GF_ASSERT(v1);
     NumberEntryArgs_Free(v0);
-    ov98_02246E88(param0, 0, 0);
+    GTS_SetNextApp(param0, 0, 0);
 }
 
-static void *ov98_02247168(UnkStruct_ov98_02246E88 *param0)
+static void *GTS_NewMenuArgs(GTSState *param0)
 {
-    UnkStruct_ov98_02247168 *v0 = Heap_Alloc(HEAP_ID_108, sizeof(UnkStruct_ov98_02247168));
-    MI_CpuClear8(v0, sizeof(UnkStruct_ov98_02247168));
+    GTSMenuArgs *v0 = Heap_Alloc(HEAP_ID_108, sizeof(GTSMenuArgs));
+    MI_CpuClear8(v0, sizeof(GTSMenuArgs));
 
     v0->saveData = param0->saveData;
     v0->unk_04 = 1;
@@ -432,14 +432,14 @@ static void *ov98_02247168(UnkStruct_ov98_02246E88 *param0)
     return param0->unk_98;
 }
 
-static void ov98_02247198(UnkStruct_ov98_02246E88 *param0)
+static void GTS_FreeMenuArgs(GTSState *param0)
 {
-    UnkStruct_ov98_02247168 *v0 = param0->unk_98;
+    GTSMenuArgs *v0 = param0->unk_98;
 
     if (WiFiList_HasValidLogin(param0->saveData)) {
         SystemFlag_SetConnectedToWiFi(SaveData_GetVarsFlags(param0->saveData));
     }
 
     Heap_Free(param0->unk_98);
-    ov98_02246E88(param0, 0, 0);
+    GTS_SetNextApp(param0, 0, 0);
 }

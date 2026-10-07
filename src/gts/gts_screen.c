@@ -1,4 +1,4 @@
-#include "overlay098/ov98_022471C8.h"
+#include "gts/gts_screen.h"
 
 #include <dwc.h>
 #include <nitro.h>
@@ -12,9 +12,9 @@
 #include "gts_application/networking.h"
 #include "nintendo_wfc/main.h"
 #include "overlay061/struct_ov61_0222C3B0.h"
-#include "overlay098/ov98_02246C20.h"
-#include "overlay098/ov98_022499C8.h"
-#include "overlay098/struct_ov98_02246E88.h"
+#include "gts/gts.h"
+#include "gts/gts_email.h"
+#include "gts/struct_gts.h"
 
 #include "bg_window.h"
 #include "colored_arrow.h"
@@ -51,7 +51,7 @@
 #include "wifi_list.h"
 
 typedef struct {
-    UnkStruct_ov98_02246E88 *unk_00;
+    GTSState *unk_00;
     BgConfig *unk_04;
     int unk_08;
     int unk_0C;
@@ -93,129 +93,129 @@ typedef struct {
     ColoredArrow *unk_E4;
     s32 unk_E8;
     UnkStruct_ov61_0222C3B0 unk_EC;
-} UnkStruct_ov98_02247704;
+} GTSScreen;
 
 typedef struct {
     u32 unk_00;
     u32 unk_04;
-} UnkStruct_ov98_02249BDC;
+} GTSMenuEntry;
 
-int ov98_022471C8(ApplicationManager *appMan, int *param1);
-int ov98_022473D8(ApplicationManager *appMan, int *param1);
-int ov98_02247440(ApplicationManager *appMan, int *param1);
-static void ov98_022474E8(void *param0);
-static void ov98_02247510(BgConfig *param0);
-static void ov98_022476D0(BgConfig *param0);
-static void ov98_02247704(UnkStruct_ov98_02247704 *param0);
-static void ov98_02247A24(UnkStruct_ov98_02247704 *param0);
-static void ov98_02247ACC(UnkStruct_ov98_02247704 *param0);
-static void ov98_02247AE8(UnkStruct_ov98_02247704 *param0, int param1, int param2);
-static void ov98_02247AF0(UnkStruct_ov98_02247704 *param0);
-static void ov98_02247B0C(UnkStruct_ov98_02247704 *param0);
-static Menu *ov98_02247B24(BgConfig *param0, int param1, int param2);
-static int ov98_02247B98(UnkStruct_ov98_02247704 *param0);
-static int ov98_02247D30(UnkStruct_ov98_02247704 *param0);
-static int ov98_02247D50(UnkStruct_ov98_02247704 *param0);
-static int ov98_02247E38(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248684(UnkStruct_ov98_02247704 *param0);
-static int ov98_022487AC(UnkStruct_ov98_02247704 *param0);
-static int ov98_022487CC(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248804(UnkStruct_ov98_02247704 *param0);
-static int ov98_022488F8(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248954(UnkStruct_ov98_02247704 *param0);
-static int ov98_0224897C(UnkStruct_ov98_02247704 *param0);
-static int ov98_022489B4(UnkStruct_ov98_02247704 *param0);
-static int ov98_022489DC(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248A68(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248B14(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248B24(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248BFC(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248C60(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248C88(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248DF4(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248EC0(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248EE0(UnkStruct_ov98_02247704 *param0);
-static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249168(UnkStruct_ov98_02247704 *param0);
-static int ov98_022491CC(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249238(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249320(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249414(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249438(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249464(UnkStruct_ov98_02247704 *param0);
-static int ov98_022494A0(UnkStruct_ov98_02247704 *param0);
-static int ov98_022494C0(UnkStruct_ov98_02247704 *param0);
-static int ov98_022495C4(UnkStruct_ov98_02247704 *param0);
-static int ov98_022496A8(UnkStruct_ov98_02247704 *param0);
-static int ov98_022496C0(UnkStruct_ov98_02247704 *param0);
-static int ov98_022496EC(UnkStruct_ov98_02247704 *param0);
-static int ov98_02249798(UnkStruct_ov98_02247704 *param0);
-static int ov98_022497F8(UnkStruct_ov98_02247704 *param0);
-static void ov98_02249714(UnkStruct_ov98_02247704 *param0, MessageLoader *param1, int param2, int param3, u16 param4);
-static int ov98_0224977C(int param0);
-static int ov98_02249894(Window *param0, String *param1, int param2, int param3, u32 param4, int param5);
-void ov98_022498CC(Window *param0, String *param1, int param2, int param3, int param4, TextColor param5);
-static void ov98_02249900(UnkStruct_ov98_02247704 *param0, int param1);
-static void ov98_02249964(UnkStruct_ov98_02247704 *param0, int param1, int param2);
-static void ov98_022499A0(ListMenu *param0, u32 param1, u8 param2);
-static void ov98_022499B4(ListMenu *param0, u32 param1, u8 param2);
+int GTSScreen_Init(ApplicationManager *appMan, int *param1);
+int GTSScreen_Main(ApplicationManager *appMan, int *param1);
+int GTSScreen_Exit(ApplicationManager *appMan, int *param1);
+static void GTSScreen_VBlankCallback(void *param0);
+static void GTSScreen_InitGraphics(BgConfig *param0);
+static void GTSScreen_FreeBackgrounds(BgConfig *param0);
+static void GTSScreen_LoadGraphics(GTSScreen *param0);
+static void GTSScreen_InitWindows(GTSScreen *param0);
+static void GTSScreen_FreeWindows(GTSScreen *param0);
+static void GTSScreen_SetNextScreen(GTSScreen *param0, int param1, int param2);
+static void GTSScreen_AddWaitDial(GTSScreen *param0);
+static void GTSScreen_DestroyWaitDial(GTSScreen *param0);
+static Menu *GTSScreen_MakeYesNoMenu(BgConfig *param0, int param1, int param2);
+static int GTSScreen_MainMenu(GTSScreen *param0);
+static int GTSScreen_CheckWiiNumber(GTSScreen *param0);
+static int GTSScreen_SetMessageReception(GTSScreen *param0);
+static int GTSScreen_DeleteSettings(GTSScreen *param0);
+static int GTSScreen_RegisterWiiNumber(GTSScreen *param0);
+static int GTSScreen_StartEmailEntry(GTSScreen *param0);
+static int GTSScreen_EmailEntryResult(GTSScreen *param0);
+static int GTSScreen_ConfirmWiiNumber(GTSScreen *param0);
+static int GTSScreen_ConfirmConnect(GTSScreen *param0);
+static int GTSScreen_ShowDisconnecting(GTSScreen *param0);
+static int GTSScreen_Disconnect(GTSScreen *param0);
+static int GTSScreen_ShowDisconnected(GTSScreen *param0);
+static int GTSScreen_ConnectWifi(GTSScreen *param0);
+static int GTSScreen_WaitConnect(GTSScreen *param0);
+static int GTSScreen_StartNasLogin(GTSScreen *param0);
+static int GTSScreen_WaitNasLogin(GTSScreen *param0);
+static int GTSScreen_InitCredentials(GTSScreen *param0);
+static int GTSScreen_SetProfile(GTSScreen *param0);
+static int GTSScreen_WaitSetProfile(GTSScreen *param0);
+static int GTSScreen_ShowCodeSent(GTSScreen *param0);
+static int GTSScreen_StartCodeEntry(GTSScreen *param0);
+static int GTSScreen_ConfirmCancelRegistration(GTSScreen *param0);
+static int GTSScreen_RegisterCode(GTSScreen *param0);
+static int GTSScreen_StartNumberEntry(GTSScreen *param0);
+static int GTSScreen_SaveEmail(GTSScreen *param0);
+static int GTSScreen_SaveData(GTSScreen *param0);
+static int GTSScreen_DisconnectWithMessage(GTSScreen *param0);
+static int GTSScreen_ShowError(GTSScreen *param0);
+static int GTSScreen_WaitErrorAck(GTSScreen *param0);
+static int GTSScreen_Finish(GTSScreen *param0);
+static int GTSScreen_ShowYesNo(GTSScreen *param0);
+static int GTSScreen_ShowErrorCode(GTSScreen *param0);
+static int GTSScreen_DisconnectAndExit(GTSScreen *param0);
+static int GTSScreen_WaitForPrinter(GTSScreen *param0);
+static int GTSScreen_WaitForPrinterAndAdvance(GTSScreen *param0);
+static int GTSScreen_ShowYesNoAfterPrint(GTSScreen *param0);
+static int GTSScreen_ReenterWiiNumber(GTSScreen *param0);
+static int GTSScreen_ShowWiiNumber(GTSScreen *param0);
+static void GTSScreen_PrintMessage(GTSScreen *param0, MessageLoader *param1, int param2, int param3, u16 param4);
+static int GTSScreen_IsPrinterActive(int param0);
+static int GTSScreen_AlignText(Window *param0, String *param1, int param2, int param3, u32 param4, int param5);
+void GTSScreen_PrintCenteredText(Window *param0, String *param1, int param2, int param3, int param4, TextColor param5);
+static void GTSScreen_PrintErrorBox(GTSScreen *param0, int param1);
+static void GTSScreen_PrintError(GTSScreen *param0, int param1, int param2);
+static void GTSScreen_ListMenuSoundCallback(ListMenu *param0, u32 param1, u8 param2);
+static void GTSScreen_ListMenuSoundCallback2(ListMenu *param0, u32 param1, u8 param2);
 
-static int (*Unk_ov98_02249D70[])(UnkStruct_ov98_02247704 *) = {
-    ov98_02247B98,
-    ov98_02247D30,
-    ov98_02247D50,
-    ov98_02247E38,
-    ov98_02248684,
-    ov98_022487AC,
-    ov98_022487CC,
-    ov98_02248804,
-    ov98_022488F8,
-    ov98_02248954,
-    ov98_0224897C,
-    ov98_022489B4,
-    ov98_022489DC,
-    ov98_02248A68,
-    ov98_02248B14,
-    ov98_02248B24,
-    ov98_02248BFC,
-    ov98_02248C60,
-    ov98_02248C88,
-    ov98_02248DF4,
-    ov98_02248EC0,
-    ov98_02248EE0,
-    ov98_02248F7C,
-    ov98_02249168,
-    ov98_022491CC,
-    ov98_02249238,
-    ov98_02249320,
-    ov98_02249414,
-    ov98_02249438,
-    ov98_02249464,
-    ov98_02249464,
-    ov98_022494A0,
-    ov98_022494C0,
-    ov98_022495C4,
-    ov98_022496A8,
-    ov98_022496C0,
-    ov98_022496EC,
-    ov98_02249798,
-    ov98_022497F8,
+static int (*sScreenHandlers[])(GTSScreen *) = {
+    GTSScreen_MainMenu,
+    GTSScreen_CheckWiiNumber,
+    GTSScreen_SetMessageReception,
+    GTSScreen_DeleteSettings,
+    GTSScreen_RegisterWiiNumber,
+    GTSScreen_StartEmailEntry,
+    GTSScreen_EmailEntryResult,
+    GTSScreen_ConfirmWiiNumber,
+    GTSScreen_ConfirmConnect,
+    GTSScreen_ShowDisconnecting,
+    GTSScreen_Disconnect,
+    GTSScreen_ShowDisconnected,
+    GTSScreen_ConnectWifi,
+    GTSScreen_WaitConnect,
+    GTSScreen_StartNasLogin,
+    GTSScreen_WaitNasLogin,
+    GTSScreen_InitCredentials,
+    GTSScreen_SetProfile,
+    GTSScreen_WaitSetProfile,
+    GTSScreen_ShowCodeSent,
+    GTSScreen_StartCodeEntry,
+    GTSScreen_ConfirmCancelRegistration,
+    GTSScreen_RegisterCode,
+    GTSScreen_StartNumberEntry,
+    GTSScreen_SaveEmail,
+    GTSScreen_SaveData,
+    GTSScreen_DisconnectWithMessage,
+    GTSScreen_ShowError,
+    GTSScreen_WaitErrorAck,
+    GTSScreen_Finish,
+    GTSScreen_Finish,
+    GTSScreen_ShowYesNo,
+    GTSScreen_ShowErrorCode,
+    GTSScreen_DisconnectAndExit,
+    GTSScreen_WaitForPrinter,
+    GTSScreen_WaitForPrinterAndAdvance,
+    GTSScreen_ShowYesNoAfterPrint,
+    GTSScreen_ReenterWiiNumber,
+    GTSScreen_ShowWiiNumber,
 };
 
-static const UnkStruct_ov98_02249BDC Unk_ov98_02249BEC[] = {
+static const GTSMenuEntry sRegisteredMenuEntries[] = {
     { 0x0, 0x1 },
     { 0x2, 0x2 },
     { 0x3, 0x3 },
     { 0x4, 0x1D }
 };
 
-static const ListMenuTemplate Unk_ov98_02249C0C = {
+static const ListMenuTemplate sRegisteredMenuTemplate = {
     NULL,
-    ov98_022499A0,
+    GTSScreen_ListMenuSoundCallback,
     NULL,
     NULL,
-    NELEMS(Unk_ov98_02249BEC),
-    NELEMS(Unk_ov98_02249BEC),
+    NELEMS(sRegisteredMenuEntries),
+    NELEMS(sRegisteredMenuEntries),
     0x0,
     0x8,
     0x0,
@@ -230,25 +230,25 @@ static const ListMenuTemplate Unk_ov98_02249C0C = {
     0x0
 };
 
-static const u8 Unk_ov98_02249BC0[4] = {
+static const u8 sRegisteredMenuWindow[4] = {
     0xB,
     0x7,
     0x14,
     0x8
 };
 
-static const UnkStruct_ov98_02249BDC Unk_ov98_02249BDC[] = {
+static const GTSMenuEntry sUnregisteredMenuEntries[] = {
     { 0x1, 0x4 },
     { 0x4, 0x1D }
 };
 
-static const ListMenuTemplate Unk_ov98_02249C2C = {
+static const ListMenuTemplate sUnregisteredMenuTemplate = {
     NULL,
-    ov98_022499B4,
+    GTSScreen_ListMenuSoundCallback2,
     NULL,
     NULL,
-    NELEMS(Unk_ov98_02249BDC),
-    NELEMS(Unk_ov98_02249BDC),
+    NELEMS(sUnregisteredMenuEntries),
+    NELEMS(sUnregisteredMenuEntries),
     0x0,
     0x8,
     0x0,
@@ -263,14 +263,14 @@ static const ListMenuTemplate Unk_ov98_02249C2C = {
     0x0
 };
 
-static const u8 Unk_ov98_02249BBC[4] = {
+static const u8 sUnregisteredMenuWindow[4] = {
     0xB,
     0xD,
     0x14,
     0x4
 };
 
-static const WindowTemplate Unk_ov98_02249BC4 = {
+static const WindowTemplate sYesNoWindowTemplate = {
     0x0,
     0x17,
     0xD,
@@ -280,9 +280,9 @@ static const WindowTemplate Unk_ov98_02249BC4 = {
     0x0
 };
 
-int ov98_022471C8(ApplicationManager *appMan, int *param1)
+int GTSScreen_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov98_02247704 *v0;
+    GTSScreen *v0;
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -297,15 +297,15 @@ int ov98_022471C8(ApplicationManager *appMan, int *param1)
     G2S_BlendNone();
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_109, 0x70000);
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov98_02247704), HEAP_ID_109);
-    MI_CpuClear8(v0, sizeof(UnkStruct_ov98_02247704));
+    v0 = ApplicationManager_NewData(appMan, sizeof(GTSScreen), HEAP_ID_109);
+    MI_CpuClear8(v0, sizeof(GTSScreen));
 
     v0->unk_00 = ApplicationManager_Args(appMan);
     v0->unk_04 = BgConfig_New(HEAP_ID_109);
 
     VramTransfer_New(64, HEAP_ID_109);
     SetAutorepeat(4, 8);
-    ov98_02247510(v0->unk_04);
+    GTSScreen_InitGraphics(v0->unk_04);
     EnableTouchPad();
     InitializeTouchPad(4);
 
@@ -319,10 +319,10 @@ int ov98_022471C8(ApplicationManager *appMan, int *param1)
     v0->unk_40 = String_Init(16 * 8 * 2, HEAP_ID_109);
     v0->unk_3C = MessageLoader_GetNewString(v0->unk_24, 31);
 
-    ov98_02247704(v0);
-    ov98_02247A24(v0);
+    GTSScreen_LoadGraphics(v0);
+    GTSScreen_InitWindows(v0);
 
-    switch (ov98_02246EA4(v0->unk_00)) {
+    switch (GTS_GetNextScreen(v0->unk_00)) {
     case 12:
         if (!DWC_CheckInet() && (WiFiList_HasValidLogin(v0->unk_00->saveData) == 1)) {
             v0->unk_08 = 12;
@@ -335,14 +335,14 @@ int ov98_022471C8(ApplicationManager *appMan, int *param1)
     case 22:
         v0->unk_E8 = 0;
         NetworkIcon_Init();
-        v0->unk_08 = ov98_02246EA4(v0->unk_00);
+        v0->unk_08 = GTS_GetNextScreen(v0->unk_00);
         break;
     default:
-        v0->unk_08 = ov98_02246EA4(v0->unk_00);
+        v0->unk_08 = GTS_GetNextScreen(v0->unk_00);
         break;
     }
 
-    ov98_02246E9C(v0->unk_00, 0);
+    GTS_SetNextScreen(v0->unk_00, 0);
 
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_109);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
@@ -358,14 +358,14 @@ int ov98_022471C8(ApplicationManager *appMan, int *param1)
     RenderControlFlags_SetCanABSpeedUpPrint(TRUE);
     RenderControlFlags_SetAutoScrollFlags(AUTO_SCROLL_DISABLED);
     RenderControlFlags_SetSpeedUpOnTouch(FALSE);
-    SetVBlankCallback(ov98_022474E8, v0);
+    SetVBlankCallback(GTSScreen_VBlankCallback, v0);
 
     return 1;
 }
 
-int ov98_022473D8(ApplicationManager *appMan, int *param1)
+int GTSScreen_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov98_02247704 *v0 = ApplicationManager_Data(appMan);
+    GTSScreen *v0 = ApplicationManager_Data(appMan);
     int v1, v2;
 
     switch (*param1) {
@@ -376,7 +376,7 @@ int ov98_022473D8(ApplicationManager *appMan, int *param1)
         break;
     case 1:
         v2 = v0->unk_08;
-        v1 = (*Unk_ov98_02249D70[v0->unk_08])(v0);
+        v1 = (*sScreenHandlers[v0->unk_08])(v0);
 
         if (v2 != v0->unk_08) {
             v0->unk_94 = 0;
@@ -400,9 +400,9 @@ int ov98_022473D8(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-int ov98_02247440(ApplicationManager *appMan, int *param1)
+int GTSScreen_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov98_02247704 *v0 = ApplicationManager_Data(appMan);
+    GTSScreen *v0 = ApplicationManager_Data(appMan);
 
     inline_ov61_0222C160(&v0->unk_EC);
 
@@ -415,9 +415,9 @@ int ov98_02247440(ApplicationManager *appMan, int *param1)
     String_Free(v0->unk_3C);
     String_Free(v0->unk_40);
     String_Free(v0->unk_38);
-    ov98_02247ACC(v0);
+    GTSScreen_FreeWindows(v0);
     Heap_Free(v0->unk_04);
-    ov98_022476D0(v0->unk_04);
+    GTSScreen_FreeBackgrounds(v0->unk_04);
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
     VramTransfer_Free();
@@ -432,9 +432,9 @@ int ov98_02247440(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static void ov98_022474E8(void *param0)
+static void GTSScreen_VBlankCallback(void *param0)
 {
-    UnkStruct_ov98_02247704 *v0 = param0;
+    GTSScreen *v0 = param0;
 
     VramTransfer_Process();
     RenderOam_Transfer();
@@ -445,7 +445,7 @@ static void ov98_022474E8(void *param0)
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
-static void ov98_02247510(BgConfig *param0)
+static void GTSScreen_InitGraphics(BgConfig *param0)
 {
     GXLayers_DisableEngineALayers();
     GXLayers_DisableEngineBLayers();
@@ -611,7 +611,7 @@ static void ov98_02247510(BgConfig *param0)
     Bg_ClearTilesRange(4, 32, 0, HEAP_ID_109);
 }
 
-static void ov98_022476D0(BgConfig *param0)
+static void GTSScreen_FreeBackgrounds(BgConfig *param0)
 {
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_1);
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_0);
@@ -621,7 +621,7 @@ static void ov98_022476D0(BgConfig *param0)
     Bg_FreeTilemapBuffer(param0, BG_LAYER_MAIN_0);
 }
 
-static void ov98_02247704(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_LoadGraphics(GTSScreen *param0)
 {
     BgConfig *v0 = param0->unk_04;
     NARC *v1 = NARC_ctor(NARC_INDEX_DATA__WIFIP2PMATCH, HEAP_ID_109);
@@ -657,40 +657,40 @@ static void ov98_02247704(UnkStruct_ov98_02247704 *param0)
     }
 }
 
-static void ov98_02247A24(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_InitWindows(GTSScreen *param0)
 {
     Window_Add(param0->unk_04, &param0->unk_68, 0, 4, 4, 23, 16, 13, ((1 + (18 + 12)) + 9) + 27 * 4);
     Window_FillTilemap(&param0->unk_68, 0x0);
     Window_Add(param0->unk_04, &param0->unk_58, 0, 4, 1, 24, 2, 13, (((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16);
     Window_FillTilemap(&param0->unk_58, 0x0);
 
-    ov98_022498CC(&param0->unk_58, param0->unk_3C, 0, 1, 1, TEXT_COLOR(15, 14, 0));
+    GTSScreen_PrintCenteredText(&param0->unk_58, param0->unk_3C, 0, 1, 1, TEXT_COLOR(15, 14, 0));
 
     Window_Add(param0->unk_04, &param0->unk_48, 0, 2, 19, 27, 4, 13, (1 + (18 + 12)) + 9);
     Window_FillTilemap(&param0->unk_48, 0x0);
 }
 
-static void ov98_02247ACC(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_FreeWindows(GTSScreen *param0)
 {
     Window_Remove(&param0->unk_48);
     Window_Remove(&param0->unk_58);
     Window_Remove(&param0->unk_68);
 }
 
-static void ov98_02247AE8(UnkStruct_ov98_02247704 *param0, int param1, int param2)
+static void GTSScreen_SetNextScreen(GTSScreen *param0, int param1, int param2)
 {
     param0->unk_08 = param1;
     param0->unk_0C = param2;
 }
 
-static void ov98_02247AF0(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_AddWaitDial(GTSScreen *param0)
 {
     if (param0->unk_8C == NULL) {
         param0->unk_8C = Window_AddWaitDial(&param0->unk_48, 1);
     }
 }
 
-static void ov98_02247B0C(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_DestroyWaitDial(GTSScreen *param0)
 {
     if (param0->unk_8C != NULL) {
         DestroyWaitDial(param0->unk_8C);
@@ -698,29 +698,29 @@ static void ov98_02247B0C(UnkStruct_ov98_02247704 *param0)
     }
 }
 
-static Menu *ov98_02247B24(BgConfig *param0, int param1, int param2)
+static Menu *GTSScreen_MakeYesNoMenu(BgConfig *param0, int param1, int param2)
 {
     WindowTemplate v0;
 
-    v0 = Unk_ov98_02249BC4;
+    v0 = sYesNoWindowTemplate;
     v0.tilemapTop = param1;
     v0.baseTile = param2;
 
     return Menu_MakeYesNoChoice(param0, &v0, 1 + (18 + 12), 11, 109);
 }
 
-static Menu *ov98_02247B58(BgConfig *param0, int param1, int param2, int param3)
+static Menu *GTSScreen_MakeYesNoMenuWithCursor(BgConfig *param0, int param1, int param2, int param3)
 {
     WindowTemplate v0;
 
-    v0 = Unk_ov98_02249BC4;
+    v0 = sYesNoWindowTemplate;
     v0.tilemapTop = param1;
     v0.baseTile = param2;
 
     return Menu_MakeYesNoChoiceWithCursorAt(param0, &v0, 1 + (18 + 12), 11, param3, 109);
 }
 
-static int ov98_02247B98(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_MainMenu(GTSScreen *param0)
 {
     u32 v0;
 
@@ -729,19 +729,19 @@ static int ov98_02247B98(UnkStruct_ov98_02247704 *param0)
         int v1;
         ListMenuTemplate v2;
         const u8 *v3;
-        const UnkStruct_ov98_02249BDC *v4;
+        const GTSMenuEntry *v4;
         int v5;
 
         if (Email_HasEmailString(param0->unk_00->saveData) == 1) {
-            v3 = Unk_ov98_02249BC0;
-            v4 = Unk_ov98_02249BEC;
-            v5 = (NELEMS(Unk_ov98_02249BEC));
-            v2 = Unk_ov98_02249C0C;
+            v3 = sRegisteredMenuWindow;
+            v4 = sRegisteredMenuEntries;
+            v5 = (NELEMS(sRegisteredMenuEntries));
+            v2 = sRegisteredMenuTemplate;
         } else {
-            v3 = Unk_ov98_02249BBC;
-            v4 = Unk_ov98_02249BDC;
-            v5 = (NELEMS(Unk_ov98_02249BDC));
-            v2 = Unk_ov98_02249C2C;
+            v3 = sUnregisteredMenuWindow;
+            v4 = sUnregisteredMenuEntries;
+            v5 = (NELEMS(sUnregisteredMenuEntries));
+            v2 = sUnregisteredMenuTemplate;
         }
 
         Window_Add(param0->unk_04, &param0->unk_78, 0, v3[0], v3[1], v3[2], v3[3], 13, ((1 + (18 + 12)) + 9) + 27 * 4);
@@ -771,7 +771,7 @@ static int ov98_02247B98(UnkStruct_ov98_02247704 *param0)
             break;
         case 0xfffffffe:
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            ov98_02246E88(param0->unk_00, 6, 0);
+            GTS_SetNextApp(param0->unk_00, 6, 0);
             param0->unk_9C = 29;
             param0->unk_94++;
             break;
@@ -795,28 +795,28 @@ static int ov98_02247B98(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02247D30(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_CheckWiiNumber(GTSScreen *param0)
 {
-    ov98_02246E88(param0->unk_00, 4, 3);
-    ov98_02246E9C(param0->unk_00, 38);
+    GTS_SetNextApp(param0->unk_00, 4, 3);
+    GTS_SetNextScreen(param0->unk_00, 38);
 
     param0->unk_08 = 29;
     return 0;
 }
 
-static int ov98_02247D50(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_SetMessageReception(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 25, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 25, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+        param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
         param0->unk_94++;
         break;
     case 2: {
@@ -824,10 +824,10 @@ static int ov98_02247D50(UnkStruct_ov98_02247704 *param0)
 
         if (v0 != 0xffffffff) {
             if (v0 == 0xfffffffe) {
-                ov98_02249714(param0, param0->unk_34, 27, TEXT_SPEED_FAST, 0xf0f);
+                GTSScreen_PrintMessage(param0, param0->unk_34, 27, TEXT_SPEED_FAST, 0xf0f);
                 Email_SetValue(param0->unk_00->saveData, 0, 0);
             } else {
-                ov98_02249714(param0, param0->unk_34, 26, TEXT_SPEED_FAST, 0xf0f);
+                GTSScreen_PrintMessage(param0, param0->unk_34, 26, TEXT_SPEED_FAST, 0xf0f);
                 Email_SetValue(param0->unk_00->saveData, 0, 1);
             }
 
@@ -835,26 +835,26 @@ static int ov98_02247D50(UnkStruct_ov98_02247704 *param0)
         }
     } break;
     case 3:
-        ov98_02247AE8(param0, 25, 0);
+        GTSScreen_SetNextScreen(param0, 25, 0);
         break;
     }
 
     return 0;
 }
 
-static int ov98_02247E38(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_DeleteSettings(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 28, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 28, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        param0->unk_88 = ov98_02247B58(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2, 1);
+        param0->unk_88 = GTSScreen_MakeYesNoMenuWithCursor(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2, 1);
         param0->unk_94++;
         break;
     case 2: {
@@ -864,21 +864,21 @@ static int ov98_02247E38(UnkStruct_ov98_02247704 *param0)
             if (v0 == 0xfffffffe) {
                 param0->unk_08 = 0;
             } else {
-                ov98_02249714(param0, param0->unk_34, 29, TEXT_SPEED_FAST, 0xf0f);
+                GTSScreen_PrintMessage(param0, param0->unk_34, 29, TEXT_SPEED_FAST, 0xf0f);
                 Email_InitSaveData(param0->unk_00->saveData);
                 param0->unk_94++;
             }
         }
     } break;
     case 3:
-        ov98_02247AE8(param0, 25, 0);
+        GTSScreen_SetNextScreen(param0, 25, 0);
         break;
     }
 
     return 0;
 }
 
-static const int Unk_ov98_022482CC[] = {
+static const int sTermsLineOffsets[] = {
     44,
     53,
     45,
@@ -892,35 +892,35 @@ static const int Unk_ov98_022482CC[] = {
     51,
 };
 
-static u32 Unk_ov98_02249D60[][2] = {
+static u32 sArrowPositions[][2] = {
     { 0x4, 0x8 },
     { 0x80, 0x8 }
 };
 
-static void ov98_02247F08(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_DrawScrollArrows(GTSScreen *param0)
 {
     String *v0;
 
     Window_FillTilemap(&param0->unk_D4, 0xf0f);
 
     v0 = MessageLoader_GetNewString(param0->unk_34, 42);
-    Text_AddPrinterWithParams(&param0->unk_D4, FONT_SYSTEM, v0, Unk_ov98_02249D60[0][0] + 12, Unk_ov98_02249D60[0][1], TEXT_SPEED_NO_TRANSFER, NULL);
+    Text_AddPrinterWithParams(&param0->unk_D4, FONT_SYSTEM, v0, sArrowPositions[0][0] + 12, sArrowPositions[0][1], TEXT_SPEED_NO_TRANSFER, NULL);
     String_Free(v0);
 
     v0 = MessageLoader_GetNewString(param0->unk_34, 43);
-    Text_AddPrinterWithParams(&param0->unk_D4, FONT_SYSTEM, v0, Unk_ov98_02249D60[1][0] + 12, Unk_ov98_02249D60[1][1], TEXT_SPEED_NO_TRANSFER, NULL);
+    Text_AddPrinterWithParams(&param0->unk_D4, FONT_SYSTEM, v0, sArrowPositions[1][0] + 12, sArrowPositions[1][1], TEXT_SPEED_NO_TRANSFER, NULL);
     String_Free(v0);
-    ColoredArrow_Print(param0->unk_E4, &param0->unk_D4, Unk_ov98_02249D60[param0->unk_B0][0], Unk_ov98_02249D60[param0->unk_B0][1]);
+    ColoredArrow_Print(param0->unk_E4, &param0->unk_D4, sArrowPositions[param0->unk_B0][0], sArrowPositions[param0->unk_B0][1]);
     Window_CopyToVRAM(&param0->unk_D4);
 }
 
-static void ov98_02247FA4(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_ClearScrollArrows(GTSScreen *param0)
 {
     Window_FillTilemap(&param0->unk_D4, 0xf0f);
     Window_CopyToVRAM(&param0->unk_D4);
 }
 
-static void ov98_02247FBC(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_AnimateScrollArrows(GTSScreen *param0)
 {
     if ((++param0->unk_BC) == 8) {
         param0->unk_C0 ^= 1;
@@ -956,7 +956,7 @@ static void ov98_02247FBC(UnkStruct_ov98_02247704 *param0)
     }
 }
 
-static void ov98_022482CC(UnkStruct_ov98_02247704 *param0)
+static void GTSScreen_DrawTermsText(GTSScreen *param0)
 {
     int v0;
     int v1 = 0;
@@ -976,7 +976,7 @@ static void ov98_022482CC(UnkStruct_ov98_02247704 *param0)
     Window_CopyToVRAM(&param0->unk_C4);
 }
 
-static int ov98_02248350(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_TermsScroll(GTSScreen *param0)
 {
     switch (param0->unk_A8) {
     case 0:
@@ -1034,7 +1034,7 @@ static int ov98_02248350(UnkStruct_ov98_02247704 *param0)
             }
 
             if (param0->unk_AC + 6 == param0->unk_B4) {
-                ov98_02247F08(param0);
+                GTSScreen_DrawScrollArrows(param0);
                 param0->unk_A8++;
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
             }
@@ -1045,7 +1045,7 @@ static int ov98_02248350(UnkStruct_ov98_02247704 *param0)
         }
 
         if (v1 != param0->unk_AC) {
-            ov98_022482CC(param0);
+            GTSScreen_DrawTermsText(param0);
         }
 
         break;
@@ -1053,7 +1053,7 @@ static int ov98_02248350(UnkStruct_ov98_02247704 *param0)
         if (gSystem.pressedKeys & PAD_KEY_RIGHT || gSystem.pressedKeys & PAD_KEY_LEFT) {
             param0->unk_B0 ^= 1;
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            ov98_02247F08(param0);
+            GTSScreen_DrawScrollArrows(param0);
         } else if (gSystem.pressedKeys & PAD_BUTTON_A) {
             param0->unk_B8 = 2 - param0->unk_B0;
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
@@ -1063,11 +1063,11 @@ static int ov98_02248350(UnkStruct_ov98_02247704 *param0)
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             param0->unk_A8++;
         } else if (gSystem.pressedKeys & PAD_KEY_UP) {
-            ov98_02247FA4(param0);
+            GTSScreen_ClearScrollArrows(param0);
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             param0->unk_A8--;
             param0->unk_AC--;
-            ov98_022482CC(param0);
+            GTSScreen_DrawTermsText(param0);
         }
 
         break;
@@ -1089,13 +1089,13 @@ static int ov98_02248350(UnkStruct_ov98_02247704 *param0)
         return param0->unk_B8;
     }
 
-    ov98_02247FBC(param0);
+    GTSScreen_AnimateScrollArrows(param0);
     return 0;
 }
 
-static int ov98_02248684(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_RegisterWiiNumber(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
@@ -1113,23 +1113,23 @@ static int ov98_02248684(UnkStruct_ov98_02247704 *param0)
             if (v0 == 0xfffffffe) {
                 param0->unk_94++;
             } else {
-                ov98_02249714(param0, param0->unk_34, 9, TEXT_SPEED_FAST, 0xf0f);
+                GTSScreen_PrintMessage(param0, param0->unk_34, 9, TEXT_SPEED_FAST, 0xf0f);
                 param0->unk_94 = 4;
             }
         }
     } break;
     case 3: {
-        int v1 = ov98_02248350(param0);
+        int v1 = GTSScreen_TermsScroll(param0);
 
         if (v1 == 1) {
-            ov98_02249714(param0, param0->unk_34, 9, TEXT_SPEED_FAST, 0xf0f);
+            GTSScreen_PrintMessage(param0, param0->unk_34, 9, TEXT_SPEED_FAST, 0xf0f);
             param0->unk_94++;
         } else if (v1 == 2) {
-            ov98_02247AE8(param0, 34, 0);
+            GTSScreen_SetNextScreen(param0, 34, 0);
         }
     } break;
     case 4:
-        param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+        param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
         param0->unk_94++;
         break;
     default: {
@@ -1137,8 +1137,8 @@ static int ov98_02248684(UnkStruct_ov98_02247704 *param0)
 
         if (v2 != 0xffffffff) {
             if (v2 == 0xfffffffe) {
-                ov98_02249714(param0, param0->unk_34, 10, TEXT_SPEED_FAST, 0xf0f);
-                ov98_02247AE8(param0, 34, 0);
+                GTSScreen_PrintMessage(param0, param0->unk_34, 10, TEXT_SPEED_FAST, 0xf0f);
+                GTSScreen_SetNextScreen(param0, 34, 0);
             } else {
                 param0->unk_08 = 5;
             }
@@ -1149,18 +1149,18 @@ static int ov98_02248684(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_022487AC(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_StartEmailEntry(GTSScreen *param0)
 {
-    ov98_02246E88(param0->unk_00, 1, 0);
-    ov98_02246E9C(param0->unk_00, 6);
+    GTS_SetNextApp(param0->unk_00, 1, 0);
+    GTS_SetNextScreen(param0->unk_00, 6);
     param0->unk_08 = 29;
     return 0;
 }
 
-static int ov98_022487CC(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_EmailEntryResult(GTSScreen *param0)
 {
     charcode_t *v0;
-    switch (ov98_02246FB4(param0->unk_00)) {
+    switch (GTS_GetResult(param0->unk_00)) {
     case 1:
         param0->unk_08 = 0;
         return 0;
@@ -1177,9 +1177,9 @@ static int ov98_022487CC(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248804(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ConfirmWiiNumber(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
@@ -1188,11 +1188,11 @@ static int ov98_02248804(UnkStruct_ov98_02247704 *param0)
         param0->unk_94++;
         break;
     case 1:
-        ov98_02249714(param0, param0->unk_34, 11, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 11, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 2:
-        param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+        param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
         param0->unk_94++;
         break;
     case 3: {
@@ -1200,7 +1200,7 @@ static int ov98_02248804(UnkStruct_ov98_02247704 *param0)
 
         if (v0 != 0xffffffff) {
             if (v0 == 0xfffffffe) {
-                ov98_02247AE8(param0, 34, 0);
+                GTSScreen_SetNextScreen(param0, 34, 0);
             } else {
                 param0->unk_94++;
             }
@@ -1208,47 +1208,47 @@ static int ov98_02248804(UnkStruct_ov98_02247704 *param0)
     } break;
     case 4:
         if (WiFiList_HasValidLogin(param0->unk_00->saveData) == 0) {
-            ov98_02246E88(param0->unk_00, 5, 0);
-            ov98_02246E9C(param0->unk_00, 12);
+            GTS_SetNextApp(param0->unk_00, 5, 0);
+            GTS_SetNextScreen(param0->unk_00, 12);
             param0->unk_08 = 29;
             return 0;
         }
 
-        ov98_02247AE8(param0, 34, 12);
+        GTSScreen_SetNextScreen(param0, 34, 12);
         break;
     }
 
     return 0;
 }
 
-static int ov98_022488F8(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ConfirmConnect(GTSScreen *param0)
 {
     int v0 = Menu_ProcessInputAndHandleExit(param0->unk_88, 109);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0xfffffffe) {
             CommManager_EndWifiMail();
-            ov98_02246E88(param0->unk_00, 6, 0);
+            GTS_SetNextApp(param0->unk_00, 6, 0);
             param0->unk_08 = 29;
         } else {
-            ov98_02249714(param0, param0->unk_2C, 1, TEXT_SPEED_FAST, 0xf0f);
-            ov98_02247AE8(param0, 34, 12);
-            ov98_02247AF0(param0);
+            GTSScreen_PrintMessage(param0, param0->unk_2C, 1, TEXT_SPEED_FAST, 0xf0f);
+            GTSScreen_SetNextScreen(param0, 34, 12);
+            GTSScreen_AddWaitDial(param0);
         }
     }
 
     return 0;
 }
 
-static int ov98_02248954(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowDisconnecting(GTSScreen *param0)
 {
-    ov98_02249714(param0, param0->unk_30, 26, TEXT_SPEED_FAST, 0xf0f);
-    ov98_02247AE8(param0, 34, 10);
+    GTSScreen_PrintMessage(param0, param0->unk_30, 26, TEXT_SPEED_FAST, 0xf0f);
+    GTSScreen_SetNextScreen(param0, 34, 10);
 
     return 0;
 }
 
-static int ov98_0224897C(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_Disconnect(GTSScreen *param0)
 {
     CommManager_EndWifiMail();
 
@@ -1267,26 +1267,26 @@ static int ov98_0224897C(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_022489B4(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowDisconnected(GTSScreen *param0)
 {
-    ov98_02249714(param0, param0->unk_30, 27, TEXT_SPEED_FAST, 0xf0f);
-    ov98_02247AE8(param0, 35, 29);
+    GTSScreen_PrintMessage(param0, param0->unk_30, 27, TEXT_SPEED_FAST, 0xf0f);
+    GTSScreen_SetNextScreen(param0, 35, 29);
 
     return 0;
 }
 
-static int ov98_022489DC(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ConnectWifi(GTSScreen *param0)
 {
     switch (param0->unk_94) {
     case 0:
         CommManager_StartWifiMail(param0->unk_00->saveData);
         NetworkIcon_Init();
-        ov98_02249714(param0, param0->unk_2C, 1, TEXT_SPEED_FAST, 0xf0f);
-        ov98_02247AF0(param0);
+        GTSScreen_PrintMessage(param0, param0->unk_2C, 1, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_AddWaitDial(param0);
         param0->unk_94++;
         break;
     case 1:
-        if (ov98_0224977C(param0->unk_44) == 0) {
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
             param0->unk_94++;
         }
         break;
@@ -1303,7 +1303,7 @@ static int ov98_022489DC(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248A68(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_WaitConnect(GTSScreen *param0)
 {
     DWC_ProcessInet();
 
@@ -1331,7 +1331,7 @@ static int ov98_02248A68(UnkStruct_ov98_02247704 *param0)
                 param0->unk_00->unk_11C = 0;
             }
 
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             param0->unk_08 = 27;
             break;
         case DWC_CONNECTINET_STATE_NOT_INITIALIZED:
@@ -1347,7 +1347,7 @@ static int ov98_02248A68(UnkStruct_ov98_02247704 *param0)
 
             v3 = DWC_GetLastError(&v4);
 
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             param0->unk_08 = 32;
             param0->unk_10 = -2;
         } break;
@@ -1368,7 +1368,7 @@ static int ov98_02248A68(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248B14(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_StartNasLogin(GTSScreen *param0)
 {
     DWC_NASLoginAsync();
 
@@ -1376,7 +1376,7 @@ static int ov98_02248B14(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248B24(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_WaitNasLogin(GTSScreen *param0)
 {
     switch (DWC_NASLoginProcess()) {
     case DWC_NASLOGIN_STATE_SUCCESS:;
@@ -1385,7 +1385,7 @@ static int ov98_02248B24(UnkStruct_ov98_02247704 *param0)
     case DWC_NASLOGIN_STATE_ERROR:
     case DWC_NASLOGIN_STATE_CANCELED:
     case DWC_NASLOGIN_STATE_DIRTY:
-        ov98_02247B0C(param0);
+        GTSScreen_DestroyWaitDial(param0);
         {
             int v0;
             DWCErrorType v1;
@@ -1441,7 +1441,7 @@ static int ov98_02248B24(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248BFC(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_InitCredentials(GTSScreen *param0)
 {
     DWCUserData *v0;
     s32 v1;
@@ -1464,10 +1464,10 @@ static int ov98_02248BFC(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248C60(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_SetProfile(GTSScreen *param0)
 {
-    ov98_02246F5C(param0->unk_00);
-    ov98_02246F74(param0->unk_00);
+    GTS_InitTrainer(param0->unk_00);
+    GTS_LoadTrainerEmail(param0->unk_00);
     GTSNetworking_SetProfile(&param0->unk_00->unk_9C, &param0->unk_00->unk_100);
 
     param0->unk_08 = 18;
@@ -1476,7 +1476,7 @@ static int ov98_02248C60(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248C88(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_WaitSetProfile(GTSScreen *param0)
 {
     if (GTSNetworking_RequestComplete()) {
         s32 v0 = GTSNetworking_GetErrorCode();
@@ -1492,18 +1492,18 @@ static int ov98_02248C88(UnkStruct_ov98_02247704 *param0)
                     param0->unk_08 = 19;
                     break;
                 case 2:
-                    ov98_02247B0C(param0);
+                    GTSScreen_DestroyWaitDial(param0);
                     param0->unk_10 = -5001;
                     param0->unk_08 = 32;
                     break;
 
                 case 0:
-                    ov98_02247B0C(param0);
+                    GTSScreen_DestroyWaitDial(param0);
                     param0->unk_10 = -5002;
                     param0->unk_08 = 32;
                     break;
                 case 3:
-                    ov98_02247B0C(param0);
+                    GTSScreen_DestroyWaitDial(param0);
                     param0->unk_10 = -5003;
                     param0->unk_08 = 32;
                     break;
@@ -1514,48 +1514,48 @@ static int ov98_02248C88(UnkStruct_ov98_02247704 *param0)
 
                 break;
             case 1:
-                ov98_02247B0C(param0);
+                GTSScreen_DestroyWaitDial(param0);
                 param0->unk_10 = -5004;
                 param0->unk_08 = 32;
                 break;
             case 2:
-                ov98_02247B0C(param0);
+                GTSScreen_DestroyWaitDial(param0);
                 param0->unk_10 = -5005;
                 param0->unk_08 = 32;
                 break;
             default:
-                ov98_02247B0C(param0);
+                GTSScreen_DestroyWaitDial(param0);
                 NetworkError_DisplayGTSCriticalError();
                 break;
             }
 
             break;
         case 1:
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             param0->unk_10 = v0;
             param0->unk_08 = 32;
             break;
         case 2:
         case -1:
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             param0->unk_10 = v0;
             param0->unk_08 = 32;
             break;
         case -12:
         case -15:
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             param0->unk_10 = v0;
             param0->unk_08 = 32;
             break;
         case -2:
         case -14:
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             param0->unk_10 = v0;
             param0->unk_08 = 32;
             break;
         case -13:
         default:
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
             NetworkError_DisplayGTSCriticalError();
             break;
         }
@@ -1570,20 +1570,20 @@ static int ov98_02248C88(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248DF4(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowCodeSent(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02247B0C(param0);
-        ov98_02249714(param0, param0->unk_34, 13, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_DestroyWaitDial(param0);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 13, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+        param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
         param0->unk_94++;
         break;
     case 2: {
@@ -1599,35 +1599,35 @@ static int ov98_02248DF4(UnkStruct_ov98_02247704 *param0)
     } break;
     case 3:
 
-        ov98_02249714(param0, param0->unk_34, 17, TEXT_SPEED_FAST, 0xf0f);
-        ov98_02247AE8(param0, 34, 20);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 17, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_SetNextScreen(param0, 34, 20);
         break;
     }
 
     return 0;
 }
 
-static int ov98_02248EC0(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_StartCodeEntry(GTSScreen *param0)
 {
-    ov98_02246E88(param0->unk_00, 2, 1);
-    ov98_02246E9C(param0->unk_00, 22);
+    GTS_SetNextApp(param0->unk_00, 2, 1);
+    GTS_SetNextScreen(param0->unk_00, 22);
     param0->unk_08 = 30;
     return 0;
 }
 
-static int ov98_02248EE0(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ConfirmCancelRegistration(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 14, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 14, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+        param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
         param0->unk_94++;
         break;
     case 2: {
@@ -1637,7 +1637,7 @@ static int ov98_02248EE0(UnkStruct_ov98_02247704 *param0)
             if (v0 == 0xfffffffe) {
                 param0->unk_08 = 19;
             } else {
-                ov98_02247AE8(param0, 26, 0);
+                GTSScreen_SetNextScreen(param0, 26, 0);
             }
         }
     } break;
@@ -1646,9 +1646,9 @@ static int ov98_02248EE0(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_RegisterCode(GTSScreen *param0)
 {
-    if (ov98_02246F9C(param0->unk_00) == 0xffffffff) {
+    if (GTS_GetRegistrationCode(param0->unk_00) == 0xffffffff) {
         param0->unk_08 = 21;
         return 0;
     }
@@ -1656,9 +1656,9 @@ static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0)
     switch (param0->unk_94) {
     case 0:
 
-        ov98_02249714(param0, param0->unk_34, 18, TEXT_SPEED_INSTANT, 0xf0f);
-        ov98_02247AF0(param0);
-        ov98_02246F88(param0->unk_00);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 18, TEXT_SPEED_INSTANT, 0xf0f);
+        GTSScreen_AddWaitDial(param0);
+        GTS_SetRegistrationCode(param0->unk_00);
         GTSNetworking_SetProfile(&param0->unk_00->unk_9C, &param0->unk_00->unk_100);
         param0->unk_94++;
         break;
@@ -1667,7 +1667,7 @@ static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0)
             s32 v0 = GTSNetworking_GetErrorCode();
 
             param0->unk_E8 = 0;
-            ov98_02247B0C(param0);
+            GTSScreen_DestroyWaitDial(param0);
 
             switch (v0) {
             case 0:
@@ -1678,8 +1678,8 @@ static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0)
                         param0->unk_94++;
                         break;
                     case 3:
-                        ov98_02249714(param0, param0->unk_34, 19, TEXT_SPEED_FAST, 0xf0f);
-                        ov98_02247AE8(param0, 34, 21);
+                        GTSScreen_PrintMessage(param0, param0->unk_34, 19, TEXT_SPEED_FAST, 0xf0f);
+                        GTSScreen_SetNextScreen(param0, 34, 21);
                         break;
                     case 1:
                         param0->unk_10 = -5006;
@@ -1741,12 +1741,12 @@ static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0)
         }
         break;
     case 2:
-        ov98_02249714(param0, param0->unk_34, 20, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 20, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 3:
-        if (ov98_0224977C(param0->unk_44) == 0) {
-            ov98_02247AE8(param0, 26, 23);
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
+            GTSScreen_SetNextScreen(param0, 26, 23);
         }
         break;
     }
@@ -1754,20 +1754,20 @@ static int ov98_02248F7C(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02249168(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_StartNumberEntry(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 21, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 21, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        ov98_02246E88(param0->unk_00, 3, 2);
-        ov98_02246E9C(param0->unk_00, 24);
+        GTS_SetNextApp(param0->unk_00, 3, 2);
+        GTS_SetNextScreen(param0->unk_00, 24);
         param0->unk_08 = 30;
         break;
     }
@@ -1775,34 +1775,34 @@ static int ov98_02249168(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_022491CC(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_SaveEmail(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 24, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 24, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        ov98_02246EF8(param0->unk_00);
-        ov98_02246F24(param0->unk_00);
-        ov98_02246F48(param0->unk_00);
-        ov98_02247AE8(param0, 25, 0);
+        GTS_SaveEmailString(param0->unk_00);
+        GTS_SaveRegistrationValues(param0->unk_00);
+        GTS_SaveEmailValue(param0->unk_00);
+        GTSScreen_SetNextScreen(param0, 25, 0);
         break;
     }
 
     return 0;
 }
 
-static int ov98_02249238(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_SaveData(GTSScreen *param0)
 {
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 32, TEXT_SPEED_INSTANT, 0xf0f);
-        ov98_02247AF0(param0);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 32, TEXT_SPEED_INSTANT, 0xf0f);
+        GTSScreen_AddWaitDial(param0);
         param0->unk_94++;
         break;
     case 1: {
@@ -1812,17 +1812,17 @@ static int ov98_02249238(UnkStruct_ov98_02247704 *param0)
 
         if (v0 == 2) {
             StringTemplate_SetPlayerName(param0->unk_20, 0, SaveData_GetTrainerInfo(param0->unk_00->saveData));
-            ov98_02249714(param0, param0->unk_34, 33, TEXT_SPEED_INSTANT, 0xf0f);
+            GTSScreen_PrintMessage(param0, param0->unk_34, 33, TEXT_SPEED_INSTANT, 0xf0f);
             Sound_PlayEffect(SEQ_SE_DP_SAVE_sseq);
         } else {
-            ov98_02249714(param0, param0->unk_34, 34, TEXT_SPEED_INSTANT, 0xf0f);
+            GTSScreen_PrintMessage(param0, param0->unk_34, 34, TEXT_SPEED_INSTANT, 0xf0f);
         }
 
-        ov98_02247B0C(param0);
+        GTSScreen_DestroyWaitDial(param0);
         param0->unk_94++;
     } break;
     case 2:
-        if (ov98_0224977C(param0->unk_44) == 0) {
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
             param0->unk_94++;
         }
         break;
@@ -1839,15 +1839,15 @@ static int ov98_02249238(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02249320(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_DisconnectWithMessage(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 15, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 15, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
@@ -1866,13 +1866,13 @@ static int ov98_02249320(UnkStruct_ov98_02247704 *param0)
         param0->unk_94++;
         break;
     case 2:
-        if (ov98_0224977C(param0->unk_44) == 0) {
-            ov98_02249714(param0, param0->unk_34, 16, TEXT_SPEED_FAST, 0xf0f);
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
+            GTSScreen_PrintMessage(param0, param0->unk_34, 16, TEXT_SPEED_FAST, 0xf0f);
             param0->unk_94++;
         }
         break;
     case 3:
-        if (ov98_0224977C(param0->unk_44) == 0) {
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
             param0->unk_94++;
         }
         break;
@@ -1888,18 +1888,18 @@ static int ov98_02249320(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02249414(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowError(GTSScreen *param0)
 {
     int v0 = NintendoWFC_GetErrorCode(-param0->unk_18, param0->unk_1C);
 
-    ov98_02249964(param0, v0, -param0->unk_18);
+    GTSScreen_PrintError(param0, v0, -param0->unk_18);
 
     param0->unk_08 = 28;
 
     return 0;
 }
 
-static int ov98_02249438(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_WaitErrorAck(GTSScreen *param0)
 {
     if (gSystem.pressedKeys & PAD_BUTTON_A || gSystem.pressedKeys & PAD_BUTTON_B) {
         Window_EraseStandardFrame(&param0->unk_68, 0);
@@ -1909,14 +1909,14 @@ static int ov98_02249438(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02249464(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_Finish(GTSScreen *param0)
 {
     if (param0->unk_08 != 30) {
         CommManager_EndWifiMail();
     }
 
     NetworkIcon_Destroy();
-    ov98_02247B0C(param0);
+    GTSScreen_DestroyWaitDial(param0);
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_109);
 
     param0->unk_08 = 0;
@@ -1924,15 +1924,15 @@ static int ov98_02249464(UnkStruct_ov98_02247704 *param0)
     return 1;
 }
 
-static int ov98_022494A0(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowYesNo(GTSScreen *param0)
 {
-    param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+    param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
     param0->unk_08 = param0->unk_0C;
 
     return 0;
 }
 
-static int ov98_022494C0(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowErrorCode(GTSScreen *param0)
 {
     int v0 = 0;
     int v1 = 0;
@@ -1995,25 +1995,25 @@ static int ov98_022494C0(UnkStruct_ov98_02247704 *param0)
     }
 
     if (v1 == 0) {
-        ov98_02249714(param0, param0->unk_34, v0, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, v0, TEXT_SPEED_FAST, 0xf0f);
     } else {
-        ov98_02249714(param0, param0->unk_24, v0, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_24, v0, TEXT_SPEED_FAST, 0xf0f);
     }
 
-    ov98_02247AE8(param0, 34, 33);
+    GTSScreen_SetNextScreen(param0, 34, 33);
 
     return 0;
 }
 
-static int ov98_022495C4(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_DisconnectAndExit(GTSScreen *param0)
 {
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, 15, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 15, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 1:
-        if (ov98_0224977C(param0->unk_44) == 0) {
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
             CommManager_EndWifiMail();
 
             DWC_CleanupInet();
@@ -2030,11 +2030,11 @@ static int ov98_022495C4(UnkStruct_ov98_02247704 *param0)
         }
         break;
     case 2:
-        ov98_02249714(param0, param0->unk_34, 16, TEXT_SPEED_FAST, 0xf0f);
+        GTSScreen_PrintMessage(param0, param0->unk_34, 16, TEXT_SPEED_FAST, 0xf0f);
         param0->unk_94++;
         break;
     case 3:
-        if (ov98_0224977C(param0->unk_44) == 0) {
+        if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
             param0->unk_94++;
         }
         break;
@@ -2042,7 +2042,7 @@ static int ov98_022495C4(UnkStruct_ov98_02247704 *param0)
         param0->unk_90++;
 
         if (param0->unk_90 > 30) {
-            ov98_02246E94(param0->unk_00);
+            GTS_RequestExit(param0->unk_00);
             param0->unk_08 = 29;
         }
         break;
@@ -2051,18 +2051,18 @@ static int ov98_022495C4(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_022496A8(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_WaitForPrinter(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 0) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
         param0->unk_08 = param0->unk_0C;
     }
 
     return 0;
 }
 
-static int ov98_022496C0(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_WaitForPrinterAndAdvance(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 0) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
         if (param0->unk_90 > 30) {
             param0->unk_08 = param0->unk_0C;
         }
@@ -2073,17 +2073,17 @@ static int ov98_022496C0(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_022496EC(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowYesNoAfterPrint(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 0) {
-        param0->unk_88 = ov98_02247B24(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 0) {
+        param0->unk_88 = GTSScreen_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
         param0->unk_08 = param0->unk_0C;
     }
 
     return 0;
 }
 
-static void ov98_02249714(UnkStruct_ov98_02247704 *param0, MessageLoader *param1, int param2, int param3, u16 param4)
+static void GTSScreen_PrintMessage(GTSScreen *param0, MessageLoader *param1, int param2, int param3, u16 param4)
 {
     String *v0 = MessageLoader_GetNewString(param1, param2);
 
@@ -2100,7 +2100,7 @@ static void ov98_02249714(UnkStruct_ov98_02247704 *param0, MessageLoader *param1
     }
 }
 
-static int ov98_0224977C(int param0)
+static int GTSScreen_IsPrinterActive(int param0)
 {
     if ((param0 == 0xff) || (Text_IsPrinterActive(param0) == 0)) {
         return 0;
@@ -2109,15 +2109,15 @@ static int ov98_0224977C(int param0)
     return 1;
 }
 
-static int ov98_02249798(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ReenterWiiNumber(GTSScreen *param0)
 {
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        ov98_02249714(param0, param0->unk_34, ov98_02246FB4(param0->unk_00) == 2 ? 0x26 : 0x27, TEXT_SPEED_FAST, 0x0F0F);
+        GTSScreen_PrintMessage(param0, param0->unk_34, GTS_GetResult(param0->unk_00) == 2 ? 0x26 : 0x27, TEXT_SPEED_FAST, 0x0F0F);
         param0->unk_94++;
         break;
     case 1:
@@ -2128,21 +2128,21 @@ static int ov98_02249798(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_022497F8(UnkStruct_ov98_02247704 *param0)
+static int GTSScreen_ShowWiiNumber(GTSScreen *param0)
 {
-    UnkStruct_ov98_02246E88 *v0 = param0->unk_00;
+    GTSState *v0 = param0->unk_00;
     int v1;
     u32 v2[4];
     u32 v3;
 
-    if (ov98_0224977C(param0->unk_44) == 1) {
+    if (GTSScreen_IsPrinterActive(param0->unk_44) == 1) {
         return 0;
     }
 
     switch (param0->unk_94) {
     case 0:
-        if (ov98_02246FA4(v0) == Email_GetValue(v0->saveData, 3)) {
-            ov98_02249ACC(Email_GetEmailString(v0->saveData), v2, 108);
+        if (GTS_GetEmailValue(v0) == Email_GetValue(v0->saveData, 3)) {
+            GTSEmail_ParseNumbers(Email_GetEmailString(v0->saveData), v2, 108);
             for (v3 = 0; v3 < 4; v3++) {
                 StringTemplate_SetNumber(param0->unk_20, v3, v2[v3], 4, 2, 1);
             }
@@ -2150,7 +2150,7 @@ static int ov98_022497F8(UnkStruct_ov98_02247704 *param0)
         } else {
             v1 = 40;
         }
-        ov98_02249714(param0, param0->unk_34, v1, TEXT_SPEED_FAST, 0x0F0F);
+        GTSScreen_PrintMessage(param0, param0->unk_34, v1, TEXT_SPEED_FAST, 0x0F0F);
         param0->unk_94++;
         break;
     case 1:
@@ -2161,7 +2161,7 @@ static int ov98_022497F8(UnkStruct_ov98_02247704 *param0)
     return 0;
 }
 
-static int ov98_02249894(Window *param0, String *param1, int param2, int param3, u32 param4, int param5)
+static int GTSScreen_AlignText(Window *param0, String *param1, int param2, int param3, u32 param4, int param5)
 {
     int v0 = 0, v1;
 
@@ -2180,13 +2180,13 @@ static int ov98_02249894(Window *param0, String *param1, int param2, int param3,
     return param2;
 }
 
-void ov98_022498CC(Window *param0, String *param1, int param2, int param3, int param4, TextColor param5)
+void GTSScreen_PrintCenteredText(Window *param0, String *param1, int param2, int param3, int param4, TextColor param5)
 {
-    param2 = ov98_02249894(param0, param1, param2, param4, param5, 1);
+    param2 = GTSScreen_AlignText(param0, param1, param2, param4, param5, 1);
     Text_AddPrinterWithParamsAndColor(param0, FONT_MESSAGE, param1, param2, param3, TEXT_SPEED_INSTANT, param5, NULL);
 }
 
-static void ov98_02249900(UnkStruct_ov98_02247704 *param0, int param1)
+static void GTSScreen_PrintErrorBox(GTSScreen *param0, int param1)
 {
     String *v0 = String_Init(16 * 8 * 2, HEAP_ID_109);
 
@@ -2202,7 +2202,7 @@ static void ov98_02249900(UnkStruct_ov98_02247704 *param0, int param1)
     String_Free(v0);
 }
 
-static void ov98_02249964(UnkStruct_ov98_02247704 *param0, int param1, int param2)
+static void GTSScreen_PrintError(GTSScreen *param0, int param1, int param2)
 {
     int v0;
 
@@ -2215,17 +2215,17 @@ static void ov98_02249964(UnkStruct_ov98_02247704 *param0, int param1, int param
     StringTemplate_SetNumber(param0->unk_20, 0, param2, 5, 2, 1);
 
     Window_EraseMessageBox(&param0->unk_48, 1);
-    ov98_02249900(param0, v0);
+    GTSScreen_PrintErrorBox(param0, v0);
 }
 
-static void ov98_022499A0(ListMenu *param0, u32 param1, u8 param2)
+static void GTSScreen_ListMenuSoundCallback(ListMenu *param0, u32 param1, u8 param2)
 {
     if (param2 == 0) {
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
     }
 }
 
-static void ov98_022499B4(ListMenu *param0, u32 param1, u8 param2)
+static void GTSScreen_ListMenuSoundCallback2(ListMenu *param0, u32 param1, u8 param2)
 {
     if (param2 == 0) {
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
