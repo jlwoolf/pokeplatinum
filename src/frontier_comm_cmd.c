@@ -12,8 +12,8 @@
 #include "applications/frontier/battle_castle/self_app.h"
 #include "applications/frontier/battle_factory/main.h"
 #include "applications/frontier/battle_hall/main.h"
-#include "overlay104/frontier_communication.h"
-#include "overlay104/wfc_facility_selector_helpers.h"
+#include "frontier_facilities/frontier_communication.h"
+#include "frontier_facilities/wfc_facility_selector_helpers.h"
 
 #include "battle_frontier_save.h"
 #include "communication_system.h"
@@ -38,13 +38,13 @@ static void WFCFacilitySelector_HandlePlayAgainCmd(int netID, int unused, void *
 // remaining entries are provided by the individual Battle Frontier
 // applications.
 static const CommCmdTable sFrontierCommCmdTable[] = {
-    { ov104_0222EF30, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveFactoryProgress, CommPacketSizeOf_Variable, NULL },
     { FactoryCommunication_ReceiveTrainers, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F03C, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F124, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F1C4, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F210, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F31C, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveFactoryRentals, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveFactoryOpponentMons, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveFactoryRetireDecision, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveFactoryTradeDecision, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveFactoryPartnerMons, CommPacketSizeOf_Variable, NULL },
     { BattleFactoryApp_DummyCommCommand, CommPacketSizeOf_Variable, NULL },
     { BattleFactoryApp_HandleSelectionUpdateCmd, CommPacketSizeOf_Variable, NULL },
     { BattleFactoryApp_DummyCommCommand2, CommPacketSizeOf_Variable, NULL },
@@ -53,16 +53,16 @@ static const CommCmdTable sFrontierCommCmdTable[] = {
     { FrontierCommunication_Unreachable3, CommPacketSizeOf_Variable, NULL },
     { HallCommunication_ReceiveTrainers, CommPacketSizeOf_Variable, NULL },
     { HallCommunication_ReceiveOpponentMons, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222EE38, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveBattleHallData, CommPacketSizeOf_Variable, NULL },
     { HallCommunication_ReceivePartnersPokemon, CommPacketSizeOf_Variable, HallCommunication_VerifyPacketSize },
     { BattleHall_DummyCommCommand, CommPacketSizeOf_Variable, NULL },
     { BattleHall_HandleTypeSelectionMsg, CommPacketSizeOf_Variable, NULL },
     { BattleHall_HandlePartnerDecisionCmd, CommPacketSizeOf_Variable, NULL },
     { CastleCommunication_ReceivePartnersCP, CommPacketSizeOf_Variable, NULL },
     { CastleCommunications_ReceiveTrainers, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F530, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F650, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F6E8, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveCastleAppSelection, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveCastleOpponentMons, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveCastleRetireDecision, CommPacketSizeOf_Variable, NULL },
     { FrontierCommunication_Unreachable5, CommPacketSizeOf_Variable, NULL },
     { CastleCommunication_ReceivePartnersParty, CommPacketSizeOf_Variable, CastleCommunication_VerifyPacketSize },
     { BattleCastleSelfApp_HandlePlayerInfoCmd, CommPacketSizeOf_Variable, NULL },
@@ -81,11 +81,11 @@ static const CommCmdTable sFrontierCommCmdTable[] = {
     { BattleTower_HandlePartnerDataCmd, CommPacketSizeOf_Variable, NULL },
     { BattleTower_HandleTrainerIDListCmd, CommPacketSizeOf_Variable, NULL },
     { BattleTower_HandlePartnerReadyCmd, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F8A0, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveArcadeProgress, CommPacketSizeOf_Variable, NULL },
     { ArcadeCommunication_ReceiveTrainers, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222F9C0, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222FA5C, CommPacketSizeOf_Variable, NULL },
-    { ov104_0222FAA8, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveArcadeOpponentMons, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveArcadeRetireDecision, CommPacketSizeOf_Variable, NULL },
+    { FrontierFacilities_ReceiveArcadeUnusedValue, CommPacketSizeOf_Variable, NULL },
     { ArcadeCommunication_ReceivePartnersParty, CommPacketSizeOf_Variable, ArcadeCommunication_VerifyPacketSize },
     { BattleArcadeApp_HandleInitialLayoutCmd, CommPacketSizeOf_Variable, NULL },
     { BattleArcadeApp_HandleResultCmd, CommPacketSizeOf_Variable, NULL },

@@ -12,7 +12,7 @@
 #include "applications/frontier/battle_arcade/sprite_manager.h"
 #include "applications/frontier/battle_arcade/sprites.h"
 #include "applications/frontier/battle_arcade/windows.h"
-#include "overlay104/battle_arcade_helpers.h"
+#include "frontier_facilities/battle_arcade_helpers.h"
 
 #include "battle_arcade_save.h"
 #include "battle_frontier_save.h"
@@ -50,7 +50,7 @@
 
 #include "res/graphics/frontier/backgrounds/frontier_backgrounds.naix"
 
-FS_EXTERN_OVERLAY(overlay104);
+FS_EXTERN_OVERLAY(frontier_facilities);
 
 #define GRID_WIDTH  4
 #define GRID_HEIGHT 4
@@ -290,7 +290,7 @@ static const TouchScreenHitTable sStopButtonHitBox[] = {
 
 BOOL BattleArcadeApp_Init(ApplicationManager *appMan, int *state)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay104), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(frontier_facilities), OVERLAY_LOAD_ASYNC);
     InitGraphicsPlane();
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_BATTLE_ARCADE_APP, HEAP_SIZE_BATTLE_ARCADE_APP);
 
@@ -421,7 +421,7 @@ BOOL BattleArcadeApp_Exit(ApplicationManager *appMan, int *state)
     ApplicationManager_FreeData(appMan);
     SetVBlankCallback(NULL, NULL);
     Heap_Destroy(HEAP_ID_BATTLE_ARCADE_APP);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay104));
+    Overlay_UnloadByID(FS_OVERLAY_ID(frontier_facilities));
 
     return TRUE;
 }

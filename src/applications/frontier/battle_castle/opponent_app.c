@@ -12,8 +12,8 @@
 #include "applications/frontier/battle_castle/sprite_manager.h"
 #include "applications/frontier/battle_castle/sprites.h"
 #include "applications/frontier/battle_castle/windows.h"
-#include "overlay104/battle_castle_helpers.h"
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/battle_castle_helpers.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 #include "battle_castle_save.h"
 #include "battle_frontier_save.h"
@@ -59,7 +59,7 @@
 #include "res/graphics/frontier/backgrounds/frontier_backgrounds.naix"
 #include "res/text/bank/battle_castle_opponent_app.h"
 
-FS_EXTERN_OVERLAY(overlay104);
+FS_EXTERN_OVERLAY(frontier_facilities);
 
 #define NUM_MONS_MAX 4
 
@@ -283,7 +283,7 @@ static void GetFlagSpritesOffsets(BattleCastleOpponentApp *app, u32 *x, u32 *y);
 
 BOOL BattleCastleOpponentApp_Init(ApplicationManager *appMan, int *state)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay104), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(frontier_facilities), OVERLAY_LOAD_ASYNC);
     InitGraphicsPlane();
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_BATTLE_CASTLE_APP, 0x20000);
 
@@ -423,7 +423,7 @@ BOOL BattleCastleOpponentApp_Exit(ApplicationManager *appMan, int *state)
     ApplicationManager_FreeData(appMan);
     SetVBlankCallback(NULL, NULL);
     Heap_Destroy(HEAP_ID_BATTLE_CASTLE_APP);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay104));
+    Overlay_UnloadByID(FS_OVERLAY_ID(frontier_facilities));
 
     return TRUE;
 }

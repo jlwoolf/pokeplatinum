@@ -1,0 +1,18 @@
+#ifndef POKEPLATINUM_STRUCT_FRONTIER_FACILITIES_0223D570_H
+#define POKEPLATINUM_STRUCT_FRONTIER_FACILITIES_0223D570_H
+
+#include "frontier_facilities/struct_frontier_facilities_0223D8F0.h"
+
+typedef struct {
+    u16 unk_00;
+    u16 unk_02;
+    u16 unk_04;
+    s16 unk_06;
+    s16 unk_08;
+    u8 unk_0A;
+    u8 unk_0B;
+    u8 unk_0C;
+    FrontierObjectMovement unk_0E;
+} FrontierObjectParams;
+
+#endif // POKEPLATINUM_STRUCT_FRONTIER_FACILITIES_0223D570_H

@@ -3,7 +3,7 @@
 
 #include "struct_defs/battle_tower.h"
 
-#include "overlay104/wfc_facility_selector.h"
+#include "frontier_facilities/wfc_facility_selector.h"
 
 // Registers the Battle Frontier comm command table with the comm manager.
 void FrontierCommCmd_Init(void *context);

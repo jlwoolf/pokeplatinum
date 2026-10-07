@@ -1529,47 +1529,47 @@ Overlay dummy7
 	After wifi_2d_char
 }
 
-Overlay overlay104
+Overlay frontier_facilities
 {
 	After wifi_2d_char
-	Object main.nef.p/src_overlay104_frontier_opponents.c.o
-	Object main.nef.p/src_overlay104_frontier_script_manager.c.o
-	Object main.nef.p/src_overlay104_frontier_script_context.c.o
-	Object main.nef.p/src_overlay104_frontier_scenes.c.o
-	Object main.nef.p/src_overlay104_frontier_communication.c.o
-	Object main.nef.p/src_overlay104_frscrcmd.c.o
-	Object main.nef.p/src_overlay104_ov104_02231F74.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_battle_factory.c.o
-	Object main.nef.p/src_overlay104_battle_factory.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_battle_hall.c.o
-	Object main.nef.p/src_overlay104_battle_hall.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_battle_castle.c.o
-	Object main.nef.p/src_overlay104_battle_castle.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_battle_arcade.c.o
-	Object main.nef.p/src_overlay104_battle_arcade.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_sound.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_battle_tower.c.o
-	Object main.nef.p/src_overlay104_ov104_022394A4.c.o
-	Object main.nef.p/src_overlay104_frscrcmd_wfc_facility_selector.c.o
-	Object main.nef.p/src_overlay104_wfc_facility_selector.c.o
-	Object main.nef.p/src_overlay104_ov104_0223A0C4.c.o
-	Object main.nef.p/src_overlay104_battle_factory_helpers.c.o
-	Object main.nef.p/src_overlay104_battle_hall_helpers.c.o
-	Object main.nef.p/src_overlay104_battle_castle_helpers.c.o
-	Object main.nef.p/src_overlay104_battle_arcade_helpers.c.o
-	Object main.nef.p/src_overlay104_wfc_facility_selector_helpers.c.o
-	Object main.nef.p/src_overlay104_frontier_graphics.c.o
-	Object main.nef.p/src_overlay104_frontier_particle_system.c.o
-	Object main.nef.p/src_overlay104_ov104_0223D768.c.o
-	Object main.nef.p/src_overlay104_ov104_0223D860.c.o
-	Object main.nef.p/src_overlay104_ov104_0223D9E4.c.o
-	Object main.nef.p/src_overlay104_frontier_brain_encounter_effect.c.o
-	Object main.nef.p/src_overlay104_ov104_0223E894.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_opponents.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_script_manager.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_script_context.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_scenes.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_communication.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_02231F74.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_battle_factory.c.o
+	Object main.nef.p/src_frontier_facilities_battle_factory.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_battle_hall.c.o
+	Object main.nef.p/src_frontier_facilities_battle_hall.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_battle_castle.c.o
+	Object main.nef.p/src_frontier_facilities_battle_castle.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_battle_arcade.c.o
+	Object main.nef.p/src_frontier_facilities_battle_arcade.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_sound.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_battle_tower.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_022394A4.c.o
+	Object main.nef.p/src_frontier_facilities_frscrcmd_wfc_facility_selector.c.o
+	Object main.nef.p/src_frontier_facilities_wfc_facility_selector.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_0223A0C4.c.o
+	Object main.nef.p/src_frontier_facilities_battle_factory_helpers.c.o
+	Object main.nef.p/src_frontier_facilities_battle_hall_helpers.c.o
+	Object main.nef.p/src_frontier_facilities_battle_castle_helpers.c.o
+	Object main.nef.p/src_frontier_facilities_battle_arcade_helpers.c.o
+	Object main.nef.p/src_frontier_facilities_wfc_facility_selector_helpers.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_graphics.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_particle_system.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_0223D768.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_0223D860.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_0223D9E4.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_brain_encounter_effect.c.o
+	Object main.nef.p/src_frontier_facilities_frontier_facilities_0223E894.c.o
 }
 
 Overlay battle_factory_app
 {
-	After overlay104
+	After frontier_facilities
 	Object main.nef.p/src_applications_frontier_battle_factory_main.c.o
 	Object main.nef.p/src_applications_frontier_battle_factory_sprite_manager.c.o
 	Object main.nef.p/src_applications_frontier_battle_factory_helpers.c.o
@@ -1581,7 +1581,7 @@ Overlay battle_factory_app
 
 Overlay battle_hall_app
 {
-	After overlay104
+	After frontier_facilities
 	Object main.nef.p/src_applications_frontier_battle_hall_main.c.o
 	Object main.nef.p/src_applications_frontier_battle_hall_sprite_manager.c.o
 	Object main.nef.p/src_applications_frontier_battle_hall_sprites.c.o
@@ -1590,7 +1590,7 @@ Overlay battle_hall_app
 
 Overlay battle_castle_app
 {
-	After overlay104
+	After frontier_facilities
 	Object main.nef.p/src_applications_frontier_battle_castle_self_app.c.o
 	Object main.nef.p/src_applications_frontier_battle_castle_opponent_app.c.o
 	Object main.nef.p/src_applications_frontier_battle_castle_sprite_manager.c.o
@@ -1601,7 +1601,7 @@ Overlay battle_castle_app
 
 Overlay battle_arcade_app
 {
-	After overlay104
+	After frontier_facilities
 	Object main.nef.p/src_applications_frontier_battle_arcade_main.c.o
 	Object main.nef.p/src_applications_frontier_battle_arcade_sprite_manager.c.o
     Object main.nef.p/src_applications_frontier_battle_arcade_sprites.c.o
