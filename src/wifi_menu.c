@@ -12,7 +12,7 @@
 #include "overlay065/ov65_0222DCE0.h"
 #include "overlay065/ov65_0223648C.h"
 #include "overlay066/struct_ov66_02231134.h"
-#include "overlay098/struct_ov98_02247168.h"
+#include "gts/struct_gts_menu_args.h"
 #include "overlay115/ov115_02260440.h"
 #include "overlay115/struct_ov115_02260440.h"
 #include "overlay116/ov116_022604C4.h"
@@ -48,7 +48,7 @@ FS_EXTERN_OVERLAY(overlay117);
 typedef struct {
     // Arguments handed to the menu app and to the communication app. The menu
     // app writes the selected activity into `appArgs->unk_04`.
-    UnkStruct_ov98_02247168 *appArgs;
+    GTSMenuArgs *appArgs;
     // State machine state (see WiFiMenu_Task).
     int state;
     // Script variable that receives the result of the WiFi app entry point.
@@ -340,8 +340,8 @@ static WiFiMenuWork *WiFiMenu_New(void)
     WiFiMenuWork *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(WiFiMenuWork));
 
     MI_CpuClear8(v0, sizeof(WiFiMenuWork));
-    v0->appArgs = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(UnkStruct_ov98_02247168));
-    MI_CpuClear8(v0->appArgs, sizeof(UnkStruct_ov98_02247168));
+    v0->appArgs = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(GTSMenuArgs));
+    MI_CpuClear8(v0->appArgs, sizeof(GTSMenuArgs));
     return v0;
 }
 

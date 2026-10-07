@@ -86,7 +86,7 @@
 #include "overlay007/shop_menu.h"
 #include "overlay008/gym_features.h"
 #include "distortion_world/distortion_world.h"
-#include "overlay098/struct_ov98_02247168.h"
+#include "gts/struct_gts_menu_args.h"
 #include "overlay104/struct_ov104_02230BE4.h"
 #include "savedata/save_table.h"
 #include "underground/vendors.h"
@@ -3029,7 +3029,7 @@ static BOOL ScrCmd_Unused_0A4(ScriptContext *ctx)
     void **v1 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PARTY_MANAGEMENT_DATA);
     u16 *v2 = ScriptContext_GetVarPointer(ctx);
 
-    UnkStruct_ov98_02247168 *v0 = (*v1);
+    GTSMenuArgs *v0 = (*v1);
     *v2 = v0->unk_04;
 
     Heap_Free(*v1);

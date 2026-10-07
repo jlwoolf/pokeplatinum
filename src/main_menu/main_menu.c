@@ -57,7 +57,7 @@
 FS_EXTERN_OVERLAY(game_start);
 FS_EXTERN_OVERLAY(game_opening);
 FS_EXTERN_OVERLAY(main_menu);
-FS_EXTERN_OVERLAY(overlay98);
+FS_EXTERN_OVERLAY(gts);
 
 #define BACKGROUND_COLOR          GX_RGB(12, 12, 31)
 #define UNFOCUSED_OPTION_BG_COLOR GX_RGB(26, 26, 26)
@@ -1322,7 +1322,7 @@ static void EnqueueNextApplication(MainMenuAppData *appData)
         break;
     case NEXT_APP_WII_MSG_SETTINGS:
         Sound_StopWaveOutAndSequences();
-        EnqueueApplication(FS_OVERLAY_ID(overlay98), &gWiiMessageAppTemplate);
+        EnqueueApplication(FS_OVERLAY_ID(gts), &gWiiMessageAppTemplate);
         break;
     case NEXT_APP_TITLE_SCREEN:
         EnqueueApplication(FS_OVERLAY_ID(game_opening), &gTitleScreenAppTemplate);

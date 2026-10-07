@@ -1472,12 +1472,12 @@ Overlay main_menu
 	Library libcrypto_ov97.a
 }
 
-Overlay overlay98
+Overlay gts
 {
 	After gts_application
-	Object main.nef.p/src_overlay098_ov98_02246C20.c.o
-	Object main.nef.p/src_overlay098_ov98_022471C8.c.o
-	Object main.nef.p/src_overlay098_ov98_022499C8.c.o
+	Object main.nef.p/src_gts_gts.c.o
+	Object main.nef.p/src_gts_gts_screen.c.o
+	Object main.nef.p/src_gts_gts_email.c.o
 }
 
 Overlay end_credits
