@@ -20,9 +20,9 @@
 #include "overlay005/model_attributes.h"
 #include "overlay005/ov5_021EAFA4.h"
 #include "overlay005/signpost.h"
-#include "overlay056/struct_ov56_02256468_decl.h"
 #include "overlay066/struct_ov66_0222DCE0_sub1.h"
 #include "underground/struct_underground_top_screen_context_decl.h"
+#include "union_room_chat/union_room_chat_decl.h"
 
 #include "bag.h"
 #include "battle_regulation.h"
@@ -107,7 +107,7 @@ typedef struct FieldSystem_t {
     FieldWildBattleMetadata wildBattleMetadata;
     UnionRoom *unk_7C;
     UnionRoomTrainers *unk_80;
-    UnkStruct_ov56_02256468 *unk_84;
+    UnionRoomChat *unk_84;
     TradeRoom *tradeRoom;
     UnkStruct_ov5_021EB0E0 *unk_8C;
     int menuCursorPos;

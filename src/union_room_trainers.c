@@ -46,7 +46,7 @@
 // their map object in when they connect and out when they leave, and drives the
 // small warp/friend visual effects. It also owns a ring buffer of the most
 // recent easy chat messages (UnionRoomChatLog) shown by the Union Room chat
-// overlay in overlay056.
+// overlay in union_room_chat.
 //
 // Slots 0-49 correspond to the other players' map objects; slot 50 is the
 // player's own map object, which only needs the effect timer ticked.

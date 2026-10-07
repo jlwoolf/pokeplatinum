@@ -1082,10 +1082,10 @@ Overlay poketch_unused_4
 	Object main.nef.p/src_applications_poketch_unused_4_graphics.c.o
 }
 
-Overlay overlay56
+Overlay union_room_chat
 {
 	After poketch
-	Object main.nef.p/src_overlay056_ov56_022561C0.c.o
+	Object main.nef.p/src_union_room_chat_union_room_chat.c.o
 }
 
 Overlay game_start
