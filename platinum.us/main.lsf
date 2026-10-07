@@ -1094,10 +1094,10 @@ Overlay game_start
 	Object main.nef.p/src_game_start.c.o
 }
 
-Overlay overlay58
+Overlay union_room_drawing
 {
 	After main
-	Object main.nef.p/src_overlay058_ov58_021D0D80.c.o
+	Object main.nef.p/src_union_room_drawing_union_room_drawing.c.o
 }
 
 Overlay overlay59

@@ -63,12 +63,12 @@
 #include "overlay007/accessory_shop.h"
 #include "overlay022/ov22_02255D44.h"
 #include "overlay022/ov22_0225B660.h"
-#include "overlay058/ov58_021D0D80.h"
 #include "overlay059/ov59_021D0D80.h"
 #include "overlay064/ov64_0222DCE0.h"
 #include "overlay092/geonet.h"
 #include "overlay101/ov101_021D0D80.h"
 #include "savedata/save_table.h"
+#include "union_room_drawing/union_room_drawing.h"
 #include "wifi_battle_tower/application.h"
 
 #include "bag.h"
@@ -138,7 +138,7 @@ FS_EXTERN_OVERLAY(pc_boxes);
 FS_EXTERN_OVERLAY(easy_chat);
 FS_EXTERN_OVERLAY(pokedex);
 FS_EXTERN_OVERLAY(overlay22);
-FS_EXTERN_OVERLAY(overlay58);
+FS_EXTERN_OVERLAY(union_room_drawing);
 FS_EXTERN_OVERLAY(overlay59);
 FS_EXTERN_OVERLAY(overlay61);
 FS_EXTERN_OVERLAY(overlay64);
@@ -1100,10 +1100,10 @@ void FieldTask_StartUnionRoomTrade(FieldTask *taskMan)
 
 // Union Room "drawing" (oekaki) app, launched from the Union Room scripts.
 const ApplicationManagerTemplate gUnionRoomDrawingAppTemplate = {
-    ov58_021D0D80,
-    ov58_021D0F08,
-    ov58_021D1018,
-    FS_OVERLAY_ID(overlay58)
+    UnionRoomDrawing_Init,
+    UnionRoomDrawing_Main,
+    UnionRoomDrawing_Exit,
+    FS_OVERLAY_ID(union_room_drawing)
 };
 
 // Union Room "mix records" app, launched from the Union Room scripts.

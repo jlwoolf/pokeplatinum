@@ -2,7 +2,7 @@
 #define POKEPLATINUM_UNION_ROOM_DRAWING_COMM_H
 
 // Communication command handlers for the Union Room drawing (oekaki) app
-// (overlay058). Register them with UnionRoomDrawing_RegisterCommHandlers,
+// (union_room_drawing). Register them with UnionRoomDrawing_RegisterCommHandlers,
 // passing the app's UnionRoomDrawing state as the handler context.
 void UnionRoomDrawing_RegisterCommHandlers(void *app);
 void UnionRoomDrawing_HandleChunkTransfer(int senderNetId, int unused, void *data, void *app);

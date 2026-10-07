@@ -8,8 +8,8 @@
 #include "struct_defs/struct_02095EAC_t.h"
 #include "struct_defs/struct_02095FE4.h"
 
-#include "overlay058/ov58_021D0D80.h"
-#include "overlay058/struct_ov58_021D2820.h"
+#include "union_room_drawing/union_room_drawing.h"
+#include "union_room_drawing/struct_union_room_drawing_status.h"
 
 #include "bg_window.h"
 #include "comm_manager.h"
@@ -19,7 +19,7 @@
 #include "wireless_manager.h"
 
 // Communication command handlers for the Union Room drawing (oekaki) app
-// (overlay058). Up to five players share a 30x15-tile canvas: the server
+// (union_room_drawing). Up to five players share a 30x15-tile canvas: the server
 // streams the canvas to the clients in 1000-byte chunks (command 118) while
 // the players exchange their pen/cursor status (commands 119 and 120). The
 // remaining commands drive the join handshake and the start/end of a drawing
@@ -195,7 +195,7 @@ void UnionRoomDrawing_HandleChunkTransfer(int senderNetId, int unused, void *dat
 void UnionRoomDrawing_ReceivePlayerStatus(int senderNetId, int unused, void *data, void *appPtr)
 {
     UnionRoomDrawing *app = (UnionRoomDrawing *)appPtr;
-    UnkStruct_ov58_021D2820 *status = (UnkStruct_ov58_021D2820 *)data;
+    UnionRoomDrawingStatus *status = (UnionRoomDrawingStatus *)data;
 
     if (senderNetId != 0) {
         app->drawingStatusBroadcast[senderNetId] = *status;
@@ -206,7 +206,7 @@ void UnionRoomDrawing_ReceivePlayerStatus(int senderNetId, int unused, void *dat
 void UnionRoomDrawing_ReceiveAllStatuses(int senderNetId, int unused, void *data, void *appPtr)
 {
     UnionRoomDrawing *app = (UnionRoomDrawing *)appPtr;
-    UnkStruct_ov58_021D2820 *statuses = (UnkStruct_ov58_021D2820 *)data;
+    UnionRoomDrawingStatus *statuses = (UnionRoomDrawingStatus *)data;
 
     if (app == NULL) {
         return;
@@ -220,7 +220,7 @@ void UnionRoomDrawing_ReceiveAllStatuses(int senderNetId, int unused, void *data
         }
     }
 
-    if (app->drawingStatus[0].unk_09 == 2) {
+    if (app->drawingStatus[0].state == 2) {
         (void)0;
     }
 }
@@ -231,7 +231,7 @@ void UnionRoomDrawing_HandleTransferComplete(int senderNetId, int unused, void *
 {
     UnionRoomDrawing *app = (UnionRoomDrawing *)appPtr;
 
-    ov58_021D2434(app, 3, 0);
+    UnionRoomDrawing_HandleCommState(app, 3, 0);
     MI_CpuClearFast(app->drawingTiles, 30 * 15 * 32);
 
     if (CommSys_CurNetId() == 0) {
@@ -259,7 +259,7 @@ void UnionRoomDrawing_HandleConnectionAck(int senderNetId, int unused, void *dat
 
             switch (ack->type) {
             case 0:
-                if ((app->connectedCount != CommSys_ConnectedCount()) || (app->connectedCount != ov58_021D2A4C()) || (app->connectedCount != MATH_CountPopulation(WirelessManager_GetConnectedBitmap()))) {
+                if ((app->connectedCount != CommSys_ConnectedCount()) || (app->connectedCount != UnionRoomDrawing_GetConnectedCount()) || (app->connectedCount != MATH_CountPopulation(WirelessManager_GetConnectedBitmap()))) {
                     reply.accepted = 0;
                 } else {
                     app->ackedNetIds |= 1 << senderNetId;
@@ -278,15 +278,15 @@ void UnionRoomDrawing_HandleConnectionAck(int senderNetId, int unused, void *dat
         case 0:
             if (ack->netId == CommSys_CurNetId()) {
                 if (ack->accepted == 0) {
-                    ov58_021D2434(app, 9, ack->netId);
+                    UnionRoomDrawing_HandleCommState(app, 9, ack->netId);
                 } else {
                     app->ackedCount = ack->connectedCount;
-                    ov58_021D2434(app, 8, ack->netId);
+                    UnionRoomDrawing_HandleCommState(app, 8, ack->netId);
                 }
             }
             break;
         case 1:
-            ov58_021D2434(app, 21, ack->netId);
+            UnionRoomDrawing_HandleCommState(app, 21, ack->netId);
             break;
         }
     }
@@ -306,7 +306,7 @@ void UnionRoomDrawing_HandleBeginDrawing(int senderNetId, int unused, void *data
     UnionRoomDrawing *app = (UnionRoomDrawing *)appPtr;
     u8 netId = *(u8 *)data;
 
-    ov58_021D2434(app, 1, netId);
+    UnionRoomDrawing_HandleCommState(app, 1, netId);
 
     if ((CommSys_CurNetId() == 0) && (app->appState == 1)) {
         app->sendChunkIndex = 0;
@@ -333,7 +333,7 @@ void UnionRoomDrawing_HandleServerEndDrawing(int senderNetId, int unused, void *
     UnionRoomDrawing *app = (UnionRoomDrawing *)appPtr;
 
     if (CommSys_CurNetId() != 0) {
-        ov58_021D2434(app, 15, 0);
+        UnionRoomDrawing_HandleCommState(app, 15, 0);
     }
 }
 

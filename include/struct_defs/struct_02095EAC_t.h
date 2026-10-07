@@ -4,8 +4,8 @@
 #include "struct_defs/struct_0203DDFC.h"
 #include "struct_defs/struct_02095EAC_sub1.h"
 
-#include "overlay058/struct_ov58_021D2754.h"
-#include "overlay058/struct_ov58_021D2820.h"
+#include "union_room_drawing/struct_union_room_drawing_prev_point.h"
+#include "union_room_drawing/struct_union_room_drawing_status.h"
 
 #include "bg_window.h"
 #include "message.h"
@@ -17,7 +17,7 @@
 #include "trainer_info.h"
 #include "yes_no_touch_menu.h"
 
-// State for the Union Room drawing (oekaki) app (overlay058). The app lets up
+// State for the Union Room drawing (oekaki) app (union_room_drawing). The app lets up
 // to five players share a canvas; the comm handlers in
 // union_room_drawing_comm.c operate on this struct.
 struct UnionRoomDrawing {
@@ -59,9 +59,9 @@ struct UnionRoomDrawing {
     u16 unk_43D8;
     u8 unk_43DA;
     u8 unk_43DB;
-    UnkStruct_ov58_021D2820 localDrawingStatus; // this player's pen/cursor status
-    UnkStruct_ov58_021D2820 drawingStatus[5]; // every player's pen/cursor status
-    UnkStruct_ov58_021D2754 unk_4418[5];
+    UnionRoomDrawingStatus localDrawingStatus; // this player's pen/cursor status
+    UnionRoomDrawingStatus drawingStatus[5]; // every player's pen/cursor status
+    UnionRoomDrawingPrevPoint prevPoints[5];
     u8 *unk_442C;
     int sendChunkIndex; // index of the canvas chunk currently being streamed
     u8 drawingTiles[14400]; // canvas tile data (30 * 15 tiles of 32 bytes)
@@ -72,7 +72,7 @@ struct UnionRoomDrawing {
     u16 ackedCount; // client: connected count reported by the server
     s16 unk_941E;
     u8 unk_9420;
-    UnkStruct_ov58_021D2820 drawingStatusBroadcast[5]; // server: statuses relayed to all players
+    UnionRoomDrawingStatus drawingStatusBroadcast[5]; // server: statuses relayed to all players
     YesNoTouchMenu *unk_9454;
     int drawingState; // 1 = idle/ready, 2 = drawing in progress
     int unk_945C;
