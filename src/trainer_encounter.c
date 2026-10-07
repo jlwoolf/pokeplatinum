@@ -16,7 +16,7 @@
 #include "field/field_system.h"
 #include "overlay005/ov5_021ECC20.h"
 #include "overlay005/ov5_021F5A10.h"
-#include "overlay008/gym_features.h"
+#include "gym_features/gym_features.h"
 
 #include "heap.h"
 #include "map_object.h"

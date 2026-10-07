@@ -10,7 +10,7 @@
 #include "field/field_system_sub2_t.h"
 #include "overlay005/villa_furniture.h"
 #include "overlay006/great_marsh_tram.h"
-#include "overlay008/gym_features.h"
+#include "gym_features/gym_features.h"
 #include "distortion_world/distortion_world.h"
 
 #include "field_system.h"

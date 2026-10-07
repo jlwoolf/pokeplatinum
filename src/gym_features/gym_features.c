@@ -1,4 +1,4 @@
-#include "overlay008/gym_features.h"
+#include "gym_features/gym_features.h"
 
 #include <nitro.h>
 #include <string.h>

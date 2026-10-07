@@ -602,7 +602,7 @@ Overlay overlay7
 Overlay gym_features
 {
 	After overlay6
-	Object main.nef.p/src_overlay008_gym_features.c.o
+	Object main.nef.p/src_gym_features_gym_features.c.o
 }
 
 Overlay distortion_world

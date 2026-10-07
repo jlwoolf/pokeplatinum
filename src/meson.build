@@ -480,7 +480,7 @@ pokeplatinum_c = files(
     'overlay007/battle_regulation_menu.c',
     'overlay007/accessory_shop.c',
     'overlay007/shop_menu.c',
-    'overlay008/gym_features.c',
+    'gym_features/gym_features.c',
     'distortion_world/distortion_world.c',
     'trainer_intro/trainer_intro.c',
     'overlay011/move_palettes.c',

@@ -84,7 +84,7 @@
 #include "overlay007/battle_regulation_menu.h"
 #include "overlay007/communication_club.h"
 #include "overlay007/shop_menu.h"
-#include "overlay008/gym_features.h"
+#include "gym_features/gym_features.h"
 #include "distortion_world/distortion_world.h"
 #include "gts/struct_gts_menu_args.h"
 #include "overlay104/struct_ov104_02230BE4.h"

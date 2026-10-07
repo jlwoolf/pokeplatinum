@@ -4,7 +4,7 @@
 
 #include "constants/heap.h"
 
-#include "overlay008/gym_features.h"
+#include "gym_features/gym_features.h"
 
 #include "heap.h"
 #include "narc.h"

@@ -24,7 +24,7 @@
 #include "overlay005/vs_seeker.h"
 #include "overlay006/repel_step_update.h"
 #include "overlay006/wild_encounters.h"
-#include "overlay008/gym_features.h"
+#include "gym_features/gym_features.h"
 #include "distortion_world/distortion_world.h"
 #include "underground/manager.h"
 
