@@ -10,7 +10,7 @@
 
 #include "applications/pokemon_summary_screen/main.h"
 #include "overlay006/struct_npc_trade_animation_template.h"
-#include "overlay061/struct_ov61_0222C3B0.h"
+#include "global_terminal/struct_global_terminal_0222C3B0.h"
 
 #include "bg_window.h"
 #include "evolution.h"
@@ -231,7 +231,7 @@ typedef struct GTSApplicationState {
     WorldExchangeTrainer worldExchangeTrainer;
     WorldExchangeTrainerError worldExchangeTrainerError;
     int selectedCountryIndex;
-    UnkStruct_ov61_0222C3B0 unk_11B4;
+    GlobalTerminalPaletteBlend unk_11B4;
 
     // these are only used in GTSApplication_WFCInit_FatalErrorDisconnectMessage
     s16 wfcDisconnectMessageIndex;

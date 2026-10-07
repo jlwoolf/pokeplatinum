@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B138_H
+#define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B138_H
+
+typedef struct {
+    int unk_00;
+    int unk_04;
+    int unk_08;
+} GlobalTerminalTaskState;
+
+#endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B138_H

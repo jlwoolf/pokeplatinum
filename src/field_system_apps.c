@@ -140,7 +140,7 @@ FS_EXTERN_OVERLAY(pokedex);
 FS_EXTERN_OVERLAY(overlay22);
 FS_EXTERN_OVERLAY(union_room_drawing);
 FS_EXTERN_OVERLAY(mix_records);
-FS_EXTERN_OVERLAY(overlay61);
+FS_EXTERN_OVERLAY(global_terminal);
 FS_EXTERN_OVERLAY(wifi_note);
 FS_EXTERN_OVERLAY(trainer_case);
 FS_EXTERN_OVERLAY(signature);
@@ -1788,17 +1788,17 @@ void *FieldSystem_OpenSummaryScreenTeachMove(int unused, FieldSystem *fieldSyste
     return summary;
 }
 
-// Opens the Global Terminal (overlay61) used by the Jubilife City Global
+// Opens the Global Terminal (global_terminal) used by the Jubilife City Global
 // Terminal machine. The two arguments are forwarded to the Wi-Fi app.
 void FieldSystem_OpenGlobalTerminal(FieldSystem *fieldSystem, int param1, int param2)
 {
-    FS_EXTERN_OVERLAY(overlay61);
+    FS_EXTERN_OVERLAY(global_terminal);
 
     const ApplicationManagerTemplate appTemplate = {
         WiFiLobby_Init,
         WiFiLobby_Main,
         WiFiLobby_Exit,
-        FS_OVERLAY_ID(overlay61)
+        FS_OVERLAY_ID(global_terminal)
     };
 
     UnkStruct_0203E6C0 *appData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(UnkStruct_0203E6C0));

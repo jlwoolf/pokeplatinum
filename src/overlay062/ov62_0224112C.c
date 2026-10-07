@@ -5,7 +5,7 @@
 
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay061/ov61_0222B008.h"
+#include "global_terminal/global_terminal_0222B008.h"
 #include "overlay062/ov62_02231690.h"
 #include "overlay062/ov62_02237D24.h"
 #include "overlay062/ov62_02239D60.h"
@@ -49,7 +49,7 @@ void ov62_02241130(UnkStruct_0208C06C *param0)
     v0.unk_3C = param0;
     v0.unk_38 = NULL;
 
-    ov61_0222B008(&param0->unk_14.unk_54, &v0);
+    GlobalTerminalTransfer_Init(&param0->unk_14.unk_54, &v0);
 }
 
 BOOL ov62_022411B8(UnkStruct_0208C06C *param0)
@@ -58,7 +58,7 @@ BOOL ov62_022411B8(UnkStruct_0208C06C *param0)
         return 0;
     }
 
-    return ov61_0222BBBC(ov62_0224112C(param0));
+    return GlobalTerminalTransfer_IsIdle(ov62_0224112C(param0));
 }
 
 void ov62_022411D4(UnkStruct_0208C06C *param0)
@@ -67,7 +67,7 @@ void ov62_022411D4(UnkStruct_0208C06C *param0)
         return;
     }
 
-    ov61_0222B57C(ov62_0224112C(param0));
+    GlobalTerminalTransfer_Main(ov62_0224112C(param0));
 }
 
 void ov62_022411EC(UnkStruct_0208C06C *param0)
@@ -76,5 +76,5 @@ void ov62_022411EC(UnkStruct_0208C06C *param0)
         return;
     }
 
-    ov61_0222B0F0(ov62_0224112C(param0));
+    GlobalTerminalTransfer_Free(ov62_0224112C(param0));
 }

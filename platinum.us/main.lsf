@@ -1119,19 +1119,19 @@ Overlay http
 	Library libdwcnhttp.a
 }
 
-Overlay overlay61
+Overlay global_terminal
 {
 	After http
-	Object main.nef.p/src_overlay061_ov61_0222AE60.c.o
-	Object main.nef.p/src_overlay061_ov61_0222B008.c.o
-	Object main.nef.p/src_overlay061_ov61_0222BC4C.c.o
-	Object main.nef.p/src_overlay061_ov61_0222BF44.c.o
+	Object main.nef.p/src_global_terminal_global_terminal_0222AE60.c.o
+	Object main.nef.p/src_global_terminal_global_terminal_0222B008.c.o
+	Object main.nef.p/src_global_terminal_global_terminal_0222BC4C.c.o
+	Object main.nef.p/src_global_terminal_global_terminal_0222BF44.c.o
 	Library libgds.a
 }
 
 Overlay overlay62
 {
-	After overlay61
+	After global_terminal
 	Object main.nef.p/src_overlay062_ov62_0222F2C0.c.o
 	Object main.nef.p/src_overlay062_ov62_022300D8.c.o
 	Object main.nef.p/src_overlay062_ov62_02231690.c.o

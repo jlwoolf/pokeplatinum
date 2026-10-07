@@ -5,10 +5,10 @@
 
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay061/ov61_0222B008.h"
-#include "overlay061/ov61_0222BC4C.h"
-#include "overlay061/struct_ov61_0222BDAC.h"
-#include "overlay061/struct_ov61_0222BDAC_1.h"
+#include "global_terminal/global_terminal_0222B008.h"
+#include "global_terminal/global_terminal_0222BC4C.h"
+#include "global_terminal/struct_global_terminal_0222BDAC.h"
+#include "global_terminal/struct_global_terminal_0222BDAC_1.h"
 #include "overlay062/ov62_0222F2C0.h"
 #include "overlay062/ov62_022300D8.h"
 #include "overlay062/ov62_02231690.h"
@@ -56,11 +56,11 @@ typedef struct {
     Window unk_84[2];
     UnkStruct_ov62_022312B0 unk_A4[2];
     TouchScreenActions *unk_DC;
-    UnkStruct_ov61_0222BDAC unk_E0;
-    UnkStruct_ov61_0222BDAC_1 unk_638;
+    GlobalTerminalPlayTimeData unk_E0;
+    GlobalTerminalPlayTimeDataAlt unk_638;
     UnkStruct_ov62_0223DF10 unk_710;
-    UnkStruct_ov61_0222BDAC *unk_714;
-    UnkStruct_ov61_0222BDAC_1 *unk_718;
+    GlobalTerminalPlayTimeData *unk_714;
+    GlobalTerminalPlayTimeDataAlt *unk_718;
     UnkStruct_ov62_0223DF10 *unk_71C;
     UnkStruct_ov62_0223D518_sub1 unk_720;
     MessageLoader *unk_744;
@@ -699,12 +699,12 @@ static BOOL ov62_0223D744(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 1:
-        if (ov61_0222B2B8(ov62_0224112C(param0)) == 1) {
+        if (GlobalTerminalTransfer_UploadPlayTime(ov62_0224112C(param0)) == 1) {
             param0->unk_08++;
         }
         break;
     case 2:
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_02231B8C(param0);
             ov62_022348B8(param0, 4, v1->unk_0C, v1->unk_04);
@@ -728,14 +728,14 @@ static BOOL ov62_0223D744(UnkStruct_0208C06C *param0)
         }
         break;
     case 3:
-        if (ov61_0222B2D8(ov62_0224112C(param0), param0->unk_88C[0], &v0->unk_720.unk_0C[0]) == 1) {
+        if (GlobalTerminalTransfer_UploadPlayTimeProfile(ov62_0224112C(param0), param0->unk_88C[0], &v0->unk_720.unk_0C[0]) == 1) {
             param0->unk_08++;
         }
         break;
     case 4:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 5, v1->unk_0C, v1->unk_04);
             VsRecorderRing_SetVisible(param0->unk_6F0, 0);
@@ -1011,7 +1011,7 @@ void ov62_0223DF10(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
         UnkStruct_ov62_0223DF10 *v2;
         int v3;
 
-        ov61_0222BD78(ov62_0224112C(v0), &v1->unk_71C);
+        GlobalTerminalGds_GetPlayTime(ov62_0224112C(v0), &v1->unk_71C);
         MI_CpuCopy8(v1->unk_71C, &v1->unk_710, sizeof(UnkStruct_ov62_0223DF10));
     }
 }
@@ -1025,9 +1025,9 @@ void ov62_0223DF4C(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
         v1->unk_714 = &v1->unk_E0;
         v1->unk_718 = &v1->unk_638;
     } else {
-        ov61_0222BDAC(ov62_0224112C(v0), &v1->unk_714, &v1->unk_718);
-        MI_CpuCopy8(v1->unk_714, &v1->unk_E0, sizeof(UnkStruct_ov61_0222BDAC));
-        MI_CpuCopy8(v1->unk_718, &v1->unk_638, sizeof(UnkStruct_ov61_0222BDAC_1));
+        GlobalTerminalGds_GetPlayTimeProfile(ov62_0224112C(v0), &v1->unk_714, &v1->unk_718);
+        MI_CpuCopy8(v1->unk_714, &v1->unk_E0, sizeof(GlobalTerminalPlayTimeData));
+        MI_CpuCopy8(v1->unk_718, &v1->unk_638, sizeof(GlobalTerminalPlayTimeDataAlt));
 
         {
             int v2;

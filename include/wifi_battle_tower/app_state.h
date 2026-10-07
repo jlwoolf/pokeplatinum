@@ -9,7 +9,7 @@
 #include "struct_defs/wifi_player_profile.h"
 #include "struct_defs/world_exchange.h"
 
-#include "overlay061/struct_ov61_0222C3B0.h"
+#include "global_terminal/struct_global_terminal_0222C3B0.h"
 
 #include "bg_window.h"
 #include "menu.h"
@@ -144,7 +144,7 @@ typedef struct WifiBattleTowerAppState {
     s16 subStep;
     s16 subTimer;
     int timeoutCounter;
-    UnkStruct_ov61_0222C3B0 unk_FF8;
+    GlobalTerminalPaletteBlend unk_FF8;
 } WifiBattleTowerAppState;
 
 #endif // POKEPLATINUM_WIFI_BATTLE_TOWER_APP_STATE_H

@@ -10,10 +10,10 @@
 #include "overlay022/ov22_0225AF8C.h"
 #include "overlay022/struct_ov22_0225AF8C.h"
 #include "overlay022/struct_ov22_0225B1BC_decl.h"
-#include "overlay061/ov61_0222AE60.h"
-#include "overlay061/ov61_0222B008.h"
-#include "overlay061/ov61_0222BC4C.h"
-#include "overlay061/struct_ov61_0222BC90.h"
+#include "global_terminal/global_terminal_0222AE60.h"
+#include "global_terminal/global_terminal_0222B008.h"
+#include "global_terminal/global_terminal_0222BC4C.h"
+#include "global_terminal/struct_global_terminal_0222BC90.h"
 #include "overlay062/const_ov62_022491F0.h"
 #include "overlay062/ov62_0222F2C0.h"
 #include "overlay062/ov62_022300D8.h"
@@ -57,7 +57,7 @@ typedef struct {
     int unk_00;
     int unk_04;
     DressUpPhoto *photo;
-    UnkStruct_ov61_0222BC90 *unk_0C[5];
+    GlobalTerminalProfilePhoto *unk_0C[5];
 } UnkStruct_ov62_02237D24_sub1;
 
 typedef struct {
@@ -416,7 +416,7 @@ static BOOL ov62_022380B0(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 3:
-        if (ov61_0222B1B4(ov62_0224112C(param0), v0->unk_2DC, v0->photo) == 1) {
+        if (GlobalTerminalTransfer_UploadProfilePhoto(ov62_0224112C(param0), v0->unk_2DC, v0->photo) == 1) {
             PlayerProfile_Free(v0->unk_2DC);
             param0->unk_08++;
         }
@@ -424,7 +424,7 @@ static BOOL ov62_022380B0(UnkStruct_0208C06C *param0)
     case 4:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 0, v1->unk_0C, v1->unk_04);
             param0->unk_08++;
@@ -846,14 +846,14 @@ static BOOL ov62_02238B70(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 1:
-        if (ov61_0222B1FC(ov62_0224112C(param0), v0->unk_2E0) == 1) {
+        if (GlobalTerminalTransfer_UploadProfile(ov62_0224112C(param0), v0->unk_2E0) == 1) {
             param0->unk_08++;
         }
         break;
     case 2:
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 1, v1->unk_0C, v1->unk_04);
             v0->unk_2E4 = 0;
@@ -905,7 +905,7 @@ static BOOL ov62_02238D04(UnkStruct_0208C06C *param0)
     case 0:
 
         v0->unk_0C = 0;
-        ov61_0222AE80(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
+        GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
         v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->unk_230.photo);
 
         ov22_0225B074(v0->unk_228, 0);
@@ -1081,13 +1081,13 @@ static BOOL ov62_0223900C(UnkStruct_0208C06C *param0)
     case 2:
         if (v0->unk_0C == 0) {
             ov62_02234540(param0, 1);
-            ov61_0222AFC0(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_00, v0->unk_250.unk_00);
+            GlobalTerminal_DeserializePlayerProfile(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_00, v0->unk_250.unk_00);
             ov62_02232378(&v0->unk_250, param0);
             ov62_022323B8(&v0->unk_250, 0);
             ov62_02234540(param0, 0);
             ov62_022343B8(param0, 80, 3);
         } else {
-            ov61_0222AE80(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
+            GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
             v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->unk_230.photo);
             ov22_0225B074(v0->unk_228, 0);
             ov62_02239518();
@@ -1174,7 +1174,7 @@ static BOOL ov62_0223921C(UnkStruct_0208C06C *param0)
         ov62_02234540(param0, 1);
 
         if (v0->unk_0C == 0) {
-            ov61_0222AE80(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
+            GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
             v0->unk_228 = ov22_0225AF8C(&v0->unk_218, v0->unk_230.photo);
             ov22_0225B074(v0->unk_228, 0);
             ov62_02239518();
@@ -1184,7 +1184,7 @@ static BOOL ov62_0223921C(UnkStruct_0208C06C *param0)
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
         } else {
-            ov61_0222AFC0(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_00, v0->unk_250.unk_00);
+            GlobalTerminal_DeserializePlayerProfile(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_00, v0->unk_250.unk_00);
             ov62_02232378(&v0->unk_250, param0);
             ov62_022323B8(&v0->unk_250, 0);
             ov62_022343B8(param0, 80, 3);
@@ -1662,6 +1662,6 @@ void ov62_02239D38(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
     if (param1->unk_00 == 1) {
         (void)0;
     } else {
-        v1->unk_2E4 = ov61_0222BC90(ov62_0224112C(v0), v1->unk_230.unk_0C, 5);
+        v1->unk_2E4 = GlobalTerminalGds_GetProfilePhotoList(ov62_0224112C(v0), v1->unk_230.unk_0C, 5);
     }
 }

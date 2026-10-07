@@ -4,7 +4,7 @@
 #include "overlay_manager.h"
 
 // Wi-Fi lobby application. Sets up the Nintendo Wi-Fi Connection (DWC) heap,
-// loads the WFC/HTTP overlays, and hosts the Global Terminal (overlay061) and
+// loads the WFC/HTTP overlays, and hosts the Global Terminal (global_terminal) and
 // the Vs. Recorder. See src/wifi_lobby.c for the implementation.
 int WiFiLobby_Init(ApplicationManager *appMan, int *param1);
 int WiFiLobby_Main(ApplicationManager *appMan, int *param1);

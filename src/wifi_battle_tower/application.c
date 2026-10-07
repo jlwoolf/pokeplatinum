@@ -191,7 +191,7 @@ static void WifiBattleTower_OnVBlank(void *appStatePtr)
     VramTransfer_Process();
     RenderOam_Transfer();
 
-    inline_ov61_0222C1FC(&appState->unk_FF8);
+    GlobalTerminal_PaletteBlendNoop2(&appState->unk_FF8);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }

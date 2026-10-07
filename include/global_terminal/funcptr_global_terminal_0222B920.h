@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_FUNCPTR_GLOBAL_TERMINAL_0222B920_H
+#define POKEPLATINUM_FUNCPTR_GLOBAL_TERMINAL_0222B920_H
+
+#include "overlay062/struct_ov62_0223CAA4.h"
+
+typedef void (*GlobalTerminalTransferCallbackFunc)(void *, const UnkStruct_ov62_0223CAA4 *);
+
+#endif // POKEPLATINUM_FUNCPTR_GLOBAL_TERMINAL_0222B920_H

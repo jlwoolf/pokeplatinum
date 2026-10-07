@@ -34,7 +34,7 @@
 #include "constdata/const_020F3050.h"
 #include "constdata/const_020F3060.h"
 
-FS_EXTERN_OVERLAY(overlay61);
+FS_EXTERN_OVERLAY(global_terminal);
 FS_EXTERN_OVERLAY(overlay62);
 
 // Private state for the Vs. Recorder application. The app runs a small state
@@ -269,7 +269,7 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
     switch (param0->state) {
     case 0:
         if (param0->vsRecorder->unk_00 != 0) {
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay61));
+            Overlay_UnloadByID(FS_OVERLAY_ID(global_terminal));
             Overlay_UnloadHttpOverlay();
         }
 
@@ -352,7 +352,7 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
 
         if (param0->vsRecorder->unk_00 != 0) {
             Overlay_LoadHttpOverlay();
-            Overlay_LoadByID(FS_OVERLAY_ID(overlay61), 2);
+            Overlay_LoadByID(FS_OVERLAY_ID(global_terminal), 2);
         }
 
         return 1;
@@ -425,7 +425,7 @@ static const ApplicationManagerTemplate *sAppTemplates[] = {
 };
 
 // Returns the app template for the given mode. Called by the Global Terminal
-// (overlay61) to launch the selected online feature.
+// (global_terminal) to launch the selected online feature.
 const ApplicationManagerTemplate *VsRecorder_GetAppTemplate(int mode)
 {
     const ApplicationManagerTemplate *v0 = sAppTemplates[mode];

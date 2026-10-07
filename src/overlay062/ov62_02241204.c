@@ -7,11 +7,11 @@
 #include "struct_defs/struct_02030A80.h"
 #include "struct_defs/struct_0208C06C.h"
 
-#include "overlay061/ov61_0222AE60.h"
-#include "overlay061/ov61_0222B008.h"
-#include "overlay061/ov61_0222BC4C.h"
-#include "overlay061/struct_ov61_0222BED8.h"
-#include "overlay061/struct_ov61_0222BED8_sub1.h"
+#include "global_terminal/global_terminal_0222AE60.h"
+#include "global_terminal/global_terminal_0222B008.h"
+#include "global_terminal/global_terminal_0222BC4C.h"
+#include "global_terminal/struct_global_terminal_0222BED8.h"
+#include "global_terminal/struct_global_terminal_0222BED8_sub1.h"
 #include "overlay062/const_ov62_022491F0.h"
 #include "overlay062/ov62_0222F2C0.h"
 #include "overlay062/ov62_022300D8.h"
@@ -70,7 +70,7 @@ typedef struct {
     UnkStruct_ov62_02246B00 *unk_4AC;
     u64 unk_4B0;
     BOOL unk_4B8;
-    UnkStruct_ov61_0222BED8 *unk_4BC;
+    GlobalTerminalRecordAlt *unk_4BC;
     u16 unk_4C0;
     u8 unk_4C2;
     u8 unk_4C3;
@@ -1659,12 +1659,12 @@ static BOOL ov62_02242BB8(UnkStruct_0208C06C *param0)
             }
         }
 
-        if (ov61_0222B394(ov62_0224112C(param0), v0->unk_4C0, v2, v0->unk_4C3, v0->unk_4C4) == 1) {
+        if (GlobalTerminalTransfer_UploadRecord(ov62_0224112C(param0), v0->unk_4C0, v2, v0->unk_4C3, v0->unk_4C4) == 1) {
             param0->unk_08++;
         }
     } break;
     case 2:
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022345B8(param0, 7, v1->unk_0C, v1->unk_04);
             param0->unk_8B4.unk_3900 = 0;
@@ -2291,12 +2291,12 @@ static BOOL ov62_0224391C(UnkStruct_0208C06C *param0)
         param0->unk_08++;
         break;
     case 3:
-        if (ov61_0222B524(ov62_0224112C(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80.unk_58) == 1) {
+        if (GlobalTerminalTransfer_UploadId(ov62_0224112C(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80.unk_58) == 1) {
             param0->unk_08++;
         }
         break;
     case 4:
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_02231B8C(param0);
             ov62_022348B8(param0, 8, v1->unk_0C, v1->unk_04);
@@ -2308,7 +2308,7 @@ static BOOL ov62_0224391C(UnkStruct_0208C06C *param0)
             v0->unk_4B8 = 1;
             param0->unk_878 = &param0->unk_8B4.unk_3904[param0->unk_14.unk_48C.unk_38.unk_00];
             v0->unk_4BC = param0->unk_8B4.unk_00;
-            MI_CpuCopy8(v0->unk_4BC, &param0->unk_8B4.unk_04, sizeof(UnkStruct_ov61_0222BED8));
+            MI_CpuCopy8(v0->unk_4BC, &param0->unk_8B4.unk_04, sizeof(GlobalTerminalRecordAlt));
         }
 
         VsRecorderRing_SetVisible(param0->unk_6F0, 0);
@@ -2739,7 +2739,7 @@ static BOOL ov62_02244258(UnkStruct_0208C06C *param0)
             return 0;
         }
 
-        if (ov61_0222B524(ov62_0224112C(param0), v1->unk_2CC) == 1) {
+        if (GlobalTerminalTransfer_UploadId(ov62_0224112C(param0), v1->unk_2CC) == 1) {
             param0->unk_08++;
         }
         break;
@@ -2750,7 +2750,7 @@ static BOOL ov62_02244258(UnkStruct_0208C06C *param0)
 
         ov62_02231A1C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v2) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v2) == 1) {
             Sound_StopEffect(1381, 0);
             G2_BlendNone();
             ov62_022348B8(param0, 8, v2->unk_0C, v2->unk_04);
@@ -2764,7 +2764,7 @@ static BOOL ov62_02244258(UnkStruct_0208C06C *param0)
             Sound_PlayEffect(SEQ_SE_PL_BREC12_sseq);
             param0->unk_878 = &param0->unk_8B4.unk_1D54;
             v0->unk_4BC = param0->unk_8B4.unk_00;
-            MI_CpuCopy8(v0->unk_4BC, &param0->unk_8B4.unk_04, sizeof(UnkStruct_ov61_0222BED8));
+            MI_CpuCopy8(v0->unk_4BC, &param0->unk_8B4.unk_04, sizeof(GlobalTerminalRecordAlt));
         }
 
         VsRecorderRing_SetVisible(param0->unk_6F4, 0);
@@ -2795,10 +2795,10 @@ static void ov62_022443EC(UnkStruct_0208C06C *param0)
     UnkStruct_ov62_02241204 *v0 = param0->unk_860;
 
     v0->unk_80.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    ov61_0222AFC0(&v0->unk_4BC->unk_00, v0->unk_80.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&v0->unk_4BC->unk_00, v0->unk_80.unk_00);
     v0->unk_10C.unk_00 = v0->unk_80.unk_00;
     v0->unk_10C.unk_04 = BattleRecording_NewSummary(HEAP_ID_102);
-    MI_CpuCopy8(&v0->unk_4BC->unk_80, v0->unk_10C.unk_04, sizeof(UnkStruct_ov61_0222BED8_sub1));
+    MI_CpuCopy8(&v0->unk_4BC->unk_80, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
 static void ov62_0224443C(UnkStruct_0208C06C *param0)
@@ -2806,10 +2806,10 @@ static void ov62_0224443C(UnkStruct_0208C06C *param0)
     UnkStruct_ov62_02241204 *v0 = param0->unk_860;
 
     v0->unk_80.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    ov61_0222AFC0(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00, v0->unk_80.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00, v0->unk_80.unk_00);
     v0->unk_10C.unk_00 = v0->unk_80.unk_00;
     v0->unk_10C.unk_04 = BattleRecording_NewSummary(HEAP_ID_102);
-    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_10C.unk_04, sizeof(UnkStruct_ov61_0222BED8_sub1));
+    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
 static void ov62_022444A0(UnkStruct_0208C06C *param0)
@@ -3489,7 +3489,7 @@ static BOOL ov62_0224536C(UnkStruct_0208C06C *param0)
             v0->unk_1D0 = PlayerProfile_New(HEAP_ID_102);
             PlayerProfile_Init(v0->unk_1D0, param0->saveData);
 
-            if (ov61_0222B338(ov62_0224112C(param0), v0->unk_1D0) == 1) {
+            if (GlobalTerminalTransfer_UploadBattleRecording(ov62_0224112C(param0), v0->unk_1D0) == 1) {
                 PlayerProfile_Free(v0->unk_1D0);
                 param0->unk_08++;
             }
@@ -3504,7 +3504,7 @@ static BOOL ov62_0224536C(UnkStruct_0208C06C *param0)
         BattleRecording_Free();
         ov62_02231B8C(param0);
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             ov62_022348B8(param0, 6, v1->unk_0C, v1->unk_04);
             VsRecorderRing_SetVisible(param0->unk_6F0, 0);
@@ -4255,7 +4255,7 @@ static BOOL ov62_0224613C(UnkStruct_0208C06C *param0)
         {
             u64 v2 = BattleRecording_GetSummaryValue(BattleRecording_GetSummary(), 4, 0);
 
-            if (ov61_0222B550(ov62_0224112C(param0), v2) == 1) {
+            if (GlobalTerminalTransfer_UploadId2(ov62_0224112C(param0), v2) == 1) {
                 param0->unk_08++;
             }
         }
@@ -4265,7 +4265,7 @@ static BOOL ov62_0224613C(UnkStruct_0208C06C *param0)
             return 0;
         }
 
-        if (ov61_0222BB48(ov62_0224112C(param0), &v1) == 1) {
+        if (GlobalTerminalTransfer_GetState(ov62_0224112C(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             param0->unk_08++;
         } else {
@@ -4548,7 +4548,7 @@ void ov62_02246944(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
     } else {
         u64 v2;
 
-        v2 = ov61_0222BDF0(ov62_0224112C(v0));
+        v2 = GlobalTerminalGds_GetBattleRecording(ov62_0224112C(v0));
         v1->unk_4B0 = v2;
     }
 }
@@ -4560,7 +4560,7 @@ void ov62_02246968(void *param0, const UnkStruct_ov62_0223CAA4 *param1)
     if (param1->unk_00 == 1) {
         (void)0;
     } else {
-        ov61_0222BED8(ov62_0224112C(v0), &v0->unk_8B4.unk_00);
+        GlobalTerminalGds_GetRecordAlt(ov62_0224112C(v0), &v0->unk_8B4.unk_00);
         ov62_0223371C(v0);
         v0->unk_8B4.unk_1D54 = v0->unk_8B4.unk_00->unk_80.unk_27;
     }
