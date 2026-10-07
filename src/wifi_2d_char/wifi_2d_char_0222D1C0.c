@@ -6,7 +6,7 @@
 #include "wifi_2d_char/wifi_2d_char_0222D160.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222D160.h"
-#include "overlay065/struct_ov65_0223582C.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0223582C.h"
 
 #include "bg_window.h"
 #include "graphics.h"
@@ -24,14 +24,14 @@ typedef struct WiFi2DCharBackground {
     u16 unk_1A;
 } WiFi2DCharBackground;
 
-static void WiFi2DCharBackground_InitBg(BgConfig *param0, int param1, const UnkStruct_ov65_0223582C *param2);
+static void WiFi2DCharBackground_InitBg(BgConfig *param0, int param1, const WiFiMenuAppSpriteParams *param2);
 static void WiFi2DCharBackground_Scroll(WiFi2DCharBackground *param0, s16 param1, s16 param2);
 static void WiFi2DCharBackground_DrawTilemap(BgConfig *param0, int param1, const NNSG2dScreenData *param2, s16 param3, s16 param4);
 static void WiFi2DCharBackground_CopyTilemapRect(BgConfig *param0, u8 param1, u8 param2, u8 param3, u8 param4, u8 param5, const void *param6, u8 param7, u8 param8, u8 param9, u8 param10);
 static u8 WiFi2DCharBackground_GetQuadrant(u8 param0, u8 param1);
 static const void *WiFi2DCharBackground_GetQuadrantData(const u8 *param0, u8 param1, u8 param2, u8 param3, u8 param4, u8 param5, WiFi2DCharPosition *param6);
 
-WiFi2DCharBackground *WiFi2DCharBackground_New(G2dRenderer *param0, BgConfig *param1, const UnkStruct_ov65_0223582C *param2, enum HeapID heapID)
+WiFi2DCharBackground *WiFi2DCharBackground_New(G2dRenderer *param0, BgConfig *param1, const WiFiMenuAppSpriteParams *param2, enum HeapID heapID)
 {
     WiFi2DCharBackground *v0 = Heap_Alloc(heapID, sizeof(WiFi2DCharBackground));
     memset(v0, 0, sizeof(WiFi2DCharBackground));
@@ -69,7 +69,7 @@ void WiFi2DCharBackground_Update(WiFi2DCharBackground *param0, const WiFi2DCharV
     WiFi2DCharBackground_Scroll(param0, v0, v1);
 }
 
-static void WiFi2DCharBackground_InitBg(BgConfig *param0, int param1, const UnkStruct_ov65_0223582C *param2)
+static void WiFi2DCharBackground_InitBg(BgConfig *param0, int param1, const WiFiMenuAppSpriteParams *param2)
 {
     BgTemplate v0 = {
         .x = 0,

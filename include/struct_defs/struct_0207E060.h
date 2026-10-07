@@ -19,7 +19,7 @@ typedef struct WFCTrainerInfo {
     // Whether the player has obtained the National Pokédex.
     u8 isNationalDexObtained;
     // Communication app state, shared so that both sides can tell whether they
-    // are running a compatible activity (see ov65_0222DD20 and wfc_host_match.c).
+    // are running a compatible activity (see WiFiMenuApp_GetAdjustedCommState and wfc_host_match.c).
     u8 commState;
     u8 unk_1C;
     // Trainer appearance and gender, used to draw the friend's sprite.

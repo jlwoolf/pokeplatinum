@@ -5,7 +5,7 @@
 
 #include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
-#include "overlay065/struct_ov65_022376D0.h"
+#include "wifi_menu_app/struct_wifi_menu_app_022376D0.h"
 
 #include "heap.h"
 
@@ -101,7 +101,7 @@ u32 WiFi2DCharObjectManager_GetCapacity(const WiFi2DCharObjectManager *param0)
     return param0->unk_04;
 }
 
-WiFi2DCharObject *WiFi2DCharObjectManager_AddObject(WiFi2DCharObjectManager *param0, const UnkStruct_ov65_022376D0 *param1)
+WiFi2DCharObject *WiFi2DCharObjectManager_AddObject(WiFi2DCharObjectManager *param0, const WiFiMenuAppRect *param1)
 {
     WiFi2DCharObject *v0;
 

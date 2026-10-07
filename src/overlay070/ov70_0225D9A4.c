@@ -6,7 +6,7 @@
 
 #include "constants/graphics.h"
 
-#include "overlay065/struct_ov65_0222F6EC.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222F6EC.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
@@ -1903,7 +1903,7 @@ static void ov70_0225F184(UnkStruct_ov70_0225F114 *param0, UnkStruct_ov70_0225F2
 {
     u32 v0;
     String *v1;
-    UnkStruct_ov65_0222F6EC *v2 = CommManager_GetUnk34();
+    WiFiCommErrorInfo *v2 = CommManager_GetUnk34();
     v0 = WiFiPlazaLobby_Time_GetWFCErrorMessageID(v2->unk_00, v2->unk_04);
 
     ov70_0225F2A8(param1, v2->unk_00, 5, 0, 2);

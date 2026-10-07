@@ -10,7 +10,7 @@
 #include "constants/net.h"
 
 #include "nintendo_wfc/main.h"
-#include "overlay065/struct_ov65_0222F6EC.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222F6EC.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
 
 #include "battle_regulation.h"
@@ -40,7 +40,7 @@ typedef struct {
     SaveData *saveData;
     TrainerInfo *trainerInfo;
     const BattleRegulation *battleRegulation;
-    UnkStruct_ov65_0222F6EC unk_34;
+    WiFiCommErrorInfo unk_34;
     int timer;
     u16 retryConnectionAttempts;
     u8 maxNumConnection;
@@ -2436,7 +2436,7 @@ BOOL CommManager_IsLoginBattleMatchWifi(void)
  *
  * @return &sCommMan->unk_34
  */
-UnkStruct_ov65_0222F6EC *CommManager_GetUnk34(void)
+WiFiCommErrorInfo *CommManager_GetUnk34(void)
 {
     GF_ASSERT(sCommMan);
     return &sCommMan->unk_34;

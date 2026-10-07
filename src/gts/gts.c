@@ -8,7 +8,7 @@
 
 #include "applications/title_screen.h"
 #include "gts_application/networking.h"
-#include "overlay065/ov65_0222DCE0.h"
+#include "wifi_menu_app/wifi_menu_app.h"
 #include "gts/gts_screen.h"
 #include "gts/gts_email.h"
 #include "gts/struct_gts.h"
@@ -34,7 +34,7 @@
 
 #include "constdata/const_020F2DBC.h"
 
-FS_EXTERN_OVERLAY(overlay65);
+FS_EXTERN_OVERLAY(wifi_menu_app);
 FS_EXTERN_OVERLAY(game_opening);
 FS_EXTERN_OVERLAY(gts_application);
 FS_EXTERN_OVERLAY(gts);
@@ -74,10 +74,10 @@ static const ApplicationManagerTemplate sGTSMenuAppTemplate = {
 };
 
 static const ApplicationManagerTemplate sOverlay65AppTemplate = {
-    ov65_0222E2A8,
-    ov65_0222E3FC,
-    ov65_0222E548,
-    FS_OVERLAY_ID(overlay65)
+    WiFiMenuApp_Init,
+    WiFiMenuApp_Main,
+    WiFiMenuApp_Exit,
+    FS_OVERLAY_ID(wifi_menu_app)
 };
 
 static const struct {

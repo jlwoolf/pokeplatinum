@@ -9,8 +9,8 @@
 #include "struct_defs/struct_0207DE04.h"
 
 #include "field/field_system.h"
-#include "overlay065/ov65_0222DCE0.h"
-#include "overlay065/ov65_0223648C.h"
+#include "wifi_menu_app/wifi_menu_app.h"
+#include "wifi_menu_app/wifi_menu_app_0223648C.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02231134.h"
 #include "gts/struct_gts_menu_args.h"
 #include "wifi_lobby_minigame_bucket/wifi_lobby_minigame_bucket.h"
@@ -35,13 +35,13 @@
 #include "vars_flags.h"
 #include "wifi_overlays.h"
 
-FS_EXTERN_OVERLAY(overlay65);
+FS_EXTERN_OVERLAY(wifi_menu_app);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame_bucket);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame_balloon);
 
-// Field task that drives the Nintendo WFC menu. It runs the overlay065 menu
+// Field task that drives the Nintendo WFC menu. It runs the wifi_menu_app menu
 // app, then dispatches to the activity the player picked: a WiFi battle, a
 // Union Room trade, the WFC settings, the Battle Frontier WiFi facility
 // selector, Poffin cooking, or one of the three WiFi Plaza minigames.
@@ -75,22 +75,22 @@ static void WiFiMenu_FreeWobbuffetMinigame(WiFiLobbyMinigameBucketArgs *param0);
 static WiFiLobbyMinigameBalloonArgs *WiFiMenu_LaunchWobbuffetMinigame(FieldSystem *fieldSystem, enum HeapID heapID, u32 param2);
 static void WiFiMenu_IncrementTrainerScore(FieldSystem *fieldSystem);
 
-// The overlay065 menu app (ov65_0222E2A8) that lets the player choose a WiFi
+// The wifi_menu_app menu app (WiFiMenuApp_Init) that lets the player choose a WiFi
 // activity.
 static const ApplicationManagerTemplate sWiFiMenuAppTemplate = {
-    ov65_0222E2A8,
-    ov65_0222E3FC,
-    ov65_0222E548,
-    FS_OVERLAY_ID(overlay65)
+    WiFiMenuApp_Init,
+    WiFiMenuApp_Main,
+    WiFiMenuApp_Exit,
+    FS_OVERLAY_ID(wifi_menu_app)
 };
 
-// The overlay065 communication app (ov65_0223648C) that runs the chosen
+// The wifi_menu_app communication app (WiFiCommApp_Init) that runs the chosen
 // activity and reports its outcome through WiFiCommAppArgs.
 static const ApplicationManagerTemplate sWiFiCommAppTemplate = {
-    ov65_0223648C,
-    ov65_02236548,
-    ov65_0223668C,
-    FS_OVERLAY_ID(overlay65)
+    WiFiCommApp_Init,
+    WiFiCommApp_Main,
+    WiFiCommApp_Exit,
+    FS_OVERLAY_ID(wifi_menu_app)
 };
 
 // Number of players each activity requires, indexed by WiFiCommAppArgs.appType
@@ -367,7 +367,7 @@ void WiFiMenu_StartWithResult(FieldTask *param0, u16 *param1)
     FieldTask_InitCall(param0, WiFiMenu_Task, v0);
 }
 
-// Sets up the arguments for the overlay065 communication app and starts it.
+// Sets up the arguments for the wifi_menu_app communication app and starts it.
 // `param3` selects the activity (see WiFiCommAppArgs.appType).
 static void WiFiMenu_LaunchCommApp(WiFiMenuWork *param0, FieldSystem *fieldSystem, enum HeapID heapID, u32 param3)
 {

@@ -6,7 +6,7 @@
 #include "generated/trainer_score_events.h"
 
 #include "global_terminal/struct_global_terminal_0222C3B0.h"
-#include "overlay065/struct_ov65_0222F6EC.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222F6EC.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
@@ -270,7 +270,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
         }
         break;
     case 9: {
-        UnkStruct_ov65_0222F6EC *v5;
+        WiFiCommErrorInfo *v5;
         int v6, v7;
 
         if (CommManager_CheckWifiError()) {
@@ -296,7 +296,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
             int v9;
 
             if (CommManager_CheckWifiError()) {
-                UnkStruct_ov65_0222F6EC *v10 = CommManager_GetUnk34();
+                WiFiCommErrorInfo *v10 = CommManager_GetUnk34();
 
                 v8 = WiFiPlazaLobby_Time_IsWFCErrorRetryable(v10->unk_00, v10->unk_04);
 

@@ -1,4 +1,4 @@
-#include "overlay065/ov65_0222DCE0.h"
+#include "wifi_menu_app/wifi_menu_app.h"
 
 #include <dwc.h>
 #include <nitro.h>
@@ -15,13 +15,13 @@
 #include "struct_defs/wi_fi_history.h"
 
 #include "nintendo_wfc/main.h"
-#include "overlay065/ov65_02235060.h"
-#include "overlay065/struct_ov65_0222E99C.h"
-#include "overlay065/struct_ov65_0222EBE0_decl.h"
-#include "overlay065/struct_ov65_0222EBE0_t.h"
-#include "overlay065/struct_ov65_0222F6EC.h"
-#include "overlay065/struct_ov65_02234E50.h"
-#include "overlay065/struct_ov65_022354D8.h"
+#include "wifi_menu_app/wifi_menu_app_02235060.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222E99C.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222EBE0_decl.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222EBE0_t.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222F6EC.h"
+#include "wifi_menu_app/struct_wifi_menu_app_02234E50.h"
+#include "wifi_menu_app/struct_wifi_menu_app_022354D8.h"
 #include "gts/struct_gts_menu_args.h"
 
 #include "assert.h"
@@ -95,175 +95,175 @@ FS_EXTERN_OVERLAY(wifi_2d_char);
 typedef struct {
     u32 unk_00;
     u32 unk_04;
-} UnkStruct_ov65_02239CDC;
+} WiFiMenuAppActivityMenuEntry;
 
-static WFCTrainerInfo *ov65_02234FA8(UnkStruct_ov65_0222EBE0 *param0, u32 param1);
-static u8 ov65_02234FC4(int param0);
-static BOOL ov65_02234FCC(UnkStruct_ov65_0222EBE0 *param0, int param1, int param2);
-static void ov65_0222E5E0(void *param0);
-static void ov65_0222E618(void);
-static void ov65_0222E638(BgConfig *param0);
-static void ov65_0222EBE0(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0222EC2C(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0222EC5C(BgConfig *param0);
-static void ov65_0222ECA8(UnkStruct_ov65_0222EBE0 *param0, NARC *param1);
-static void ov65_0222EDD0(void);
-static void ov65_0222EE18(UnkStruct_ov65_0222EBE0 *param0, NARC *param1);
-static void ov65_0222EE8C(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0222EE98(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0222E87C(UnkStruct_ov65_0222EBE0 *param0, UnkStruct_ov65_022354D8 *param1);
-static void ov65_0222E8A8(UnkStruct_ov65_0222EBE0 *param0, UnkStruct_ov65_022354D8 *param1);
-static int ov65_02230164(UnkStruct_ov65_0222EBE0 *param0);
-static UnkStruct_ov65_022354D8 *ov65_0222E8D4(UnkStruct_ov65_0222EBE0 *param0, u32 param1);
-static void ov65_0222E90C(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, NARC *param2, u32 param3);
-static void ov65_0222E99C(UnkStruct_ov65_0222E99C *param0);
-static void ov65_0222E9C0(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, u32 param2, u8 param3, u8 param4, u32 param5, u32 param6);
-static void ov65_0222EA38(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, u32 param2, u8 param3, u8 param4, u32 param5);
-static void ov65_0222EAD0(Window *param0, UnkStruct_ov65_0222E99C *param1, u16 param2, u16 param3, u32 param4, u32 param5);
-static void ov65_0222EB1C(Window *param0, UnkStruct_ov65_0222E99C *param1, u16 param2, u16 param3, u32 param4);
-static int ov65_0222EBAC(u32 param0);
-static int ov65_0222EBB8(void);
-static void ov65_02232F90(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_02232FB0(UnkStruct_ov65_0222EBE0 *param0, u32 param1, enum HeapID heapID);
-static BOOL ov65_02232FCC(const UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02232FE0(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum HeapID heapID);
-static void ov65_02233068(UnkStruct_ov65_0222EBE0 *param0);
-static u32 ov65_022330C0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_022331E0(UnkStruct_ov65_0222EBE0 *param0);
-static BOOL ov65_02233208(UnkStruct_ov65_0222EBE0 *param0, u32 param1);
-static u32 ov65_02233240(const UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0223324C(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0223327C(UnkStruct_ov65_0222EBE0 *param0, u32 param1);
-static void ov65_02233638(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param2);
-static void ov65_0223366C(UnkStruct_ov65_0222EBE0 *param0, u32 param1);
-static u32 ov65_0223368C(const UnkStruct_ov65_0222EBE0 *param0, u32 param1);
-static void ov65_022336A4(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_022336C4(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_022332C4(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void ov65_02234A10(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_022332FC(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum HeapID heapID);
-static void ov65_02233570(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_022335F8(NNSG2dScreenData *param0, u8 param1);
-static void ov65_022336D4(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0223370C(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02233874(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_02233940(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_02233E20(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_02233EF0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_0223416C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_022342A8(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_022343CC(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID);
-static void ov65_02234628(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02234694(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5);
-static void ov65_022346C4(UnkStruct_ov65_0222EBE0 *param0, String *param1, u32 param2, u32 param3);
-static void ov65_02234708(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param2, u32 param3, u32 param4);
-static void ov65_02234788(UnkStruct_ov65_0222EBE0 *param0, u8 param1, u8 param2, u8 param3, u8 param4);
-static u32 ov65_0223484C(u32 param0, TextColor *param1);
-static void ov65_02234900(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 param2, u32 param3, u32 param4);
-static void ov65_0223498C(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 param2, u32 param3, u32 param4);
-static void ov65_02234A68(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum HeapID heapID);
-static void ov65_02234CFC(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02234D6C(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02234DA0(UnkStruct_ov65_0222EBE0 *param0);
-static u32 ov65_02234DD8(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02234E40(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void ov65_02234E50(UnkStruct_ov65_02234E50 *param0, u32 param1);
-static BOOL ov65_02234E8C(UnkStruct_ov65_02234E50 *param0, u32 param1, u32 param2, u32 param3);
-static void ov65_02234F68(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static void ov65_0222EF4C(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02232CA8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static void ov65_02232B58(UnkStruct_ov65_0222EBE0 *param0, int param1, BOOL param2);
-static void ov65_02232DFC(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02232E58(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static void ov65_02232E70(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static void ov65_02232F50(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02232DC0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static u32 ov65_022319B8(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_02231A0C(void);
-static BOOL ov65_02231A54(void);
-static void ov65_02231A74(UnkStruct_ov65_0222EBE0 *param0, u32 unused);
-static void ov65_0222F6EC(UnkStruct_ov65_0222EBE0 *param0);
-static void ov65_0223500C(UnkStruct_ov65_0222EBE0 *param0, BOOL param1);
-static void ov65_0223503C(UnkStruct_ov65_0222EBE0 *param0);
-static int ov65_0222F010(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F164(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F1A8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F21C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F288(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F304(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F3DC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F7AC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F7F0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F7FC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F808(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F868(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F8AC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F90C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FC48(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222F490(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FAA0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FB44(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FCB8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FCDC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FFAC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230634(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230774(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022307B0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230860(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022309D0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230A30(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230AF8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230BB4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230C04(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230CAC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230CB0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230CB4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232530(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230E04(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230FBC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231200(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231440(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230CF8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230D20(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230D6C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022315A4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022316F0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231E64(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231FE0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231FE4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232020(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232024(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232028(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022321F4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0223229C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022322DC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232358(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022323C0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232558(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232564(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022325AC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022325C4(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232608(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232698(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_022326F0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232734(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0223278C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0223288C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0223294C(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static BOOL ov65_02232EDC(UnkStruct_ov65_0222EBE0 *param0);
-static BOOL ov65_02232F00(UnkStruct_ov65_0222EBE0 *param0);
-static BOOL ov65_02232F30(UnkStruct_ov65_0222EBE0 *param0);
-static int ov65_022305EC(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02232B28(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02230CB8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_02231FE8(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0222FBD0(UnkStruct_ov65_0222EBE0 *param0, int param1);
-static int ov65_0223128C(UnkStruct_ov65_0222EBE0 *param0, int param1);
+static WFCTrainerInfo *WiFiMenuApp_GetFriendStatus(WiFiMenuApp *param0, u32 param1);
+static u8 WiFiMenuApp_GetFriendOnlineStatus(int param0);
+static BOOL WiFiMenuApp_StartWifiBattle(WiFiMenuApp *param0, int param1, int param2);
+static void WiFiMenuApp_VBlankCallback(void *param0);
+static void WiFiMenuApp_SetGXBanks(void);
+static void WiFiMenuApp_InitBgLayers(BgConfig *param0);
+static void WiFiMenuApp_InitStrings(WiFiMenuApp *param0);
+static void WiFiMenuApp_FreeStrings(WiFiMenuApp *param0);
+static void WiFiMenuApp_FreeBgLayers(BgConfig *param0);
+static void WiFiMenuApp_LoadMainBgGraphics(WiFiMenuApp *param0, NARC *param1);
+static void WiFiMenuApp_InitTransfers(void);
+static void WiFiMenuApp_InitSpriteManager(WiFiMenuApp *param0, NARC *param1);
+static void WiFiMenuApp_EnableObjLayer(WiFiMenuApp *param0);
+static void WiFiMenuApp_CreateHeaderWindow(WiFiMenuApp *param0);
+static void WiFiMenuApp_AddActor(WiFiMenuApp *param0, WiFiMenuAppActor *param1);
+static void WiFiMenuApp_RemoveActor(WiFiMenuApp *param0, WiFiMenuAppActor *param1);
+static int WiFiMenuApp_UpdateBoardActors(WiFiMenuApp *param0);
+static WiFiMenuAppActor *WiFiMenuApp_GetActorByIndex(WiFiMenuApp *param0, u32 param1);
+static void WiFiMenuApp_LoadScreenData(BgConfig *param0, WiFiMenuAppScreenData *param1, NARC *param2, u32 param3);
+static void WiFiMenuApp_FreeScreenData(WiFiMenuAppScreenData *param0);
+static void WiFiMenuApp_DrawScreenDataTilemap(BgConfig *param0, WiFiMenuAppScreenData *param1, u32 param2, u8 param3, u8 param4, u32 param5, u32 param6);
+static void WiFiMenuApp_DrawStateIconToBg(BgConfig *param0, WiFiMenuAppScreenData *param1, u32 param2, u8 param3, u8 param4, u32 param5);
+static void WiFiMenuApp_DrawStateIconToWindow(Window *param0, WiFiMenuAppScreenData *param1, u16 param2, u16 param3, u32 param4, u32 param5);
+static void WiFiMenuApp_DrawActorStateIcon(Window *param0, WiFiMenuAppScreenData *param1, u16 param2, u16 param3, u32 param4);
+static int WiFiMenuApp_GetBgPaletteOffset(u32 param0);
+static int WiFiMenuApp_StartFadeOutAndPlayBgm(void);
+static void WiFiMenuApp_ResetBoardAndRedraw(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_ResetIfCurrentActor(WiFiMenuApp *param0, u32 param1, enum HeapID heapID);
+static BOOL WiFiMenuApp_IsTouchScreenActive(const WiFiMenuApp *param0);
+static void WiFiMenuApp_InitTouchScreen(WiFiMenuApp *param0, NARC *param1, enum HeapID heapID);
+static void WiFiMenuApp_FreeTouchScreen(WiFiMenuApp *param0);
+static u32 WiFiMenuApp_UpdateTouchScreen(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_UpdateTouchScreenCursor(WiFiMenuApp *param0);
+static BOOL WiFiMenuApp_IsTouchSelectionInput(WiFiMenuApp *param0, u32 param1);
+static u32 WiFiMenuApp_GetTouchScreenSelection(const WiFiMenuApp *param0);
+static void WiFiMenuApp_ResetTouchScreenSelection(WiFiMenuApp *param0);
+static void WiFiMenuApp_ChangeTouchScreenPage(WiFiMenuApp *param0, u32 param1);
+static void WiFiMenuApp_SetFriendListState(WiFiMenuApp *param0, u32 param1, u32 param2);
+static void WiFiMenuApp_ClearFriendListState(WiFiMenuApp *param0, u32 param1);
+static u32 WiFiMenuApp_GetFriendListState(const WiFiMenuApp *param0, u32 param1);
+static void WiFiMenuApp_RedrawTouchScreen(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_MarkTouchScreenDirty(WiFiMenuApp *param0);
+static void WiFiMenuApp_TouchButtonCallback(u32 param0, enum TouchScreenButtonState param1, void *param2);
+static void WiFiMenuApp_UpdateTouchScreenAnim(WiFiMenuApp *param0);
+static void WiFiMenuApp_LoadTouchScreenGraphics(WiFiMenuApp *param0, NARC *param1, enum HeapID heapID);
+static void WiFiMenuApp_FreeTouchScreenGraphics(WiFiMenuApp *param0);
+static void WiFiMenuApp_OffsetScreenData(NNSG2dScreenData *param0, u8 param1);
+static void WiFiMenuApp_UpdateTouchScreenPalette(WiFiMenuApp *param0);
+static void WiFiMenuApp_DrawFriendList(WiFiMenuApp *param0);
+static void WiFiMenuApp_DrawFriendDetail(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage0(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage1(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage2(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage3(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage4(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage5(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendDetailPage6(WiFiMenuApp *param0, enum HeapID heapID);
+static void WiFiMenuApp_DrawFriendListHeader(WiFiMenuApp *param0);
+static void WiFiMenuApp_DrawFrontierStat(WiFiMenuApp *param0, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5);
+static void WiFiMenuApp_SetFrontierRecordMessage(WiFiMenuApp *param0, String *param1, u32 param2, u32 param3);
+static void WiFiMenuApp_DrawCenteredNumber(WiFiMenuApp *param0, u32 param1, u32 param2, u32 param3, u32 param4);
+static void WiFiMenuApp_DrawFriendRow(WiFiMenuApp *param0, u8 param1, u8 param2, u8 param3, u8 param4);
+static u32 WiFiMenuApp_GetCommStateMessage(u32 param0, TextColor *param1);
+static void WiFiMenuApp_DrawFriendName(WiFiMenuApp *param0, Window *param1, u32 param2, u32 param3, u32 param4);
+static void WiFiMenuApp_DrawFriendStatus(WiFiMenuApp *param0, Window *param1, u32 param2, u32 param3, u32 param4);
+static void WiFiMenuApp_InitTouchScreenSprites(WiFiMenuApp *param0, NARC *param1, enum HeapID heapID);
+static void WiFiMenuApp_FreeTouchScreenSprites(WiFiMenuApp *param0);
+static void WiFiMenuApp_ShowTouchButtons(WiFiMenuApp *param0);
+static void WiFiMenuApp_HideTouchButtons(WiFiMenuApp *param0);
+static u32 WiFiMenuApp_UpdateTouchButtons(WiFiMenuApp *param0);
+static void WiFiMenuApp_TouchButtonActionCallback(u32 param0, enum TouchScreenButtonState param1, void *param2);
+static void WiFiMenuApp_SetTouchButtonAnim(WiFiMenuAppTouchScreen *param0, u32 param1);
+static BOOL WiFiMenuApp_UpdateTouchButtonAnim(WiFiMenuAppTouchScreen *param0, u32 param1, u32 param2, u32 param3);
+static void WiFiMenuApp_SetTouchScreenFriendName(WiFiMenuApp *param0, int param1);
+static void WiFiMenuApp_FreeWindows(WiFiMenuApp *param0);
+static void WiFiMenuApp_ShowMessageBox(WiFiMenuApp *param0, int param1);
+static void WiFiMenuApp_ShowMessage(WiFiMenuApp *param0, int param1, BOOL param2);
+static void WiFiMenuApp_ClearMessage(WiFiMenuApp *param0);
+static void WiFiMenuApp_SetCommState(WiFiMenuApp *param0, int param1);
+static void WiFiMenuApp_UpdateCommState(WiFiMenuApp *param0, int param1);
+static void WiFiMenuApp_DestroyWaitDial(WiFiMenuApp *param0);
+static void WiFiMenuApp_SetFriendNameTemplate(WiFiMenuApp *param0, int param1);
+static u32 WiFiMenuApp_GetPoffinAvailability(WiFiMenuApp *param0);
+static void WiFiMenuApp_PlayLobbyBgm(void);
+static BOOL WiFiMenuApp_IsLobbyBgmPlaying(void);
+static void WiFiMenuApp_SaveWifiClubJournalEvent(WiFiMenuApp *param0, u32 unused);
+static void WiFiMenuApp_HandleWifiError(WiFiMenuApp *param0);
+static void WiFiMenuApp_SetBoardBusyFlag(WiFiMenuApp *param0, BOOL param1);
+static void WiFiMenuApp_ClearBoardBusyFlag(WiFiMenuApp *param0);
+static int WiFiMenuApp_StateConnectWifi(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmLogin(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessLogin(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmWfcNotice(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessWfcNotice(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateResetWifiData(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateLoginAfterReset(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateDismissError(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateTo9(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateTo11(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitErrorAck(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmDisconnect(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessDisconnect(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateHandleDisconnect(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitMatchEnd(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitWfcSetup(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitBattleWifiLogin(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateSaveStateInit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateShowConnecting(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateHandleBack(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateInitBoard(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateBoardInput(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitForMatch(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateSelectFriend(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmFriend(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateFriendAction(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmLeave(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessLeave(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitBattleStart(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateCancelMatch(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitThenLogin(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop1(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop2(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop3(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateReturnFromMatch(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_CreateActivityListMenu(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessActivityList(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateStartBattleMatch(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessActivitySubMenu(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateOpenActivityMenu(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmExitActivity(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessExitActivity(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StatePrepareFriendAction(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateCreateFriendActionMenu(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessFriendAction(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitMatchSynchronize(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop4(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop5(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop6(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateNoop7(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateEvaluateMatchState(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateSyncWifiReady(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateSendTempData(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateReceiveTempData(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateSendPlayerInfo(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateFinishSync(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWait55(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitBeforeExit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateReturnToBoard(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmQuit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessQuit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateLogoutAndCompact(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitExit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmSyncExit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessSyncExit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateConfirmFriendAction(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateProcessFriendActionConfirm(WiFiMenuApp *param0, int param1);
+static BOOL WiFiMenuApp_ToggleVoiceChat(WiFiMenuApp *param0);
+static BOOL WiFiMenuApp_ToggleVoiceChatBackup(WiFiMenuApp *param0);
+static BOOL WiFiMenuApp_RestoreVoiceChat(WiFiMenuApp *param0);
+static int WiFiMenuApp_StateHandleNewClient(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitCommInit(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateWaitDisconnectMessage(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateEndWifiMatch(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_StateSaveStateMain(WiFiMenuApp *param0, int param1);
+static int WiFiMenuApp_CreateActivitySubMenu(WiFiMenuApp *param0, int param1);
 
-static const s8 Unk_ov65_0223893C[5] = {
+static const s8 sWiFiMenuAppVoiceChatIconYOffsets[5] = {
     0xFFFFFFFFFFFFFFF8,
     0xFFFFFFFFFFFFFFF7,
     0xFFFFFFFFFFFFFFF6,
@@ -271,107 +271,107 @@ static const s8 Unk_ov65_0223893C[5] = {
     0xFFFFFFFFFFFFFFF7
 };
 
-static const u8 Unk_ov65_0223892C[3] = {
+static const u8 sWiFiMenuAppTouchButtonPressedAnims[3] = {
     0x0,
     0x2,
     0x4
 };
 
-static const u8 Unk_ov65_02238930[3] = {
+static const u8 sWiFiMenuAppTouchButtonIdleAnims[3] = {
     0x1,
     0x3,
     0x5
 };
 
-static const TouchScreenHitTable Unk_ov65_0223895C[3] = {
+static const TouchScreenHitTable sWiFiMenuAppTouchButtonsHitTable[3] = {
     { 0xA0, 0xC0, 0x8, 0x40 },
     { 0xA0, 0xC0, 0x50, 0xB0 },
     { 0xA0, 0xC0, 0xC0, 0xF8 }
 };
 
-static int (*Unk_ov65_02239D2C[])(UnkStruct_ov65_0222EBE0 *, int) = {
-    ov65_0222F010,
-    ov65_0222F164,
-    ov65_0222F1A8,
-    ov65_0222F21C,
-    ov65_0222F288,
-    ov65_0222F304,
-    ov65_0222F3DC,
-    ov65_0222F7AC,
-    ov65_0222F7F0,
-    ov65_0222F7FC,
-    ov65_0222F808,
-    ov65_0222F868,
-    ov65_0222F8AC,
-    ov65_0222F90C,
-    ov65_0222F490,
-    ov65_0222FAA0,
-    ov65_0222FCB8,
-    ov65_0222FCDC,
-    ov65_0222FFAC,
-    ov65_022302C4,
-    ov65_022305EC,
-    ov65_02230634,
-    ov65_02230774,
-    ov65_022307B0,
-    ov65_02230860,
-    ov65_022309D0,
-    ov65_02230A30,
-    ov65_02230AF8,
-    ov65_02230BB4,
-    ov65_02230C04,
-    ov65_02230CAC,
-    ov65_02230CB0,
-    ov65_02230CB4,
-    ov65_02232530,
-    ov65_02232B28,
-    ov65_02230CB8,
-    ov65_02230E04,
-    ov65_02230FBC,
-    ov65_02231440,
-    ov65_02230CF8,
-    ov65_02230D20,
-    ov65_02230D6C,
-    ov65_022315A4,
-    ov65_022316F0,
-    ov65_02231A98,
-    ov65_02231E64,
-    ov65_02232020,
-    ov65_02232024,
-    ov65_02232028,
-    ov65_022321F4,
-    ov65_0223229C,
-    ov65_022322DC,
-    ov65_02232358,
-    ov65_022323C0,
-    ov65_02232558,
-    ov65_02232564,
-    ov65_022325AC,
-    ov65_022325C4,
-    ov65_02232608,
-    ov65_02232698,
-    ov65_022326F0,
-    ov65_02232734,
-    ov65_0223278C,
-    ov65_0223288C,
-    ov65_0223294C,
-    ov65_0222FC48,
-    ov65_02231FE0,
-    ov65_02231FE4,
-    ov65_02231200,
-    ov65_0222FB44,
-    ov65_02231FE8,
-    ov65_0222FBD0
+static int (*sWiFiMenuAppStateHandlers[])(WiFiMenuApp *, int) = {
+    WiFiMenuApp_StateConnectWifi,
+    WiFiMenuApp_StateConfirmLogin,
+    WiFiMenuApp_StateProcessLogin,
+    WiFiMenuApp_StateConfirmWfcNotice,
+    WiFiMenuApp_StateProcessWfcNotice,
+    WiFiMenuApp_StateResetWifiData,
+    WiFiMenuApp_StateLoginAfterReset,
+    WiFiMenuApp_StateDismissError,
+    WiFiMenuApp_StateTo9,
+    WiFiMenuApp_StateTo11,
+    WiFiMenuApp_StateWaitErrorAck,
+    WiFiMenuApp_StateConfirmDisconnect,
+    WiFiMenuApp_StateProcessDisconnect,
+    WiFiMenuApp_StateHandleDisconnect,
+    WiFiMenuApp_StateWaitWfcSetup,
+    WiFiMenuApp_StateWaitBattleWifiLogin,
+    WiFiMenuApp_StateShowConnecting,
+    WiFiMenuApp_StateHandleBack,
+    WiFiMenuApp_StateInitBoard,
+    WiFiMenuApp_StateBoardInput,
+    WiFiMenuApp_StateHandleNewClient,
+    WiFiMenuApp_StateWaitForMatch,
+    WiFiMenuApp_StateSelectFriend,
+    WiFiMenuApp_StateConfirmFriend,
+    WiFiMenuApp_StateFriendAction,
+    WiFiMenuApp_StateConfirmLeave,
+    WiFiMenuApp_StateProcessLeave,
+    WiFiMenuApp_StateWaitBattleStart,
+    WiFiMenuApp_StateCancelMatch,
+    WiFiMenuApp_StateWaitThenLogin,
+    WiFiMenuApp_StateNoop1,
+    WiFiMenuApp_StateNoop2,
+    WiFiMenuApp_StateNoop3,
+    WiFiMenuApp_StateReturnFromMatch,
+    WiFiMenuApp_StateWaitCommInit,
+    WiFiMenuApp_StateWaitDisconnectMessage,
+    WiFiMenuApp_CreateActivityListMenu,
+    WiFiMenuApp_StateProcessActivityList,
+    WiFiMenuApp_StateProcessActivitySubMenu,
+    WiFiMenuApp_StateOpenActivityMenu,
+    WiFiMenuApp_StateConfirmExitActivity,
+    WiFiMenuApp_StateProcessExitActivity,
+    WiFiMenuApp_StatePrepareFriendAction,
+    WiFiMenuApp_StateCreateFriendActionMenu,
+    WiFiMenuApp_StateProcessFriendAction,
+    WiFiMenuApp_StateWaitMatchSynchronize,
+    WiFiMenuApp_StateNoop6,
+    WiFiMenuApp_StateNoop7,
+    WiFiMenuApp_StateEvaluateMatchState,
+    WiFiMenuApp_StateSyncWifiReady,
+    WiFiMenuApp_StateSendTempData,
+    WiFiMenuApp_StateReceiveTempData,
+    WiFiMenuApp_StateSendPlayerInfo,
+    WiFiMenuApp_StateFinishSync,
+    WiFiMenuApp_StateWait55,
+    WiFiMenuApp_StateWaitBeforeExit,
+    WiFiMenuApp_StateReturnToBoard,
+    WiFiMenuApp_StateConfirmQuit,
+    WiFiMenuApp_StateProcessQuit,
+    WiFiMenuApp_StateLogoutAndCompact,
+    WiFiMenuApp_StateWaitExit,
+    WiFiMenuApp_StateConfirmSyncExit,
+    WiFiMenuApp_StateProcessSyncExit,
+    WiFiMenuApp_StateConfirmFriendAction,
+    WiFiMenuApp_StateProcessFriendActionConfirm,
+    WiFiMenuApp_StateWaitMatchEnd,
+    WiFiMenuApp_StateNoop4,
+    WiFiMenuApp_StateNoop5,
+    WiFiMenuApp_StateStartBattleMatch,
+    WiFiMenuApp_StateSaveStateInit,
+    WiFiMenuApp_StateEndWifiMatch,
+    WiFiMenuApp_StateSaveStateMain
 };
 
-static const u8 Unk_ov65_02238934[4] = {
+static const u8 sWiFiMenuAppDetailTextYOffsets[4] = {
     0x8,
     0x7,
     0x5,
     0x7
 };
 
-static const WindowTemplate Unk_ov65_0223894C = {
+static const WindowTemplate sWiFiMenuAppYesNoWindowTemplate2 = {
     0x2,
     0x19,
     0xD,
@@ -381,12 +381,12 @@ static const WindowTemplate Unk_ov65_0223894C = {
     0x115
 };
 
-static BOOL ov65_0222DCE0(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_IsBattleParkAccessed(WiFiMenuApp *param0)
 {
     return SystemFlag_HandleFirstArrivalToZone(SaveData_GetVarsFlags(param0->saveData), HANDLE_FLAG_CHECK, FIRST_ARRIVAL_BATTLE_PARK);
 }
 
-static BOOL ov65_0222DCF8(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_HasPoffinCase(WiFiMenuApp *param0)
 {
     if (!Bag_GetItemQuantity(SaveData_GetBag(param0->saveData), ITEM_POFFIN_CASE, HEAP_ID_54)) {
         return 0;
@@ -395,29 +395,29 @@ static BOOL ov65_0222DCF8(UnkStruct_ov65_0222EBE0 *param0)
     return 1;
 }
 
-static BOOL ov65_0222DD1C(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_CanAccessWifiClub(WiFiMenuApp *param0)
 {
     return 1;
 }
 
-static u32 ov65_0222DD20(UnkStruct_ov65_0222EBE0 *param0, WFCTrainerInfo *param1)
+static u32 WiFiMenuApp_GetAdjustedCommState(WiFiMenuApp *param0, WFCTrainerInfo *param1)
 {
     u32 v0 = param1->commState;
 
     if ((v0 == 20) || (v0 == 21)) {
-        if (ov65_0222DCE0(param0) == 0) {
+        if (WiFiMenuApp_IsBattleParkAccessed(param0) == 0) {
             v0 = 29;
         }
     }
 
     if ((v0 == 22) || (v0 == 23) || (v0 == 24) || (v0 == 25) || (v0 == 26) || (v0 == 27)) {
-        if (ov65_0222DD1C(param0) == 0) {
+        if (WiFiMenuApp_CanAccessWifiClub(param0) == 0) {
             v0 = 29;
         }
     }
 
     if ((v0 == 18) || (v0 == 19)) {
-        if (ov65_0222DCF8(param0) == 0) {
+        if (WiFiMenuApp_HasPoffinCase(param0) == 0) {
             v0 = 29;
         }
     }
@@ -425,7 +425,7 @@ static u32 ov65_0222DD20(UnkStruct_ov65_0222EBE0 *param0, WFCTrainerInfo *param1
     return v0;
 }
 
-static BOOL ov65_0222DD64(int param0)
+static BOOL WiFiMenuApp_IsWifiClubCommState(int param0)
 {
     switch (param0) {
     case 19:
@@ -442,7 +442,7 @@ static BOOL ov65_0222DD64(int param0)
     }
 }
 
-static u32 ov65_0222DD94(int param0)
+static u32 WiFiMenuApp_GetWifiConnectionTypeFromState(int param0)
 {
     switch (param0) {
     case 19:
@@ -465,7 +465,7 @@ static u32 ov65_0222DD94(int param0)
     return 0;
 }
 
-static BOOL ov65_0222DDD4(int param0)
+static BOOL WiFiMenuApp_IsBattleTowerCommState(int param0)
 {
     switch (param0) {
     case 9:
@@ -480,9 +480,9 @@ static BOOL ov65_0222DDD4(int param0)
     }
 }
 
-static BOOL ov65_0222DDFC(int param0)
+static BOOL WiFiMenuApp_IsWifiBattleCommState(int param0)
 {
-    if (ov65_0222DDD4(param0)) {
+    if (WiFiMenuApp_IsBattleTowerCommState(param0)) {
         return 1;
     }
 
@@ -499,7 +499,7 @@ static BOOL ov65_0222DDFC(int param0)
     return 0;
 }
 
-static BOOL ov65_0222DE40(int param0)
+static BOOL WiFiMenuApp_IsBattleModeCommState(int param0)
 {
     switch (param0) {
     case 2:
@@ -514,9 +514,9 @@ static BOOL ov65_0222DE40(int param0)
     }
 }
 
-static BOOL ov65_0222DE68(int param0)
+static BOOL WiFiMenuApp_IsSingleBattleCommState(int param0)
 {
-    if (ov65_0222DE40(param0)) {
+    if (WiFiMenuApp_IsBattleModeCommState(param0)) {
         return 1;
     }
 
@@ -534,7 +534,7 @@ static BOOL ov65_0222DE68(int param0)
     return 0;
 }
 
-static BOOL ov65_0222DEB0(int param0)
+static BOOL WiFiMenuApp_IsTowerCommState(int param0)
 {
     switch (param0) {
     case 15:
@@ -547,7 +547,7 @@ static BOOL ov65_0222DEB0(int param0)
     return 0;
 }
 
-static int ov65_0222DED4(int param0)
+static int WiFiMenuApp_GetPairedCommState(int param0)
 {
     int v0 = 29;
 
@@ -636,7 +636,7 @@ static int ov65_0222DED4(int param0)
     return v0;
 }
 
-static int ov65_0222DF88(UnkStruct_ov65_0222EBE0 *param0)
+static int WiFiMenuApp_GetUsablePartyCount(WiFiMenuApp *param0)
 {
     Party *v0 = SaveData_GetParty(param0->saveData);
     Pokemon *v1;
@@ -660,11 +660,11 @@ static int ov65_0222DF88(UnkStruct_ov65_0222EBE0 *param0)
     return v4;
 }
 
-static void ov65_0222DFD4(int param0)
+static void WiFiMenuApp_SetCommStateForSelection(int param0)
 {
     if ((param0 == 19) || (18 == param0)) {
         CommManager_SetState_WifiPoffin();
-    } else if (ov65_0222DD64(param0)) {
+    } else if (WiFiMenuApp_IsWifiClubCommState(param0)) {
         CommManager_SetState_WifiClub();
     } else if (param0 == 16) {
         CommManager_SetState_LoginWifi();
@@ -677,7 +677,7 @@ static void ov65_0222DFD4(int param0)
     }
 }
 
-static void ov65_0222E01C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_InitGraphics(WiFiMenuApp *param0)
 {
     NARC *v0;
 
@@ -698,24 +698,24 @@ static void ov65_0222E01C(UnkStruct_ov65_0222EBE0 *param0)
     param0->unk_168 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0674, HEAP_ID_54);
     param0->unk_16C = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0695, HEAP_ID_54);
 
-    ov65_0222E618();
-    ov65_0222E638(param0->unk_15C);
-    ov65_0222ECA8(param0, v0);
+    WiFiMenuApp_SetGXBanks();
+    WiFiMenuApp_InitBgLayers(param0->unk_15C);
+    WiFiMenuApp_LoadMainBgGraphics(param0, v0);
 
     GlobalTerminal_InitPaletteBlend(&param0->unk_E2C, v0, 4, 54);
 
-    SetVBlankCallback(ov65_0222E5E0, param0);
+    SetVBlankCallback(WiFiMenuApp_VBlankCallback, param0);
 
-    ov65_0222EDD0();
-    ov65_0222EE18(param0, v0);
-    ov65_0222EE8C(param0);
+    WiFiMenuApp_InitTransfers();
+    WiFiMenuApp_InitSpriteManager(param0, v0);
+    WiFiMenuApp_EnableObjLayer(param0);
 
     NARC_dtor(v0);
 }
 
-int ov65_0222E2A8(ApplicationManager *appMan, int *param1)
+int WiFiMenuApp_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov65_0222EBE0 *v0;
+    WiFiMenuApp *v0;
     GTSMenuArgs *v1;
     u32 v2;
 
@@ -753,9 +753,9 @@ int ov65_0222E2A8(ApplicationManager *appMan, int *param1)
             Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_54, 0xa0000);
         }
 
-        v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov65_0222EBE0), HEAP_ID_54);
+        v0 = ApplicationManager_NewData(appMan, sizeof(WiFiMenuApp), HEAP_ID_54);
 
-        MI_CpuFill8(v0, 0, sizeof(UnkStruct_ov65_0222EBE0));
+        MI_CpuFill8(v0, 0, sizeof(WiFiMenuApp));
         VramTransfer_New(32, HEAP_ID_54);
 
         v0->unk_180 = 8;
@@ -768,8 +768,8 @@ int ov65_0222E2A8(ApplicationManager *appMan, int *param1)
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0 | GX_PLANEMASK_BG1 | GX_PLANEMASK_BG2 | GX_PLANEMASK_BG3, 0);
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG0 | GX_PLANEMASK_BG1 | GX_PLANEMASK_BG2 | GX_PLANEMASK_BG3, 0);
 
-        ov65_0222EBE0(v0);
-        ov65_0222E01C(v0);
+        WiFiMenuApp_InitStrings(v0);
+        WiFiMenuApp_InitGraphics(v0);
 
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_54);
 
@@ -793,9 +793,9 @@ int ov65_0222E2A8(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-int ov65_0222E3FC(ApplicationManager *appMan, int *param1)
+int WiFiMenuApp_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov65_0222EBE0 *v0 = ApplicationManager_Data(appMan);
+    WiFiMenuApp *v0 = ApplicationManager_Data(appMan);
 
     switch (*param1) {
     case 0:
@@ -804,7 +804,7 @@ int ov65_0222E3FC(ApplicationManager *appMan, int *param1)
         }
         break;
     case 1:
-        if (Unk_ov65_02239D2C[v0->unk_3A8] != NULL) {
+        if (sWiFiMenuAppStateHandlers[v0->unk_3A8] != NULL) {
             static int v1 = 0;
 
             if (v1 != v0->unk_3A8) {
@@ -812,7 +812,7 @@ int ov65_0222E3FC(ApplicationManager *appMan, int *param1)
             }
 
             v1 = v0->unk_3A8;
-            *param1 = (*Unk_ov65_02239D2C[v0->unk_3A8])(v0, *param1);
+            *param1 = (*sWiFiMenuAppStateHandlers[v0->unk_3A8])(v0, *param1);
         }
         break;
     case 2:
@@ -826,8 +826,8 @@ int ov65_0222E3FC(ApplicationManager *appMan, int *param1)
         SpriteList_Update(v0->unk_18C);
     }
 
-    if (ov65_02235194(&v0->unk_3EC) == 1) {
-        ov65_02235244(&v0->unk_3EC);
+    if (WiFiMenuAppBoard_IsActive(&v0->unk_3EC) == 1) {
+        WiFiMenuAppBoard_UpdateSprites(&v0->unk_3EC);
     }
 
     GlobalTerminal_PaletteBlendNoop(&v0->unk_E2C);
@@ -835,7 +835,7 @@ int ov65_0222E3FC(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_FreeGraphics(WiFiMenuApp *param0)
 {
     int v0;
 
@@ -843,15 +843,15 @@ static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
 
     GlobalTerminal_FreePaletteBlend(&param0->unk_E2C);
 
-    if (ov65_02235194(&param0->unk_3EC) == 1) {
-        ov65_02235130(&param0->unk_3EC);
+    if (WiFiMenuAppBoard_IsActive(&param0->unk_3EC) == 1) {
+        WiFiMenuAppBoard_Free(&param0->unk_3EC);
     }
 
-    if (ov65_02232FCC(param0) == 1) {
-        ov65_02233068(param0);
+    if (WiFiMenuApp_IsTouchScreenActive(param0) == 1) {
+        WiFiMenuApp_FreeTouchScreen(param0);
     }
 
-    ov65_0222E99C(&param0->unk_BD0);
+    WiFiMenuApp_FreeScreenData(&param0->unk_BD0);
     FontOAMManager_Free(param0->unk_32C);
 
     for (v0 = 0; v0 < 4; v0++) {
@@ -863,8 +863,8 @@ static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
     CharTransfer_Free();
     PlttTransfer_Free();
 
-    ov65_0222EF4C(param0);
-    ov65_0222EC5C(param0->unk_15C);
+    WiFiMenuApp_FreeWindows(param0);
+    WiFiMenuApp_FreeBgLayers(param0->unk_15C);
 
     MessageLoader_Free(param0->unk_16C);
     MessageLoader_Free(param0->unk_168);
@@ -872,12 +872,12 @@ static void ov65_0222E47C(UnkStruct_ov65_0222EBE0 *param0)
     Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
 }
 
-int ov65_0222E548(ApplicationManager *appMan, int *param1)
+int WiFiMenuApp_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov65_0222EBE0 *v0 = ApplicationManager_Data(appMan);
+    WiFiMenuApp *v0 = ApplicationManager_Data(appMan);
     GTSMenuArgs *v1;
 
-    ov65_0222E47C(v0);
+    WiFiMenuApp_FreeGraphics(v0);
 
     v1 = ApplicationManager_Args(appMan);
     v1->unk_04 = v0->unk_3AC;
@@ -888,7 +888,7 @@ int ov65_0222E548(ApplicationManager *appMan, int *param1)
         v1->unk_08 = NintendoWFC_GetHostFriendIdx();
     }
 
-    ov65_0222EC2C(v0);
+    WiFiMenuApp_FreeStrings(v0);
 
     ApplicationManager_FreeData(appMan);
     DisableTouchPad();
@@ -913,16 +913,16 @@ int ov65_0222E548(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    if (ov65_02231A54() == 1) {
+    if (WiFiMenuApp_IsLobbyBgmPlaying() == 1) {
         Sound_SetInitialVolumeForHandle(SOUND_HANDLE_TYPE_FIELD_BGM, 120);
     }
 
     return 1;
 }
 
-static void ov65_0222E5E0(void *param0)
+static void WiFiMenuApp_VBlankCallback(void *param0)
 {
-    UnkStruct_ov65_0222EBE0 *v0 = param0;
+    WiFiMenuApp *v0 = param0;
 
     Bg_RunScheduledUpdates(v0->unk_15C);
     VramTransfer_Process();
@@ -937,7 +937,7 @@ static void ov65_0222E5E0(void *param0)
     }
 }
 
-static void ov65_0222E618(void)
+static void WiFiMenuApp_SetGXBanks(void)
 {
     GXBanks v0 = {
         GX_VRAM_BG_128_A,
@@ -955,7 +955,7 @@ static void ov65_0222E618(void)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov65_0222E638(BgConfig *param0)
+static void WiFiMenuApp_InitBgLayers(BgConfig *param0)
 {
     {
         GraphicsModes v0 = {
@@ -1150,7 +1150,7 @@ static void ov65_0222E638(BgConfig *param0)
     G2S_BlendNone();
 }
 
-static void ov65_0222E87C(UnkStruct_ov65_0222EBE0 *param0, UnkStruct_ov65_022354D8 *param1)
+static void WiFiMenuApp_AddActor(WiFiMenuApp *param0, WiFiMenuAppActor *param1)
 {
     int v0;
 
@@ -1164,7 +1164,7 @@ static void ov65_0222E87C(UnkStruct_ov65_0222EBE0 *param0, UnkStruct_ov65_022354
     GF_ASSERT(FALSE);
 }
 
-static void ov65_0222E8A8(UnkStruct_ov65_0222EBE0 *param0, UnkStruct_ov65_022354D8 *param1)
+static void WiFiMenuApp_RemoveActor(WiFiMenuApp *param0, WiFiMenuAppActor *param1)
 {
     int v0;
 
@@ -1178,13 +1178,13 @@ static void ov65_0222E8A8(UnkStruct_ov65_0222EBE0 *param0, UnkStruct_ov65_022354
     GF_ASSERT(FALSE);
 }
 
-static UnkStruct_ov65_022354D8 *ov65_0222E8D4(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
+static WiFiMenuAppActor *WiFiMenuApp_GetActorByIndex(WiFiMenuApp *param0, u32 param1)
 {
     int v0;
 
     for (v0 = 0; v0 < (32 + 1); v0++) {
         if (param0->unk_B4C[v0]) {
-            if (ov65_022354D8(param0->unk_B4C[v0]) == param1) {
+            if (WiFiMenuAppBoard_GetActorField(param0->unk_B4C[v0]) == param1) {
                 return param0->unk_B4C[v0];
             }
         }
@@ -1193,7 +1193,7 @@ static UnkStruct_ov65_022354D8 *ov65_0222E8D4(UnkStruct_ov65_0222EBE0 *param0, u
     return NULL;
 }
 
-static void ov65_0222E90C(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, NARC *param2, u32 param3)
+static void WiFiMenuApp_LoadScreenData(BgConfig *param0, WiFiMenuAppScreenData *param1, NARC *param2, u32 param3)
 {
     Graphics_LoadPaletteFromOpenNARC(param2, 13, 0, 8 * 32, 2 * 32, param3);
     Graphics_LoadPaletteFromOpenNARC(param2, 13, 4, 13 * 32, 2 * 32, param3);
@@ -1209,7 +1209,7 @@ static void ov65_0222E90C(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, NAR
     }
 }
 
-static void ov65_0222E99C(UnkStruct_ov65_0222E99C *param0)
+static void WiFiMenuApp_FreeScreenData(WiFiMenuAppScreenData *param0)
 {
     if (param0->unk_00 != NULL) {
         Heap_Free(param0->unk_00);
@@ -1222,19 +1222,19 @@ static void ov65_0222E99C(UnkStruct_ov65_0222E99C *param0)
     }
 }
 
-static void ov65_0222E9C0(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, u32 param2, u8 param3, u8 param4, u32 param5, u32 param6)
+static void WiFiMenuApp_DrawScreenDataTilemap(BgConfig *param0, WiFiMenuAppScreenData *param1, u32 param2, u8 param3, u8 param4, u32 param5, u32 param6)
 {
     int v0;
 
     Bg_CopyToTilemapRect(param0, param2, param3, param4, 2, 2, param1->unk_04->rawData, 2 * param5, 0, param1->unk_04->screenWidth / 8, param1->unk_04->screenHeight / 8);
 
-    v0 = ov65_0222EBAC(param2);
+    v0 = WiFiMenuApp_GetBgPaletteOffset(param2);
 
     Bg_ChangeTilemapRectPalette(param0, param2, param3, param4, 2, 2, v0 + param6);
     Bg_ScheduleTilemapTransfer(param0, param2);
 }
 
-static void ov65_0222EA38(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, u32 param2, u8 param3, u8 param4, u32 param5)
+static void WiFiMenuApp_DrawStateIconToBg(BgConfig *param0, WiFiMenuAppScreenData *param1, u32 param2, u8 param3, u8 param4, u32 param5)
 {
     u8 v0 = 0;
     u8 v1 = 0;
@@ -1297,19 +1297,19 @@ static void ov65_0222EA38(BgConfig *param0, UnkStruct_ov65_0222E99C *param1, u32
         break;
     }
 
-    ov65_0222E9C0(param0, param1, param2, param3, param4, v1, v0);
+    WiFiMenuApp_DrawScreenDataTilemap(param0, param1, param2, param3, param4, v1, v0);
 }
 
-static void ov65_0222EAD0(Window *param0, UnkStruct_ov65_0222E99C *param1, u16 param2, u16 param3, u32 param4, u32 param5)
+static void WiFiMenuApp_DrawStateIconToWindow(Window *param0, WiFiMenuAppScreenData *param1, u16 param2, u16 param3, u32 param4, u32 param5)
 {
     int v0;
 
     Window_BlitBitmapRect(param0, param1->unk_0C->pRawData, (2 * 8) * param4, 0, param1->unk_0C->W * 8, param1->unk_0C->H * 8, param2, param3, 2 * 8, 2 * 8);
-    v0 = ov65_0222EBAC(param0->bgLayer);
+    v0 = WiFiMenuApp_GetBgPaletteOffset(param0->bgLayer);
     Window_SetPalette(param0, v0 + param5);
 }
 
-static void ov65_0222EB1C(Window *param0, UnkStruct_ov65_0222E99C *param1, u16 param2, u16 param3, u32 param4)
+static void WiFiMenuApp_DrawActorStateIcon(Window *param0, WiFiMenuAppScreenData *param1, u16 param2, u16 param3, u32 param4)
 {
     u8 v0 = 0;
     u8 v1 = 0;
@@ -1372,10 +1372,10 @@ static void ov65_0222EB1C(Window *param0, UnkStruct_ov65_0222E99C *param1, u16 p
         break;
     }
 
-    ov65_0222EAD0(param0, param1, param2, param3, v1, v0);
+    WiFiMenuApp_DrawStateIconToWindow(param0, param1, param2, param3, v1, v0);
 }
 
-static int ov65_0222EBAC(u32 param0)
+static int WiFiMenuApp_GetBgPaletteOffset(u32 param0)
 {
     if (param0 < 4) {
         return 8;
@@ -1384,15 +1384,15 @@ static int ov65_0222EBAC(u32 param0)
     return 13;
 }
 
-static int ov65_0222EBB8(void)
+static int WiFiMenuApp_StartFadeOutAndPlayBgm(void)
 {
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_54);
-    ov65_02231A0C();
+    WiFiMenuApp_PlayLobbyBgm();
 
     return 18;
 }
 
-static void ov65_0222EBE0(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_InitStrings(WiFiMenuApp *param0)
 {
     int v0;
     int v1;
@@ -1404,7 +1404,7 @@ static void ov65_0222EBE0(UnkStruct_ov65_0222EBE0 *param0)
     param0->unk_3A8 = 0;
 }
 
-static void ov65_0222EC2C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_FreeStrings(WiFiMenuApp *param0)
 {
     int v0;
 
@@ -1414,7 +1414,7 @@ static void ov65_0222EC2C(UnkStruct_ov65_0222EBE0 *param0)
     String_Free(param0->unk_170);
 }
 
-static void ov65_0222EC5C(BgConfig *param0)
+static void WiFiMenuApp_FreeBgLayers(BgConfig *param0)
 {
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_3);
     Bg_FreeTilemapBuffer(param0, BG_LAYER_SUB_2);
@@ -1427,7 +1427,7 @@ static void ov65_0222EC5C(BgConfig *param0)
     Heap_Free(param0);
 }
 
-static void ov65_0222ECA8(UnkStruct_ov65_0222EBE0 *param0, NARC *param1)
+static void WiFiMenuApp_LoadMainBgGraphics(WiFiMenuApp *param0, NARC *param1)
 {
     BgConfig *v0 = param0->unk_15C;
 
@@ -1457,7 +1457,7 @@ static void ov65_0222ECA8(UnkStruct_ov65_0222EBE0 *param0, NARC *param1)
     }
 }
 
-static void ov65_0222EDD0(void)
+static void WiFiMenuApp_InitTransfers(void)
 {
     {
         CharTransferTemplate v0 = {
@@ -1474,7 +1474,7 @@ static void ov65_0222EDD0(void)
     ReserveSlotsForWirelessIconPalette(NNS_G2D_VRAM_TYPE_2DMAIN);
 }
 
-static void ov65_0222EE18(UnkStruct_ov65_0222EBE0 *param0, NARC *param1)
+static void WiFiMenuApp_InitSpriteManager(WiFiMenuApp *param0, NARC *param1)
 {
     int v0;
 
@@ -1492,12 +1492,12 @@ static void ov65_0222EE18(UnkStruct_ov65_0222EBE0 *param0, NARC *param1)
     param0->unk_32C = FontOAMManager_New(1, HEAP_ID_54);
 }
 
-static void ov65_0222EE8C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_EnableObjLayer(WiFiMenuApp *param0)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void ov65_0222EE98(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_CreateHeaderWindow(WiFiMenuApp *param0)
 {
     int v0, v1;
 
@@ -1519,11 +1519,11 @@ static void ov65_0222EE98(UnkStruct_ov65_0222EBE0 *param0)
     Window_ScheduleCopyToVRAM(&param0->unk_350);
 }
 
-static void ov65_0222EF4C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_FreeWindows(WiFiMenuApp *param0)
 {
     int v0;
 
-    ov65_02232DFC(param0);
+    WiFiMenuApp_ClearMessage(param0);
 
     if (Window_IsInUse(&param0->unk_350)) {
         Window_Remove(&param0->unk_350);
@@ -1559,7 +1559,7 @@ static void ov65_0222EF4C(UnkStruct_ov65_0222EBE0 *param0)
     }
 }
 
-static const WindowTemplate Unk_ov65_02238944 = {
+static const WindowTemplate sWiFiMenuAppYesNoWindowTemplate1 = {
     0x2,
     0x19,
     0xD,
@@ -1569,7 +1569,7 @@ static const WindowTemplate Unk_ov65_02238944 = {
     0x51
 };
 
-static const WindowTemplate Unk_ov65_02238954 = {
+static const WindowTemplate sWiFiMenuAppYesNoWindowTemplate3 = {
     0x1,
     0x19,
     0x13,
@@ -1579,19 +1579,19 @@ static const WindowTemplate Unk_ov65_02238954 = {
     0x189
 };
 
-static int ov65_0222F010(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConnectWifi(WiFiMenuApp *param0, int param1)
 {
     u32 v0;
 
     if (CommManager_IsConnectedToWifi()) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
         param0->unk_04 = CommManager_GetUnk00();
         param0->unk_04->ownStatus.voiceChatEnabled = param0->unk_04->ownStatus.voiceChatEnabledBackup;
 
-        v0 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
+        v0 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
 
         if ((v0 == 8) || (v0 == 18) || (v0 == 20) || (v0 == 22) || (v0 == 23) || (v0 == 24) || (v0 == 25) || (v0 == 26) || (v0 == 27) || (v0 == 19)) {
-            ov65_02232E58(param0, 16);
+            WiFiMenuApp_SetCommState(param0, 16);
             CommInfo_Delete();
             CommManager_EndTradeWifiMatch();
 
@@ -1600,14 +1600,14 @@ static int ov65_0222F010(UnkStruct_ov65_0222EBE0 *param0, int param1)
             param0->unk_3BC = 20;
             param0->unk_3A8 = 65;
         } else {
-            ov65_02232B58(param0, 77, 0);
+            WiFiMenuApp_ShowMessage(param0, 77, 0);
             CommManager_SetErrorHandling(1, 1);
             CommTiming_StartSync(16);
             param0->unk_3A8 = 61;
         }
     } else {
         Sound_SetSceneAndPlayBGM(SOUND_SCENE_11, SEQ_WIFILOBBY_sseq, 1);
-        ov65_0222EE98(param0);
+        WiFiMenuApp_CreateHeaderWindow(param0);
 
         if (!DWC_CheckHasProfile(WiFiList_GetUserData(param0->unk_00))) {
             Bg_SetPriority(BG_LAYER_MAIN_0, 3);
@@ -1615,15 +1615,15 @@ static int ov65_0222F010(UnkStruct_ov65_0222EBE0 *param0, int param1)
             Bg_SetPriority(BG_LAYER_MAIN_3, 0);
             Bg_SetPriority(BG_LAYER_MAIN_2, 1);
 
-            ov65_02232CA8(param0, 18);
+            WiFiMenuApp_ShowMessageBox(param0, 18);
 
-            param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_02238954, (512 - (18 + 12)) - 9, 11, 54);
+            param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate3, (512 - (18 + 12)) - 9, 11, 54);
             param0->unk_3A8 = 6;
         } else if (!DWC_CheckValidConsole(WiFiList_GetUserData(param0->unk_00))) {
-            ov65_02232CA8(param0, 20);
+            WiFiMenuApp_ShowMessageBox(param0, 20);
             param0->unk_3A8 = 3;
         } else {
-            ov65_02232B58(param0, 17, 1);
+            WiFiMenuApp_ShowMessage(param0, 17, 1);
             param0->unk_3A8 = 1;
         }
     }
@@ -1631,17 +1631,17 @@ static int ov65_0222F010(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222F164(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmLogin(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_02238944, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate1, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 2;
     }
 
     return param1;
 }
 
-static int ov65_0222F1A8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessLogin(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
@@ -1651,7 +1651,7 @@ static int ov65_0222F1A8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     } else {
         if (v1 == 0) {
             param0->unk_04 = CommManager_LoginWifiBattleServer(param0->saveData, sizeof(WFCStatusBuffer));
-            ov65_02232B58(param0, 23, 1);
+            WiFiMenuApp_ShowMessage(param0, 23, 1);
             GF_ASSERT(param0->unk_188 == NULL);
             param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
             param0->unk_3A8 = 14;
@@ -1663,23 +1663,23 @@ static int ov65_0222F1A8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222F21C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmWfcNotice(WiFiMenuApp *param0, int param1)
 {
     if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
-        ov65_02232CA8(param0, 21);
+        WiFiMenuApp_ShowMessageBox(param0, 21);
         Bg_SetPriority(BG_LAYER_MAIN_3, 0);
         Bg_SetPriority(BG_LAYER_MAIN_2, 1);
         Bg_SetPriority(BG_LAYER_MAIN_1, 0);
         Bg_SetPriority(BG_LAYER_MAIN_0, 3);
 
-        param0->unk_184 = Menu_MakeYesNoChoiceWithCursorAt(param0->unk_15C, &Unk_ov65_02238954, (512 - (18 + 12)) - 9, 11, 1, 54);
+        param0->unk_184 = Menu_MakeYesNoChoiceWithCursorAt(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate3, (512 - (18 + 12)) - 9, 11, 1, 54);
         param0->unk_3A8 = 4;
     }
 
     return param1;
 }
 
-static int ov65_0222F288(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessWfcNotice(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
@@ -1691,8 +1691,8 @@ static int ov65_0222F288(UnkStruct_ov65_0222EBE0 *param0, int param1)
         Window_Remove(&param0->unk_360);
 
         if (v1 == 0) {
-            ov65_02232CA8(param0, 22);
-            param0->unk_184 = Menu_MakeYesNoChoiceWithCursorAt(param0->unk_15C, &Unk_ov65_02238954, (512 - (18 + 12)) - 9, 11, 1, 54);
+            WiFiMenuApp_ShowMessageBox(param0, 22);
+            param0->unk_184 = Menu_MakeYesNoChoiceWithCursorAt(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate3, (512 - (18 + 12)) - 9, 11, 1, 54);
             param0->unk_3A8 = 5;
         } else {
             param0->unk_3A8 = 34;
@@ -1702,7 +1702,7 @@ static int ov65_0222F288(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222F304(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateResetWifiData(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
@@ -1723,7 +1723,7 @@ static int ov65_0222F304(UnkStruct_ov65_0222EBE0 *param0, int param1)
             BattleFrontierSave_ClearAllWFCStats(SaveData_GetBattleFrontier(param0->saveData));
             param0->unk_3A8 = 14;
             param0->unk_04 = CommManager_LoginWifiBattleServer(param0->saveData, sizeof(WFCStatusBuffer));
-            ov65_02232B58(param0, 23, 1);
+            WiFiMenuApp_ShowMessage(param0, 23, 1);
             GF_ASSERT(param0->unk_188 == NULL);
             param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
             param0->unk_3C8 = 1;
@@ -1735,7 +1735,7 @@ static int ov65_0222F304(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222F3DC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateLoginAfterReset(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
@@ -1753,7 +1753,7 @@ static int ov65_0222F3DC(UnkStruct_ov65_0222EBE0 *param0, int param1)
         if (v1 == 0) {
             param0->unk_3A8 = 14;
             param0->unk_04 = CommManager_LoginWifiBattleServer(param0->saveData, sizeof(WFCStatusBuffer));
-            ov65_02232B58(param0, 23, 1);
+            WiFiMenuApp_ShowMessage(param0, 23, 1);
             GF_ASSERT(param0->unk_188 == NULL);
             param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
             param0->unk_3C8 = 1;
@@ -1765,7 +1765,7 @@ static int ov65_0222F3DC(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222F490(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitWfcSetup(WiFiMenuApp *param0, int param1)
 {
     Bg_SetPriority(BG_LAYER_MAIN_0, 3);
     Bg_SetPriority(BG_LAYER_MAIN_1, 1);
@@ -1775,7 +1775,7 @@ static int ov65_0222F490(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static void ov65_0222F4C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static void WiFiMenuApp_SetupOwnStatus(WiFiMenuApp *param0, int param1)
 {
     TrainerInfo *v0 = SaveData_GetTrainerInfo(param0->saveData);
     Pokedex *v1 = SaveData_GetPokedex(param0->saveData);
@@ -1799,7 +1799,7 @@ static void ov65_0222F4C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     param0->unk_04->ownStatus.isNationalDexObtained = Pokedex_IsNationalDexObtained(v1);
     param0->unk_04->ownStatus.commState = 29;
 
-    ov65_02232E70(param0, param1);
+    WiFiMenuApp_UpdateCommState(param0, param1);
 
     param0->unk_04->ownStatus.unk_1C = 0;
     param0->unk_04->ownStatus.appearance = TrainerInfo_Appearance(v0);
@@ -1813,7 +1813,7 @@ static void ov65_0222F4C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     NintendoWFC_SetFriendStatusesBuffer(&param0->unk_04->friendStatuses[0], sizeof(WFCTrainerInfo));
 }
 
-static int ov65_0222F5BC(UnkStruct_ov65_0222EBE0 *param0)
+static int WiFiMenuApp_BuildVisibleFriendList(WiFiMenuApp *param0)
 {
     int v0, v1 = 0;
     WFCTrainerInfo *v2;
@@ -1823,17 +1823,17 @@ static int ov65_0222F5BC(UnkStruct_ov65_0222EBE0 *param0)
         param0->unk_0C[v0] = 0;
 
         if (param0->unk_115A > v0) {
-            if (DWC_STATUS_OFFLINE != ov65_02234FC4(v0)) {
-                v2 = ov65_02234FA8(param0, v0);
-                v3 = ov65_0222DD20(param0, v2);
+            if (DWC_STATUS_OFFLINE != WiFiMenuApp_GetFriendOnlineStatus(v0)) {
+                v2 = WiFiMenuApp_GetFriendStatus(param0, v0);
+                v3 = WiFiMenuApp_GetAdjustedCommState(param0, v2);
 
                 if ((v3 != 0) && (v3 != 28) && (v2->appearance != 0x0)) {
                     param0->unk_0C[v1] = v0 + 1;
                     v1++;
                 } else {
                     if (v3 == 28) {
-                        if (ov65_0223368C(param0, v0 + 1) != 0) {
-                            ov65_0223366C(param0, v0 + 1);
+                        if (WiFiMenuApp_GetFriendListState(param0, v0 + 1) != 0) {
+                            WiFiMenuApp_ClearFriendListState(param0, v0 + 1);
                         }
                     }
                 }
@@ -1844,30 +1844,30 @@ static int ov65_0222F5BC(UnkStruct_ov65_0222EBE0 *param0)
     return v1;
 }
 
-static int ov65_0222F62C(UnkStruct_ov65_0222EBE0 *param0)
+static int WiFiMenuApp_UpdateFriendActors(WiFiMenuApp *param0)
 {
     int v0, v1 = 0;
     BOOL v2;
     BOOL v3;
-    UnkStruct_ov65_022354D8 *v4;
+    WiFiMenuAppActor *v4;
     WFCTrainerInfo *v5;
     u32 v6;
 
     for (v0 = 0; v0 < 32; v0++) {
-        v5 = ov65_02234FA8(param0, v0);
-        v6 = ov65_0222DD20(param0, v5);
+        v5 = WiFiMenuApp_GetFriendStatus(param0, v0);
+        v6 = WiFiMenuApp_GetAdjustedCommState(param0, v5);
 
         if ((param0->unk_4C[v0] != v6) || (param0->unk_CC[v0] != v5->voiceChatEnabled)) {
-            v4 = ov65_0222E8D4(param0, v0 + 1);
+            v4 = WiFiMenuApp_GetActorByIndex(param0, v0 + 1);
 
             if (v4) {
-                v2 = ov65_0222DDFC(param0->unk_4C[v0]);
-                v3 = ov65_0222DDFC(v6);
+                v2 = WiFiMenuApp_IsWifiBattleCommState(param0->unk_4C[v0]);
+                v3 = WiFiMenuApp_IsWifiBattleCommState(v6);
 
                 if ((v2 == 1) && (v3 == 0)) {
-                    ov65_0223558C(&param0->unk_3EC, v4, 0);
+                    WiFiMenuAppBoard_SetActorState(&param0->unk_3EC, v4, 0);
                 } else if ((v2 == 0) && (v3 == 1)) {
-                    ov65_0223558C(&param0->unk_3EC, v4, 1);
+                    WiFiMenuAppBoard_SetActorState(&param0->unk_3EC, v4, 1);
                 }
 
                 param0->unk_4C[v0] = v6;
@@ -1883,9 +1883,9 @@ static int ov65_0222F62C(UnkStruct_ov65_0222EBE0 *param0)
     return v1;
 }
 
-static void ov65_0222F6EC(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_HandleWifiError(WiFiMenuApp *param0)
 {
-    UnkStruct_ov65_0222F6EC *v0 = CommManager_GetUnk34();
+    WiFiCommErrorInfo *v0 = CommManager_GetUnk34();
     int v1, v2 = v0->unk_00;
     int v3 = NintendoWFC_GetErrorCode(v0->unk_00, v0->unk_04);
 
@@ -1903,12 +1903,12 @@ static void ov65_0222F6EC(UnkStruct_ov65_0222EBE0 *param0)
         }
     }
 
-    ov65_02232DFC(param0);
+    WiFiMenuApp_ClearMessage(param0);
     StringTemplate_SetNumber(param0->unk_164, 0, v2, 5, 2, 1);
 
     param0->unk_3BC = 30;
 
-    ov65_02232CA8(param0, v1);
+    WiFiMenuApp_ShowMessageBox(param0, v1);
 
     switch (v3) {
     case 1:
@@ -1935,7 +1935,7 @@ static void ov65_0222F6EC(UnkStruct_ov65_0222EBE0 *param0)
     }
 }
 
-static int ov65_0222F7AC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateDismissError(WiFiMenuApp *param0, int param1)
 {
     if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
         if (Window_IsInUse(&param0->unk_360)) {
@@ -1949,19 +1949,19 @@ static int ov65_0222F7AC(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222F7F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateTo9(WiFiMenuApp *param0, int param1)
 {
     param0->unk_3A8 = 9;
     return param1;
 }
 
-static int ov65_0222F7FC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateTo11(WiFiMenuApp *param0, int param1)
 {
     param0->unk_3A8 = 11;
     return param1;
 }
 
-static int ov65_0222F808(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitErrorAck(WiFiMenuApp *param0, int param1)
 {
     if (param0->unk_3BC > 0) {
         param0->unk_3BC--;
@@ -1974,24 +1974,24 @@ static int ov65_0222F808(UnkStruct_ov65_0222EBE0 *param0, int param1)
             Window_Remove(&param0->unk_360);
         }
 
-        ov65_02232B58(param0, 88, 0);
+        WiFiMenuApp_ShowMessage(param0, 88, 0);
         param0->unk_3A8 = 11;
     }
 
     return param1;
 }
 
-static int ov65_0222F868(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmDisconnect(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_0223894C, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate2, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 12;
     }
 
     return param1;
 }
 
-static int ov65_0222F8AC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessDisconnect(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
@@ -2000,30 +2000,30 @@ static int ov65_0222F8AC(UnkStruct_ov65_0222EBE0 *param0, int param1)
         return param1;
     } else if (v1 == 0) {
         CommManager_LogoutWifi();
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_SetCommState(param0, 16);
         param0->unk_3A8 = 13;
     } else {
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_SetCommState(param0, 16);
         CommManager_LogoutWifi();
         CommInfo_Delete();
         param0->unk_3AC = 8;
         param0->unk_3A8 = 34;
     }
 
-    ov65_02232DFC(param0);
+    WiFiMenuApp_ClearMessage(param0);
     return param1;
 }
 
-static int ov65_0222F90C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateHandleDisconnect(WiFiMenuApp *param0, int param1)
 {
     int v0;
     NARC *v1;
 
     if (!WirelessDriver_IsReady()) {
-        if (ov65_02235194(&param0->unk_3EC) == 1) {
+        if (WiFiMenuAppBoard_IsActive(&param0->unk_3EC) == 1) {
             SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
             SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
-            ov65_02235130(&param0->unk_3EC);
+            WiFiMenuAppBoard_Free(&param0->unk_3EC);
 
             for (v0 = 0; v0 < (32 + 1); v0++) {
                 param0->unk_B4C[v0] = NULL;
@@ -2033,8 +2033,8 @@ static int ov65_0222F90C(UnkStruct_ov65_0222EBE0 *param0, int param1)
             RenderOam_ClearSub(54);
         }
 
-        if (ov65_02232FCC(param0) == 1) {
-            ov65_02233068(param0);
+        if (WiFiMenuApp_IsTouchScreenActive(param0) == 1) {
+            WiFiMenuApp_FreeTouchScreen(param0);
         }
 
         if (Window_IsInUse(&param0->unk_350)) {
@@ -2049,7 +2049,7 @@ static int ov65_0222F90C(UnkStruct_ov65_0222EBE0 *param0, int param1)
         Bg_ClearTilemap(param0->unk_15C, BG_LAYER_MAIN_3);
 
         v1 = NARC_ctor(NARC_INDEX_DATA__WIFIP2PMATCH, HEAP_ID_54);
-        ov65_0222ECA8(param0, v1);
+        WiFiMenuApp_LoadMainBgGraphics(param0, v1);
         NARC_dtor(v1);
 
         inline_ov96_0223BDEC(&param0->unk_E2C, 1);
@@ -2069,9 +2069,9 @@ static int ov65_0222F90C(UnkStruct_ov65_0222EBE0 *param0, int param1)
         MI_CpuClear8(param0->unk_4C, 32 * sizeof(int));
         MI_CpuClear8(param0->unk_CC, 32 * sizeof(int));
 
-        ov65_0222EE98(param0);
+        WiFiMenuApp_CreateHeaderWindow(param0);
         param0->unk_04 = CommManager_LoginWifiBattleServer(param0->saveData, sizeof(WFCStatusBuffer));
-        ov65_02232B58(param0, 23, 1);
+        WiFiMenuApp_ShowMessage(param0, 23, 1);
         GF_ASSERT(param0->unk_188 == NULL);
         param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
         param0->unk_3A8 = 14;
@@ -2080,7 +2080,7 @@ static int ov65_0222F90C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222FAA0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitBattleWifiLogin(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) != FALSE) {
         return param1;
@@ -2088,7 +2088,7 @@ static int ov65_0222FAA0(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     if (NintendoWFC_GetNeedsGameSave()) {
         param0->unk_3A8 = 69;
-        ov65_02232B58(param0, 30, 1);
+        WiFiMenuApp_ShowMessage(param0, 30, 1);
         GF_ASSERT(param0->unk_188 == NULL);
         param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
     }
@@ -2097,18 +2097,18 @@ static int ov65_0222FAA0(UnkStruct_ov65_0222EBE0 *param0, int param1)
         if (param0->unk_3C8) {
             param0->unk_3A8 = 16;
         } else {
-            ov65_0222F4C4(param0, 16);
-            ov65_0222F5BC(param0);
-            param0->unk_3A8 = ov65_0222EBB8();
+            WiFiMenuApp_SetupOwnStatus(param0, 16);
+            WiFiMenuApp_BuildVisibleFriendList(param0);
+            param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
         }
     } else if (CommManager_CheckWifiError() || CommManager_GetMatchmakingState() == 3) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     }
 
     return param1;
 }
 
-static int ov65_0222FB44(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateSaveStateInit(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
         return param1;
@@ -2124,18 +2124,18 @@ static int ov65_0222FB44(UnkStruct_ov65_0222EBE0 *param0, int param1)
         if (param0->unk_3C8) {
             param0->unk_3A8 = 16;
         } else {
-            ov65_0222F4C4(param0, 16);
-            ov65_0222F5BC(param0);
-            param0->unk_3A8 = ov65_0222EBB8();
+            WiFiMenuApp_SetupOwnStatus(param0, 16);
+            WiFiMenuApp_BuildVisibleFriendList(param0);
+            param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
         }
     } else if (CommManager_CheckWifiError() || (CommManager_GetMatchmakingState() == 3)) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     }
 
     return param1;
 }
 
-static int ov65_0222FBD0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateSaveStateMain(WiFiMenuApp *param0, int param1)
 {
     if (NintendoWFC_GetNeedsGameSave()) {
         int v0 = SaveData_SaveStateMain(param0->saveData);
@@ -2151,18 +2151,18 @@ static int ov65_0222FBD0(UnkStruct_ov65_0222EBE0 *param0, int param1)
         if (param0->unk_3C8) {
             param0->unk_3A8 = 16;
         } else {
-            ov65_0222F4C4(param0, 16);
-            ov65_0222F5BC(param0);
-            param0->unk_3A8 = ov65_0222EBB8();
+            WiFiMenuApp_SetupOwnStatus(param0, 16);
+            WiFiMenuApp_BuildVisibleFriendList(param0);
+            param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
         }
     } else if (CommManager_CheckWifiError() || (CommManager_GetMatchmakingState() == 3)) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     }
 
     return param1;
 }
 
-static int ov65_0222FC48(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitMatchEnd(WiFiMenuApp *param0, int param1)
 {
     int v0;
 
@@ -2172,21 +2172,21 @@ static int ov65_0222FC48(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 
     if (CommManager_IsLoginBattleMatchWifi()) {
-        param0->unk_3A8 = ov65_0222EBB8();
+        param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
     } else if (CommManager_CheckWifiError() || (CommManager_GetMatchmakingState() == 3)) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else if ((CommManager_GetMatchmakingState() >= 4) || CommManager_GetDisconnectedWifi() || !CommSys_IsPlayerConnected(0)) {
         CommManager_EndWifiMatch();
-        param0->unk_3A8 = ov65_0222EBB8();
+        param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
     }
 
     return param1;
 }
 
-static int ov65_0222FCB8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateShowConnecting(WiFiMenuApp *param0, int param1)
 {
-    ov65_02232DFC(param0);
-    ov65_02232CA8(param0, 19);
+    WiFiMenuApp_ClearMessage(param0);
+    WiFiMenuApp_ShowMessageBox(param0, 19);
 
     param0->unk_3A8 = 17;
     param0->unk_3C8 = 0;
@@ -2194,7 +2194,7 @@ static int ov65_0222FCB8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0222FCDC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateHandleBack(WiFiMenuApp *param0, int param1)
 {
     if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
         if (param0->unk_3B4 == 1) {
@@ -2202,14 +2202,14 @@ static int ov65_0222FCDC(UnkStruct_ov65_0222EBE0 *param0, int param1)
             param0->unk_3A8 = 34;
             CommManager_LogoutWifi();
         } else if (0 == WiFiList_GetValidFriendsCount(param0->unk_00)) {
-            ov65_02232B58(param0, 26, 1);
+            WiFiMenuApp_ShowMessage(param0, 26, 1);
             param0->unk_3A8 = 59;
             param0->unk_3BC = 1;
         } else {
-            ov65_0222F4C4(param0, 16);
-            ov65_0222F5BC(param0);
+            WiFiMenuApp_SetupOwnStatus(param0, 16);
+            WiFiMenuApp_BuildVisibleFriendList(param0);
 
-            param0->unk_3A8 = ov65_0222EBB8();
+            param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
 
             if (Window_IsInUse(&param0->unk_360)) {
                 Window_EraseMessageBox(&param0->unk_360, 0);
@@ -2221,7 +2221,7 @@ static int ov65_0222FCDC(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static void ov65_0222FD70(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_DrawPlayerStatusWindow(WiFiMenuApp *param0)
 {
     TextColor v0;
     int v1, v2, v3;
@@ -2247,8 +2247,8 @@ static void ov65_0222FD70(UnkStruct_ov65_0222EBE0 *param0)
     Text_AddPrinterWithParamsAndColor(&param0->unk_340, FONT_SYSTEM, v5, 32, 0, TEXT_SPEED_NO_TRANSFER, v0, NULL);
     String_Free(v5);
 
-    v6 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
-    v3 = ov65_0223484C(v6, &v0);
+    v6 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
+    v3 = WiFiMenuApp_GetCommStateMessage(v6, &v0);
 
     if (v6 == 1) {
         if (NintendoWFC_GetHostFriendIdx() == -1) {
@@ -2269,7 +2269,7 @@ static void ov65_0222FD70(UnkStruct_ov65_0222EBE0 *param0)
     }
 
     Text_AddPrinterWithParamsAndColor(&param0->unk_340, FONT_SYSTEM, param0->unk_170, 102, 0, TEXT_SPEED_NO_TRANSFER, v0, NULL);
-    ov65_0222EA38(param0->unk_15C, &param0->unk_BD0, 1, 2, 1, v6);
+    WiFiMenuApp_DrawStateIconToBg(param0->unk_15C, &param0->unk_BD0, 1, 2, 1, v6);
 
     if (param0->unk_04->ownStatus.voiceChatEnabled) {
         v2 = 8;
@@ -2277,18 +2277,18 @@ static void ov65_0222FD70(UnkStruct_ov65_0222EBE0 *param0)
         v2 = 1;
     }
 
-    ov65_0222E9C0(param0->unk_15C, &param0->unk_BD0, 1, 26, 1, v2, 0);
+    WiFiMenuApp_DrawScreenDataTilemap(param0->unk_15C, &param0->unk_BD0, 1, 26, 1, v2, 0);
     Window_ScheduleCopyToVRAM(&param0->unk_340);
 }
 
-static void ov65_0222FED8(ListMenu *param0, u32 param1, u8 param2)
+static void WiFiMenuApp_ListMenuSoundCallback(ListMenu *param0, u32 param1, u8 param2)
 {
     if (param2 == 0) {
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
     }
 }
 
-static void ov65_0222FEEC(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_CreateStatusWindows(WiFiMenuApp *param0)
 {
     if (Window_IsInUse(&param0->unk_340)) {
         Window_Remove(&param0->unk_340);
@@ -2306,12 +2306,12 @@ static void ov65_0222FEEC(UnkStruct_ov65_0222EBE0 *param0)
     Window_DrawStandardFrame(&param0->unk_350, 0, (512 - (18 + 12)) - 9, 11);
 }
 
-static int ov65_0222FFAC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateInitBoard(WiFiMenuApp *param0, int param1)
 {
     int v0, v1;
     int v2 = 0;
     NARC *v3;
-    UnkStruct_ov65_022354D8 *v4;
+    WiFiMenuAppActor *v4;
     int v5;
 
     if (IsScreenFadeDone() == FALSE) {
@@ -2330,9 +2330,9 @@ static int ov65_0222FFAC(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     v3 = NARC_ctor(NARC_INDEX_DATA__WIFIP2PMATCH, HEAP_ID_54);
 
-    ov65_0222E90C(param0->unk_15C, &param0->unk_BD0, v3, 54);
-    ov65_02232F30(param0);
-    ov65_02232DFC(param0);
+    WiFiMenuApp_LoadScreenData(param0->unk_15C, &param0->unk_BD0, v3, 54);
+    WiFiMenuApp_RestoreVoiceChat(param0);
+    WiFiMenuApp_ClearMessage(param0);
 
     Bg_ClearTilemap(param0->unk_15C, BG_LAYER_MAIN_3);
 
@@ -2344,7 +2344,7 @@ static int ov65_0222FFAC(UnkStruct_ov65_0222EBE0 *param0, int param1)
         param0->unk_14C = NULL;
     }
 
-    if (ov65_02235194(&param0->unk_3EC) == 0) {
+    if (WiFiMenuAppBoard_IsActive(&param0->unk_3EC) == 0) {
         if (param0->unk_04->ownStatus.gender == 0) {
             v5 = 0x0;
         } else {
@@ -2353,20 +2353,20 @@ static int ov65_0222FFAC(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
         param0->unk_115A = WiFiList_GetFriendListSize(param0->unk_00);
 
-        ov65_02235060(&param0->unk_3EC, 54, v3, param0->unk_15C, v5, param0->unk_115A);
-        v4 = ov65_02235380(&param0->unk_3EC, v5);
-        ov65_0222E87C(param0, v4);
+        WiFiMenuAppBoard_Init(&param0->unk_3EC, 54, v3, param0->unk_15C, v5, param0->unk_115A);
+        v4 = WiFiMenuAppBoard_CreatePlayer(&param0->unk_3EC, v5);
+        WiFiMenuApp_AddActor(param0, v4);
     }
 
-    if (ov65_02232FCC(param0) == 0) {
-        ov65_02232FE0(param0, v3, HEAP_ID_54);
+    if (WiFiMenuApp_IsTouchScreenActive(param0) == 0) {
+        WiFiMenuApp_InitTouchScreen(param0, v3, HEAP_ID_54);
     }
 
-    ov65_022336A4(param0, HEAP_ID_54);
-    ov65_02232DFC(param0);
-    ov65_0222F5BC(param0);
-    ov65_0222FEEC(param0);
-    ov65_02232E58(param0, 16);
+    WiFiMenuApp_RedrawTouchScreen(param0, HEAP_ID_54);
+    WiFiMenuApp_ClearMessage(param0);
+    WiFiMenuApp_BuildVisibleFriendList(param0);
+    WiFiMenuApp_CreateStatusWindows(param0);
+    WiFiMenuApp_SetCommState(param0, 16);
 
     CommManager_SetState_LoginWifi();
     param0->unk_3D0 = -1;
@@ -2379,7 +2379,7 @@ static int ov65_0222FFAC(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0223012C(UnkStruct_ov65_0222EBE0 *param0)
+static int WiFiMenuApp_IsMatchmakingStarted(WiFiMenuApp *param0)
 {
     if (CommManager_GetMatchmakingState() == 1) {
         return 1;
@@ -2388,7 +2388,7 @@ static int ov65_0223012C(UnkStruct_ov65_0222EBE0 *param0)
     return 0;
 }
 
-static BOOL ov65_02230140(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_HandleNewClient(WiFiMenuApp *param0)
 {
     if (NintendoWFC_GetLatestNewClientFriendIdx() != WFC_NOT_A_FRIEND) {
         NintendoWFC_SetVoiceChatEnabled(param0->unk_04->ownStatus.voiceChatEnabled);
@@ -2398,17 +2398,17 @@ static BOOL ov65_02230140(UnkStruct_ov65_0222EBE0 *param0)
     return 0;
 }
 
-static int ov65_02230164(UnkStruct_ov65_0222EBE0 *param0)
+static int WiFiMenuApp_UpdateBoardActors(WiFiMenuApp *param0)
 {
     int v0;
     int v1, v2;
-    UnkStruct_ov65_022354D8 *v3;
+    WiFiMenuAppActor *v3;
     BOOL v4;
     WFCTrainerInfo *v5;
     BOOL v6;
     BOOL v7;
 
-    v0 = ov65_0222F5BC(param0);
+    v0 = WiFiMenuApp_BuildVisibleFriendList(param0);
     v6 = 0;
     v7 = 0;
 
@@ -2424,13 +2424,13 @@ static int ov65_02230164(UnkStruct_ov65_0222EBE0 *param0)
             }
 
             if ((v4 == 0) && (param0->unk_2C[v1] != 0)) {
-                v3 = ov65_0222E8D4(param0, param0->unk_2C[v1]);
+                v3 = WiFiMenuApp_GetActorByIndex(param0, param0->unk_2C[v1]);
 
                 if (v3 != NULL) {
-                    ov65_02235478(&param0->unk_3EC, v3);
-                    ov65_0222E8A8(param0, v3);
-                    ov65_0223366C(param0, param0->unk_2C[v1]);
-                    ov65_02232FB0(param0, param0->unk_2C[v1], HEAP_ID_54);
+                    WiFiMenuAppBoard_RemoveActor(&param0->unk_3EC, v3);
+                    WiFiMenuApp_RemoveActor(param0, v3);
+                    WiFiMenuApp_ClearFriendListState(param0, param0->unk_2C[v1]);
+                    WiFiMenuApp_ResetIfCurrentActor(param0, param0->unk_2C[v1], HEAP_ID_54);
                     v7 = 1;
                 }
             }
@@ -2445,22 +2445,22 @@ static int ov65_02230164(UnkStruct_ov65_0222EBE0 *param0)
             }
 
             if ((v4 == 0) && (param0->unk_0C[v1] != 0)) {
-                v5 = ov65_02234FA8(param0, param0->unk_0C[v1] - 1);
-                v3 = ov65_022353EC(&param0->unk_3EC, v5->appearance, param0->unk_0C[v1]);
+                v5 = WiFiMenuApp_GetFriendStatus(param0, param0->unk_0C[v1] - 1);
+                v3 = WiFiMenuAppBoard_CreateActor(&param0->unk_3EC, v5->appearance, param0->unk_0C[v1]);
 
                 if (v3) {
-                    ov65_02233638(param0, param0->unk_0C[v1], 2);
-                    ov65_0222E87C(param0, v3);
+                    WiFiMenuApp_SetFriendListState(param0, param0->unk_0C[v1], 2);
+                    WiFiMenuApp_AddActor(param0, v3);
                     v6 = 1;
                 } else {
-                    ov65_02233638(param0, param0->unk_0C[v1], 1);
+                    WiFiMenuApp_SetFriendListState(param0, param0->unk_0C[v1], 1);
                     param0->unk_0C[v1] = 0;
                 }
             }
         }
 
         memcpy(param0->unk_2C, param0->unk_0C, sizeof(u8) * 32);
-        ov65_022336C4(param0);
+        WiFiMenuApp_MarkTouchScreenDirty(param0);
 
         if (v6 == 1) {
             Sound_PlayEffect(SEQ_SE_DP_TELE2_sseq);
@@ -2472,31 +2472,31 @@ static int ov65_02230164(UnkStruct_ov65_0222EBE0 *param0)
     return v0;
 }
 
-static void ov65_02230298(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_RefreshActorList(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0;
     u32 v1;
     u32 v2;
     BOOL v3;
-    int v4 = ov65_0222F62C(param0);
+    int v4 = WiFiMenuApp_UpdateFriendActors(param0);
 
     if (v4 > 0) {
-        ov65_022336A4(param0, heapID);
+        WiFiMenuApp_RedrawTouchScreen(param0, heapID);
     }
 }
 
-static void ov65_022302B0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_UpdateAndRefreshActors(WiFiMenuApp *param0, enum HeapID heapID)
 {
-    ov65_02230164(param0);
-    ov65_02230298(param0, heapID);
+    WiFiMenuApp_UpdateBoardActors(param0);
+    WiFiMenuApp_RefreshActorList(param0, heapID);
 }
 
-static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateBoardInput(WiFiMenuApp *param0, int param1)
 {
     u32 v0 = 0;
     int v1;
     u32 v2;
-    UnkStruct_ov65_022354D8 *v3;
+    WiFiMenuAppActor *v3;
     u32 v4;
 
     if (IsScreenFadeDone() == FALSE) {
@@ -2504,55 +2504,55 @@ static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
     if (CommManager_GetMatchmakingState() == 4) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 29;
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_SetCommState(param0, 16);
         CommManager_EndWifiMatch();
         return param1;
     }
 
-    ov65_022302B0(param0, HEAP_ID_54);
-    ov65_022331E0(param0);
-    ov65_022355EC(&param0->unk_3EC);
+    WiFiMenuApp_UpdateAndRefreshActors(param0, HEAP_ID_54);
+    WiFiMenuApp_UpdateTouchScreenCursor(param0);
+    WiFiMenuAppBoard_ResetPalette(&param0->unk_3EC);
 
-    if (ov65_0223537C(&param0->unk_3EC) == 0) {
+    if (WiFiMenuAppBoard_GetFlag(&param0->unk_3EC) == 0) {
         if (NintendoWFC_GetLatestNewClientFriendIdx() == WFC_NOT_A_FRIEND) {
             if (PAD_BUTTON_X & gSystem.pressedKeys) {
-                if (ov65_02232F00(param0)) {
-                    ov65_02232B58(param0, 90, 0);
+                if (WiFiMenuApp_ToggleVoiceChatBackup(param0)) {
+                    WiFiMenuApp_ShowMessage(param0, 90, 0);
                 } else {
-                    ov65_02232B58(param0, 91, 0);
+                    WiFiMenuApp_ShowMessage(param0, 91, 0);
                 }
 
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-                ov65_0222FD70(param0);
+                WiFiMenuApp_DrawPlayerStatusWindow(param0);
                 param0->unk_3A8 = 20;
-                ov65_02232F90(param0, HEAP_ID_54);
+                WiFiMenuApp_ResetBoardAndRedraw(param0, HEAP_ID_54);
                 return param1;
             }
         }
 
-        v2 = ov65_022330C0(param0, HEAP_ID_54);
-        v3 = ov65_0222E8D4(param0, v2);
+        v2 = WiFiMenuApp_UpdateTouchScreen(param0, HEAP_ID_54);
+        v3 = WiFiMenuApp_GetActorByIndex(param0, v2);
 
         if (v2 != 0) {
             if (v3) {
-                ov65_0223532C(&param0->unk_3EC, v3);
+                WiFiMenuAppBoard_UpdateActorPriority(&param0->unk_3EC, v3);
             } else {
-                ov65_02235370(&param0->unk_3EC);
+                WiFiMenuAppBoard_ResetActors(&param0->unk_3EC);
             }
         } else {
-            ov65_02235370(&param0->unk_3EC);
+            WiFiMenuAppBoard_ResetActors(&param0->unk_3EC);
         }
     }
 
-    v1 = ov65_0223012C(param0);
+    v1 = WiFiMenuApp_IsMatchmakingStarted(param0);
 
     if ((0 != v1) && (param0->unk_3D0 != -1)) {
         Sound_PlayEffect(SEQ_SE_DP_UG_020_sseq);
@@ -2562,14 +2562,14 @@ static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     if ((param0->unk_3D0 == -1) && (NintendoWFC_GetLatestNewClientFriendIdx() != WFC_NOT_A_FRIEND)) {
         param0->unk_3D0 = NintendoWFC_GetLatestNewClientFriendIdx();
-        ov65_02232DC0(param0, param0->unk_3D0);
-        ov65_02232B58(param0, 76, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, param0->unk_3D0);
+        WiFiMenuApp_ShowMessage(param0, 76, 0);
         NintendoWFC_SetVoiceChatEnabled(param0->unk_04->ownStatus.voiceChatEnabled);
         param0->unk_3A4 = 0;
     } else if ((param0->unk_3D0 != -1) && (NintendoWFC_GetLatestNewClientFriendIdx() == WFC_NOT_A_FRIEND)) {
         NintendoWFC_SetVoiceChatEnabled(0);
-        ov65_02232DC0(param0, param0->unk_3D0);
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, param0->unk_3D0);
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         CommManager_EndWifiMatch();
         param0->unk_3A8 = 27;
         return param1;
@@ -2579,20 +2579,20 @@ static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
         NintendoWFC_SetVoiceChatEnabled(0);
     }
 
-    v4 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
+    v4 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
 
     if (param0->unk_3D0 == -1) {
         if (gSystem.pressedKeys & PAD_BUTTON_B) {
-            if (ov65_0222DDFC(v4)) {
+            if (WiFiMenuApp_IsWifiBattleCommState(v4)) {
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
                 param0->unk_3A8 = 39;
-                ov65_02232F90(param0, HEAP_ID_54);
+                WiFiMenuApp_ResetBoardAndRedraw(param0, HEAP_ID_54);
                 return param1;
             }
         }
 
-        v0 = ov65_02235198(&param0->unk_3EC);
-        ov65_022355FC(&param0->unk_3EC);
+        v0 = WiFiMenuAppBoard_Update(&param0->unk_3EC);
+        WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
     }
 
     switch (v0) {
@@ -2601,46 +2601,46 @@ static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     case 1:
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
 
-        if (ov65_0222DDFC(v4)) {
+        if (WiFiMenuApp_IsWifiBattleCommState(v4)) {
             param0->unk_3A8 = 39;
         } else {
             param0->unk_3AC = 8;
             param0->unk_3A8 = 57;
-            ov65_02232B58(param0, 25, 1);
+            WiFiMenuApp_ShowMessage(param0, 25, 1);
 
             v0 = 0xfffffffe;
         }
 
-        ov65_02232F90(param0, HEAP_ID_54);
+        WiFiMenuApp_ResetBoardAndRedraw(param0, HEAP_ID_54);
         return param1;
     case 3:
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
 
-        if (ov65_0222DDFC(v4)) {
-            ov65_022355B0(&param0->unk_3EC);
+        if (WiFiMenuApp_IsWifiBattleCommState(v4)) {
+            WiFiMenuAppBoard_SetPlayerPalette(&param0->unk_3EC);
             param0->unk_3A8 = 39;
         } else {
             if (v4 == 16) {
                 if (CommManager_IsLoginBattleMatchWifi() == 1) {
-                    ov65_022355B0(&param0->unk_3EC);
+                    WiFiMenuAppBoard_SetPlayerPalette(&param0->unk_3EC);
                     param0->unk_3A8 = 36;
                 }
             }
         }
 
-        ov65_02232F90(param0, HEAP_ID_54);
+        WiFiMenuApp_ResetBoardAndRedraw(param0, HEAP_ID_54);
         return param1;
         break;
     case 2:
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
 
-        if (ov65_0222DDFC(v4)) {
+        if (WiFiMenuApp_IsWifiBattleCommState(v4)) {
             param0->unk_3A8 = 39;
         } else {
             param0->unk_3A8 = 42;
         }
 
-        ov65_02232F90(param0, HEAP_ID_54);
+        WiFiMenuApp_ResetBoardAndRedraw(param0, HEAP_ID_54);
         return param1;
         break;
     default:
@@ -2651,60 +2651,60 @@ static int ov65_022302C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_022305EC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateHandleNewClient(WiFiMenuApp *param0, int param1)
 {
-    if (0 != ov65_02230140(param0)) {
+    if (0 != WiFiMenuApp_HandleNewClient(param0)) {
         param0->unk_3A8 = 19;
-        ov65_0223503C(param0);
+        WiFiMenuApp_ClearBoardBusyFlag(param0);
     } else if (Text_IsPrinterActive(param0->unk_180) == 0) {
         param0->unk_3A8 = 19;
 
-        ov65_0223503C(param0);
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearBoardBusyFlag(param0);
+        WiFiMenuApp_ClearMessage(param0);
     }
 
     return param1;
 }
 
-static int ov65_02230634(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitForMatch(WiFiMenuApp *param0, int param1)
 {
     WFCTrainerInfo *v0;
     int v1;
     int v2;
 
-    v0 = ov65_02234FA8(param0, param0->unk_3E2 - 1);
+    v0 = WiFiMenuApp_GetFriendStatus(param0, param0->unk_3E2 - 1);
     v1 = v0->voiceChatEnabled;
-    v2 = ov65_0222DD20(param0, v0);
+    v2 = WiFiMenuApp_GetAdjustedCommState(param0, v0);
 
     param0->unk_3A0--;
 
     if (param0->unk_3A0 < 0) {
         param0->unk_3A8 = 70;
     } else if (CommManager_GetMatchmakingState() == 5) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 15, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 15, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_GetMatchmakingState() == 3) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 27;
     } else if ((CommManager_GetMatchmakingState() == 4) || (CommManager_GetDisconnectedWifi())) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 19, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 19, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else if (v1 == 0) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 16, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 16, 0);
         param0->unk_3A8 = 27;
     } else if (v2 != 16) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 16, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 16, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_GetMatchmakingState() == 1) {
-        ov65_02232DFC(param0);
-        ov65_02232E58(param0, 1);
+        WiFiMenuApp_ClearMessage(param0);
+        WiFiMenuApp_SetCommState(param0, 1);
         param0->unk_3A8 = 24;
         WiFiList_SetHostFriendCurrentDate(param0->unk_00, param0->unk_3E2 - 1);
     }
@@ -2712,11 +2712,11 @@ static int ov65_02230634(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02230774(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateSelectFriend(WiFiMenuApp *param0, int param1)
 {
-    ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-    ov65_02232B58(param0, 14, 0);
-    ov65_02232E58(param0, 1);
+    WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+    WiFiMenuApp_ShowMessage(param0, 14, 0);
+    WiFiMenuApp_SetCommState(param0, 1);
 
     param0->unk_3A8 = 23;
 
@@ -2725,161 +2725,161 @@ static int ov65_02230774(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_022307B0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmFriend(WiFiMenuApp *param0, int param1)
 {
     WFCTrainerInfo *v0;
     int v1;
     int v2;
 
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
     if (NintendoWFC_GetHostFriendIdx() < 0) {
-        ov65_02232B58(param0, 19, 0);
+        WiFiMenuApp_ShowMessage(param0, 19, 0);
         param0->unk_3A8 = 27;
         return param1;
     }
 
-    v0 = ov65_02234FA8(param0, NintendoWFC_GetHostFriendIdx());
-    v2 = ov65_0222DD20(param0, v0);
+    v0 = WiFiMenuApp_GetFriendStatus(param0, NintendoWFC_GetHostFriendIdx());
+    v2 = WiFiMenuApp_GetAdjustedCommState(param0, v0);
 
     if ((v2 != 16) && (v2 != 1)) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 16, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 16, 0);
         param0->unk_3A8 = 27;
         return param1;
     }
 
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
         if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
             param0->unk_3A8 = 24;
         } else {
-            ov65_02230860(param0, param1);
+            WiFiMenuApp_StateFriendAction(param0, param1);
         }
     }
 
     return param1;
 }
 
-static int ov65_02230860(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateFriendAction(WiFiMenuApp *param0, int param1)
 {
     WFCTrainerInfo *v0;
     int v1;
 
     if (NintendoWFC_GetHostFriendIdx() < 0) {
-        ov65_02232B58(param0, 19, 0);
+        WiFiMenuApp_ShowMessage(param0, 19, 0);
         param0->unk_3A8 = 27;
         return param1;
     }
 
-    v0 = ov65_02234FA8(param0, NintendoWFC_GetHostFriendIdx());
-    v1 = ov65_0222DD20(param0, v0);
+    v0 = WiFiMenuApp_GetFriendStatus(param0, NintendoWFC_GetHostFriendIdx());
+    v1 = WiFiMenuApp_GetAdjustedCommState(param0, v0);
 
-    ov65_022302B0(param0, HEAP_ID_54);
-    ov65_022331E0(param0);
+    WiFiMenuApp_UpdateAndRefreshActors(param0, HEAP_ID_54);
+    WiFiMenuApp_UpdateTouchScreenCursor(param0);
 
     if (CommManager_GetMatchmakingState() == 5) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 15, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 15, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_GetMatchmakingState() == 3) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 27;
     } else if ((CommManager_GetMatchmakingState() == 4) || (CommManager_GetDisconnectedWifi())) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 19, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 19, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else if ((v1 != 16) && (v1 != 1)) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 16, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 16, 0);
         param0->unk_3A8 = 27;
     } else if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
-        ov65_02232B58(param0, 20, 0);
+        WiFiMenuApp_ShowMessage(param0, 20, 0);
         param0->unk_3A8 = 25;
     } else {
         if (NintendoWFC_IsPlayerSpeaking()) {
-            ov65_0222E9C0(param0->unk_15C, &param0->unk_BD0, 1, 2, 1, 2, 0);
+            WiFiMenuApp_DrawScreenDataTilemap(param0->unk_15C, &param0->unk_BD0, 1, 2, 1, 2, 0);
         } else {
-            ov65_0222E9C0(param0->unk_15C, &param0->unk_BD0, 1, 2, 1, 3, 0);
+            WiFiMenuApp_DrawScreenDataTilemap(param0->unk_15C, &param0->unk_BD0, 1, 2, 1, 3, 0);
         }
     }
 
     return param1;
 }
 
-static int ov65_022309D0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmLeave(WiFiMenuApp *param0, int param1)
 {
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
         WiFiList_SetHostFriendCurrentDate(param0->unk_00, NintendoWFC_GetHostFriendIdx());
 
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_0223894C, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate2, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 26;
     }
 
     return param1;
 }
 
-static int ov65_02230A30(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessLeave(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
 
     if (v1 == 0xffffffff) {
         if ((CommManager_GetMatchmakingState() >= 4) || CommManager_GetDisconnectedWifi() || !CommSys_IsPlayerConnected(0)) {
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
 
-            ov65_02232E58(param0, 16);
+            WiFiMenuApp_SetCommState(param0, 16);
             Menu_DestroyForExit(param0->unk_184, 54);
             param0->unk_3D0 = -1;
             param0->unk_3BC = 20;
             param0->unk_3A8 = 65;
         } else if (CommManager_CheckWifiError()) {
-            ov65_0222F6EC(param0);
+            WiFiMenuApp_HandleWifiError(param0);
         }
 
         return param1;
     } else if (v1 == 0) {
         if (!CommManager_CheckWifiError()) {
-            ov65_02232E58(param0, 16);
+            WiFiMenuApp_SetCommState(param0, 16);
             CommManager_EndBattleWifiMatch();
             param0->unk_3D0 = -1;
             param0->unk_3BC = 20;
             param0->unk_3A8 = 65;
         } else {
-            ov65_0222F6EC(param0);
+            WiFiMenuApp_HandleWifiError(param0);
         }
     } else {
         param0->unk_3A8 = 24;
     }
 
-    ov65_02232DFC(param0);
+    WiFiMenuApp_ClearMessage(param0);
     return param1;
 }
 
-static int ov65_02230AF8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitBattleStart(WiFiMenuApp *param0, int param1)
 {
     u32 v0;
 
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
-    v0 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
+    v0 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
 
     if (v0 != 16) {
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_SetCommState(param0, 16);
     }
 
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
@@ -2890,36 +2890,36 @@ static int ov65_02230AF8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     param0->unk_3BC--;
 
     if ((gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) || (param0->unk_3BC == 0)) {
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
         CommManager_EndWifiMatch();
         CommManager_SetState_LoginWifi();
 
-        if (ov65_02235194(&param0->unk_3EC) == 0) {
+        if (WiFiMenuAppBoard_IsActive(&param0->unk_3EC) == 0) {
             param0->unk_3BC = 20;
             param0->unk_3A8 = 65;
         } else {
-            ov65_02232F30(param0);
-            ov65_0222FD70(param0);
+            WiFiMenuApp_RestoreVoiceChat(param0);
+            WiFiMenuApp_DrawPlayerStatusWindow(param0);
 
             param0->unk_3D0 = -1;
             param0->unk_3A8 = 19;
 
-            ov65_0223503C(param0);
+            WiFiMenuApp_ClearBoardBusyFlag(param0);
         }
     }
 
     return param1;
 }
 
-static int ov65_02230BB4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateCancelMatch(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
         return param1;
     }
 
     if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
-        ov65_02232DFC(param0);
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_ClearMessage(param0);
+        WiFiMenuApp_SetCommState(param0, 16);
         CommManager_EndWifiMatch();
         param0->unk_3BC = 20;
         param0->unk_3A8 = 65;
@@ -2928,10 +2928,10 @@ static int ov65_02230BB4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02230C04(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitThenLogin(WiFiMenuApp *param0, int param1)
 {
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
@@ -2943,43 +2943,43 @@ static int ov65_02230C04(UnkStruct_ov65_0222EBE0 *param0, int param1)
     param0->unk_3BC--;
 
     if ((gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) || (param0->unk_3BC == 0)) {
-        ov65_02232DFC(param0);
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_ClearMessage(param0);
+        WiFiMenuApp_SetCommState(param0, 16);
 
         CommManager_SetState_LoginWifi();
 
-        if (ov65_02235194(&param0->unk_3EC) == 0) {
-            param0->unk_3A8 = ov65_0222EBB8();
+        if (WiFiMenuAppBoard_IsActive(&param0->unk_3EC) == 0) {
+            param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
         } else {
-            ov65_02232F30(param0);
-            ov65_0222FD70(param0);
+            WiFiMenuApp_RestoreVoiceChat(param0);
+            WiFiMenuApp_DrawPlayerStatusWindow(param0);
 
             param0->unk_3D0 = -1;
             param0->unk_3A8 = 19;
 
-            ov65_0223503C(param0);
+            WiFiMenuApp_ClearBoardBusyFlag(param0);
         }
     }
 
     return param1;
 }
 
-static int ov65_02230CAC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop1(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02230CB0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop2(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02230CB4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop3(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02230CB8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitDisconnectMessage(WiFiMenuApp *param0, int param1)
 {
     if (param0->unk_3BC > 0) {
         param0->unk_3BC--;
@@ -2987,7 +2987,7 @@ static int ov65_02230CB8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 
     if (gSystem.pressedKeys & (PAD_BUTTON_B | PAD_BUTTON_A)) {
-        ov65_02232B58(param0, 26, 1);
+        WiFiMenuApp_ShowMessage(param0, 26, 1);
         param0->unk_3A8 = 59;
         param0->unk_3BC = 1;
     }
@@ -2995,34 +2995,34 @@ static int ov65_02230CB8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02230CF8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateOpenActivityMenu(WiFiMenuApp *param0, int param1)
 {
-    ov65_022355FC(&param0->unk_3EC);
-    ov65_02232B58(param0, 10, 0);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
+    WiFiMenuApp_ShowMessage(param0, 10, 0);
 
     param0->unk_3A8 = 40;
 
     return param1;
 }
 
-static int ov65_02230D20(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmExitActivity(WiFiMenuApp *param0, int param1)
 {
-    ov65_022355FC(&param0->unk_3EC);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
 
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_0223894C, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate2, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 41;
     }
 
     return param1;
 }
 
-static int ov65_02230D6C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessExitActivity(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
 
-    ov65_022355FC(&param0->unk_3EC);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
 
     if ((param0->unk_3D0 == -1) && (NintendoWFC_GetLatestNewClientFriendIdx() != WFC_NOT_A_FRIEND)) {
         NintendoWFC_SetVoiceChatEnabled(param0->unk_04->ownStatus.voiceChatEnabled);
@@ -3037,12 +3037,12 @@ static int ov65_02230D6C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     if (v1 == 0xffffffff) {
         return param1;
     } else if (v1 == 0) {
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_SetCommState(param0, 16);
         CommManager_SetState_LoginWifi();
-        ov65_0223503C(param0);
+        WiFiMenuApp_ClearBoardBusyFlag(param0);
     } else {
-        ov65_0223503C(param0);
-        ov65_0223500C(param0, 1);
+        WiFiMenuApp_ClearBoardBusyFlag(param0);
+        WiFiMenuApp_SetBoardBusyFlag(param0, 1);
     }
 
     param0->unk_3A8 = 19;
@@ -3050,56 +3050,56 @@ static int ov65_02230D6C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-UnkStruct_ov65_02239CDC Unk_ov65_02239CDC[10] = {
+WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivityBaseEntries[10] = {
     { 0x5D, (u32)0 },
     { 0x5E, (u32)1 },
     { 0x1C, (u32)15 }
 };
 
-static UnkStruct_ov65_02239CDC Unk_ov65_02239C38 = {
+static WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivityWifiClubEntry = {
     0x22,
     (u32)29
 };
 
-static UnkStruct_ov65_02239CDC Unk_ov65_02239C30 = {
+static WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivityBattleParkEntry = {
     0x20,
     (u32)21
 };
 
-static UnkStruct_ov65_02239CDC Unk_ov65_02239C28 = {
+static WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivityPoffinEntry = {
     0x1E,
     (u32)19
 };
 
-static UnkStruct_ov65_02239CDC Unk_ov65_02239C20 = {
+static WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivityCancelEntry = {
     0x29,
     (u32)0xfffffffe
 };
 
-UnkStruct_ov65_02239CDC Unk_ov65_02239C5C[] = {
+WiFiMenuAppActivityMenuEntry sWiFiMenuAppPlazaMinigameEntries[] = {
     { 0x47, (u32)23 },
     { 0x47, (u32)25 },
     { 0x47, (u32)27 },
     { 0x29, (u32)0xfffffffe }
 };
 
-UnkStruct_ov65_02239CDC Unk_ov65_02239C7C[] = {
+WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivitySubMenu0Entries[] = {
     { 0x5F, (u32)11 },
     { 0x60, (u32)9 },
     { 0x61, (u32)10 },
     { 0x29, (u32)0xfffffffe }
 };
 
-UnkStruct_ov65_02239CDC Unk_ov65_02239C9C[] = {
+WiFiMenuAppActivityMenuEntry sWiFiMenuAppActivitySubMenu1Entries[] = {
     { 0x62, (u32)14 },
     { 0x63, (u32)12 },
     { 0x64, (u32)13 },
     { 0x29, (u32)0xfffffffe }
 };
 
-static ListMenuTemplate Unk_ov65_02239CBC = {
+static ListMenuTemplate sWiFiMenuAppActivityListTemplate = {
     NULL,
-    ov65_0222FED8,
+    WiFiMenuApp_ListMenuSoundCallback,
     NULL,
     NULL,
     0x3,
@@ -3119,13 +3119,13 @@ static ListMenuTemplate Unk_ov65_02239CBC = {
     NULL
 };
 
-static const ListMenuTemplate Unk_ov65_02238AD0 = {
+static const ListMenuTemplate sWiFiMenuAppBattleModeListTemplate = {
     NULL,
-    ov65_0222FED8,
+    WiFiMenuApp_ListMenuSoundCallback,
     NULL,
     NULL,
-    NELEMS(Unk_ov65_02239C7C),
-    NELEMS(Unk_ov65_02239C7C),
+    NELEMS(sWiFiMenuAppActivitySubMenu0Entries),
+    NELEMS(sWiFiMenuAppActivitySubMenu0Entries),
     0x0,
     0x8,
     0x0,
@@ -3141,13 +3141,13 @@ static const ListMenuTemplate Unk_ov65_02238AD0 = {
     NULL
 };
 
-static const ListMenuTemplate Unk_ov65_02238AF0 = {
+static const ListMenuTemplate sWiFiMenuAppMinigameListTemplate = {
     NULL,
-    ov65_0222FED8,
+    WiFiMenuApp_ListMenuSoundCallback,
     NULL,
     NULL,
-    NELEMS(Unk_ov65_02239C5C),
-    NELEMS(Unk_ov65_02239C5C),
+    NELEMS(sWiFiMenuAppPlazaMinigameEntries),
+    NELEMS(sWiFiMenuAppPlazaMinigameEntries),
     0x0,
     0x8,
     0x0,
@@ -3163,43 +3163,43 @@ static const ListMenuTemplate Unk_ov65_02238AF0 = {
     NULL
 };
 
-static int ov65_02230E04(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_CreateActivityListMenu(WiFiMenuApp *param0, int param1)
 {
     int v0, v1;
     ListMenuTemplate v2;
-    UnkStruct_ov65_02239CDC *v3;
+    WiFiMenuAppActivityMenuEntry *v3;
 
     v1 = 3;
-    v2 = Unk_ov65_02239CBC;
-    v3 = Unk_ov65_02239CDC;
+    v2 = sWiFiMenuAppActivityListTemplate;
+    v3 = sWiFiMenuAppActivityBaseEntries;
 
-    if (ov65_0222DCF8(param0) == 1) {
+    if (WiFiMenuApp_HasPoffinCase(param0) == 1) {
         v1++;
         v2.count++;
         v2.maxDisplay++;
-        v3[v1 - 1] = Unk_ov65_02239C28;
+        v3[v1 - 1] = sWiFiMenuAppActivityPoffinEntry;
     }
 
-    if (ov65_0222DCE0(param0) == 1) {
+    if (WiFiMenuApp_IsBattleParkAccessed(param0) == 1) {
         v1++;
         v2.count++;
         v2.maxDisplay++;
 
-        v3[v1 - 1] = Unk_ov65_02239C30;
+        v3[v1 - 1] = sWiFiMenuAppActivityBattleParkEntry;
     }
 
-    if (ov65_0222DD1C(param0) == 1) {
+    if (WiFiMenuApp_CanAccessWifiClub(param0) == 1) {
         v1++;
         v2.count++;
         v2.maxDisplay++;
-        v3[v1 - 1] = Unk_ov65_02239C38;
+        v3[v1 - 1] = sWiFiMenuAppActivityWifiClubEntry;
     }
 
     {
         v1++;
         v2.count++;
         v2.maxDisplay++;
-        v3[v1 - 1] = Unk_ov65_02239C20;
+        v3[v1 - 1] = sWiFiMenuAppActivityCancelEntry;
     }
 
     param0->unk_154 = StringList_New(v1, HEAP_ID_54);
@@ -3222,29 +3222,29 @@ static int ov65_02230E04(UnkStruct_ov65_0222EBE0 *param0, int param1)
     param0->unk_158 = ListMenu_New(&v2, 0, param0->unk_3D4, HEAP_ID_54);
 
     Window_ScheduleCopyToVRAM(&param0->unk_380);
-    ov65_02232B58(param0, 8, 0);
-    ov65_022355FC(&param0->unk_3EC);
+    WiFiMenuApp_ShowMessage(param0, 8, 0);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
 
     param0->unk_3A8 = 37;
     return param1;
 }
 
-static int ov65_02230FBC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessActivityList(WiFiMenuApp *param0, int param1)
 {
     u32 v0;
-    int v1 = ov65_0222DF88(param0);
-    int v2 = ov65_022319B8(param0);
+    int v1 = WiFiMenuApp_GetUsablePartyCount(param0);
+    int v2 = WiFiMenuApp_GetPoffinAvailability(param0);
 
-    ov65_022355FC(&param0->unk_3EC);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
 
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
-        if (0 != ov65_02230140(param0)) {
+        if (0 != WiFiMenuApp_HandleNewClient(param0)) {
             param0->unk_3A8 = 19;
             Window_EraseStandardFrame(&param0->unk_380, 0);
             Window_Remove(&param0->unk_380);
             ListMenu_Free(param0->unk_158, NULL, &param0->unk_3D4);
             StringList_Free(param0->unk_154);
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
         }
 
         return param1;
@@ -3252,7 +3252,7 @@ static int ov65_02230FBC(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     v0 = ListMenu_ProcessInput(param0->unk_158);
 
-    if (0 != ov65_02230140(param0)) {
+    if (0 != WiFiMenuApp_HandleNewClient(param0)) {
         v0 = 0xfffffffe;
     }
 
@@ -3261,7 +3261,7 @@ static int ov65_02230FBC(UnkStruct_ov65_0222EBE0 *param0, int param1)
         return param1;
     case 0xfffffffe:
         param0->unk_3A8 = 19;
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
         break;
     default:
@@ -3269,51 +3269,51 @@ static int ov65_02230FBC(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
         if ((v0 == 19) && (v2 != 0)) {
             if (v2 == 1) {
-                ov65_02232B58(param0, 104, 0);
+                WiFiMenuApp_ShowMessage(param0, 104, 0);
             } else if (v2 == 3) {
-                ov65_02232B58(param0, 106, 0);
+                WiFiMenuApp_ShowMessage(param0, 106, 0);
             } else {
-                ov65_02232B58(param0, 105, 0);
+                WiFiMenuApp_ShowMessage(param0, 105, 0);
             }
 
             param0->unk_3A8 = 29;
         } else if ((v0 == 15) && (2 > v1)) {
-            ov65_02232B58(param0, 89, 0);
+            WiFiMenuApp_ShowMessage(param0, 89, 0);
             param0->unk_3A8 = 29;
         } else if ((v0 == 1) && (2 > v1)) {
-            ov65_02232B58(param0, 103, 0);
+            WiFiMenuApp_ShowMessage(param0, 103, 0);
             param0->unk_3A8 = 29;
         } else if ((v0 == 0) || (v0 == 1) || (v0 == 29)) {
             Window_EraseStandardFrame(&param0->unk_380, 0);
             Window_Remove(&param0->unk_380);
             ListMenu_Free(param0->unk_158, NULL, &param0->unk_3D4);
             StringList_Free(param0->unk_154);
-            ov65_0223128C(param0, v0);
+            WiFiMenuApp_CreateActivitySubMenu(param0, v0);
             param0->unk_3A8 = 38;
             return param1;
         } else {
-            ov65_02232E58(param0, v0);
+            WiFiMenuApp_SetCommState(param0, v0);
             param0->unk_3A8 = 19;
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
         }
 
         {
             BOOL v3 = 1;
 
-            if (ov65_0222DD64(v0) && (param0->unk_3A8 == 19)) {
+            if (WiFiMenuApp_IsWifiClubCommState(v0) && (param0->unk_3A8 == 19)) {
                 param0->unk_3A8 = 68;
-                ov65_02234FCC(param0, -1, v0);
-                ov65_0222DFD4(v0);
-                ov65_02232E58(param0, v0);
-                param0->unk_3AC = ov65_0222DD94(v0);
+                WiFiMenuApp_StartWifiBattle(param0, -1, v0);
+                WiFiMenuApp_SetCommStateForSelection(v0);
+                WiFiMenuApp_SetCommState(param0, v0);
+                param0->unk_3AC = WiFiMenuApp_GetWifiConnectionTypeFromState(v0);
                 v3 = 0;
             } else {
-                ov65_02234FCC(param0, -1, v0);
-                ov65_0222DFD4(v0);
+                WiFiMenuApp_StartWifiBattle(param0, -1, v0);
+                WiFiMenuApp_SetCommStateForSelection(v0);
             }
 
             if (param0->unk_3A8 == 19) {
-                ov65_0223500C(param0, v3);
+                WiFiMenuApp_SetBoardBusyFlag(param0, v3);
             }
         }
         break;
@@ -3327,18 +3327,18 @@ static int ov65_02230FBC(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02231200(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateStartBattleMatch(WiFiMenuApp *param0, int param1)
 {
     u32 v0;
 
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
-    ov65_022355FC(&param0->unk_3EC);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
 
-    if (0 != ov65_02230140(param0)) {
+    if (0 != WiFiMenuApp_HandleNewClient(param0)) {
         param0->unk_3A8 = 19;
     }
 
@@ -3361,29 +3361,29 @@ static int ov65_02231200(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0223128C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_CreateActivitySubMenu(WiFiMenuApp *param0, int param1)
 {
     int v0, v1;
     ListMenuTemplate v2;
-    UnkStruct_ov65_02239CDC *v3;
+    WiFiMenuAppActivityMenuEntry *v3;
 
     switch (param1) {
     case 0:
-        v3 = Unk_ov65_02239C7C;
-        v1 = NELEMS(Unk_ov65_02239C7C);
+        v3 = sWiFiMenuAppActivitySubMenu0Entries;
+        v1 = NELEMS(sWiFiMenuAppActivitySubMenu0Entries);
         param0->unk_3DC = 1;
-        v2 = Unk_ov65_02238AD0;
+        v2 = sWiFiMenuAppBattleModeListTemplate;
         break;
     case 1:
-        v3 = Unk_ov65_02239C9C;
-        v1 = NELEMS(Unk_ov65_02239C9C);
+        v3 = sWiFiMenuAppActivitySubMenu1Entries;
+        v1 = NELEMS(sWiFiMenuAppActivitySubMenu1Entries);
         param0->unk_3DC = 0;
-        v2 = Unk_ov65_02238AD0;
+        v2 = sWiFiMenuAppBattleModeListTemplate;
         break;
     case 29:
-        v3 = Unk_ov65_02239C5C;
-        v1 = NELEMS(Unk_ov65_02239C5C);
-        v2 = Unk_ov65_02238AF0;
+        v3 = sWiFiMenuAppPlazaMinigameEntries;
+        v1 = NELEMS(sWiFiMenuAppPlazaMinigameEntries);
+        v2 = sWiFiMenuAppMinigameListTemplate;
         param0->unk_3DC = 2;
         break;
     }
@@ -3419,19 +3419,19 @@ static int ov65_0223128C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return 1;
 }
 
-static int ov65_02231440(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessActivitySubMenu(WiFiMenuApp *param0, int param1)
 {
     u32 v0;
 
-    ov65_022355FC(&param0->unk_3EC);
+    WiFiMenuAppBoard_UpdatePalette(&param0->unk_3EC);
 
-    if (0 != ov65_02230140(param0)) {
+    if (0 != WiFiMenuApp_HandleNewClient(param0)) {
         param0->unk_3A8 = 19;
         Window_EraseStandardFrame(&param0->unk_380, 0);
         Window_Remove(&param0->unk_380);
         ListMenu_Free(param0->unk_158, NULL, &param0->unk_3D6[param0->unk_3DC]);
         StringList_Free(param0->unk_154);
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
         return param1;
     }
 
@@ -3450,28 +3450,28 @@ static int ov65_02231440(UnkStruct_ov65_0222EBE0 *param0, int param1)
         break;
     default:
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-        ov65_02232E58(param0, v0);
+        WiFiMenuApp_SetCommState(param0, v0);
         param0->unk_3A8 = 19;
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
         break;
     }
 
     if (param0->unk_3A8 == 19) {
         BOOL v1 = 1;
 
-        if (ov65_0222DD64(v0)) {
+        if (WiFiMenuApp_IsWifiClubCommState(v0)) {
             param0->unk_3A8 = 68;
-            ov65_02234FCC(param0, -1, v0);
-            ov65_0222DFD4(v0);
-            ov65_02232E58(param0, v0);
-            param0->unk_3AC = ov65_0222DD94(v0);
+            WiFiMenuApp_StartWifiBattle(param0, -1, v0);
+            WiFiMenuApp_SetCommStateForSelection(v0);
+            WiFiMenuApp_SetCommState(param0, v0);
+            param0->unk_3AC = WiFiMenuApp_GetWifiConnectionTypeFromState(v0);
             v1 = 0;
         } else {
-            ov65_02234FCC(param0, -1, v0);
+            WiFiMenuApp_StartWifiBattle(param0, -1, v0);
             CommManager_SetState_SingleBattleWifi();
         }
 
-        ov65_0223500C(param0, v1);
+        WiFiMenuApp_SetBoardBusyFlag(param0, v1);
     }
 
     Window_EraseStandardFrame(&param0->unk_380, 0);
@@ -3485,18 +3485,18 @@ static int ov65_02231440(UnkStruct_ov65_0222EBE0 *param0, int param1)
 static const struct {
     u32 unk_00;
     u32 unk_04;
-} Unk_ov65_02238968[] = {
+} sWiFiMenuAppFriendActionEntries[] = {
     { 0x27, (u32)1 },
     { 0x29, (u32)0xfffffffe }
 };
 
-static const ListMenuTemplate Unk_ov65_02238A90 = {
+static const ListMenuTemplate sWiFiMenuAppFriendActionListTemplate = {
     NULL,
-    ov65_0222FED8,
+    WiFiMenuApp_ListMenuSoundCallback,
     NULL,
     NULL,
-    NELEMS(Unk_ov65_02238968),
-    NELEMS(Unk_ov65_02238968),
+    NELEMS(sWiFiMenuAppFriendActionEntries),
+    NELEMS(sWiFiMenuAppFriendActionEntries),
     0x0,
     0x8,
     0x0,
@@ -3512,39 +3512,39 @@ static const ListMenuTemplate Unk_ov65_02238A90 = {
     NULL
 };
 
-static int ov65_022315A4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StatePrepareFriendAction(WiFiMenuApp *param0, int param1)
 {
     int v0;
     u16 v1, v2;
     WFCTrainerInfo *v3;
-    UnkStruct_ov65_022354D8 *v4;
-    UnkStruct_ov65_022354D8 *v5;
+    WiFiMenuAppActor *v4;
+    WiFiMenuAppActor *v5;
     u32 v6;
 
-    v1 = ov65_02235254(&param0->unk_3EC);
-    v4 = ov65_0222E8D4(param0, 0);
+    v1 = WiFiMenuAppBoard_GetPlayerDirection(&param0->unk_3EC);
+    v4 = WiFiMenuApp_GetActorByIndex(param0, 0);
 
     GF_ASSERT(v4);
 
-    v5 = ov65_0222E8D4(param0, v1);
+    v5 = WiFiMenuApp_GetActorByIndex(param0, v1);
 
     if (v5 == NULL) {
-        ov65_02232DC0(param0, v1 - 1);
-        ov65_02232B58(param0, 16, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, v1 - 1);
+        WiFiMenuApp_ShowMessage(param0, 16, 0);
         param0->unk_3A8 = 29;
         return param1;
     }
 
-    v6 = ov65_022354E8(v4);
+    v6 = WiFiMenuAppBoard_GetActorOppositeDirection(v4);
 
-    ov65_022354F8(&param0->unk_3EC, v5, v6);
+    WiFiMenuAppBoard_SetActorAnim(&param0->unk_3EC, v5, v6);
 
-    v3 = ov65_02234FA8(param0, v1 - 1);
-    v2 = ov65_0222DD20(param0, v3);
+    v3 = WiFiMenuApp_GetFriendStatus(param0, v1 - 1);
+    v2 = WiFiMenuApp_GetAdjustedCommState(param0, v3);
 
     param0->unk_3DE = v2;
 
-    ov65_02232DC0(param0, v1 - 1);
+    WiFiMenuApp_SetFriendNameTemplate(param0, v1 - 1);
 
     if (v2 == 15) {
         v0 = 3;
@@ -3571,11 +3571,11 @@ static int ov65_022315A4(UnkStruct_ov65_0222EBE0 *param0, int param1)
         v0 = 6;
     } else if (v2 == 26) {
         v0 = 85;
-    } else if (ov65_0222DDD4(v2)) {
+    } else if (WiFiMenuApp_IsBattleTowerCommState(v2)) {
         v0 = 2;
     } else if (v2 == 8) {
         v0 = 82;
-    } else if (ov65_0222DE40(v2)) {
+    } else if (WiFiMenuApp_IsBattleModeCommState(v2)) {
         v0 = 81;
     } else if (v2 == 1) {
         v0 = 86;
@@ -3583,50 +3583,50 @@ static int ov65_022315A4(UnkStruct_ov65_0222EBE0 *param0, int param1)
         v0 = 7;
     }
 
-    ov65_02232B58(param0, v0, 0);
+    WiFiMenuApp_ShowMessage(param0, v0, 0);
     param0->unk_3A8 = 43;
 
     return param1;
 }
 
-static int ov65_022316F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateCreateFriendActionMenu(WiFiMenuApp *param0, int param1)
 {
-    UnkStruct_ov65_022354D8 *v0;
+    WiFiMenuAppActor *v0;
     u32 v1;
     int v2, v3;
     WFCTrainerInfo *v4;
 
     if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
-    v2 = ov65_02235254(&param0->unk_3EC);
-    v0 = ov65_0222E8D4(param0, v2);
-    v1 = ov65_02230140(param0);
+    v2 = WiFiMenuAppBoard_GetPlayerDirection(&param0->unk_3EC);
+    v0 = WiFiMenuApp_GetActorByIndex(param0, v2);
+    v1 = WiFiMenuApp_HandleNewClient(param0);
 
     if (0 != v1) {
-        ov65_0223556C(&param0->unk_3EC, v0);
-        ov65_02232DFC(param0);
+        WiFiMenuAppBoard_RestoreActorCallback(&param0->unk_3EC, v0);
+        WiFiMenuApp_ClearMessage(param0);
         param0->unk_3A8 = 19;
         return param1;
     }
 
     if (v0 == NULL) {
-        ov65_0223556C(&param0->unk_3EC, v0);
+        WiFiMenuAppBoard_RestoreActorCallback(&param0->unk_3EC, v0);
         ListMenu_Free(param0->unk_158, NULL, NULL);
-        ov65_02232DC0(param0, v2 - 1);
-        ov65_02232B58(param0, 16, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+        WiFiMenuApp_ShowMessage(param0, 16, 0);
         param0->unk_3A8 = 29;
         return param1;
     } else {
-        v4 = ov65_02234FA8(param0, v2 - 1);
-        v3 = ov65_0222DD20(param0, v4);
+        v4 = WiFiMenuApp_GetFriendStatus(param0, v2 - 1);
+        v3 = WiFiMenuApp_GetAdjustedCommState(param0, v4);
 
         if (param0->unk_3DE != v3) {
-            ov65_0223556C(&param0->unk_3EC, v0);
-            ov65_02232DC0(param0, v2 - 1);
-            ov65_02232B58(param0, 16, 0);
+            WiFiMenuAppBoard_RestoreActorCallback(&param0->unk_3EC, v0);
+            WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+            WiFiMenuApp_ShowMessage(param0, 16, 0);
             param0->unk_3A8 = 29;
             return param1;
         }
@@ -3642,11 +3642,11 @@ static int ov65_022316F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
         u16 v8, v9, v10;
         WFCTrainerInfo *v11;
 
-        v6 = NELEMS(Unk_ov65_02238968);
-        v7 = Unk_ov65_02238A90;
-        v8 = ov65_02235254(&param0->unk_3EC);
-        v11 = ov65_02234FA8(param0, v8 - 1);
-        v9 = ov65_0222DD20(param0, v11);
+        v6 = NELEMS(sWiFiMenuAppFriendActionEntries);
+        v7 = sWiFiMenuAppFriendActionListTemplate;
+        v8 = WiFiMenuAppBoard_GetPlayerDirection(&param0->unk_3EC);
+        v11 = WiFiMenuApp_GetFriendStatus(param0, v8 - 1);
+        v9 = WiFiMenuApp_GetAdjustedCommState(param0, v11);
         v10 = v11->voiceChatEnabled;
 
         param0->unk_3E0 = v10;
@@ -3655,25 +3655,25 @@ static int ov65_022316F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
         param0->unk_154 = StringList_New(v6, HEAP_ID_54);
         v5 = 0;
 
-        for (v5 = 0; v5 < NELEMS(Unk_ov65_02238968); v5++) {
+        for (v5 = 0; v5 < NELEMS(sWiFiMenuAppFriendActionEntries); v5++) {
             if (v5 == 0) {
-                if (ov65_0222DE68(v9) || (v9 == 0) || (v9 == 28) || (v9 >= 29)) {
+                if (WiFiMenuApp_IsSingleBattleCommState(v9) || (v9 == 0) || (v9 == 28) || (v9 >= 29)) {
                     v7.maxDisplay -= 1;
                     v7.count -= 1;
                     v6 -= 1;
                 } else if (v9 == 16) {
                     if (v10 == 2) {
-                        StringList_AddFromMessageBank(param0->unk_154, param0->unk_168, 36, Unk_ov65_02238968[v5].unk_04);
+                        StringList_AddFromMessageBank(param0->unk_154, param0->unk_168, 36, sWiFiMenuAppFriendActionEntries[v5].unk_04);
                     } else {
                         v7.maxDisplay -= 1;
                         v7.count -= 1;
                         v6 -= 1;
                     }
                 } else {
-                    StringList_AddFromMessageBank(param0->unk_154, param0->unk_168, Unk_ov65_02238968[v5].unk_00, Unk_ov65_02238968[v5].unk_04);
+                    StringList_AddFromMessageBank(param0->unk_154, param0->unk_168, sWiFiMenuAppFriendActionEntries[v5].unk_00, sWiFiMenuAppFriendActionEntries[v5].unk_04);
                 }
             } else {
-                StringList_AddFromMessageBank(param0->unk_154, param0->unk_168, Unk_ov65_02238968[v5].unk_00, Unk_ov65_02238968[v5].unk_04);
+                StringList_AddFromMessageBank(param0->unk_154, param0->unk_168, sWiFiMenuAppFriendActionEntries[v5].unk_00, sWiFiMenuAppFriendActionEntries[v5].unk_04);
             }
         }
 
@@ -3692,7 +3692,7 @@ static int ov65_022316F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static BOOL ov65_02231978(WFCTrainerInfo *param0)
+static BOOL WiFiMenuApp_IsPartyValidForWifi(WFCTrainerInfo *param0)
 {
     int v0;
 
@@ -3713,7 +3713,7 @@ static BOOL ov65_02231978(WFCTrainerInfo *param0)
     return 1;
 }
 
-static u32 ov65_022319B8(UnkStruct_ov65_0222EBE0 *param0)
+static u32 WiFiMenuApp_GetPoffinAvailability(WiFiMenuApp *param0)
 {
     if (!Bag_HasItemsInPocket(SaveData_GetBag(param0->saveData), POCKET_BERRIES)) {
         return 1;
@@ -3730,13 +3730,13 @@ static u32 ov65_022319B8(UnkStruct_ov65_0222EBE0 *param0)
     return 0;
 }
 
-static void ov65_02231A0C(void)
+static void WiFiMenuApp_PlayLobbyBgm(void)
 {
     u32 bgmID;
 
     NintendoWFC_SetVoiceChatEnabled(0);
 
-    if (ov65_02231A54() == 0) {
+    if (WiFiMenuApp_IsLobbyBgmPlaying() == 0) {
         if (IsNight() == FALSE) {
             bgmID = SEQ_PC_01_sseq;
         } else {
@@ -3750,7 +3750,7 @@ static void ov65_02231A0C(void)
     }
 }
 
-static BOOL ov65_02231A54(void)
+static BOOL WiFiMenuApp_IsLobbyBgmPlaying(void)
 {
     u32 v0 = Sound_GetCurrentBGM();
 
@@ -3761,7 +3761,7 @@ static BOOL ov65_02231A54(void)
     return 1;
 }
 
-static void ov65_02231A74(UnkStruct_ov65_0222EBE0 *param0, u32 unused)
+static void WiFiMenuApp_SaveWifiClubJournalEvent(WiFiMenuApp *param0, u32 unused)
 {
     JournalEntry *journalEntry = SaveData_GetJournal(param0->saveData);
     void *journalEntryOnlineEvent = JournalEntry_CreateEventMisc(54, ONLINE_EVENT_WIFI_CLUB);
@@ -3769,24 +3769,24 @@ static void ov65_02231A74(UnkStruct_ov65_0222EBE0 *param0, u32 unused)
     JournalEntry_SaveData(journalEntry, journalEntryOnlineEvent, JOURNAL_ONLINE_EVENT);
 }
 
-static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessFriendAction(WiFiMenuApp *param0, int param1)
 {
     u32 v0;
     int v1, v2, v3 = 0, v4;
     u16 v5;
     int v6;
-    UnkStruct_ov65_022354D8 *v7;
+    WiFiMenuAppActor *v7;
     WFCTrainerInfo *v8;
 
     v0 = ListMenu_ProcessInput(param0->unk_158);
-    v6 = ov65_02230140(param0);
+    v6 = WiFiMenuApp_HandleNewClient(param0);
 
     if (0 != v6) {
         v0 = 0xfffffffe;
     }
 
-    v2 = ov65_02235254(&param0->unk_3EC);
-    v7 = ov65_0222E8D4(param0, v2);
+    v2 = WiFiMenuAppBoard_GetPlayerDirection(&param0->unk_3EC);
+    v7 = WiFiMenuApp_GetActorByIndex(param0, v2);
 
     if (CommManager_CheckWifiError()) {
         Window_EraseStandardFrame(&param0->unk_380, 0);
@@ -3795,10 +3795,10 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
         StringList_Free(param0->unk_154);
 
         if (v7 != NULL) {
-            ov65_0223556C(&param0->unk_3EC, v7);
+            WiFiMenuAppBoard_RestoreActorCallback(&param0->unk_3EC, v7);
         }
 
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
         return param1;
     }
 
@@ -3806,19 +3806,19 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
     case 0xffffffff:
         if (v7 == NULL) {
             ListMenu_Free(param0->unk_158, NULL, NULL);
-            ov65_02232DC0(param0, v2 - 1);
-            ov65_02232B58(param0, 16, 0);
+            WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+            WiFiMenuApp_ShowMessage(param0, 16, 0);
             param0->unk_3A8 = 29;
             v3 = 1;
             break;
         } else {
-            v8 = ov65_02234FA8(param0, v2 - 1);
-            v1 = ov65_0222DD20(param0, v8);
+            v8 = WiFiMenuApp_GetFriendStatus(param0, v2 - 1);
+            v1 = WiFiMenuApp_GetAdjustedCommState(param0, v8);
             v4 = v8->voiceChatEnabled;
 
-            if ((param0->unk_3DE != v1) || ((ov65_0222DD64(v1) == 0) && (param0->unk_3E0 != v4))) {
-                ov65_02232DC0(param0, v2 - 1);
-                ov65_02232B58(param0, 16, 0);
+            if ((param0->unk_3DE != v1) || ((WiFiMenuApp_IsWifiClubCommState(v1) == 0) && (param0->unk_3E0 != v4))) {
+                WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+                WiFiMenuApp_ShowMessage(param0, 16, 0);
                 param0->unk_3A8 = 29;
                 v3 = 1;
                 break;
@@ -3839,34 +3839,34 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
             param0->unk_3E2 = v2;
 
             if (v2 != 0) {
-                int v9 = ov65_0222DF88(param0);
-                int v10 = ov65_022319B8(param0);
+                int v9 = WiFiMenuApp_GetUsablePartyCount(param0);
+                int v10 = WiFiMenuApp_GetPoffinAvailability(param0);
 
-                v8 = ov65_02234FA8(param0, v2 - 1);
-                v1 = ov65_0222DD20(param0, v8);
+                v8 = WiFiMenuApp_GetFriendStatus(param0, v2 - 1);
+                v1 = WiFiMenuApp_GetAdjustedCommState(param0, v8);
                 v4 = v8->voiceChatEnabled;
 
-                if ((param0->unk_3DE != v1) || ((ov65_0222DD64(v1) == 0) && (param0->unk_3E0 != v4))) {
-                    ov65_02232DC0(param0, v2 - 1);
-                    ov65_02232B58(param0, 16, 0);
+                if ((param0->unk_3DE != v1) || ((WiFiMenuApp_IsWifiClubCommState(v1) == 0) && (param0->unk_3E0 != v4))) {
+                    WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+                    WiFiMenuApp_ShowMessage(param0, 16, 0);
                     param0->unk_3A8 = 29;
                     v3 = 1;
                     break;
                 }
 
-                if (!ov65_02231978(v8)) {
-                    ov65_02232DC0(param0, v2 - 1);
-                    ov65_02232B58(param0, 16, 0);
+                if (!WiFiMenuApp_IsPartyValidForWifi(v8)) {
+                    WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+                    WiFiMenuApp_ShowMessage(param0, 16, 0);
                     param0->unk_3A8 = 29;
                     v3 = 1;
                     break;
                 }
 
-                if (ov65_0222DEB0(v1) && (2 > v9)) {
+                if (WiFiMenuApp_IsTowerCommState(v1) && (2 > v9)) {
                     if (15 == v1) {
-                        ov65_02232B58(param0, 89, 0);
+                        WiFiMenuApp_ShowMessage(param0, 89, 0);
                     } else {
-                        ov65_02232B58(param0, 103, 0);
+                        WiFiMenuApp_ShowMessage(param0, 103, 0);
                     }
 
                     param0->unk_3A8 = 29;
@@ -3876,11 +3876,11 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
                 if ((v1 == 19) && (v10 != 0)) {
                     if (v10 == 1) {
-                        ov65_02232B58(param0, 104, 0);
+                        WiFiMenuApp_ShowMessage(param0, 104, 0);
                     } else if (v10 == 3) {
-                        ov65_02232B58(param0, 106, 0);
+                        WiFiMenuApp_ShowMessage(param0, 106, 0);
                     } else {
-                        ov65_02232B58(param0, 105, 0);
+                        WiFiMenuApp_ShowMessage(param0, 105, 0);
                     }
 
                     param0->unk_3A8 = 29;
@@ -3888,15 +3888,15 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
                     break;
                 }
 
-                if (ov65_0222DD64(v1) == 0) {
+                if (WiFiMenuApp_IsWifiClubCommState(v1) == 0) {
                     if (v4 != param0->unk_04->ownStatus.voiceChatEnabled) {
                         if (v4) {
-                            ov65_02232B58(param0, 134, 0);
+                            WiFiMenuApp_ShowMessage(param0, 134, 0);
                         } else {
-                            ov65_02232B58(param0, 135, 0);
+                            WiFiMenuApp_ShowMessage(param0, 135, 0);
                         }
 
-                        ov65_02232E58(param0, ov65_0222DED4(v1));
+                        WiFiMenuApp_SetCommState(param0, WiFiMenuApp_GetPairedCommState(v1));
 
                         param0->unk_3A8 = 63;
                         v3 = 1;
@@ -3904,19 +3904,19 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
                     }
                 }
 
-                v1 = ov65_0222DED4(v1);
+                v1 = WiFiMenuApp_GetPairedCommState(v1);
 
                 if (29 == v1) {
                     break;
                 }
 
-                if (ov65_02234FC4(v2 - 1) == DWC_STATUS_MATCH_SC_SV) {
-                    if (ov65_02234FCC(param0, v2 - 1, v1)) {
+                if (WiFiMenuApp_GetFriendOnlineStatus(v2 - 1) == DWC_STATUS_MATCH_SC_SV) {
+                    if (WiFiMenuApp_StartWifiBattle(param0, v2 - 1, v1)) {
                         param0->unk_3A0 = (60 * 30);
-                        ov65_0222DFD4(v1);
-                        ov65_02232E58(param0, v1);
-                        ov65_02232DC0(param0, v2 - 1);
-                        ov65_02232B58(param0, 17, 0);
+                        WiFiMenuApp_SetCommStateForSelection(v1);
+                        WiFiMenuApp_SetCommState(param0, v1);
+                        WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+                        WiFiMenuApp_ShowMessage(param0, 17, 0);
                         GF_ASSERT(param0->unk_188 == NULL);
                         param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
 
@@ -3929,14 +3929,14 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
                         v3 = 1;
                     } else {
-                        ov65_02232DC0(param0, v2 - 1);
-                        ov65_02232B58(param0, 16, 0);
+                        WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+                        WiFiMenuApp_ShowMessage(param0, 16, 0);
                         param0->unk_3A8 = 29;
                         v3 = 1;
                     }
                 } else {
-                    ov65_02232DC0(param0, v2 - 1);
-                    ov65_02232B58(param0, 16, 0);
+                    WiFiMenuApp_SetFriendNameTemplate(param0, v2 - 1);
+                    WiFiMenuApp_ShowMessage(param0, 16, 0);
                     param0->unk_3A8 = 29;
                     v3 = 1;
                     break;
@@ -3950,7 +3950,7 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 
     if (v3 == 0) {
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
     }
 
     Window_EraseStandardFrame(&param0->unk_380, 0);
@@ -3959,7 +3959,7 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
     StringList_Free(param0->unk_154);
 
     if (v7 != NULL) {
-        ov65_0223556C(&param0->unk_3EC, v7);
+        WiFiMenuAppBoard_RestoreActorCallback(&param0->unk_3EC, v7);
     }
 
     if (param0->unk_3A8 == 19) {
@@ -3971,7 +3971,7 @@ static int ov65_02231A98(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02231E64(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitMatchSynchronize(WiFiMenuApp *param0, int param1)
 {
     int v0;
 
@@ -3980,34 +3980,34 @@ static int ov65_02231E64(UnkStruct_ov65_0222EBE0 *param0, int param1)
     if (param0->unk_3A0 < 0) {
         param0->unk_3A8 = 70;
     } else if (CommManager_GetMatchmakingState() == 3) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_GetMatchmakingState() == 5) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 15, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 15, 0);
         param0->unk_3A8 = 27;
     } else if ((CommManager_GetMatchmakingState() == 4) || (CommManager_GetDisconnectedWifi())) {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else if (CommManager_GetMatchmakingState() == 1) {
-        v0 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
+        v0 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
 
-        if (ov65_0222DD64(v0) == 0) {
+        if (WiFiMenuApp_IsWifiClubCommState(v0) == 0) {
             param0->unk_3A8 = 49;
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
             CommInfo_Init(param0->saveData, NULL);
             param0->unk_3BC = 30;
         } else if (CommSys_IsPlayerConnected(0) == 1) {
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
             CommInfo_Init(param0->saveData, NULL);
             CommManager_SetErrorHandling(0, 1);
-            ov65_0222DFD4(v0);
+            WiFiMenuApp_SetCommStateForSelection(v0);
 
-            param0->unk_3AC = ov65_0222DD94(v0);
+            param0->unk_3AC = WiFiMenuApp_GetWifiConnectionTypeFromState(v0);
 
             CommSys_SetRecvLimitEnabled(0);
             StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_54);
@@ -4016,8 +4016,8 @@ static int ov65_02231E64(UnkStruct_ov65_0222EBE0 *param0, int param1)
             param1 = 2;
         } else {
             if (CommSys_WifiConnected() == 1) {
-                ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-                ov65_02232B58(param0, 18, 0);
+                WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+                WiFiMenuApp_ShowMessage(param0, 18, 0);
                 param0->unk_3A8 = 27;
             }
         }
@@ -4026,52 +4026,52 @@ static int ov65_02231E64(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02231FE0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop4(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02231FE4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop5(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02231FE8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateEndWifiMatch(WiFiMenuApp *param0, int param1)
 {
-    ov65_02232F30(param0);
-    ov65_02232E58(param0, 16);
+    WiFiMenuApp_RestoreVoiceChat(param0);
+    WiFiMenuApp_SetCommState(param0, 16);
 
     CommManager_EndWifiMatch();
 
     param0->unk_3D0 = -1;
     param0->unk_3A8 = 19;
 
-    ov65_0223503C(param0);
-    ov65_02232DFC(param0);
+    WiFiMenuApp_ClearBoardBusyFlag(param0);
+    WiFiMenuApp_ClearMessage(param0);
 
     return param1;
 }
 
-static int ov65_02232020(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop6(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02232024(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateNoop7(WiFiMenuApp *param0, int param1)
 {
     return param1;
 }
 
-static int ov65_02232028(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateEvaluateMatchState(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1;
     WFCTrainerInfo *v2;
     int v3;
 
-    v2 = ov65_02234FA8(param0, NintendoWFC_GetHostFriendIdx());
-    v0 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
-    v1 = ov65_0222DD20(param0, v2);
+    v2 = WiFiMenuApp_GetFriendStatus(param0, NintendoWFC_GetHostFriendIdx());
+    v0 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
+    v1 = WiFiMenuApp_GetAdjustedCommState(param0, v2);
     v3 = param0->unk_04->ownStatus.voiceChatEnabled;
 
     if ((v0 == 12) && (v1 == 5)) {
@@ -4102,16 +4102,16 @@ static int ov65_02232028(UnkStruct_ov65_0222EBE0 *param0, int param1)
         param0->unk_3A8 = 22;
         return param1;
     } else {
-        ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 29;
-        ov65_02232E58(param0, 16);
+        WiFiMenuApp_SetCommState(param0, 16);
         CommManager_EndWifiMatch();
         return param1;
     }
 
-    ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-    ov65_02232B58(param0, 11, 0);
+    WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+    WiFiMenuApp_ShowMessage(param0, 11, 0);
 
     CommInfo_Init(param0->saveData, NULL);
 
@@ -4121,14 +4121,14 @@ static int ov65_02232028(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static BOOL ov65_022321A8(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_CheckMatchAborted(WiFiMenuApp *param0)
 {
     if (CommManager_GetMatchmakingState() >= 3) {
-        ov65_02232DC0(param0, param0->unk_3D0);
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_SetFriendNameTemplate(param0, param0->unk_3D0);
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         param0->unk_3A8 = 27;
     } else if (CommManager_CheckWifiError()) {
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else {
         return 0;
     }
@@ -4137,19 +4137,19 @@ static BOOL ov65_022321A8(UnkStruct_ov65_0222EBE0 *param0)
     return 1;
 }
 
-static int ov65_022321F4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateSyncWifiReady(WiFiMenuApp *param0, int param1)
 {
     if ((CommManager_GetMatchmakingState() >= 4) || CommManager_GetDisconnectedWifi() || !CommSys_IsPlayerConnected(0)) {
         if (param0->unk_3E4) {
-            ov65_02232B58(param0, 101, 0);
+            WiFiMenuApp_ShowMessage(param0, 101, 0);
         } else {
-            ov65_02232DC0(param0, param0->unk_3D0);
-            ov65_02232B58(param0, 18, 0);
+            WiFiMenuApp_SetFriendNameTemplate(param0, param0->unk_3D0);
+            WiFiMenuApp_ShowMessage(param0, 18, 0);
         }
 
         param0->unk_3E4 = 0;
         param0->unk_3A8 = 27;
-    } else if (ov65_022321A8(param0)) {
+    } else if (WiFiMenuApp_CheckMatchAborted(param0)) {
         (void)0;
     } else {
         if (param0->unk_3BC == 0) {
@@ -4172,12 +4172,12 @@ static int ov65_022321F4(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0223229C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateSendTempData(WiFiMenuApp *param0, int param1)
 {
-    if (ov65_022321A8(param0)) {
+    if (WiFiMenuApp_CheckMatchAborted(param0)) {
         (void)0;
     } else if (CommTiming_IsSyncState(14)) {
-        u16 v0 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
+        u16 v0 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
         BOOL v1;
 
         v1 = CommTool_SendTempData(CommSys_CurNetId(), &v0);
@@ -4190,7 +4190,7 @@ static int ov65_0223229C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_022322DC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateReceiveTempData(WiFiMenuApp *param0, int param1)
 {
     const u16 *v0;
     int v1 = 0;
@@ -4203,18 +4203,18 @@ static int ov65_022322DC(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     v0 = CommTool_GetReceivedTempData(v1);
 
-    if (ov65_022321A8(param0)) {
+    if (WiFiMenuApp_CheckMatchAborted(param0)) {
         (void)0;
     } else if (v0 != NULL) {
-        u16 v2 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
-        u16 v3 = ov65_0222DED4(v2);
+        u16 v2 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
+        u16 v3 = WiFiMenuApp_GetPairedCommState(v2);
 
         if ((v0[0] == v3) || (v0[0] == v2)) {
             CommTiming_StartSync(15);
             param0->unk_3A8 = 52;
         } else {
-            ov65_02232DC0(param0, NintendoWFC_GetHostFriendIdx());
-            ov65_02232B58(param0, 16, 0);
+            WiFiMenuApp_SetFriendNameTemplate(param0, NintendoWFC_GetHostFriendIdx());
+            WiFiMenuApp_ShowMessage(param0, 16, 0);
             param0->unk_3A8 = 27;
         }
     }
@@ -4222,11 +4222,11 @@ static int ov65_022322DC(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02232358(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateSendPlayerInfo(WiFiMenuApp *param0, int param1)
 {
     int v0;
 
-    if (ov65_022321A8(param0)) {
+    if (WiFiMenuApp_CheckMatchAborted(param0)) {
         (void)0;
     } else if (CommTiming_IsSyncState(15)) {
         CommInfo_SendPlayerInfo();
@@ -4239,7 +4239,7 @@ static int ov65_02232358(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static BOOL ov65_02232390(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_IsTextIdle(WiFiMenuApp *param0)
 {
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
         return 1;
@@ -4252,20 +4252,20 @@ static BOOL ov65_02232390(UnkStruct_ov65_0222EBE0 *param0)
     return 0;
 }
 
-static int ov65_022323C0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateFinishSync(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1[8];
     WFCTrainerInfo *v2;
 
-    if (ov65_022321A8(param0)) {
+    if (WiFiMenuApp_CheckMatchAborted(param0)) {
         (void)0;
-    } else if (CommTiming_IsSyncState(18) && (ov65_02232390(param0) == 1)) {
+    } else if (CommTiming_IsSyncState(18) && (WiFiMenuApp_IsTextIdle(param0) == 1)) {
         WiFiFriend_UpdateConnectedPlayers(param0->saveData, v1, HEAP_ID_54);
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
 
-        v2 = ov65_02234FA8(param0, NintendoWFC_GetHostFriendIdx());
-        v0 = ov65_0222DD20(param0, v2);
+        v2 = WiFiMenuApp_GetFriendStatus(param0, NintendoWFC_GetHostFriendIdx());
+        v0 = WiFiMenuApp_GetAdjustedCommState(param0, v2);
 
         if ((v0 == 15) || (v0 == 8)) {
             v0 = 8;
@@ -4305,8 +4305,8 @@ static int ov65_022323C0(UnkStruct_ov65_0222EBE0 *param0, int param1)
             param0->unk_3AC = 6;
         }
 
-        ov65_02231A74(param0, NintendoWFC_GetHostFriendIdx());
-        ov65_02232E58(param0, v0);
+        WiFiMenuApp_SaveWifiClubJournalEvent(param0, NintendoWFC_GetHostFriendIdx());
+        WiFiMenuApp_SetCommState(param0, v0);
 
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_54);
 
@@ -4316,17 +4316,17 @@ static int ov65_022323C0(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02232530(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateReturnFromMatch(WiFiMenuApp *param0, int param1)
 {
     Bg_ClearTilemap(param0->unk_15C, BG_LAYER_MAIN_3);
 
     param0->unk_3C4 = 0;
-    param0->unk_3A8 = ov65_0222EBB8();
+    param0->unk_3A8 = WiFiMenuApp_StartFadeOutAndPlayBgm();
 
     return param1;
 }
 
-static int ov65_02232558(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWait55(WiFiMenuApp *param0, int param1)
 {
     u16 v0, v1;
     int v2, v3, v4, v5;
@@ -4336,13 +4336,13 @@ static int ov65_02232558(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02232564(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitBeforeExit(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
         return param1;
     }
 
-    if (0 != ov65_0223012C(param0)) {
+    if (0 != WiFiMenuApp_IsMatchmakingStarted(param0)) {
         param0->unk_3A8 = 56;
     }
 
@@ -4353,28 +4353,28 @@ static int ov65_02232564(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_022325AC(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateReturnToBoard(WiFiMenuApp *param0, int param1)
 {
     int v0, v1;
     int v2 = 0;
 
-    ov65_02232DFC(param0);
+    WiFiMenuApp_ClearMessage(param0);
     param0->unk_3A8 = 19;
 
     return param1;
 }
 
-static int ov65_022325C4(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmQuit(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_0223894C, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate2, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 58;
     }
 
     return param1;
 }
 
-static int ov65_02232608(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessQuit(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
@@ -4383,7 +4383,7 @@ static int ov65_02232608(UnkStruct_ov65_0222EBE0 *param0, int param1)
         return param1;
     }
 
-    if (0 != ov65_02230140(param0)) {
+    if (0 != WiFiMenuApp_HandleNewClient(param0)) {
         if (v1 == 0xffffffff) {
             Menu_DestroyForExit(param0->unk_184, 54);
         }
@@ -4394,19 +4394,19 @@ static int ov65_02232608(UnkStruct_ov65_0222EBE0 *param0, int param1)
     if (v1 == 0xffffffff) {
         return param1;
     } else if (v1 == 0) {
-        ov65_02232B58(param0, 26, 1);
+        WiFiMenuApp_ShowMessage(param0, 26, 1);
         param0->unk_3A8 = 59;
         param0->unk_3BC = 1;
     } else {
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
         param0->unk_3A8 = 19;
-        ov65_0223503C(param0);
+        WiFiMenuApp_ClearBoardBusyFlag(param0);
     }
 
     return param1;
 }
 
-static int ov65_02232698(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateLogoutAndCompact(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
         return param1;
@@ -4419,7 +4419,7 @@ static int ov65_02232698(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     if (!CommManager_IsInitialized()) {
         WiFiList_CompactFriendList(param0->unk_00);
-        ov65_02232B58(param0, 27, 1);
+        WiFiMenuApp_ShowMessage(param0, 27, 1);
 
         param0->unk_3A8 = 60;
         param0->unk_3BC = 30;
@@ -4428,7 +4428,7 @@ static int ov65_02232698(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_022326F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitExit(WiFiMenuApp *param0, int param1)
 {
     if (Text_IsPrinterActive(param0->unk_180) != 0) {
         return param1;
@@ -4439,13 +4439,13 @@ static int ov65_022326F0(UnkStruct_ov65_0222EBE0 *param0, int param1)
     if (param0->unk_3BC == 0) {
         param0->unk_3AC = 8;
         param0->unk_3A8 = 34;
-        ov65_02232DFC(param0);
+        WiFiMenuApp_ClearMessage(param0);
     }
 
     return param1;
 }
 
-static int ov65_02232734(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmSyncExit(WiFiMenuApp *param0, int param1)
 {
     if (CommTiming_IsSyncState(16) == 0) {
         return param1;
@@ -4454,14 +4454,14 @@ static int ov65_02232734(UnkStruct_ov65_0222EBE0 *param0, int param1)
     CommManager_SetErrorHandling(0, 1);
 
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_0223894C, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate2, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 62;
     }
 
     return param1;
 }
 
-static int ov65_0223278C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessSyncExit(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1;
@@ -4472,25 +4472,25 @@ static int ov65_0223278C(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     if (CommManager_IsLoginBattleWifi() || CommManager_GetDisconnectedWifi() || (CommManager_GetMatchmakingState() >= 3)) {
         Menu_DestroyForExit(param0->unk_184, 54);
-        ov65_02232B58(param0, 101, 0);
+        WiFiMenuApp_ShowMessage(param0, 101, 0);
         param0->unk_3A8 = 28;
     } else if (CommManager_CheckWifiError()) {
         Menu_DestroyForExit(param0->unk_184, 54);
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else {
         v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
 
         if (v1 == 0xffffffff) {
             return param1;
         } else if (v1 == 0) {
-            ov65_02232B58(param0, 138, 0);
+            WiFiMenuApp_ShowMessage(param0, 138, 0);
             GF_ASSERT(param0->unk_188 == NULL);
             param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
             param0->unk_3E4 = 1;
             param0->unk_3A8 = 49;
             param0->unk_3BC = 30;
         } else {
-            ov65_02232DFC(param0);
+            WiFiMenuApp_ClearMessage(param0);
             CommInfo_Delete();
             CommManager_EndBattleWifiMatch();
             param0->unk_3BC = 20;
@@ -4504,29 +4504,29 @@ static int ov65_0223278C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_0223288C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateConfirmFriendAction(WiFiMenuApp *param0, int param1)
 {
     {
         int v0, v1, v2;
-        UnkStruct_ov65_022354D8 *v3;
+        WiFiMenuAppActor *v3;
         WFCTrainerInfo *v4;
 
-        v1 = ov65_02235254(&param0->unk_3EC);
-        v3 = ov65_0222E8D4(param0, v1);
+        v1 = WiFiMenuAppBoard_GetPlayerDirection(&param0->unk_3EC);
+        v3 = WiFiMenuApp_GetActorByIndex(param0, v1);
 
         if (v3 == NULL) {
-            ov65_02232DC0(param0, v1 - 1);
-            ov65_02232B58(param0, 16, 0);
+            WiFiMenuApp_SetFriendNameTemplate(param0, v1 - 1);
+            WiFiMenuApp_ShowMessage(param0, 16, 0);
             param0->unk_3A8 = 29;
             return param1;
         } else {
-            v4 = ov65_02234FA8(param0, v1 - 1);
-            v0 = ov65_0222DD20(param0, v4);
+            v4 = WiFiMenuApp_GetFriendStatus(param0, v1 - 1);
+            v0 = WiFiMenuApp_GetAdjustedCommState(param0, v4);
             v2 = v4->voiceChatEnabled;
 
             if ((param0->unk_3DE != v0) || (param0->unk_3E0 != v2)) {
-                ov65_02232DC0(param0, v1 - 1);
-                ov65_02232B58(param0, 16, 0);
+                WiFiMenuApp_SetFriendNameTemplate(param0, v1 - 1);
+                WiFiMenuApp_ShowMessage(param0, 16, 0);
                 param0->unk_3A8 = 29;
                 return param1;
             }
@@ -4534,41 +4534,41 @@ static int ov65_0223288C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 
     if (Text_IsPrinterActive(param0->unk_180) == 0) {
-        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &Unk_ov65_0223894C, (512 - (18 + 12)) - 9, 11, 54);
+        param0->unk_184 = Menu_MakeYesNoChoice(param0->unk_15C, &sWiFiMenuAppYesNoWindowTemplate2, (512 - (18 + 12)) - 9, 11, 54);
         param0->unk_3A8 = 64;
     }
 
     return param1;
 }
 
-static int ov65_0223294C(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateProcessFriendActionConfirm(WiFiMenuApp *param0, int param1)
 {
     int v0;
     int v1, v2;
 
     {
         int v3, v4;
-        UnkStruct_ov65_022354D8 *v5;
+        WiFiMenuAppActor *v5;
         WFCTrainerInfo *v6;
 
-        v3 = ov65_02235254(&param0->unk_3EC);
-        v5 = ov65_0222E8D4(param0, v3);
+        v3 = WiFiMenuAppBoard_GetPlayerDirection(&param0->unk_3EC);
+        v5 = WiFiMenuApp_GetActorByIndex(param0, v3);
 
         if (v5 == NULL) {
             Menu_DestroyForExit(param0->unk_184, 54);
-            ov65_02232DC0(param0, v3 - 1);
-            ov65_02232B58(param0, 16, 0);
+            WiFiMenuApp_SetFriendNameTemplate(param0, v3 - 1);
+            WiFiMenuApp_ShowMessage(param0, 16, 0);
             param0->unk_3A8 = 29;
             return param1;
         } else {
-            v6 = ov65_02234FA8(param0, v3 - 1);
-            v2 = ov65_0222DD20(param0, v6);
+            v6 = WiFiMenuApp_GetFriendStatus(param0, v3 - 1);
+            v2 = WiFiMenuApp_GetAdjustedCommState(param0, v6);
             v4 = v6->voiceChatEnabled;
 
             if ((param0->unk_3DE != v2) || (param0->unk_3E0 != v4)) {
                 Menu_DestroyForExit(param0->unk_184, 54);
-                ov65_02232DC0(param0, v3 - 1);
-                ov65_02232B58(param0, 16, 0);
+                WiFiMenuApp_SetFriendNameTemplate(param0, v3 - 1);
+                WiFiMenuApp_ShowMessage(param0, 16, 0);
                 param0->unk_3A8 = 29;
                 return param1;
             }
@@ -4577,35 +4577,35 @@ static int ov65_0223294C(UnkStruct_ov65_0222EBE0 *param0, int param1)
 
     if (CommManager_GetMatchmakingState() >= 3) {
         Menu_DestroyForExit(param0->unk_184, 54);
-        ov65_02232B58(param0, 18, 0);
+        WiFiMenuApp_ShowMessage(param0, 18, 0);
         CommManager_EndWifiMatch();
         param0->unk_3A8 = 29;
         return param1;
     } else if (CommManager_CheckWifiError()) {
         Menu_DestroyForExit(param0->unk_184, 54);
-        ov65_0222F6EC(param0);
+        WiFiMenuApp_HandleWifiError(param0);
     } else {
         v1 = Menu_ProcessInputAndHandleExit(param0->unk_184, 54);
 
         if (v1 == 0xffffffff) {
             return param1;
         } else if (v1 == 0) {
-            v2 = ov65_0222DED4(param0->unk_3DE);
+            v2 = WiFiMenuApp_GetPairedCommState(param0->unk_3DE);
 
             if (29 == v2) {
                 (void)0;
-            } else if (ov65_02234FC4(param0->unk_3E2 - 1) == DWC_STATUS_MATCH_SC_SV) {
-                ov65_02232EDC(param0);
+            } else if (WiFiMenuApp_GetFriendOnlineStatus(param0->unk_3E2 - 1) == DWC_STATUS_MATCH_SC_SV) {
+                WiFiMenuApp_ToggleVoiceChat(param0);
 
-                if (ov65_02234FCC(param0, param0->unk_3E2 - 1, v2)) {
+                if (WiFiMenuApp_StartWifiBattle(param0, param0->unk_3E2 - 1, v2)) {
                     param0->unk_3A0 = (60 * 30);
-                    ov65_0222DFD4(v2);
+                    WiFiMenuApp_SetCommStateForSelection(v2);
 
                     CommSys_SetRecvLimitEnabled(0);
 
-                    ov65_02232E58(param0, v2);
-                    ov65_02232DC0(param0, param0->unk_3E2 - 1);
-                    ov65_02232B58(param0, 17, 0);
+                    WiFiMenuApp_SetCommState(param0, v2);
+                    WiFiMenuApp_SetFriendNameTemplate(param0, param0->unk_3E2 - 1);
+                    WiFiMenuApp_ShowMessage(param0, 17, 0);
 
                     GF_ASSERT(param0->unk_188 == NULL);
                     param0->unk_188 = Window_AddWaitDial(&param0->unk_330, 512 - (18 + 12));
@@ -4623,10 +4623,10 @@ static int ov65_0223294C(UnkStruct_ov65_0222EBE0 *param0, int param1)
             }
         }
 
-        ov65_02232DFC(param0);
-        ov65_02232E58(param0, 16);
-        ov65_02232F30(param0);
-        ov65_0222FD70(param0);
+        WiFiMenuApp_ClearMessage(param0);
+        WiFiMenuApp_SetCommState(param0, 16);
+        WiFiMenuApp_RestoreVoiceChat(param0);
+        WiFiMenuApp_DrawPlayerStatusWindow(param0);
 
         param0->unk_3A8 = 19;
 
@@ -4636,7 +4636,7 @@ static int ov65_0223294C(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static int ov65_02232B28(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static int WiFiMenuApp_StateWaitCommInit(WiFiMenuApp *param0, int param1)
 {
     if (!CommManager_IsInitialized()) {
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_54);
@@ -4646,11 +4646,11 @@ static int ov65_02232B28(UnkStruct_ov65_0222EBE0 *param0, int param1)
     return param1;
 }
 
-static void ov65_02232B58(UnkStruct_ov65_0222EBE0 *param0, int param1, BOOL param2)
+static void WiFiMenuApp_ShowMessage(WiFiMenuApp *param0, int param1, BOOL param2)
 {
     u8 v0 = Options_TextFrameDelay(SaveData_GetOptions(param0->saveData));
 
-    ov65_02232F50(param0);
+    WiFiMenuApp_DestroyWaitDial(param0);
 
     if (Window_IsInUse(&param0->unk_360)) {
         Window_EraseMessageBox(&param0->unk_360, 0);
@@ -4688,9 +4688,9 @@ static void ov65_02232B58(UnkStruct_ov65_0222EBE0 *param0, int param1, BOOL para
     Window_ScheduleCopyToVRAM(&param0->unk_330);
 }
 
-static void ov65_02232CA8(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static void WiFiMenuApp_ShowMessageBox(WiFiMenuApp *param0, int param1)
 {
-    ov65_02232F50(param0);
+    WiFiMenuApp_DestroyWaitDial(param0);
 
     if (Window_IsInUse(&param0->unk_360)) {
         Window_EraseMessageBox(&param0->unk_360, 0);
@@ -4720,7 +4720,7 @@ static void ov65_02232CA8(UnkStruct_ov65_0222EBE0 *param0, int param1)
     Window_ScheduleCopyToVRAM(&param0->unk_360);
 }
 
-static void ov65_02232DC0(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static void WiFiMenuApp_SetFriendNameTemplate(WiFiMenuApp *param0, int param1)
 {
     if (param1 != -1) {
         TrainerInfo *v0 = TrainerInfo_New(HEAP_ID_54);
@@ -4731,9 +4731,9 @@ static void ov65_02232DC0(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 }
 
-static void ov65_02232DFC(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_ClearMessage(WiFiMenuApp *param0)
 {
-    ov65_02232F50(param0);
+    WiFiMenuApp_DestroyWaitDial(param0);
 
     if (param0->unk_180 != 8) {
         if (Text_IsPrinterActive(param0->unk_180) != 0) {
@@ -4748,17 +4748,17 @@ static void ov65_02232DFC(UnkStruct_ov65_0222EBE0 *param0)
     }
 }
 
-static void ov65_02232E58(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static void WiFiMenuApp_SetCommState(WiFiMenuApp *param0, int param1)
 {
     if (param0->unk_04 == NULL) {
         return;
     }
 
-    ov65_02232E70(param0, param1);
+    WiFiMenuApp_UpdateCommState(param0, param1);
     NintendoWFC_SetStatusData(&(param0->unk_04->ownStatus), sizeof(WFCTrainerInfo));
 }
 
-static void ov65_02232E70(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static void WiFiMenuApp_UpdateCommState(WiFiMenuApp *param0, int param1)
 {
     int v0;
 
@@ -4766,28 +4766,28 @@ static void ov65_02232E70(UnkStruct_ov65_0222EBE0 *param0, int param1)
         return;
     }
 
-    v0 = ov65_0222DD20(param0, &param0->unk_04->ownStatus);
+    v0 = WiFiMenuApp_GetAdjustedCommState(param0, &param0->unk_04->ownStatus);
 
     if (v0 != param1) {
         param0->unk_04->ownStatus.commState = param1;
 
-        if (ov65_0222DE40(param1) || (param1 == 8) || (param1 == 20) || (param1 == 22) || (param1 == 24) || (param1 == 26) || (param1 == 18)) {
+        if (WiFiMenuApp_IsBattleModeCommState(param1) || (param1 == 8) || (param1 == 20) || (param1 == 22) || (param1 == 24) || (param1 == 26) || (param1 == 18)) {
             (void)0;
         } else if (param1 == 1) {
             Sound_FadeOutBGM(0, 30);
         } else if (param1 == 16) {
             NintendoWFC_SetVoiceChatEnabled(0);
 
-            if (ov65_02231A54() == 1) {
+            if (WiFiMenuApp_IsLobbyBgmPlaying() == 1) {
                 Sound_FadeInBGM(120, 30, BGM_FADE_IN_TYPE_FROM_CURRENT);
             }
         }
     }
 
-    ov65_0222FD70(param0);
+    WiFiMenuApp_DrawPlayerStatusWindow(param0);
 }
 
-static BOOL ov65_02232EDC(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_ToggleVoiceChat(WiFiMenuApp *param0)
 {
     param0->unk_04->ownStatus.voiceChatEnabled = 1 - param0->unk_04->ownStatus.voiceChatEnabled;
 
@@ -4795,7 +4795,7 @@ static BOOL ov65_02232EDC(UnkStruct_ov65_0222EBE0 *param0)
     return param0->unk_04->ownStatus.voiceChatEnabled;
 }
 
-static BOOL ov65_02232F00(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_ToggleVoiceChatBackup(WiFiMenuApp *param0)
 {
     param0->unk_04->ownStatus.voiceChatEnabledBackup = 1 - param0->unk_04->ownStatus.voiceChatEnabledBackup;
     param0->unk_04->ownStatus.voiceChatEnabled = param0->unk_04->ownStatus.voiceChatEnabledBackup;
@@ -4804,7 +4804,7 @@ static BOOL ov65_02232F00(UnkStruct_ov65_0222EBE0 *param0)
     return param0->unk_04->ownStatus.voiceChatEnabledBackup;
 }
 
-static BOOL ov65_02232F30(UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_RestoreVoiceChat(WiFiMenuApp *param0)
 {
     param0->unk_04->ownStatus.voiceChatEnabled = param0->unk_04->ownStatus.voiceChatEnabledBackup;
 
@@ -4812,7 +4812,7 @@ static BOOL ov65_02232F30(UnkStruct_ov65_0222EBE0 *param0)
     return param0->unk_04->ownStatus.voiceChatEnabledBackup;
 }
 
-static void ov65_02232F50(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_DestroyWaitDial(WiFiMenuApp *param0)
 {
     if (param0->unk_188) {
         DestroyWaitDialTaskOnly(param0->unk_188);
@@ -4826,21 +4826,21 @@ static void ov65_02232F50(UnkStruct_ov65_0222EBE0 *param0)
     }
 }
 
-static void ov65_02232F90(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_ResetBoardAndRedraw(WiFiMenuApp *param0, enum HeapID heapID)
 {
-    ov65_0223324C(param0);
-    ov65_02235370(&param0->unk_3EC);
-    ov65_022336A4(param0, heapID);
+    WiFiMenuApp_ResetTouchScreenSelection(param0);
+    WiFiMenuAppBoard_ResetActors(&param0->unk_3EC);
+    WiFiMenuApp_RedrawTouchScreen(param0, heapID);
 }
 
-static void ov65_02232FB0(UnkStruct_ov65_0222EBE0 *param0, u32 param1, enum HeapID heapID)
+static void WiFiMenuApp_ResetIfCurrentActor(WiFiMenuApp *param0, u32 param1, enum HeapID heapID)
 {
-    if (ov65_02233240(param0) == param1) {
-        ov65_02232F90(param0, heapID);
+    if (WiFiMenuApp_GetTouchScreenSelection(param0) == param1) {
+        WiFiMenuApp_ResetBoardAndRedraw(param0, heapID);
     }
 }
 
-static BOOL ov65_02232FCC(const UnkStruct_ov65_0222EBE0 *param0)
+static BOOL WiFiMenuApp_IsTouchScreenActive(const WiFiMenuApp *param0)
 {
     if (param0->unk_BE0.unk_4C == NULL) {
         return 0;
@@ -4849,7 +4849,7 @@ static BOOL ov65_02232FCC(const UnkStruct_ov65_0222EBE0 *param0)
     return 1;
 }
 
-static void ov65_02232FE0(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum HeapID heapID)
+static void WiFiMenuApp_InitTouchScreen(WiFiMenuApp *param0, NARC *param1, enum HeapID heapID)
 {
     static const TouchScreenHitTable v0[8] = {
         { 0, 47, 0, 119 },
@@ -4862,31 +4862,31 @@ static void ov65_02232FE0(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum He
         { 144, 191, 128, 255 }
     };
 
-    memset(&param0->unk_BE0, 0, sizeof(UnkStruct_ov65_02234E50));
+    memset(&param0->unk_BE0, 0, sizeof(WiFiMenuAppTouchScreen));
 
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG0, 1);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG1, 1);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 1);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 0);
 
-    param0->unk_BE0.unk_4C = TouchScreenActions_RegisterHandler(v0, 8, ov65_022332C4, param0, heapID);
+    param0->unk_BE0.unk_4C = TouchScreenActions_RegisterHandler(v0, 8, WiFiMenuApp_TouchButtonCallback, param0, heapID);
     param0->unk_BE0.unk_00 = StringTemplate_Default(heapID);
 
-    ov65_022332FC(param0, param1, heapID);
+    WiFiMenuApp_LoadTouchScreenGraphics(param0, param1, heapID);
 
     param0->unk_BE0.unk_78 = 1;
 
-    ov65_022336D4(param0);
-    ov65_0223370C(param0);
+    WiFiMenuApp_UpdateTouchScreenPalette(param0);
+    WiFiMenuApp_DrawFriendList(param0);
 }
 
-static void ov65_02233068(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_FreeTouchScreen(WiFiMenuApp *param0)
 {
-    if (ov65_02232FCC(param0) == 0) {
+    if (WiFiMenuApp_IsTouchScreenActive(param0) == 0) {
         return;
     }
 
-    ov65_02233570(param0);
+    WiFiMenuApp_FreeTouchScreenGraphics(param0);
 
     TouchScreenActions_Free(param0->unk_BE0.unk_4C);
     param0->unk_BE0.unk_4C = NULL;
@@ -4900,14 +4900,14 @@ static void ov65_02233068(UnkStruct_ov65_0222EBE0 *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 0);
 }
 
-static u32 ov65_022330C0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static u32 WiFiMenuApp_UpdateTouchScreen(WiFiMenuApp *param0, enum HeapID heapID)
 {
     u32 v0, v1;
     u32 v2;
     BOOL v3;
 
-    v0 = ov65_02235270(&param0->unk_3EC);
-    v1 = ov65_022352CC(&param0->unk_3EC);
+    v0 = WiFiMenuAppBoard_GetPlayerTileFlags(&param0->unk_3EC);
+    v1 = WiFiMenuAppBoard_GetTileFlagsBelowPlayer(&param0->unk_3EC);
 
     if ((v1 >= 3) && (v1 <= 6)) {
         v0 = v1;
@@ -4918,7 +4918,7 @@ static u32 ov65_022330C0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
             param0->unk_BE0.unk_70 = (v0 - 3);
 
             Sound_PlayEffect(SEQ_SE_DP_SELECT5_sseq);
-            ov65_022336D4(param0);
+            WiFiMenuApp_UpdateTouchScreenPalette(param0);
 
             param0->unk_BE0.unk_75 = 1;
             param0->unk_BE0.unk_78 = 1;
@@ -4929,23 +4929,23 @@ static u32 ov65_022330C0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         param0->unk_BE0.unk_73 = 2;
         param0->unk_BE0.unk_74 = 0;
 
-        ov65_02233874(param0, heapID);
-        ov65_02234D6C(param0);
+        WiFiMenuApp_DrawFriendDetail(param0, heapID);
+        WiFiMenuApp_ShowTouchButtons(param0);
     }
 
     if (param0->unk_BE0.unk_73 == 0) {
         TouchScreenActions_HandleAction(param0->unk_BE0.unk_4C);
-        ov65_02234A10(param0);
+        WiFiMenuApp_UpdateTouchScreenAnim(param0);
 
         if (param0->unk_BE0.unk_75 == 1) {
-            ov65_0223370C(param0);
+            WiFiMenuApp_DrawFriendList(param0);
             param0->unk_BE0.unk_75 = 0;
         }
     }
 
     if ((param0->unk_BE0.unk_73 == 2) || (param0->unk_BE0.unk_73 == 3)) {
-        v2 = ov65_02234DD8(param0);
-        v3 = ov65_02233208(param0, v2);
+        v2 = WiFiMenuApp_UpdateTouchButtons(param0);
+        v3 = WiFiMenuApp_IsTouchSelectionInput(param0, v2);
 
         if (v3 == 1) {
             param0->unk_BE0.unk_77 = param0->unk_BE0.unk_71;
@@ -4955,13 +4955,13 @@ static u32 ov65_022330C0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
             param0->unk_BE0.unk_78 = 1;
             param0->unk_BE0.unk_73 = 0;
 
-            ov65_02234DA0(param0);
+            WiFiMenuApp_HideTouchButtons(param0);
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
         } else {
             if (v2 != 0) {
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-                ov65_0223327C(param0, v2);
-                ov65_02233874(param0, heapID);
+                WiFiMenuApp_ChangeTouchScreenPage(param0, v2);
+                WiFiMenuApp_DrawFriendDetail(param0, heapID);
             }
         }
     }
@@ -4969,17 +4969,17 @@ static u32 ov65_022330C0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     return param0->unk_BE0.unk_71;
 }
 
-static void ov65_022331E0(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_UpdateTouchScreenCursor(WiFiMenuApp *param0)
 {
     if (param0->unk_BE0.unk_73 == 0) {
         if (param0->unk_BE0.unk_75 == 1) {
-            ov65_0223370C(param0);
+            WiFiMenuApp_DrawFriendList(param0);
             param0->unk_BE0.unk_75 = 0;
         }
     }
 }
 
-static BOOL ov65_02233208(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
+static BOOL WiFiMenuApp_IsTouchSelectionInput(WiFiMenuApp *param0, u32 param1)
 {
     if (param0->unk_BE0.unk_73 == 3) {
         return 0;
@@ -4992,29 +4992,29 @@ static BOOL ov65_02233208(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
     return 0;
 }
 
-static u32 ov65_02233240(const UnkStruct_ov65_0222EBE0 *param0)
+static u32 WiFiMenuApp_GetTouchScreenSelection(const WiFiMenuApp *param0)
 {
     return param0->unk_BE0.unk_71;
 }
 
-static void ov65_0223324C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_ResetTouchScreenSelection(WiFiMenuApp *param0)
 {
-    if (ov65_02232FCC(param0) == 1) {
+    if (WiFiMenuApp_IsTouchScreenActive(param0) == 1) {
         param0->unk_BE0.unk_71 = 0;
         param0->unk_BE0.unk_72 = 0;
         param0->unk_BE0.unk_73 = 0;
         param0->unk_BE0.unk_75 = 1;
         param0->unk_BE0.unk_78 = 1;
 
-        ov65_02234DA0(param0);
+        WiFiMenuApp_HideTouchButtons(param0);
     }
 }
 
-static void ov65_0223327C(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
+static void WiFiMenuApp_ChangeTouchScreenPage(WiFiMenuApp *param0, u32 param1)
 {
     u32 v0;
 
-    if (ov65_0222DCE0(param0) == 1) {
+    if (WiFiMenuApp_IsBattleParkAccessed(param0) == 1) {
         v0 = 7;
     } else {
         v0 = 1 + 1;
@@ -5031,9 +5031,9 @@ static void ov65_0223327C(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
     }
 }
 
-static void ov65_022332C4(u32 param0, enum TouchScreenButtonState param1, void *param2)
+static void WiFiMenuApp_TouchButtonCallback(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_ov65_0222EBE0 *v0 = param2;
+    WiFiMenuApp *v0 = param2;
     u32 v1 = (v0->unk_BE0.unk_70 * 8) + param0;
     v1++;
 
@@ -5055,7 +5055,7 @@ static void ov65_022332C4(u32 param0, enum TouchScreenButtonState param1, void *
     }
 }
 
-static void ov65_022332FC(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum HeapID heapID)
+static void WiFiMenuApp_LoadTouchScreenGraphics(WiFiMenuApp *param0, NARC *param1, enum HeapID heapID)
 {
     int v0, v1;
     int v2, v3;
@@ -5069,16 +5069,16 @@ static void ov65_022332FC(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum He
 
     param0->unk_BE0.unk_04 = Graphics_GetScrnDataFromOpenNARC(param1, 20, 0, &param0->unk_BE0.unk_08, heapID);
 
-    ov65_022335F8(param0->unk_BE0.unk_08, 0 + 48);
+    WiFiMenuApp_OffsetScreenData(param0->unk_BE0.unk_08, 0 + 48);
 
     for (v0 = 0; v0 < 7; v0++) {
         param0->unk_BE0.unk_0C[v0] = Graphics_GetScrnDataFromOpenNARC(param1, 21 + v0, 0, &param0->unk_BE0.unk_28[v0], heapID);
-        ov65_022335F8(param0->unk_BE0.unk_28[v0], 0 + 48);
+        WiFiMenuApp_OffsetScreenData(param0->unk_BE0.unk_28[v0], 0 + 48);
     }
 
     param0->unk_BE0.unk_44 = Graphics_GetScrnDataFromOpenNARC(param1, 28, 0, &param0->unk_BE0.unk_48, heapID);
 
-    ov65_022335F8(param0->unk_BE0.unk_48, 0 + 48);
+    WiFiMenuApp_OffsetScreenData(param0->unk_BE0.unk_48, 0 + 48);
     Font_LoadScreenIndicatorsPalette(PAL_LOAD_SUB_BG, PLTT_OFFSET(15), heapID);
 
     for (v0 = 0; v0 < 8; v0++) {
@@ -5102,14 +5102,14 @@ static void ov65_022332FC(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum He
     Window_FillTilemap(&param0->unk_BE0.unk_1FC, 0);
     Window_ScheduleCopyToVRAM(&param0->unk_BE0.unk_1FC);
 
-    ov65_02234A68(param0, param1, heapID);
+    WiFiMenuApp_InitTouchScreenSprites(param0, param1, heapID);
 }
 
-static void ov65_02233570(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_FreeTouchScreenGraphics(WiFiMenuApp *param0)
 {
     int v0, v1;
 
-    ov65_02234CFC(param0);
+    WiFiMenuApp_FreeTouchScreenSprites(param0);
 
     for (v0 = 0; v0 < 8; v0++) {
         Window_Remove(&param0->unk_BE0.unk_7C[v0]);
@@ -5129,7 +5129,7 @@ static void ov65_02233570(UnkStruct_ov65_0222EBE0 *param0)
     Heap_Free(param0->unk_BE0.unk_44);
 }
 
-static void ov65_022335F8(NNSG2dScreenData *param0, u8 param1)
+static void WiFiMenuApp_OffsetScreenData(NNSG2dScreenData *param0, u8 param1)
 {
     u16 *v0;
     int v1, v2;
@@ -5146,7 +5146,7 @@ static void ov65_022335F8(NNSG2dScreenData *param0, u8 param1)
     }
 }
 
-static void ov65_02233638(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param2)
+static void WiFiMenuApp_SetFriendListState(WiFiMenuApp *param0, u32 param1, u32 param2)
 {
     GF_ASSERT(param1 > 0);
     GF_ASSERT(param2 > 0);
@@ -5156,7 +5156,7 @@ static void ov65_02233638(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param
     param0->unk_BE0.unk_75 = 1;
 }
 
-static void ov65_0223366C(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
+static void WiFiMenuApp_ClearFriendListState(WiFiMenuApp *param0, u32 param1)
 {
     GF_ASSERT(param1 > 0);
 
@@ -5164,35 +5164,35 @@ static void ov65_0223366C(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
     param0->unk_BE0.unk_75 = 1;
 }
 
-static u32 ov65_0223368C(const UnkStruct_ov65_0222EBE0 *param0, u32 param1)
+static u32 WiFiMenuApp_GetFriendListState(const WiFiMenuApp *param0, u32 param1)
 {
     GF_ASSERT(param1 > 0);
     return param0->unk_BE0.unk_50[param1 - 1];
 }
 
-static void ov65_022336A4(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_RedrawTouchScreen(WiFiMenuApp *param0, enum HeapID heapID)
 {
     if (param0->unk_BE0.unk_73 != 0) {
-        ov65_02233874(param0, heapID);
+        WiFiMenuApp_DrawFriendDetail(param0, heapID);
     } else {
         param0->unk_BE0.unk_78 = 1;
-        ov65_0223370C(param0);
+        WiFiMenuApp_DrawFriendList(param0);
     }
 }
 
-static void ov65_022336C4(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_MarkTouchScreenDirty(WiFiMenuApp *param0)
 {
     param0->unk_BE0.unk_78 = 1;
     param0->unk_BE0.unk_75 = 1;
 }
 
-static void ov65_022336D4(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_UpdateTouchScreenPalette(WiFiMenuApp *param0)
 {
     Bg_ChangeTilemapRectPalette(param0->unk_15C, 4, 0, 0, 32, 24, param0->unk_BE0.unk_70 + 0);
     Bg_ScheduleTilemapTransfer(param0->unk_15C, 4);
 }
 
-static void ov65_0223370C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_DrawFriendList(WiFiMenuApp *param0)
 {
     int v0, v1;
     int v2;
@@ -5242,11 +5242,11 @@ static void ov65_0223370C(UnkStruct_ov65_0222EBE0 *param0)
         }
 
         if ((v8 == 1) || (v9 == 1)) {
-            ov65_02234788(param0, 0 + (16 * v4), 0 + (6 * v5), v3, v7);
+            WiFiMenuApp_DrawFriendRow(param0, 0 + (16 * v4), 0 + (6 * v5), v3, v7);
 
             if (v3 != 2) {
-                ov65_02234900(param0, &param0->unk_BE0.unk_7C[v0], v6, v7, v0);
-                ov65_0223498C(param0, param0->unk_BE0.unk_FC[v0], v6, v7, v0);
+                WiFiMenuApp_DrawFriendName(param0, &param0->unk_BE0.unk_7C[v0], v6, v7, v0);
+                WiFiMenuApp_DrawFriendStatus(param0, param0->unk_BE0.unk_FC[v0], v6, v7, v0);
             } else {
                 Window_FillTilemap(&param0->unk_BE0.unk_7C[v0], 0);
                 Window_ScheduleCopyToVRAM(&param0->unk_BE0.unk_7C[v0]);
@@ -5264,16 +5264,16 @@ static void ov65_0223370C(UnkStruct_ov65_0222EBE0 *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 0);
 }
 
-static void ov65_02233874(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetail(WiFiMenuApp *param0, enum HeapID heapID)
 {
-    static void (*v0[7])(UnkStruct_ov65_0222EBE0 *, enum HeapID) = {
-        ov65_02233940,
-        ov65_0223449C,
-        ov65_02233E20,
-        ov65_02233EF0,
-        ov65_0223416C,
-        ov65_022342A8,
-        ov65_022343CC
+    static void (*v0[7])(WiFiMenuApp *, enum HeapID) = {
+        WiFiMenuApp_DrawFriendDetailPage0,
+        WiFiMenuApp_DrawFriendDetailPage6,
+        WiFiMenuApp_DrawFriendDetailPage1,
+        WiFiMenuApp_DrawFriendDetailPage2,
+        WiFiMenuApp_DrawFriendDetailPage3,
+        WiFiMenuApp_DrawFriendDetailPage4,
+        WiFiMenuApp_DrawFriendDetailPage5
     };
     int v1;
     int v2;
@@ -5290,8 +5290,8 @@ static void ov65_02233874(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     Bg_ChangeTilemapRectPalette(param0->unk_15C, 6, 0, 0, 32, 24, v2);
     Bg_ClearTilemap(param0->unk_15C, BG_LAYER_SUB_3);
 
-    if (ov65_0222DCE0(param0) == 0) {
-        ov65_02234628(param0);
+    if (WiFiMenuApp_IsBattleParkAccessed(param0) == 0) {
+        WiFiMenuApp_DrawFriendListHeader(param0);
     }
 
     Window_FillTilemap(&param0->unk_BE0.unk_1FC, 0x0);
@@ -5304,7 +5304,7 @@ static void ov65_02233874(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
 }
 
-static void ov65_02233940(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage0(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0 = param0->unk_BE0.unk_71 - 1;
     TextColor color;
@@ -5315,14 +5315,14 @@ static void ov65_02233940(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         color = TEXT_COLOR(3, 4, 0);
     }
 
-    ov65_02234F68(param0, v0);
+    WiFiMenuApp_SetTouchScreenFriendName(param0, v0);
     MessageLoader_GetString(param0->unk_168, 42, param0->unk_170);
     StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_MESSAGE, param0->unk_178, 32, 8, TEXT_SPEED_NO_TRANSFER, color, NULL);
 
-    WFCTrainerInfo *v2 = ov65_02234FA8(param0, v0);
-    u32 v3 = ov65_0222DD20(param0, v2);
-    MessageLoader_GetString(param0->unk_168, ov65_0223484C(v3, &color), param0->unk_170);
+    WFCTrainerInfo *v2 = WiFiMenuApp_GetFriendStatus(param0, v0);
+    u32 v3 = WiFiMenuApp_GetAdjustedCommState(param0, v2);
+    MessageLoader_GetString(param0->unk_168, WiFiMenuApp_GetCommStateMessage(v3, &color), param0->unk_170);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_170, 104, 8, TEXT_SPEED_NO_TRANSFER, color, NULL);
 
     TrainerInfo *trainerInfo = TrainerInfo_New(HEAP_ID_54);
@@ -5360,7 +5360,7 @@ static void ov65_02233940(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     xOffset = 232 - Font_CalcStringWidth(FONT_SYSTEM, param0->unk_178, 0);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, xOffset, 80, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    if (ov65_0222DCF8(param0) == TRUE) {
+    if (WiFiMenuApp_HasPoffinCase(param0) == TRUE) {
         MessageLoader_GetString(param0->unk_168, 49, param0->unk_178);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 104, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
@@ -5385,7 +5385,7 @@ static void ov65_02233940(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, xOffset, 128, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
     }
 
-    ov65_0222EA38(param0->unk_15C, &param0->unk_BD0, 6, 2, 2, v3);
+    WiFiMenuApp_DrawStateIconToBg(param0->unk_15C, &param0->unk_BD0, 6, 2, 2, v3);
 
     int v5;
 
@@ -5395,10 +5395,10 @@ static void ov65_02233940(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         v5 = 1;
     }
 
-    ov65_0222E9C0(param0->unk_15C, &param0->unk_BD0, 6, 28, 2, v5, 0);
+    WiFiMenuApp_DrawScreenDataTilemap(param0->unk_15C, &param0->unk_BD0, 6, 28, 2, v5, 0);
 }
 
-static void ov65_02233E20(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage1(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0 = param0->unk_BE0.unk_71 - 1;
 
@@ -5408,19 +5408,19 @@ static void ov65_02233E20(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        ov65_022346C4(param0, param0->unk_178, 0, v0);
+        WiFiMenuApp_SetFrontierRecordMessage(param0, param0->unk_178, 0, v0);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 24, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 65, 113, v0, 120, 24);
+        WiFiMenuApp_DrawFrontierStat(param0, 65, 113, v0, 120, 24);
     }
 
     {
         MessageLoader_GetString(param0->unk_168, 59, param0->unk_178);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 65, 112, v0, 120, 48);
+        WiFiMenuApp_DrawFrontierStat(param0, 65, 112, v0, 120, 48);
     }
 }
 
-static void ov65_02233EF0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage2(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0 = param0->unk_BE0.unk_71 - 1;
 
@@ -5434,17 +5434,17 @@ static void ov65_02233EF0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     u32 xOffset = 232 - Font_CalcStringWidth(FONT_SYSTEM, param0->unk_178, 0);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, xOffset, 24, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    ov65_022346C4(param0, param0->unk_178, 1, v0);
+    WiFiMenuApp_SetFrontierRecordMessage(param0, param0->unk_178, 1, v0);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    ov65_02234694(param0, 65, 115, v0, 104, 48);
-    ov65_02234694(param0, 66, 117, v0, 212, 48);
+    WiFiMenuApp_DrawFrontierStat(param0, 65, 115, v0, 104, 48);
+    WiFiMenuApp_DrawFrontierStat(param0, 66, 117, v0, 212, 48);
 
     MessageLoader_GetString(param0->unk_168, 59, param0->unk_178);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 64, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    ov65_02234694(param0, 65, 114, v0, 104, 64);
-    ov65_02234694(param0, 66, 116, v0, 212, 64);
+    WiFiMenuApp_DrawFrontierStat(param0, 65, 114, v0, 104, 64);
+    WiFiMenuApp_DrawFrontierStat(param0, 66, 116, v0, 212, 64);
 
     MessageLoader_GetString(param0->unk_168, 61, param0->unk_178);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 88, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
@@ -5453,20 +5453,20 @@ static void ov65_02233EF0(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     xOffset = 232 - Font_CalcStringWidth(FONT_SYSTEM, param0->unk_178, 0);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, xOffset, 88, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    ov65_022346C4(param0, param0->unk_178, 2, v0);
+    WiFiMenuApp_SetFrontierRecordMessage(param0, param0->unk_178, 2, v0);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 112, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    ov65_02234694(param0, 65, 119, v0, 104, 112);
-    ov65_02234694(param0, 66, 121, v0, 212, 112);
+    WiFiMenuApp_DrawFrontierStat(param0, 65, 119, v0, 104, 112);
+    WiFiMenuApp_DrawFrontierStat(param0, 66, 121, v0, 212, 112);
 
     MessageLoader_GetString(param0->unk_168, 59, param0->unk_178);
     Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 128, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-    ov65_02234694(param0, 65, 118, v0, 104, 128);
-    ov65_02234694(param0, 66, 120, v0, 212, 128);
+    WiFiMenuApp_DrawFrontierStat(param0, 65, 118, v0, 104, 128);
+    WiFiMenuApp_DrawFrontierStat(param0, 66, 120, v0, 212, 128);
 }
 
-static void ov65_0223416C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage3(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0 = param0->unk_BE0.unk_71 - 1;
 
@@ -5482,22 +5482,22 @@ static void ov65_0223416C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        ov65_022346C4(param0, param0->unk_178, 3, v0);
+        WiFiMenuApp_SetFrontierRecordMessage(param0, param0->unk_178, 3, v0);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 68, 135, v0, 104, 48);
-        ov65_02234694(param0, 67, 136, v0, 212, 48);
+        WiFiMenuApp_DrawFrontierStat(param0, 68, 135, v0, 104, 48);
+        WiFiMenuApp_DrawFrontierStat(param0, 67, 136, v0, 212, 48);
     }
 
     {
         MessageLoader_GetString(param0->unk_168, 59, param0->unk_178);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 80, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
 
-        ov65_02234694(param0, 68, 134, v0, 104, 80);
-        ov65_02234694(param0, 67, 138, v0, 212, 80);
+        WiFiMenuApp_DrawFrontierStat(param0, 68, 134, v0, 104, 80);
+        WiFiMenuApp_DrawFrontierStat(param0, 67, 138, v0, 212, 80);
     }
 }
 
-static void ov65_022342A8(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage4(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0;
     int v1;
@@ -5523,19 +5523,19 @@ static void ov65_022342A8(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        ov65_022346C4(param0, param0->unk_178, 4, v0);
+        WiFiMenuApp_SetFrontierRecordMessage(param0, param0->unk_178, 4, v0);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 65, 123, v0, 108, 48);
+        WiFiMenuApp_DrawFrontierStat(param0, 65, 123, v0, 108, 48);
     }
 
     {
         MessageLoader_GetString(param0->unk_168, 59, param0->unk_178);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 80, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 65, 122, v0, 108, 80);
+        WiFiMenuApp_DrawFrontierStat(param0, 65, 122, v0, 108, 80);
     }
 }
 
-static void ov65_022343CC(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage5(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0 = param0->unk_BE0.unk_71 - 1;
 
@@ -5545,19 +5545,19 @@ static void ov65_022343CC(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
     }
 
     {
-        ov65_022346C4(param0, param0->unk_178, 5, v0);
+        WiFiMenuApp_SetFrontierRecordMessage(param0, param0->unk_178, 5, v0);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 24, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 69, 143, v0, 112, 24);
+        WiFiMenuApp_DrawFrontierStat(param0, 69, 143, v0, 112, 24);
     }
 
     {
         MessageLoader_GetString(param0->unk_168, 59, param0->unk_178);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234694(param0, 69, 142, v0, 112, 48);
+        WiFiMenuApp_DrawFrontierStat(param0, 69, 142, v0, 112, 48);
     }
 }
 
-static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
+static void WiFiMenuApp_DrawFriendDetailPage6(WiFiMenuApp *param0, enum HeapID heapID)
 {
     int v0;
     WiFiList *v1 = SaveData_GetWiFiList(param0->saveData);
@@ -5574,7 +5574,7 @@ static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         MessageLoader_GetString(param0->unk_168, 71, param0->unk_170);
         StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 24, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234708(param0, 72, WiFiList_GetFriendField(v1, v0, 10), 164, 24);
+        WiFiMenuApp_DrawCenteredNumber(param0, 72, WiFiList_GetFriendField(v1, v0, 10), 164, 24);
     }
 
     {
@@ -5582,7 +5582,7 @@ static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         MessageLoader_GetString(param0->unk_168, 71, param0->unk_170);
         StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 48, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234708(param0, 72, WiFiList_GetFriendField(v1, v0, 11), 164, 48);
+        WiFiMenuApp_DrawCenteredNumber(param0, 72, WiFiList_GetFriendField(v1, v0, 11), 164, 48);
     }
 
     {
@@ -5590,11 +5590,11 @@ static void ov65_0223449C(UnkStruct_ov65_0222EBE0 *param0, enum HeapID heapID)
         MessageLoader_GetString(param0->unk_168, 71, param0->unk_170);
         StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
         Text_AddPrinterWithParamsAndColor(&param0->unk_BE0.unk_1FC, FONT_SYSTEM, param0->unk_178, 8, 72, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-        ov65_02234708(param0, 72, WiFiList_GetFriendField(v1, v0, 12), 164, 72);
+        WiFiMenuApp_DrawCenteredNumber(param0, 72, WiFiList_GetFriendField(v1, v0, 12), 164, 72);
     }
 }
 
-static void ov65_02234628(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_DrawFriendListHeader(WiFiMenuApp *param0)
 {
     int v0;
     int v1 = 7 - 2;
@@ -5606,16 +5606,16 @@ static void ov65_02234628(UnkStruct_ov65_0222EBE0 *param0)
     Bg_ChangeTilemapRectPalette(param0->unk_15C, 6, 0x1a, 0, 0x1 * v1, 0x1, 4 + 2);
 }
 
-static void ov65_02234694(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5)
+static void WiFiMenuApp_DrawFrontierStat(WiFiMenuApp *param0, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5)
 {
     int v0;
     BattleFrontierSave *frontier = SaveData_GetBattleFrontier(param0->saveData);
     v0 = BattleFrontierSave_GetStat(frontier, param2, param3);
 
-    ov65_02234708(param0, param1, v0, param4, param5);
+    WiFiMenuApp_DrawCenteredNumber(param0, param1, v0, param4, param5);
 }
 
-static void ov65_022346C4(UnkStruct_ov65_0222EBE0 *param0, String *param1, u32 param2, u32 param3)
+static void WiFiMenuApp_SetFrontierRecordMessage(WiFiMenuApp *param0, String *param1, u32 param2, u32 param3)
 {
     BattleFrontierSave *frontier;
     BOOL v1;
@@ -5643,7 +5643,7 @@ static void ov65_022346C4(UnkStruct_ov65_0222EBE0 *param0, String *param1, u32 p
     MessageLoader_GetString(param0->unk_168, v2, param1);
 }
 
-static void ov65_02234708(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param2, u32 param3, u32 param4)
+static void WiFiMenuApp_DrawCenteredNumber(WiFiMenuApp *param0, u32 param1, u32 param2, u32 param3, u32 param4)
 {
     StringTemplate_SetNumber(param0->unk_BE0.unk_00, 0, param2, 4, 1, 1);
     MessageLoader_GetString(param0->unk_168, param1, param0->unk_170);
@@ -5655,7 +5655,7 @@ static void ov65_02234708(UnkStruct_ov65_0222EBE0 *param0, u32 param1, u32 param
     }
 }
 
-static void ov65_02234788(UnkStruct_ov65_0222EBE0 *param0, u8 param1, u8 param2, u8 param3, u8 param4)
+static void WiFiMenuApp_DrawFriendRow(WiFiMenuApp *param0, u8 param1, u8 param2, u8 param3, u8 param4)
 {
     u16 v0, v1;
     u16 *v2;
@@ -5682,7 +5682,7 @@ static void ov65_02234788(UnkStruct_ov65_0222EBE0 *param0, u8 param1, u8 param2,
     Bg_ChangeTilemapRectPalette(param0->unk_15C, 6, param1, param2, 16, 6, param3 + 4);
 }
 
-static u32 ov65_0223484C(u32 param0, TextColor *param1)
+static u32 WiFiMenuApp_GetCommStateMessage(u32 param0, TextColor *param1)
 {
     u32 v0;
 
@@ -5763,7 +5763,7 @@ static u32 ov65_0223484C(u32 param0, TextColor *param1)
     return v0;
 }
 
-static void ov65_02234900(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 param2, u32 param3, u32 param4)
+static void WiFiMenuApp_DrawFriendName(WiFiMenuApp *param0, Window *param1, u32 param2, u32 param3, u32 param4)
 {
     int v0;
     TextColor v1;
@@ -5771,7 +5771,7 @@ static void ov65_02234900(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 p
 
     Window_FillTilemap(param1, 0);
 
-    v2 = Unk_ov65_02238934[param3];
+    v2 = sWiFiMenuAppDetailTextYOffsets[param3];
     v0 = WiFiList_GetFriendField(param0->unk_00, param2 - 1, 8);
 
     if (v0 == 0) {
@@ -5780,7 +5780,7 @@ static void ov65_02234900(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 p
         v1 = TEXT_COLOR(3, 4, 0);
     }
 
-    ov65_02234F68(param0, param2 - 1);
+    WiFiMenuApp_SetTouchScreenFriendName(param0, param2 - 1);
 
     MessageLoader_GetString(param0->unk_168, 42, param0->unk_170);
     StringTemplate_Format(param0->unk_BE0.unk_00, param0->unk_178, param0->unk_170);
@@ -5788,7 +5788,7 @@ static void ov65_02234900(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 p
     Window_ScheduleCopyToVRAM(param1);
 }
 
-static void ov65_0223498C(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 param2, u32 param3, u32 param4)
+static void WiFiMenuApp_DrawFriendStatus(WiFiMenuApp *param0, Window *param1, u32 param2, u32 param3, u32 param4)
 {
     int v0;
     int v1;
@@ -5796,15 +5796,15 @@ static void ov65_0223498C(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 p
     WFCTrainerInfo *v3;
     u32 v4;
 
-    v3 = ov65_02234FA8(param0, param2 - 1);
-    v4 = ov65_0222DD20(param0, v3);
-    v0 = Unk_ov65_02238934[param3];
+    v3 = WiFiMenuApp_GetFriendStatus(param0, param2 - 1);
+    v4 = WiFiMenuApp_GetAdjustedCommState(param0, v3);
+    v0 = sWiFiMenuAppDetailTextYOffsets[param3];
 
     for (v1 = 0; v1 < 2; v1++) {
         Window_FillTilemap(&param1[v1], 0);
 
         if (v1 == 0) {
-            ov65_0222EB1C(&param1[v1], &param0->unk_BD0, 0, v0, v4);
+            WiFiMenuApp_DrawActorStateIcon(&param1[v1], &param0->unk_BD0, 0, v0, v4);
         } else {
             if (v3->voiceChatEnabled) {
                 v2 = 8;
@@ -5812,14 +5812,14 @@ static void ov65_0223498C(UnkStruct_ov65_0222EBE0 *param0, Window *param1, u32 p
                 v2 = 1;
             }
 
-            ov65_0222EAD0(&param1[v1], &param0->unk_BD0, 0, v0, v2, 0);
+            WiFiMenuApp_DrawStateIconToWindow(&param1[v1], &param0->unk_BD0, 0, v0, v2, 0);
         }
 
         Window_ScheduleCopyToVRAM(&param1[v1]);
     }
 }
 
-static void ov65_02234A10(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_UpdateTouchScreenAnim(WiFiMenuApp *param0)
 {
     static const u8 v0[4] = {
         0, 1, 2, 1
@@ -5845,7 +5845,7 @@ static void ov65_02234A10(UnkStruct_ov65_0222EBE0 *param0)
     }
 }
 
-static void ov65_02234A68(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum HeapID heapID)
+static void WiFiMenuApp_InitTouchScreenSprites(WiFiMenuApp *param0, NARC *param1, enum HeapID heapID)
 {
     BOOL v0;
     int v1;
@@ -5907,7 +5907,7 @@ static void ov65_02234A68(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum He
 
         param0->unk_BE0.unk_21C[v1] = SpriteList_AddAffine(&v9[v1]);
 
-        Sprite_SetAnim(param0->unk_BE0.unk_21C[v1], Unk_ov65_02238930[v1]);
+        Sprite_SetAnim(param0->unk_BE0.unk_21C[v1], sWiFiMenuAppTouchButtonIdleAnims[v1]);
     }
 
     Font_InitManager(FONT_SUBSCREEN, heapID);
@@ -5949,10 +5949,10 @@ static void ov65_02234A68(UnkStruct_ov65_0222EBE0 *param0, NARC *param1, enum He
     Window_Remove(&v3);
     Font_Free(FONT_SUBSCREEN);
 
-    param0->unk_BE0.unk_244 = TouchScreenActions_RegisterHandler(Unk_ov65_0223895C, 3, ov65_02234E40, param0, heapID);
+    param0->unk_BE0.unk_244 = TouchScreenActions_RegisterHandler(sWiFiMenuAppTouchButtonsHitTable, 3, WiFiMenuApp_TouchButtonActionCallback, param0, heapID);
 }
 
-static void ov65_02234CFC(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_FreeTouchScreenSprites(WiFiMenuApp *param0)
 {
     int v0;
 
@@ -5972,7 +5972,7 @@ static void ov65_02234CFC(UnkStruct_ov65_0222EBE0 *param0)
     }
 }
 
-static void ov65_02234D6C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_ShowTouchButtons(WiFiMenuApp *param0)
 {
     int v0;
 
@@ -5981,11 +5981,11 @@ static void ov65_02234D6C(UnkStruct_ov65_0222EBE0 *param0)
     param0->unk_BE0.unk_23C = 0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        ov65_02234E50(&param0->unk_BE0, v0);
+        WiFiMenuApp_SetTouchButtonAnim(&param0->unk_BE0, v0);
     }
 }
 
-static void ov65_02234DA0(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_HideTouchButtons(WiFiMenuApp *param0)
 {
     if (param0->unk_BE0.unk_238 == 2) {
         Sprite_SetDrawFlag(param0->unk_BE0.unk_21C[1], TRUE);
@@ -5997,7 +5997,7 @@ static void ov65_02234DA0(UnkStruct_ov65_0222EBE0 *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 0);
 }
 
-static u32 ov65_02234DD8(UnkStruct_ov65_0222EBE0 *param0)
+static u32 WiFiMenuApp_UpdateTouchButtons(WiFiMenuApp *param0)
 {
     int v0;
     BOOL v1;
@@ -6016,7 +6016,7 @@ static u32 ov65_02234DD8(UnkStruct_ov65_0222EBE0 *param0)
             continue;
         }
 
-        v1 = ov65_02234E8C(&param0->unk_BE0, v0, param0->unk_BE0.unk_23C, param0->unk_BE0.unk_240);
+        v1 = WiFiMenuApp_UpdateTouchButtonAnim(&param0->unk_BE0, v0, param0->unk_BE0.unk_23C, param0->unk_BE0.unk_240);
 
         if (v1 == 1) {
             return 1 + v0;
@@ -6026,25 +6026,25 @@ static u32 ov65_02234DD8(UnkStruct_ov65_0222EBE0 *param0)
     return 0;
 }
 
-static void ov65_02234E40(u32 param0, enum TouchScreenButtonState param1, void *param2)
+static void WiFiMenuApp_TouchButtonActionCallback(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_ov65_0222EBE0 *v0 = param2;
+    WiFiMenuApp *v0 = param2;
 
     v0->unk_BE0.unk_23C = param0;
     v0->unk_BE0.unk_240 = param1;
 }
 
-static void ov65_02234E50(UnkStruct_ov65_02234E50 *param0, u32 param1)
+static void WiFiMenuApp_SetTouchButtonAnim(WiFiMenuAppTouchScreen *param0, u32 param1)
 {
-    Sprite_SetAnim(param0->unk_21C[param1], Unk_ov65_02238930[param1]);
+    Sprite_SetAnim(param0->unk_21C[param1], sWiFiMenuAppTouchButtonIdleAnims[param1]);
     Sprite_SetAnimFrame(param0->unk_21C[param1], 5 - 1);
 
     if (param1 == 1) {
-        FontOAM_SetXY(param0->unk_234, -18, Unk_ov65_0223893C[0]);
+        FontOAM_SetXY(param0->unk_234, -18, sWiFiMenuAppVoiceChatIconYOffsets[0]);
     }
 }
 
-static BOOL ov65_02234E8C(UnkStruct_ov65_02234E50 *param0, u32 param1, u32 param2, u32 param3)
+static BOOL WiFiMenuApp_UpdateTouchButtonAnim(WiFiMenuAppTouchScreen *param0, u32 param1, u32 param2, u32 param3)
 {
     BOOL v0 = 0;
     u32 v1;
@@ -6055,7 +6055,7 @@ static BOOL ov65_02234E8C(UnkStruct_ov65_02234E50 *param0, u32 param1, u32 param
 
         if ((param3 == 0) || (param3 == 2)) {
             if (param3 == 0) {
-                Sprite_SetAnim(param0->unk_21C[param1], Unk_ov65_0223892C[param1]);
+                Sprite_SetAnim(param0->unk_21C[param1], sWiFiMenuAppTouchButtonPressedAnims[param1]);
             }
 
             if (v1 < 3) {
@@ -6063,7 +6063,7 @@ static BOOL ov65_02234E8C(UnkStruct_ov65_02234E50 *param0, u32 param1, u32 param
                 v1 = Sprite_GetAnimFrame(param0->unk_21C[param1]);
 
                 if (param1 == 1) {
-                    FontOAM_SetXY(param0->unk_234, -18, Unk_ov65_0223893C[v1]);
+                    FontOAM_SetXY(param0->unk_234, -18, sWiFiMenuAppVoiceChatIconYOffsets[v1]);
                 }
 
                 if (v1 >= 3) {
@@ -6079,8 +6079,8 @@ static BOOL ov65_02234E8C(UnkStruct_ov65_02234E50 *param0, u32 param1, u32 param
         v2 = Sprite_GetActiveAnim(param0->unk_21C[param1]);
         v1 = Sprite_GetAnimFrame(param0->unk_21C[param1]);
 
-        if (v2 == Unk_ov65_0223892C[param1]) {
-            Sprite_SetAnim(param0->unk_21C[param1], Unk_ov65_02238930[param1]);
+        if (v2 == sWiFiMenuAppTouchButtonPressedAnims[param1]) {
+            Sprite_SetAnim(param0->unk_21C[param1], sWiFiMenuAppTouchButtonIdleAnims[param1]);
             Sprite_SetAnimFrame(param0->unk_21C[param1], (5 - 1) - v1);
         }
 
@@ -6090,7 +6090,7 @@ static BOOL ov65_02234E8C(UnkStruct_ov65_02234E50 *param0, u32 param1, u32 param
     return v0;
 }
 
-static void ov65_02234F68(UnkStruct_ov65_0222EBE0 *param0, int param1)
+static void WiFiMenuApp_SetTouchScreenFriendName(WiFiMenuApp *param0, int param1)
 {
     if (param1 != -1) {
         TrainerInfo *v0 = TrainerInfo_New(HEAP_ID_54);
@@ -6101,24 +6101,24 @@ static void ov65_02234F68(UnkStruct_ov65_0222EBE0 *param0, int param1)
     }
 }
 
-static WFCTrainerInfo *ov65_02234FA8(UnkStruct_ov65_0222EBE0 *param0, u32 param1)
+static WFCTrainerInfo *WiFiMenuApp_GetFriendStatus(WiFiMenuApp *param0, u32 param1)
 {
     GF_ASSERT(param1 < 32);
 
     return &param0->unk_04->friendStatuses[param1];
 }
 
-static u8 ov65_02234FC4(int param0)
+static u8 WiFiMenuApp_GetFriendOnlineStatus(int param0)
 {
     return NintendoWFC_GetFriendStatus(param0);
 }
 
-static BOOL ov65_02234FCC(UnkStruct_ov65_0222EBE0 *param0, int param1, int param2)
+static BOOL WiFiMenuApp_StartWifiBattle(WiFiMenuApp *param0, int param1, int param2)
 {
     CommTool_Init(HEAP_ID_COMMUNICATION);
     NintendoWFC_SetVoiceChatEnabled(param0->unk_04->ownStatus.voiceChatEnabled);
 
-    if (ov65_0222DD64(param2) == 1) {
+    if (WiFiMenuApp_IsWifiClubCommState(param2) == 1) {
         NintendoWFC_ManageSecondaryHeap(1, HEAP_ID_PARTY_MENU1);
     } else {
         NintendoWFC_ManageSecondaryHeap(0, HEAP_ID_PARTY_MENU1);
@@ -6129,23 +6129,23 @@ static BOOL ov65_02234FCC(UnkStruct_ov65_0222EBE0 *param0, int param1, int param
     return CommManager_StartWifiBattle(param1);
 }
 
-static void ov65_0223500C(UnkStruct_ov65_0222EBE0 *param0, BOOL param1)
+static void WiFiMenuApp_SetBoardBusyFlag(WiFiMenuApp *param0, BOOL param1)
 {
     if (param0->unk_E28 == 0) {
         param0->unk_E28 = 1;
-        ov65_02235378(&param0->unk_3EC, 1);
+        WiFiMenuAppBoard_SetFlag(&param0->unk_3EC, 1);
 
         if (param1 == 1) {
-            ov65_02232B58(param0, 9, 0);
+            WiFiMenuApp_ShowMessage(param0, 9, 0);
         }
     }
 }
 
-static void ov65_0223503C(UnkStruct_ov65_0222EBE0 *param0)
+static void WiFiMenuApp_ClearBoardBusyFlag(WiFiMenuApp *param0)
 {
     if (param0->unk_E28 == 1) {
         param0->unk_E28 = 0;
-        ov65_02232DFC(param0);
-        ov65_02235378(&param0->unk_3EC, 0);
+        WiFiMenuApp_ClearMessage(param0);
+        WiFiMenuAppBoard_SetFlag(&param0->unk_3EC, 0);
     }
 }

@@ -1,15 +1,15 @@
-#ifndef POKEPLATINUM_STRUCT_OV65_0222EBE0_T_H
-#define POKEPLATINUM_STRUCT_OV65_0222EBE0_T_H
+#ifndef POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222EBE0_T_H
+#define POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222EBE0_T_H
 
 #include "struct_decls/struct_02012744_decl.h"
 #include "struct_decls/wi_fi_list.h"
 #include "struct_defs/struct_0207DFAC.h"
 
 #include "global_terminal/struct_global_terminal_0222C3B0.h"
-#include "overlay065/struct_ov65_0222E99C.h"
-#include "overlay065/struct_ov65_02234E50.h"
-#include "overlay065/struct_ov65_02235130.h"
-#include "overlay065/struct_ov65_022354D8.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222E99C.h"
+#include "wifi_menu_app/struct_wifi_menu_app_02234E50.h"
+#include "wifi_menu_app/struct_wifi_menu_app_02235130.h"
+#include "wifi_menu_app/struct_wifi_menu_app_022354D8.h"
 
 #include "bg_window.h"
 #include "list_menu.h"
@@ -24,7 +24,7 @@
 #include "string_list.h"
 #include "trainer_info.h"
 
-struct UnkStruct_ov65_0222EBE0_t {
+struct WiFiMenuApp_t {
     WiFiList *unk_00;
     WFCStatusBuffer *unk_04;
     int unk_08;
@@ -81,14 +81,14 @@ struct UnkStruct_ov65_0222EBE0_t {
     u16 unk_3E2;
     BOOL unk_3E4;
     int unk_3E8;
-    UnkStruct_ov65_02235130 unk_3EC;
-    UnkStruct_ov65_022354D8 *unk_B4C[33];
-    UnkStruct_ov65_0222E99C unk_BD0;
-    UnkStruct_ov65_02234E50 unk_BE0;
+    WiFiMenuAppBoard unk_3EC;
+    WiFiMenuAppActor *unk_B4C[33];
+    WiFiMenuAppScreenData unk_BD0;
+    WiFiMenuAppTouchScreen unk_BE0;
     BOOL unk_E28;
     GlobalTerminalPaletteBlend unk_E2C;
     u16 unk_1158;
     u16 unk_115A;
 };
 
-#endif // POKEPLATINUM_STRUCT_OV65_0222EBE0_T_H
+#endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222EBE0_T_H

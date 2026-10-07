@@ -13,7 +13,7 @@
 #include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222D848_decl.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222D894.h"
-#include "overlay065/struct_ov65_022376D0.h"
+#include "wifi_menu_app/struct_wifi_menu_app_022376D0.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_022343A8.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02234548_decl.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_02234798_decl.h"
@@ -282,7 +282,7 @@ UnkStruct_ov70_0225CC54 *ov70_0225CB5C(UnkStruct_ov70_0225CA20 *param0, u32 para
     UnkStruct_ov70_0225CC54 *v0 = ov70_0225D2C0(param0);
 
     {
-        UnkStruct_ov65_022376D0 v1;
+        WiFiMenuAppRect v1;
 
         v1.unk_00 = (param2) * 16;
         v1.unk_02 = (param3) * 16;
@@ -314,7 +314,7 @@ UnkStruct_ov70_0225CC54 *ov70_0225CBB8(UnkStruct_ov70_0225CA20 *param0, u32 para
     UnkStruct_ov70_0225CC54 *v0 = ov70_0225D2C0(param0);
 
     {
-        UnkStruct_ov65_022376D0 v1;
+        WiFiMenuAppRect v1;
         u16 v2, v3, v4;
         BOOL v5;
         BOOL v6 = 0;
@@ -665,7 +665,7 @@ static void ov70_0225D0D8(UnkStruct_ov70_0225CA20 *param0)
             v1 = ov70_0225D2C0(param0);
 
             {
-                UnkStruct_ov65_022376D0 v6;
+                WiFiMenuAppRect v6;
 
                 v6.unk_00 = (v2) * 16;
                 v6.unk_02 = (v3) * 16;

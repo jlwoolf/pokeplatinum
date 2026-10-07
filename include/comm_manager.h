@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_COMM_MANAGER_H
 #define POKEPLATINUM_COMM_MANAGER_H
 
-#include "overlay065/struct_ov65_0222F6EC.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0222F6EC.h"
 
 #include "battle_regulation.h"
 #include "bg_window.h"
@@ -63,7 +63,7 @@ void CommManager_DisconnectWifi(int unused_0, int unused_1, void *unused_2, void
 BOOL CommManager_GetDisconnectedWifi(void);
 BOOL CommManager_IsLoginBattleWifi(void);
 BOOL CommManager_IsLoginBattleMatchWifi(void);
-UnkStruct_ov65_0222F6EC *CommManager_GetUnk34(void);
+WiFiCommErrorInfo *CommManager_GetUnk34(void);
 void CommManager_LogoutWifi(void);
 void CommManager_EndWifiMatch(void);
 void CommManager_EndTradeWifiMatch(void);

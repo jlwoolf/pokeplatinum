@@ -1169,13 +1169,13 @@ Overlay wifi_note
 	Object main.nef.p/src_wifi_note_wifi_note.c.o
 }
 
-Overlay overlay65
+Overlay wifi_menu_app
 {
 	After wifi_2d_char
-	Object main.nef.p/src_overlay065_ov65_0222DCE0.c.o
-	Object main.nef.p/src_overlay065_ov65_02235060.c.o
-	Object main.nef.p/src_overlay065_ov65_02236474.c.o
-	Object main.nef.p/src_overlay065_ov65_0223648C.c.o
+	Object main.nef.p/src_wifi_menu_app_wifi_menu_app.c.o
+	Object main.nef.p/src_wifi_menu_app_wifi_menu_app_02235060.c.o
+	Object main.nef.p/src_wifi_menu_app_wifi_menu_app_02236474.c.o
+	Object main.nef.p/src_wifi_menu_app_wifi_menu_app_0223648C.c.o
 }
 
 Overlay wifi_plaza_lobby

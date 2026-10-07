@@ -1,4 +1,4 @@
-#include "overlay065/ov65_02236474.h"
+#include "wifi_menu_app/wifi_menu_app_02236474.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -6,7 +6,7 @@
 #include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_2d_char/union_wifi_2d_char_0222BDAC.h"
 
-static const WiFi2DCharTile Unk_ov65_02238C08[176] = {
+static const WiFi2DCharTile sWiFiMenuAppBoardMapTiles0[176] = {
     0x3,
     0x3,
     0x3,
@@ -185,7 +185,7 @@ static const WiFi2DCharTile Unk_ov65_02238C08[176] = {
     0x3
 };
 
-static const WiFi2DCharTile Unk_ov65_02238EC8[176] = {
+static const WiFi2DCharTile sWiFiMenuAppBoardMapTiles1[176] = {
     0x3,
     0x3,
     0x3,
@@ -364,7 +364,7 @@ static const WiFi2DCharTile Unk_ov65_02238EC8[176] = {
     0x3
 };
 
-static const WiFi2DCharTile Unk_ov65_02239188[242] = {
+static const WiFi2DCharTile sWiFiMenuAppBoardMapTiles2[242] = {
     0x3,
     0x3,
     0x3,
@@ -609,7 +609,7 @@ static const WiFi2DCharTile Unk_ov65_02239188[242] = {
     0x3
 };
 
-static const WiFi2DCharTile Unk_ov65_02239550[308] = {
+static const WiFi2DCharTile sWiFiMenuAppBoardMapTiles3[308] = {
     0x3,
     0x3,
     0x3,
@@ -920,7 +920,7 @@ static const WiFi2DCharTile Unk_ov65_02239550[308] = {
     0x3
 };
 
-WiFi2DCharPosition ov65_02236474(u32 param0)
+WiFi2DCharPosition WiFiMenuAppBoard_GetMapGridSize(u32 param0)
 {
     static const WiFi2DCharPosition v0[4] = {
         { 16, 11 },
@@ -932,13 +932,13 @@ WiFi2DCharPosition ov65_02236474(u32 param0)
     return v0[param0];
 }
 
-const WiFi2DCharTile *ov65_02236480(u32 param0)
+const WiFi2DCharTile *WiFiMenuAppBoard_GetMapTiles(u32 param0)
 {
     static const WiFi2DCharTile *v0[4] = {
-        Unk_ov65_02238C08,
-        Unk_ov65_02238EC8,
-        Unk_ov65_02239188,
-        Unk_ov65_02239550
+        sWiFiMenuAppBoardMapTiles0,
+        sWiFiMenuAppBoardMapTiles1,
+        sWiFiMenuAppBoardMapTiles2,
+        sWiFiMenuAppBoardMapTiles3
     };
 
     return v0[param0];

@@ -20,8 +20,8 @@
 #include "wifi_2d_char/struct_wifi_2d_char_0222CE44.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222D894.h"
 #include "wifi_2d_char/union_wifi_2d_char_0222BDAC.h"
-#include "overlay065/struct_ov65_0223582C.h"
-#include "overlay065/struct_ov65_022376D0.h"
+#include "wifi_menu_app/struct_wifi_menu_app_0223582C.h"
+#include "wifi_menu_app/struct_wifi_menu_app_022376D0.h"
 #include "overlay104/frontier_opponents.h"
 #include "overlay104/frontier_particle_system.h"
 #include "overlay104/frontier_scenes.h"
@@ -619,7 +619,7 @@ static void ov104_0223CC74(FrontierGraphics *param0, int sceneID, const TrainerI
     param0->unk_20 = WiFi2DCharRenderer_NewWithShadow(SpriteManager_GetSpriteList(param0->spriteMan), param0->plttData, 32, BattleFrontier_GetPlayerObjEventGfx(playerInfo), 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_94);
 
     {
-        UnkStruct_ov65_0223582C v0 = {
+        WiFiMenuAppSpriteParams v0 = {
             0,
             3,
             GX_BG_COLORMODE_16,
@@ -856,7 +856,7 @@ WiFi2DCharObject *ov104_0223D180(FrontierGraphics *param0, const FrontierObjectP
 {
     FrontierObject *v0;
     int v1, v2;
-    UnkStruct_ov65_022376D0 v3;
+    WiFiMenuAppRect v3;
     WiFi2DCharObject *v4;
     WiFi2DCharRenderObject *v5;
 

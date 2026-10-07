@@ -4,7 +4,7 @@
 #include "savedata.h"
 
 // Arguments shared between the WiFi menu field task (wifi_menu.c) and the
-// overlay065 communication app it launches. The task fills in the request
+// wifi_menu_app communication app it launches. The task fills in the request
 // (appType, minPlayers, requiredPlayers) before starting the app; the app
 // writes back the outcome (success, result) when it exits.
 typedef struct {

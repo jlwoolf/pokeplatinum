@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV65_02234E50_H
-#define POKEPLATINUM_STRUCT_OV65_02234E50_H
+#ifndef POKEPLATINUM_STRUCT_WIFI_MENU_APP_02234E50_H
+#define POKEPLATINUM_STRUCT_WIFI_MENU_APP_02234E50_H
 
 #include <nnsys.h>
 
@@ -42,6 +42,6 @@ typedef struct {
     u32 unk_23C;
     u32 unk_240;
     TouchScreenActions *unk_244;
-} UnkStruct_ov65_02234E50;
+} WiFiMenuAppTouchScreen;
 
-#endif // POKEPLATINUM_STRUCT_OV65_02234E50_H
+#endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_02234E50_H

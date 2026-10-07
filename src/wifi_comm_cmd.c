@@ -7,7 +7,7 @@
 
 #include "wifi_comm.h"
 
-// Command table for the overlay065 WiFi apps. The command manager indexes this
+// Command table for the wifi_menu_app WiFi apps. The command manager indexes this
 // table with (cmd - 22), so the entries are commands 22, 23 and 24:
 //   22: player join/leave status (WiFiComm_RecvPlayerStatus)
 //   23: sync request (WiFiComm_RecvSyncRequest)

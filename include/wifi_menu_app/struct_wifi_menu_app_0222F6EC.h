@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222F6EC_H
+#define POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222F6EC_H
+
+typedef struct {
+    int unk_00;
+    int unk_04;
+    int unk_08;
+} WiFiCommErrorInfo;
+
+#endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222F6EC_H

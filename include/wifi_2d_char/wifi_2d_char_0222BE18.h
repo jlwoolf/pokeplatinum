@@ -7,14 +7,14 @@
 #include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
-#include "overlay065/struct_ov65_022376D0.h"
+#include "wifi_menu_app/struct_wifi_menu_app_022376D0.h"
 
 WiFi2DCharObjectManager *WiFi2DCharObjectManager_New(u32 param0, enum HeapID heapID);
 void WiFi2DCharObjectManager_Free(WiFi2DCharObjectManager *param0);
 void WiFi2DCharObjectManager_StartMove(WiFi2DCharObjectManager *param0, const WiFi2DCharMoveRequest *param1);
 void WiFi2DCharObjectManager_Update(WiFi2DCharObjectManager *param0);
 u32 WiFi2DCharObjectManager_GetCapacity(const WiFi2DCharObjectManager *param0);
-WiFi2DCharObject *WiFi2DCharObjectManager_AddObject(WiFi2DCharObjectManager *param0, const UnkStruct_ov65_022376D0 *param1);
+WiFi2DCharObject *WiFi2DCharObjectManager_AddObject(WiFi2DCharObjectManager *param0, const WiFiMenuAppRect *param1);
 void WiFi2DCharObject_Reset(WiFi2DCharObject *param0);
 WiFi2DCharObject *WiFi2DCharObjectManager_FindObjectByID(WiFi2DCharObjectManager *param0, u16 param1);
 WiFi2DCharObject *WiFi2DCharObjectManager_GetObject(WiFi2DCharObjectManager *param0, u16 param1);
