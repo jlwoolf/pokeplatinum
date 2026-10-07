@@ -1,4 +1,4 @@
-#include "overlay109/ov109_021D0D80.h"
+#include "spin_trade/spin_trade.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -12,8 +12,8 @@
 #include "struct_defs/struct_0209C0F0.h"
 #include "struct_defs/struct_0209C194.h"
 
-#include "overlay109/struct_ov109_021D1048.h"
-#include "overlay109/struct_ov109_021D17EC.h"
+#include "spin_trade/struct_spin_trade_order.h"
+#include "spin_trade/struct_spin_trade_result.h"
 
 #include "bag.h"
 #include "bg_window.h"
@@ -69,7 +69,7 @@ typedef struct {
     Simple3DRotationAngles unk_4C;
     Simple3DModel unk_54;
     Simple3DRenderObj unk_68;
-} UnkStruct_ov109_021D2AE4;
+} SpinTradeEggModel;
 
 typedef struct {
     int unk_00;
@@ -87,7 +87,7 @@ typedef struct {
     VecFx32 unk_44;
     VecFx32 unk_50;
     Simple3DRenderObj unk_5C;
-} UnkStruct_ov109_021D2D78;
+} SpinTradeMonModel;
 
 typedef struct {
     int unk_00;
@@ -95,34 +95,34 @@ typedef struct {
     VecFx32 unk_0C;
     VecFx32 unk_18;
     Simple3DRenderObj unk_24;
-    UnkStruct_ov109_021D2D78 *unk_78;
-} UnkStruct_ov109_021D2EF4;
+    SpinTradeMonModel *unk_78;
+} SpinTradeMonShadow;
 
 typedef struct {
     int unk_00;
     VecFx32 unk_04;
     Simple3DRenderObj unk_10;
-    UnkStruct_ov109_021D2D78 *unk_64;
-} UnkStruct_ov109_021D2FA4;
+    SpinTradeMonModel *unk_64;
+} SpinTradeMonAnim;
 
 typedef struct {
     Simple3DModel unk_00;
     Simple3DModel unk_14;
     Simple3DModel unk_28[5];
     Simple3DAnimation unk_8C[5];
-    UnkStruct_ov109_021D2D78 unk_140[5];
-    UnkStruct_ov109_021D2EF4 unk_4B0[5];
-    UnkStruct_ov109_021D2FA4 unk_71C[5];
-} UnkStruct_ov109_021D1334;
+    SpinTradeMonModel unk_140[5];
+    SpinTradeMonShadow unk_4B0[5];
+    SpinTradeMonAnim unk_71C[5];
+} SpinTradeModels;
 
 typedef struct {
     int unk_00;
     int unk_04;
     int unk_08;
     fx32 unk_0C;
-    UnkStruct_ov109_021D2D78 *unk_10;
-    UnkStruct_ov109_021D0F70 *unk_14;
-} UnkStruct_ov109_021D2FE0;
+    SpinTradeMonModel *unk_10;
+    SpinTrade *unk_14;
+} SpinTradeMonDropTask;
 
 typedef struct {
     int unk_00;
@@ -131,7 +131,7 @@ typedef struct {
     Window unk_0C[1];
     Window unk_1C[5];
     void *unk_6C;
-} UnkStruct_ov109_021D24F8;
+} SpinTradeWindows;
 
 typedef struct {
     int unk_00;
@@ -140,7 +140,7 @@ typedef struct {
     int unk_0C;
     int unk_10;
     int unk_14;
-} UnkStruct_ov109_021D122C;
+} SpinTradeSpinOrder;
 
 typedef struct {
     fx32 unk_00;
@@ -148,7 +148,7 @@ typedef struct {
     VecFx32 unk_08;
     CameraAngle cameraAngle;
     Camera *camera;
-} UnkStruct_ov109_021D28C4;
+} SpinTradeCamera;
 
 typedef struct {
     int unk_00;
@@ -156,23 +156,23 @@ typedef struct {
     int unk_08;
     int unk_0C;
     TouchPadDataBuffer unk_10;
-} UnkStruct_ov109_021D294C;
+} SpinTradeTouchInput;
 
 typedef struct {
-    UnkStruct_ov109_021D0F70 *unk_00;
+    SpinTrade *unk_00;
     int unk_04;
     u32 unk_08;
-} UnkStruct_ov109_021D3948;
+} SpinTradeFadeTask;
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-} UnkStruct_ov109_021D59AC;
+    u16 min;
+    u16 max;
+} SpinTradeRange;
 
 typedef struct {
-    int unk_00;
-    const UnkStruct_ov109_021D59AC *unk_04;
-} UnkStruct_ov109_021D5C14;
+    int count;
+    const SpinTradeRange *ranges;
+} SpinTradeRangeSet;
 
 typedef struct {
     int unk_00;
@@ -182,24 +182,24 @@ typedef struct {
     fx32 unk_10;
     fx32 unk_14;
     fx32 unk_18;
-    UnkStruct_ov109_021D2D78 *unk_1C;
-} UnkStruct_ov109_021D3110;
+    SpinTradeMonModel *unk_1C;
+} SpinTradeBounceTask;
 
 typedef struct {
-    UnkStruct_ov109_021D3110 unk_00[5];
-} UnkStruct_ov109_021D31A8;
+    SpinTradeBounceTask unk_00[5];
+} SpinTradeBounceTasks;
 
 typedef struct {
     int unk_00;
     int unk_04;
     int unk_08;
     fx32 unk_0C;
-    UnkStruct_ov109_021D2D78 *unk_10;
-} UnkStruct_ov109_021D3268;
+    SpinTradeMonModel *unk_10;
+} SpinTradeShakeTask;
 
 typedef struct {
-    UnkStruct_ov109_021D3268 unk_00[5];
-} UnkStruct_ov109_021D32DC;
+    SpinTradeShakeTask unk_00[5];
+} SpinTradeShakeTasks;
 
 typedef struct {
     int unk_00;
@@ -207,12 +207,12 @@ typedef struct {
     fx32 unk_08;
     fx32 unk_0C;
     fx32 unk_10;
-    UnkStruct_ov109_021D2D78 *unk_14;
-} UnkStruct_ov109_021D3370;
+    SpinTradeMonModel *unk_14;
+} SpinTradeWobbleTask;
 
 typedef struct {
-    UnkStruct_ov109_021D3370 unk_00[5];
-} UnkStruct_ov109_021D3414;
+    SpinTradeWobbleTask unk_00[5];
+} SpinTradeWobbleTasks;
 
 typedef struct {
     int unk_00;
@@ -220,24 +220,24 @@ typedef struct {
     int unk_08;
     int unk_0C;
     fx32 unk_10;
-} UnkStruct_ov109_021D34A8;
+} SpinTradeIntroTask;
 
 typedef struct {
     u16 unk_00;
     u16 unk_02;
     int unk_04;
-} UnkStruct_ov109_021D3700;
+} SpinTradeFlashTask;
 
 typedef struct {
     int unk_00;
     int unk_04;
     int unk_08;
-    UnkStruct_ov109_021D2D78 *unk_0C;
-} UnkStruct_ov109_021D3818;
+    SpinTradeMonModel *unk_0C;
+} SpinTradeBobTask;
 
 typedef struct {
-    UnkStruct_ov109_021D3818 unk_00[5];
-} UnkStruct_ov109_021D3884;
+    SpinTradeBobTask unk_00[5];
+} SpinTradeBobTasks;
 
 typedef struct {
     int unk_00;
@@ -248,13 +248,13 @@ typedef struct {
     int unk_14;
     int unk_18[5];
     UnionRoomCommSpinTradePos unk_2C;
-    UnkStruct_ov109_021D17EC unk_34;
-    UnkStruct_ov109_021D1048 unk_44[5];
+    SpinTradeResult unk_34;
+    SpinTradeOrder unk_44[5];
     TrainerInfo *unk_58[5];
     String *unk_6C[5];
-} UnkStruct_ov109_021D0F70_sub1;
+} SpinTradeCommState;
 
-typedef struct UnkStruct_ov109_021D0F70_t {
+typedef struct SpinTrade_t {
     int unk_00;
     int unk_04;
     int unk_08;
@@ -265,22 +265,22 @@ typedef struct UnkStruct_ov109_021D0F70_t {
     int unk_1C;
     u32 unk_20;
     Party *unk_24;
-    UnkStruct_ov109_021D2D78 *unk_28;
-    UnkStruct_ov109_021D0F70_sub1 unk_2C;
+    SpinTradeMonModel *unk_28;
+    SpinTradeCommState unk_2C;
     u8 unk_AC[32];
     UnionRoomSpinTradeSession *unk_CC;
     UnionRoomComm *unk_D0;
-    UnkStruct_ov109_021D2AE4 unk_D4;
-    UnkStruct_ov109_021D1334 unk_190;
-    UnkStruct_ov109_021D31A8 unk_AB4;
-    UnkStruct_ov109_021D32DC unk_B54;
-    UnkStruct_ov109_021D3414 unk_BB8;
-    UnkStruct_ov109_021D34A8 unk_C30;
-    UnkStruct_ov109_021D3700 unk_C44;
-    UnkStruct_ov109_021D3884 unk_C4C;
-    UnkStruct_ov109_021D24F8 unk_C9C;
-    UnkStruct_ov109_021D28C4 unk_D0C;
-    UnkStruct_ov109_021D294C unk_D2C;
+    SpinTradeEggModel unk_D4;
+    SpinTradeModels unk_190;
+    SpinTradeBounceTasks unk_AB4;
+    SpinTradeShakeTasks unk_B54;
+    SpinTradeWobbleTasks unk_BB8;
+    SpinTradeIntroTask unk_C30;
+    SpinTradeFlashTask unk_C44;
+    SpinTradeBobTasks unk_C4C;
+    SpinTradeWindows unk_C9C;
+    SpinTradeCamera unk_D0C;
+    SpinTradeTouchInput unk_D2C;
     NARC *unk_D80;
     BgConfig *unk_D84;
     NNSG2dScreenData *unk_D88;
@@ -297,132 +297,132 @@ typedef struct UnkStruct_ov109_021D0F70_t {
     SysTask *unk_DC0;
     SysTask *unk_DC4;
     void *unk_DC8;
-} UnkStruct_ov109_021D0F70;
+} SpinTrade;
 
 typedef struct {
     int unk_00;
     int unk_04;
     int unk_08;
     int unk_0C;
-    UnkStruct_ov109_021D0F70 *unk_10;
+    SpinTrade *unk_10;
     ManagedSprite *unk_14;
-} UnkStruct_ov109_021D3600;
+} SpinTradeSparkleTask;
 
-static void ov109_021D0F70(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1C00(void *param0);
-static void ov109_021D1C28(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1C68(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1C90(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1CF0(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1D10(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1DC8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1E1C(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D1EC8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2004(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2204(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D228C(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2298(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D22A4(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D22B0(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2308(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2344(UnkStruct_ov109_021D0F70 *param0, u32 param1);
-static void ov109_021D2368(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2408(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D24C0(UnkStruct_ov109_021D0F70 *param0);
-static ManagedSprite *ov109_021D24E0(UnkStruct_ov109_021D0F70 *param0, const SpriteTemplate *param1);
-static void ov109_021D24F8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D25E8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2634(UnkStruct_ov109_021D0F70 *param0, u32 param1);
-static void ov109_021D268C(UnkStruct_ov109_021D0F70 *param0, u32 param1, const TrainerInfo *param2);
-static void ov109_021D2714(UnkStruct_ov109_021D0F70 *param0, u32 param1, u32 param2);
-static void ov109_021D2788(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D27AC(UnkStruct_ov109_021D0F70 *param0, int param1);
-static void ov109_021D27F0(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2820(UnkStruct_ov109_021D0F70 *param0, String *param1, int param2, TextColor param3);
-static void ov109_021D2874(UnkStruct_ov109_021D0F70 *param0, String *param1, int param2, int param3);
-static void ov109_021D28A0(UnkStruct_ov109_021D0F70 *param0, int param1);
-static void ov109_021D28C4(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D293C(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D294C(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D29AC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D29CC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2A58(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2A68(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2AC8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2AE4(UnkStruct_ov109_021D2AE4 *param0, fx32 param1);
-static void ov109_021D2AF0(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2AF8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2B00(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2BD4(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2C0C(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1);
-static void ov109_021D2C38(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2CCC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2D44(UnkStruct_ov109_021D0F70 *param0, fx32 param1);
-static void ov109_021D2D78(UnkStruct_ov109_021D2D78 *param0, const VecFx32 *param1);
-static UnkStruct_ov109_021D2D78 *ov109_021D2DF8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D2EC0(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1);
-static void ov109_021D2EF4(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2EF4 *param1);
-static void ov109_021D2F68(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1);
-static void ov109_021D2FA4(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2FA4 *param1);
-static SysTask *ov109_021D2FE0(UnkStruct_ov109_021D0F70 *param0, int param1, int param2, int param3, int param4, int param5, UnkStruct_ov109_021D2D78 *param6);
-static void ov109_021D302C(SysTask *param0, void *param1);
-static void ov109_021D31A8(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D31E0(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3218(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D3248(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D32DC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3318(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3328(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1);
-static void ov109_021D3414(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3450(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3460(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1);
-static void ov109_021D3584(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D35BC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D35CC(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D35E8(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D35F4(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D379C(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D37E0(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D37F0(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D37FC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3884(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D38BC(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D38CC(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1);
-static void ov109_021D38F8(UnkStruct_ov109_021D0F70 *param0);
-static SysTask *ov109_021D3684(UnkStruct_ov109_021D0F70 *param0);
-static void ov109_021D3990(UnkStruct_ov109_021D0F70 *param0, int param1);
-static void ov109_021D39D4(fx32 *param0, fx32 param1);
-static void ov109_021D39FC(UnkStruct_ov109_021D0F70 *param0, fx32 param1);
-static BOOL ov109_021D3A14(UnkStruct_ov109_021D0F70 *param0);
-static void *ov109_021D3A2C(UnkStruct_ov109_021D0F70 *param0, u32 param1, BOOL param2);
-static void *ov109_021D3A94(UnkStruct_ov109_021D0F70 *param0, u32 param1);
-static void *ov109_021D3AB4(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D3AB8(UnkStruct_ov109_021D0F70 *param0, u16 param1);
-static BOOL ov109_021D3ACC(UnkStruct_ov109_021D0F70 *param0);
-static int ov109_021D3B04(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D3B54(UnkStruct_ov109_021D0F70 *param0, int param1);
-static void ov109_021D3B70(UnkStruct_ov109_021D0F70 *param0, int param1);
-static int ov109_021D3BC4(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D3C08(UnkStruct_ov109_021D0F70 *param0, fx32 param1, int param2);
-static BOOL ov109_021D3C94(Party *param0);
-static BOOL ov109_021D3CD8(UnkStruct_ov109_021D0F70 *param0);
-static int ov109_021D3D1C(UnkStruct_ov109_021D0F70 *param0);
-static BOOL ov109_021D3D3C(UnkStruct_ov109_021D0F70 *param0);
+static void SpinTrade_ResetCommFlags(SpinTrade *param0);
+static void SpinTrade_VBlankCallback(void *param0);
+static void SpinTrade_InitGraphics(SpinTrade *param0);
+static void SpinTrade_FreeGraphics(SpinTrade *param0);
+static void SpinTrade_DrawFrame(SpinTrade *param0);
+static void SpinTrade_SetGXBanks(SpinTrade *param0);
+static void SpinTrade_EnableLayers(SpinTrade *param0);
+static void SpinTrade_DisableLayers(SpinTrade *param0);
+static void SpinTrade_InitG3D(SpinTrade *param0);
+static void SpinTrade_InitBg(SpinTrade *param0);
+static void SpinTrade_LoadGraphics(SpinTrade *param0);
+static void SpinTrade_FreeBg(SpinTrade *param0);
+static void SpinTrade_ShowTilemapA(SpinTrade *param0);
+static void SpinTrade_ShowTilemapB(SpinTrade *param0);
+static void SpinTrade_ShowTilemapC(SpinTrade *param0);
+static void SpinTrade_InitPalette(SpinTrade *param0);
+static void SpinTrade_FreePalette(SpinTrade *param0);
+static void SpinTrade_SetPaletteBlend(SpinTrade *param0, u32 param1);
+static void SpinTrade_InitSprites(SpinTrade *param0);
+static void SpinTrade_LoadSpriteResources(SpinTrade *param0);
+static void SpinTrade_FreeSprites(SpinTrade *param0);
+static ManagedSprite *SpinTrade_NewSprite(SpinTrade *param0, const SpriteTemplate *param1);
+static void SpinTrade_InitWindows(SpinTrade *param0);
+static void SpinTrade_FreeWindows(SpinTrade *param0);
+static void SpinTrade_ShowMessage(SpinTrade *param0, u32 param1);
+static void SpinTrade_ShowMessageWithTrainer(SpinTrade *param0, u32 param1, const TrainerInfo *param2);
+static void SpinTrade_ShowMessageWithItem(SpinTrade *param0, u32 param1, u32 param2);
+static void SpinTrade_EraseMessage(SpinTrade *param0);
+static void SpinTrade_AddPlayerWindows(SpinTrade *param0, int param1);
+static void SpinTrade_RemovePlayerWindows(SpinTrade *param0);
+static void SpinTrade_DrawPlayerName(SpinTrade *param0, String *param1, int param2, TextColor param3);
+static void SpinTrade_DrawPlayerNameColored(SpinTrade *param0, String *param1, int param2, int param3);
+static void SpinTrade_ErasePlayerWindow(SpinTrade *param0, int param1);
+static void SpinTrade_InitCamera(SpinTrade *param0);
+static void SpinTrade_FreeCamera(SpinTrade *param0);
+static void SpinTrade_UpdateTouchInput(SpinTrade *param0);
+static BOOL SpinTrade_IsCenterTouched(SpinTrade *param0);
+static void SpinTrade_LoadEggModel(SpinTrade *param0);
+static void SpinTrade_FreeEggModel(SpinTrade *param0);
+static void SpinTrade_UpdateEggModel(SpinTrade *param0);
+static void SpinTrade_DrawEggModel(SpinTrade *param0);
+static void SpinTrade_AdvanceEggRotation(SpinTradeEggModel *param0, fx32 param1);
+static void SpinTrade_LoadModels(SpinTrade *param0);
+static void SpinTrade_FreeModels(SpinTrade *param0);
+static void SpinTrade_LoadMonModels(SpinTrade *param0);
+static void SpinTrade_FreeMonModels(SpinTrade *param0);
+static void SpinTrade_CreateMonRenderObj(SpinTrade *param0, SpinTradeMonModel *param1);
+static void SpinTrade_UpdateMonModels(SpinTrade *param0);
+static void SpinTrade_DrawMonModels(SpinTrade *param0);
+static void SpinTrade_AdvanceMonRotation(SpinTrade *param0, fx32 param1);
+static void SpinTrade_UpdateMonPosition(SpinTradeMonModel *param0, const VecFx32 *param1);
+static SpinTradeMonModel *SpinTrade_GetLeadingMon(SpinTrade *param0);
+static void SpinTrade_CreateMonShadow(SpinTrade *param0, SpinTradeMonModel *param1);
+static void SpinTrade_UpdateMonShadow(SpinTrade *param0, SpinTradeMonShadow *param1);
+static void SpinTrade_CreateMonAnim(SpinTrade *param0, SpinTradeMonModel *param1);
+static void SpinTrade_UpdateMonAnim(SpinTrade *param0, SpinTradeMonAnim *param1);
+static SysTask *SpinTrade_StartMonDropTask(SpinTrade *param0, int param1, int param2, int param3, int param4, int param5, SpinTradeMonModel *param6);
+static void SpinTrade_MonDropTask(SysTask *param0, void *param1);
+static void SpinTrade_InitBounceTasks(SpinTrade *param0);
+static void SpinTrade_FreeBounceTasks(SpinTrade *param0);
+static void SpinTrade_StartAllBounceTasks(SpinTrade *param0);
+static BOOL SpinTrade_AreBounceTasksActive(SpinTrade *param0);
+static void SpinTrade_InitShakeTasks(SpinTrade *param0);
+static void SpinTrade_FreeShakeTasks(SpinTrade *param0);
+static void SpinTrade_StartShakeTask(SpinTrade *param0, SpinTradeMonModel *param1);
+static void SpinTrade_InitWobbleTasks(SpinTrade *param0);
+static void SpinTrade_FreeWobbleTasks(SpinTrade *param0);
+static void SpinTrade_StartWobbleTask(SpinTrade *param0, SpinTradeMonModel *param1);
+static void SpinTrade_InitIntroTask(SpinTrade *param0);
+static void SpinTrade_FreeIntroTask(SpinTrade *param0);
+static void SpinTrade_StartIntroTask(SpinTrade *param0);
+static BOOL SpinTrade_IsIntroTaskRunning(SpinTrade *param0);
+static BOOL SpinTrade_IsIntroTaskDone(SpinTrade *param0);
+static void SpinTrade_InitFlashTask(SpinTrade *param0);
+static void SpinTrade_FreeFlashTask(SpinTrade *param0);
+static BOOL SpinTrade_IsFlashTaskRunning(SpinTrade *param0);
+static void SpinTrade_StartFlashTask(SpinTrade *param0);
+static void SpinTrade_InitBobTasks(SpinTrade *param0);
+static void SpinTrade_FreeBobTasks(SpinTrade *param0);
+static void SpinTrade_StartBobTask(SpinTrade *param0, SpinTradeMonModel *param1);
+static void SpinTrade_StartAllBobTasks(SpinTrade *param0);
+static SysTask *SpinTrade_StartSparkleTask(SpinTrade *param0);
+static void SpinTrade_StartFadeTask(SpinTrade *param0, int param1);
+static void SpinTrade_AddRotation(fx32 *param0, fx32 param1);
+static void SpinTrade_AdvanceRotation(SpinTrade *param0, fx32 param1);
+static BOOL SpinTrade_UpdateSpinTimer(SpinTrade *param0);
+static void *SpinTrade_LoadNarcMember(SpinTrade *param0, u32 param1, BOOL param2);
+static void *SpinTrade_GetSendBuffer(SpinTrade *param0, u32 param1);
+static void *SpinTrade_GetSendBufferPtr(SpinTrade *param0);
+static BOOL SpinTrade_CheckStageFlag(SpinTrade *param0, u16 param1);
+static BOOL SpinTrade_AreAllParticipantsConnected(SpinTrade *param0);
+static int SpinTrade_CountParticipants(SpinTrade *param0);
+static BOOL SpinTrade_IsNetIdConnected(SpinTrade *param0, int param1);
+static void SpinTrade_CopyReceivedMon(SpinTrade *param0, int param1);
+static int SpinTrade_CountReceivedTrainerData(SpinTrade *param0);
+static BOOL SpinTrade_IsInRange(SpinTrade *param0, fx32 param1, int param2);
+static BOOL SpinTrade_HasBadEgg(Party *param0);
+static BOOL SpinTrade_AnyBadEgg(SpinTrade *param0);
+static int SpinTrade_CountEggOk(SpinTrade *param0);
+static BOOL SpinTrade_HasBadEggFlag(SpinTrade *param0);
 
-static const WindowTemplate Unk_ov109_021D59B8[1];
-static const WindowTemplate *const Unk_ov109_021D5A68[5 + 1];
-static const u16 Unk_ov109_021D5C44[5 + 1][5];
-static const u16 Unk_ov109_021D5C80[5 + 1][5];
-static const UnkStruct_ov109_021D5C14 Unk_ov109_021D5C14[5 + 1];
-static const u32 Unk_ov109_021D5BE4[5 + 1][2];
-static const u32 Unk_ov109_021D5A80[5 + 1];
-static const fx32 Unk_ov109_021D5A98[5 + 1];
-static int (*const Unk_ov109_021D5CBC[54])(UnkStruct_ov109_021D0F70 *);
-static int (*const Unk_ov109_021D59D8[3])(UnkStruct_ov109_021D2FE0 *);
+static const WindowTemplate sMessageWindowTemplate[1];
+static const WindowTemplate *const sPlayerWindowTemplates[5 + 1];
+static const u16 sPlayerStartAngles[5 + 1][5];
+static const u16 sPlayerTargetAngles[5 + 1][5];
+static const SpinTradeRangeSet sRangeSets[5 + 1];
+static const u32 sItemRanges[5 + 1][2];
+static const u32 sEggModelIndices[5 + 1];
+static const fx32 sEggModelAngles[5 + 1];
+static int (*const sStateHandlers[54])(SpinTrade *);
+static int (*const sMonDropStateHandlers[3])(SpinTradeMonDropTask *);
 
-int ov109_021D0D80(ApplicationManager *appMan, int *param1)
+int SpinTrade_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov109_021D0F70 *v0;
+    SpinTrade *v0;
     UnionRoomSpinTradeSession *v1 = ApplicationManager_Args(appMan);
 
     CommManager_SetErrorHandling(1, 1);
@@ -431,8 +431,8 @@ int ov109_021D0D80(ApplicationManager *appMan, int *param1)
     ResetLock(RESET_LOCK_0x2);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_95, 0x80000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov109_021D0F70), HEAP_ID_95);
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D0F70));
+    v0 = ApplicationManager_NewData(appMan, sizeof(SpinTrade), HEAP_ID_95);
+    memset(v0, 0, sizeof(SpinTrade));
 
     v1->spinAppData = v0;
     v0->unk_CC = v1;
@@ -443,15 +443,15 @@ int ov109_021D0D80(ApplicationManager *appMan, int *param1)
     VramTransfer_New(8, HEAP_ID_95);
     EnableTouchPad();
     InitializeTouchPad(4);
-    ov109_021D1C28(v0);
-    SetVBlankCallback(ov109_021D1C00, v0);
-    ov109_021D29CC(v0);
-    ov109_021D2AF0(v0);
+    SpinTrade_InitGraphics(v0);
+    SetVBlankCallback(SpinTrade_VBlankCallback, v0);
+    SpinTrade_LoadEggModel(v0);
+    SpinTrade_LoadModels(v0);
 
     {
         int v2 = 0, v3 = 0;
         int v4 = CommSys_CurNetId();
-        UnkStruct_ov109_021D2AE4 *v5 = &v0->unk_D4;
+        SpinTradeEggModel *v5 = &v0->unk_D4;
 
         do {
             if (v0->unk_CC->connectedBitmap & (1 << v2)) {
@@ -465,39 +465,39 @@ int ov109_021D0D80(ApplicationManager *appMan, int *param1)
             v2++;
         } while (v2 < 5);
 
-        v5->unk_40 = (FX32_ONE * (Unk_ov109_021D5C44[v0->unk_CC->connectedCount][v3]));
+        v5->unk_40 = (FX32_ONE * (sPlayerStartAngles[v0->unk_CC->connectedCount][v3]));
     }
 
     v0->unk_1C = Sound_GetCurrentBGM();
 
-    ov109_021D31A8(v0);
-    ov109_021D32DC(v0);
-    ov109_021D3414(v0);
-    ov109_021D3584(v0);
-    ov109_021D379C(v0);
-    ov109_021D3884(v0);
+    SpinTrade_InitBounceTasks(v0);
+    SpinTrade_InitShakeTasks(v0);
+    SpinTrade_InitWobbleTasks(v0);
+    SpinTrade_InitIntroTask(v0);
+    SpinTrade_InitFlashTask(v0);
+    SpinTrade_InitBobTasks(v0);
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 8, 1, HEAP_ID_95);
 
     return 1;
 }
 
-int ov109_021D0EB4(ApplicationManager *appMan, int *param1)
+int SpinTrade_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov109_021D0F70 *v0 = ApplicationManager_Data(appMan);
+    SpinTrade *v0 = ApplicationManager_Data(appMan);
 
     if (DisableTouchPad() != 1) {
         GF_ASSERT(FALSE);
     }
 
-    ov109_021D31E0(v0);
-    ov109_021D3318(v0);
-    ov109_021D3450(v0);
-    ov109_021D35BC(v0);
-    ov109_021D37E0(v0);
-    ov109_021D38BC(v0);
-    ov109_021D2A58(v0);
-    ov109_021D2AF8(v0);
-    ov109_021D1C68(v0);
+    SpinTrade_FreeBounceTasks(v0);
+    SpinTrade_FreeShakeTasks(v0);
+    SpinTrade_FreeWobbleTasks(v0);
+    SpinTrade_FreeIntroTask(v0);
+    SpinTrade_FreeFlashTask(v0);
+    SpinTrade_FreeBobTasks(v0);
+    SpinTrade_FreeEggModel(v0);
+    SpinTrade_FreeModels(v0);
+    SpinTrade_FreeGraphics(v0);
 
     SetVBlankCallback(NULL, NULL);
     VramTransfer_Free();
@@ -509,43 +509,43 @@ int ov109_021D0EB4(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-int ov109_021D0F2C(ApplicationManager *appMan, int *param1)
+int SpinTrade_Main(ApplicationManager *appMan, int *param1)
 {
     int v0;
-    UnkStruct_ov109_021D0F70 *v1 = ApplicationManager_Data(appMan);
+    SpinTrade *v1 = ApplicationManager_Data(appMan);
 
-    ov109_021D294C(v1);
+    SpinTrade_UpdateTouchInput(v1);
 
     do {
-        v0 = Unk_ov109_021D5CBC[v1->unk_00](v1);
+        v0 = sStateHandlers[v1->unk_00](v1);
     } while (v0 == 1);
 
     if (v0 == 2) {
         return 1;
     }
 
-    ov109_021D2A68(v1);
-    ov109_021D2C38(v1);
-    ov109_021D1C90(v1);
-    ov109_021D0F70(v1);
+    SpinTrade_UpdateEggModel(v1);
+    SpinTrade_UpdateMonModels(v1);
+    SpinTrade_DrawFrame(v1);
+    SpinTrade_ResetCommFlags(v1);
 
     return 0;
 }
 
-static void ov109_021D0F70(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_ResetCommFlags(SpinTrade *param0)
 {
     param0->unk_2C.unk_08 = 0;
     param0->unk_2C.unk_10 = 0;
 }
 
-static int ov109_021D0F78(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State0(SpinTrade *param0)
 {
-    ov109_021D2634(param0, 0);
+    SpinTrade_ShowMessage(param0, 0);
     param0->unk_00 = 1;
     return 0;
 }
 
-static int ov109_021D0F8C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State1(SpinTrade *param0)
 {
     if (IsScreenFadeDone()) {
         if (CommSys_CurNetId() == 0) {
@@ -560,9 +560,9 @@ static int ov109_021D0F8C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D0FB0(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State2(SpinTrade *param0)
 {
-    if (ov109_021D3ACC(param0)) {
+    if (SpinTrade_AreAllParticipantsConnected(param0)) {
         param0->unk_00 = 3;
         return 1;
     }
@@ -570,7 +570,7 @@ static int ov109_021D0FB0(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D0FC8(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State3(SpinTrade *param0)
 {
     u16 v0 = (1 << 0);
 
@@ -582,9 +582,9 @@ static int ov109_021D0FC8(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D0FF8(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State4(SpinTrade *param0)
 {
-    int v0 = ov109_021D3B04(param0) + 1;
+    int v0 = SpinTrade_CountParticipants(param0) + 1;
 
     if (v0 != CommSys_ConnectedCount()) {
         return 0;
@@ -594,11 +594,11 @@ static int ov109_021D0FF8(UnkStruct_ov109_021D0F70 *param0)
     return 1;
 }
 
-static int ov109_021D1018(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State5(SpinTrade *param0)
 {
     int v0;
 
-    param0->unk_2C.unk_04 = ov109_021D3B04(param0) + 1;
+    param0->unk_2C.unk_04 = SpinTrade_CountParticipants(param0) + 1;
 
     v0 = UnionRoomComm_Send(param0->unk_D0, 13, &param0->unk_2C.unk_04, 4);
 
@@ -610,16 +610,16 @@ static int ov109_021D1018(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1048(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State6(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D1048 v1;
+    SpinTradeOrder v1;
 
     if (param0->unk_14 == 0) {
-        v1.unk_02 = 0;
-        v1.unk_00 = 0;
+        v1.netId = 0;
+        v1.slot = 0;
 
-        v0 = UnionRoomComm_Send(param0->unk_D0, 12, &v1, sizeof(UnkStruct_ov109_021D1048));
+        v0 = UnionRoomComm_Send(param0->unk_D0, 12, &v1, sizeof(SpinTradeOrder));
 
         if (v0 == 1) {
             param0->unk_14++;
@@ -635,10 +635,10 @@ static int ov109_021D1048(UnkStruct_ov109_021D0F70 *param0)
         do {
             if (v4 & (1 << v2)) {
                 if (v3 >= param0->unk_14) {
-                    v1.unk_02 = v2;
-                    v1.unk_00 = param0->unk_14;
+                    v1.netId = v2;
+                    v1.slot = param0->unk_14;
 
-                    v0 = UnionRoomComm_Send(param0->unk_D0, 12, &v1, sizeof(UnkStruct_ov109_021D1048));
+                    v0 = UnionRoomComm_Send(param0->unk_D0, 12, &v1, sizeof(SpinTradeOrder));
 
                     if (v0 == 1) {
                         param0->unk_14++;
@@ -660,7 +660,7 @@ static int ov109_021D1048(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D10D8(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State7(SpinTrade *param0)
 {
     u16 v0 = (1 << 3);
 
@@ -671,7 +671,7 @@ static int ov109_021D10D8(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1100(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State8(SpinTrade *param0)
 {
     int v0 = UnionRoomComm_Send(param0->unk_D0, 9, NULL, 0);
 
@@ -684,9 +684,9 @@ static int ov109_021D1100(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1124(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State9(SpinTrade *param0)
 {
-    if (ov109_021D3AB8(param0, 1 << 3) == 1) {
+    if (SpinTrade_CheckStageFlag(param0, 1 << 3) == 1) {
         GF_ASSERT(param0->unk_2C.unk_04 >= 2);
         GF_ASSERT(param0->unk_2C.unk_00 != 0);
         param0->unk_00 = 10;
@@ -695,14 +695,14 @@ static int ov109_021D1124(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1150(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State10(SpinTrade *param0)
 {
     CommTiming_StartSync(202);
     param0->unk_00 = 11;
     return 0;
 }
 
-static int ov109_021D1164(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State11(SpinTrade *param0)
 {
     if (CommTiming_IsSyncState(202)) {
         param0->unk_00 = 12;
@@ -711,7 +711,7 @@ static int ov109_021D1164(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D117C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State12(SpinTrade *param0)
 {
     if (UnionRoomComm_Send(param0->unk_D0, 14, &param0->unk_CC->selectedMonSlot, 4)) {
         param0->unk_00 = 13;
@@ -720,7 +720,7 @@ static int ov109_021D117C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D11A0(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State13(SpinTrade *param0)
 {
     int v0;
     u32 v1 = (u32)param0->unk_24;
@@ -733,10 +733,10 @@ static int ov109_021D11A0(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D11BC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State14(SpinTrade *param0)
 {
-    if (ov109_021D3BC4(param0) == param0->unk_2C.unk_04) {
-        if (ov109_021D3CD8(param0) == 1) {
+    if (SpinTrade_CountReceivedTrainerData(param0) == param0->unk_2C.unk_04) {
+        if (SpinTrade_AnyBadEgg(param0) == 1) {
             UnionRoomComm_Send(param0->unk_D0, 16, NULL, 0);
             param0->unk_00 = 46;
         } else {
@@ -748,28 +748,28 @@ static int ov109_021D11BC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1204(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State15(SpinTrade *param0)
 {
-    if (ov109_021D3D3C(param0) == 1) {
+    if (SpinTrade_HasBadEggFlag(param0) == 1) {
         param0->unk_00 = 46;
-    } else if (ov109_021D3D1C(param0) == param0->unk_2C.unk_04) {
+    } else if (SpinTrade_CountEggOk(param0) == param0->unk_2C.unk_04) {
         param0->unk_00 = 16;
     }
 
     return 0;
 }
 
-static int ov109_021D122C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State16(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D122C *v1 = ov109_021D3A94(param0, sizeof(UnkStruct_ov109_021D122C));
+    SpinTradeSpinOrder *v1 = SpinTrade_GetSendBuffer(param0, sizeof(SpinTradeSpinOrder));
 
     v1->unk_10 = param0->unk_2C.unk_00;
     v1->unk_14 = param0->unk_2C.unk_04;
-    v1->unk_04 = Unk_ov109_021D5C44[v1->unk_14][param0->unk_2C.unk_00];
+    v1->unk_04 = sPlayerStartAngles[v1->unk_14][param0->unk_2C.unk_00];
 
     for (v0 = 0; v0 < (7 + 1); v0++) {
-        if (ov109_021D3B54(param0, v0)) {
+        if (SpinTrade_IsNetIdConnected(param0, v0)) {
             param0->unk_2C.unk_58[v0] = CommInfo_TrainerInfo(v0);
             TrainerInfo_NameString(
                 param0->unk_2C.unk_58[v0], param0->unk_2C.unk_6C[v0]);
@@ -780,12 +780,12 @@ static int ov109_021D122C(UnkStruct_ov109_021D0F70 *param0)
     param0->unk_00 = 17;
 
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_15, SEQ_PL_GURUGURU_sseq, 1);
-    ov109_021D2788(param0);
+    SpinTrade_EraseMessage(param0);
 
     return 1;
 }
 
-static int ov109_021D12B0(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State17(SpinTrade *param0)
 {
     param0->unk_0C--;
 
@@ -796,11 +796,11 @@ static int ov109_021D12B0(UnkStruct_ov109_021D0F70 *param0)
     param0->unk_0C = 15;
 
     {
-        UnkStruct_ov109_021D122C *v0 = ov109_021D3AB4(param0);
-        u16 v1 = Unk_ov109_021D5C80[v0->unk_14][v0->unk_10];
-        int v2 = param0->unk_2C.unk_44[v0->unk_10].unk_02;
+        SpinTradeSpinOrder *v0 = SpinTrade_GetSendBufferPtr(param0);
+        u16 v1 = sPlayerTargetAngles[v0->unk_14][v0->unk_10];
+        int v2 = param0->unk_2C.unk_44[v0->unk_10].netId;
 
-        ov109_021D2FE0(param0, v2, v0->unk_10, v0->unk_00, v1, v0->unk_04, &param0->unk_190.unk_140[v0->unk_10]);
+        SpinTrade_StartMonDropTask(param0, v2, v0->unk_10, v0->unk_00, v1, v0->unk_04, &param0->unk_190.unk_140[v0->unk_10]);
 
         v0->unk_10++;
         v0->unk_10 %= v0->unk_14;
@@ -815,9 +815,9 @@ static int ov109_021D12B0(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1334(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State18(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
+    SpinTradeModels *v0 = &param0->unk_190;
     int v1 = 0, v2 = 0, v3 = param0->unk_2C.unk_04;
 
     do {
@@ -836,7 +836,7 @@ static int ov109_021D1334(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1368(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State19(SpinTrade *param0)
 {
     param0->unk_0C++;
 
@@ -853,7 +853,7 @@ static int ov109_021D1368(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1390(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State20(SpinTrade *param0)
 {
     u16 v0 = (1 << 2);
 
@@ -864,9 +864,9 @@ static int ov109_021D1390(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D13BC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State21(SpinTrade *param0)
 {
-    if (ov109_021D3AB8(param0, 1 << 2) == 1) {
+    if (SpinTrade_CheckStageFlag(param0, 1 << 2) == 1) {
         param0->unk_00 = 22;
 
         return 1;
@@ -875,14 +875,14 @@ static int ov109_021D13BC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D13D8(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State22(SpinTrade *param0)
 {
     CommTiming_StartSync(202);
     param0->unk_00 = 23;
     return 0;
 }
 
-static int ov109_021D13EC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State23(SpinTrade *param0)
 {
     if (CommTiming_IsSyncState(202)) {
         param0->unk_00 = 24;
@@ -891,16 +891,16 @@ static int ov109_021D13EC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1404(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State24(SpinTrade *param0)
 {
-    ov109_021D3990(param0, 1);
-    ov109_021D3684(param0);
+    SpinTrade_StartFadeTask(param0, 1);
+    SpinTrade_StartSparkleTask(param0);
     param0->unk_00 = 25;
 
     return 0;
 }
 
-static int ov109_021D141C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State25(SpinTrade *param0)
 {
     int v0;
 
@@ -911,7 +911,7 @@ static int ov109_021D141C(UnkStruct_ov109_021D0F70 *param0)
     }
 
     for (v0 = 0; v0 < param0->unk_2C.unk_04; v0++) {
-        ov109_021D28A0(param0, v0);
+        SpinTrade_ErasePlayerWindow(param0, v0);
     }
 
     param0->unk_0C = 0;
@@ -920,7 +920,7 @@ static int ov109_021D141C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1450(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State26(SpinTrade *param0)
 {
     if (CommSys_CurNetId() == 0) {
         param0->unk_00 = 27;
@@ -931,31 +931,31 @@ static int ov109_021D1450(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1460(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State27(SpinTrade *param0)
 {
     {
-        BOOL v0 = ov109_021D3A14(param0);
+        BOOL v0 = SpinTrade_UpdateSpinTimer(param0);
 
-        if ((v0 == 1) && (ov109_021D35F4(param0) == 0)) {
+        if ((v0 == 1) && (SpinTrade_IsIntroTaskDone(param0) == 0)) {
             param0->unk_00 = 29;
             return 1;
         }
     }
 
     if (param0->unk_2C.unk_08) {
-        if (ov109_021D35F4(param0) == 0) {
-            ov109_021D35CC(param0);
+        if (SpinTrade_IsIntroTaskDone(param0) == 0) {
+            SpinTrade_StartIntroTask(param0);
         }
     }
 
-    if (ov109_021D37F0(param0) == 0) {
-        if (ov109_021D29AC(param0) == 1) {
-            if (ov109_021D35F4(param0) == 0) {
-                ov109_021D35CC(param0);
+    if (SpinTrade_IsFlashTaskRunning(param0) == 0) {
+        if (SpinTrade_IsCenterTouched(param0) == 1) {
+            if (SpinTrade_IsIntroTaskDone(param0) == 0) {
+                SpinTrade_StartIntroTask(param0);
                 param0->unk_2C.unk_0C = 1;
             }
 
-            ov109_021D37FC(param0);
+            SpinTrade_StartFlashTask(param0);
         }
     }
 
@@ -967,7 +967,7 @@ static int ov109_021D1460(UnkStruct_ov109_021D0F70 *param0)
 
     {
         fx32 v1;
-        UnkStruct_ov109_021D2AE4 *v2 = &param0->unk_D4;
+        SpinTradeEggModel *v2 = &param0->unk_D4;
 
         if (param0->unk_08 < ((30 * 20) / 2)) {
             v2->unk_48 += (FX32_ONE * 14 / ((30 * 20) / 2));
@@ -985,10 +985,10 @@ static int ov109_021D1460(UnkStruct_ov109_021D0F70 *param0)
 
         v1 = v2->unk_48;
 
-        if (ov109_021D35E8(param0) == 1) {
-            ov109_021D2AE4(&param0->unk_D4, (v1) << 1);
+        if (SpinTrade_IsIntroTaskRunning(param0) == 1) {
+            SpinTrade_AdvanceEggRotation(&param0->unk_D4, (v1) << 1);
         } else {
-            ov109_021D39FC(param0, v1);
+            SpinTrade_AdvanceRotation(param0, v1);
         }
     }
 
@@ -1005,7 +1005,7 @@ static int ov109_021D1460(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1570(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State28(SpinTrade *param0)
 {
     if (param0->unk_2C.unk_10 == 1) {
         param0->unk_D4.unk_3C = (FX32_ONE * (param0->unk_2C.unk_2C.posY));
@@ -1014,28 +1014,28 @@ static int ov109_021D1570(UnkStruct_ov109_021D0F70 *param0)
     }
 
     {
-        BOOL v0 = ov109_021D3A14(param0);
+        BOOL v0 = SpinTrade_UpdateSpinTimer(param0);
 
-        if ((v0 == 1) && (ov109_021D35F4(param0) == 0)) {
+        if ((v0 == 1) && (SpinTrade_IsIntroTaskDone(param0) == 0)) {
             param0->unk_00 = 29;
             return 1;
         }
     }
 
     if (param0->unk_2C.unk_08) {
-        if (ov109_021D35F4(param0) == 0) {
-            ov109_021D35CC(param0);
+        if (SpinTrade_IsIntroTaskDone(param0) == 0) {
+            SpinTrade_StartIntroTask(param0);
         }
     }
 
-    if (ov109_021D37F0(param0) == 0) {
-        if (ov109_021D29AC(param0) == 1) {
-            if (ov109_021D35F4(param0) == 0) {
-                ov109_021D35CC(param0);
+    if (SpinTrade_IsFlashTaskRunning(param0) == 0) {
+        if (SpinTrade_IsCenterTouched(param0) == 1) {
+            if (SpinTrade_IsIntroTaskDone(param0) == 0) {
+                SpinTrade_StartIntroTask(param0);
                 param0->unk_2C.unk_0C = 1;
             }
 
-            ov109_021D37FC(param0);
+            SpinTrade_StartFlashTask(param0);
         }
     }
 
@@ -1045,20 +1045,20 @@ static int ov109_021D1570(UnkStruct_ov109_021D0F70 *param0)
         }
     }
 
-    if (ov109_021D35E8(param0) == 1) {
-        ov109_021D2AE4(&param0->unk_D4, (param0->unk_D4.unk_48) << 1);
+    if (SpinTrade_IsIntroTaskRunning(param0) == 1) {
+        SpinTrade_AdvanceEggRotation(&param0->unk_D4, (param0->unk_D4.unk_48) << 1);
     } else {
-        ov109_021D39FC(param0, param0->unk_D4.unk_48);
+        SpinTrade_AdvanceRotation(param0, param0->unk_D4.unk_48);
     }
 
     return 0;
 }
 
-static int ov109_021D1648(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State29(SpinTrade *param0)
 {
-    ov109_021D3990(param0, 0);
+    SpinTrade_StartFadeTask(param0, 0);
 
-    param0->unk_28 = ov109_021D2DF8(param0);
+    param0->unk_28 = SpinTrade_GetLeadingMon(param0);
 
     if (param0->unk_28->unk_0C == CommSys_CurNetId()) {
         param0->unk_00 = 30;
@@ -1070,13 +1070,13 @@ static int ov109_021D1648(UnkStruct_ov109_021D0F70 *param0)
     return 1;
 }
 
-static int ov109_021D167C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State30(SpinTrade *param0)
 {
     u32 v0;
-    UnkStruct_ov109_021D2D78 *v1 = param0->unk_28;
+    SpinTradeMonModel *v1 = param0->unk_28;
 
-    ov109_021D39FC(param0, FX32_ONE * 4);
-    param0->unk_28 = ov109_021D2DF8(param0);
+    SpinTrade_AdvanceRotation(param0, FX32_ONE * 4);
+    param0->unk_28 = SpinTrade_GetLeadingMon(param0);
 
     if (param0->unk_28->unk_0C != CommSys_CurNetId()) {
         param0->unk_00 = 31;
@@ -1085,17 +1085,17 @@ static int ov109_021D167C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D16A4(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State31(SpinTrade *param0)
 {
     int v0, v1;
     fx32 v2, v3, v4, v5;
-    UnkStruct_ov109_021D2D78 *v6 = param0->unk_28;
+    SpinTradeMonModel *v6 = param0->unk_28;
 
     v1 = param0->unk_2C.unk_00;
     v0 = param0->unk_2C.unk_04;
     v5 = (FX32_ONE * 4);
     v2 = v6->unk_1C;
-    v3 = (FX32_ONE * (Unk_ov109_021D5C80[v0][v1]));
+    v3 = (FX32_ONE * (sPlayerTargetAngles[v0][v1]));
 
     v4 = v3 - v2;
 
@@ -1111,9 +1111,9 @@ static int ov109_021D16A4(UnkStruct_ov109_021D0F70 *param0)
         v5 = v4;
     }
 
-    ov109_021D2AE4(&param0->unk_D4, v5);
-    ov109_021D2D44(param0, v5);
-    ov109_021D39D4(&v2, v5);
+    SpinTrade_AdvanceEggRotation(&param0->unk_D4, v5);
+    SpinTrade_AdvanceMonRotation(param0, v5);
+    SpinTrade_AddRotation(&v2, v5);
 
     if (((v2) / FX32_ONE) == ((v3) / FX32_ONE)) {
         param0->unk_00 = 32;
@@ -1122,14 +1122,14 @@ static int ov109_021D16A4(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1720(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State32(SpinTrade *param0)
 {
     CommTiming_StartSync(202);
     param0->unk_00 = 33;
     return 0;
 }
 
-static int ov109_021D1734(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State33(SpinTrade *param0)
 {
     if (CommTiming_IsSyncState(202)) {
         if (CommSys_CurNetId() == 0) {
@@ -1142,26 +1142,26 @@ static int ov109_021D1734(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1758(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State34(SpinTrade *param0)
 {
     int v0, v1;
-    UnkStruct_ov109_021D2D78 *v2;
-    UnkStruct_ov109_021D17EC v3;
+    SpinTradeMonModel *v2;
+    SpinTradeResult v3;
 
-    v3.unk_00 = ((param0->unk_D4.unk_3C) / FX32_ONE);
+    v3.eggAngle = ((param0->unk_D4.unk_3C) / FX32_ONE);
 
     for (v0 = 0, param0->unk_20 = 0; v0 < param0->unk_2C.unk_04; v0++) {
         v2 = &param0->unk_190.unk_140[v0];
         GF_ASSERT(v2->unk_00);
-        v3.unk_04[v2->unk_10] = (u16)((v2->unk_1C) / FX32_ONE);
+        v3.slotAngles[v2->unk_10] = (u16)((v2->unk_1C) / FX32_ONE);
 
-        if (ov109_021D3C08(param0, v2->unk_1C, param0->unk_2C.unk_04) == 1) {
+        if (SpinTrade_IsInRange(param0, v2->unk_1C, param0->unk_2C.unk_04) == 1) {
             param0->unk_20 |= (1 << v2->unk_0C);
         }
     }
 
-    v3.unk_02 = param0->unk_20;
-    v1 = UnionRoomComm_Send(param0->unk_D0, 15, &v3, sizeof(UnkStruct_ov109_021D17EC));
+    v3.winnerBitmap = param0->unk_20;
+    v1 = UnionRoomComm_Send(param0->unk_D0, 15, &v3, sizeof(SpinTradeResult));
 
     if (v1 == 1) {
         param0->unk_00 = 36;
@@ -1170,41 +1170,41 @@ static int ov109_021D1758(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D17EC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State35(SpinTrade *param0)
 {
     if (param0->unk_2C.unk_14 == 1) {
         int v0;
-        UnkStruct_ov109_021D2D78 *v1;
-        UnkStruct_ov109_021D17EC *v2 = &param0->unk_2C.unk_34;
+        SpinTradeMonModel *v1;
+        SpinTradeResult *v2 = &param0->unk_2C.unk_34;
 
-        param0->unk_D4.unk_3C = (FX32_ONE * (v2->unk_00));
+        param0->unk_D4.unk_3C = (FX32_ONE * (v2->eggAngle));
 
         for (v0 = 0; v0 < param0->unk_2C.unk_04; v0++) {
             v1 = &param0->unk_190.unk_140[v0];
             GF_ASSERT(v1->unk_00);
-            v1->unk_1C = (FX32_ONE * (v2->unk_04[v1->unk_10]));
+            v1->unk_1C = (FX32_ONE * (v2->slotAngles[v1->unk_10]));
         }
 
-        param0->unk_20 = v2->unk_02;
+        param0->unk_20 = v2->winnerBitmap;
 
-        ov109_021D2A68(param0);
-        ov109_021D2C38(param0);
+        SpinTrade_UpdateEggModel(param0);
+        SpinTrade_UpdateMonModels(param0);
 
-        param0->unk_28 = ov109_021D2DF8(param0);
+        param0->unk_28 = SpinTrade_GetLeadingMon(param0);
         param0->unk_00 = 36;
     }
 
     return 0;
 }
 
-static int ov109_021D1858(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State36(SpinTrade *param0)
 {
     int v0, v1;
     int v2 = param0->unk_28->unk_10;
 
     for (v0 = 0; v0 < param0->unk_2C.unk_04; v0++) {
         v1 = param0->unk_190.unk_140[v2].unk_0C;
-        ov109_021D2874(param0, param0->unk_2C.unk_6C[v1], v0, v1);
+        SpinTrade_DrawPlayerNameColored(param0, param0->unk_2C.unk_6C[v1], v0, v1);
         v2++;
         v2 %= param0->unk_2C.unk_04;
     }
@@ -1215,7 +1215,7 @@ static int ov109_021D1858(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D18A0(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State37(SpinTrade *param0)
 {
     param0->unk_0C++;
 
@@ -1229,13 +1229,13 @@ static int ov109_021D18A0(UnkStruct_ov109_021D0F70 *param0)
         int v0;
 
         for (v0 = 0; v0 < param0->unk_2C.unk_04; v0++) {
-            ov109_021D28A0(param0, v0);
+            SpinTrade_ErasePlayerWindow(param0, v0);
         }
     }
 
     {
         int v1 = param0->unk_28->unk_0C;
-        ov109_021D268C(param0, 2, param0->unk_2C.unk_58[v1]);
+        SpinTrade_ShowMessageWithTrainer(param0, 2, param0->unk_2C.unk_58[v1]);
     }
 
     {
@@ -1246,7 +1246,7 @@ static int ov109_021D18A0(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D18F4(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State38(SpinTrade *param0)
 {
     if (param0->unk_0C < (30 * 4)) {
         param0->unk_0C++;
@@ -1258,9 +1258,9 @@ static int ov109_021D18F4(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1918(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State39(SpinTrade *param0)
 {
-    ov109_021D38F8(param0);
+    SpinTrade_StartAllBobTasks(param0);
 
     if ((param0->unk_20 & (1 << param0->unk_28->unk_0C)) == 0) {
         param0->unk_00 = 43;
@@ -1270,16 +1270,16 @@ static int ov109_021D1918(UnkStruct_ov109_021D0F70 *param0)
     {
         u32 v0;
 
-        v0 = Unk_ov109_021D5BE4[param0->unk_2C.unk_04][0];
-        v0 += LCRNG_Next() % (Unk_ov109_021D5BE4[param0->unk_2C.unk_04][1] - v0 + 1);
+        v0 = sItemRanges[param0->unk_2C.unk_04][0];
+        v0 += LCRNG_Next() % (sItemRanges[param0->unk_2C.unk_04][1] - v0 + 1);
 
-        if (v0 < Unk_ov109_021D5BE4[param0->unk_2C.unk_04][0]) {
-            v0 = Unk_ov109_021D5BE4[param0->unk_2C.unk_04][0];
-        } else if (v0 > Unk_ov109_021D5BE4[param0->unk_2C.unk_04][1]) {
-            v0 = Unk_ov109_021D5BE4[param0->unk_2C.unk_04][1];
+        if (v0 < sItemRanges[param0->unk_2C.unk_04][0]) {
+            v0 = sItemRanges[param0->unk_2C.unk_04][0];
+        } else if (v0 > sItemRanges[param0->unk_2C.unk_04][1]) {
+            v0 = sItemRanges[param0->unk_2C.unk_04][1];
         }
 
-        ov109_021D2714(param0, 3, v0);
+        SpinTrade_ShowMessageWithItem(param0, 3, v0);
 
         BOOL removedItem = Bag_TryAddItem(SaveData_GetBag(param0->unk_CC->context.saveData), v0, 1, HEAP_ID_95);
         Sound_PlayFanfare(SEQ_FANFA4_sseq);
@@ -1294,7 +1294,7 @@ static int ov109_021D1918(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D19AC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State40(SpinTrade *param0)
 {
     if (param0->unk_0C < (30 * 4)) {
         param0->unk_0C++;
@@ -1306,20 +1306,20 @@ static int ov109_021D19AC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D19D0(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State41(SpinTrade *param0)
 {
     if (param0->unk_0C < (30 * 4)) {
         param0->unk_0C++;
     } else if (Sound_IsBGMPausedByFanfare() == 0) {
         param0->unk_0C = 0;
         param0->unk_00 = 40;
-        ov109_021D2634(param0, 4);
+        SpinTrade_ShowMessage(param0, 4);
     }
 
     return 0;
 }
 
-static int ov109_021D19FC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State42(SpinTrade *param0)
 {
     if (param0->unk_0C < (30 * 4)) {
         param0->unk_0C++;
@@ -1331,14 +1331,14 @@ static int ov109_021D19FC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1A14(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State43(SpinTrade *param0)
 {
     void *journalEntryOnlineEvent = JournalEntry_CreateEventMisc(95, ONLINE_EVENT_SPIN_TRADE);
 
     JournalEntry_SaveData(param0->unk_CC->context.journalEntry, journalEntryOnlineEvent, JOURNAL_ONLINE_EVENT);
     GameRecords_IncrementRecordValue(param0->unk_CC->context.records, RECORD_UNK_119);
     GameRecords_IncrementTrainerScore(param0->unk_CC->context.records, TRAINER_SCORE_EVENT_UNK_45);
-    ov109_021D2634(param0, 11);
+    SpinTrade_ShowMessage(param0, 11);
     CommTiming_StartSync(202);
 
     gSystem.inhibitReset = 1;
@@ -1347,10 +1347,10 @@ static int ov109_021D1A14(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1A6C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State44(SpinTrade *param0)
 {
     if (CommTiming_IsSyncState(202)) {
-        ov109_021D3B70(param0, param0->unk_28->unk_0C);
+        SpinTrade_CopyReceivedMon(param0, param0->unk_28->unk_0C);
         CommSyncSave_Reset(&param0->unk_04);
         param0->unk_DC8 = Window_AddWaitDial(&param0->unk_C9C.unk_0C[0], 1 + 9);
         param0->unk_00 = 45;
@@ -1359,7 +1359,7 @@ static int ov109_021D1A6C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1AA8(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State45(SpinTrade *param0)
 {
     int v0 = CommSyncSave_Update(
         param0->unk_CC->context.saveData, 2, &param0->unk_04);
@@ -1373,14 +1373,14 @@ static int ov109_021D1AA8(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1ADC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State46(SpinTrade *param0)
 {
-    ov109_021D2634(param0, 12);
+    SpinTrade_ShowMessage(param0, 12);
     param0->unk_00 = 47;
     return 0;
 }
 
-static int ov109_021D1AF0(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State47(SpinTrade *param0)
 {
     param0->unk_0C++;
 
@@ -1394,19 +1394,19 @@ static int ov109_021D1AF0(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1B0C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State48(SpinTrade *param0)
 {
     if (param0->unk_18 == 0) {
         CommTiming_StartSync(202);
     }
 
-    ov109_021D2634(param0, 10);
+    SpinTrade_ShowMessage(param0, 10);
     param0->unk_00 = 49;
 
     return 0;
 }
 
-static int ov109_021D1B2C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State49(SpinTrade *param0)
 {
     if (param0->unk_18 == 0) {
         if (CommTiming_IsSyncState(202)) {
@@ -1434,7 +1434,7 @@ static int ov109_021D1B2C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1B8C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State50(SpinTrade *param0)
 {
     if (CommSys_ConnectedCount() <= 1) {
         param0->unk_00 = 51;
@@ -1444,7 +1444,7 @@ static int ov109_021D1B8C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1BA4(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State51(SpinTrade *param0)
 {
     StartScreenFade(FADE_SUB_THEN_MAIN, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 8, 1, HEAP_ID_95);
 
@@ -1456,7 +1456,7 @@ static int ov109_021D1BA4(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1BE4(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State52(SpinTrade *param0)
 {
     if (IsScreenFadeDone()) {
         param0->unk_00 = 53;
@@ -1466,71 +1466,71 @@ static int ov109_021D1BE4(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D1BFC(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_State53(SpinTrade *param0)
 {
     return 2;
 }
 
-static int (*const Unk_ov109_021D5CBC[54])(UnkStruct_ov109_021D0F70 *g2m) = {
-    ov109_021D0F78,
-    ov109_021D0F8C,
-    ov109_021D0FB0,
-    ov109_021D0FC8,
-    ov109_021D0FF8,
-    ov109_021D1018,
-    ov109_021D1048,
-    ov109_021D10D8,
-    ov109_021D1100,
-    ov109_021D1124,
-    ov109_021D1150,
-    ov109_021D1164,
-    ov109_021D117C,
-    ov109_021D11A0,
-    ov109_021D11BC,
-    ov109_021D1204,
-    ov109_021D122C,
-    ov109_021D12B0,
-    ov109_021D1334,
-    ov109_021D1368,
-    ov109_021D1390,
-    ov109_021D13BC,
-    ov109_021D13D8,
-    ov109_021D13EC,
-    ov109_021D1404,
-    ov109_021D141C,
-    ov109_021D1450,
-    ov109_021D1460,
-    ov109_021D1570,
-    ov109_021D1648,
-    ov109_021D167C,
-    ov109_021D16A4,
-    ov109_021D1720,
-    ov109_021D1734,
-    ov109_021D1758,
-    ov109_021D17EC,
-    ov109_021D1858,
-    ov109_021D18A0,
-    ov109_021D18F4,
-    ov109_021D1918,
-    ov109_021D19AC,
-    ov109_021D19D0,
-    ov109_021D19FC,
-    ov109_021D1A14,
-    ov109_021D1A6C,
-    ov109_021D1AA8,
-    ov109_021D1ADC,
-    ov109_021D1AF0,
-    ov109_021D1B0C,
-    ov109_021D1B2C,
-    ov109_021D1B8C,
-    ov109_021D1BA4,
-    ov109_021D1BE4,
-    ov109_021D1BFC,
+static int (*const sStateHandlers[54])(SpinTrade *g2m) = {
+    SpinTrade_State0,
+    SpinTrade_State1,
+    SpinTrade_State2,
+    SpinTrade_State3,
+    SpinTrade_State4,
+    SpinTrade_State5,
+    SpinTrade_State6,
+    SpinTrade_State7,
+    SpinTrade_State8,
+    SpinTrade_State9,
+    SpinTrade_State10,
+    SpinTrade_State11,
+    SpinTrade_State12,
+    SpinTrade_State13,
+    SpinTrade_State14,
+    SpinTrade_State15,
+    SpinTrade_State16,
+    SpinTrade_State17,
+    SpinTrade_State18,
+    SpinTrade_State19,
+    SpinTrade_State20,
+    SpinTrade_State21,
+    SpinTrade_State22,
+    SpinTrade_State23,
+    SpinTrade_State24,
+    SpinTrade_State25,
+    SpinTrade_State26,
+    SpinTrade_State27,
+    SpinTrade_State28,
+    SpinTrade_State29,
+    SpinTrade_State30,
+    SpinTrade_State31,
+    SpinTrade_State32,
+    SpinTrade_State33,
+    SpinTrade_State34,
+    SpinTrade_State35,
+    SpinTrade_State36,
+    SpinTrade_State37,
+    SpinTrade_State38,
+    SpinTrade_State39,
+    SpinTrade_State40,
+    SpinTrade_State41,
+    SpinTrade_State42,
+    SpinTrade_State43,
+    SpinTrade_State44,
+    SpinTrade_State45,
+    SpinTrade_State46,
+    SpinTrade_State47,
+    SpinTrade_State48,
+    SpinTrade_State49,
+    SpinTrade_State50,
+    SpinTrade_State51,
+    SpinTrade_State52,
+    SpinTrade_State53,
 };
 
-static void ov109_021D1C00(void *param0)
+static void SpinTrade_VBlankCallback(void *param0)
 {
-    UnkStruct_ov109_021D0F70 *v0 = param0;
+    SpinTrade *v0 = param0;
 
     VramTransfer_Process();
     SpriteSystem_TransferOam();
@@ -1538,32 +1538,32 @@ static void ov109_021D1C00(void *param0)
     Bg_RunScheduledUpdates(v0->unk_D84);
 }
 
-static void ov109_021D1C28(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitGraphics(SpinTrade *param0)
 {
-    ov109_021D1CF0(param0);
-    ov109_021D1E1C(param0);
-    ov109_021D28C4(param0);
-    ov109_021D1EC8(param0);
-    ov109_021D22B0(param0);
-    ov109_021D2368(param0);
+    SpinTrade_SetGXBanks(param0);
+    SpinTrade_InitG3D(param0);
+    SpinTrade_InitCamera(param0);
+    SpinTrade_InitBg(param0);
+    SpinTrade_InitPalette(param0);
+    SpinTrade_InitSprites(param0);
 
-    ov109_021D2004(param0);
-    ov109_021D24F8(param0);
-    ov109_021D2408(param0);
-    ov109_021D1D10(param0);
+    SpinTrade_LoadGraphics(param0);
+    SpinTrade_InitWindows(param0);
+    SpinTrade_LoadSpriteResources(param0);
+    SpinTrade_EnableLayers(param0);
 }
 
-static void ov109_021D1C68(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeGraphics(SpinTrade *param0)
 {
-    ov109_021D1DC8(param0);
-    ov109_021D24C0(param0);
-    ov109_021D25E8(param0);
-    ov109_021D2204(param0);
-    ov109_021D2308(param0);
-    ov109_021D293C(param0);
+    SpinTrade_DisableLayers(param0);
+    SpinTrade_FreeSprites(param0);
+    SpinTrade_FreeWindows(param0);
+    SpinTrade_FreeBg(param0);
+    SpinTrade_FreePalette(param0);
+    SpinTrade_FreeCamera(param0);
 }
 
-static void ov109_021D1C90(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_DrawFrame(SpinTrade *param0)
 {
     G3_ResetG3X();
     Camera_ComputeViewMatrix();
@@ -1573,14 +1573,14 @@ static void ov109_021D1C90(UnkStruct_ov109_021D0F70 *param0)
     NNS_G3dGlbMaterialColorDiffAmb(GX_RGB(31, 31, 31), GX_RGB(31, 31, 31), 0);
     NNS_G3dGlbMaterialColorSpecEmi(GX_RGB(31, 31, 31), GX_RGB(31, 31, 31), 0);
 
-    ov109_021D2AC8(param0);
-    ov109_021D2CCC(param0);
+    SpinTrade_DrawEggModel(param0);
+    SpinTrade_DrawMonModels(param0);
 
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
     SpriteSystem_DrawSprites(param0->unk_D98);
 }
 
-static void ov109_021D1CF0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_SetGXBanks(SpinTrade *param0)
 {
     GXBanks v0 = {
         GX_VRAM_BG_128_B,
@@ -1598,7 +1598,7 @@ static void ov109_021D1CF0(UnkStruct_ov109_021D0F70 *param0)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov109_021D1D10(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_EnableLayers(SpinTrade *param0)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 1);
@@ -1625,7 +1625,7 @@ static void ov109_021D1D10(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D1DC8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_DisableLayers(SpinTrade *param0)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
@@ -1639,7 +1639,7 @@ static void ov109_021D1DC8(UnkStruct_ov109_021D0F70 *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 0);
 }
 
-static void ov109_021D1E1C(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitG3D(SpinTrade *param0)
 {
     int v0;
 
@@ -1664,7 +1664,7 @@ static void ov109_021D1E1C(UnkStruct_ov109_021D0F70 *param0)
     NNS_GfdInitFrmPlttVramManager(0x4000, 1);
 }
 
-static void ov109_021D1EC8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitBg(SpinTrade *param0)
 {
     param0->unk_D84 = BgConfig_New(HEAP_ID_95);
     GX_SetDispSelect(GX_DISP_SELECT_MAIN_SUB);
@@ -1782,61 +1782,61 @@ static void ov109_021D1EC8(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2004(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_LoadGraphics(SpinTrade *param0)
 {
-    void *v0 = ov109_021D3A2C(param0, 17, 0);
+    void *v0 = SpinTrade_LoadNarcMember(param0, 17, 0);
     NNS_G2dGetUnpackedPaletteData(v0, &param0->unk_D90);
     PaletteData_LoadBuffer(param0->unk_D9C, param0->unk_D90->pRawData, PLTTBUF_MAIN_BG, 0, PALETTE_SIZE_BYTES * 2);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 20, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 20, 0);
     NNS_G2dGetUnpackedPaletteData(v0, &param0->unk_D90);
     PaletteData_LoadBuffer(param0->unk_D9C, param0->unk_D90->pRawData, PLTTBUF_SUB_BG, 0, PALETTE_SIZE_BYTES * 2);
     Heap_Free(v0);
 
     PaletteData_BlendMulti(param0->unk_D9C, PLTTBUF_SUB_BG, 0xffff, 8, 0);
 
-    v0 = ov109_021D3A2C(param0, 16, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 16, 0);
     NNS_G2dGetUnpackedCharacterData(v0, &param0->unk_D8C);
     Bg_LoadTiles(param0->unk_D84, 3, param0->unk_D8C->pRawData, param0->unk_D8C->szByte, 32 * 0);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 22, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 22, 0);
     NNS_G2dGetUnpackedCharacterData(v0, &param0->unk_D8C);
     Bg_LoadTiles(param0->unk_D84, 6, param0->unk_D8C->pRawData, param0->unk_D8C->szByte, 32 * 0);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 21, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 21, 0);
     NNS_G2dGetUnpackedCharacterData(v0, &param0->unk_D8C);
     Bg_LoadTiles(param0->unk_D84, 7, param0->unk_D8C->pRawData, param0->unk_D8C->szByte, 32 * 0);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 19, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 19, 0);
     NNS_G2dGetUnpackedScreenData(v0, &param0->unk_D88);
     Bg_LoadTilemapBuffer(param0->unk_D84, 2, (void *)param0->unk_D88->rawData, param0->unk_D88->szByte);
     Bg_CopyTilemapBufferToVRAM(param0->unk_D84, 2);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 18, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 18, 0);
     NNS_G2dGetUnpackedScreenData(v0, &param0->unk_D88);
     Bg_LoadTilemapBuffer(param0->unk_D84, 3, (void *)param0->unk_D88->rawData, param0->unk_D88->szByte);
     Bg_CopyTilemapBufferToVRAM(param0->unk_D84, 3);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 24, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 24, 0);
     NNS_G2dGetUnpackedScreenData(v0, &param0->unk_D88);
     Bg_LoadTilemapBuffer(param0->unk_D84, 6, (void *)param0->unk_D88->rawData, param0->unk_D88->szByte);
     Bg_CopyTilemapBufferToVRAM(param0->unk_D84, 6);
     Heap_Free(v0);
 
-    v0 = ov109_021D3A2C(param0, 23, 0);
+    v0 = SpinTrade_LoadNarcMember(param0, 23, 0);
     NNS_G2dGetUnpackedScreenData(v0, &param0->unk_D88);
     Bg_LoadTilemapBuffer(param0->unk_D84, 7, (void *)param0->unk_D88->rawData, param0->unk_D88->szByte);
     Bg_CopyTilemapBufferToVRAM(param0->unk_D84, 7);
     Heap_Free(v0);
 }
 
-static void ov109_021D2204(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeBg(SpinTrade *param0)
 {
     Bg_FreeTilemapBuffer(param0->unk_D84, BG_LAYER_MAIN_1);
     Bg_FreeTilemapBuffer(param0->unk_D84, BG_LAYER_MAIN_2);
@@ -1846,9 +1846,9 @@ static void ov109_021D2204(UnkStruct_ov109_021D0F70 *param0)
     Heap_Free(param0->unk_D84);
 }
 
-static void ov109_021D2248(UnkStruct_ov109_021D0F70 *param0, u32 param1)
+static void SpinTrade_LoadTilemap(SpinTrade *param0, u32 param1)
 {
-    void *v0 = ov109_021D3A2C(param0, param1, 0);
+    void *v0 = SpinTrade_LoadNarcMember(param0, param1, 0);
     NNS_G2dGetUnpackedScreenData(v0, &param0->unk_D88);
 
     Bg_LoadTilemapBuffer(param0->unk_D84, 6, (void *)param0->unk_D88->rawData, param0->unk_D88->szByte);
@@ -1856,22 +1856,22 @@ static void ov109_021D2248(UnkStruct_ov109_021D0F70 *param0, u32 param1)
     Heap_Free(v0);
 }
 
-static void ov109_021D228C(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_ShowTilemapA(SpinTrade *param0)
 {
-    ov109_021D2248(param0, 26);
+    SpinTrade_LoadTilemap(param0, 26);
 }
 
-static void ov109_021D2298(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_ShowTilemapB(SpinTrade *param0)
 {
-    ov109_021D2248(param0, 24);
+    SpinTrade_LoadTilemap(param0, 24);
 }
 
-static void ov109_021D22A4(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_ShowTilemapC(SpinTrade *param0)
 {
-    ov109_021D2248(param0, 25);
+    SpinTrade_LoadTilemap(param0, 25);
 }
 
-static void ov109_021D22B0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitPalette(SpinTrade *param0)
 {
     param0->unk_D9C = PaletteData_New(HEAP_ID_95);
 
@@ -1882,7 +1882,7 @@ static void ov109_021D22B0(UnkStruct_ov109_021D0F70 *param0)
     PaletteData_AllocBuffer(param0->unk_D9C, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_95);
 }
 
-static void ov109_021D2308(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreePalette(SpinTrade *param0)
 {
     PaletteData_FreeBuffer(param0->unk_D9C, PLTTBUF_MAIN_BG);
     PaletteData_FreeBuffer(param0->unk_D9C, PLTTBUF_MAIN_OBJ);
@@ -1891,12 +1891,12 @@ static void ov109_021D2308(UnkStruct_ov109_021D0F70 *param0)
     PaletteData_Free(param0->unk_D9C);
 }
 
-static void ov109_021D2344(UnkStruct_ov109_021D0F70 *param0, u32 param1)
+static void SpinTrade_SetPaletteBlend(SpinTrade *param0, u32 param1)
 {
     PaletteData_BlendMulti(param0->unk_D9C, PLTTBUF_SUB_BG, 0xffff, param1, 0);
 }
 
-static void ov109_021D2368(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitSprites(SpinTrade *param0)
 {
     {
         const RenderOamTemplate v0 = {
@@ -1936,7 +1936,7 @@ static void ov109_021D2368(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2408(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_LoadSpriteResources(SpinTrade *param0)
 {
     SpriteSystem *v0 = param0->unk_D94;
     SpriteManager *v1 = param0->unk_D98;
@@ -1965,22 +1965,22 @@ static void ov109_021D2408(UnkStruct_ov109_021D0F70 *param0)
     Heap_Free(v6);
 }
 
-static void ov109_021D24C0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeSprites(SpinTrade *param0)
 {
     SpriteSystem_FreeResourcesAndManager(param0->unk_D94, param0->unk_D98);
     SpriteSystem_Free(param0->unk_D94);
 }
 
-static ManagedSprite *ov109_021D24E0(UnkStruct_ov109_021D0F70 *param0, const SpriteTemplate *param1)
+static ManagedSprite *SpinTrade_NewSprite(SpinTrade *param0, const SpriteTemplate *param1)
 {
     ManagedSprite *v0 = SpriteSystem_NewSprite(param0->unk_D94, param0->unk_D98, param1);
     return v0;
 }
 
-static void ov109_021D24F8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitWindows(SpinTrade *param0)
 {
     int v0 = 0;
-    UnkStruct_ov109_021D24F8 *v1 = &param0->unk_C9C;
+    SpinTradeWindows *v1 = &param0->unk_C9C;
 
     LoadStandardWindowGraphics(param0->unk_D84, BG_LAYER_MAIN_1, 1, 15, 0, HEAP_ID_95);
     LoadMessageBoxGraphics(param0->unk_D84, BG_LAYER_MAIN_1, 1 + 9, 14, param0->unk_CC->context.messageBoxFrame, HEAP_ID_95);
@@ -1990,7 +1990,7 @@ static void ov109_021D24F8(UnkStruct_ov109_021D0F70 *param0)
     v1->unk_04 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_SPIN_TRADE, HEAP_ID_95);
     v1->unk_08 = StringTemplate_Default(HEAP_ID_95);
 
-    Window_AddFromTemplate(param0->unk_D84, &v1->unk_0C[v0], &Unk_ov109_021D59B8[v0]);
+    Window_AddFromTemplate(param0->unk_D84, &v1->unk_0C[v0], &sMessageWindowTemplate[v0]);
 
     v1->unk_6C = String_Init(0x100, HEAP_ID_95);
 
@@ -1998,20 +1998,20 @@ static void ov109_021D24F8(UnkStruct_ov109_021D0F70 *param0)
         param0->unk_2C.unk_6C[v0] = String_Init(7 + 1, HEAP_ID_95);
     }
 
-    ov109_021D27AC(param0, param0->unk_CC->connectedCount);
+    SpinTrade_AddPlayerWindows(param0, param0->unk_CC->connectedCount);
 }
 
-static void ov109_021D25E8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeWindows(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D24F8 *v1 = &param0->unk_C9C;
+    SpinTradeWindows *v1 = &param0->unk_C9C;
 
     for (v0 = 0; v0 < 1; v0++) {
         Window_ClearAndCopyToVRAM(&v1->unk_0C[v0]);
         Window_Remove(&v1->unk_0C[v0]);
     }
 
-    ov109_021D27F0(param0);
+    SpinTrade_RemovePlayerWindows(param0);
 
     MessageLoader_Free(v1->unk_04);
     StringTemplate_Free(v1->unk_08);
@@ -2022,9 +2022,9 @@ static void ov109_021D25E8(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2634(UnkStruct_ov109_021D0F70 *param0, u32 param1)
+static void SpinTrade_ShowMessage(SpinTrade *param0, u32 param1)
 {
-    UnkStruct_ov109_021D24F8 *v0 = &param0->unk_C9C;
+    SpinTradeWindows *v0 = &param0->unk_C9C;
     Window *v1 = &v0->unk_0C[0];
 
     Window_FillTilemap(v1, 15);
@@ -2035,10 +2035,10 @@ static void ov109_021D2634(UnkStruct_ov109_021D0F70 *param0, u32 param1)
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void ov109_021D268C(UnkStruct_ov109_021D0F70 *param0, u32 param1, const TrainerInfo *param2)
+static void SpinTrade_ShowMessageWithTrainer(SpinTrade *param0, u32 param1, const TrainerInfo *param2)
 {
     String *v0;
-    UnkStruct_ov109_021D24F8 *v1 = &param0->unk_C9C;
+    SpinTradeWindows *v1 = &param0->unk_C9C;
     Window *v2 = &v1->unk_0C[0];
 
     StringTemplate_SetPlayerName(v1->unk_08, 1, CommInfo_TrainerInfo(CommSys_CurNetId()));
@@ -2055,10 +2055,10 @@ static void ov109_021D268C(UnkStruct_ov109_021D0F70 *param0, u32 param1, const T
     Window_ScheduleCopyToVRAM(v2);
 }
 
-static void ov109_021D2714(UnkStruct_ov109_021D0F70 *param0, u32 param1, u32 param2)
+static void SpinTrade_ShowMessageWithItem(SpinTrade *param0, u32 param1, u32 param2)
 {
     String *v0;
-    UnkStruct_ov109_021D24F8 *v1 = &param0->unk_C9C;
+    SpinTradeWindows *v1 = &param0->unk_C9C;
     Window *v2 = &v1->unk_0C[0];
 
     StringTemplate_SetItemName(v1->unk_08, 0, param2);
@@ -2074,9 +2074,9 @@ static void ov109_021D2714(UnkStruct_ov109_021D0F70 *param0, u32 param1, u32 par
     Window_ScheduleCopyToVRAM(v2);
 }
 
-static void ov109_021D2788(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_EraseMessage(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D24F8 *v0 = &param0->unk_C9C;
+    SpinTradeWindows *v0 = &param0->unk_C9C;
     Window *v1 = &v0->unk_0C[0];
 
     Window_EraseMessageBox(v1, 1);
@@ -2084,11 +2084,11 @@ static void ov109_021D2788(UnkStruct_ov109_021D0F70 *param0)
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void ov109_021D27AC(UnkStruct_ov109_021D0F70 *param0, int param1)
+static void SpinTrade_AddPlayerWindows(SpinTrade *param0, int param1)
 {
     int v0;
-    UnkStruct_ov109_021D24F8 *v1 = &param0->unk_C9C;
-    const WindowTemplate *v2 = Unk_ov109_021D5A68[param1];
+    SpinTradeWindows *v1 = &param0->unk_C9C;
+    const WindowTemplate *v2 = sPlayerWindowTemplates[param1];
 
     v1->unk_00 = param1;
 
@@ -2097,10 +2097,10 @@ static void ov109_021D27AC(UnkStruct_ov109_021D0F70 *param0, int param1)
     }
 }
 
-static void ov109_021D27F0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_RemovePlayerWindows(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D24F8 *v1 = &param0->unk_C9C;
+    SpinTradeWindows *v1 = &param0->unk_C9C;
 
     for (v0 = 0; v0 < v1->unk_00; v0++) {
         Window_ClearAndCopyToVRAM(&v1->unk_1C[v0]);
@@ -2108,9 +2108,9 @@ static void ov109_021D27F0(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2820(UnkStruct_ov109_021D0F70 *param0, String *param1, int param2, TextColor param3)
+static void SpinTrade_DrawPlayerName(SpinTrade *param0, String *param1, int param2, TextColor param3)
 {
-    UnkStruct_ov109_021D24F8 *v0 = &param0->unk_C9C;
+    SpinTradeWindows *v0 = &param0->unk_C9C;
     Window *v1 = &v0->unk_1C[param2];
     Window_DrawStandardFrame(v1, 1, 1, 14);
     Window_FillTilemap(v1, 15);
@@ -2118,7 +2118,7 @@ static void ov109_021D2820(UnkStruct_ov109_021D0F70 *param0, String *param1, int
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void ov109_021D2874(UnkStruct_ov109_021D0F70 *param0, String *param1, int param2, int param3)
+static void SpinTrade_DrawPlayerNameColored(SpinTrade *param0, String *param1, int param2, int param3)
 {
     TextColor v0 = TEXT_COLOR(1, 2, 0);
 
@@ -2126,12 +2126,12 @@ static void ov109_021D2874(UnkStruct_ov109_021D0F70 *param0, String *param1, int
         v0 = TEXT_COLOR(3, 4, 0);
     }
 
-    ov109_021D2820(param0, param1, param2, v0);
+    SpinTrade_DrawPlayerName(param0, param1, param2, v0);
 }
 
-static void ov109_021D28A0(UnkStruct_ov109_021D0F70 *param0, int param1)
+static void SpinTrade_ErasePlayerWindow(SpinTrade *param0, int param1)
 {
-    UnkStruct_ov109_021D24F8 *v0 = &param0->unk_C9C;
+    SpinTradeWindows *v0 = &param0->unk_C9C;
     Window *v1 = &v0->unk_1C[param1];
 
     Window_EraseMessageBox(v1, 1);
@@ -2139,9 +2139,9 @@ static void ov109_021D28A0(UnkStruct_ov109_021D0F70 *param0, int param1)
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void ov109_021D28C4(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitCamera(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D28C4 *v0 = &param0->unk_D0C;
+    SpinTradeCamera *v0 = &param0->unk_D0C;
 
     v0->camera = Camera_Alloc(HEAP_ID_95);
 
@@ -2170,16 +2170,16 @@ static void ov109_021D28C4(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D293C(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeCamera(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D28C4 *v0 = &param0->unk_D0C;
+    SpinTradeCamera *v0 = &param0->unk_D0C;
     Camera_Delete(v0->camera);
 }
 
-static void ov109_021D294C(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_UpdateTouchInput(SpinTrade *param0)
 {
     int v0 = 0, v1 = 4 - 1;
-    UnkStruct_ov109_021D294C *v2 = &param0->unk_D2C;
+    SpinTradeTouchInput *v2 = &param0->unk_D2C;
 
     WriteAutoSamplingDataToBuffer(&v2->unk_10, TOUCH_PAD_EXTERNAL_BUFFER_WRITE_METHOD_NO_WRITE, 0);
 
@@ -2197,7 +2197,7 @@ static void ov109_021D294C(UnkStruct_ov109_021D0F70 *param0)
     v2->unk_0C = v0;
 }
 
-static BOOL ov109_021D2990(UnkStruct_ov109_021D294C *param0)
+static BOOL SpinTrade_IsTouchInCenter(SpinTradeTouchInput *param0)
 {
     int v0, v1, v2, v3, v4, v5;
 
@@ -2215,12 +2215,12 @@ static BOOL ov109_021D2990(UnkStruct_ov109_021D294C *param0)
     return 0;
 }
 
-static BOOL ov109_021D29AC(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_IsCenterTouched(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D294C *v0 = &param0->unk_D2C;
+    SpinTradeTouchInput *v0 = &param0->unk_D2C;
 
     if (v0->unk_08) {
-        if (ov109_021D2990(v0) == 1) {
+        if (SpinTrade_IsTouchInCenter(v0) == 1) {
             return 1;
         }
     }
@@ -2228,22 +2228,22 @@ static BOOL ov109_021D29AC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static void ov109_021D29CC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_LoadEggModel(SpinTrade *param0)
 {
     int v0;
     u32 v1;
-    UnkStruct_ov109_021D2AE4 *v2 = &param0->unk_D4;
+    SpinTradeEggModel *v2 = &param0->unk_D4;
     NARC *v3 = param0->unk_D80;
 
     v0 = param0->unk_CC->connectedCount;
-    v1 = Unk_ov109_021D5A80[v0];
+    v1 = sEggModelIndices[v0];
 
     Simple3D_LoadModelFromSet(&v2->unk_54, 0, v3, v1, HEAP_ID_95, 0);
     Simple3D_ScheduleBindModelTexture(&v2->unk_54);
     Simple3D_CreateRenderObject(&v2->unk_68, &v2->unk_54);
 
     v2->unk_3C = (FX32_ONE * 0);
-    v2->unk_44 = Unk_ov109_021D5A98[v0];
+    v2->unk_44 = sEggModelAngles[v0];
     v2->unk_18.x = FX32_ONE;
     v2->unk_18.y = FX32_ONE;
     v2->unk_18.z = FX32_ONE;
@@ -2256,19 +2256,19 @@ static void ov109_021D29CC(UnkStruct_ov109_021D0F70 *param0)
     v2->unk_0C = v2->unk_00;
 }
 
-static void ov109_021D2A58(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeEggModel(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D2AE4 *v0 = &param0->unk_D4;
+    SpinTradeEggModel *v0 = &param0->unk_D4;
     Simple3D_FreeModel(&v0->unk_54);
 }
 
-static void ov109_021D2A68(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_UpdateEggModel(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D2AE4 *v0 = &param0->unk_D4;
+    SpinTradeEggModel *v0 = &param0->unk_D4;
     fx32 v1 = v0->unk_3C;
 
-    ov109_021D39D4(&v1, v0->unk_40);
-    ov109_021D39D4(&v1, v0->unk_44);
+    SpinTrade_AddRotation(&v1, v0->unk_40);
+    SpinTrade_AddRotation(&v1, v0->unk_44);
 
     v0->unk_4C.beta = (360 - ((v1) / FX32_ONE)) % 360;
     v0->unk_0C.x = v0->unk_00.x + v0->unk_30.x + v0->unk_24.x;
@@ -2276,37 +2276,37 @@ static void ov109_021D2A68(UnkStruct_ov109_021D0F70 *param0)
     v0->unk_0C.z = v0->unk_00.z + v0->unk_30.z + v0->unk_24.z;
 }
 
-static void ov109_021D2AC8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_DrawEggModel(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D2AE4 *v0 = &param0->unk_D4;
+    SpinTradeEggModel *v0 = &param0->unk_D4;
     Simple3D_DrawRenderObjRotationAngles(&v0->unk_68, &v0->unk_0C, &v0->unk_18, &v0->unk_4C);
 }
 
-static void ov109_021D2AE4(UnkStruct_ov109_021D2AE4 *param0, fx32 param1)
+static void SpinTrade_AdvanceEggRotation(SpinTradeEggModel *param0, fx32 param1)
 {
-    ov109_021D39D4(&param0->unk_3C, param1);
+    SpinTrade_AddRotation(&param0->unk_3C, param1);
 }
 
-static void ov109_021D2AF0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_LoadModels(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
-    ov109_021D2B00(param0);
+    SpinTradeModels *v0 = &param0->unk_190;
+    SpinTrade_LoadMonModels(param0);
 }
 
-static void ov109_021D2AF8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeModels(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D2D78 *v1;
-    UnkStruct_ov109_021D1334 *v2 = &param0->unk_190;
+    SpinTradeMonModel *v1;
+    SpinTradeModels *v2 = &param0->unk_190;
 
     for (v0 = 0; v0 < 5; v0++) {
         v1 = &v2->unk_140[v0];
     }
 
-    ov109_021D2BD4(param0);
+    SpinTrade_FreeMonModels(param0);
 }
 
-static const u32 Unk_ov109_021D5A14[5] = {
+static const u32 sMonModelIndices[5] = {
     0x6,
     0x7,
     0x8,
@@ -2314,7 +2314,7 @@ static const u32 Unk_ov109_021D5A14[5] = {
     0xA
 };
 
-static const u32 Unk_ov109_021D5A3C[5] = {
+static const u32 sMonAnimIndices[5] = {
     0xB,
     0xC,
     0xD,
@@ -2322,19 +2322,19 @@ static const u32 Unk_ov109_021D5A3C[5] = {
     0xF
 };
 
-static void ov109_021D2B00(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_LoadMonModels(SpinTrade *param0)
 {
     int v0;
     const u32 *v1, *v2;
-    UnkStruct_ov109_021D1334 *v3 = &param0->unk_190;
+    SpinTradeModels *v3 = &param0->unk_190;
 
     Simple3D_LoadModelFromSet(&v3->unk_00, 0, param0->unk_D80, 0, HEAP_ID_95, 0);
     Simple3D_ScheduleBindModelTexture(&v3->unk_00);
     Simple3D_LoadModelFromSet(&v3->unk_14, 0, param0->unk_D80, 5, HEAP_ID_95, 0);
     Simple3D_ScheduleBindModelTexture(&v3->unk_14);
 
-    v1 = Unk_ov109_021D5A14;
-    v2 = Unk_ov109_021D5A3C;
+    v1 = sMonModelIndices;
+    v2 = sMonAnimIndices;
 
     for (v0 = 0; v0 < 5; v0++, v1++, v2++) {
         Simple3D_LoadModelFromSet(&v3->unk_28[v0], 0, param0->unk_D80, *v1, HEAP_ID_95, 0);
@@ -2345,10 +2345,10 @@ static void ov109_021D2B00(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2BD4(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeMonModels(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D1334 *v1 = &param0->unk_190;
+    SpinTradeModels *v1 = &param0->unk_190;
 
     Simple3D_FreeModel(&v1->unk_00);
     Simple3D_FreeModel(&v1->unk_14);
@@ -2359,46 +2359,46 @@ static void ov109_021D2BD4(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2C0C(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_CreateMonRenderObj(SpinTrade *param0, SpinTradeMonModel *param1)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
+    SpinTradeModels *v0 = &param0->unk_190;
 
     Simple3D_CreateRenderObject(&param1->unk_5C, &v0->unk_00);
     param1->unk_04 = 1;
 
-    ov109_021D2EC0(param0, param1);
-    ov109_021D2F68(param0, param1);
+    SpinTrade_CreateMonShadow(param0, param1);
+    SpinTrade_CreateMonAnim(param0, param1);
 }
 
-static void ov109_021D2C38(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_UpdateMonModels(SpinTrade *param0)
 {
     int v0 = 0, v1 = param0->unk_2C.unk_04;
-    UnkStruct_ov109_021D1334 *v2 = &param0->unk_190;
+    SpinTradeModels *v2 = &param0->unk_190;
 
     while (v0 < v1) {
         if (v2->unk_140[v0].unk_00) {
-            ov109_021D2D78(&v2->unk_140[v0], &param0->unk_D4.unk_30);
+            SpinTrade_UpdateMonPosition(&v2->unk_140[v0], &param0->unk_D4.unk_30);
         }
 
         if (v2->unk_4B0[v0].unk_00) {
-            ov109_021D2EF4(param0, &v2->unk_4B0[v0]);
+            SpinTrade_UpdateMonShadow(param0, &v2->unk_4B0[v0]);
         }
 
         if (v2->unk_71C[v0].unk_00) {
-            ov109_021D2FA4(param0, &v2->unk_71C[v0]);
+            SpinTrade_UpdateMonAnim(param0, &v2->unk_71C[v0]);
         }
 
         v0++;
     }
 }
 
-static void ov109_021D2CCC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_DrawMonModels(SpinTrade *param0)
 {
     int v0 = 0, v1 = param0->unk_2C.unk_04;
-    UnkStruct_ov109_021D1334 *v2 = &param0->unk_190;
-    UnkStruct_ov109_021D2D78 *v3 = v2->unk_140;
-    UnkStruct_ov109_021D2EF4 *v4 = v2->unk_4B0;
-    UnkStruct_ov109_021D2FA4 *v5 = v2->unk_71C;
+    SpinTradeModels *v2 = &param0->unk_190;
+    SpinTradeMonModel *v3 = v2->unk_140;
+    SpinTradeMonShadow *v4 = v2->unk_4B0;
+    SpinTradeMonAnim *v5 = v2->unk_71C;
 
     while (v0 < v1) {
         if (v3->unk_04) {
@@ -2420,27 +2420,27 @@ static void ov109_021D2CCC(UnkStruct_ov109_021D0F70 *param0)
     }
 }
 
-static void ov109_021D2D44(UnkStruct_ov109_021D0F70 *param0, fx32 param1)
+static void SpinTrade_AdvanceMonRotation(SpinTrade *param0, fx32 param1)
 {
     int v0 = 0, v1 = param0->unk_2C.unk_04;
-    UnkStruct_ov109_021D1334 *v2 = &param0->unk_190;
+    SpinTradeModels *v2 = &param0->unk_190;
 
     while (v0 < v1) {
         if (v2->unk_140[v0].unk_00) {
-            ov109_021D39D4(&v2->unk_140[v0].unk_1C, param1);
+            SpinTrade_AddRotation(&v2->unk_140[v0].unk_1C, param1);
         }
 
         v0++;
     }
 }
 
-static void ov109_021D2D78(UnkStruct_ov109_021D2D78 *param0, const VecFx32 *param1)
+static void SpinTrade_UpdateMonPosition(SpinTradeMonModel *param0, const VecFx32 *param1)
 {
     u16 v0;
     fx32 v1;
 
     v1 = param0->unk_1C;
-    ov109_021D39D4(&v1, param0->unk_20);
+    SpinTrade_AddRotation(&v1, param0->unk_20);
     v0 = (u16)((v1) / FX32_ONE);
 
     param0->unk_44.x = (FX32_ONE * 0) + param0->unk_50.x + param1->x + (CalcCosineDegrees(v0) * 22);
@@ -2452,16 +2452,16 @@ static void ov109_021D2D78(UnkStruct_ov109_021D2D78 *param0, const VecFx32 *para
     param0->unk_24.gamma = ((param0->unk_2C.z) / FX32_ONE);
 }
 
-static UnkStruct_ov109_021D2D78 *ov109_021D2DF8(UnkStruct_ov109_021D0F70 *param0)
+static SpinTradeMonModel *SpinTrade_GetLeadingMon(SpinTrade *param0)
 {
     int v0, v1, v2, v3;
     fx32 v4, v5, v6;
     int v7 = param0->unk_2C.unk_04;
     int v8[5], v9[5];
-    UnkStruct_ov109_021D1334 *v10 = &param0->unk_190;
+    SpinTradeModels *v10 = &param0->unk_190;
 
     v0 = 0;
-    v4 = (FX32_ONE * (Unk_ov109_021D5C80[v7][param0->unk_2C.unk_00]));
+    v4 = (FX32_ONE * (sPlayerTargetAngles[v7][param0->unk_2C.unk_00]));
 
     do {
         v9[v0] = v0, v8[v0] = 0xffff;
@@ -2492,18 +2492,18 @@ static UnkStruct_ov109_021D2D78 *ov109_021D2DF8(UnkStruct_ov109_021D0F70 *param0
     return &v10->unk_140[v9[0]];
 }
 
-static void ov109_021D2EC0(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_CreateMonShadow(SpinTrade *param0, SpinTradeMonModel *param1)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
-    UnkStruct_ov109_021D2EF4 *v1 = &v0->unk_4B0[param1->unk_10];
+    SpinTradeModels *v0 = &param0->unk_190;
+    SpinTradeMonShadow *v1 = &v0->unk_4B0[param1->unk_10];
 
     v1->unk_00 = 1;
     v1->unk_78 = param1;
     Simple3D_CreateRenderObject(&v1->unk_24, &v0->unk_14);
-    ov109_021D2EF4(param0, v1);
+    SpinTrade_UpdateMonShadow(param0, v1);
 }
 
-static void ov109_021D2EF4(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2EF4 *param1)
+static void SpinTrade_UpdateMonShadow(SpinTrade *param0, SpinTradeMonShadow *param1)
 {
     fx32 v0;
 
@@ -2533,10 +2533,10 @@ static void ov109_021D2EF4(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     param1->unk_0C.z = FX32_ONE - v0;
 }
 
-static void ov109_021D2F68(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_CreateMonAnim(SpinTrade *param0, SpinTradeMonModel *param1)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
-    UnkStruct_ov109_021D2FA4 *v1 = &v0->unk_71C[param1->unk_10];
+    SpinTradeModels *v0 = &param0->unk_190;
+    SpinTradeMonAnim *v1 = &v0->unk_71C[param1->unk_10];
 
     v1->unk_00 = 1;
     v1->unk_64 = param1;
@@ -2544,9 +2544,9 @@ static void ov109_021D2F68(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     Simple3D_CreateRenderObjectWithAnim(&v1->unk_10, &v0->unk_28[param1->unk_10], &v0->unk_8C[param1->unk_10]);
 }
 
-static void ov109_021D2FA4(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2FA4 *param1)
+static void SpinTrade_UpdateMonAnim(SpinTrade *param0, SpinTradeMonAnim *param1)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
+    SpinTradeModels *v0 = &param0->unk_190;
 
     param1->unk_04 = param1->unk_64->unk_44;
     param1->unk_04.y += (FX32_ONE * 20);
@@ -2554,10 +2554,10 @@ static void ov109_021D2FA4(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     Simple3D_UpdateAnim(&v0->unk_8C[param1->unk_64->unk_10], FX32_ONE, 1);
 }
 
-static SysTask *ov109_021D2FE0(UnkStruct_ov109_021D0F70 *param0, int param1, int param2, int param3, int param4, int param5, UnkStruct_ov109_021D2D78 *param6)
+static SysTask *SpinTrade_StartMonDropTask(SpinTrade *param0, int param1, int param2, int param3, int param4, int param5, SpinTradeMonModel *param6)
 {
     SysTask *v0;
-    UnkStruct_ov109_021D2FE0 *v1;
+    SpinTradeMonDropTask *v1;
 
     param6->unk_0C = param1;
     param6->unk_10 = param2;
@@ -2568,22 +2568,22 @@ static SysTask *ov109_021D2FE0(UnkStruct_ov109_021D0F70 *param0, int param1, int
     param6->unk_00 = 1;
     param6->unk_08 = 0;
 
-    v1 = Heap_AllocAtEnd(HEAP_ID_95, sizeof(UnkStruct_ov109_021D2FE0));
-    memset(v1, 0, sizeof(UnkStruct_ov109_021D2FE0));
+    v1 = Heap_AllocAtEnd(HEAP_ID_95, sizeof(SpinTradeMonDropTask));
+    memset(v1, 0, sizeof(SpinTradeMonDropTask));
     v1->unk_14 = param0;
     v1->unk_10 = param6;
-    v0 = SysTask_Start(ov109_021D302C, v1, 0);
+    v0 = SysTask_Start(SpinTrade_MonDropTask, v1, 0);
 
     return v0;
 }
 
-static void ov109_021D302C(SysTask *param0, void *param1)
+static void SpinTrade_MonDropTask(SysTask *param0, void *param1)
 {
     int v0;
-    UnkStruct_ov109_021D2FE0 *v1 = param1;
+    SpinTradeMonDropTask *v1 = param1;
 
     do {
-        v0 = Unk_ov109_021D59D8[v1->unk_00](v1);
+        v0 = sMonDropStateHandlers[v1->unk_00](v1);
     } while (v0 == 1);
 
     if (v0 == 2) {
@@ -2593,16 +2593,16 @@ static void ov109_021D302C(SysTask *param0, void *param1)
     }
 }
 
-static int ov109_021D3060(UnkStruct_ov109_021D2FE0 *param0)
+static int SpinTrade_MonDropState0(SpinTradeMonDropTask *param0)
 {
-    UnkStruct_ov109_021D2D78 *v0 = param0->unk_10;
+    SpinTradeMonModel *v0 = param0->unk_10;
 
     v0->unk_38.x = FX32_ONE;
     v0->unk_38.y = FX32_ONE;
     v0->unk_38.z = FX32_ONE;
     v0->unk_50.y = (FX32_ONE * 192);
 
-    ov109_021D2C0C(param0->unk_14, v0);
+    SpinTrade_CreateMonRenderObj(param0->unk_14, v0);
 
     param0->unk_0C = (FX32_ONE * 8);
     param0->unk_00 = 1;
@@ -2610,9 +2610,9 @@ static int ov109_021D3060(UnkStruct_ov109_021D2FE0 *param0)
     return 0;
 }
 
-static int ov109_021D308C(UnkStruct_ov109_021D2FE0 *param0)
+static int SpinTrade_MonDropState1(SpinTradeMonDropTask *param0)
 {
-    UnkStruct_ov109_021D2D78 *v0 = param0->unk_10;
+    SpinTradeMonModel *v0 = param0->unk_10;
 
     v0->unk_50.y -= param0->unk_0C;
 
@@ -2631,9 +2631,9 @@ static int ov109_021D308C(UnkStruct_ov109_021D2FE0 *param0)
     return 0;
 }
 
-static int ov109_021D30CC(UnkStruct_ov109_021D2FE0 *param0)
+static int SpinTrade_MonDropState2(SpinTradeMonDropTask *param0)
 {
-    UnkStruct_ov109_021D2D78 *v0 = param0->unk_10;
+    SpinTradeMonModel *v0 = param0->unk_10;
 
     if (param0->unk_0C > (FX32_ONE * 1)) {
         param0->unk_0C -= 0x1000;
@@ -2648,7 +2648,7 @@ static int ov109_021D30CC(UnkStruct_ov109_021D2FE0 *param0)
     if (v0->unk_50.y <= 0) {
         v0->unk_50.y = 0;
 
-        ov109_021D2874(param0->unk_14, param0->unk_14->unk_2C.unk_6C[v0->unk_0C], v0->unk_14, v0->unk_0C);
+        SpinTrade_DrawPlayerNameColored(param0->unk_14, param0->unk_14->unk_2C.unk_6C[v0->unk_0C], v0->unk_14, v0->unk_0C);
 
         return 2;
     }
@@ -2656,19 +2656,19 @@ static int ov109_021D30CC(UnkStruct_ov109_021D2FE0 *param0)
     return 0;
 }
 
-static int (*const Unk_ov109_021D59D8[3])(UnkStruct_ov109_021D2FE0 *) = {
-    ov109_021D3060,
-    ov109_021D308C,
-    ov109_021D30CC,
+static int (*const sMonDropStateHandlers[3])(SpinTradeMonDropTask *) = {
+    SpinTrade_MonDropState0,
+    SpinTrade_MonDropState1,
+    SpinTrade_MonDropState2,
 };
 
-static void ov109_021D3110(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D3110 *param1)
+static void SpinTrade_UpdateBounceTask(SpinTrade *param0, SpinTradeBounceTask *param1)
 {
-    UnkStruct_ov109_021D2D78 *v0 = param1->unk_1C;
+    SpinTradeMonModel *v0 = param1->unk_1C;
 
     switch (param1->unk_04) {
     case 0:
-        ov109_021D3328(param0, v0);
+        SpinTrade_StartShakeTask(param0, v0);
         param1->unk_10 = (FX32_ONE * 4);
         param1->unk_14 = -((FX32_ONE * 4) / (30 / 2));
         param1->unk_04++;
@@ -2690,44 +2690,44 @@ static void ov109_021D3110(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
         }
 
         v0->unk_50.y = 0;
-        ov109_021D3460(param0, v0);
-        memset(param1, 0, sizeof(UnkStruct_ov109_021D3110));
+        SpinTrade_StartWobbleTask(param0, v0);
+        memset(param1, 0, sizeof(SpinTradeBounceTask));
     }
 }
 
-static void ov109_021D3180(SysTask *param0, void *param1)
+static void SpinTrade_BounceTask(SysTask *param0, void *param1)
 {
     int v0;
-    UnkStruct_ov109_021D0F70 *v1 = param1;
-    UnkStruct_ov109_021D31A8 *v2 = &v1->unk_AB4;
-    UnkStruct_ov109_021D3110 *v3 = v2->unk_00;
+    SpinTrade *v1 = param1;
+    SpinTradeBounceTasks *v2 = &v1->unk_AB4;
+    SpinTradeBounceTask *v3 = v2->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v3++) {
         if (v3->unk_00) {
-            ov109_021D3110(v1, v3);
+            SpinTrade_UpdateBounceTask(v1, v3);
         }
     }
 }
 
-static void ov109_021D31A8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitBounceTasks(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D31A8 *v0 = &param0->unk_AB4;
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D31A8));
+    SpinTradeBounceTasks *v0 = &param0->unk_AB4;
+    memset(v0, 0, sizeof(SpinTradeBounceTasks));
 
-    param0->unk_DB0 = SysTask_Start(ov109_021D3180, param0, 256);
+    param0->unk_DB0 = SysTask_Start(SpinTrade_BounceTask, param0, 256);
     GF_ASSERT(param0->unk_DB0);
 }
 
-static void ov109_021D31E0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeBounceTasks(SpinTrade *param0)
 {
     SysTask_Done(param0->unk_DB0);
 }
 
-static void ov109_021D31F0(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_StartBounceTask(SpinTrade *param0, SpinTradeMonModel *param1)
 {
     int v0;
-    UnkStruct_ov109_021D31A8 *v1 = &param0->unk_AB4;
-    UnkStruct_ov109_021D3110 *v2 = v1->unk_00;
+    SpinTradeBounceTasks *v1 = &param0->unk_AB4;
+    SpinTradeBounceTask *v2 = v1->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v2++) {
         if (v2->unk_00 == 0) {
@@ -2740,25 +2740,25 @@ static void ov109_021D31F0(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     GF_ASSERT(FALSE);
 }
 
-static void ov109_021D3218(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_StartAllBounceTasks(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D1334 *v0 = &param0->unk_190;
+    SpinTradeModels *v0 = &param0->unk_190;
     int v1 = 0, v2 = param0->unk_2C.unk_04;
 
     do {
         if (v0->unk_140[v1].unk_00) {
-            ov109_021D31F0(param0, &v0->unk_140[v1]);
+            SpinTrade_StartBounceTask(param0, &v0->unk_140[v1]);
         }
 
         v1++;
     } while (v1 < v2);
 }
 
-static BOOL ov109_021D3248(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_AreBounceTasksActive(SpinTrade *param0)
 {
     int v0;
-    UnkStruct_ov109_021D31A8 *v1 = &param0->unk_AB4;
-    UnkStruct_ov109_021D3110 *v2 = v1->unk_00;
+    SpinTradeBounceTasks *v1 = &param0->unk_AB4;
+    SpinTradeBounceTask *v2 = v1->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v2++) {
         if (v2->unk_00) {
@@ -2769,10 +2769,10 @@ static BOOL ov109_021D3248(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static void ov109_021D3268(UnkStruct_ov109_021D3268 *param0)
+static void SpinTrade_UpdateShakeTask(SpinTradeShakeTask *param0)
 {
     fx32 v0;
-    UnkStruct_ov109_021D2D78 *v1 = param0->unk_10;
+    SpinTradeMonModel *v1 = param0->unk_10;
 
     switch (param0->unk_04) {
     case 0:
@@ -2781,52 +2781,52 @@ static void ov109_021D3268(UnkStruct_ov109_021D3268 *param0)
         param0->unk_04++;
     case 1:
         v0 = v1->unk_2C.y;
-        ov109_021D39D4(&v1->unk_2C.y, param0->unk_0C);
+        SpinTrade_AddRotation(&v1->unk_2C.y, param0->unk_0C);
 
         if (v1->unk_2C.y < (FX32_ONE * 4)) {
             param0->unk_0C = (u32)(param0->unk_0C) >> 1;
 
             if (param0->unk_0C < (FX32_ONE * 4)) {
                 v1->unk_2C.y = 0;
-                memset(param0, 0, sizeof(UnkStruct_ov109_021D3268));
+                memset(param0, 0, sizeof(SpinTradeShakeTask));
             }
         }
     }
 }
 
-static void ov109_021D32B8(SysTask *param0, void *param1)
+static void SpinTrade_ShakeTask(SysTask *param0, void *param1)
 {
     int v0;
-    UnkStruct_ov109_021D0F70 *v1 = param1;
-    UnkStruct_ov109_021D32DC *v2 = &v1->unk_B54;
-    UnkStruct_ov109_021D3268 *v3 = v2->unk_00;
+    SpinTrade *v1 = param1;
+    SpinTradeShakeTasks *v2 = &v1->unk_B54;
+    SpinTradeShakeTask *v3 = v2->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v3++) {
         if (v3->unk_00) {
-            ov109_021D3268(v3);
+            SpinTrade_UpdateShakeTask(v3);
         }
     }
 }
 
-static void ov109_021D32DC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitShakeTasks(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D32DC *v0 = &param0->unk_B54;
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D32DC));
+    SpinTradeShakeTasks *v0 = &param0->unk_B54;
+    memset(v0, 0, sizeof(SpinTradeShakeTasks));
 
-    param0->unk_DB4 = SysTask_Start(ov109_021D32B8, param0, 257);
+    param0->unk_DB4 = SysTask_Start(SpinTrade_ShakeTask, param0, 257);
     GF_ASSERT(param0->unk_DB4);
 }
 
-static void ov109_021D3318(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeShakeTasks(SpinTrade *param0)
 {
     SysTask_Done(param0->unk_DB4);
 }
 
-static void ov109_021D3328(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_StartShakeTask(SpinTrade *param0, SpinTradeMonModel *param1)
 {
     int v0;
-    UnkStruct_ov109_021D32DC *v1 = &param0->unk_B54;
-    UnkStruct_ov109_021D3268 *v2 = v1->unk_00;
+    SpinTradeShakeTasks *v1 = &param0->unk_B54;
+    SpinTradeShakeTask *v2 = v1->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v2++) {
         if ((v2->unk_00 == 1) && (v2->unk_10 == param1)) {
@@ -2846,10 +2846,10 @@ static void ov109_021D3328(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     GF_ASSERT(FALSE);
 }
 
-static void ov109_021D3370(UnkStruct_ov109_021D3370 *param0)
+static void SpinTrade_UpdateWobbleTask(SpinTradeWobbleTask *param0)
 {
     fx32 v0;
-    UnkStruct_ov109_021D2D78 *v1 = param0->unk_14;
+    SpinTradeMonModel *v1 = param0->unk_14;
 
     switch (param0->unk_04) {
     case 0:
@@ -2861,55 +2861,55 @@ static void ov109_021D3370(UnkStruct_ov109_021D3370 *param0)
     case 1:
         v0 = CalcSineDegrees((param0->unk_10) / FX32_ONE) * ((param0->unk_08) / FX32_ONE);
         v1->unk_2C.z = 0;
-        ov109_021D39D4(&v1->unk_2C.z, v0);
+        SpinTrade_AddRotation(&v1->unk_2C.z, v0);
 
         v0 = param0->unk_10;
-        ov109_021D39D4(&param0->unk_10, param0->unk_0C);
+        SpinTrade_AddRotation(&param0->unk_10, param0->unk_0C);
 
         if (param0->unk_10 < v0) {
             param0->unk_08 = (u32)(param0->unk_08) >> 1;
 
             if (param0->unk_08 == 0) {
                 v1->unk_2C.z = 0;
-                memset(param0, 0, sizeof(UnkStruct_ov109_021D3370));
+                memset(param0, 0, sizeof(SpinTradeWobbleTask));
             }
         }
     }
 }
 
-static void ov109_021D33F0(SysTask *param0, void *param1)
+static void SpinTrade_WobbleTask(SysTask *param0, void *param1)
 {
     int v0;
-    UnkStruct_ov109_021D0F70 *v1 = param1;
-    UnkStruct_ov109_021D3414 *v2 = &v1->unk_BB8;
-    UnkStruct_ov109_021D3370 *v3 = v2->unk_00;
+    SpinTrade *v1 = param1;
+    SpinTradeWobbleTasks *v2 = &v1->unk_BB8;
+    SpinTradeWobbleTask *v3 = v2->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v3++) {
         if (v3->unk_00) {
-            ov109_021D3370(v3);
+            SpinTrade_UpdateWobbleTask(v3);
         }
     }
 }
 
-static void ov109_021D3414(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitWobbleTasks(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D3414 *v0 = &param0->unk_BB8;
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D3414));
+    SpinTradeWobbleTasks *v0 = &param0->unk_BB8;
+    memset(v0, 0, sizeof(SpinTradeWobbleTasks));
 
-    param0->unk_DB8 = SysTask_Start(ov109_021D33F0, param0, 258);
+    param0->unk_DB8 = SysTask_Start(SpinTrade_WobbleTask, param0, 258);
     GF_ASSERT(param0->unk_DB8);
 }
 
-static void ov109_021D3450(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeWobbleTasks(SpinTrade *param0)
 {
     SysTask_Done(param0->unk_DB8);
 }
 
-static void ov109_021D3460(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_StartWobbleTask(SpinTrade *param0, SpinTradeMonModel *param1)
 {
     int v0;
-    UnkStruct_ov109_021D3414 *v1 = &param0->unk_BB8;
-    UnkStruct_ov109_021D3370 *v2 = v1->unk_00;
+    SpinTradeWobbleTasks *v1 = &param0->unk_BB8;
+    SpinTradeWobbleTask *v2 = v1->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v2++) {
         if ((v2->unk_00 == 1) && (v2->unk_14 == param1)) {
@@ -2929,9 +2929,9 @@ static void ov109_021D3460(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     GF_ASSERT(FALSE);
 }
 
-static void ov109_021D34A8(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D34A8 *param1)
+static void SpinTrade_UpdateIntroTask(SpinTrade *param0, SpinTradeIntroTask *param1)
 {
-    UnkStruct_ov109_021D2AE4 *v0 = &param0->unk_D4;
+    SpinTradeEggModel *v0 = &param0->unk_D4;
 
     switch (param1->unk_00) {
     case 0:
@@ -2952,7 +2952,7 @@ static void ov109_021D34A8(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
 
         if (v0->unk_30.y >= (FX32_ONE * 0)) {
             v0->unk_30.y = 0;
-            ov109_021D3218(param0);
+            SpinTrade_StartAllBounceTasks(param0);
             param1->unk_04 = 1;
             param1->unk_00++;
             Sound_PlayEffect(SEQ_SE_PL_DANSA5_sseq_1);
@@ -2973,7 +2973,7 @@ static void ov109_021D34A8(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
         }
         break;
     case 5:
-        if (ov109_021D3248(param0) == 0) {
+        if (SpinTrade_AreBounceTasksActive(param0) == 0) {
             param1->unk_08 = 0;
             param1->unk_04 = 0;
             param1->unk_00 = 0;
@@ -2983,51 +2983,51 @@ static void ov109_021D34A8(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     }
 }
 
-static void ov109_021D3574(SysTask *param0, void *param1)
+static void SpinTrade_IntroTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov109_021D0F70 *v0 = param1;
-    UnkStruct_ov109_021D34A8 *v1 = &v0->unk_C30;
+    SpinTrade *v0 = param1;
+    SpinTradeIntroTask *v1 = &v0->unk_C30;
 
-    ov109_021D34A8(v0, v1);
+    SpinTrade_UpdateIntroTask(v0, v1);
 }
 
-static void ov109_021D3584(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitIntroTask(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D34A8 *v0 = &param0->unk_C30;
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D34A8));
-    param0->unk_DBC = SysTask_Start(ov109_021D3574, param0, 255);
+    SpinTradeIntroTask *v0 = &param0->unk_C30;
+    memset(v0, 0, sizeof(SpinTradeIntroTask));
+    param0->unk_DBC = SysTask_Start(SpinTrade_IntroTask, param0, 255);
 
     GF_ASSERT(param0->unk_DBC);
 }
 
-static void ov109_021D35BC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeIntroTask(SpinTrade *param0)
 {
     SysTask_Done(param0->unk_DBC);
 }
 
-static void ov109_021D35CC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_StartIntroTask(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D34A8 *v0 = &param0->unk_C30;
+    SpinTradeIntroTask *v0 = &param0->unk_C30;
     GF_ASSERT(v0->unk_04 == 0);
     v0->unk_08 = 1;
     v0->unk_00 = 1;
 }
 
-static BOOL ov109_021D35E8(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_IsIntroTaskRunning(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D34A8 *v0 = &param0->unk_C30;
+    SpinTradeIntroTask *v0 = &param0->unk_C30;
     return v0->unk_04;
 }
 
-static BOOL ov109_021D35F4(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_IsIntroTaskDone(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D34A8 *v0 = &param0->unk_C30;
+    SpinTradeIntroTask *v0 = &param0->unk_C30;
     return v0->unk_08;
 }
 
-static void ov109_021D3600(SysTask *param0, void *param1)
+static void SpinTrade_SparkleTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov109_021D3600 *v0 = param1;
+    SpinTradeSparkleTask *v0 = param1;
 
     switch (v0->unk_00) {
     case 0:
@@ -3057,12 +3057,12 @@ static void ov109_021D3600(SysTask *param0, void *param1)
     }
 }
 
-static SysTask *ov109_021D3684(UnkStruct_ov109_021D0F70 *param0)
+static SysTask *SpinTrade_StartSparkleTask(SpinTrade *param0)
 {
     SpriteTemplate v0;
-    UnkStruct_ov109_021D3600 *v1 = Heap_AllocAtEnd(HEAP_ID_95, sizeof(UnkStruct_ov109_021D3600));
+    SpinTradeSparkleTask *v1 = Heap_AllocAtEnd(HEAP_ID_95, sizeof(SpinTradeSparkleTask));
 
-    memset(v1, 0, sizeof(UnkStruct_ov109_021D3600));
+    memset(v1, 0, sizeof(SpinTradeSparkleTask));
 
     v0.x = 128;
     v0.y = 100;
@@ -3080,25 +3080,25 @@ static SysTask *ov109_021D3684(UnkStruct_ov109_021D0F70 *param0)
     v0.resources[4] = SPRITE_RESOURCE_NONE;
     v0.resources[5] = SPRITE_RESOURCE_NONE;
 
-    v1->unk_14 = ov109_021D24E0(param0, &v0);
+    v1->unk_14 = SpinTrade_NewSprite(param0, &v0);
     ManagedSprite_TickFrame(v1->unk_14);
 
     v1->unk_10 = param0;
     {
-        SysTask *v2 = SysTask_Start(ov109_021D3600, v1, 0);
+        SysTask *v2 = SysTask_Start(SpinTrade_SparkleTask, v1, 0);
 
         GF_ASSERT(v2 != NULL);
         return v2;
     }
 }
 
-static void ov109_021D3700(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D3700 *param1)
+static void SpinTrade_UpdateFlashTask(SpinTrade *param0, SpinTradeFlashTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
         break;
     case 1:
-        ov109_021D228C(param0);
+        SpinTrade_ShowTilemapA(param0);
         Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
         param1->unk_04 = 0;
         param1->unk_00++;
@@ -3108,14 +3108,14 @@ static void ov109_021D3700(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
         if (param1->unk_04 >= 2) {
             param1->unk_04 = 0;
             param1->unk_00++;
-            ov109_021D22A4(param0);
+            SpinTrade_ShowTilemapC(param0);
         }
         break;
     case 3:
         param1->unk_04++;
 
         if (param1->unk_04 >= 4) {
-            ov109_021D228C(param0);
+            SpinTrade_ShowTilemapA(param0);
             param1->unk_04 = 0;
             param1->unk_00++;
         }
@@ -3124,7 +3124,7 @@ static void ov109_021D3700(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
         param1->unk_04++;
 
         if (param1->unk_04 >= 2) {
-            ov109_021D2298(param0);
+            SpinTrade_ShowTilemapB(param0);
             param1->unk_02 = 0;
             param1->unk_00 = 0;
         }
@@ -3132,42 +3132,42 @@ static void ov109_021D3700(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     }
 }
 
-static void ov109_021D3788(SysTask *param0, void *param1)
+static void SpinTrade_FlashTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov109_021D0F70 *v0 = param1;
-    UnkStruct_ov109_021D3700 *v1 = &v0->unk_C44;
+    SpinTrade *v0 = param1;
+    SpinTradeFlashTask *v1 = &v0->unk_C44;
 
-    ov109_021D3700(v0, v1);
+    SpinTrade_UpdateFlashTask(v0, v1);
 }
 
-static void ov109_021D379C(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitFlashTask(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D3700 *v0 = &param0->unk_C44;
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D3700));
-    param0->unk_DC0 = SysTask_Start(ov109_021D3788, param0, 259);
+    SpinTradeFlashTask *v0 = &param0->unk_C44;
+    memset(v0, 0, sizeof(SpinTradeFlashTask));
+    param0->unk_DC0 = SysTask_Start(SpinTrade_FlashTask, param0, 259);
     GF_ASSERT(param0->unk_DC0);
 }
 
-static void ov109_021D37E0(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeFlashTask(SpinTrade *param0)
 {
     SysTask_Done(param0->unk_DC0);
 }
 
-static BOOL ov109_021D37F0(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_IsFlashTaskRunning(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D3700 *v0 = &param0->unk_C44;
+    SpinTradeFlashTask *v0 = &param0->unk_C44;
     return v0->unk_02;
 }
 
-static void ov109_021D37FC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_StartFlashTask(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D3700 *v0 = &param0->unk_C44;
+    SpinTradeFlashTask *v0 = &param0->unk_C44;
     GF_ASSERT(v0->unk_02 == 0);
     v0->unk_02 = 1;
     v0->unk_00 = 1;
 }
 
-static void ov109_021D3818(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D3818 *param1)
+static void SpinTrade_UpdateBobTask(SpinTrade *param0, SpinTradeBobTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -3196,36 +3196,36 @@ static void ov109_021D3818(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     }
 }
 
-static void ov109_021D3864(SysTask *param0, void *param1)
+static void SpinTrade_BobTask(SysTask *param0, void *param1)
 {
     int v0;
-    UnkStruct_ov109_021D0F70 *v1 = param1;
-    UnkStruct_ov109_021D3884 *v2 = &v1->unk_C4C;
-    UnkStruct_ov109_021D3818 *v3 = v2->unk_00;
+    SpinTrade *v1 = param1;
+    SpinTradeBobTasks *v2 = &v1->unk_C4C;
+    SpinTradeBobTask *v3 = v2->unk_00;
 
     for (v0 = 0; v0 < 5; v0++, v3++) {
-        ov109_021D3818(v1, v3);
+        SpinTrade_UpdateBobTask(v1, v3);
     }
 }
 
-static void ov109_021D3884(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_InitBobTasks(SpinTrade *param0)
 {
-    UnkStruct_ov109_021D3884 *v0 = &param0->unk_C4C;
-    memset(v0, 0, sizeof(UnkStruct_ov109_021D3884));
-    param0->unk_DC4 = SysTask_Start(ov109_021D3864, param0, 260);
+    SpinTradeBobTasks *v0 = &param0->unk_C4C;
+    memset(v0, 0, sizeof(SpinTradeBobTasks));
+    param0->unk_DC4 = SysTask_Start(SpinTrade_BobTask, param0, 260);
     GF_ASSERT(param0->unk_DC4);
 }
 
-static void ov109_021D38BC(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_FreeBobTasks(SpinTrade *param0)
 {
     SysTask_Done(param0->unk_DC4);
 }
 
-static void ov109_021D38CC(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021D2D78 *param1)
+static void SpinTrade_StartBobTask(SpinTrade *param0, SpinTradeMonModel *param1)
 {
     int v0 = param1->unk_0C;
-    UnkStruct_ov109_021D3884 *v1 = &param0->unk_C4C;
-    UnkStruct_ov109_021D3818 *v2 = &v1->unk_00[v0];
+    SpinTradeBobTasks *v1 = &param0->unk_C4C;
+    SpinTradeBobTask *v2 = &v1->unk_00[v0];
 
     GF_ASSERT(v0 < 5);
     GF_ASSERT(v2->unk_00 == 0);
@@ -3234,25 +3234,25 @@ static void ov109_021D38CC(UnkStruct_ov109_021D0F70 *param0, UnkStruct_ov109_021
     v2->unk_0C = param1;
 }
 
-static void ov109_021D38F8(UnkStruct_ov109_021D0F70 *param0)
+static void SpinTrade_StartAllBobTasks(SpinTrade *param0)
 {
     u32 v0 = param0->unk_20;
     int v1 = 0, v2 = param0->unk_2C.unk_04;
-    UnkStruct_ov109_021D1334 *v3 = &param0->unk_190;
+    SpinTradeModels *v3 = &param0->unk_190;
 
     while (v1 < v2) {
         if (v3->unk_140[v1].unk_00 && (v0 & (1 << v3->unk_140[v1].unk_0C))) {
-            ov109_021D38CC(param0, &v3->unk_140[v1]);
+            SpinTrade_StartBobTask(param0, &v3->unk_140[v1]);
         }
 
         v1++;
     }
 }
 
-static void ov109_021D3948(SysTask *param0, void *param1)
+static void SpinTrade_FadeTask(SysTask *param0, void *param1)
 {
     int v0 = 0;
-    UnkStruct_ov109_021D3948 *v1 = param1;
+    SpinTradeFadeTask *v1 = param1;
 
     if (v1->unk_04 == 1) {
         v1->unk_08--;
@@ -3270,7 +3270,7 @@ static void ov109_021D3948(SysTask *param0, void *param1)
         }
     }
 
-    ov109_021D2344(v1->unk_00, v1->unk_08);
+    SpinTrade_SetPaletteBlend(v1->unk_00, v1->unk_08);
 
     if (v0 == 1) {
         Heap_Free(v1);
@@ -3278,21 +3278,21 @@ static void ov109_021D3948(SysTask *param0, void *param1)
     }
 }
 
-static void ov109_021D3990(UnkStruct_ov109_021D0F70 *param0, int param1)
+static void SpinTrade_StartFadeTask(SpinTrade *param0, int param1)
 {
     SysTask *v0;
     u32 v1[2] = { 0, 8 };
-    UnkStruct_ov109_021D3948 *v2 = Heap_AllocAtEnd(HEAP_ID_95, sizeof(UnkStruct_ov109_021D3948));
+    SpinTradeFadeTask *v2 = Heap_AllocAtEnd(HEAP_ID_95, sizeof(SpinTradeFadeTask));
 
     v2->unk_00 = param0;
     v2->unk_04 = param1;
     v2->unk_08 = v1[param1];
 
-    v0 = SysTask_Start(ov109_021D3948, v2, 0);
+    v0 = SysTask_Start(SpinTrade_FadeTask, v2, 0);
     GF_ASSERT(v0 != NULL);
 }
 
-static void ov109_021D39D4(fx32 *param0, fx32 param1)
+static void SpinTrade_AddRotation(fx32 *param0, fx32 param1)
 {
     (*param0) += param1;
 
@@ -3303,13 +3303,13 @@ static void ov109_021D39D4(fx32 *param0, fx32 param1)
     (*param0) %= (FX32_ONE * 360);
 }
 
-static void ov109_021D39FC(UnkStruct_ov109_021D0F70 *param0, fx32 param1)
+static void SpinTrade_AdvanceRotation(SpinTrade *param0, fx32 param1)
 {
-    ov109_021D2AE4(&param0->unk_D4, param1);
-    ov109_021D2D44(param0, param1);
+    SpinTrade_AdvanceEggRotation(&param0->unk_D4, param1);
+    SpinTrade_AdvanceMonRotation(param0, param1);
 }
 
-static BOOL ov109_021D3A14(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_UpdateSpinTimer(SpinTrade *param0)
 {
     param0->unk_08++;
 
@@ -3321,7 +3321,7 @@ static BOOL ov109_021D3A14(UnkStruct_ov109_021D0F70 *param0)
     return 1;
 }
 
-static void *ov109_021D3A2C(UnkStruct_ov109_021D0F70 *param0, u32 param1, BOOL param2)
+static void *SpinTrade_LoadNarcMember(SpinTrade *param0, u32 param1, BOOL param2)
 {
     void *v0;
     u32 v1 = NARC_GetMemberSize(param0->unk_D80, param1);
@@ -3336,32 +3336,32 @@ static void *ov109_021D3A2C(UnkStruct_ov109_021D0F70 *param0, u32 param1, BOOL p
     return v0;
 }
 
-void ov109_021D3A68(UnkStruct_ov109_021D0F70 *param0, u32 param1)
+void SpinTrade_SetState(SpinTrade *param0, u32 param1)
 {
     if (param1 != 0) {
         param0->unk_2C.unk_08 = param1;
     }
 }
 
-void ov109_021D3A70(UnkStruct_ov109_021D0F70 *param0, const UnionRoomCommSpinTradePos *param1)
+void SpinTrade_HandleSpinTradePos(SpinTrade *param0, const UnionRoomCommSpinTradePos *param1)
 {
     param0->unk_2C.unk_10 = 1;
     param0->unk_2C.unk_2C = *param1;
 }
 
-static void *ov109_021D3A94(UnkStruct_ov109_021D0F70 *param0, u32 param1)
+static void *SpinTrade_GetSendBuffer(SpinTrade *param0, u32 param1)
 {
     GF_ASSERT(param1 < 32);
     memset(param0->unk_AC, 0, 32);
     return param0->unk_AC;
 }
 
-static void *ov109_021D3AB4(UnkStruct_ov109_021D0F70 *param0)
+static void *SpinTrade_GetSendBufferPtr(SpinTrade *param0)
 {
     return param0->unk_AC;
 }
 
-static BOOL ov109_021D3AB8(UnkStruct_ov109_021D0F70 *param0, u16 param1)
+static BOOL SpinTrade_CheckStageFlag(SpinTrade *param0, u16 param1)
 {
     u32 v0 = param0->unk_D0->stageFlags;
 
@@ -3372,7 +3372,7 @@ static BOOL ov109_021D3AB8(UnkStruct_ov109_021D0F70 *param0, u16 param1)
     return 0;
 }
 
-static BOOL ov109_021D3ACC(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_AreAllParticipantsConnected(SpinTrade *param0)
 {
     int v0 = 0;
     int v1 = param0->unk_CC->connectedCount - 1;
@@ -3390,7 +3390,7 @@ static BOOL ov109_021D3ACC(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D3B04(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_CountParticipants(SpinTrade *param0)
 {
     int v0 = 0;
     u32 v1 = param0->unk_D0->participantBitmap;
@@ -3403,21 +3403,21 @@ static int ov109_021D3B04(UnkStruct_ov109_021D0F70 *param0)
     return v0;
 }
 
-void ov109_021D3B24(UnkStruct_ov109_021D0F70 *param0, const UnkStruct_ov109_021D1048 *param1)
+void SpinTrade_HandleOrder(SpinTrade *param0, const SpinTradeOrder *param1)
 {
-    param0->unk_2C.unk_44[param1->unk_00] = *param1;
+    param0->unk_2C.unk_44[param1->slot] = *param1;
 
-    if (param1->unk_02 == CommSys_CurNetId()) {
-        param0->unk_2C.unk_00 = param1->unk_00;
+    if (param1->netId == CommSys_CurNetId()) {
+        param0->unk_2C.unk_00 = param1->slot;
     }
 }
 
-void ov109_021D3B50(UnkStruct_ov109_021D0F70 *param0, int param1)
+void SpinTrade_SetPlayerCount(SpinTrade *param0, int param1)
 {
     param0->unk_2C.unk_04 = param1;
 }
 
-static BOOL ov109_021D3B54(UnkStruct_ov109_021D0F70 *param0, int param1)
+static BOOL SpinTrade_IsNetIdConnected(SpinTrade *param0, int param1)
 {
     if (param1 != 0) {
         u32 v0 = 1 << (u32)param1;
@@ -3430,7 +3430,7 @@ static BOOL ov109_021D3B54(UnkStruct_ov109_021D0F70 *param0, int param1)
     return 1;
 }
 
-static void ov109_021D3B70(UnkStruct_ov109_021D0F70 *param0, int param1)
+static void SpinTrade_CopyReceivedMon(SpinTrade *param0, int param1)
 {
     int v0, v1;
     Party *v2, *v3;
@@ -3449,7 +3449,7 @@ static void ov109_021D3B70(UnkStruct_ov109_021D0F70 *param0, int param1)
     Pokemon_Copy(v5, v4);
 }
 
-static int ov109_021D3BC4(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_CountReceivedTrainerData(SpinTrade *param0)
 {
     int v0 = 0;
     u32 v1 = param0->unk_D0->trainerDataBitmap;
@@ -3462,41 +3462,41 @@ static int ov109_021D3BC4(UnkStruct_ov109_021D0F70 *param0)
     return v0;
 }
 
-void ov109_021D3BE4(UnkStruct_ov109_021D0F70 *param0, int param1, int param2)
+void SpinTrade_SetMonSlot(SpinTrade *param0, int param1, int param2)
 {
     param0->unk_2C.unk_18[param1] = param2;
 }
 
-void ov109_021D3BEC(UnkStruct_ov109_021D0F70 *param0, const UnkStruct_ov109_021D17EC *param1)
+void SpinTrade_HandleResult(SpinTrade *param0, const SpinTradeResult *param1)
 {
     param0->unk_2C.unk_34 = *param1;
     param0->unk_2C.unk_14 = 1;
 }
 
-static BOOL ov109_021D3C08(UnkStruct_ov109_021D0F70 *param0, fx32 param1, int param2)
+static BOOL SpinTrade_IsInRange(SpinTrade *param0, fx32 param1, int param2)
 {
     int v0;
     fx32 v1;
     u32 v2, v3;
-    const UnkStruct_ov109_021D5C14 *v4;
-    const UnkStruct_ov109_021D59AC *v5;
+    const SpinTradeRangeSet *v4;
+    const SpinTradeRange *v5;
 
-    ov109_021D39D4(&param1, -param0->unk_D4.unk_3C);
+    SpinTrade_AddRotation(&param1, -param0->unk_D4.unk_3C);
 
     v1 = param1;
-    ov109_021D39D4(&v1, FX32_ONE * -4);
+    SpinTrade_AddRotation(&v1, FX32_ONE * -4);
     v2 = ((v1) / FX32_ONE);
 
     v1 = param1;
-    ov109_021D39D4(&v1, FX32_ONE * 5);
+    SpinTrade_AddRotation(&v1, FX32_ONE * 5);
     v3 = ((v1) / FX32_ONE);
 
-    v4 = &Unk_ov109_021D5C14[param2];
-    v0 = v4->unk_00;
-    v5 = v4->unk_04;
+    v4 = &sRangeSets[param2];
+    v0 = v4->count;
+    v5 = v4->ranges;
 
     while (v0) {
-        if (((v2 >= v5->unk_00) && (v2 <= v5->unk_02)) || ((v3 >= v5->unk_00) && (v3 <= v5->unk_02))) {
+        if (((v2 >= v5->min) && (v2 <= v5->max)) || ((v3 >= v5->min) && (v3 <= v5->max))) {
             return 1;
         }
 
@@ -3507,7 +3507,7 @@ static BOOL ov109_021D3C08(UnkStruct_ov109_021D0F70 *param0, fx32 param1, int pa
     return 0;
 }
 
-static BOOL ov109_021D3C94(Party *param0)
+static BOOL SpinTrade_HasBadEgg(Party *param0)
 {
     int v0, v1;
     Pokemon *v2;
@@ -3527,9 +3527,9 @@ static BOOL ov109_021D3C94(Party *param0)
     return 0;
 }
 
-static BOOL ov109_021D3CD8(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_AnyBadEgg(SpinTrade *param0)
 {
-    if (ov109_021D3C94(param0->unk_24) == 1) {
+    if (SpinTrade_HasBadEgg(param0->unk_24) == 1) {
         return 1;
     }
 
@@ -3538,10 +3538,10 @@ static BOOL ov109_021D3CD8(UnkStruct_ov109_021D0F70 *param0)
         Party *v1;
 
         for (v0 = 0; v0 < 5; v0++) {
-            if (ov109_021D3B54(param0, v0)) {
+            if (SpinTrade_IsNetIdConnected(param0, v0)) {
                 v1 = UnionRoomComm_GetRecvTrainerData(param0->unk_D0, v0);
 
-                if (ov109_021D3C94(v1) == 1) {
+                if (SpinTrade_HasBadEgg(v1) == 1) {
                     return 1;
                 }
             }
@@ -3551,7 +3551,7 @@ static BOOL ov109_021D3CD8(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static int ov109_021D3D1C(UnkStruct_ov109_021D0F70 *param0)
+static int SpinTrade_CountEggOk(SpinTrade *param0)
 {
     int v0 = 0;
     u32 v1 = param0->unk_D0->eggOkBitmap;
@@ -3564,7 +3564,7 @@ static int ov109_021D3D1C(UnkStruct_ov109_021D0F70 *param0)
     return v0;
 }
 
-static BOOL ov109_021D3D3C(UnkStruct_ov109_021D0F70 *param0)
+static BOOL SpinTrade_HasBadEggFlag(SpinTrade *param0)
 {
     int v0 = 0;
     u32 v1 = param0->unk_D0->badEggBitmap;
@@ -3576,7 +3576,7 @@ static BOOL ov109_021D3D3C(UnkStruct_ov109_021D0F70 *param0)
     return 0;
 }
 
-static const WindowTemplate Unk_ov109_021D59B8[1] = {
+static const WindowTemplate sMessageWindowTemplate[1] = {
     0x1,
     0x2,
     0x13,
@@ -3586,25 +3586,25 @@ static const WindowTemplate Unk_ov109_021D59B8[1] = {
     0x28
 };
 
-static const WindowTemplate Unk_ov109_021D5A04[2] = {
+static const WindowTemplate sPlayerWindowTemplates2[2] = {
     { 0x1, 0xC, 0x12, 0x8, 0x2, 0xF, 0x94 },
     { 0x1, 0xC, 0x6, 0x8, 0x2, 0xF, 0xBC }
 };
 
-static const WindowTemplate Unk_ov109_021D5AB0[3] = {
+static const WindowTemplate sPlayerWindowTemplates3[3] = {
     { 0x1, 0xC, 0x12, 0x8, 0x2, 0xF, 0x94 },
     { 0x1, 0x5, 0xA, 0x8, 0x2, 0xF, 0xBC },
     { 0x1, 0x13, 0xA, 0x8, 0x2, 0xF, 0xE4 }
 };
 
-static const WindowTemplate Unk_ov109_021D5B54[4] = {
+static const WindowTemplate sPlayerWindowTemplates4[4] = {
     { 0x1, 0xC, 0x12, 0x8, 0x2, 0xF, 0x94 },
     { 0x1, 0x4, 0xD, 0x8, 0x2, 0xF, 0xBC },
     { 0x1, 0xC, 0x6, 0x8, 0x2, 0xF, 0xE4 },
     { 0x1, 0x14, 0xD, 0x8, 0x2, 0xF, 0x10C }
 };
 
-static const WindowTemplate Unk_ov109_021D5B94[5] = {
+static const WindowTemplate sPlayerWindowTemplates5[5] = {
     { 0x1, 0xC, 0x13, 0x8, 0x2, 0xF, 0x94 },
     { 0x1, 0x4, 0xE, 0x8, 0x2, 0xF, 0xBC },
     { 0x1, 0x6, 0x9, 0x8, 0x2, 0xF, 0xE4 },
@@ -3612,16 +3612,16 @@ static const WindowTemplate Unk_ov109_021D5B94[5] = {
     { 0x1, 0x14, 0xE, 0x8, 0x2, 0xF, 0X134 }
 };
 
-static const WindowTemplate *const Unk_ov109_021D5A68[5 + 1] = {
+static const WindowTemplate *const sPlayerWindowTemplates[5 + 1] = {
     NULL,
     NULL,
-    Unk_ov109_021D5A04,
-    Unk_ov109_021D5AB0,
-    Unk_ov109_021D5B54,
-    Unk_ov109_021D5B94
+    sPlayerWindowTemplates2,
+    sPlayerWindowTemplates3,
+    sPlayerWindowTemplates4,
+    sPlayerWindowTemplates5
 };
 
-static const u16 Unk_ov109_021D5C44[5 + 1][5] = {
+static const u16 sPlayerStartAngles[5 + 1][5] = {
     { 0x0, 0x0, 0x0, 0x0, 0x0 },
     { 0x0, 0x0, 0x0, 0x0, 0x0 },
     { 0x0, 0xB4, 0x0, 0x0, 0x0 },
@@ -3630,7 +3630,7 @@ static const u16 Unk_ov109_021D5C44[5 + 1][5] = {
     { 0x0, 0x120, 0xD8, 0x90, 0x48 }
 };
 
-static const u16 Unk_ov109_021D5C80[5 + 1][5] = {
+static const u16 sPlayerTargetAngles[5 + 1][5] = {
     { 0x0, 0x0, 0x0, 0x0, 0x0 },
     { 0x0, 0x0, 0x0, 0x0, 0x0 },
     { 0x5A, 0x10E, 0x0, 0x0, 0x0 },
@@ -3639,36 +3639,36 @@ static const u16 Unk_ov109_021D5C80[5 + 1][5] = {
     { 0x5A, 0xA2, 0xEA, 0x132, 0x12 }
 };
 
-static const UnkStruct_ov109_021D59AC Unk_ov109_021D59AC = {
+static const SpinTradeRange sRange1 = {
     0x0,
     0xB4
 };
 
-static const UnkStruct_ov109_021D59AC Unk_ov109_021D59B0[2] = {
+static const SpinTradeRange sRange2[2] = {
     { 0x0, 0xC6 },
     { 0x156, 0x167 }
 };
 
-static const UnkStruct_ov109_021D59AC Unk_ov109_021D59D0[2] = {
+static const SpinTradeRange sRange3[2] = {
     { 0x25, 0x8E },
     { 0xD7, 0x143 }
 };
 
-static const UnkStruct_ov109_021D59AC Unk_ov109_021D59C0[2] = {
+static const SpinTradeRange sRange4[2] = {
     { 0x0, 0xD7 },
     { 0x143, 0x167 }
 };
 
-static const UnkStruct_ov109_021D5C14 Unk_ov109_021D5C14[5 + 1] = {
+static const SpinTradeRangeSet sRangeSets[5 + 1] = {
     { 0x0, NULL },
     { 0x0, NULL },
-    { 0x1, &Unk_ov109_021D59AC },
-    { 0x2, Unk_ov109_021D59B0 },
-    { 0x2, Unk_ov109_021D59D0 },
-    { 0x2, Unk_ov109_021D59C0 }
+    { 0x1, &sRange1 },
+    { 0x2, sRange2 },
+    { 0x2, sRange3 },
+    { 0x2, sRange4 }
 };
 
-static const u32 Unk_ov109_021D5BE4[5 + 1][2] = {
+static const u32 sItemRanges[5 + 1][2] = {
     { 0x0, 0x0 },
     { 0x0, 0x0 },
     { 0x9F, 0xA3 },
@@ -3677,7 +3677,7 @@ static const u32 Unk_ov109_021D5BE4[5 + 1][2] = {
     { 0xAF, 0xB7 }
 };
 
-static const u32 Unk_ov109_021D5A80[5 + 1] = {
+static const u32 sEggModelIndices[5 + 1] = {
     0x0,
     0x0,
     0x1,
@@ -3686,7 +3686,7 @@ static const u32 Unk_ov109_021D5A80[5 + 1] = {
     0x4
 };
 
-static const fx32 Unk_ov109_021D5A98[5 + 1] = {
+static const fx32 sEggModelAngles[5 + 1] = {
     0x0,
     0x0,
     FX32_ONE * -72,

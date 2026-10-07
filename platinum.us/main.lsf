@@ -1608,11 +1608,11 @@ Overlay battle_arcade_app
 	Object main.nef.p/src_applications_frontier_battle_arcade_windows.c.o
 }
 
-Overlay overlay109
+Overlay spin_trade
 {
 	After main
-	Object main.nef.p/src_overlay109_ov109_021D0D80.c.o
-	Object main.nef.p/src_overlay109_ov109_021D3D50.c.o
+	Object main.nef.p/src_spin_trade_spin_trade.c.o
+	Object main.nef.p/src_spin_trade_group_confirmation.c.o
 }
 
 Overlay frontier_records_app

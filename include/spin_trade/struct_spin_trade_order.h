@@ -1,0 +1,9 @@
+#ifndef POKEPLATINUM_STRUCT_SPIN_TRADE_ORDER_H
+#define POKEPLATINUM_STRUCT_SPIN_TRADE_ORDER_H
+
+typedef struct {
+    u16 slot;
+    u16 netId;
+} SpinTradeOrder;
+
+#endif // POKEPLATINUM_STRUCT_SPIN_TRADE_ORDER_H

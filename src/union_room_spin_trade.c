@@ -9,8 +9,8 @@
 #include "applications/party_menu/defs.h"
 #include "applications/pokemon_summary_screen/main.h"
 #include "field/field_system.h"
-#include "overlay109/ov109_021D0D80.h"
-#include "overlay109/ov109_021D3D50.h"
+#include "spin_trade/spin_trade.h"
+#include "spin_trade/group_confirmation.h"
 
 #include "comm_manager.h"
 #include "field_system.h"
@@ -23,11 +23,11 @@
 #include "field_system_apps.h"
 #include "union_room_comm.h"
 
-FS_EXTERN_OVERLAY(overlay109);
+FS_EXTERN_OVERLAY(spin_trade);
 
 // Field task that runs one Union Room spin trade. It is created by ScrCmd_2C6
 // once two players agree to a spin trade, and drives the whole exchange:
-//   0. launch the group confirmation app (overlay109) that gathers the players,
+//   0. launch the group confirmation app (spin_trade) that gathers the players,
 //   1. wait for it, then open the party menu to choose the egg to offer,
 //   2. either view the chosen egg's summary or launch the spin trade app,
 //   3. return to the party menu after the summary,
@@ -198,16 +198,16 @@ static BOOL (*const sSpinTradeTaskStates[6])(UnionRoomSpinTradeTask *) = {
 // Group confirmation app: gathers the players and asks them to confirm the
 // spin trade before the egg is chosen.
 static const ApplicationManagerTemplate sSpinTradeGroupAppTemplate = {
-    ov109_021D3D50,
-    ov109_021D3EB0,
-    ov109_021D3F9C,
-    FS_OVERLAY_ID(overlay109)
+    SpinTradeGroup_Init,
+    SpinTradeGroup_Main,
+    SpinTradeGroup_Exit,
+    FS_OVERLAY_ID(spin_trade)
 };
 
 // Spin trade app: performs the 3D egg exchange.
 static const ApplicationManagerTemplate sSpinTradeAppTemplate = {
-    ov109_021D0D80,
-    ov109_021D0F2C,
-    ov109_021D0EB4,
-    FS_OVERLAY_ID(overlay109)
+    SpinTrade_Init,
+    SpinTrade_Main,
+    SpinTrade_Exit,
+    FS_OVERLAY_ID(spin_trade)
 };

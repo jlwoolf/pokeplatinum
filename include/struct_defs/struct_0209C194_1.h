@@ -12,7 +12,7 @@
 
 // Subset of game state copied into a UnionRoomSpinTradeSession. It is filled
 // from the FieldSystem when the spin trade field task starts and read by both
-// overlay109 apps.
+// spin_trade apps.
 typedef struct {
     int unk_00; // Unused.
     int messageBoxFrame; // Message box frame style (Options_Frame).

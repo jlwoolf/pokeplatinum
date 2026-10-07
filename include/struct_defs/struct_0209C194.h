@@ -4,12 +4,12 @@
 #include "struct_defs/struct_0209BDF8.h"
 #include "struct_defs/struct_0209C194_1.h"
 
-#include "overlay109/struct_ov109_021D0F70_decl.h"
-#include "overlay109/struct_ov109_021D5140_decl.h"
+#include "spin_trade/struct_spin_trade_decl.h"
+#include "spin_trade/struct_spin_trade_group_decl.h"
 
 // Shared state for one Union Room spin trade session. The spin trade field
 // task (union_room_spin_trade.c) creates it, then passes it as the argument to
-// the two overlay109 apps that make up the session: the group confirmation
+// the two spin_trade apps that make up the session: the group confirmation
 // app, followed by the spin trade app. UnionRoomComm also holds a pointer to
 // it and dispatches incoming commands to whichever app is active.
 typedef struct UnionRoomSpinTradeSession {
@@ -20,8 +20,8 @@ typedef struct UnionRoomSpinTradeSession {
     BOOL groupConfirmed; // Set when the group app confirms the trade; lets the field task continue.
     UnionRoomSpinTradeContext context; // Savedata, options, records, journal and trainer manager.
     UnionRoomComm *comm; // Communication handler shared by both apps.
-    UnkStruct_ov109_021D0F70 *spinAppData; // Data for the 3D spin trade app (ov109_021D0D80).
-    UnkStruct_ov109_021D5140 *groupAppData; // Data for the group confirmation app (ov109_021D3D50).
+    SpinTrade *spinAppData; // Data for the 3D spin trade app (SpinTrade_Init).
+    SpinTradeGroup *groupAppData; // Data for the group confirmation app (SpinTradeGroup_Init).
 } UnionRoomSpinTradeSession;
 
 #endif // POKEPLATINUM_STRUCT_0209C194_H

@@ -10,10 +10,10 @@
 #include "struct_defs/struct_0209C194.h"
 
 #include "functypes/funcptr_020F8E60.h"
-#include "overlay109/ov109_021D0D80.h"
-#include "overlay109/ov109_021D3D50.h"
-#include "overlay109/struct_ov109_021D1048.h"
-#include "overlay109/struct_ov109_021D17EC.h"
+#include "spin_trade/spin_trade.h"
+#include "spin_trade/group_confirmation.h"
+#include "spin_trade/struct_spin_trade_order.h"
+#include "spin_trade/struct_spin_trade_result.h"
 
 #include "comm_manager.h"
 #include "communication_information.h"
@@ -168,7 +168,7 @@ static void UnionRoomComm_HandleDisconnect(int netId, int unused, void *data, vo
         comm->receivedCount = 0;
         comm->disconnected = 1;
 
-        ov109_021D5140(comm->app->groupAppData, 31, netId);
+        SpinTradeGroup_HandleCommState(comm->app->groupAppData, 31, netId);
     }
 }
 
@@ -177,7 +177,7 @@ static void UnionRoomComm_HandleDisconnect(int netId, int unused, void *data, vo
 static void UnionRoomComm_HandleEraseMessage(int netId, int unused, void *data, void *context)
 {
     UnionRoomComm *comm = context;
-    ov109_021D5140(comm->app->groupAppData, 2, 0);
+    SpinTradeGroup_HandleCommState(comm->app->groupAppData, 2, 0);
 }
 
 // Sub-command 2: connection-confirmation handshake. A client asks the server
@@ -217,17 +217,17 @@ static void UnionRoomComm_HandleConnectionConfirm(int netId, int unused, void *d
         case 0:
             if (request->netId == CommSys_CurNetId()) {
                 if (request->accepted == 0) {
-                    ov109_021D5140(
+                    SpinTradeGroup_HandleCommState(
                         comm->app->groupAppData, 8, request->netId);
                 } else {
                     comm->serverPlayerCount = request->playerCount;
-                    ov109_021D5140(
+                    SpinTradeGroup_HandleCommState(
                         comm->app->groupAppData, 7, request->netId);
                 }
             }
             break;
         case 1:
-            ov109_021D5140(comm->app->groupAppData, 19, request->netId);
+            SpinTradeGroup_HandleCommState(comm->app->groupAppData, 19, request->netId);
             break;
         }
     }
@@ -239,7 +239,7 @@ static void UnionRoomComm_HandlePlayerReady(int netId, int unused, void *data, v
 {
     UnionRoomComm *comm = context;
     u8 readyNetId = *(u8 *)data;
-    ov109_021D5258(comm->app->groupAppData, 1, readyNetId);
+    SpinTradeGroup_HandleConfirm(comm->app->groupAppData, 1, readyNetId);
 
     if (CommSys_CurNetId() == 0) {
         comm->unk_34 = 0;
@@ -252,7 +252,7 @@ static void UnionRoomComm_HandleCancelTrade(int netId, int unused, void *data, v
     UnionRoomComm *comm = context;
 
     if (CommSys_CurNetId() != 0) {
-        ov109_021D5140(comm->app->groupAppData, 13, 0);
+        SpinTradeGroup_HandleCommState(comm->app->groupAppData, 13, 0);
     }
 }
 
@@ -289,9 +289,9 @@ static void UnionRoomComm_HandleSetParticipant(int netId, int unused, void *data
 static void UnionRoomComm_HandlePlayerOrder(int netId, int unused, void *data, void *context)
 {
     UnionRoomComm *comm = context;
-    UnkStruct_ov109_021D1048 *order = data;
+    SpinTradeOrder *order = data;
 
-    ov109_021D3B24(comm->app->spinAppData, order);
+    SpinTrade_HandleOrder(comm->app->spinAppData, order);
 }
 
 // Sub-command 13: sets the expected player count.
@@ -300,7 +300,7 @@ static void UnionRoomComm_HandleSetPlayerCount(int netId, int unused, void *data
     int count = *(int *)data;
     UnionRoomComm *comm = context;
 
-    ov109_021D3B50(comm->app->spinAppData, count);
+    SpinTrade_SetPlayerCount(comm->app->spinAppData, count);
 }
 
 // Sub-command 10: sets a remote animation state.
@@ -309,7 +309,7 @@ static void UnionRoomComm_HandleSetState(int netId, int unused, void *data, void
     u8 state = *(u8 *)data;
     UnionRoomComm *comm = context;
 
-    ov109_021D3A68(comm->app->spinAppData, state);
+    SpinTrade_SetState(comm->app->spinAppData, state);
 }
 
 // Sub-command 11: applies a remote player's spin-trade position.
@@ -319,7 +319,7 @@ static void UnionRoomComm_HandleSpinTradePos(int netId, int unused, void *data, 
         UnionRoomComm *comm = context;
         UnionRoomCommSpinTradePos *pos = data;
 
-        ov109_021D3A70(comm->app->spinAppData, pos);
+        SpinTrade_HandleSpinTradePos(comm->app->spinAppData, pos);
     }
 }
 
@@ -329,16 +329,16 @@ static void UnionRoomComm_HandleSetMonSlot(int netId, int unused, void *data, vo
     int slot = *(int *)data;
     UnionRoomComm *comm = context;
 
-    ov109_021D3BE4(comm->app->spinAppData, netId, slot);
+    SpinTrade_SetMonSlot(comm->app->spinAppData, netId, slot);
 }
 
 // Sub-command 15: stores the final spin-trade result.
 static void UnionRoomComm_HandleSpinTradeResult(int netId, int unused, void *data, void *context)
 {
     UnionRoomComm *comm = context;
-    UnkStruct_ov109_021D17EC *result = data;
+    SpinTradeResult *result = data;
 
-    ov109_021D3BEC(comm->app->spinAppData, result);
+    SpinTrade_HandleResult(comm->app->spinAppData, result);
 }
 
 // Sub-command 16: marks a player as having a bad egg.
