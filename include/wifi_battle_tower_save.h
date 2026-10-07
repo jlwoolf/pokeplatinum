@@ -7,7 +7,7 @@
 #include "struct_defs/wifi_battle_tower_data.h"
 #include "struct_defs/wifi_player_profile.h"
 
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 #include "easy_chat_sentence.h"
 #include "savedata.h"

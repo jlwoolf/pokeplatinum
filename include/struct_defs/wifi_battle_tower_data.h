@@ -6,7 +6,7 @@
 #include "struct_defs/struct_0202D63C.h"
 #include "struct_defs/wifi_player_profile.h"
 
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 typedef struct WifiBattleTowerIndices {
     u8 rank;

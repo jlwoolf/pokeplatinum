@@ -8,8 +8,8 @@
 #include "applications/frontier/battle_hall/sprites.h"
 #include "applications/frontier/battle_hall/windows.h"
 #include "applications/pokemon_summary_screen/main.h"
-#include "overlay104/battle_hall_helpers.h"
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/battle_hall_helpers.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 #include "battle_hall_save.h"
 #include "bg_window.h"
@@ -110,7 +110,7 @@ enum BattleHallAppMultiConfirmSubState {
 #define COMM_CMD_TYPE_SELECTION   5
 #define COMM_CMD_PARTNER_DECISION 6
 
-FS_EXTERN_OVERLAY(overlay104);
+FS_EXTERN_OVERLAY(frontier_facilities);
 
 typedef struct BattleHallApp {
     ApplicationManager *unused;
@@ -237,7 +237,7 @@ static const u8 sSummaryPages[] = {
 
 BOOL BattleHallApp_Init(ApplicationManager *appMan, int *state)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay104), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(frontier_facilities), OVERLAY_LOAD_ASYNC);
     InitGraphicsPlane();
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_BATTLE_HALL_APP, HEAP_SIZE_BATTLE_HALL_APP);
 
@@ -352,7 +352,7 @@ BOOL BattleHallApp_Exit(ApplicationManager *appMan, int *state)
     ApplicationManager_FreeData(appMan);
     SetVBlankCallback(NULL, NULL);
     Heap_Destroy(HEAP_ID_BATTLE_HALL_APP);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay104));
+    Overlay_UnloadByID(FS_OVERLAY_ID(frontier_facilities));
 
     return TRUE;
 }

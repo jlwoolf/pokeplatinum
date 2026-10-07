@@ -5,7 +5,7 @@
 
 #include "struct_defs/wifi_battle_tower_data.h"
 
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 #include "field_battle_data_transfer.h"
 #include "location.h"

@@ -87,7 +87,7 @@
 #include "gym_features/gym_features.h"
 #include "distortion_world/distortion_world.h"
 #include "gts/struct_gts_menu_args.h"
-#include "overlay104/struct_ov104_02230BE4.h"
+#include "frontier_facilities/struct_frontier_facilities_02230BE4.h"
 #include "savedata/save_table.h"
 #include "underground/vendors.h"
 

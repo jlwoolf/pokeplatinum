@@ -3,7 +3,7 @@
 
 #include "constants/string.h"
 
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 #include "charcode.h"
 

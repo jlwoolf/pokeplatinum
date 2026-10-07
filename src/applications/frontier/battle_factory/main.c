@@ -13,8 +13,8 @@
 #include "applications/frontier/battle_factory/sprite_manager.h"
 #include "applications/frontier/battle_factory/windows.h"
 #include "applications/pokemon_summary_screen/main.h"
-#include "overlay104/battle_factory_helpers.h"
-#include "overlay104/frontier_opponents.h"
+#include "frontier_facilities/battle_factory_helpers.h"
+#include "frontier_facilities/frontier_opponents.h"
 
 #include "bg_window.h"
 #include "communication_information.h"
@@ -59,7 +59,7 @@
 #include "res/graphics/frontier/backgrounds/frontier_backgrounds.naix"
 #include "res/text/bank/battle_factory_app.h"
 
-FS_EXTERN_OVERLAY(overlay104);
+FS_EXTERN_OVERLAY(frontier_facilities);
 
 #define MENU_OPTION_SUMMARY  0
 #define MENU_OPTION_RENT     1
@@ -370,7 +370,7 @@ static const u8 sSummaryPages[] = {
 
 int BattleFactoryApp_Init(ApplicationManager *appMan, int *state)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay104), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(frontier_facilities), OVERLAY_LOAD_ASYNC);
     InitGraphicsPlane();
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_BATTLE_FACTORY_APP, HEAP_SIZE_BATTLE_FACTORY_APP);
 
@@ -605,7 +605,7 @@ int BattleFactoryApp_Exit(ApplicationManager *appMan, int *state)
     ApplicationManager_FreeData(appMan);
     SetVBlankCallback(NULL, NULL);
     Heap_Destroy(HEAP_ID_BATTLE_FACTORY_APP);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay104));
+    Overlay_UnloadByID(FS_OVERLAY_ID(frontier_facilities));
 
     return TRUE;
 }

@@ -6,7 +6,7 @@
 #include "overlay005/struct_ov5_021DDF24_sub1.h"
 #include "spear_pillar/struct_spear_pillar_screen_scroll.h"
 #include "spear_pillar/struct_spear_pillar_capture_config.h"
-#include "overlay104/ov104_0223E894.h"
+#include "frontier_facilities/frontier_facilities_0223E894.h"
 
 #include "bg_window.h"
 #include "buffer_manager.h"

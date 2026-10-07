@@ -6,16 +6,16 @@
 #include "constants/heap.h"
 
 #include "field/field_system.h"
-#include "overlay104/defs.h"
-#include "overlay104/frontier_graphics.h"
-#include "overlay104/frontier_script_manager.h"
-#include "overlay104/struct_ov104_0222E8C8.h"
-#include "overlay104/struct_ov104_02230BE4.h"
-#include "overlay104/struct_ov104_0223C634.h"
-#include "overlay104/struct_ov104_0223C688.h"
-#include "overlay104/struct_ov104_0223D3B0.h"
-#include "overlay104/struct_ov104_0223D3B0_sub1.h"
-#include "overlay104/struct_ov104_0223D8F0.h"
+#include "frontier_facilities/defs.h"
+#include "frontier_facilities/frontier_graphics.h"
+#include "frontier_facilities/frontier_script_manager.h"
+#include "frontier_facilities/struct_frontier_facilities_0222E8C8.h"
+#include "frontier_facilities/struct_frontier_facilities_02230BE4.h"
+#include "frontier_facilities/struct_frontier_facilities_0223C634.h"
+#include "frontier_facilities/struct_frontier_facilities_0223C688.h"
+#include "frontier_facilities/struct_frontier_facilities_0223D3B0.h"
+#include "frontier_facilities/struct_frontier_facilities_0223D3B0_sub1.h"
+#include "frontier_facilities/struct_frontier_facilities_0223D8F0.h"
 
 #include "field_system.h"
 #include "game_overlay.h"
@@ -37,7 +37,7 @@
 // the sub-app returns.
 
 FS_EXTERN_OVERLAY(wifi_2d_char);
-FS_EXTERN_OVERLAY(overlay104);
+FS_EXTERN_OVERLAY(frontier_facilities);
 FS_EXTERN_OVERLAY(battle_factory_app);
 
 typedef struct BattleFrontier {
@@ -144,7 +144,7 @@ int BattleFrontier_Main(ApplicationManager *appMan, int *state)
     case 3:
         // Save the sprite state, then release the graphics and overlays so the
         // sub-app can use them.
-        ov104_0223C634(frontier->graphics);
+        FrontierFacilities_SaveObjectState(frontier->graphics);
         FreeFrontierGraphics(frontier);
         UnloadBattleFrontierOverlays();
         *state = 4;
@@ -168,7 +168,7 @@ int BattleFrontier_Main(ApplicationManager *appMan, int *state)
 
             // Rebuild the graphics and restore the sprites saved in state 3.
             InitFrontierGraphics(frontier);
-            ov104_0223C688(frontier->graphics);
+            FrontierFacilities_RestoreObjectState(frontier->graphics);
             *state = 1;
         }
         break;
@@ -186,12 +186,12 @@ int BattleFrontier_Main(ApplicationManager *appMan, int *state)
         } else {
             // Rebuild the script manager for the new scene, carrying the local
             // script variables across.
-            FrontierScriptLocalVars *v2 = ov104_0222E8C8(frontier->scriptMan, HEAP_ID_FIELD2);
+            FrontierScriptLocalVars *v2 = FrontierFacilities_SaveScriptLocalVars(frontier->scriptMan, HEAP_ID_FIELD2);
             FrontierScriptManager_Free(frontier->scriptMan);
 
             frontier->scriptMan = FrontierScriptManager_New(frontier, HEAP_ID_FIELD2, frontier->fieldData->sceneID);
             FrontierScriptManager_Load(frontier->scriptMan, frontier->fieldData->sceneID, frontier->offsetID);
-            ov104_0222E8E8(frontier->scriptMan, v2);
+            FrontierFacilities_RestoreScriptLocalVars(frontier->scriptMan, v2);
         }
 
         frontier->changeScript = FALSE;
@@ -245,14 +245,14 @@ static void ClearFrontierObjects(BattleFrontier *frontier)
 
 static void LoadBattleFrontierOverlays(void)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay104), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(frontier_facilities), OVERLAY_LOAD_ASYNC);
     Overlay_LoadByID(FS_OVERLAY_ID(battle_factory_app), OVERLAY_LOAD_ASYNC);
     Overlay_LoadByID(FS_OVERLAY_ID(wifi_2d_char), OVERLAY_LOAD_ASYNC);
 }
 
 static void UnloadBattleFrontierOverlays(void)
 {
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay104));
+    Overlay_UnloadByID(FS_OVERLAY_ID(frontier_facilities));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_factory_app));
     Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
 }

@@ -3,11 +3,11 @@
 
 #include "struct_decls/battle_frontier_decl.h"
 
-#include "overlay104/frontier_graphics.h"
-#include "overlay104/struct_ov104_02230BE4.h"
-#include "overlay104/struct_ov104_0223C634.h"
-#include "overlay104/struct_ov104_0223C688.h"
-#include "overlay104/struct_ov104_0223D3B0.h"
+#include "frontier_facilities/frontier_graphics.h"
+#include "frontier_facilities/struct_frontier_facilities_02230BE4.h"
+#include "frontier_facilities/struct_frontier_facilities_0223C634.h"
+#include "frontier_facilities/struct_frontier_facilities_0223C688.h"
+#include "frontier_facilities/struct_frontier_facilities_0223D3B0.h"
 
 #include "overlay_manager.h"
 
