@@ -64,12 +64,12 @@
 #include "overlay022/ov22_02255D44.h"
 #include "overlay022/ov22_0225B660.h"
 #include "overlay059/ov59_021D0D80.h"
-#include "overlay064/ov64_0222DCE0.h"
 #include "overlay092/geonet.h"
 #include "overlay101/ov101_021D0D80.h"
 #include "savedata/save_table.h"
 #include "union_room_drawing/union_room_drawing.h"
 #include "wifi_battle_tower/application.h"
+#include "wifi_note/wifi_note.h"
 
 #include "bag.h"
 #include "bag_context.h"
@@ -141,7 +141,7 @@ FS_EXTERN_OVERLAY(overlay22);
 FS_EXTERN_OVERLAY(union_room_drawing);
 FS_EXTERN_OVERLAY(overlay59);
 FS_EXTERN_OVERLAY(overlay61);
-FS_EXTERN_OVERLAY(overlay64);
+FS_EXTERN_OVERLAY(wifi_note);
 FS_EXTERN_OVERLAY(trainer_case);
 FS_EXTERN_OVERLAY(signature);
 FS_EXTERN_OVERLAY(options_menu);
@@ -1140,12 +1140,12 @@ void *FieldSystem_OpenMixRecordsApp(FieldSystem *fieldSystem)
     return appData;
 }
 
-// Pal Pad app (overlay64).
+// Pal Pad app (wifi_note).
 const ApplicationManagerTemplate gPalPadAppTemplate = {
-    ov64_0222DCE0,
-    ov64_0222DDAC,
-    ov64_0222DEA4,
-    FS_OVERLAY_ID(overlay64)
+    WiFiNote_Init,
+    WiFiNote_Main,
+    WiFiNote_Exit,
+    FS_OVERLAY_ID(wifi_note)
 };
 
 void FieldSystem_OpenPalPad(FieldSystem *fieldSystem, SaveData *saveData)

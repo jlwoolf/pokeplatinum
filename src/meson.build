@@ -757,7 +757,7 @@ pokeplatinum_c = files(
     'overlay063/ov63_0222D160.c',
     'overlay063/ov63_0222D1C0.c',
     'overlay063/ov63_0222D77C.c',
-    'overlay064/ov64_0222DCE0.c',
+    'wifi_note/wifi_note.c',
     'overlay065/ov65_0222DCE0.c',
     'overlay065/ov65_02235060.c',
     'overlay065/ov65_02236474.c',

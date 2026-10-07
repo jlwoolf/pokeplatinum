@@ -156,7 +156,7 @@ void WiFiFriend_SavePlayerToSlot(SaveData *saveData, int netId, int slot, enum H
         WiFiList_SetFriendField(wiFiList, slot, WIFI_LIST_FRIEND_FIELD_TRAINER_ID, TrainerInfo_ID(trainerInfo));
     } else if (mode == WIFI_FRIEND_SAVE_PROFILE) {
         // A gender field of 2 marks a slot that has not been registered yet
-        // (see ov64_0222E09C), so only then is the identity refreshed.
+        // (see WiFiNoteState_RegisterFriend), so only then is the identity refreshed.
         if (WiFiList_GetFriendField(wiFiList, slot, WIFI_LIST_FRIEND_FIELD_GENDER) == 2) {
             WiFiList_SetFriendField(wiFiList, slot, WIFI_LIST_FRIEND_FIELD_GENDER, TrainerInfo_Gender(trainerInfo));
             WiFiList_SetFriendField(wiFiList, slot, WIFI_LIST_FRIEND_FIELD_TRAINER_ID, TrainerInfo_ID(trainerInfo));

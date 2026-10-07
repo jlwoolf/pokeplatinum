@@ -1163,10 +1163,10 @@ Overlay overlay63
 	Object main.nef.p/src_overlay063_ov63_0222D77C.c.o
 }
 
-Overlay overlay64
+Overlay wifi_note
 {
 	After overlay63
-	Object main.nef.p/src_overlay064_ov64_0222DCE0.c.o
+	Object main.nef.p/src_wifi_note_wifi_note.c.o
 }
 
 Overlay overlay65

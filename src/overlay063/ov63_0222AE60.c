@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay064/struct_ov64_022302EC.h"
+#include "wifi_note/struct_wifi_note_sprite_params.h"
 
 #include "heap.h"
 #include "narc.h"
@@ -426,7 +426,7 @@ void ov63_0222B0B8(UnkStruct_ov63_0222AE60 *param0)
     ov63_0222B914(param0);
 }
 
-UnkStruct_ov63_0222BB38 *ov63_0222B0C0(UnkStruct_ov63_0222AE60 *param0, const UnkStruct_ov64_022302EC *param1, u32 param2, u32 heapID)
+UnkStruct_ov63_0222BB38 *ov63_0222B0C0(UnkStruct_ov63_0222AE60 *param0, const WiFiNoteSpriteParams *param1, u32 param2, u32 heapID)
 {
     UnkStruct_ov63_0222BB38 *v0;
     AffineSpriteListTemplate v1;
@@ -440,12 +440,12 @@ UnkStruct_ov63_0222BB38 *ov63_0222B0C0(UnkStruct_ov63_0222AE60 *param0, const Un
 
     v1.list = param0->unk_00;
     v1.resourceData = &param0->unk_10[v2].unk_14;
-    v1.position.x = param1->unk_00 << FX32_SHIFT;
-    v1.position.y = param1->unk_02 << FX32_SHIFT;
+    v1.position.x = param1->x << FX32_SHIFT;
+    v1.position.y = param1->y << FX32_SHIFT;
     v1.affineScale.x = FX32_ONE;
     v1.affineScale.y = FX32_ONE;
     v1.affineScale.z = FX32_ONE;
-    v1.priority = param1->unk_04;
+    v1.priority = param1->priority;
     v1.heapID = heapID;
 
     if ((param0->unk_10[v2].unk_0C == NNS_G2D_VRAM_TYPE_2DBOTH) || (param0->unk_10[v2].unk_0C == NNS_G2D_VRAM_TYPE_2DMAIN)) {
@@ -455,7 +455,7 @@ UnkStruct_ov63_0222BB38 *ov63_0222B0C0(UnkStruct_ov63_0222AE60 *param0, const Un
     }
 
     v0->unk_04 = SpriteList_AddAffine(&v1);
-    Sprite_SetExplicitPriority(v0->unk_04, param1->unk_06);
+    Sprite_SetExplicitPriority(v0->unk_04, param1->explicitPriority);
 
     if (param0->unk_10[v2].unk_10 == 1) {
         Sprite_SetAnim(v0->unk_04, 5 + 1);
@@ -473,8 +473,8 @@ UnkStruct_ov63_0222BB38 *ov63_0222B0C0(UnkStruct_ov63_0222AE60 *param0, const Un
 
         v1.list = param0->unk_00;
         v1.resourceData = &param0->unk_2248.unk_10;
-        v1.position.x = param1->unk_00 << FX32_SHIFT;
-        v1.position.y = param1->unk_02 << FX32_SHIFT;
+        v1.position.x = param1->x << FX32_SHIFT;
+        v1.position.y = param1->y << FX32_SHIFT;
         v1.affineScale.x = FX32_ONE;
         v1.affineScale.y = FX32_ONE;
         v1.affineScale.z = FX32_ONE;
@@ -489,7 +489,7 @@ UnkStruct_ov63_0222BB38 *ov63_0222B0C0(UnkStruct_ov63_0222AE60 *param0, const Un
 
         v0->unk_08 = SpriteList_AddAffine(&v1);
 
-        Sprite_SetExplicitPriority(v0->unk_08, param1->unk_06);
+        Sprite_SetExplicitPriority(v0->unk_08, param1->explicitPriority);
     } else {
         v0->unk_08 = NULL;
     }
