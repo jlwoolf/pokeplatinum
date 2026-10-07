@@ -1392,10 +1392,10 @@ Overlay move_reminder
 	Object main.nef.p/src_applications_move_reminder.c.o
 }
 
-Overlay overlay92
+Overlay geonet
 {
 	After main
-	Object main.nef.p/src_overlay092_geonet.c.o
+	Object main.nef.p/src_geonet_geonet.c.o
 }
 
 Overlay cutscenes

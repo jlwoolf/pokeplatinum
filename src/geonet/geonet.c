@@ -1,4 +1,4 @@
-#include "overlay092/geonet.h"
+#include "geonet/geonet.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -8,8 +8,8 @@
 
 #include "struct_defs/wi_fi_history.h"
 
-#include "overlay092/struct_ov92_021D1530.h"
-#include "overlay092/struct_ov92_021D28C0.h"
+#include "geonet/struct_wifi_earth_place_entry.h"
+#include "geonet/struct_geonet_angle.h"
 
 #include "bg_window.h"
 #include "camera.h"

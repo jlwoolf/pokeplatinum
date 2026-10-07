@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV92_021D1530_H
-#define POKEPLATINUM_STRUCT_OV92_021D1530_H
+#ifndef POKEPLATINUM_STRUCT_WIFI_EARTH_PLACE_ENTRY_H
+#define POKEPLATINUM_STRUCT_WIFI_EARTH_PLACE_ENTRY_H
 
 // A single world-place entry from member 18 of wifi_earth_place.narc. Entries
 // whose type is 2 have no coordinates and are skipped; every other entry places
@@ -10,4 +10,4 @@ typedef struct WiFiEarthPlaceEntry {
     s16 latitude;
 } WiFiEarthPlaceEntry;
 
-#endif // POKEPLATINUM_STRUCT_OV92_021D1530_H
+#endif // POKEPLATINUM_STRUCT_WIFI_EARTH_PLACE_ENTRY_H

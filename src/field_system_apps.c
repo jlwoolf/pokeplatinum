@@ -64,7 +64,7 @@
 #include "overlay022/ov22_02255D44.h"
 #include "overlay022/ov22_0225B660.h"
 #include "mix_records/mix_records.h"
-#include "overlay092/geonet.h"
+#include "geonet/geonet.h"
 #include "overlay101/ov101_021D0D80.h"
 #include "savedata/save_table.h"
 #include "union_room_drawing/union_room_drawing.h"
@@ -154,7 +154,7 @@ FS_EXTERN_OVERLAY(hall_of_fame);
 FS_EXTERN_OVERLAY(pc_hall_of_fame);
 FS_EXTERN_OVERLAY(trade_room);
 FS_EXTERN_OVERLAY(battle_tower_records_app);
-FS_EXTERN_OVERLAY(overlay92);
+FS_EXTERN_OVERLAY(geonet);
 FS_EXTERN_OVERLAY(cutscenes);
 FS_EXTERN_OVERLAY(gts_application);
 FS_EXTERN_OVERLAY(trade_sequence);
@@ -1403,12 +1403,12 @@ void *FieldSystem_OpenWifiBattleTowerApp(FieldSystem *fieldSystem, int mode, int
     return (void *)appData;
 }
 
-// Geonet app (overlay92), opened from the Global Terminal.
+// Geonet app, opened from the Global Terminal.
 static const ApplicationManagerTemplate gGeonetAppTemplate = {
     Geonet_Init,
     Geonet_Main,
     Geonet_Exit,
-    FS_OVERLAY_ID(overlay92)
+    FS_OVERLAY_ID(geonet)
 };
 
 void FieldSystem_OpenGeonet(FieldSystem *fieldSystem)

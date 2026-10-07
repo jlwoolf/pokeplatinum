@@ -14,7 +14,7 @@
 #include "overlay066/struct_ov66_02231428.h"
 #include "overlay066/struct_ov66_02231560.h"
 #include "wifi_earth/struct_wifi_earth_region_entry.h"
-#include "overlay092/struct_ov92_021D1530.h"
+#include "geonet/struct_wifi_earth_place_entry.h"
 
 #include "bg_window.h"
 #include "camera.h"
