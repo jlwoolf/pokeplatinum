@@ -15,11 +15,11 @@
 #include "applications/naming_screen.h"
 #include "global/utility.h"
 #include "nintendo_wfc/main.h"
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/ov63_0222CCE4.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CE44.h"
-#include "overlay063/struct_ov63_0222D77C_decl.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222CCE4.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CE44.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222D77C_decl.h"
 #include "overlay104/defs.h"
 #include "overlay104/frontier_brain_encounter_effect.h"
 #include "overlay104/frontier_graphics.h"
@@ -166,7 +166,7 @@ static BOOL FrontierScrCmd_23(FrontierScriptContext *ctx);
 static BOOL FrontierScrCmd_24(FrontierScriptContext *ctx);
 static BOOL FrontierScrCmd_25(FrontierScriptContext *ctx);
 static BOOL FrontierScrCmd_ApplyMovement(FrontierScriptContext *ctx);
-static void FrontierSystem_StartAnimation(u16 localID, FrontierObject *object, const FrontierAnimCmd *animCmd, UnkStruct_ov63_0222D77C *param3, u8 *movementCount, enum HeapID heapID);
+static void FrontierSystem_StartAnimation(u16 localID, FrontierObject *object, const FrontierAnimCmd *animCmd, WiFi2DCharMoveQueue *param3, u8 *movementCount, enum HeapID heapID);
 static BOOL FrontierScrCmd_WaitMovement(FrontierScriptContext *ctx);
 static BOOL WaitForMovement(FrontierScriptContext *ctx);
 static BOOL FrontierScrCmd_InitNewBattleRecording(FrontierScriptContext *ctx);
@@ -866,9 +866,9 @@ static BOOL FrontierScrCmd_25(FrontierScriptContext *ctx)
 {
     FrontierScriptManager *v0 = ctx->scriptMan;
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
-    UnkStruct_ov63_0222BEC0 *v2;
+    WiFi2DCharObject *v2;
     u16 v3 = FrontierScriptContext_GetVar(ctx);
-    v2 = ov63_0222BF18(v1->unk_14, v3);
+    v2 = WiFi2DCharObjectManager_FindObjectByID(v1->unk_14, v3);
 
     ov104_0223D200(v1, v2);
 
@@ -881,11 +881,11 @@ static BOOL FrontierScrCmd_26(FrontierScriptContext *ctx)
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
     u16 v2 = FrontierScriptContext_GetVar(ctx);
     u8 v3 = FrontierScriptContext_ReadByte(ctx);
-    UnkStruct_ov63_0222CE44 *v4 = NULL;
+    WiFi2DCharRenderObject *v4 = NULL;
 
     ov104_0223D258(v1, v2, NULL, &v4);
     GF_ASSERT(v4 != NULL);
-    ov63_0222D008(v4, v3);
+    WiFi2DCharRenderer_SetObjectVisible(v4, v3);
 
     return FALSE;
 }
@@ -914,7 +914,7 @@ static BOOL FrontierScrCmd_ApplyMovement(FrontierScriptContext *ctx)
     return FALSE;
 }
 
-static void FrontierSystem_StartAnimation(u16 localID, FrontierObject *object, const FrontierAnimCmd *animCmd, UnkStruct_ov63_0222D77C *param3, u8 *movementCount, enum HeapID heapID)
+static void FrontierSystem_StartAnimation(u16 localID, FrontierObject *object, const FrontierAnimCmd *animCmd, WiFi2DCharMoveQueue *param3, u8 *movementCount, enum HeapID heapID)
 {
     FrontierAnimData *data = Heap_Alloc(heapID, sizeof(FrontierAnimData));
     MI_CpuClear8(data, sizeof(FrontierAnimData));

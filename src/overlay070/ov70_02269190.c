@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 #include "overlay070/ov70_0225C700.h"
 #include "overlay070/ov70_0225C858.h"
@@ -251,13 +251,13 @@ static const u8 Unk_ov70_0226E2E8[3] = {
     0x80
 };
 
-static const UnkStruct_ov63_0222CC3C Unk_ov70_0226E328[3] = {
+static const WiFi2DCharPosition Unk_ov70_0226E328[3] = {
     { 0x2, 0x38 },
     { 0xE, 0x38 },
     { 0x8, 0x3C }
 };
 
-static const UnkStruct_ov63_0222CC3C Unk_ov70_0226E340[3] = {
+static const WiFi2DCharPosition Unk_ov70_0226E340[3] = {
     { 0x2, 0x2C },
     { 0xE, 0x2C },
     { 0x8, 0x30 }
@@ -1810,11 +1810,11 @@ static void ov70_0226A9D0(UnkStruct_ov70_02269204 *param0, UnkStruct_ov70_022698
     }
 
     {
-        UnkStruct_ov63_0222CC3C v1;
+        WiFi2DCharPosition v1;
         u32 v2;
 
         v1 = ov70_0225CD34(param1->unk_08);
-        v2 = ov70_0225C8C4(param0->unk_0C, (v1.unk_00) / 16, (v1.unk_02) / 16);
+        v2 = ov70_0225C8C4(param0->unk_0C, (v1.x) / 16, (v1.y) / 16);
 
         if (v2 == 42) {
             param1->unk_954.val1.unk_11 = 1;
@@ -2239,17 +2239,17 @@ static void ov70_0226B324(UnkStruct_ov70_02269800 *param0)
 
     switch (param0->unk_954.val1.unk_01) {
     case 1:
-        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E328[2].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E328[2].unk_02), v0.z + (FX32_CONST(1)));
+        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E328[2].x), v0.y + FX32_CONST(Unk_ov70_0226E328[2].y), v0.z + (FX32_CONST(1)));
         break;
     case 2:
-        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E328[0].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E328[0].unk_02), v0.z + (FX32_CONST(1)));
-        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E328[1].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E328[1].unk_02), v0.z + (FX32_CONST(1)));
+        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E328[0].x), v0.y + FX32_CONST(Unk_ov70_0226E328[0].y), v0.z + (FX32_CONST(1)));
+        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E328[1].x), v0.y + FX32_CONST(Unk_ov70_0226E328[1].y), v0.z + (FX32_CONST(1)));
         break;
     default:
     case 3:
-        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E328[2].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E328[2].unk_02), v0.z + (FX32_CONST(1)));
-        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E328[0].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E328[0].unk_02), v0.z + (FX32_CONST(1)));
-        Easy3DObject_SetPosition(&param0->unk_0C[2], v0.x + FX32_CONST(Unk_ov70_0226E328[1].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E328[1].unk_02), v0.z + (FX32_CONST(1)));
+        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E328[2].x), v0.y + FX32_CONST(Unk_ov70_0226E328[2].y), v0.z + (FX32_CONST(1)));
+        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E328[0].x), v0.y + FX32_CONST(Unk_ov70_0226E328[0].y), v0.z + (FX32_CONST(1)));
+        Easy3DObject_SetPosition(&param0->unk_0C[2], v0.x + FX32_CONST(Unk_ov70_0226E328[1].x), v0.y + FX32_CONST(Unk_ov70_0226E328[1].y), v0.z + (FX32_CONST(1)));
         break;
     }
 }
@@ -2262,17 +2262,17 @@ static void ov70_0226B51C(UnkStruct_ov70_02269800 *param0)
 
     switch (param0->unk_954.val1.unk_01) {
     case 1:
-        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E340[2].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E340[2].unk_02), v0.z + (-FX32_CONST(8)));
+        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E340[2].x), v0.y + FX32_CONST(Unk_ov70_0226E340[2].y), v0.z + (-FX32_CONST(8)));
         break;
     case 2:
-        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E340[0].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E340[0].unk_02), v0.z + (-FX32_CONST(8)));
-        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E340[1].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E340[1].unk_02), v0.z + (-FX32_CONST(8)));
+        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E340[0].x), v0.y + FX32_CONST(Unk_ov70_0226E340[0].y), v0.z + (-FX32_CONST(8)));
+        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E340[1].x), v0.y + FX32_CONST(Unk_ov70_0226E340[1].y), v0.z + (-FX32_CONST(8)));
         break;
     default:
     case 3:
-        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E340[2].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E340[2].unk_02), v0.z + (-FX32_CONST(8)));
-        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E340[0].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E340[0].unk_02), v0.z + (-FX32_CONST(8)));
-        Easy3DObject_SetPosition(&param0->unk_0C[2], v0.x + FX32_CONST(Unk_ov70_0226E340[1].unk_00), v0.y + FX32_CONST(Unk_ov70_0226E340[1].unk_02), v0.z + (-FX32_CONST(8)));
+        Easy3DObject_SetPosition(&param0->unk_0C[0], v0.x + FX32_CONST(Unk_ov70_0226E340[2].x), v0.y + FX32_CONST(Unk_ov70_0226E340[2].y), v0.z + (-FX32_CONST(8)));
+        Easy3DObject_SetPosition(&param0->unk_0C[1], v0.x + FX32_CONST(Unk_ov70_0226E340[0].x), v0.y + FX32_CONST(Unk_ov70_0226E340[0].y), v0.z + (-FX32_CONST(8)));
+        Easy3DObject_SetPosition(&param0->unk_0C[2], v0.x + FX32_CONST(Unk_ov70_0226E340[1].x), v0.y + FX32_CONST(Unk_ov70_0226E340[1].y), v0.z + (-FX32_CONST(8)));
         break;
     }
 }

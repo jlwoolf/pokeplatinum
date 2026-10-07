@@ -8,11 +8,11 @@
 #include "constants/narc.h"
 
 #include "applications/party_menu/main.h"
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/ov63_0222CCE4.h"
-#include "overlay063/ov63_0222D77C.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CCB8.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/wifi_2d_char_0222CCE4.h"
+#include "wifi_2d_char/wifi_2d_char_0222D77C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
 #include "overlay104/defs.h"
 #include "overlay104/frontier_script_context.h"
 #include "overlay104/frontier_script_manager.h"
@@ -668,7 +668,7 @@ static UnkStruct_ov104_022419A0 sFrontierMovementActions[] = {
 void FrontierObject_DoAnimation(SysTask *task, void *data)
 {
     FrontierAnimData *animData = data;
-    UnkStruct_ov63_0222CCB8 v1;
+    WiFi2DCharMoveRequest v1;
     u16 action = animData->animCmd->action;
     u16 count = animData->animCmd->count;
 
@@ -679,7 +679,7 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
             break;
         }
     case 1:
-        if (ov63_0222BF90(animData->frontierObj->object, 5) == 0) {
+        if (WiFi2DCharObject_GetField(animData->frontierObj->object, 5) == 0) {
             if (action >= FRONTIER_MOVEMENT_DELAY_1 && action <= FRONTIER_MOVEMENT_DELAY_32) {
                 animData->delay++;
 
@@ -691,10 +691,10 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
             } else if (action >= FRONTIER_MOVEMENT_WARP_IN && action < NUM_FRONTIER_MOVEMENTS) {
                 switch (action) {
                 case FRONTIER_MOVEMENT_WARP_IN:
-                    ov63_0222D008(animData->frontierObj->sprite, TRUE);
+                    WiFi2DCharRenderer_SetObjectVisible(animData->frontierObj->sprite, TRUE);
                     break;
                 case FRONTIER_MOVEMENT_WARP_OUT:
-                    ov63_0222D008(animData->frontierObj->sprite, FALSE);
+                    WiFi2DCharRenderer_SetObjectVisible(animData->frontierObj->sprite, FALSE);
                     break;
                 default:
                     GF_ASSERT(FALSE);
@@ -706,7 +706,7 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
             }
 
             ov104_02232C80(&v1, animData->frontierObj->object, animData->localID, action);
-            ov63_0222D7C8(animData->unk_10, &v1);
+            WiFi2DCharMoveQueue_Push(animData->unk_10, &v1);
 
             animData->elapsed++;
 
@@ -719,7 +719,7 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
         }
         break;
     case 2:
-        if (ov63_0222BF90(animData->frontierObj->object, 5) == 0) {
+        if (WiFi2DCharObject_GetField(animData->frontierObj->object, 5) == 0) {
             (*animData->totalMovementCount)--;
             animData->frontierObj->movementTask = NULL;
             Heap_Free(animData);
@@ -730,16 +730,16 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
     }
 }
 
-void ov104_02232C80(UnkStruct_ov63_0222CCB8 *param0, UnkStruct_ov63_0222BEC0 *param1, int param2, int action)
+void ov104_02232C80(WiFi2DCharMoveRequest *param0, WiFi2DCharObject *param1, int param2, int action)
 {
     param0->unk_07 = param2;
     param0->unk_06 = sFrontierMovementActions[action].unk_02;
     param0->unk_04 = sFrontierMovementActions[action].unk_00;
 
     if ((param0->unk_04 == 2) || (param0->unk_04 == 3) || (param0->unk_04 == 6)) {
-        param0->unk_00 = ov63_0222C0F0(param1);
+        param0->unk_00 = WiFi2DCharObject_GetTargetPosition(param1);
     } else {
-        param0->unk_00 = ov63_0222C0E4(param1);
+        param0->unk_00 = WiFi2DCharObject_GetPosition(param1);
     }
 }
 

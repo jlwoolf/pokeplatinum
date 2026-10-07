@@ -3,10 +3,10 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/struct_ov63_0222CC3C.h"
-#include "overlay063/union_ov63_0222BDAC.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
+#include "wifi_2d_char/union_wifi_2d_char_0222BDAC.h"
 
-static const UnkUnion_ov63_0222BDAC Unk_ov65_02238C08[176] = {
+static const WiFi2DCharTile Unk_ov65_02238C08[176] = {
     0x3,
     0x3,
     0x3,
@@ -185,7 +185,7 @@ static const UnkUnion_ov63_0222BDAC Unk_ov65_02238C08[176] = {
     0x3
 };
 
-static const UnkUnion_ov63_0222BDAC Unk_ov65_02238EC8[176] = {
+static const WiFi2DCharTile Unk_ov65_02238EC8[176] = {
     0x3,
     0x3,
     0x3,
@@ -364,7 +364,7 @@ static const UnkUnion_ov63_0222BDAC Unk_ov65_02238EC8[176] = {
     0x3
 };
 
-static const UnkUnion_ov63_0222BDAC Unk_ov65_02239188[242] = {
+static const WiFi2DCharTile Unk_ov65_02239188[242] = {
     0x3,
     0x3,
     0x3,
@@ -609,7 +609,7 @@ static const UnkUnion_ov63_0222BDAC Unk_ov65_02239188[242] = {
     0x3
 };
 
-static const UnkUnion_ov63_0222BDAC Unk_ov65_02239550[308] = {
+static const WiFi2DCharTile Unk_ov65_02239550[308] = {
     0x3,
     0x3,
     0x3,
@@ -920,9 +920,9 @@ static const UnkUnion_ov63_0222BDAC Unk_ov65_02239550[308] = {
     0x3
 };
 
-UnkStruct_ov63_0222CC3C ov65_02236474(u32 param0)
+WiFi2DCharPosition ov65_02236474(u32 param0)
 {
-    static const UnkStruct_ov63_0222CC3C v0[4] = {
+    static const WiFi2DCharPosition v0[4] = {
         { 16, 11 },
         { 16, 11 },
         { 22, 11 },
@@ -932,9 +932,9 @@ UnkStruct_ov63_0222CC3C ov65_02236474(u32 param0)
     return v0[param0];
 }
 
-const UnkUnion_ov63_0222BDAC *ov65_02236480(u32 param0)
+const WiFi2DCharTile *ov65_02236480(u32 param0)
 {
-    static const UnkUnion_ov63_0222BDAC *v0[4] = {
+    static const WiFi2DCharTile *v0[4] = {
         Unk_ov65_02238C08,
         Unk_ov65_02238EC8,
         Unk_ov65_02239188,

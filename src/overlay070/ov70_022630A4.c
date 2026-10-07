@@ -4,8 +4,8 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_022324F0.h"
@@ -157,7 +157,7 @@ static BOOL ov70_022657D0(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
 static BOOL ov70_02265840(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *param1, u32 param2);
 static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DEE8 *param1, u32 param2);
 static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *param1, UnkStruct_ov70_0225DEE8 *param2, UnkStruct_ov70_0225CC54 *param3, u8 param4, int param5);
-static BOOL ov70_02265ED0(const UnkStruct_ov70_0225C894 *param0, const UnkStruct_ov70_0225CA20 *param1, const u32 *param2, u32 param3, UnkStruct_ov63_0222CC3C *param4);
+static BOOL ov70_02265ED0(const UnkStruct_ov70_0225C894 *param0, const UnkStruct_ov70_0225CA20 *param1, const u32 *param2, u32 param3, WiFi2DCharPosition *param4);
 
 static const ListMenuTemplate Unk_ov70_0226DA98 = {
     NULL,
@@ -1198,7 +1198,7 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             u32 v1;
             u32 v2;
             UnkStruct_ov70_0225CC54 *v3;
-            UnkStruct_ov63_0222CC3C v4, v5;
+            WiFi2DCharPosition v4, v5;
             u32 v6, v7;
             UnkStruct_ov70_0225CA20 *v8;
             UnkStruct_ov70_02261E10 *v9;
@@ -1230,9 +1230,9 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             v1 = ov70_0225CD60(v3, 5);
             v2 = ov70_0225CD60(v3, 6);
             v4 = ov70_0225CD34(v3);
-            v5 = ov63_0222C078(v4, v2);
-            v6 = ov70_0225C8C4(v10, (v4.unk_00) / 16, (v4.unk_02) / 16);
-            v7 = ov70_0225C8C4(v10, (v5.unk_00) / 16, (v5.unk_02) / 16);
+            v5 = WiFi2DCharPosition_OffsetByDirection(v4, v2);
+            v6 = ov70_0225C8C4(v10, (v4.x) / 16, (v4.y) / 16);
+            v7 = ov70_0225C8C4(v10, (v5.x) / 16, (v5.y) / 16);
 
             {
                 u32 v14;
@@ -1325,7 +1325,7 @@ static BOOL ov70_02263CC8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                         v21 = ov70_0225CD60(v3, 6);
 
                         if (v21 == 0) {
-                            ov70_02262484(v9, (v5.unk_00) / 16, (v5.unk_02) / 16);
+                            ov70_02262484(v9, (v5.x) / 16, (v5.y) / 16);
                             ov70_0225DF3C(param1, v7);
                             ov70_0225E43C(param1, 1);
 
@@ -1713,18 +1713,18 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         WiFiPlazaLobby_State_MarkActivityDone(v2, v18);
 
         {
-            UnkStruct_ov63_0222CC3C v19;
+            WiFi2DCharPosition v19;
             UnkStruct_ov70_02263910 *v20;
             int v21;
 
             v21 = ov70_0225CD60(v1, 6);
-            v21 = ov63_0222C0AC(v21);
+            v21 = WiFi2DChar_DirectionOpposite(v21);
             v20 = ov70_0225DEEC(param1);
             v19 = ov70_0225CD34(v1);
 
             v20->unk_06 = 1;
-            v20->unk_00 = (v19.unk_00) / 16;
-            v20->unk_02 = (v19.unk_02) / 16;
+            v20->unk_00 = (v19.x) / 16;
+            v20->unk_02 = (v19.y) / 16;
             v20->unk_04 = v21;
             v20->unk_08 = v4->unk_08;
         }
@@ -1774,7 +1774,7 @@ static BOOL ov70_02264324(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         u8 v25;
 
         v25 = ov70_0225CD60(v1, 6);
-        v25 = ov63_0222C0AC(v25);
+        v25 = WiFi2DChar_DirectionOpposite(v25);
 
         ov70_0225CDAC(v0, v1, 2, v25);
         ov70_02262E8C(param0);
@@ -1915,18 +1915,18 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         WiFiPlazaLobby_State_MarkActivityDone(v4, v9);
 
         {
-            UnkStruct_ov63_0222CC3C v10;
+            WiFi2DCharPosition v10;
             UnkStruct_ov70_02263910 *v11;
             int v12;
 
             v12 = ov70_0225CD60(v3, 6);
-            v12 = ov63_0222C0AC(v12);
+            v12 = WiFi2DChar_DirectionOpposite(v12);
             v11 = ov70_0225DEEC(param1);
             v10 = ov70_0225CD34(v3);
 
             v11->unk_06 = 2;
-            v11->unk_00 = (v10.unk_00) / 16;
-            v11->unk_02 = (v10.unk_02) / 16;
+            v11->unk_00 = (v10.x) / 16;
+            v11->unk_02 = (v10.y) / 16;
             v11->unk_04 = v12;
             v11->unk_08 = v0->unk_00.unk_02;
         }
@@ -1937,11 +1937,11 @@ static BOOL ov70_022646C8(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         return 1;
     } break;
     case 3: {
-        UnkStruct_ov63_0222CC3C v13;
+        WiFi2DCharPosition v13;
         int v14;
 
         v14 = ov70_0225CD60(v3, 6);
-        v14 = ov63_0222C0AC(v14);
+        v14 = WiFi2DChar_DirectionOpposite(v14);
 
         ov70_0225CDAC(v2, v3, 2, v14);
         ov70_02262E8C(param0);
@@ -2078,18 +2078,18 @@ static BOOL ov70_02264974(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         WiFiPlazaLobby_State_SetAttendee(v4, 23, DWC_LOBBY_INVALID_USER_ID);
 
         {
-            UnkStruct_ov63_0222CC3C v8;
+            WiFi2DCharPosition v8;
             UnkStruct_ov70_02263910 *v9;
             int v10;
 
             v10 = ov70_0225CD60(v3, 6);
-            v10 = ov63_0222C0AC(v10);
+            v10 = WiFi2DChar_DirectionOpposite(v10);
             v9 = ov70_0225DEEC(param1);
             v8 = ov70_0225CD34(v3);
 
             v9->unk_06 = 3;
-            v9->unk_00 = (v8.unk_00) / 16;
-            v9->unk_02 = (v8.unk_02) / 16;
+            v9->unk_00 = (v8.x) / 16;
+            v9->unk_02 = (v8.y) / 16;
             v9->unk_04 = v10;
             v9->unk_08 = 0;
         }
@@ -2099,11 +2099,11 @@ static BOOL ov70_02264974(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         return 1;
     } break;
     case 2: {
-        UnkStruct_ov63_0222CC3C v11;
+        WiFi2DCharPosition v11;
         int v12;
 
         v12 = ov70_0225CD60(v3, 6);
-        v12 = ov63_0222C0AC(v12);
+        v12 = WiFi2DChar_DirectionOpposite(v12);
 
         ov70_0225CDAC(v2, v3, 2, v12);
         ov70_02262E8C(param0);
@@ -2558,7 +2558,7 @@ static BOOL ov70_02265144(UnkStruct_ov70_02265104 *param0, UnkStruct_ov70_02261E
     VecFx32 v0;
     VecFx32 v1;
     u32 v2, v3;
-    UnkStruct_ov63_0222CC3C v4;
+    WiFi2DCharPosition v4;
     VecFx32 v5;
     u16 v6;
     BOOL v7;
@@ -2938,7 +2938,7 @@ static BOOL ov70_02265840(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
             }
 
             {
-                UnkStruct_ov63_0222CC3C v5 = { 0 };
+                WiFi2DCharPosition v5 = { 0 };
                 ov70_0225CCB4(v0->unk_00, v5);
             }
 
@@ -3056,7 +3056,7 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
     case 3:
 
     {
-        UnkStruct_ov63_0222CC3C v6;
+        WiFi2DCharPosition v6;
 
         v6 = ov70_0225CD34(v2);
         ov70_0225D03C(v2, &v6);
@@ -3098,7 +3098,7 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
                 WiFiPlazaLobby_State_SetChatPending(v4);
 
                 v12 = ov70_0225CD60(v2, 6);
-                v11 = ov63_0222C0AC(v12);
+                v11 = WiFi2DChar_DirectionOpposite(v12);
 
                 ov70_0225CDAC(v1, v3, 0, v11);
             }
@@ -3143,13 +3143,13 @@ static BOOL ov70_02265A84(UnkStruct_ov70_02263344 *param0, UnkStruct_ov70_0225DE
         break;
     case 8: {
         UnkStruct_ov70_0225CC54 *v15;
-        UnkStruct_ov63_0222CC3C v16;
+        WiFi2DCharPosition v16;
 
         v15 = ov70_0225CCAC(v1);
 
         if (ov70_0225CEDC(v15, v0->unk_00, v0->unk_01) == 0) {
-            v16.unk_00 = (v0->unk_00) * 16;
-            v16.unk_02 = (v0->unk_01) * 16;
+            v16.x = (v0->unk_00) * 16;
+            v16.y = (v0->unk_01) * 16;
 
             ov70_0225CCB4(v2, v16);
             ov70_0225D03C(v2, &v16);
@@ -3172,7 +3172,7 @@ static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *
 {
     u32 v0;
     u32 v1;
-    UnkStruct_ov63_0222CC3C v2;
+    WiFi2DCharPosition v2;
     UnkStruct_ov70_0225CA20 *v3;
     UnkStruct_ov70_0225CC54 *v4;
     UnkStruct_ov70_0225C894 *v5;
@@ -3257,7 +3257,7 @@ static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *
         v7 = ov70_0225CF4C(v3, v4, &v1, &v2);
         GF_ASSERT(v7 == 1);
 
-        v1 = ov63_0222C0AC(v1);
+        v1 = WiFi2DChar_DirectionOpposite(v1);
         v6 = 1;
         break;
     case 0:
@@ -3270,14 +3270,14 @@ static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *
     }
 
     {
-        UnkStruct_ov63_0222CC3C v8;
+        WiFi2DCharPosition v8;
 
         v8 = ov70_0225CD34(param3);
 
         ov70_0225CD04(param3, v2, v1);
 
-        param0->unk_00 = (v8.unk_00) / 16;
-        param0->unk_01 = (v8.unk_02) / 16;
+        param0->unk_00 = (v8.x) / 16;
+        param0->unk_01 = (v8.y) / 16;
         param0->unk_02 = param4;
         param0->unk_03 = v6;
         param0->unk_04 = param5;
@@ -3286,7 +3286,7 @@ static BOOL ov70_02265CCC(UnkStruct_ov70_02265CCC *param0, WiFiPlazaLobbyState *
     return 1;
 }
 
-static BOOL ov70_02265ED0(const UnkStruct_ov70_0225C894 *param0, const UnkStruct_ov70_0225CA20 *param1, const u32 *param2, u32 param3, UnkStruct_ov63_0222CC3C *param4)
+static BOOL ov70_02265ED0(const UnkStruct_ov70_0225C894 *param0, const UnkStruct_ov70_0225CA20 *param1, const u32 *param2, u32 param3, WiFi2DCharPosition *param4)
 {
     u16 v0, v1;
     int v2;
@@ -3297,8 +3297,8 @@ static BOOL ov70_02265ED0(const UnkStruct_ov70_0225C894 *param0, const UnkStruct
 
         if (v3 == 1) {
             if (ov70_0225CE7C(param1, v0, v1) == NULL) {
-                param4->unk_00 = (v0) * 16;
-                param4->unk_02 = (v1) * 16;
+                param4->x = (v0) * 16;
+                param4->y = (v1) * 16;
                 return 1;
             }
         }

@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "overlay070/ov70_0225C858.h"
 #include "overlay070/ov70_02260B44.h"
 #include "overlay070/struct_ov70_0225C894_decl.h"
@@ -123,7 +123,7 @@ static const s32 Unk_ov70_0226D90C[2] = {
     0xC
 };
 
-static const UnkStruct_ov63_0222CC3C Unk_ov70_0226D914[3] = {
+static const WiFi2DCharPosition Unk_ov70_0226D914[3] = {
     { 0xFFFFFFFFFFFFFFFE, 0xA },
     { 0xE, 0xA },
     { 0x1E, 0xA }
@@ -221,11 +221,11 @@ UnkStruct_ov70_02261E10 *ov70_02261E10(int param0, int param1, const UnkStruct_o
                     ov70_0226138C(v0->unk_08[v0->unk_612], 0);
 
                     {
-                        UnkStruct_ov63_0222CC3C v6;
+                        WiFi2DCharPosition v6;
 
                         v6 = ov70_022610E4(v0->unk_08[v0->unk_612]);
-                        v6.unk_00 += 8;
-                        v6.unk_02 += 20;
+                        v6.x += 8;
+                        v6.y += 20;
                         ov70_022610BC(v0->unk_08[v0->unk_612], v6);
                     }
                     break;
@@ -334,8 +334,8 @@ void ov70_02262318(const UnkStruct_ov70_02261E10 *param0, u32 param1, u32 param2
 
     ov70_02260F28(param0->unk_208[param1], param3);
 
-    param3->x += (Unk_ov70_0226D914[param2].unk_00 * (FX32_ONE));
-    param3->z += (Unk_ov70_0226D914[param2].unk_02 * (FX32_ONE));
+    param3->x += (Unk_ov70_0226D914[param2].x * (FX32_ONE));
+    param3->z += (Unk_ov70_0226D914[param2].y * (FX32_ONE));
     param3->y = (FX32_CONST(40));
 }
 
@@ -607,15 +607,15 @@ void ov70_022627BC(UnkStruct_ov70_02261E10 *param0, enum PlazaMinigame param1, u
 
 static BOOL ov70_022628C8(const UnkStruct_ov70_022610B8 *param0, u8 param1, u8 param2)
 {
-    UnkStruct_ov63_0222CC3C v0;
-    UnkStruct_ov63_0222CC3C v1;
+    WiFi2DCharPosition v0;
+    WiFi2DCharPosition v1;
 
-    v1.unk_00 = param1 * 16;
-    v1.unk_02 = param2 * 16;
+    v1.x = param1 * 16;
+    v1.y = param2 * 16;
 
     v0 = ov70_022610E4(param0);
 
-    if ((v0.unk_00 == v1.unk_00) && (v0.unk_02 == v1.unk_02)) {
+    if ((v0.x == v1.x) && (v0.y == v1.y)) {
         return 1;
     }
 
@@ -909,15 +909,15 @@ static void ov70_02262D0C(UnkStruct_ov70_022629FC *param0, UnkStruct_ov70_02260B
 
 static void ov70_02262D48(UnkStruct_ov70_022610B8 *param0, u32 param1)
 {
-    UnkStruct_ov63_0222CC3C v0;
+    WiFi2DCharPosition v0;
     u32 v1;
 
     GF_ASSERT((param1 == 92) || (param1 == 93));
 
     v1 = param1 - 92;
     v0 = ov70_022610E4(param0);
-    v0.unk_00 += Unk_ov70_0226D90C[v1];
-    v0.unk_02 += -10;
+    v0.x += Unk_ov70_0226D90C[v1];
+    v0.y += -10;
 
     ov70_022610BC(param0, v0);
 }

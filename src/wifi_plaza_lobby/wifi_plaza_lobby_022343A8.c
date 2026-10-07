@@ -3,9 +3,9 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay063/ov63_0222BE18.h"
-#include "overlay063/struct_ov63_0222BEC0_decl.h"
-#include "overlay063/struct_ov63_0222CC3C.h"
+#include "wifi_2d_char/wifi_2d_char_0222BE18.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BEC0_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CC3C.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
 #include "overlay070/ov70_0225C700.h"
 
@@ -37,7 +37,7 @@ typedef struct WiFiPlazaLobbyObject_t {
     u8 unk_01_1 : 7;
     u8 unk_02;
     u8 unk_03;
-    const UnkStruct_ov63_0222BEC0 *unk_04;
+    const WiFi2DCharObject *unk_04;
     Billboard *unk_08;
     Easy3DObject unk_0C;
     u8 unk_84;
@@ -291,7 +291,7 @@ void WiFiPlazaLobby_Object_ManagerSetAlpha(WiFiPlazaLobbyObjectManager *param0, 
     WiFiPlazaLobby_Object_ModelSetAlpha(&param0->unk_18, param1);
 }
 
-WiFiPlazaLobbyObject *WiFiPlazaLobby_Object_New(WiFiPlazaLobbyObjectManager *param0, const UnkStruct_ov63_0222BEC0 *param1)
+WiFiPlazaLobbyObject *WiFiPlazaLobby_Object_New(WiFiPlazaLobbyObjectManager *param0, const WiFi2DCharObject *param1)
 {
     WiFiPlazaLobbyObject *v0 = WiFiPlazaLobby_Object_Alloc(param0);
     v0->unk_04 = param1;
@@ -312,7 +312,7 @@ WiFiPlazaLobbyObject *WiFiPlazaLobby_Object_New(WiFiPlazaLobbyObjectManager *par
         VecFx32 v13 = { 0, 0, 0 };
         VecFx32 v14 = { FX32_ONE, FX32_ONE, FX32_ONE };
 
-        v6 = ov63_0222BF90(param1, 7);
+        v6 = WiFi2DCharObject_GetField(param1, 7);
         v1 = WiFiPlazaLobby_Object_FindTextureEntry(v6);
 
         {
@@ -352,9 +352,9 @@ WiFiPlazaLobbyObject *WiFiPlazaLobby_Object_New(WiFiPlazaLobbyObjectManager *par
         }
 
         {
-            UnkStruct_ov63_0222CC3C v17;
+            WiFi2DCharPosition v17;
 
-            v17 = ov63_0222C0E4(param1);
+            v17 = WiFi2DCharObject_GetPosition(param1);
             ov70_0225C700(&v17, &v13);
             v13.z += (FX32_CONST(16));
         }
@@ -399,7 +399,7 @@ BOOL WiFiPlazaLobby_Object_IsCulled(const WiFiPlazaLobbyObject *param0)
     return param0->unk_00_4;
 }
 
-void WiFiPlazaLobby_Object_SetPositionFromTileCoords(WiFiPlazaLobbyObject *param0, const UnkStruct_ov63_0222CC3C *param1)
+void WiFiPlazaLobby_Object_SetPositionFromTileCoords(WiFiPlazaLobbyObject *param0, const WiFi2DCharPosition *param1)
 {
     VecFx32 v0;
 
@@ -566,7 +566,7 @@ static void WiFiPlazaLobby_Object_Update(WiFiPlazaLobbyObject *param0)
 {
     u32 v0;
     u32 v1;
-    UnkStruct_ov63_0222CC3C v2;
+    WiFi2DCharPosition v2;
     static void (*v3[12])(WiFiPlazaLobbyObject *) = {
         WiFiPlazaLobby_Object_AnimModeStatic,
         WiFiPlazaLobby_Object_AnimModeHold,
@@ -585,8 +585,8 @@ static void WiFiPlazaLobby_Object_Update(WiFiPlazaLobbyObject *param0)
         return;
     }
 
-    v0 = ov63_0222BF90(param0->unk_04, 5);
-    v1 = ov63_0222BF90(param0->unk_04, 8);
+    v0 = WiFi2DCharObject_GetField(param0->unk_04, 5);
+    v1 = WiFi2DCharObject_GetField(param0->unk_04, 8);
 
     if ((param0->unk_86 > v1) || (param0->unk_84 != v0)) {
         if (WiFiPlazaLobby_Object_IsPersistentAnimMode(param0->unk_84) == 1) {
@@ -601,7 +601,7 @@ static void WiFiPlazaLobby_Object_Update(WiFiPlazaLobbyObject *param0)
 
     v3[v0](param0);
 
-    v2 = ov63_0222C0FC(param0->unk_04);
+    v2 = WiFi2DCharObject_GetInterpolatedPosition(param0->unk_04);
     WiFiPlazaLobby_Object_SetPositionFromTileCoords(param0, &v2);
 }
 
@@ -610,7 +610,7 @@ static void WiFiPlazaLobby_Object_AnimModeStatic(WiFiPlazaLobbyObject *param0)
     u32 v0;
     u32 v1;
 
-    v0 = ov63_0222BF90(param0->unk_04, 6);
+    v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
     v1 = WiFiPlazaLobby_Object_GetAnimationIndex(1, v0);
 
     Billboard_SetAnimNum(param0->unk_08, v1);
@@ -625,10 +625,10 @@ static void WiFiPlazaLobby_Object_AnimModeProgress(WiFiPlazaLobbyObject *param0)
     u16 v3;
     u16 v4;
 
-    v0 = ov63_0222BF90(param0->unk_04, 6);
+    v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
     v1 = WiFiPlazaLobby_Object_GetAnimationIndex(1, v0);
-    v3 = ov63_0222BF90(param0->unk_04, 9);
-    v4 = ov63_0222BF90(param0->unk_04, 8);
+    v3 = WiFi2DCharObject_GetField(param0->unk_04, 9);
+    v4 = WiFi2DCharObject_GetField(param0->unk_04, 8);
     v2 = WiFiPlazaLobby_Object_CalcAnimationProgress(v3, v4, 8);
 
     Billboard_SetAnimNum(param0->unk_08, v1);
@@ -646,12 +646,12 @@ static void WiFiPlazaLobby_Object_AnimModeHold(WiFiPlazaLobbyObject *param0)
 {
     u32 v0;
     u32 v1;
-    u16 v2 = ov63_0222BF90(param0->unk_04, 8);
+    u16 v2 = WiFi2DCharObject_GetField(param0->unk_04, 8);
 
     if (v2 < 4) {
         Billboard_SetAnimFrameNum(param0->unk_08, 4 * FX32_ONE);
     } else {
-        v0 = ov63_0222BF90(param0->unk_04, 6);
+        v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
         v1 = WiFiPlazaLobby_Object_GetAnimationIndex(1, v0);
 
         Billboard_SetAnimNum(param0->unk_08, v1);
@@ -667,10 +667,10 @@ static void WiFiPlazaLobby_Object_AnimModeProgressReverse(WiFiPlazaLobbyObject *
     u16 v3;
     u16 v4;
 
-    v0 = ov63_0222BF90(param0->unk_04, 6);
+    v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
     v1 = WiFiPlazaLobby_Object_GetAnimationIndex(0, v0);
-    v3 = ov63_0222BF90(param0->unk_04, 9);
-    v4 = ov63_0222BF90(param0->unk_04, 8);
+    v3 = WiFi2DCharObject_GetField(param0->unk_04, 9);
+    v4 = WiFi2DCharObject_GetField(param0->unk_04, 8);
     v2 = WiFiPlazaLobby_Object_CalcAnimationProgress(v3, v4, 4);
 
     Billboard_SetAnimNum(param0->unk_08, v1);
@@ -723,8 +723,8 @@ static void WiFiPlazaLobby_Object_LoopAnimPlayOnce(WiFiPlazaLobbyObject *param0)
     u32 v1;
 
     if (param0->unk_02 == 0) {
-        v0 = ov63_0222BF90(param0->unk_04, 6);
-        v0 = ov63_0222BF90(param0->unk_04, 6);
+        v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
+        v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
         v1 = WiFiPlazaLobby_Object_GetAnimationIndex(1, v0);
 
         Billboard_SetAnimNum(param0->unk_08, v1);
@@ -740,13 +740,13 @@ static void WiFiPlazaLobby_Object_LoopAnimTwoPhase(WiFiPlazaLobbyObject *param0)
     u32 v1;
 
     if (param0->unk_02 == 0) {
-        v0 = ov63_0222BF90(param0->unk_04, 6);
+        v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
         v1 = WiFiPlazaLobby_Object_GetAnimationIndex(1, v0);
 
         Billboard_SetAnimNum(param0->unk_08, v1);
         Billboard_SetAnimFrameNum(param0->unk_08, 4 * FX32_ONE);
     } else if (param0->unk_02 == 4) {
-        v0 = ov63_0222BF90(param0->unk_04, 6);
+        v0 = WiFi2DCharObject_GetField(param0->unk_04, 6);
         v1 = WiFiPlazaLobby_Object_GetAnimationIndex(1, v0);
 
         Billboard_SetAnimNum(param0->unk_08, v1);

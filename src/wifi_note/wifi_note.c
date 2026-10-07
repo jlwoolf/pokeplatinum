@@ -13,9 +13,9 @@
 #include "struct_defs/struct_02089438.h"
 
 #include "applications/naming_screen.h"
-#include "overlay063/ov63_0222AE60.h"
-#include "overlay063/struct_ov63_0222AE60_decl.h"
-#include "overlay063/struct_ov63_0222BB38_decl.h"
+#include "wifi_2d_char/wifi_2d_char.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222AE60_decl.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BB38_decl.h"
 #include "wifi_note/struct_wifi_note_sprite_params.h"
 
 #include "appearance.h"
@@ -68,7 +68,7 @@
 
 #include "constdata/const_020F2DBC.h"
 
-FS_EXTERN_OVERLAY(overlay63);
+FS_EXTERN_OVERLAY(wifi_2d_char);
 
 typedef struct {
     u32 entryID;
@@ -147,7 +147,7 @@ typedef struct {
 typedef struct {
     WiFiNotePageOffset offset;
     Window window;
-    UnkStruct_ov63_0222BB38 *sprites[8];
+    WiFi2DCharSprite *sprites[8];
 } WiFiNoteFriendSlot;
 
 typedef struct {
@@ -163,7 +163,7 @@ typedef struct {
     WiFiNoteFriendSlot slots[3];
     s16 transitionTimer;
     u16 transitionDir;
-    UnkStruct_ov63_0222AE60 *spriteManager;
+    WiFi2DCharManager *spriteManager;
     Window headerWindow;
     Window messageWindow;
     String *string;
@@ -315,10 +315,10 @@ static void WiFiNoteFriendSlot_Init(WiFiNoteFriendSlot *param0, WiFiNoteGraphics
 static void WiFiNoteFriendSlot_Free(WiFiNoteFriendSlot *param0, WiFiNoteGraphics *param1);
 static void WiFiNoteFriendSlot_DrawBackground(WiFiNoteFriendSlot *param0, WiFiNoteGraphics *param1, const WiFiNoteScreenData *param2);
 static void WiFiNoteFriendSlot_Highlight(WiFiNoteFriendSlot *param0, WiFiNoteGraphics *param1, u32 param2);
-static void WiFiNoteFriendSlot_DrawEntries(WiFiNoteFriendSlot *param0, WiFiNoteState *param1, WiFiNoteGraphics *param2, UnkStruct_ov63_0222AE60 *param3, const WiFiNoteScreenData *param4, const WiFiNoteFriendIndexList *param5, u32 param6, enum HeapID heapID);
+static void WiFiNoteFriendSlot_DrawEntries(WiFiNoteFriendSlot *param0, WiFiNoteState *param1, WiFiNoteGraphics *param2, WiFi2DCharManager *param3, const WiFiNoteScreenData *param4, const WiFiNoteFriendIndexList *param5, u32 param6, enum HeapID heapID);
 static void WiFiNoteFriendSlot_Clear(WiFiNoteFriendSlot *param0, WiFiNoteGraphics *param1, const WiFiNoteScreenData *param2);
 static void WiFiNoteFriendSlot_DeleteSprites(WiFiNoteFriendSlot *param0, WiFiNoteGraphics *param1);
-static void WiFiNoteFriendSlot_DrawFriend(WiFiNoteFriendSlot *param0, UnkStruct_ov63_0222AE60 *param1, WiFiNoteGraphics *param2, const WiFiNoteScreenData *param3, u32 param4, WiFiList *param5, u32 param6, enum HeapID heapID);
+static void WiFiNoteFriendSlot_DrawFriend(WiFiNoteFriendSlot *param0, WiFi2DCharManager *param1, WiFiNoteGraphics *param2, const WiFiNoteScreenData *param3, u32 param4, WiFiList *param5, u32 param6, enum HeapID heapID);
 static void WiFiNoteFriendSlot_DrawEmpty(WiFiNoteFriendSlot *param0, WiFiNoteGraphics *param1, const WiFiNoteScreenData *param2, u32 param3);
 static void WiFiNoteNamingScreen_Init(WiFiNoteNamingScreen *param0, WiFiNoteState *param1, WiFiNoteGraphics *param2, enum HeapID heapID);
 static int WiFiNoteNamingScreen_Main(WiFiNoteNamingScreen *param0, WiFiNote *param1, WiFiNoteState *param2, WiFiNoteGraphics *param3, enum HeapID heapID);
@@ -593,7 +593,7 @@ int WiFiNote_Init(ApplicationManager *appMan, int *param1)
 {
     WiFiNote *v0;
 
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay63), 2);
+    Overlay_LoadByID(FS_OVERLAY_ID(wifi_2d_char), 2);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_52, 0x70000);
 
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiNote), HEAP_ID_52);
@@ -680,7 +680,7 @@ int WiFiNote_Exit(ApplicationManager *appMan, int *param1)
 
     ApplicationManager_FreeData(appMan);
     Heap_Destroy(HEAP_ID_52);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay63));
+    Overlay_UnloadByID(FS_OVERLAY_ID(wifi_2d_char));
 
     return 1;
 }
@@ -1789,8 +1789,8 @@ static void WiFiNoteFriendList_CreateWindows(WiFiNoteFriendList *param0, WiFiNot
         WiFiNoteFriendSlot_Init(&param0->slots[i], param2, &sPageOffsets[i], sSlotBgBaseTiles[i], heapID);
     }
 
-    param0->spriteManager = ov63_0222AE60(param2->spriteList, NULL, 16, heapID);
-    ov63_0222B02C(param0->spriteManager, 1, 2, heapID);
+    param0->spriteManager = WiFi2DCharManager_New(param2->spriteList, NULL, 16, heapID);
+    WiFi2DCharManager_LoadShadowResources(param0->spriteManager, 1, 2, heapID);
 
     Window_Init(&param0->headerWindow);
     Window_Add(param2->bgConfig, &param0->headerWindow, BG_LAYER_MAIN_1, 13, 21, 8, 3, 7, 112);
@@ -1840,8 +1840,8 @@ static void WiFiNoteFriendList_DestroyWindows(WiFiNoteFriendList *param0, WiFiNo
     Window_Remove(&param0->menuWindow);
     Window_Remove(&param0->headerWindow);
 
-    ov63_0222B078(param0->spriteManager);
-    ov63_0222AF14(param0->spriteManager);
+    WiFi2DCharManager_UnloadShadowResources(param0->spriteManager);
+    WiFi2DCharManager_Free(param0->spriteManager);
 
     for (v0 = 0; v0 < 3; v0++) {
         WiFiNoteFriendSlot_Free(&param0->slots[v0], param2);
@@ -2366,7 +2366,7 @@ static void WiFiNoteFriendSlot_Highlight(WiFiNoteFriendSlot *param0, WiFiNoteGra
     Bg_ScheduleTilemapTransfer(param1->bgConfig, sBgLayers[0]);
 }
 
-static void WiFiNoteFriendSlot_DrawEntries(WiFiNoteFriendSlot *param0, WiFiNoteState *param1, WiFiNoteGraphics *param2, UnkStruct_ov63_0222AE60 *param3, const WiFiNoteScreenData *param4, const WiFiNoteFriendIndexList *param5, u32 param6, enum HeapID heapID)
+static void WiFiNoteFriendSlot_DrawEntries(WiFiNoteFriendSlot *param0, WiFiNoteState *param1, WiFiNoteGraphics *param2, WiFi2DCharManager *param3, const WiFiNoteScreenData *param4, const WiFiNoteFriendIndexList *param5, u32 param6, enum HeapID heapID)
 {
     int v0;
     int v1;
@@ -2408,13 +2408,13 @@ static void WiFiNoteFriendSlot_DeleteSprites(WiFiNoteFriendSlot *param0, WiFiNot
 
     for (v0 = 0; v0 < 8; v0++) {
         if (param0->sprites[v0]) {
-            ov63_0222B210(param0->sprites[v0]);
+            WiFi2DCharSprite_Delete(param0->sprites[v0]);
             param0->sprites[v0] = NULL;
         }
     }
 }
 
-static void WiFiNoteFriendSlot_DrawFriend(WiFiNoteFriendSlot *param0, UnkStruct_ov63_0222AE60 *param1, WiFiNoteGraphics *param2, const WiFiNoteScreenData *param3, u32 param4, WiFiList *param5, u32 param6, enum HeapID heapID)
+static void WiFiNoteFriendSlot_DrawFriend(WiFiNoteFriendSlot *param0, WiFi2DCharManager *param1, WiFiNoteGraphics *param2, const WiFiNoteScreenData *param3, u32 param4, WiFiList *param5, u32 param6, enum HeapID heapID)
 {
     int v0;
     int v1;
@@ -2433,7 +2433,7 @@ static void WiFiNoteFriendSlot_DrawFriend(WiFiNoteFriendSlot *param0, UnkStruct_
         v2.y = ((param0->offset.y + sSlotRects[param4].rect.y) * 8) + (6 + 256);
         v2.priority = 8;
         v2.explicitPriority = 1;
-        param0->sprites[param4] = ov63_0222B0C0(param1, &v2, v1, heapID);
+        param0->sprites[param4] = WiFi2DCharSprite_New(param1, &v2, v1, heapID);
     }
 
     v4 = ((sSlotRects[param4].rect.x) * 8) + 0;

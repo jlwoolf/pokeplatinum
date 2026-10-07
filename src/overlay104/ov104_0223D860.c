@@ -5,8 +5,8 @@
 
 #include "struct_decls/battle_frontier_decl.h"
 
-#include "overlay063/ov63_0222D77C.h"
-#include "overlay063/struct_ov63_0222CCB8.h"
+#include "wifi_2d_char/wifi_2d_char_0222D77C.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222CCB8.h"
 #include "overlay104/frontier_graphics.h"
 #include "overlay104/ov104_02231F74.h"
 #include "overlay104/struct_ov104_0223C634.h"
@@ -75,7 +75,7 @@ void ov104_0223D8C4(BattleFrontier *param0)
 static BOOL ov104_0223D8F0(BattleFrontier *param0, FrontierObject *param1)
 {
     FrontierObjectMovement *v0 = &param1->movement;
-    UnkStruct_ov63_0222CCB8 v1;
+    WiFi2DCharMoveRequest v1;
     FrontierGraphics *v2 = BattleFrontier_GetGraphics(param0);
 
     if (v0->params[2] > 0) {
@@ -117,7 +117,7 @@ static BOOL ov104_0223D8F0(BattleFrontier *param0, FrontierObject *param1)
     case 2:
     case 3:
         ov104_02232C80(&v1, param1->object, param1->params.unk_04, v0->params[3 + v0->step - 1]);
-        ov63_0222D7C8(v2->unk_30, &v1);
+        WiFi2DCharMoveQueue_Push(v2->unk_30, &v1);
 
         if (v0->params[0] == v0->params[3 + v0->step - 1]) {
             v0->params[2] = 45;

@@ -5,14 +5,14 @@
 
 #include "constants/heap.h"
 
-#include "overlay063/ov63_0222BCE8.h"
-#include "overlay063/struct_ov63_0222BCE8_decl.h"
+#include "wifi_2d_char/wifi_2d_char_0222BCE8.h"
+#include "wifi_2d_char/struct_wifi_2d_char_0222BCE8_decl.h"
 
 #include "graphics.h"
 #include "heap.h"
 
 typedef struct UnkStruct_ov70_0225C894_t {
-    UnkStruct_ov63_0222BCE8 *unk_00;
+    WiFi2DCharGrid *unk_00;
 } UnkStruct_ov70_0225C894;
 
 UnkStruct_ov70_0225C894 *ov70_0225C858(enum HeapID heapID)
@@ -21,11 +21,11 @@ UnkStruct_ov70_0225C894 *ov70_0225C858(enum HeapID heapID)
     void *v1;
 
     v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov70_0225C894));
-    v0->unk_00 = ov63_0222BCE8(35, 42, heapID);
+    v0->unk_00 = WiFi2DCharGrid_New(35, 42, heapID);
 
     v1 = LoadMemberFromNARC(NARC_INDEX_APPLICATION__WIFI_LOBBY__MAP_CONV__WFLBY_MAP, 0, 0, heapID, 1);
 
-    ov63_0222BD50(v0->unk_00, v1);
+    WiFi2DCharGrid_SetTiles(v0->unk_00, v1);
     Heap_Free(v1);
 
     return v0;
@@ -33,7 +33,7 @@ UnkStruct_ov70_0225C894 *ov70_0225C858(enum HeapID heapID)
 
 void ov70_0225C894(UnkStruct_ov70_0225C894 *param0)
 {
-    ov63_0222BD30(param0->unk_00);
+    WiFi2DCharGrid_Free(param0->unk_00);
     Heap_Free(param0);
 }
 
@@ -44,18 +44,18 @@ u16 ov70_0225C8A8(const UnkStruct_ov70_0225C894 *param0)
 
 BOOL ov70_0225C8AC(const UnkStruct_ov70_0225C894 *param0, u16 param1, u16 param2)
 {
-    return ov63_0222BDAC(param0->unk_00, param1, param2);
+    return WiFi2DCharGrid_IsTileBlocked(param0->unk_00, param1, param2);
 }
 
 u32 ov70_0225C8B8(const UnkStruct_ov70_0225C894 *param0, u16 param1, u16 param2)
 {
-    u32 v0 = ov63_0222BDE4(param0->unk_00, param1, param2);
+    u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_00, param1, param2);
     return v0 >> 15;
 }
 
 u32 ov70_0225C8C4(const UnkStruct_ov70_0225C894 *param0, u16 param1, u16 param2)
 {
-    u32 v0 = ov63_0222BDE4(param0->unk_00, param1, param2);
+    u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_00, param1, param2);
     v0 &= 0x7fff;
 
     return v0;
@@ -187,7 +187,7 @@ BOOL ov70_0225C990(u32 param0)
     return 0;
 }
 
-const UnkStruct_ov63_0222BCE8 *ov70_0225C9B0(const UnkStruct_ov70_0225C894 *param0)
+const WiFi2DCharGrid *ov70_0225C9B0(const UnkStruct_ov70_0225C894 *param0)
 {
     return param0->unk_00;
 }
