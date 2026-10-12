@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_STRUCT_DANCE_COMPETITION_TASK_H
+#define POKEPLATINUM_STRUCT_DANCE_COMPETITION_TASK_H
+
+typedef struct {
+    u16 unk_00;
+    u16 unk_02;
+    s32 unk_04;
+} DanceCompetitionTask;
+
+#endif // POKEPLATINUM_STRUCT_DANCE_COMPETITION_TASK_H

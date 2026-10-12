@@ -1,0 +1,9 @@
+#ifndef POKEPLATINUM_STRUCT_DANCE_PAYLOAD_BUFFER_H
+#define POKEPLATINUM_STRUCT_DANCE_PAYLOAD_BUFFER_H
+
+typedef struct {
+    u8 unk_00;
+    u8 unk_01[255];
+} DancePayloadBuffer;
+
+#endif // POKEPLATINUM_STRUCT_DANCE_PAYLOAD_BUFFER_H

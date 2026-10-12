@@ -7,7 +7,7 @@
 #include "struct_decls/struct_02012744_decl.h"
 #include "struct_defs/struct_020127E8.h"
 
-#include "contest_competition/struct_contest_competition_0224A1EC.h"
+#include "contest_competition/struct_dance_competition_scene.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -34,7 +34,7 @@ typedef struct {
     s32 unk_04;
     s32 unk_08;
     s32 unk_0C;
-} UnkStruct_contest_competition_022492DC_sub1_sub1;
+} DanceMoveSelectRect;
 
 typedef struct {
     u16 unk_00;
@@ -43,24 +43,24 @@ typedef struct {
     u16 unk_06;
     u16 unk_08;
     u16 unk_0A;
-} UnkStruct_contest_competition_02254630;
+} DanceMoveSelectMove;
 
 typedef struct {
     SysTask *unk_00;
     u8 *unk_04;
     void *unk_08;
     u8 *unk_0C;
-    UnkStruct_contest_competition_02254630 unk_10;
+    DanceMoveSelectMove unk_10;
     u16 unk_1C;
-} UnkStruct_contest_competition_02249B30;
+} DanceMoveSelectTask;
 
 typedef struct {
     s16 unk_00;
     s16 unk_02;
     union {
         struct {
-            UnkStruct_contest_competition_02249B30 *unk_00;
-            const UnkStruct_contest_competition_02254630 *unk_04[3];
+            DanceMoveSelectTask *unk_00;
+            const DanceMoveSelectMove *unk_04[3];
             ManagedSprite *unk_10[3];
             u32 unk_1C[3];
             int unk_28;
@@ -69,35 +69,35 @@ typedef struct {
             u8 unk_30;
         } unk_04_val1;
     };
-} UnkStruct_contest_competition_022492DC_sub2;
+} DanceMoveSelectInput;
 
 typedef struct {
-    const UnkStruct_contest_competition_022492DC_sub1_sub1 *unk_00;
+    const DanceMoveSelectRect *unk_00;
     u8 unk_04;
     s8 unk_05;
-} UnkStruct_contest_competition_022492DC_sub1;
+} DanceMoveSelectSelection;
 
 typedef struct {
     FontOAM *unk_00;
     CharTransferAllocation unk_04;
     u16 unk_10;
-} UnkStruct_contest_competition_02249BC4;
+} DanceMoveSelectLabel;
 
-typedef struct UnkStruct_contest_competition_022492DC_t {
+typedef struct DanceMoveSelectScreen_t {
     Contest *unk_00;
-    UnkStruct_contest_competition_0224A1EC *unk_04;
+    DanceCompetitionScene *unk_04;
     void *unk_08;
     SysTask *unk_0C;
-    UnkStruct_contest_competition_022492DC_sub1 unk_10;
+    DanceMoveSelectSelection unk_10;
     FontOAMManager *unk_18;
-    UnkStruct_contest_competition_02249BC4 unk_1C[6];
+    DanceMoveSelectLabel unk_1C[6];
     u16 unk_88;
     s8 unk_8A;
-    UnkStruct_contest_competition_022492DC_sub2 unk_8C;
+    DanceMoveSelectInput unk_8C;
     u8 *unk_C4[3];
     u16 *unk_D0[4];
     u16 *unk_E0[2];
-} UnkStruct_contest_competition_022492DC;
+} DanceMoveSelectScreen;
 
 typedef struct {
     u16 unk_00;
@@ -122,32 +122,32 @@ typedef struct {
     };
     const TouchScreenRect *unk_14;
     const int *unk_18;
-    void (*unk_1C)(UnkStruct_contest_competition_022492DC *param0, int param1, int param2);
-    int (*unk_20)(UnkStruct_contest_competition_022492DC *param0, int param1);
-} UnkStruct_contest_competition_02254578;
+    void (*unk_1C)(DanceMoveSelectScreen *param0, int param1, int param2);
+    int (*unk_20)(DanceMoveSelectScreen *param0, int param1);
+} DanceMoveSelectPage;
 
-static UnkStruct_contest_competition_02249B30 *contest_competition_02249AAC(UnkStruct_contest_competition_022492DC *param0, int param1, u16 param2, u32 param3, const UnkStruct_contest_competition_02254630 *param4, int param5);
-static UnkStruct_contest_competition_02249B30 *contest_competition_02249B08(UnkStruct_contest_competition_022492DC *param0, int param1, u16 param2, u32 param3, const UnkStruct_contest_competition_02254630 *param4, int param5);
+static DanceMoveSelectTask *contest_competition_02249AAC(DanceMoveSelectScreen *param0, int param1, u16 param2, u32 param3, const DanceMoveSelectMove *param4, int param5);
+static DanceMoveSelectTask *contest_competition_02249B08(DanceMoveSelectScreen *param0, int param1, u16 param2, u32 param3, const DanceMoveSelectMove *param4, int param5);
 static void *contest_competition_022492DC(void);
-static void contest_competition_022498E8(UnkStruct_contest_competition_022492DC *param0, int param1, int param2);
-static int contest_competition_02249A0C(UnkStruct_contest_competition_022492DC *param0, int param1);
-static BOOL contest_competition_02249B30(UnkStruct_contest_competition_02249B30 *param0);
-static void contest_competition_02249B54(UnkStruct_contest_competition_02249B30 *param0);
-static void contest_competition_02249D3C(UnkStruct_contest_competition_022492DC *param0, int param1);
-static void contest_competition_02249D50(SysTaskFunc param0, UnkStruct_contest_competition_022492DC *param1);
-static void contest_competition_02249D80(UnkStruct_contest_competition_022492DC *param0);
+static void contest_competition_022498E8(DanceMoveSelectScreen *param0, int param1, int param2);
+static int contest_competition_02249A0C(DanceMoveSelectScreen *param0, int param1);
+static BOOL contest_competition_02249B30(DanceMoveSelectTask *param0);
+static void contest_competition_02249B54(DanceMoveSelectTask *param0);
+static void contest_competition_02249D3C(DanceMoveSelectScreen *param0, int param1);
+static void contest_competition_02249D50(SysTaskFunc param0, DanceMoveSelectScreen *param1);
+static void contest_competition_02249D80(DanceMoveSelectScreen *param0);
 static void contest_competition_02249DA0(SysTask *param0, void *param1);
 static void contest_competition_0224A038(SysTask *param0, void *param1);
 static void contest_competition_0224A088(SysTask *param0, void *param1);
 static void contest_competition_0224A0C8(SysTask *param0, void *param1);
-static void contest_competition_022498F4(UnkStruct_contest_competition_022492DC *param0);
-static void contest_competition_02249BC4(UnkStruct_contest_competition_022492DC *param0, UnkStruct_contest_competition_02249BC4 *param1, const String *param2, int param3, u32 param4, int param5, int param6, int param7, int param8, int param9);
-static void contest_competition_02249CD0(UnkStruct_contest_competition_022492DC *param0);
-static void contest_competition_02249CFC(UnkStruct_contest_competition_022492DC *param0, int param1);
-static void contest_competition_02249828(UnkStruct_contest_competition_022492DC *param0);
-static void contest_competition_0224981C(UnkStruct_contest_competition_022492DC *param0, int param1, int param2);
-static void contest_competition_022493DC(UnkStruct_contest_competition_022492DC *param0);
-static void contest_competition_022495F8(UnkStruct_contest_competition_022492DC *param0);
+static void contest_competition_022498F4(DanceMoveSelectScreen *param0);
+static void contest_competition_02249BC4(DanceMoveSelectScreen *param0, DanceMoveSelectLabel *param1, const String *param2, int param3, u32 param4, int param5, int param6, int param7, int param8, int param9);
+static void contest_competition_02249CD0(DanceMoveSelectScreen *param0);
+static void contest_competition_02249CFC(DanceMoveSelectScreen *param0, int param1);
+static void contest_competition_02249828(DanceMoveSelectScreen *param0);
+static void contest_competition_0224981C(DanceMoveSelectScreen *param0, int param1, int param2);
+static void contest_competition_022493DC(DanceMoveSelectScreen *param0);
+static void contest_competition_022495F8(DanceMoveSelectScreen *param0);
 
 static const BgTemplate Unk_contest_competition_022545C0[] = {
     {
@@ -223,7 +223,7 @@ static const int Unk_contest_competition_02254554[NELEMS(Unk_contest_competition
     0x3
 };
 
-static const UnkStruct_contest_competition_02254578 Unk_contest_competition_02254578[] = {
+static const DanceMoveSelectPage Unk_contest_competition_02254578[] = {
     {
         0x0,
         0x0,
@@ -246,7 +246,7 @@ static const UnkStruct_contest_competition_02254578 Unk_contest_competition_0225
     }
 };
 
-static const UnkStruct_contest_competition_02254630 Unk_contest_competition_02254630[][4] = {
+static const DanceMoveSelectMove Unk_contest_competition_02254630[][4] = {
     {
         { 0x0, 0x0, 0xC, 0x0, 0x6, 0xC },
         { 0x12, 0x0, 0xC, 0x0, 0x6, 0xC },
@@ -269,8 +269,8 @@ static const UnkStruct_contest_competition_02254630 Unk_contest_competition_0225
 
 static void *contest_competition_022492DC(void)
 {
-    UnkStruct_contest_competition_022492DC *v0 = Heap_Alloc(HEAP_ID_23, sizeof(UnkStruct_contest_competition_022492DC));
-    MI_CpuClear8(v0, sizeof(UnkStruct_contest_competition_022492DC));
+    DanceMoveSelectScreen *v0 = Heap_Alloc(HEAP_ID_23, sizeof(DanceMoveSelectScreen));
+    MI_CpuClear8(v0, sizeof(DanceMoveSelectScreen));
     v0->unk_8A = -1;
 
     return v0;
@@ -298,9 +298,9 @@ void contest_competition_02249358(BgConfig *param0)
     }
 }
 
-void *contest_competition_02249380(Contest *param0, UnkStruct_contest_competition_0224A1EC *param1)
+void *contest_competition_02249380(Contest *param0, DanceCompetitionScene *param1)
 {
-    UnkStruct_contest_competition_022492DC *v0 = contest_competition_022492DC();
+    DanceMoveSelectScreen *v0 = contest_competition_022492DC();
 
     v0->unk_00 = param0;
     v0->unk_04 = param1;
@@ -311,7 +311,7 @@ void *contest_competition_02249380(Contest *param0, UnkStruct_contest_competitio
     return v0;
 }
 
-void contest_competition_022493A4(UnkStruct_contest_competition_022492DC *param0)
+void contest_competition_022493A4(DanceMoveSelectScreen *param0)
 {
     contest_competition_022495F8(param0);
     contest_competition_02249D3C(param0, 1);
@@ -320,14 +320,14 @@ void contest_competition_022493A4(UnkStruct_contest_competition_022492DC *param0
     Heap_Free(param0);
 }
 
-void contest_competition_022493C4(UnkStruct_contest_competition_022492DC *param0)
+void contest_competition_022493C4(DanceMoveSelectScreen *param0)
 {
     contest_competition_02249828(param0);
     contest_competition_022498F4(param0);
     contest_competition_02249CFC(param0, 0);
 }
 
-static void contest_competition_022493DC(UnkStruct_contest_competition_022492DC *param0)
+static void contest_competition_022493DC(DanceMoveSelectScreen *param0)
 {
     NNSG2dCharacterData *v0;
     NNSG2dScreenData *v1;
@@ -378,7 +378,7 @@ static void contest_competition_022493DC(UnkStruct_contest_competition_022492DC 
     LoadPaletteFromFile(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 33, HEAP_ID_23, 0x200, 0, param0->unk_E0[1]);
 }
 
-static void contest_competition_022495F8(UnkStruct_contest_competition_022492DC *param0)
+static void contest_competition_022495F8(DanceMoveSelectScreen *param0)
 {
     int v0;
 
@@ -395,9 +395,9 @@ static void contest_competition_022495F8(UnkStruct_contest_competition_022492DC 
     }
 }
 
-void contest_competition_02249640(UnkStruct_contest_competition_022492DC *param0, int param1, int param2, void *param3)
+void contest_competition_02249640(DanceMoveSelectScreen *param0, int param1, int param2, void *param3)
 {
-    const UnkStruct_contest_competition_02254578 *v0, *v1;
+    const DanceMoveSelectPage *v0, *v1;
     int v2;
     BgConfig *v3;
     SpriteSystem *v4;
@@ -451,10 +451,10 @@ void contest_competition_02249640(UnkStruct_contest_competition_022492DC *param0
     SysTask_ExecuteAfterVBlank(contest_competition_0224A038, param0, 10);
 }
 
-int contest_competition_02249760(UnkStruct_contest_competition_022492DC *param0)
+int contest_competition_02249760(DanceMoveSelectScreen *param0)
 {
     int v0, v1, v2;
-    const UnkStruct_contest_competition_02254578 *v3;
+    const DanceMoveSelectPage *v3;
 
     GF_ASSERT(param0->unk_8A != -1);
     v3 = &Unk_contest_competition_02254578[param0->unk_8A];
@@ -493,7 +493,7 @@ int contest_competition_02249760(UnkStruct_contest_competition_022492DC *param0)
     return v0;
 }
 
-BOOL contest_competition_02249804(UnkStruct_contest_competition_022492DC *param0)
+BOOL contest_competition_02249804(DanceMoveSelectScreen *param0)
 {
     if (param0->unk_0C == NULL) {
         return 1;
@@ -502,17 +502,17 @@ BOOL contest_competition_02249804(UnkStruct_contest_competition_022492DC *param0
     return 0;
 }
 
-int contest_competition_02249814(UnkStruct_contest_competition_022492DC *param0)
+int contest_competition_02249814(DanceMoveSelectScreen *param0)
 {
     return param0->unk_8A;
 }
 
-static void contest_competition_0224981C(UnkStruct_contest_competition_022492DC *param0, int param1, int param2)
+static void contest_competition_0224981C(DanceMoveSelectScreen *param0, int param1, int param2)
 {
     contest_competition_02249CFC(param0, 1);
 }
 
-static void contest_competition_02249828(UnkStruct_contest_competition_022492DC *param0)
+static void contest_competition_02249828(DanceMoveSelectScreen *param0)
 {
     String *v0, *v1;
     u32 v2, v3;
@@ -530,12 +530,12 @@ static void contest_competition_02249828(UnkStruct_contest_competition_022492DC 
     MessageLoader_Free(contestTextMessageLoader);
 }
 
-static void contest_competition_022498E8(UnkStruct_contest_competition_022492DC *param0, int param1, int param2)
+static void contest_competition_022498E8(DanceMoveSelectScreen *param0, int param1, int param2)
 {
     contest_competition_02249CFC(param0, 1);
 }
 
-static void contest_competition_022498F4(UnkStruct_contest_competition_022492DC *param0)
+static void contest_competition_022498F4(DanceMoveSelectScreen *param0)
 {
     String *v0;
     MessageLoader *danceMessageLoader = param0->unk_04->danceMessageLoader;
@@ -561,7 +561,7 @@ static void contest_competition_022498F4(UnkStruct_contest_competition_022492DC 
     String_Free(v3);
 }
 
-static int contest_competition_02249A0C(UnkStruct_contest_competition_022492DC *param0, int param1)
+static int contest_competition_02249A0C(DanceMoveSelectScreen *param0, int param1)
 {
     int v0;
 
@@ -599,10 +599,10 @@ static int contest_competition_02249A0C(UnkStruct_contest_competition_022492DC *
     return param1;
 }
 
-static UnkStruct_contest_competition_02249B30 *contest_competition_02249AAC(UnkStruct_contest_competition_022492DC *param0, int param1, u16 param2, u32 param3, const UnkStruct_contest_competition_02254630 *param4, int param5)
+static DanceMoveSelectTask *contest_competition_02249AAC(DanceMoveSelectScreen *param0, int param1, u16 param2, u32 param3, const DanceMoveSelectMove *param4, int param5)
 {
-    UnkStruct_contest_competition_02249B30 *v0 = Heap_Alloc(HEAP_ID_23, sizeof(UnkStruct_contest_competition_02249B30));
-    MI_CpuClear8(v0, sizeof(UnkStruct_contest_competition_02249B30));
+    DanceMoveSelectTask *v0 = Heap_Alloc(HEAP_ID_23, sizeof(DanceMoveSelectTask));
+    MI_CpuClear8(v0, sizeof(DanceMoveSelectTask));
 
     if (param3 != 0xffffffff) {
         v0->unk_0C = param0->unk_C4[param3];
@@ -615,15 +615,15 @@ static UnkStruct_contest_competition_02249B30 *contest_competition_02249AAC(UnkS
     return v0;
 }
 
-static UnkStruct_contest_competition_02249B30 *contest_competition_02249B08(UnkStruct_contest_competition_022492DC *param0, int param1, u16 param2, u32 param3, const UnkStruct_contest_competition_02254630 *param4, int param5)
+static DanceMoveSelectTask *contest_competition_02249B08(DanceMoveSelectScreen *param0, int param1, u16 param2, u32 param3, const DanceMoveSelectMove *param4, int param5)
 {
-    UnkStruct_contest_competition_02249B30 *v0 = contest_competition_02249AAC(param0, param1, param2, param3, param4, param5);
+    DanceMoveSelectTask *v0 = contest_competition_02249AAC(param0, param1, param2, param3, param4, param5);
     v0->unk_00 = SysTask_ExecuteAfterVBlank(contest_competition_0224A0C8, v0, 20);
 
     return v0;
 }
 
-static BOOL contest_competition_02249B30(UnkStruct_contest_competition_02249B30 *param0)
+static BOOL contest_competition_02249B30(DanceMoveSelectTask *param0)
 {
     if (param0->unk_00 == NULL) {
         if (param0->unk_08 != NULL) {
@@ -637,7 +637,7 @@ static BOOL contest_competition_02249B30(UnkStruct_contest_competition_02249B30 
     return 0;
 }
 
-static void contest_competition_02249B54(UnkStruct_contest_competition_02249B30 *param0)
+static void contest_competition_02249B54(DanceMoveSelectTask *param0)
 {
     int v0, v1, v2;
     u32 v3, v4;
@@ -655,7 +655,7 @@ static void contest_competition_02249B54(UnkStruct_contest_competition_02249B30 
     }
 }
 
-static void contest_competition_02249BC4(UnkStruct_contest_competition_022492DC *param0, UnkStruct_contest_competition_02249BC4 *param1, const String *param2, int param3, u32 param4, int param5, int param6, int param7, int param8, int param9)
+static void contest_competition_02249BC4(DanceMoveSelectScreen *param0, DanceMoveSelectLabel *param1, const String *param2, int param3, u32 param4, int param5, int param6, int param7, int param8, int param9)
 {
     UnkStruct_020127E8 v0;
     Window v1;
@@ -719,7 +719,7 @@ static void contest_competition_02249BC4(UnkStruct_contest_competition_022492DC 
     param1->unk_10 = v7;
 }
 
-static void contest_competition_02249CD0(UnkStruct_contest_competition_022492DC *param0)
+static void contest_competition_02249CD0(DanceMoveSelectScreen *param0)
 {
     int v0;
 
@@ -732,7 +732,7 @@ static void contest_competition_02249CD0(UnkStruct_contest_competition_022492DC 
     }
 }
 
-static void contest_competition_02249CFC(UnkStruct_contest_competition_022492DC *param0, int param1)
+static void contest_competition_02249CFC(DanceMoveSelectScreen *param0, int param1)
 {
     SpriteManager *v0;
     int v1;
@@ -760,7 +760,7 @@ static void contest_competition_02249CFC(UnkStruct_contest_competition_022492DC 
     }
 }
 
-static void contest_competition_02249D3C(UnkStruct_contest_competition_022492DC *param0, int param1)
+static void contest_competition_02249D3C(DanceMoveSelectScreen *param0, int param1)
 {
     if (param1 == 1) {
         contest_competition_02249CD0(param0);
@@ -769,26 +769,26 @@ static void contest_competition_02249D3C(UnkStruct_contest_competition_022492DC 
     }
 }
 
-static void contest_competition_02249D50(SysTaskFunc param0, UnkStruct_contest_competition_022492DC *param1)
+static void contest_competition_02249D50(SysTaskFunc param0, DanceMoveSelectScreen *param1)
 {
     GF_ASSERT(param1->unk_0C == NULL);
 
-    MI_CpuClear8(&param1->unk_8C, sizeof(UnkStruct_contest_competition_022492DC_sub2));
+    MI_CpuClear8(&param1->unk_8C, sizeof(DanceMoveSelectInput));
     param1->unk_0C = SysTask_Start(param0, param1, 1300);
 }
 
-static void contest_competition_02249D80(UnkStruct_contest_competition_022492DC *param0)
+static void contest_competition_02249D80(DanceMoveSelectScreen *param0)
 {
     if (param0->unk_0C != NULL) {
         SysTask_Done(param0->unk_0C);
         param0->unk_0C = NULL;
-        MI_CpuClear8(&param0->unk_8C, sizeof(UnkStruct_contest_competition_022492DC_sub2));
+        MI_CpuClear8(&param0->unk_8C, sizeof(DanceMoveSelectInput));
     }
 }
 
 static void contest_competition_02249DA0(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_022492DC *v0 = param1;
+    DanceMoveSelectScreen *v0 = param1;
     BgConfig *v1;
     int v2, v3;
     int v4;
@@ -891,8 +891,8 @@ static void contest_competition_02249DA0(SysTask *param0, void *param1)
 
 static void contest_competition_0224A038(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_022492DC *v0 = param1;
-    const UnkStruct_contest_competition_02254578 *v1;
+    DanceMoveSelectScreen *v0 = param1;
+    const DanceMoveSelectPage *v1;
     int v2;
 
     v1 = &Unk_contest_competition_02254578[v0->unk_8A];
@@ -910,7 +910,7 @@ static void contest_competition_0224A038(SysTask *param0, void *param1)
 
 static void contest_competition_0224A088(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_022492DC *v0 = param1;
+    DanceMoveSelectScreen *v0 = param1;
 
     if (v0->unk_88 != 0xffff) {
         Bg_LoadTiles(v0->unk_04->unk_60, 4, v0->unk_C4[v0->unk_88], 0x8000 - (0x800 * 4), 0);
@@ -922,14 +922,14 @@ static void contest_competition_0224A088(SysTask *param0, void *param1)
 
 static void contest_competition_0224A0C8(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_02249B30 *v0 = param1;
+    DanceMoveSelectTask *v0 = param1;
 
     contest_competition_02249B54(v0);
     v0->unk_00 = NULL;
     SysTask_Done(param0);
 }
 
-void contest_competition_0224A0E0(UnkStruct_contest_competition_022492DC *param0, u16 param1, u8 param2)
+void contest_competition_0224A0E0(DanceMoveSelectScreen *param0, u16 param1, u8 param2)
 {
     PaletteData_Blend(param0->unk_04->unk_90, PLTTBUF_SUB_BG, 0 * 16, 16 * 4, param2, param1);
 }

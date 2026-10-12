@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_STRUCT_DANCE_MESSAGE_CONFIG_H
+#define POKEPLATINUM_STRUCT_DANCE_MESSAGE_CONFIG_H
+
+typedef struct {
+    u16 unk_00;
+    u8 unk_02;
+    u8 unk_03;
+} DanceMessageConfig;
+
+#endif // POKEPLATINUM_STRUCT_DANCE_MESSAGE_CONFIG_H

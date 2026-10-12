@@ -5,7 +5,7 @@
 
 #include "generated/pokemon_contest_types.h"
 
-#include "contest_competition/struct_contest_competition_022472F8.h"
+#include "contest_competition/struct_acting_match_state.h"
 
 #include "move_table.h"
 
@@ -17,7 +17,7 @@ __attribute__((aligned(4))) static const s8 Unk_contest_competition_022539C8[CON
     { 0x0, 0xFFFFFFFFFFFFFFF6, 0xFFFFFFFFFFFFFFF6, 0x0, 0xA }
 };
 
-int contest_competition_02243AC4(UnkStruct_contest_competition_022472F8 *param0, int param1)
+int contest_competition_02243AC4(ActingMatchState *param0, int param1)
 {
     int v0, v1 = 0;
 
@@ -75,7 +75,7 @@ __attribute__((aligned(4))) static const s16 Unk_contest_competition_022539B8[] 
     0x2710
 };
 
-void contest_competition_02243B0C(UnkStruct_contest_competition_022472F8 *param0)
+void contest_competition_02243B0C(ActingMatchState *param0)
 {
     int v0, v1, v2;
     s16 v3[4];

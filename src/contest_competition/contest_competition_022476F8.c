@@ -3,9 +3,9 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "contest_competition/struct_contest_competition_022476F8.h"
-#include "contest_competition/struct_contest_competition_0224792C.h"
-#include "contest_competition/struct_contest_competition_02247A48.h"
+#include "contest_competition/struct_visual_competition_scene.h"
+#include "contest_competition/struct_visual_message_args.h"
+#include "contest_competition/struct_visual_competition.h"
 
 #include "bg_window.h"
 #include "game_options.h"
@@ -43,7 +43,7 @@ typedef struct {
     fx32 unk_10;
     u8 unk_14;
     u16 unk_16;
-} UnkStruct_contest_competition_022477B8;
+} VisualPhotoMoveTask;
 
 static const SpriteTemplate Unk_contest_competition_022543F8 = {
     0x0,
@@ -79,7 +79,7 @@ static const VisualContestMessage Unk_contest_competition_0225442C[] = {
 void include_contest_competition_022476F8(void);
 static void contest_competition_02247840(SysTask *param0, void *param1);
 
-void contest_competition_022476F8(UnkStruct_contest_competition_022476F8 *param0, int param1)
+void contest_competition_022476F8(VisualCompetitionScene *param0, int param1)
 {
     if (param0->unk_08[param1] == NULL) {
         GF_ASSERT(param0->pokemonSpriteDataArray[param1].tiles == NULL);
@@ -93,7 +93,7 @@ void contest_competition_022476F8(UnkStruct_contest_competition_022476F8 *param0
     param0->pokemonSpriteDataArray[param1].tiles = NULL;
 }
 
-void contest_competition_02247734(UnkStruct_contest_competition_022476F8 *param0)
+void contest_competition_02247734(VisualCompetitionScene *param0)
 {
     int v0;
 
@@ -116,10 +116,10 @@ void contest_competition_02247798(SpriteManager *param0)
     SpriteManager_UnloadAnimObjById(param0, 33002);
 }
 
-void contest_competition_022477B8(UnkStruct_contest_competition_02247A48 *param0, int param1, int param2, fx32 param3, int param4)
+void contest_competition_022477B8(VisualCompetition *param0, int param1, int param2, fx32 param3, int param4)
 {
-    UnkStruct_contest_competition_022477B8 *v0 = Heap_Alloc(HEAP_ID_22, sizeof(UnkStruct_contest_competition_022477B8));
-    MI_CpuClear8(v0, sizeof(UnkStruct_contest_competition_022477B8));
+    VisualPhotoMoveTask *v0 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoMoveTask));
+    MI_CpuClear8(v0, sizeof(VisualPhotoMoveTask));
 
     v0->unk_04 = SpriteSystem_NewSprite(param0->unk_0C.unk_1C, param0->unk_0C.unk_20, &Unk_contest_competition_022543F8);
     ManagedSprite_SetPositionXYWithSubscreenOffset(v0->unk_04, param1, param2, (256 * FX32_ONE));
@@ -141,7 +141,7 @@ void contest_competition_022477B8(UnkStruct_contest_competition_02247A48 *param0
 
 static void contest_competition_02247840(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_022477B8 *v0 = param1;
+    VisualPhotoMoveTask *v0 = param1;
     s32 v1;
 
     switch (v0->unk_14) {
@@ -167,7 +167,7 @@ static void contest_competition_02247840(SysTask *param0, void *param1)
     }
 }
 
-void contest_competition_022478D0(UnkStruct_contest_competition_02247A48 *param0, int param1)
+void contest_competition_022478D0(VisualCompetition *param0, int param1)
 {
     PokemonSpriteTemplate v0;
 
@@ -177,7 +177,7 @@ void contest_competition_022478D0(UnkStruct_contest_competition_02247A48 *param0
     param0->unk_0C.unk_18 = PokemonSpriteManager_CreateSprite(param0->unk_0C.unk_04, &v0, 320, 32, (-0x200 - 0x40), 3, NULL, NULL);
 }
 
-void contest_competition_02247918(UnkStruct_contest_competition_02247A48 *param0)
+void contest_competition_02247918(VisualCompetition *param0)
 {
     if (param0->unk_0C.unk_18 == NULL) {
         return;
@@ -187,7 +187,7 @@ void contest_competition_02247918(UnkStruct_contest_competition_02247A48 *param0
     param0->unk_0C.unk_18 = NULL;
 }
 
-static void contest_competition_VisualContest_FormatString(UnkStruct_contest_competition_02247A48 *param0, enum VisualContestMessageFormatting stringTemplateFormatting, const UnkStruct_contest_competition_0224792C *param2)
+static void contest_competition_VisualContest_FormatString(VisualCompetition *param0, enum VisualContestMessageFormatting stringTemplateFormatting, const VisualMessageArgs *param2)
 {
     if (stringTemplateFormatting != 0) {
         GF_ASSERT(param2 != NULL);
@@ -206,7 +206,7 @@ static void contest_competition_VisualContest_FormatString(UnkStruct_contest_com
     }
 }
 
-static void contest_competition_02247990(UnkStruct_contest_competition_02247A48 *param0, MessageLoader *param1, u32 messageID, enum VisualContestMessageFormatting stringTemplateFormatting, const UnkStruct_contest_competition_0224792C *param4)
+static void contest_competition_02247990(VisualCompetition *param0, MessageLoader *param1, u32 messageID, enum VisualContestMessageFormatting stringTemplateFormatting, const VisualMessageArgs *param4)
 {
     String *message;
     int textDelay;
@@ -227,7 +227,7 @@ static void contest_competition_02247990(UnkStruct_contest_competition_02247A48 
     String_Free(message);
 }
 
-void contest_competition_02247A08(UnkStruct_contest_competition_02247A48 *param0, u32 param1, const UnkStruct_contest_competition_0224792C *param2)
+void contest_competition_02247A08(VisualCompetition *param0, u32 param1, const VisualMessageArgs *param2)
 {
     GF_ASSERT(param1 < NELEMS(Unk_contest_competition_0225442C));
 
@@ -237,7 +237,7 @@ void contest_competition_02247A08(UnkStruct_contest_competition_02247A48 *param0
     contest_competition_02247990(param0, param0->unk_0C.visualCompetitionMessages, messageID, stringTemplateFormatting, param2);
 }
 
-int contest_competition_02247A3C(UnkStruct_contest_competition_02247A48 *param0)
+int contest_competition_02247A3C(VisualCompetition *param0)
 {
     return Text_IsPrinterActive(param0->unk_0C.unk_C4);
 }

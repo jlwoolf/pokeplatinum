@@ -1,0 +1,10 @@
+#ifndef POKEPLATINUM_STRUCT_VISUAL_COMPETITION_SCORES_H
+#define POKEPLATINUM_STRUCT_VISUAL_COMPETITION_SCORES_H
+
+typedef struct {
+    u8 unk_00[4];
+    u8 unk_04;
+    s16 unk_06[4];
+} VisualCompetitionScores;
+
+#endif // POKEPLATINUM_STRUCT_VISUAL_COMPETITION_SCORES_H

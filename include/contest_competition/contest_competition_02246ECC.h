@@ -1,9 +1,9 @@
 #ifndef POKEPLATINUM_CONTEST_COMPETITION_02246ECC_H
 #define POKEPLATINUM_CONTEST_COMPETITION_02246ECC_H
 
-#include "contest_competition/struct_contest_competition_0223BE58.h"
-#include "contest_competition/struct_contest_competition_02246F24.h"
+#include "contest_competition/struct_acting_mon_moves.h"
+#include "contest_competition/struct_acting_competition.h"
 
-void contest_competition_02246ECC(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_0223BE58 *param1);
+void contest_competition_02246ECC(ActingCompetition *param0, ActingMonMoves *param1);
 
 #endif // POKEPLATINUM_CONTEST_COMPETITION_02246ECC_H

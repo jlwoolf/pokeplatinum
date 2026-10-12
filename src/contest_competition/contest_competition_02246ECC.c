@@ -4,9 +4,9 @@
 #include <string.h>
 
 #include "contest_competition/contest_competition_022413D8.h"
-#include "contest_competition/struct_contest_competition_0223BE58.h"
-#include "contest_competition/struct_contest_competition_02246F24.h"
-#include "contest_competition/struct_contest_competition_022472F8.h"
+#include "contest_competition/struct_acting_mon_moves.h"
+#include "contest_competition/struct_acting_competition.h"
+#include "contest_competition/struct_acting_match_state.h"
 
 #include "contest.h"
 #include "heap.h"
@@ -20,12 +20,12 @@ typedef struct {
     s16 unk_04[3];
     u8 moveContestEffect;
     u8 moveContestType;
-} UnkStruct_contest_competition_02246F9C_sub1;
+} ActingMonRoundMove;
 
 typedef struct {
-    UnkStruct_contest_competition_02246F9C_sub1 unk_00[4];
+    ActingMonRoundMove unk_00[4];
     u8 unk_30;
-} UnkStruct_contest_competition_02246F9C;
+} ActingMonRoundMoves;
 
 typedef struct {
     u8 unk_00;
@@ -33,40 +33,40 @@ typedef struct {
     u8 unk_02;
     s8 unk_03;
     s16 unk_04[4];
-} UnkStruct_contest_competition_02253C30;
+} ContestMoveInfo;
 
-static void contest_competition_02246F24(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246F9C *param1, int param2);
-static void contest_competition_02246F9C(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246F9C *param1, int contestantID, u16 *destMoveID, u8 *param4);
-static int contest_competition_022472F8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247308(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247320(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247338(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247350(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247368(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247380(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247398(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022473B0(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022473C8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022473E0(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022473F8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247424(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247454(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247474(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247490(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022474D8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247520(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247538(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247550(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_0224757C(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022475A8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022475D4(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247600(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_0224762C(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247658(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_02247684(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
-static int contest_competition_022476B0(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType);
+static void contest_competition_02246F24(ActingCompetition *param0, ActingMonRoundMoves *param1, int param2);
+static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRoundMoves *param1, int contestantID, u16 *destMoveID, u8 *param4);
+static int contest_competition_022472F8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247308(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247320(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247338(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247350(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247368(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247380(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247398(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022473B0(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022473C8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022473E0(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022473F8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247424(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247454(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247474(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247490(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022474D8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247520(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247538(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247550(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_0224757C(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022475A8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022475D4(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247600(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_0224762C(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247658(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_02247684(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
+static int contest_competition_022476B0(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType);
 
-static int (*const Unk_contest_competition_02253BBC[])(UnkStruct_contest_competition_022472F8 *, int, UnkStruct_contest_competition_02246F9C *, u8 *, int) = {
+static int (*const Unk_contest_competition_02253BBC[])(ActingMatchState *, int, ActingMonRoundMoves *, u8 *, int) = {
     NULL,
     contest_competition_022472F8,
     contest_competition_02247308,
@@ -98,7 +98,7 @@ static int (*const Unk_contest_competition_02253BBC[])(UnkStruct_contest_competi
     contest_competition_022476B0
 };
 
-static const UnkStruct_contest_competition_02253C30 Unk_contest_competition_02253C30[] = {
+static const ContestMoveInfo Unk_contest_competition_02253C30[] = {
     {
         0x1,
         0x14,
@@ -1256,9 +1256,9 @@ static const UnkStruct_contest_competition_02253C30 Unk_contest_competition_0225
     },
 };
 
-void contest_competition_02246ECC(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_0223BE58 *param1)
+void contest_competition_02246ECC(ActingCompetition *param0, ActingMonMoves *param1)
 {
-    UnkStruct_contest_competition_02246F9C *v1 = Heap_Alloc(HEAP_ID_21, sizeof(UnkStruct_contest_competition_02246F9C));
+    ActingMonRoundMoves *v1 = Heap_Alloc(HEAP_ID_21, sizeof(ActingMonRoundMoves));
 
     for (int contestantID = param0->unk_00->data.connectionCount; contestantID < CONTEST_NUM_PARTICIPANTS; contestantID++) {
         contest_competition_02246F24(param0, v1, contestantID);
@@ -1268,11 +1268,11 @@ void contest_competition_02246ECC(UnkStruct_contest_competition_02246F24 *param0
     Heap_Free(v1);
 }
 
-static void contest_competition_02246F24(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246F9C *param1, int contestantID)
+static void contest_competition_02246F24(ActingCompetition *param0, ActingMonRoundMoves *param1, int contestantID)
 {
     int v0;
 
-    MI_CpuClear8(param1, sizeof(UnkStruct_contest_competition_02246F9C));
+    MI_CpuClear8(param1, sizeof(ActingMonRoundMoves));
 
     for (v0 = 0; v0 < LEARNED_MOVES_MAX; v0++) {
         param1->unk_00[v0].moveID = Pokemon_GetValue(param0->unk_00->data.contestMons[contestantID], MON_DATA_MOVE1 + v0, NULL);
@@ -1288,10 +1288,10 @@ static void contest_competition_02246F24(UnkStruct_contest_competition_02246F24 
     param1->unk_30 = param0->unk_00->data.cameraFlashVariant[contestantID];
 }
 
-static void contest_competition_02246F9C(UnkStruct_contest_competition_02246F24 *param0, UnkStruct_contest_competition_02246F9C *param1, int contestantID, u16 *destMoveID, u8 *param4)
+static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRoundMoves *param1, int contestantID, u16 *destMoveID, u8 *param4)
 {
     int v0, v1, v2, v3, v4;
-    UnkStruct_contest_competition_022472F8 *v5;
+    ActingMatchState *v5;
     int v6;
     u8 v7[1 + 2];
 
@@ -1463,7 +1463,7 @@ static void contest_competition_02246F9C(UnkStruct_contest_competition_02246F24 
     }
 }
 
-static int contest_competition_022472F8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022472F8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     if (param0->unk_00 == 4) {
         return 1;
@@ -1472,7 +1472,7 @@ static int contest_competition_022472F8(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247308(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247308(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     if (param0->unk_30.unk_A0[param1].contestMoveEffect != CONTEST_EFFECT_NONE) {
         return 1;
@@ -1481,7 +1481,7 @@ static int contest_competition_02247308(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247320(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247320(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1494,7 +1494,7 @@ static int contest_competition_02247320(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247338(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247338(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1507,7 +1507,7 @@ static int contest_competition_02247338(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247350(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247350(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1520,7 +1520,7 @@ static int contest_competition_02247350(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247368(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247368(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1533,7 +1533,7 @@ static int contest_competition_02247368(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247380(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247380(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1546,7 +1546,7 @@ static int contest_competition_02247380(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247398(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247398(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1559,7 +1559,7 @@ static int contest_competition_02247398(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022473B0(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022473B0(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1572,7 +1572,7 @@ static int contest_competition_022473B0(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022473C8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022473C8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1585,7 +1585,7 @@ static int contest_competition_022473C8(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022473E0(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022473E0(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1598,7 +1598,7 @@ static int contest_competition_022473E0(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022473F8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022473F8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1;
 
@@ -1617,7 +1617,7 @@ static int contest_competition_022473F8(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247424(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247424(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1;
 
@@ -1638,7 +1638,7 @@ static int contest_competition_02247424(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247454(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247454(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1651,7 +1651,7 @@ static int contest_competition_02247454(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247474(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247474(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1664,7 +1664,7 @@ static int contest_competition_02247474(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247490(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247490(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1;
 
@@ -1694,7 +1694,7 @@ static int contest_competition_02247490(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022474D8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022474D8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1;
 
@@ -1724,7 +1724,7 @@ static int contest_competition_022474D8(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247520(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247520(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1737,7 +1737,7 @@ static int contest_competition_02247520(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247538(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247538(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1750,7 +1750,7 @@ static int contest_competition_02247538(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247550(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247550(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1 = 0;
 
@@ -1768,7 +1768,7 @@ static int contest_competition_02247550(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_0224757C(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_0224757C(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1 = 0;
 
@@ -1786,7 +1786,7 @@ static int contest_competition_0224757C(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022475A8(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022475A8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1 = 0;
 
@@ -1804,7 +1804,7 @@ static int contest_competition_022475A8(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022475D4(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022475D4(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1;
 
@@ -1821,7 +1821,7 @@ static int contest_competition_022475D4(UnkStruct_contest_competition_022472F8 *
     return 1;
 }
 
-static int contest_competition_02247600(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247600(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0;
 
@@ -1838,7 +1838,7 @@ static int contest_competition_02247600(UnkStruct_contest_competition_022472F8 *
     return 1;
 }
 
-static int contest_competition_0224762C(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_0224762C(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1 = 0;
 
@@ -1856,7 +1856,7 @@ static int contest_competition_0224762C(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247658(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247658(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1 = 0;
 
@@ -1874,7 +1874,7 @@ static int contest_competition_02247658(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_02247684(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_02247684(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1 = 0;
 
@@ -1892,7 +1892,7 @@ static int contest_competition_02247684(UnkStruct_contest_competition_022472F8 *
     return 0;
 }
 
-static int contest_competition_022476B0(UnkStruct_contest_competition_022472F8 *param0, int param1, UnkStruct_contest_competition_02246F9C *param2, u8 *param3, int contestType)
+static int contest_competition_022476B0(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
     int v0, v1;
 
