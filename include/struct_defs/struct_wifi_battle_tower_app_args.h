@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_0206BC70_H
-#define POKEPLATINUM_STRUCT_0206BC70_H
+#ifndef POKEPLATINUM_STRUCT_WIFI_BATTLE_TOWER_APP_ARGS_H
+#define POKEPLATINUM_STRUCT_WIFI_BATTLE_TOWER_APP_ARGS_H
 
 #include <dwc.h>
 
@@ -20,7 +20,7 @@ typedef struct {
     int profileId;
     int unk_20;
     int unk_24;
-} UnkStruct_0206BC70;
+} WifiBattleTowerAppArgs;
 
 enum WifiBattleTowerMode {
     WIFI_BT_MODE_BROWSE,
@@ -28,4 +28,4 @@ enum WifiBattleTowerMode {
     WIFI_BT_MODE_SELECT_RANK,
 };
 
-#endif // POKEPLATINUM_STRUCT_0206BC70_H
+#endif // POKEPLATINUM_STRUCT_WIFI_BATTLE_TOWER_APP_ARGS_H

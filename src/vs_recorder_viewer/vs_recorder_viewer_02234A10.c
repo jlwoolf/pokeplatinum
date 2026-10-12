@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_viewer_state.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_022300D8.h"
@@ -27,15 +27,15 @@
 #include "font_oam.h"
 #include "vs_recorder_ring.h"
 
-static void VsRecorderViewerEntry_CreateMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerEntry_DestroyMessageWindow(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerEntry_RevealRing(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerEntry_EnterMenu(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerEntry_ShowRingAtCenter(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerEntry_FanOutEntries(UnkStruct_0208C06C *param0);
-BOOL VsRecorderViewerEntry_AnimateEntries(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerEntry_CreateMessageWindow(VsRecorderViewerState *param0);
+static void VsRecorderViewerEntry_DestroyMessageWindow(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerEntry_RevealRing(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerEntry_EnterMenu(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerEntry_ShowRingAtCenter(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerEntry_FanOutEntries(VsRecorderViewerState *param0);
+BOOL VsRecorderViewerEntry_AnimateEntries(VsRecorderViewerState *param0);
 
-static void VsRecorderViewerEntry_CreateMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerEntry_CreateMessageWindow(VsRecorderViewerState *param0)
 {
     String *v0;
     int v1;
@@ -54,14 +54,14 @@ static void VsRecorderViewerEntry_CreateMessageWindow(UnkStruct_0208C06C *param0
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
 }
 
-static void VsRecorderViewerEntry_DestroyMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerEntry_DestroyMessageWindow(VsRecorderViewerState *param0)
 {
     Window_ClearAndCopyToVRAM(&param0->unk_8A4);
     Window_Remove(&param0->unk_8A4);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
-static BOOL VsRecorderViewerEntry_RevealRing(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerEntry_RevealRing(VsRecorderViewerState *param0)
 {
     switch (param0->unk_08) {
     case 0:
@@ -147,7 +147,7 @@ static BOOL VsRecorderViewerEntry_RevealRing(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerEntry_EnterMenu(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerEntry_EnterMenu(VsRecorderViewerState *param0)
 {
     switch (param0->unk_08) {
     case 0:
@@ -221,7 +221,7 @@ static BOOL VsRecorderViewerEntry_EnterMenu(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerEntry_ShowRingAtCenter(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerEntry_ShowRingAtCenter(VsRecorderViewerState *param0)
 {
     switch (param0->unk_08) {
     case 0:
@@ -257,7 +257,7 @@ static BOOL VsRecorderViewerEntry_ShowRingAtCenter(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerEntry_FanOutEntries(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerEntry_FanOutEntries(VsRecorderViewerState *param0)
 {
     BOOL v0 = VsRecorderViewerEntry_AnimateEntries(param0);
 
@@ -271,7 +271,7 @@ static BOOL VsRecorderViewerEntry_FanOutEntries(UnkStruct_0208C06C *param0)
     return v0;
 }
 
-BOOL VsRecorderViewerEntry_AnimateEntries(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerEntry_AnimateEntries(VsRecorderViewerState *param0)
 {
     VsRecorderViewerEntryAnim *v0;
 
@@ -366,7 +366,7 @@ BOOL VsRecorderViewerEntry_AnimateEntries(UnkStruct_0208C06C *param0)
 }
 
 // clang-format off
-BOOL(*const sVsRecorderViewerEntryHandlers[])(UnkStruct_0208C06C *) = {
+BOOL(*const sVsRecorderViewerEntryHandlers[])(VsRecorderViewerState *) = {
     VsRecorderViewerEntry_RevealRing,
     VsRecorderViewerEntry_EnterMenu,
     VsRecorderViewerEntry_ShowRingAtCenter,

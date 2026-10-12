@@ -3,7 +3,7 @@
 
 #include <nnsys.h>
 
-#include "struct_defs/struct_0203DE34.h"
+#include "struct_defs/struct_mix_records_app_args.h"
 #include "struct_defs/struct_020961E8_sub1.h"
 
 #include "mix_records/struct_mix_records_animation.h"
@@ -28,7 +28,7 @@
 struct MixRecordsComm {
     BgConfig *bgConfig; // Background configuration shared with the app.
     BOOL unk_04; // Unused.
-    UnkStruct_0203DE34 *appArgs; // Application arguments (save data, options, ...).
+    MixRecordsAppArgs *appArgs; // Application arguments (save data, options, ...).
     MixRecordsAnimation animation; // Rotating record-icon animation state.
     SysTask *vBlankTask; // Per-VBlank task driving the animation.
     StringTemplate *strTemplate; // Template used to format messages.

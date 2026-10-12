@@ -5,7 +5,7 @@
 
 #include "generated/game_records.h"
 
-#include "struct_defs/struct_0203E348.h"
+#include "struct_defs/struct_slot_machine_app_args.h"
 
 #include "slot_machine/slot_machine_game.h"
 #include "slot_machine/slot_machine_anim.h"
@@ -40,12 +40,12 @@
 #include "vram_transfer.h"
 
 typedef struct {
-    UnkStruct_0203E348 *unk_00;
+    SlotMachineAppArgs *unk_00;
     SlotMachineContext *unk_04;
 } SlotMachineAppData;
 
 static void SlotMachine_SaveResult(SlotMachineAppData *param0, SlotMachineContext *param1);
-static SlotMachineContext *SlotMachine_NewContext(UnkStruct_0203E348 *param0);
+static SlotMachineContext *SlotMachine_NewContext(SlotMachineAppArgs *param0);
 static void SlotMachine_FreeContext(SlotMachineContext *param0);
 static void SlotMachine_InitGraphics(SlotMachineContext *param0);
 static void SlotMachine_FreeGraphics(SlotMachineContext *param0);
@@ -76,7 +76,7 @@ int SlotMachine_Init(ApplicationManager *appMan, int *param1)
 {
     SlotMachineAppData *v0;
     SlotMachineContext *v1;
-    UnkStruct_0203E348 *v2;
+    SlotMachineAppArgs *v2;
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -185,7 +185,7 @@ static void SlotMachine_SaveResult(SlotMachineAppData *param0, SlotMachineContex
     }
 }
 
-static SlotMachineContext *SlotMachine_NewContext(UnkStruct_0203E348 *param0)
+static SlotMachineContext *SlotMachine_NewContext(SlotMachineAppArgs *param0)
 {
     SlotMachineContext *v0 = SlotMachine_Alloc(sizeof(SlotMachineContext));
 

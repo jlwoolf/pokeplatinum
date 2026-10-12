@@ -64,7 +64,7 @@ typedef struct {
     u8 unk_0F_0 : 1;
     u8 unk_0F_1 : 1;
     u8 : 6;
-} UnkStruct_020322D8_t;
+} UnusedCommQueueEntry;
 
 // In-progress reassembly state for a single incoming command. A command whose
 // payload spans several packets (or several frames) is accumulated here until

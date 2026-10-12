@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_0203DE34_H
-#define POKEPLATINUM_STRUCT_0203DE34_H
+#ifndef POKEPLATINUM_STRUCT_MIX_RECORDS_APP_ARGS_H
+#define POKEPLATINUM_STRUCT_MIX_RECORDS_APP_ARGS_H
 
 #include "struct_decls/struct_0205C22C_decl.h"
 
@@ -14,6 +14,6 @@ typedef struct {
     Options *options;
     GameRecords *records;
     JournalEntry *journalEntry;
-} UnkStruct_0203DE34;
+} MixRecordsAppArgs;
 
-#endif // POKEPLATINUM_STRUCT_0203DE34_H
+#endif // POKEPLATINUM_STRUCT_MIX_RECORDS_APP_ARGS_H

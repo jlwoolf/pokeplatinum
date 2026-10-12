@@ -19,7 +19,7 @@ typedef struct {
     PMiLoadedOverlay unk_00[8];
     PMiLoadedOverlay unk_40[8];
     PMiLoadedOverlay unk_80[8];
-} UnkStruct_021BF370;
+} LoadedOverlayRegions;
 
 static void FreeOverlayAllocation(PMiLoadedOverlay *loadedOverlays);
 static BOOL CanOverlayBeLoaded(const FSOverlayID overlayID);
@@ -29,7 +29,7 @@ static BOOL LoadOverlayNormal(MIProcessor param0, FSOverlayID param1);
 static BOOL LoadOverlayNoInit(MIProcessor param0, FSOverlayID param1);
 static BOOL LoadOverlayNoInitAsync(MIProcessor param0, FSOverlayID param1);
 
-static UnkStruct_021BF370 Unk_021BF370;
+static LoadedOverlayRegions Unk_021BF370;
 
 #ifdef GDB_DEBUGGING
 

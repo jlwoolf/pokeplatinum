@@ -7,7 +7,7 @@
 #include "generated/journal_online_events.h"
 
 #include "struct_defs/struct_0208BA84.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_viewer_state.h"
 
 #include "field/field_system.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_02248408.h"
@@ -49,7 +49,7 @@ typedef struct {
     // Battle setup used while replaying a recording.
     FieldBattleDTO *battleDTO;
     // Shared Vs. Recorder state, also used by vs_recorder_viewer.
-    UnkStruct_0208C06C *vsRecorder;
+    VsRecorderViewerState *vsRecorder;
     // Set by vs_recorder_viewer when the player chooses to replay a recording.
     VsRecorderPlaybackRequest playbackRequest;
     FieldSystem *fieldSystem;
@@ -70,9 +70,9 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
 static BOOL VsRecorder_IsFrontierBrain(int param0);
 
 // Returns the Vs. Recorder state shared with the vs_recorder_viewer app.
-UnkStruct_0208C06C *VsRecorder_GetState(ApplicationManager *appMan)
+VsRecorderViewerState *VsRecorder_GetState(ApplicationManager *appMan)
 {
-    UnkStruct_0208C06C *v0;
+    VsRecorderViewerState *v0;
     VsRecorderAppData *v1 = ApplicationManager_Args(appMan);
 
     return v1->vsRecorder;
@@ -111,9 +111,9 @@ static void VsRecorder_Init(ApplicationManager *appMan, int mode)
 
     v0->fieldSystem = ApplicationManager_Args(appMan);
     v0->saveData = v0->fieldSystem->saveData;
-    v0->vsRecorder = Heap_Alloc(HEAP_ID_119, sizeof(UnkStruct_0208C06C));
+    v0->vsRecorder = Heap_Alloc(HEAP_ID_119, sizeof(VsRecorderViewerState));
 
-    MI_CpuFill8(v0->vsRecorder, 0, sizeof(UnkStruct_0208C06C));
+    MI_CpuFill8(v0->vsRecorder, 0, sizeof(VsRecorderViewerState));
 
     v0->vsRecorder->unk_868 = &v0->playbackRequest;
     v0->vsRecorder->saveData = v0->saveData;
@@ -434,7 +434,7 @@ const ApplicationManagerTemplate *VsRecorder_GetAppTemplate(int mode)
 
 // TRUE if the player has not yet arrived at the Battle Park for the first
 // time. Used by vs_recorder_viewer to gate the Battle Park introduction.
-BOOL VsRecorder_CheckFirstArrivalBattlePark(UnkStruct_0208C06C *vsRecorder)
+BOOL VsRecorder_CheckFirstArrivalBattlePark(VsRecorderViewerState *vsRecorder)
 {
     VarsFlags *v0 = SaveData_GetVarsFlags(vsRecorder->saveData);
     return SystemFlag_HandleFirstArrivalToZone(v0, HANDLE_FLAG_CHECK, FIRST_ARRIVAL_BATTLE_PARK);

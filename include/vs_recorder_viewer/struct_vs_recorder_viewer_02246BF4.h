@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_H
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_H
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_viewer_state.h"
 
 #include "vs_recorder_viewer/struct_vs_recorder_viewer_02246B00.h"
 #include "vs_recorder_viewer/struct_vs_recorder_viewer_02246BF4_sub1.h"
@@ -30,7 +30,7 @@ typedef struct {
     VsRecorderViewerIdEntryConfig unk_2A8;
     BOOL unk_2C8;
     u64 unk_2CC;
-    UnkStruct_0208C06C *unk_2D4;
+    VsRecorderViewerState *unk_2D4;
 } VsRecorderViewerIdEntryState;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_H

@@ -33,16 +33,16 @@ typedef struct {
     u16 unk_04;
     u16 unk_06;
     u16 unk_08;
-} UnkStruct_battle_subscreen_0226A3F4;
+} UnusedTargetSelectAnimFrame;
 
 typedef struct {
     SysTask *unk_00;
     u8 *unk_04;
     void *unk_08;
     u8 *unk_0C;
-    UnkStruct_battle_subscreen_0226A3F4 unk_10;
+    UnusedTargetSelectAnimFrame unk_10;
     u16 unk_1C;
-} UnkStruct_battle_subscreen_02268A14_sub3_sub1;
+} UnusedTargetSelectAnimState;
 
 typedef struct MenuButtonPressAnimState {
     s16 phase;
@@ -60,8 +60,8 @@ typedef struct MenuButtonPressAnimState {
             CoordinatesS16 screenPos;
         } ButtonPressAnimationState;
         struct {
-            UnkStruct_battle_subscreen_02268A14_sub3_sub1 *unused_00[4];
-            UnkStruct_battle_subscreen_02268A14_sub3_sub1 *unused_10;
+            UnusedTargetSelectAnimState *unused_00[4];
+            UnusedTargetSelectAnimState *unused_10;
             NNSG2dCharacterData *unused_14;
             void *unused_18;
             int selectedTarget;
@@ -75,13 +75,13 @@ typedef struct {
     s16 unk_06;
     u8 unk_08;
     u8 unk_09;
-} UnkStruct_battle_subscreen_02268A14_sub4;
+} UnusedSubscreenMenuState;
 
 typedef struct {
     const SubscreenTilemapRect *unk_00;
     u8 unk_04;
     s8 unk_05;
-} UnkStruct_battle_subscreen_02268A14_sub1;
+} UnusedSubscreenTilemapState;
 
 typedef struct FontOAMEntry {
     FontOAM *fontOAM;
@@ -179,7 +179,7 @@ typedef struct BattleSubscreen {
     SysTask *animatePartyBallsTask;
     SysTask *menuTransitionTask;
     SysTask *unused_10;
-    UnkStruct_battle_subscreen_02268A14_sub1 unused_14;
+    UnusedSubscreenTilemapState unused_14;
     ActiveMenuData activeMenuData;
     u16 *tilemapBuffers[7];
     u16 *subscreenPaletteBuf;
@@ -212,7 +212,7 @@ typedef struct BattleSubscreen {
     s16 pulseCursorBlendValue;
     SysTask *pulseCursorTask;
     MenuButtonPressAnimState menuButtonPressAnimState;
-    UnkStruct_battle_subscreen_02268A14_sub4 unused_6A0;
+    UnusedSubscreenMenuState unused_6A0;
     s32 panelScrollPos;
     s32 slideSpeed;
     s32 targetOffset;

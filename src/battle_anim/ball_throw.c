@@ -41,7 +41,7 @@ typedef struct {
     ParticleSystem *unk_10;
     BallSeal *unk_14;
     SPLEmitterCallback unk_18;
-} UnkStruct_02236430;
+} BallSealEmitTask;
 
 typedef struct BallCapsuleSealEffect_t {
     enum HeapID heapID;
@@ -636,7 +636,7 @@ void BallCapsuleSealEffect_Free(BallCapsuleSealEffect *ballCapSealEff)
 
 static void BallCapsuleSealEffect_EmitTask(SysTask *param0, void *param1)
 {
-    UnkStruct_02236430 *v0 = (UnkStruct_02236430 *)param1;
+    BallSealEmitTask *v0 = (BallSealEmitTask *)param1;
 
     if (v0->unk_04 == 0) {
         *(v0->unk_0C) = 1;
@@ -666,7 +666,7 @@ static void BallCapsuleSealEffect_CreateEmitters(BallCapsuleSealEffect *ballCapS
         ParticleSystem_SetCameraProjection(ballCapSealEff->sealParticleSystems[0], 1);
     } else {
         for (v0 = 0; v0 < ballCapSealEff->sealCount; v0++) {
-            UnkStruct_02236430 *v4 = Heap_Alloc(ballCapSealEff->heapID, sizeof(UnkStruct_02236430));
+            BallSealEmitTask *v4 = Heap_Alloc(ballCapSealEff->heapID, sizeof(BallSealEmitTask));
 
             GF_ASSERT(v4 != NULL);
 
@@ -756,7 +756,7 @@ static void BallCapsuleSealEffect_SetSealEmitterPosition(SPLEmitter *param0)
     VecFx32 v0;
     int v1;
     BallCapsuleSealEffect *unused;
-    UnkStruct_02236430 *v3 = ParticleSystem_GetEmitterCallbackParam();
+    BallSealEmitTask *v3 = ParticleSystem_GetEmitterCallbackParam();
     v1 = v3->unk_08;
 
     BallCapsuleSealEffect_GetEmitterPosition(v1, &v0);

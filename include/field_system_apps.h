@@ -8,7 +8,7 @@
 #include "struct_defs/choose_starter_data.h"
 #include "struct_defs/clear_game_player_info.h"
 #include "struct_defs/hall_of_fame_display_data.h"
-#include "struct_defs/struct_0203E348.h"
+#include "struct_defs/struct_slot_machine_app_args.h"
 
 #include "applications/frontier/tower_records.h"
 #include "applications/mail.h"
@@ -100,7 +100,7 @@ void FieldSystem_OpenMoveReminderMenu(FieldSystem *fieldSystem, MoveReminderData
 void FieldTask_PlayBoatCutscene_CanalaveShip(FieldSystem *fieldSystem, void *taskEnv);
 void FieldTask_PlayBoatCutscene_SnowpointShip(FieldSystem *fieldSystem, void *taskEnv);
 void FieldSystem_HatchEgg(FieldSystem *fieldSystem);
-BOOL FieldSystem_OpenSlotMachine(FieldSystem *fieldSystem, UnkStruct_0203E348 *appArgs);
+BOOL FieldSystem_OpenSlotMachine(FieldSystem *fieldSystem, SlotMachineAppArgs *appArgs);
 void FieldTask_StartSlotMachine(FieldTask *task, int slotMachineID);
 void AccessoryShop_Init(FieldTask *task);
 void *FieldSystem_ShowDiploma(FieldSystem *fieldSystem, enum HeapID heapID, BOOL isNatDex);

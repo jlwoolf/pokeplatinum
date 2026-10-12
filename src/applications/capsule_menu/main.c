@@ -51,11 +51,11 @@ FS_EXTERN_OVERLAY(capsule_menu);
 
 typedef struct {
     int unk_00;
-} UnkStruct_02097F38_sub1;
+} CapsuleMenuUnusedData;
 
 typedef struct {
     CapsuleAppManager *capsuleAppMan;
-    UnkStruct_02097F38_sub1 *unk_04;
+    CapsuleMenuUnusedData *unk_04;
     CapsuleAppData *appData;
     PartyMenu *partyMenu;
     SaveData *saveData;

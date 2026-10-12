@@ -6,7 +6,7 @@
 #include "constants/species.h"
 
 #include "struct_defs/battle_frontier.h"
-#include "struct_defs/struct_0206BC70.h"
+#include "struct_defs/struct_wifi_battle_tower_app_args.h"
 #include "struct_defs/wifi_battle_tower_data.h"
 
 #include "applications/party_menu/defs.h"
@@ -63,7 +63,7 @@ typedef struct PartyMenuSummaryTask {
 typedef struct WifiBattleTowerTask {
     int result; // result written to the script variable
     int state; // field task state
-    UnkStruct_0206BC70 *appState; // WiFi Battle Tower app state
+    WifiBattleTowerAppArgs *appState; // WiFi Battle Tower app state
     u16 **unk_0C; // unused
     u16 varID; // script variable that receives the result
     u16 mode; // WiFi Battle Tower app mode

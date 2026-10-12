@@ -1,12 +1,12 @@
-#ifndef POKEPLATINUM_STRUCT_0208C06C_H
-#define POKEPLATINUM_STRUCT_0208C06C_H
+#ifndef POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_STATE_H
+#define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_STATE_H
 
 #include "struct_decls/struct_0202F41C_decl.h"
 #include "struct_decls/struct_02030A80_decl.h"
 #include "struct_defs/struct_0208B878.h"
 #include "struct_defs/struct_0208BA84.h"
-#include "struct_defs/struct_0208C06C_sub1.h"
-#include "struct_defs/struct_0208C06C_sub2.h"
+#include "struct_defs/struct_vs_recorder_viewer_pending_selection.h"
+#include "struct_defs/struct_vs_recorder_viewer_ring_anim_state.h"
 #include "struct_defs/struct_020F3DCC.h"
 
 #include "vs_recorder_viewer/struct_vs_recorder_viewer_022307C0.h"
@@ -36,7 +36,7 @@ typedef struct {
     SaveData *saveData;
     u16 unk_834;
     u16 unk_836;
-    UnkStruct_0208C06C_sub1 unk_838;
+    VsRecorderViewerPendingSelection unk_838;
     void *unk_860;
     u8 padding_864[4];
     VsRecorderPlaybackRequest *unk_868;
@@ -50,8 +50,8 @@ typedef struct {
     BOOL unk_8A0;
     Window unk_8A4;
     VsRecorderViewerListRecordStore unk_8B4;
-    UnkStruct_0208C06C_sub2 unk_41D8;
+    VsRecorderViewerRingAnimState unk_41D8;
     SysTask *unk_41E8;
-} UnkStruct_0208C06C;
+} VsRecorderViewerState;
 
-#endif // POKEPLATINUM_STRUCT_0208C06C_H
+#endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_STATE_H

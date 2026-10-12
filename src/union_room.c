@@ -7,7 +7,7 @@
 
 #include "struct_decls/struct_0205B43C_decl.h"
 #include "struct_defs/struct_0203330C.h"
-#include "struct_defs/struct_0205B4F8.h"
+#include "struct_defs/struct_union_room_activity.h"
 
 #include "field/field_system.h"
 
@@ -56,13 +56,13 @@ typedef void (*UnionRoomStateFunc)(UnionRoom *);
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-} UnkStruct_0205B43C_sub1;
+} UnionRoomUnusedEntry1;
 
 // Unused scratch entries; the original code never reads or writes them.
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-} UnkStruct_0205B43C_sub2;
+} UnionRoomUnusedEntry2;
 
 struct UnionRoom {
     FieldSystem *fieldSystem;
@@ -83,8 +83,8 @@ struct UnionRoom {
     u32 unk_3C; // Unused (written but never read)
     u32 peerActivity; // Activity the peer agreed to (7 = declined/busy)
     u32 peerNoActivity; // Set when the peer reports it has no activity
-    UnkStruct_0205B43C_sub1 unk_48[10]; // Unused
-    UnkStruct_0205B43C_sub2 unk_70[40]; // Unused
+    UnionRoomUnusedEntry1 unk_48[10]; // Unused
+    UnionRoomUnusedEntry2 unk_70[40]; // Unused
     WMbssDesc *bssDesc[16]; // Wireless beacon descriptors, indexed by net ID
     MATHRandContext32 rng; // RNG used to pick random busy messages
     int unk_168; // Unused
@@ -116,7 +116,7 @@ static int UnionRoom_HasConnectedTrainer(void);
 static int UnionRoom_GetTrainerBusyMessage(UnionRoom *param0, int param1);
 static int UnionRoom_GetStartMessage(int param0, int gender, StringTemplate *strTemplate);
 static void UnionRoom_StateInit(UnionRoom *param0);
-static void UnionRoom_ResetGameInfo(UnkStruct_0205B4F8 *param0);
+static void UnionRoom_ResetGameInfo(UnionRoomActivity *param0);
 
 // Allocates the Union Room state and starts its state machine. Called when the
 // player enters the Union Room. Returns NULL if it is already initialised.
@@ -271,7 +271,7 @@ static int UnionRoom_HasConnectedTrainer(void)
 // server is lost, restart the search.
 static void UnionRoom_StateWaitClient(UnionRoom *param0)
 {
-    UnkStruct_0205B4F8 *v0;
+    UnionRoomActivity *v0;
 
     if (param0->stateDelay > 0) {
         param0->stateDelay--;
@@ -471,7 +471,7 @@ WMBssDesc *UnionRoom_GetBssDesc(UnionRoom *param0, int param1)
 }
 
 // Write-only cache of the peer's broadcast game info.
-static UnkStruct_0205B4F8 *Unk_021C0854;
+static UnionRoomActivity *Unk_021C0854;
 
 // Returns the activity status of the trainer at the given local ID (1-based):
 // 1 = greet, 2 = draw, 3 = mix records, 4 = spin trade, 5 = busy. The status
@@ -480,7 +480,7 @@ int UnionRoom_GetTrainerStatus(UnionRoom *param0, int param1)
 {
     TrainerInfo *v0;
     UnkStruct_0203330C *v1;
-    UnkStruct_0205B4F8 *v2;
+    UnionRoomActivity *v2;
 
     param1--;
     v0 = CommServerClient_GetServerTrainerInfo(param1);
@@ -496,7 +496,7 @@ int UnionRoom_GetTrainerStatus(UnionRoom *param0, int param1)
     }
 
     v1 = (UnkStruct_0203330C *)param0->bssDesc[param1]->gameInfo.userGameInfo;
-    v2 = (UnkStruct_0205B4F8 *)v1->unk_30;
+    v2 = (UnionRoomActivity *)v1->unk_30;
 
     Unk_021C0854 = v2;
 
@@ -535,7 +535,7 @@ int UnionRoom_RequestActivity(UnionRoom *param0, int param1, u16 param2)
 {
     TrainerInfo *v0;
     UnkStruct_0203330C *v1;
-    UnkStruct_0205B4F8 *v2;
+    UnionRoomActivity *v2;
 
     param1--;
 
@@ -544,7 +544,7 @@ int UnionRoom_RequestActivity(UnionRoom *param0, int param1, u16 param2)
     }
 
     v1 = (UnkStruct_0203330C *)param0->bssDesc[param1]->gameInfo.userGameInfo;
-    v2 = (UnkStruct_0205B4F8 *)v1->unk_30;
+    v2 = (UnionRoomActivity *)v1->unk_30;
 
     Unk_021C0854 = v2;
 
@@ -1001,7 +1001,7 @@ static int UnionRoom_GetTrainerBusyMessage(UnionRoom *param0, int param1)
 
     TrainerInfo *trainerInfo = CommServerClient_GetServerTrainerInfo(v1);
     UnkStruct_0203330C *v3 = (UnkStruct_0203330C *)param0->bssDesc[v1]->gameInfo.userGameInfo;
-    UnkStruct_0205B4F8 *v4 = (UnkStruct_0205B4F8 *)v3->unk_30;
+    UnionRoomActivity *v4 = (UnionRoomActivity *)v3->unk_30;
 
     if (trainerInfo == NULL) {
         return UnionRoom_Text_TrainersAppearsBusy;
@@ -1191,7 +1191,7 @@ u8 UnionRoom_GetCommInfoGameCode(void)
 // Fills the broadcast game info with the trainer IDs and appearance of the
 // other players (net IDs 1-4). Only the server (net ID 0) fills this in.
 // param1 is unused.
-static void UnionRoom_FillTrainerInfo(UnkStruct_0205B4F8 *param0, int param1)
+static void UnionRoom_FillTrainerInfo(UnionRoomActivity *param0, int param1)
 {
     TrainerInfo *v0;
     int v1, v2 = 0;
@@ -1219,9 +1219,9 @@ static void UnionRoom_FillTrainerInfo(UnkStruct_0205B4F8 *param0, int param1)
 // 6 = battle, 7 = trade, 11 = busy, 13 = spin trade).
 void UnionRoom_BroadcastActivity(int param0)
 {
-    UnkStruct_0205B4F8 v0;
+    UnionRoomActivity v0;
 
-    MI_CpuClear8(&v0, sizeof(UnkStruct_0205B4F8));
+    MI_CpuClear8(&v0, sizeof(UnionRoomActivity));
 
     switch (param0) {
     case 0:
@@ -1332,7 +1332,7 @@ int UnionRoom_GetTealaMessage(UnionRoom *param0, StringTemplate *strTemplate)
 }
 
 // Clears the broadcast game info.
-static void UnionRoom_ResetGameInfo(UnkStruct_0205B4F8 *param0)
+static void UnionRoom_ResetGameInfo(UnionRoomActivity *param0)
 {
     int v0;
 
@@ -1443,7 +1443,7 @@ void UnionRoom_DoGreeting(StringTemplate *strTemplate, int param1, int param2, T
 // Publishes the player's easy chat sentence and clears the broadcast game info.
 void UnionRoom_InitGameInfo(EasyChatSentence *param0)
 {
-    UnkStruct_0205B4F8 v0;
+    UnionRoomActivity v0;
 
     UnionRoom_ResetGameInfo(&v0);
     v0.unk_1C = 0;

@@ -38,7 +38,7 @@
 #include "struct_defs/seal_case.h"
 #include "struct_defs/special_encounter.h"
 #include "struct_defs/struct_02029C88.h"
-#include "struct_defs/struct_02041DC8.h"
+#include "struct_defs/struct_photo_viewer_args.h"
 
 #include "applications/capsule_menu/main.h"
 #include "applications/naming_screen.h"
@@ -2994,7 +2994,7 @@ static BOOL ImageClipsSlotHasData(FieldSystem *fieldSystem, int param1, int slot
 // Allocates the argument block for the dress-up/contest photo viewer, unless
 // the requested slot has no photo saved. photoType is 0 for a dress-up photo
 // and 1 for a contest photo (see ImageClipsSlotHasData).
-static UnkStruct_02041DC8 *PhotoViewerArgs_New(enum HeapID heapID, FieldSystem *fieldSystem, int photoType, int slot)
+static PhotoViewerArgs *PhotoViewerArgs_New(enum HeapID heapID, FieldSystem *fieldSystem, int photoType, int slot)
 {
     ImageClips *imageClips = SaveData_GetImageClips(fieldSystem->saveData);
 
@@ -3002,8 +3002,8 @@ static UnkStruct_02041DC8 *PhotoViewerArgs_New(enum HeapID heapID, FieldSystem *
         return NULL;
     }
 
-    UnkStruct_02041DC8 *args = Heap_Alloc(heapID, sizeof(UnkStruct_02041DC8));
-    memset(args, 0, sizeof(UnkStruct_02041DC8));
+    PhotoViewerArgs *args = Heap_Alloc(heapID, sizeof(PhotoViewerArgs));
+    memset(args, 0, sizeof(PhotoViewerArgs));
 
     args->imageClips = imageClips;
     args->unk_08 = photoType;

@@ -4,7 +4,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_0206BC70.h"
+#include "struct_defs/struct_wifi_battle_tower_app_args.h"
 
 #include "wifi_battle_tower/app_state.h"
 #include "wifi_battle_tower/http.h"
@@ -216,7 +216,7 @@ static void WifiBattleTower_SetupVramBanks(void)
 
 static void WifiBattleTower_InitAppState(WifiBattleTowerAppState *appState, ApplicationManager *appMan)
 {
-    appState->args = (UnkStruct_0206BC70 *)ApplicationManager_Args(appMan);
+    appState->args = (WifiBattleTowerAppArgs *)ApplicationManager_Args(appMan);
     appState->screenMode = 0;
 
     WifiBattleTower_SetExitMode(appState, 0, 0);

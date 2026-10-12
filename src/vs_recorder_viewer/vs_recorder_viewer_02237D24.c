@@ -5,7 +5,7 @@
 
 #include "struct_defs/dress_up_photo.h"
 #include "struct_defs/struct_02030A80.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_viewer_state.h"
 
 #include "image_clip_app/image_clip_app_0225AF8C.h"
 #include "image_clip_app/struct_image_clip_app_0225AF8C.h"
@@ -84,40 +84,40 @@ typedef struct {
     int unk_2E4;
 } VsRecorderViewerProfile;
 
-static BOOL VsRecorderViewerProfile_Init(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_InitDisplay(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_ShowLocalPhoto(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_HandlePhotoModeInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_UploadPhoto(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_ExitPhotoMode(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_EnterCategoryMenu(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_SelectCategory(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_ShowCategoryRecords(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_CloseCategoryRecords(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_UploadRanking(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_NavigatePhotoList(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_CloseProfileView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_SwitchToProfileView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerProfile_SwitchToPhotoView(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_RemoveMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_DrawMessageWindow(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerProfile_CreateMessageWindow(UnkStruct_0208C06C *param0);
+static BOOL VsRecorderViewerProfile_Init(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_InitDisplay(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_ShowLocalPhoto(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_HandlePhotoModeInput(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_UploadPhoto(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_ExitPhotoMode(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_EnterCategoryMenu(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_SelectCategory(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_ShowCategoryRecords(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_CloseCategoryRecords(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_UploadRanking(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_NavigatePhotoList(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_CloseProfileView(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_SwitchToProfileView(VsRecorderViewerState *param0);
+static BOOL VsRecorderViewerProfile_SwitchToPhotoView(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_RemoveMessageWindow(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_DrawMessageWindow(VsRecorderViewerState *param0, int param1);
+static void VsRecorderViewerProfile_CreateMessageWindow(VsRecorderViewerState *param0);
 static void VsRecorderViewerProfile_VBlankCallback(void *param0);
 static void VsRecorderViewerProfile_SetPhotoClipWindow(void);
 static void VsRecorderViewerProfile_ResetClipWindow(void);
-static void VsRecorderViewerProfile_SetArrowSpritesVisible(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerProfile_CreateArrowSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_FreeArrowSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_DrawLocalPhotoName(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_DrawDownloadedPhotoName(UnkStruct_0208C06C *param0, int param1);
-static BOOL VsRecorderViewerProfile_CategoryHasSeenSpecies(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerProfile_BuildSpeciesList(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerProfile_FreeSpeciesList(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerProfile_SetArrowSpritesVisible(VsRecorderViewerState *param0, int param1);
+static void VsRecorderViewerProfile_CreateArrowSprites(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_FreeArrowSprites(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_DrawLocalPhotoName(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_DrawDownloadedPhotoName(VsRecorderViewerState *param0, int param1);
+static BOOL VsRecorderViewerProfile_CategoryHasSeenSpecies(VsRecorderViewerState *param0, int param1);
+static void VsRecorderViewerProfile_BuildSpeciesList(VsRecorderViewerState *param0, int param1);
+static void VsRecorderViewerProfile_FreeSpeciesList(VsRecorderViewerState *param0);
 static void VsRecorderViewerProfile_CategoryTouchHandler(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void VsRecorderViewerProfile_DrawCategoryWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_RemoveCategoryWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerProfile_RemoveNameWindow(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerProfile_DrawCategoryWindows(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_RemoveCategoryWindows(VsRecorderViewerState *param0);
+static void VsRecorderViewerProfile_RemoveNameWindow(VsRecorderViewerState *param0);
 void VsRecorderViewerProfile_ProfilePhotoCallback(void *param0, const VsRecorderViewerTransferStatus *param1);
 void VsRecorderViewerProfile_ProfileCallback(void *param0, const VsRecorderViewerTransferStatus *param1);
 
@@ -135,7 +135,7 @@ static u16 sVsRecorderViewerProfileCategoryOffsets[] = {
 };
 
 // clang-format off
-BOOL (*const sVsRecorderViewerProfilePhotoModeTable[])(UnkStruct_0208C06C *) = {
+BOOL (*const sVsRecorderViewerProfilePhotoModeTable[])(VsRecorderViewerState *) = {
     VsRecorderViewerProfile_Init,
     VsRecorderViewerProfile_InitDisplay,
     VsRecorderViewerProfile_ShowLocalPhoto,
@@ -146,7 +146,7 @@ BOOL (*const sVsRecorderViewerProfilePhotoModeTable[])(UnkStruct_0208C06C *) = {
 // clang-format on
 
 // clang-format off
-BOOL (*const sVsRecorderViewerProfileBrowserModeTable[])(UnkStruct_0208C06C *) = {
+BOOL (*const sVsRecorderViewerProfileBrowserModeTable[])(VsRecorderViewerState *) = {
     VsRecorderViewerProfile_Init,
     VsRecorderViewerProfile_InitDisplay,
     VsRecorderViewerProfile_EnterCategoryMenu,
@@ -200,7 +200,7 @@ static const VsRecorderViewerListConfig sVsRecorderViewerProfileWindowConfig = {
     sVsRecorderViewerProfileCategoryTouchRects
 };
 
-static BOOL VsRecorderViewerProfile_Init(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_Init(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerProfile));
 
@@ -231,7 +231,7 @@ static BOOL VsRecorderViewerProfile_Init(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_InitDisplay(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_InitDisplay(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -281,7 +281,7 @@ static BOOL VsRecorderViewerProfile_InitDisplay(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_ShowLocalPhoto(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_ShowLocalPhoto(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -336,7 +336,7 @@ static BOOL VsRecorderViewerProfile_ShowLocalPhoto(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_HandlePhotoModeInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_HandlePhotoModeInput(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -359,7 +359,7 @@ static BOOL VsRecorderViewerProfile_HandlePhotoModeInput(UnkStruct_0208C06C *par
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_UploadPhoto(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_UploadPhoto(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -488,7 +488,7 @@ static BOOL VsRecorderViewerProfile_UploadPhoto(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_ExitPhotoMode(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_ExitPhotoMode(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -576,7 +576,7 @@ static BOOL VsRecorderViewerProfile_ExitPhotoMode(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_EnterCategoryMenu(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_EnterCategoryMenu(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -593,7 +593,7 @@ static BOOL VsRecorderViewerProfile_EnterCategoryMenu(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_SelectCategory(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_SelectCategory(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -660,7 +660,7 @@ static BOOL VsRecorderViewerProfile_SelectCategory(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_ShowCategoryRecords(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_ShowCategoryRecords(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -739,7 +739,7 @@ static BOOL VsRecorderViewerProfile_ShowCategoryRecords(UnkStruct_0208C06C *para
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_CloseCategoryRecords(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_CloseCategoryRecords(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -827,7 +827,7 @@ static BOOL VsRecorderViewerProfile_CloseCategoryRecords(UnkStruct_0208C06C *par
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_UploadRanking(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_UploadRanking(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -897,7 +897,7 @@ static BOOL VsRecorderViewerProfile_UploadRanking(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -953,7 +953,7 @@ static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(UnkStruct_0208C06C *para
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_NavigatePhotoList(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_NavigatePhotoList(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -994,7 +994,7 @@ static BOOL VsRecorderViewerProfile_NavigatePhotoList(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_CloseProfileView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_CloseProfileView(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1042,7 +1042,7 @@ static BOOL VsRecorderViewerProfile_CloseProfileView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_SwitchToProfileView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_SwitchToProfileView(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1134,7 +1134,7 @@ static BOOL VsRecorderViewerProfile_SwitchToProfileView(UnkStruct_0208C06C *para
     return 0;
 }
 
-static BOOL VsRecorderViewerProfile_SwitchToPhotoView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerProfile_SwitchToPhotoView(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1226,7 +1226,7 @@ static BOOL VsRecorderViewerProfile_SwitchToPhotoView(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static void VsRecorderViewerProfile_RemoveMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_RemoveMessageWindow(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1234,7 +1234,7 @@ static void VsRecorderViewerProfile_RemoveMessageWindow(UnkStruct_0208C06C *para
     Window_Remove(&v0->unk_D0[0]);
 }
 
-static void VsRecorderViewerProfile_DrawMessageWindow(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerProfile_DrawMessageWindow(VsRecorderViewerState *param0, int param1)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
     Window *v1;
@@ -1253,7 +1253,7 @@ static void VsRecorderViewerProfile_DrawMessageWindow(UnkStruct_0208C06C *param0
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerProfile_CreateMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_CreateMessageWindow(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
     Window *v1;
@@ -1268,7 +1268,7 @@ static void VsRecorderViewerProfile_CreateMessageWindow(UnkStruct_0208C06C *para
 
 static void VsRecorderViewerProfile_VBlankCallback(void *param0)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderViewerState *v0 = param0;
     VsRecorderViewerProfile *v1 = v0->unk_860;
 
     if (v1->unk_228) {
@@ -1296,7 +1296,7 @@ static void VsRecorderViewerProfile_ResetClipWindow(void)
     GXS_SetVisibleWnd(GX_WNDMASK_NONE);
 }
 
-static void VsRecorderViewerProfile_SetArrowSpritesVisible(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerProfile_SetArrowSpritesVisible(VsRecorderViewerState *param0, int param1)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1314,7 +1314,7 @@ static void VsRecorderViewerProfile_SetArrowSpritesVisible(UnkStruct_0208C06C *p
     FontOAM_SetXY(v0->unk_198[1].unk_0C, 36, -8);
 }
 
-static void VsRecorderViewerProfile_CreateArrowSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_CreateArrowSprites(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1340,7 +1340,7 @@ static void VsRecorderViewerProfile_CreateArrowSprites(UnkStruct_0208C06C *param
     VsRecorderViewerProfile_SetArrowSpritesVisible(param0, 0);
 }
 
-static void VsRecorderViewerProfile_FreeArrowSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_FreeArrowSprites(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1353,7 +1353,7 @@ static void VsRecorderViewerProfile_FreeArrowSprites(UnkStruct_0208C06C *param0)
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static void VsRecorderViewerProfile_DrawLocalPhotoName(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_DrawLocalPhotoName(VsRecorderViewerState *param0)
 {
     Window *v0;
     String *v1;
@@ -1402,7 +1402,7 @@ static void VsRecorderViewerProfile_DrawLocalPhotoName(UnkStruct_0208C06C *param
     StringTemplate_Free(v4);
 }
 
-static void VsRecorderViewerProfile_DrawDownloadedPhotoName(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerProfile_DrawDownloadedPhotoName(VsRecorderViewerState *param0, int param1)
 {
     Window *v0;
     String *v1;
@@ -1451,7 +1451,7 @@ static void VsRecorderViewerProfile_DrawDownloadedPhotoName(UnkStruct_0208C06C *
     StringTemplate_Free(v4);
 }
 
-static BOOL VsRecorderViewerProfile_CategoryHasSeenSpecies(UnkStruct_0208C06C *param0, int param1)
+static BOOL VsRecorderViewerProfile_CategoryHasSeenSpecies(VsRecorderViewerState *param0, int param1)
 {
     BOOL v0 = 0;
     u16 *v1;
@@ -1495,7 +1495,7 @@ static BOOL VsRecorderViewerProfile_CategoryHasSeenSpecies(UnkStruct_0208C06C *p
     return v0;
 }
 
-static void VsRecorderViewerProfile_BuildSpeciesList(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerProfile_BuildSpeciesList(VsRecorderViewerState *param0, int param1)
 {
     u16 *v0;
     int v1;
@@ -1557,7 +1557,7 @@ static void VsRecorderViewerProfile_BuildSpeciesList(UnkStruct_0208C06C *param0,
     v4->unk_1D4.unk_10 = 1;
 }
 
-static void VsRecorderViewerProfile_FreeSpeciesList(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_FreeSpeciesList(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1570,7 +1570,7 @@ static void VsRecorderViewerProfile_FreeSpeciesList(UnkStruct_0208C06C *param0)
 
 static void VsRecorderViewerProfile_CategoryTouchHandler(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderViewerState *v0 = param2;
     VsRecorderViewerProfile *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -1584,7 +1584,7 @@ static void VsRecorderViewerProfile_CategoryTouchHandler(u32 param0, enum TouchS
     VsRecorderViewerProfile_BuildSpeciesList(v0, param0);
 }
 
-static void VsRecorderViewerProfile_DrawCategoryWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_DrawCategoryWindows(VsRecorderViewerState *param0)
 {
     String *v0;
     Window *v1;
@@ -1619,7 +1619,7 @@ static void VsRecorderViewerProfile_DrawCategoryWindows(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerProfile_RemoveCategoryWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_RemoveCategoryWindows(VsRecorderViewerState *param0)
 {
     u32 v0;
     Window *v1;
@@ -1632,7 +1632,7 @@ static void VsRecorderViewerProfile_RemoveCategoryWindows(UnkStruct_0208C06C *pa
     }
 }
 
-static void VsRecorderViewerProfile_RemoveNameWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerProfile_RemoveNameWindow(VsRecorderViewerState *param0)
 {
     VsRecorderViewerProfile *v0 = param0->unk_860;
 
@@ -1644,7 +1644,7 @@ static void VsRecorderViewerProfile_RemoveNameWindow(UnkStruct_0208C06C *param0)
 
 void VsRecorderViewerProfile_ProfilePhotoCallback(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderViewerState *v0 = param0;
     VsRecorderViewerProfile *v1 = v0->unk_860;
 
     if (param1->unk_00 == 1) {
@@ -1656,7 +1656,7 @@ void VsRecorderViewerProfile_ProfilePhotoCallback(void *param0, const VsRecorder
 
 void VsRecorderViewerProfile_ProfileCallback(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderViewerState *v0 = param0;
     VsRecorderViewerProfile *v1 = v0->unk_860;
 
     if (param1->unk_00 == 1) {

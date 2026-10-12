@@ -10,7 +10,7 @@
 #include "struct_decls/map_object_manager.h"
 #include "struct_decls/struct_0205B43C_decl.h"
 #include "struct_defs/struct_0203330C.h"
-#include "struct_defs/struct_0205B4F8.h"
+#include "struct_defs/struct_union_room_activity.h"
 #include "struct_defs/struct_0205C22C.h"
 #include "struct_defs/struct_0205C680.h"
 #include "struct_defs/struct_0205C924.h"
@@ -143,7 +143,7 @@ static int UnionRoomTrainers_UpdateGroup(UnionRoomTrainers *trainers, int group,
 {
     int i, slot, anyPresent = 0;
     UnkStruct_0203330C *gameInfo;
-    UnkStruct_0205B4F8 *activity;
+    UnionRoomActivity *activity;
     MapObject *mapObj;
 
     if (bssDesc == NULL) {
@@ -157,7 +157,7 @@ static int UnionRoomTrainers_UpdateGroup(UnionRoomTrainers *trainers, int group,
     }
 
     gameInfo = (UnkStruct_0203330C *)bssDesc->gameInfo.userGameInfo;
-    activity = (UnkStruct_0205B4F8 *)gameInfo->unk_30;
+    activity = (UnionRoomActivity *)gameInfo->unk_30;
 
     if (trainers->slots[group].trainerId != gameInfo->unk_00) {
         // The group leader changed; drop the whole group and let it respawn.

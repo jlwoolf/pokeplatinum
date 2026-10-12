@@ -3,7 +3,7 @@
 
 #include "constants/graphics.h"
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_viewer_state.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_022300D8.h"
@@ -52,7 +52,7 @@ const ApplicationManagerTemplate gVsRecorderViewerWiFiTemplate = {
 // saved in the player's MiscSaveBlock.
 static int VsRecorderApp_Init(ApplicationManager *appMan, int *param1, int param2)
 {
-    UnkStruct_0208C06C *v0;
+    VsRecorderViewerState *v0;
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_102, 0x55000);
     v0 = VsRecorder_GetState(appMan);
@@ -100,7 +100,7 @@ static int VsRecorderApp_InitWiFi(ApplicationManager *appMan, int *param1)
 static int VsRecorderApp_Main(ApplicationManager *appMan, int *param1)
 {
     BOOL v0 = 0;
-    UnkStruct_0208C06C *v1 = VsRecorder_GetState(appMan);
+    VsRecorderViewerState *v1 = VsRecorder_GetState(appMan);
 
     v1->unk_10 = param1;
     v0 = VsRecorderViewerMain_Update(v1, param1);
@@ -114,7 +114,7 @@ static int VsRecorderApp_Main(ApplicationManager *appMan, int *param1)
 // 3D screen is restored to the main display.
 static int VsRecorderApp_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_0208C06C *v0 = VsRecorder_GetState(appMan);
+    VsRecorderViewerState *v0 = VsRecorder_GetState(appMan);
 
     switch (*param1) {
     case 0:

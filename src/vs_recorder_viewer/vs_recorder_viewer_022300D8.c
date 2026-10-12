@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "struct_defs/struct_020127E8.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_viewer_state.h"
 #include "struct_defs/struct_020F3DCC.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
@@ -38,7 +38,7 @@ static const u8 sVsRecorderViewerMenuSpritePriorities[][5] = {
     { 0x19, 0x14, 0xF, 0xA, 0x5 }
 };
 
-void VsRecorderViewerMenu_LoadBackground(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_LoadBackground(VsRecorderViewerState *param0)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -69,7 +69,7 @@ void VsRecorderViewerMenu_LoadBackground(UnkStruct_0208C06C *param0)
     PaletteData_BlendMulti(v4, PLTTBUF_SUB_BG, 0x2, 16, param0->unk_14.unk_44);
 }
 
-void VsRecorderViewerMenu_LoadBgPanel(UnkStruct_0208C06C *param0, int param1, BOOL param2)
+void VsRecorderViewerMenu_LoadBgPanel(VsRecorderViewerState *param0, int param1, BOOL param2)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -86,7 +86,7 @@ void VsRecorderViewerMenu_LoadBgPanel(UnkStruct_0208C06C *param0, int param1, BO
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, v5, v1, param1, 0, 0, 0, HEAP_ID_102);
 }
 
-void VsRecorderViewerMenu_LoadBgPanelAlt(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMenu_LoadBgPanelAlt(VsRecorderViewerState *param0, int param1)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -99,7 +99,7 @@ void VsRecorderViewerMenu_LoadBgPanelAlt(UnkStruct_0208C06C *param0, int param1)
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, v5, v1, param1, 0, 0, 0, HEAP_ID_102);
 }
 
-void VsRecorderViewerMenu_LoadEntrySpriteResources(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_LoadEntrySpriteResources(VsRecorderViewerState *param0)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -123,7 +123,7 @@ void VsRecorderViewerMenu_LoadEntrySpriteResources(UnkStruct_0208C06C *param0)
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, 47, FALSE, 10000);
 }
 
-void VsRecorderViewerMenu_CreateDecorativeSprites(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_CreateDecorativeSprites(VsRecorderViewerState *param0)
 {
     SpriteTemplate v0;
     SpriteSystem *v1 = param0->unk_14.unk_04;
@@ -239,7 +239,7 @@ void VsRecorderViewerMenu_CreateDecorativeSprites(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_FreeDecorativeSprites(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_FreeDecorativeSprites(VsRecorderViewerState *param0)
 {
     int v0, v1;
 
@@ -250,7 +250,7 @@ void VsRecorderViewerMenu_FreeDecorativeSprites(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_StopDecorativeSpriteTasks(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_StopDecorativeSpriteTasks(VsRecorderViewerState *param0)
 {
     int v0;
 
@@ -259,7 +259,7 @@ void VsRecorderViewerMenu_StopDecorativeSpriteTasks(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_LoadEntryIconResources(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_LoadEntryIconResources(VsRecorderViewerState *param0)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -312,13 +312,13 @@ void VsRecorderViewerMenu_LoadEntryIconResources(UnkStruct_0208C06C *param0)
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, v7, FALSE, 10002);
 }
 
-void VsRecorderViewerMenu_FreeEntryIconResources(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_FreeEntryIconResources(VsRecorderViewerState *param0)
 {
     SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 10001);
     SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 10002);
 }
 
-void VsRecorderViewerMenu_PositionMenuEntries(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_PositionMenuEntries(VsRecorderViewerState *param0)
 {
     int v0;
     VsRecorderViewerMenu *v1 = &param0->unk_534;
@@ -355,7 +355,7 @@ void VsRecorderViewerMenu_PositionMenuEntries(UnkStruct_0208C06C *param0)
     } while (v0 < param0->unk_534.unk_1A4);
 }
 
-void VsRecorderViewerMenu_CreateMenuEntries(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_CreateMenuEntries(VsRecorderViewerState *param0)
 {
     int v0;
     VsRecorderViewerMenu *v1 = &param0->unk_534;
@@ -440,7 +440,7 @@ void VsRecorderViewerMenu_CreateMenuEntries(UnkStruct_0208C06C *param0)
     PaletteData_BlendMulti(v5, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.unk_44);
 }
 
-void VsRecorderViewerMenu_UpdateSubEntryLabels(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_UpdateSubEntryLabels(VsRecorderViewerState *param0)
 {
     int v0;
 
@@ -456,7 +456,7 @@ void VsRecorderViewerMenu_UpdateSubEntryLabels(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_AttachEntryLabelSprites(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_AttachEntryLabelSprites(VsRecorderViewerState *param0)
 {
     int v0;
 
@@ -466,7 +466,7 @@ void VsRecorderViewerMenu_AttachEntryLabelSprites(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_UpdateMainEntryLabels(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_UpdateMainEntryLabels(VsRecorderViewerState *param0)
 {
     int v0;
 
@@ -483,7 +483,7 @@ void VsRecorderViewerMenu_UpdateMainEntryLabels(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_FreeMenuEntries(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_FreeMenuEntries(VsRecorderViewerState *param0)
 {
     int v0;
     VsRecorderViewerMenu *v1 = &param0->unk_534;
@@ -494,7 +494,7 @@ void VsRecorderViewerMenu_FreeMenuEntries(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_SetMenuEntriesVisible(UnkStruct_0208C06C *param0, BOOL param1)
+void VsRecorderViewerMenu_SetMenuEntriesVisible(VsRecorderViewerState *param0, BOOL param1)
 {
     int v0;
 
@@ -638,7 +638,7 @@ void VsRecorderViewerMenu_GetSpritePositionWithOffset(ManagedSprite *param0, s16
     Sprite_GetPositionXYWithSubscreenOffset2(param0, param1, param2, (256 * FX32_ONE));
 }
 
-void VsRecorderViewerMenu_CreateEntryLabels(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_CreateEntryLabels(VsRecorderViewerState *param0)
 {
     s16 v0, v1;
     UnkStruct_020127E8 v2;
@@ -686,7 +686,7 @@ void VsRecorderViewerMenu_CreateEntryLabels(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMenu_RenderEntryLabel(UnkStruct_0208C06C *param0, VsRecorderViewerMenuEntry *param1, int param2, const VsRecorderMenuEntry *param3)
+void VsRecorderViewerMenu_RenderEntryLabel(VsRecorderViewerState *param0, VsRecorderViewerMenuEntry *param1, int param2, const VsRecorderMenuEntry *param3)
 {
     String *v0;
     MessageLoader *v1;
@@ -741,7 +741,7 @@ void VsRecorderViewerMenu_RenderEntryLabel(UnkStruct_0208C06C *param0, VsRecorde
     Window_Remove(&v2);
 }
 
-void VsRecorderViewerMenu_FreeEntryLabels(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_FreeEntryLabels(VsRecorderViewerState *param0)
 {
     int v0, v1;
     VsRecorderViewerMenuEntry *v2[2];
@@ -825,7 +825,7 @@ void VsRecorderViewerMenu_FreeLabelOAM(VsRecorderViewerTextSprite *param0)
     CharTransfer_ClearRange(&param0->unk_14);
 }
 
-void VsRecorderViewerMenu_LoadSpriteResourceSetA(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMenu_LoadSpriteResourceSetA(VsRecorderViewerState *param0, int param1)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -838,7 +838,7 @@ void VsRecorderViewerMenu_LoadSpriteResourceSetA(UnkStruct_0208C06C *param0, int
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, 27, FALSE, 11924);
 }
 
-void VsRecorderViewerMenu_LoadCursorSpriteResources(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMenu_LoadCursorSpriteResources(VsRecorderViewerState *param0, int param1)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -851,7 +851,7 @@ void VsRecorderViewerMenu_LoadCursorSpriteResources(UnkStruct_0208C06C *param0, 
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, 124, FALSE, 11924);
 }
 
-void VsRecorderViewerMenu_LoadSpriteResourceSetB(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMenu_LoadSpriteResourceSetB(VsRecorderViewerState *param0, int param1)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -867,14 +867,14 @@ void VsRecorderViewerMenu_LoadSpriteResourceSetB(UnkStruct_0208C06C *param0, int
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, v7, FALSE, 11924);
 }
 
-void VsRecorderViewerMenu_FreeCursorSpriteResources(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_FreeCursorSpriteResources(VsRecorderViewerState *param0)
 {
     SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 11924);
     SpriteManager_UnloadCellObjById(param0->unk_14.unk_08, 11924);
     SpriteManager_UnloadAnimObjById(param0->unk_14.unk_08, 11924);
 }
 
-ManagedSprite *VsRecorderViewerMenu_CreateCursorSprite(UnkStruct_0208C06C *param0, int param1)
+ManagedSprite *VsRecorderViewerMenu_CreateCursorSprite(VsRecorderViewerState *param0, int param1)
 {
     ManagedSprite *v0;
     SpriteTemplate v1;
@@ -909,14 +909,14 @@ ManagedSprite *VsRecorderViewerMenu_CreateCursorSprite(UnkStruct_0208C06C *param
     return v0;
 }
 
-void VsRecorderViewerMenu_HideAndFreeMenu(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_HideAndFreeMenu(VsRecorderViewerState *param0)
 {
     VsRecorderViewerMenu_SetMenuEntriesVisible(param0, 0);
     VsRecorderViewerMenu_FreeMenuEntries(param0);
     VsRecorderViewerMenu_FreeEntryIconResources(param0);
 }
 
-void VsRecorderViewerMenu_InitMenu(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_InitMenu(VsRecorderViewerState *param0)
 {
     VsRecorderViewerMenu_LoadEntryIconResources(param0);
     VsRecorderViewerMain_ReturnToParentMenu(param0);
@@ -929,7 +929,7 @@ void VsRecorderViewerMenu_InitMenu(UnkStruct_0208C06C *param0)
     VsRecorderViewerMenu_UpdateMainEntryLabels(param0);
 }
 
-void VsRecorderViewerMenu_InitMenuWithExtraEntry(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMenu_InitMenuWithExtraEntry(VsRecorderViewerState *param0)
 {
     VsRecorderViewerMenu_LoadEntryIconResources(param0);
     VsRecorderViewerMain_ReturnToParentMenu(param0);

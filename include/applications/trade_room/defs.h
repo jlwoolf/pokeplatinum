@@ -6,7 +6,7 @@
 
 #include "struct_decls/wi_fi_list.h"
 #include "struct_defs/chatot_cry.h"
-#include "struct_defs/struct_02095E80_sub1.h"
+#include "struct_defs/struct_trade_room_unused_data.h"
 #include "struct_defs/wi_fi_history.h"
 
 #include "applications/pokemon_summary_screen/main.h"
@@ -85,7 +85,7 @@ struct TradeRoom {
     int partnerSyncStatus[2];
     int notificationMsgId;
     BOOL unk_6C;
-    UnkStruct_02095E80_sub1 unk_70;
+    TradeRoomUnusedData unk_70;
     int selectedSlot[2];
     u16 cursorGlowAngle;
     u16 unk_92[5][17];
