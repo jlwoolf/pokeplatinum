@@ -14,11 +14,11 @@ typedef struct {
     FieldEffectManager *unk_04;
     Simple3DModel unk_08;
     Simple3DAnimation unk_1C;
-} UnkStruct_021F5788;
+} BuriedSphereSparkleContext;
 
 typedef struct {
     FieldEffectManager *unk_00;
-    UnkStruct_021F5788 *unk_04;
+    BuriedSphereSparkleContext *unk_04;
 } BuriedSphereSparkleParams;
 
 typedef struct {
@@ -27,14 +27,14 @@ typedef struct {
     BuriedSphereSparkleParams unk_78;
 } BuriedSphereSparkleAnim;
 
-static void FieldMap_021F5788(UnkStruct_021F5788 *param0);
-static void FieldMap_021F57B4(UnkStruct_021F5788 *param0);
+static void FieldMap_021F5788(BuriedSphereSparkleContext *param0);
+static void FieldMap_021F57B4(BuriedSphereSparkleContext *param0);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200B54;
 
 void *FieldMap_021F575C(FieldEffectManager *param0)
 {
-    UnkStruct_021F5788 *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(UnkStruct_021F5788)), 0, 0);
+    BuriedSphereSparkleContext *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(BuriedSphereSparkleContext)), 0, 0);
     v0->unk_04 = param0;
 
     FieldMap_021F5788(v0);
@@ -43,19 +43,19 @@ void *FieldMap_021F575C(FieldEffectManager *param0)
 
 void FieldMap_021F5778(void *param0)
 {
-    UnkStruct_021F5788 *v0 = param0;
+    BuriedSphereSparkleContext *v0 = param0;
 
     FieldMap_021F57B4(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_021F5788(UnkStruct_021F5788 *param0)
+static void FieldMap_021F5788(BuriedSphereSparkleContext *param0)
 {
     FieldEffectManager_LoadModel(param0->unk_04, &param0->unk_08, 0, 92, 0);
     FieldEffectManager_LoadAnimation(param0->unk_04, &param0->unk_1C, 0, 164, 0);
 }
 
-static void FieldMap_021F57B4(UnkStruct_021F5788 *param0)
+static void FieldMap_021F57B4(BuriedSphereSparkleContext *param0)
 {
     Simple3D_FreeModel(&param0->unk_08);
     Simple3D_FreeAnimation(&param0->unk_1C);
