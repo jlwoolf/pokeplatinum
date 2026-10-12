@@ -716,7 +716,7 @@ s32 PPW_LobbyToErrorCode(PPW_LOBBY_ERROR err)
     }
 }
 
-PPW_LOBBY_ERROR ov66_02237134(PPW_LOBBY_RESULT param0)
+PPW_LOBBY_ERROR PPW_LobbyResultToError(PPW_LOBBY_RESULT param0)
 {
     switch (param0) {
     case PPW_LOBBY_RESULT_SUCCESS:
