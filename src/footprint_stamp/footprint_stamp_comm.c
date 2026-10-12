@@ -30,11 +30,11 @@ void FootprintStampComm_Init(FootprintStampApp *param0)
 
 static BOOL FootprintStampComm_IsValid(s32 param0, FootprintStampCommState *param1)
 {
-    if (param1->unk_04 == param0) {
+    if (param1->localUserId == param0) {
         return 0;
     }
 
-    if (param1->unk_00 == 0) {
+    if (param1->isActive == 0) {
         return 0;
     }
 

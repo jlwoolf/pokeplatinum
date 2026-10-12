@@ -5,10 +5,10 @@
 
 typedef struct {
     CameraAngle cameraAngle;
-    s32 unk_08;
-    s16 unk_0C;
-    u8 unk_0E;
-    u8 unk_0F;
+    s32 angle;
+    s16 step;
+    u8 state;
+    u8 unused_0F;
 } FootprintStampCameraAnimTiltDown;
 
 #endif // POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_TILT_DOWN_H

@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_ZOOM_IN_H
 
 typedef struct {
-    fx32 unk_00;
-    s16 unk_04;
-    u8 unk_06;
-    u8 unk_07;
+    fx32 distance;
+    s16 timer;
+    u8 state;
+    u8 unused_07;
 } FootprintStampCameraAnimZoomIn;
 
 #endif // POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_ZOOM_IN_H
