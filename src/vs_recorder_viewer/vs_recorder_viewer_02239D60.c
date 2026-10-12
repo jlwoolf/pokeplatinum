@@ -163,7 +163,7 @@ static void VsRecorderViewerBox_LoadProfileFromBox(VsRecorderState *param0, int 
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
     v0->unk_2ED8.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    GlobalTerminal_DeserializePlayerProfile(&v0->unk_38C[param1]->unk_00, v0->unk_2ED8.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&v0->unk_38C[param1]->profile, v0->unk_2ED8.unk_00);
 }
 
 static void VsRecorderViewerBox_FreeLoadedProfile(VsRecorderState *param0)
@@ -969,7 +969,7 @@ static void VsRecorderViewerBox_PrintTrainerNameMessage(VsRecorderState *param0,
     v4 = String_Init(255, HEAP_ID_102);
     v5 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
 
-    String_CopyChars(v3, v0->unk_38C[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00.unk_00);
+    String_CopyChars(v3, v0->unk_38C[param0->unk_14.unk_48C.unk_38.unk_00]->profile.name);
     VsRecorderViewerList_CheckNameChars(param0, v3);
     StringTemplate_SetString(v5, 0, v3, 0, 1, GAME_LANGUAGE);
     StringTemplate_Format(v5, v4, v2);
@@ -1784,7 +1784,7 @@ static void VsRecorderViewerBox_InitProfileBoxStrings(VsRecorderState *param0)
 
     for (v0 = 0; v0 < v1->unk_380.unk_08; v0++) {
         v1->unk_2E0C[v0][1] = String_Init(20, HEAP_ID_102);
-        String_CopyChars(v1->unk_2E0C[v0][1], v1->unk_38C[v0]->unk_00.unk_00);
+        String_CopyChars(v1->unk_2E0C[v0][1], v1->unk_38C[v0]->profile.name);
         VsRecorderViewerList_CheckNameChars(param0, v1->unk_2E0C[v0][1]);
 
         v1->unk_2E0C[v0][0] = String_Init(30, HEAP_ID_102);

@@ -716,12 +716,12 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
                 v0->unk_720.unk_08.unk_00 = PlayTime_GetHours(SaveData_GetPlayTime(param0->saveData));
                 v0->unk_720.unk_08.unk_02 = PlayTime_GetMinutes(SaveData_GetPlayTime(param0->saveData));
                 v0->unk_720.unk_08.unk_03 = PlayTime_GetSeconds(SaveData_GetPlayTime(param0->saveData));
-                v0->unk_720.unk_0C[0].unk_00 = v0->unk_71C->unk_00[0];
-                v0->unk_720.unk_0C[1].unk_00 = v0->unk_71C->unk_00[1];
-                v0->unk_720.unk_0C[2].unk_00 = v0->unk_71C->unk_00[2];
-                v0->unk_720.unk_0C[0].unk_04 = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[0].unk_00 - 1);
-                v0->unk_720.unk_0C[1].unk_04 = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[1].unk_00 - 1);
-                v0->unk_720.unk_0C[2].unk_04 = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[2].unk_00 - 1);
+                v0->unk_720.unk_0C[0].rank = v0->unk_71C->unk_00[0];
+                v0->unk_720.unk_0C[1].rank = v0->unk_71C->unk_00[1];
+                v0->unk_720.unk_0C[2].rank = v0->unk_71C->unk_00[2];
+                v0->unk_720.unk_0C[0].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[0].rank - 1);
+                v0->unk_720.unk_0C[1].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[1].rank - 1);
+                v0->unk_720.unk_0C[2].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[2].rank - 1);
             }
             Sound_StopEffect(1381, 0);
             param0->unk_08++;
