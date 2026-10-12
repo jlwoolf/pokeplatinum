@@ -726,7 +726,7 @@ static void BtlIOCmd_ClearTouchScreen(BattleSystem *battleSys, BattlerData *batt
         btlSubscreen = BattleSystem_GetBattleSubscreen(battleSys);
 
         BattleSubscreen_SetupBackground(bgNarc, objNarc, btlSubscreen, 0, 0, NULL);
-        ov16_Dummy3(btlSubscreen, 0);
+        BattleSubscreen_Dummy3(btlSubscreen, 0);
 
         NARC_dtor(bgNarc);
         NARC_dtor(objNarc);

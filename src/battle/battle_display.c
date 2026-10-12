@@ -3261,7 +3261,7 @@ static void Task_PlayerSetCommandSelection(SysTask *task, void *data)
         actionData.isWaitingForPartner = BattleSystem_IsSlot2WaitingForPartner(commandSetData->battleSys, commandSetData->battler, commandSetData->switchingOrCanPickCommandMask);
 
         if (battlerData->commandUIReady) {
-            ov16_Dummy3(btlSubscreen, 1);
+            BattleSubscreen_Dummy3(btlSubscreen, 1);
 
             if (BattleSystem_GetBattleStatusMask(commandSetData->battleSys) & BATTLE_STATUS_FIRST_BATTLE) {
                 BattleSubscreen_SetupBackground(bgNarc, objNarc, btlSubscreen, 6, 0, &actionData);
@@ -3335,7 +3335,7 @@ static void Task_PlayerSetCommandSelection(SysTask *task, void *data)
                 NARC *objNarc = NARC_ctor(NARC_INDEX_BATTLE__GRAPHIC__PL_BATT_OBJ, HEAP_ID_BATTLE);
 
                 BattleSubscreen_SetupBackground(bgNarc, objNarc, btlSubscreen, 0, 0, NULL);
-                ov16_Dummy3(btlSubscreen, 0);
+                BattleSubscreen_Dummy3(btlSubscreen, 0);
                 dummy_0226846C(healthbox);
                 Healthbox_Deactivate(commandSetData->healthbox);
                 BattlerData_StopIdleBounceAnim(battlerData);
@@ -3347,7 +3347,7 @@ static void Task_PlayerSetCommandSelection(SysTask *task, void *data)
                 NARC *objNarc = NARC_ctor(NARC_INDEX_BATTLE__GRAPHIC__PL_BATT_OBJ, HEAP_ID_BATTLE);
 
                 BattleSubscreen_SetupBackground(bgNarc, objNarc, btlSubscreen, 0, 0, NULL);
-                ov16_Dummy3(btlSubscreen, 0);
+                BattleSubscreen_Dummy3(btlSubscreen, 0);
                 dummy_0226846C(healthbox);
                 Healthbox_Deactivate(commandSetData->healthbox);
                 BattlerData_StopIdleBounceAnim(battlerData);
@@ -3382,7 +3382,7 @@ static void Task_PlayerSetCommandSelection(SysTask *task, void *data)
             NARC *objNarc = NARC_ctor(NARC_INDEX_BATTLE__GRAPHIC__PL_BATT_OBJ, HEAP_ID_BATTLE);
 
             BattleSubscreen_SetupBackground(bgNarc, objNarc, btlSubscreen, 0, 0, NULL);
-            ov16_Dummy3(btlSubscreen, 0);
+            BattleSubscreen_Dummy3(btlSubscreen, 0);
             dummy_0226846C(healthbox);
             Healthbox_Deactivate(commandSetData->healthbox);
             BattlerData_StopIdleBounceAnim(battlerData);
@@ -3554,7 +3554,7 @@ static void Task_PlayerShowMoveSelectMenu(SysTask *task, void *data)
     case 2:
         if (moveSelectMenuData->input != 0xFF) {
             if ((BattleSystem_GetBattleType(moveSelectMenuData->battleSys) & BATTLE_TYPE_DOUBLES) == FALSE) {
-                ov16_Dummy3(btlSubscreen, 0);
+                BattleSubscreen_Dummy3(btlSubscreen, 0);
                 dummy_0226846C(healthbox);
                 Healthbox_Deactivate(moveSelectMenuData->healthbox);
                 BattlerData_StopIdleBounceAnim(battlerData);
@@ -3708,7 +3708,7 @@ static void Task_PlayerShowTargetSelectMenu(SysTask *task, void *data)
             dummy_0226846C(healthbox);
 
             if (targetSelectMenuData->shouldHidePanel == 1) {
-                ov16_Dummy3(btlSubscreen, 0);
+                BattleSubscreen_Dummy3(btlSubscreen, 0);
             }
         }
 
@@ -4713,7 +4713,7 @@ static void Task_PlayerShowYesNoMenu(SysTask *task, void *data)
             BattleSubscreen_SetupBackground(bgNarc, objNarc, btlSubscreen, 0, 0, NULL);
 
             if (yesNoMenuData->input == 1) {
-                ov16_Dummy3(btlSubscreen, 0);
+                BattleSubscreen_Dummy3(btlSubscreen, 0);
             }
 
             yesNoMenuData->state = 4;
