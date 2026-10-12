@@ -8,7 +8,7 @@
 #include "struct_defs/struct_02095B28.h"
 #include "struct_defs/struct_02095C60.h"
 
-#include "overlay006/ov6_022489E4.h"
+#include "field_events/contest_comm_tasks.h"
 #include "contest_competition/contest_competition_02252CEC.h"
 #include "contest_competition/struct_contest_competition_0224EDE0.h"
 
@@ -41,18 +41,18 @@ static const CommCmdTable sContestCommCmdTable[] = {
     { ContestComm_RecvNoOp, CommPacketSizeOf_Nothing, NULL }, // 23
     { contest_competition_02252CEC, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 24: dance data
     { contest_competition_02252D7C, ContestComm_DancePacketSize, NULL }, // 25: dance packet
-    { ov6_022489E4, CommPacketSizeOf_Variable, NULL }, // 26
-    { ov6_02248AC8, CommPacketSizeOf_Variable, NULL }, // 27
-    { ov6_02248B30, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 28
-    { ov6_02248BC0, CommPacketSizeOf_Variable, NULL }, // 29
-    { ov6_02248C28, CommPacketSizeOf_Variable, NULL }, // 30
-    { ov6_02248CBC, CommPacketSizeOf_Variable, NULL }, // 31
+    { ContestCommTask_RecvLeaderElection, CommPacketSizeOf_Variable, NULL }, // 26
+    { ContestCommTask_RecvContestantMon, CommPacketSizeOf_Variable, NULL }, // 27
+    { ContestCommTask_RecvAllContestantMons, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 28
+    { ContestCommTask_RecvOpponentData, CommPacketSizeOf_Variable, NULL }, // 29
+    { ContestCommTask_RecvJudges, CommPacketSizeOf_Variable, NULL }, // 30
+    { ContestCommTask_RecvTrainerName, CommPacketSizeOf_Variable, NULL }, // 31
     { ContestComm_RecvPhoto, CommPacketSizeOf_Variable, NULL }, // 32: single photo
     { ContestComm_RecvPhotoSet, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 33: all photos
     { ContestComm_RecvScore, ContestComm_ScoringPacketSize, NULL }, // 34: score value
     { ContestComm_RecvFinished, ContestComm_ScoringPacketSize, NULL }, // 35: finished flag
-    { ov6_02248D38, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 36
-    { ov6_02248DA0, CommPacketSizeOf_Variable, NULL } // 37
+    { ContestCommTask_RecvChatotCry, CommPacketSizeOf_Variable, ContestComm_GetRecvBuffer }, // 36
+    { ContestCommTask_RecvContestantSummary, CommPacketSizeOf_Variable, NULL } // 37
 };
 
 // Registers the contest command table with the command manager, using the

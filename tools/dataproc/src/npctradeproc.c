@@ -13,7 +13,7 @@
 #include "nitroarc.h"
 
 #include "constants/string.h"
-#include "overlay006/npc_trade.h"
+#include "field_events/npc_trade.h"
 
 static enum_template_t enums[] = {
     include_enum("generated/species.h",  "enum Species"),

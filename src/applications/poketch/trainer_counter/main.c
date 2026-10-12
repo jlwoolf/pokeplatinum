@@ -5,7 +5,7 @@
 #include "applications/poketch/poketch_system.h"
 #include "applications/poketch/trainer_counter/graphics.h"
 #include "field/field_system_decl.h"
-#include "overlay006/radar_chain_records.h"
+#include "field_events/radar_chain_records.h"
 
 #include "bg_window.h"
 #include "heap.h"

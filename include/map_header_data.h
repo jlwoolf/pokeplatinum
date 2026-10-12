@@ -5,7 +5,7 @@
 #include "generated/map_headers.h"
 
 #include "field/field_system_decl.h"
-#include "overlay006/wild_encounters.h"
+#include "field_events/wild_encounters.h"
 
 // A background event: an interactable tile (sign, hidden item, etc.) at a fixed
 // position. `script` is the script run when the player interacts with it.

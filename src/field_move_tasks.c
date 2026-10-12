@@ -16,8 +16,8 @@
 #include "field/field_system.h"
 #include "overlay005/ov5_021DFB54.h"
 #include "overlay005/ov5_021F101C.h"
-#include "overlay006/field_warp.h"
-#include "overlay006/hm_cut_in.h"
+#include "field_events/field_warp.h"
+#include "field_events/hm_cut_in.h"
 
 #include "field_map_change.h"
 #include "field_overworld_state.h"

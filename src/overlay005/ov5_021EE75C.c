@@ -8,7 +8,7 @@
 #include "overlay005/ov5_021D1A94.h"
 #include "overlay005/ov5_021D431C.h"
 #include "overlay005/struct_ov5_021D1BEC_decl.h"
-#include "overlay006/struct_ov6_0223E6EC.h"
+#include "field_events/struct_field_effect.h"
 
 #include "map_tile_behavior.h"
 #include "player_avatar.h"
@@ -62,7 +62,7 @@ static void ov5_021EE768(UnkStruct_ov5_021D1BEC *param0, FieldSystem *fieldSyste
     ov5_021D4D78(v1, v2, v3, fieldSystem);
 }
 
-static const UnkStruct_ov6_0223E6EC Unk_ov5_021FF4F0 = {
+static const FieldEffectTemplate Unk_ov5_021FF4F0 = {
     0x2,
     sizeof(UnkStruct_ov5_021EE75C),
     ov5_021EE75C,

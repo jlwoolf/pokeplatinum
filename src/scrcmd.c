@@ -68,19 +68,19 @@
 #include "overlay005/signpost.h"
 #include "overlay005/size_contest.h"
 #include "overlay005/vs_seeker.h"
-#include "overlay006/elevator_animation.h"
-#include "overlay006/great_marsh_tram.h"
-#include "overlay006/healing_machine_animation.h"
-#include "overlay006/hm_cut_in.h"
-#include "overlay006/lake_guardian_containment_units.h"
-#include "overlay006/npc_trade.h"
-#include "overlay006/ov6_0223E140.h"
-#include "overlay006/ov6_02243004.h"
-#include "overlay006/ov6_02248948.h"
-#include "overlay006/pc_animation.h"
-#include "overlay006/swarm.h"
-#include "overlay006/trophy_garden_daily_encounters.h"
-#include "overlay006/wallpaper_passwords.h"
+#include "field_events/elevator_animation.h"
+#include "field_events/great_marsh_tram.h"
+#include "field_events/healing_machine_animation.h"
+#include "field_events/hm_cut_in.h"
+#include "field_events/lake_guardian_containment_units.h"
+#include "field_events/npc_trade.h"
+#include "field_events/field_events_0223E140.h"
+#include "field_events/field_event_dispatch.h"
+#include "field_events/destroy_obstacle.h"
+#include "field_events/pc_animation.h"
+#include "field_events/swarm.h"
+#include "field_events/trophy_garden_daily_encounters.h"
+#include "field_events/wallpaper_passwords.h"
 #include "field_shops/battle_regulation_menu.h"
 #include "field_shops/communication_club.h"
 #include "field_shops/shop_menu.h"
@@ -5380,7 +5380,7 @@ static BOOL ScrCmd_20D(ScriptContext *ctx)
     u8 v0 = ScriptContext_ReadByte(ctx);
     u16 *v1 = ScriptContext_GetVarPointer(ctx);
 
-    *v1 = ov6_02243004(ctx->fieldSystem, v0);
+    *v1 = FieldEventDispatch_ProcessCommand(ctx->fieldSystem, v0);
     return TRUE;
 }
 
@@ -6411,13 +6411,13 @@ static BOOL ScrCmd_StartDestroyObstacleAnimation(ScriptContext *ctx)
 
     switch (obstacle) {
     case 0:
-        ov6_0224899C(fieldSystem, destVar, 0, HEAP_ID_FIELD3);
+        DestroyObstacle_Start(fieldSystem, destVar, 0, HEAP_ID_FIELD3);
         break;
     case 1:
-        ov6_0224899C(fieldSystem, destVar, 1, HEAP_ID_FIELD3);
+        DestroyObstacle_Start(fieldSystem, destVar, 1, HEAP_ID_FIELD3);
         break;
     case 2:
-        ov6_0224899C(fieldSystem, destVar, 2, HEAP_ID_FIELD3);
+        DestroyObstacle_Start(fieldSystem, destVar, 2, HEAP_ID_FIELD3);
         break;
     default:
         GF_ASSERT(FALSE);
@@ -6440,9 +6440,9 @@ static BOOL ScrCmd_29F(ScriptContext *ctx)
     u16 v0 = ScriptContext_GetVar(ctx);
 
     if (v0 == 0) {
-        ov6_0223E384(ctx->fieldSystem->task);
+        ScreenTransition_StartSimple(ctx->fieldSystem->task);
     } else {
-        ov6_0223E4EC(ctx->fieldSystem->task);
+        ScreenTransition_StartWithSound(ctx->fieldSystem->task);
     }
 
     return TRUE;

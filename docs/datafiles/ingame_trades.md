@@ -4,7 +4,7 @@ This document describes the file format for in-game trade data consumed by the
 `npctradeproc` build tool. Each NPC trade in the ROM is represented by a JSON
 file `res/npc_trades/<name>.json`, which contains metadata for the in-game trade
 event and the received Pokémon. The fields from each of these files are mapped
-onto the `NPCTradeMon` struct from `include/overlay006/npc_trade.h`.
+onto the `NPCTradeMon` struct from `include/field_events/npc_trade.h`.
 
 ## Schema
 

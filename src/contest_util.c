@@ -13,7 +13,7 @@
 #include "struct_defs/struct_020F568C.h"
 
 #include "battle/pokemon_sprite_data.h"
-#include "overlay006/struct_ov6_02248BE8.h"
+#include "field_events/struct_contest_opponent_data.h"
 
 #include "character_sprite.h"
 #include "contest.h"
@@ -415,9 +415,9 @@ void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandom
     int isPostGame = 0;
     int opponentCount;
     int isRealCompetition, isPracticeCompetition;
-    UnkStruct_ov6_02248BE8 *opponents;
+    ContestOpponentData *opponents;
     int specialCount, specialPick;
-    UnkStruct_ov6_02248BE8 specialOpponent;
+    ContestOpponentData specialOpponent;
 
     isPracticeCompetition = FALSE;
     isRealCompetition = FALSE;
@@ -436,7 +436,7 @@ void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandom
     }
 
     opponents = LoadMemberFromNARC(NARC_INDEX_CONTEST__DATA__CONTEST_DATA, 0, 0, heapID, 1);
-    opponentCount = NARC_GetMemberSizeByIndexPair(NARC_INDEX_CONTEST__DATA__CONTEST_DATA, 0) / sizeof(UnkStruct_ov6_02248BE8);
+    opponentCount = NARC_GetMemberSizeByIndexPair(NARC_INDEX_CONTEST__DATA__CONTEST_DATA, 0) / sizeof(ContestOpponentData);
     candidateIndices = Heap_AllocAtEnd(heapID, opponentCount + 1);
 
     if (isGameCompleted == TRUE && isNatDexObtained == TRUE) {
@@ -651,7 +651,7 @@ void Contest_InitPhotos(Contest *contest)
 
 // Builds an NPC contestant's Pokemon from its contest NARC entry: species,
 // moves, nickname, OT name, and contest stats.
-void Contest_InitOpponentMon(const UnkStruct_ov6_02248BE8 *opponentData, Pokemon *mon, enum HeapID heapID)
+void Contest_InitOpponentMon(const ContestOpponentData *opponentData, Pokemon *mon, enum HeapID heapID)
 {
     int i;
     u16 move;

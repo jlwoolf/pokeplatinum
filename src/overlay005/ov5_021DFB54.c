@@ -21,9 +21,9 @@
 #include "overlay005/ov5_021F2850.h"
 #include "overlay005/struct_ov5_021D1BEC_decl.h"
 #include "overlay005/surf_mount_renderer.h"
-#include "overlay006/hm_cut_in.h"
-#include "overlay006/ov6_02248050.h"
-#include "overlay006/wild_encounters.h"
+#include "field_events/hm_cut_in.h"
+#include "field_events/hidden_effect.h"
+#include "field_events/wild_encounters.h"
 #include "distortion_world/distortion_world.h"
 
 #include "billboard.h"
@@ -1081,7 +1081,7 @@ static int SubTask_RockClimb_CreateMount(RockClimbTaskEnv *taskEnv)
     int zPos = PlayerAvatar_GetZPos(taskEnv->playerAvatar) + MapObject_GetDzFromDir(taskEnv->direction);
 
     taskEnv->unk_18 = ov5_021F28F4(taskEnv->playerObject, xPos, zPos, taskEnv->direction, 0);
-    taskEnv->unk_2C = ov6_0224892C(taskEnv->fieldSystem);
+    taskEnv->unk_2C = HiddenEffectParticles_New(taskEnv->fieldSystem);
 
     Sound_PlayEffect(SEQ_SE_DP_UG_023_sseq);
     taskEnv->state++;
@@ -1144,7 +1144,7 @@ static int SubTask_RockClimb_LoopOrHopOff(RockClimbTaskEnv *taskEnv)
     taskEnv->state++;
     ov5_021F2974(taskEnv->unk_18, 0);
 
-    ov6_02248940(taskEnv->unk_2C);
+    HiddenEffectParticles_Delete(taskEnv->unk_2C);
     taskEnv->unk_2C = NULL;
 
     return 0;
@@ -1267,7 +1267,7 @@ static int SubTask_Waterfall_InitAscent(WaterfallTaskEnv *taskEnv)
     deltaPos.z /= 64;
 
     taskEnv->deltaPos = deltaPos;
-    taskEnv->unk_50 = ov6_022485F4(taskEnv->fieldSystem);
+    taskEnv->unk_50 = HiddenEffectTransition_New(taskEnv->fieldSystem);
     taskEnv->state++;
 
     return 0;
@@ -1331,7 +1331,7 @@ static int SubTask_Waterfall_FinishAscent(WaterfallTaskEnv *taskEnv)
     MapObject_SetZ(taskEnv->playerObject, taskEnv->targetZ);
     MapObject_UpdateCoords(taskEnv->playerObject);
 
-    ov6_02248608(taskEnv->unk_50);
+    HiddenEffectTransition_Delete(taskEnv->unk_50);
     return 1;
 }
 
@@ -1385,7 +1385,7 @@ static int SubTask_Waterfall_InitDescent(WaterfallTaskEnv *taskEnv)
     deltaPos.z /= 64;
 
     taskEnv->deltaPos = deltaPos;
-    taskEnv->unk_50 = ov6_022485F4(taskEnv->fieldSystem);
+    taskEnv->unk_50 = HiddenEffectTransition_New(taskEnv->fieldSystem);
     taskEnv->state++;
 
     return 0;
@@ -1453,7 +1453,7 @@ static int SubTask_Waterfall_FinishDescent(WaterfallTaskEnv *taskEnv)
     MapObject_SetZ(taskEnv->playerObject, taskEnv->targetZ);
     MapObject_UpdateCoords(taskEnv->playerObject);
 
-    ov6_02248608(taskEnv->unk_50);
+    HiddenEffectTransition_Delete(taskEnv->unk_50);
 
     return 1;
 }

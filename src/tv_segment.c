@@ -28,8 +28,8 @@
 #include "applications/poketch/poketch_system.h"
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay006/swarm.h"
-#include "overlay006/tv_episode.h"
+#include "field_events/swarm.h"
+#include "field_events/tv_episode.h"
 #include "savedata/save_table.h"
 
 #include "bag.h"

@@ -554,45 +554,45 @@ Overlay overlay5
 	Object main.nef.p/src_overlay005_dist_world_surf_mount_renderer.c.o
 }
 
-Overlay overlay6
+Overlay field_events
 {
 	After overlay5
-	Object main.nef.p/src_overlay006_ov6_0223E140.c.o
-	Object main.nef.p/src_overlay006_wild_encounters.c.o
-	Object main.nef.p/src_overlay006_great_marsh_lookout_sprite.c.o
-	Object main.nef.p/src_overlay006_great_marsh_binoculars.c.o
-	Object main.nef.p/src_overlay006_great_marsh_tram.c.o
-	Object main.nef.p/src_overlay006_great_marsh_daily_encounters.c.o
-	Object main.nef.p/src_overlay006_ov6_02243004.c.o
-	Object main.nef.p/src_overlay006_radar_chain_records.c.o
-	Object main.nef.p/src_overlay006_swarm.c.o
-	Object main.nef.p/src_overlay006_hm_cut_in.c.o
-	Object main.nef.p/src_overlay006_roamer_after_battle.c.o
-	Object main.nef.p/src_overlay006_npc_trade.c.o
-	Object main.nef.p/src_overlay006_tv_episode.c.o
-	Object main.nef.p/src_overlay006_ov6_022465FC.c.o
-	Object main.nef.p/src_overlay006_tv_commercials.c.o
-	Object main.nef.p/src_overlay006_special_dates.c.o
-	Object main.nef.p/src_overlay006_repel_step_update.c.o
-	Object main.nef.p/src_overlay006_healing_machine_animation_pokecenter.c.o
-	Object main.nef.p/src_overlay006_elevator_animation.c.o
-	Object main.nef.p/src_overlay006_pc_animation.c.o
-	Object main.nef.p/src_overlay006_field_warp.c.o
-	Object main.nef.p/src_overlay006_trophy_garden_daily_encounters.c.o
-	Object main.nef.p/src_overlay006_feebas_fishing.c.o
-	Object main.nef.p/src_overlay006_dual_slot_encounters.c.o
-	Object main.nef.p/src_overlay006_wallpaper_passwords.c.o
-	Object main.nef.p/src_overlay006_link_contest_record_display.c.o
-	Object main.nef.p/src_overlay006_healing_machine_animation_hall_of_fame.c.o
-	Object main.nef.p/src_overlay006_lake_guardian_containment_units.c.o
-	Object main.nef.p/src_overlay006_ov6_02248050.c.o
-	Object main.nef.p/src_overlay006_ov6_02248948.c.o
-	Object main.nef.p/src_overlay006_ov6_022489E4.c.o
+	Object main.nef.p/src_field_events_field_events_0223E140.c.o
+	Object main.nef.p/src_field_events_wild_encounters.c.o
+	Object main.nef.p/src_field_events_great_marsh_lookout_sprite.c.o
+	Object main.nef.p/src_field_events_great_marsh_binoculars.c.o
+	Object main.nef.p/src_field_events_great_marsh_tram.c.o
+	Object main.nef.p/src_field_events_great_marsh_daily_encounters.c.o
+	Object main.nef.p/src_field_events_field_event_dispatch.c.o
+	Object main.nef.p/src_field_events_radar_chain_records.c.o
+	Object main.nef.p/src_field_events_swarm.c.o
+	Object main.nef.p/src_field_events_hm_cut_in.c.o
+	Object main.nef.p/src_field_events_roamer_after_battle.c.o
+	Object main.nef.p/src_field_events_npc_trade.c.o
+	Object main.nef.p/src_field_events_tv_episode.c.o
+	Object main.nef.p/src_field_events_tv_broadcast_schedule.c.o
+	Object main.nef.p/src_field_events_tv_commercials.c.o
+	Object main.nef.p/src_field_events_special_dates.c.o
+	Object main.nef.p/src_field_events_repel_step_update.c.o
+	Object main.nef.p/src_field_events_healing_machine_animation_pokecenter.c.o
+	Object main.nef.p/src_field_events_elevator_animation.c.o
+	Object main.nef.p/src_field_events_pc_animation.c.o
+	Object main.nef.p/src_field_events_field_warp.c.o
+	Object main.nef.p/src_field_events_trophy_garden_daily_encounters.c.o
+	Object main.nef.p/src_field_events_feebas_fishing.c.o
+	Object main.nef.p/src_field_events_dual_slot_encounters.c.o
+	Object main.nef.p/src_field_events_wallpaper_passwords.c.o
+	Object main.nef.p/src_field_events_link_contest_record_display.c.o
+	Object main.nef.p/src_field_events_healing_machine_animation_hall_of_fame.c.o
+	Object main.nef.p/src_field_events_lake_guardian_containment_units.c.o
+	Object main.nef.p/src_field_events_hidden_effect.c.o
+	Object main.nef.p/src_field_events_destroy_obstacle.c.o
+	Object main.nef.p/src_field_events_contest_comm_tasks.c.o
 }
 
 Overlay field_shops
 {
-	After overlay6
+	After field_events
 	Object main.nef.p/src_field_shops_communication_club.c.o
 	Object main.nef.p/src_field_shops_battle_regulation_menu.c.o
 	Object main.nef.p/src_field_shops_accessory_shop.c.o
@@ -601,13 +601,13 @@ Overlay field_shops
 
 Overlay gym_features
 {
-	After overlay6
+	After field_events
 	Object main.nef.p/src_gym_features_gym_features.c.o
 }
 
 Overlay distortion_world
 {
-	After overlay6
+	After field_events
 	Object main.nef.p/src_distortion_world_distortion_world.c.o
 }
 

@@ -8,7 +8,7 @@
 #include "generated/map_headers.h"
 
 #include "field/field_system.h"
-#include "overlay006/wild_encounters.h"
+#include "field_events/wild_encounters.h"
 
 #include "heap.h"
 #include "map_header.h"

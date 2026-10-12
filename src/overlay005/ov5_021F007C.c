@@ -8,8 +8,8 @@
 #include "overlay005/ov5_021D1A94.h"
 #include "overlay005/ov5_021D5EB8.h"
 #include "overlay005/struct_ov5_021D1BEC_decl.h"
-#include "overlay006/struct_ov6_0223E6EC.h"
-#include "overlay006/wild_encounters.h"
+#include "field_events/struct_field_effect.h"
+#include "field_events/wild_encounters.h"
 
 #include "bg_window.h"
 #include "field_task.h"
@@ -165,7 +165,7 @@ static void ov5_021F01EC(UnkStruct_ov5_021D1BEC *param0, FieldSystem *fieldSyste
 
 UnkStruct_ov5_021D1BEC *ov5_021F01F0(FieldSystem *fieldSystem)
 {
-    static const UnkStruct_ov6_0223E6EC v0 = {
+    static const FieldEffectTemplate v0 = {
         1024,
         sizeof(UnkStruct_ov5_021F013C),
         ov5_021F013C,
@@ -179,7 +179,7 @@ UnkStruct_ov5_021D1BEC *ov5_021F01F0(FieldSystem *fieldSystem)
 
 UnkStruct_ov5_021D1BEC *ov5_021F0204(FieldSystem *fieldSystem)
 {
-    static const UnkStruct_ov6_0223E6EC v0 = {
+    static const FieldEffectTemplate v0 = {
         1024,
         sizeof(UnkStruct_ov5_021F013C),
         ov5_021F0188,
@@ -204,7 +204,7 @@ BOOL ov5_021F0220(UnkStruct_ov5_021D1BEC *param0)
 
 UnkStruct_ov5_021D1BEC *ov5_021F022C(FieldSystem *fieldSystem)
 {
-    static const UnkStruct_ov6_0223E6EC v0 = {
+    static const FieldEffectTemplate v0 = {
         1024,
         sizeof(UnkStruct_ov5_021F007C),
         ov5_021F007C,
@@ -218,7 +218,7 @@ UnkStruct_ov5_021D1BEC *ov5_021F022C(FieldSystem *fieldSystem)
 
 UnkStruct_ov5_021D1BEC *ov5_021F0240(FieldSystem *fieldSystem)
 {
-    static const UnkStruct_ov6_0223E6EC v0 = {
+    static const FieldEffectTemplate v0 = {
         1024,
         sizeof(UnkStruct_ov5_021F007C),
         ov5_021F00BC,

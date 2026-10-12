@@ -12,7 +12,7 @@
 #include "overlay005/ov5_021D1A94.h"
 #include "overlay005/ov5_021EAFA4.h"
 #include "overlay005/struct_ov5_021D1BEC_decl.h"
-#include "overlay006/struct_ov6_0223E6EC.h"
+#include "field_events/struct_field_effect.h"
 #include "underground/decoration_menu.h"
 #include "underground/secret_bases.h"
 
@@ -190,7 +190,7 @@ static void ov23_022562B8(UnkStruct_ov5_021D1BEC *param0, FieldSystem *fieldSyst
 static void ov23_022562BC(UnkStruct_ov5_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
 static void ov23_022562C8(UnkStruct_ov5_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
 
-static const UnkStruct_ov6_0223E6EC Unk_ov23_02256B88 = {
+static const FieldEffectTemplate Unk_ov23_02256B88 = {
     0x0,
     sizeof(DecorateCursor),
     ov23_022562AC,
