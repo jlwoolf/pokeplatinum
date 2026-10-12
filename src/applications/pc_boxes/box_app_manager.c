@@ -226,7 +226,7 @@ BOOL BoxAppMan_Init(ApplicationManager *appMan, int *state)
 
     if (boxAppMan != NULL) {
         BoxAppMan_Load(boxAppMan, ApplicationManager_Args(appMan));
-        BoxGraphics_Load(&boxAppMan->unk_114, &boxAppMan->boxApp, boxAppMan);
+        BoxGraphics_Load(&boxAppMan->boxGraphics, &boxAppMan->boxApp, boxAppMan);
 
         boxAppMan->cursorLocationHandlerState = 0;
         boxAppMan->cursorLocationInputHandler = BoxAppMan_GetCursorLocationInputHandler(boxAppMan);
@@ -246,9 +246,9 @@ BOOL BoxAppMan_Main(ApplicationManager *appMan, int *state)
         return FALSE;
     } else if (boxAppMan->cursorLocationInputHandler != NULL) {
         if (JOY_NEW(PAD_BUTTON_Y)) {
-            if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == TRUE) {
+            if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == TRUE) {
                 BoxApp_ToggleCursorFastMode(&boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateCursorFastMode);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateCursorFastMode);
                 return FALSE;
             }
         }
@@ -270,7 +270,7 @@ BOOL BoxAppMan_Exit(ApplicationManager *appMan, int *state)
         ChatotCry_ResetStatus(chatotCry);
     }
 
-    BoxGraphics_Free(boxAppMan->unk_114);
+    BoxGraphics_Free(boxAppMan->boxGraphics);
     BoxAppMan_Free(boxAppMan);
 
     Heap_Destroy(HEAP_ID_BOX_DATA);
@@ -322,17 +322,17 @@ static void BoxAppMan_LogInAction(BoxApplicationManager *boxAppMan, u32 *state)
 {
     switch (*state) {
     case 0:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetupScene);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetupScene);
         (*state)++;
         break;
     case 1:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_SetupScene)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack0);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetupScene)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack0);
             (*state)++;
         }
         break;
     case 2:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack0)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack0)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -343,17 +343,17 @@ static void BoxAppMan_ReturnToBoxFade1Action(BoxApplicationManager *boxAppMan, u
 {
     switch (*state) {
     case 0:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetupScene);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetupScene);
         (*state)++;
         break;
     case 1:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_SetupScene)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack1);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetupScene)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack1);
             (*state)++;
         }
         break;
     case 2:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack1)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack1)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -364,8 +364,8 @@ static inline void BoxAppMan_PreviewCompareMon(BoxApplicationManager *boxAppMan)
 {
     BoxApp_ToggleCompareMonSlot(&boxAppMan->boxApp);
     BoxApp_PreviewBoxMon(&boxAppMan->boxApp, boxAppMan->boxApp.cursor.mon, boxAppMan);
-    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetCompareButtonPressed);
-    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetCompareButtonPressed);
+    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
 }
 
 static inline BOOL BoxAppMan_RegisterBoxTouchActionOrTryTouchCompareButton(BoxApplicationManager *boxAppMan)
@@ -407,7 +407,7 @@ static inline BOOL BoxAppMan_RegisterBoxTouchActionOrTryTouchCompareButton(BoxAp
             case COMPARE_MON_PC_BUTTON_ID:
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
                 BoxApp_NextCompareMode(&boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SwitchCompareMode);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SwitchCompareMode);
                 return TRUE;
             }
         }
@@ -455,10 +455,10 @@ static int BoxAppMan_CursorInBoxInputHandler(BoxApplicationManager *boxAppMan)
         }
 
         if (BoxAppMan_TryMoveCursorFromUserInput(gSystem.heldKeys, boxAppMan)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState++;
@@ -470,12 +470,12 @@ static int BoxAppMan_CursorInBoxInputHandler(BoxApplicationManager *boxAppMan)
         }
         break;
     case CURSOR_IN_BOX_WAIT_FOR_MOVE_CURSOR:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             BoxAppMan_RegisterCursorLocationInputHandler(boxAppMan, BoxAppMan_GetCursorLocationInputHandler(boxAppMan));
         }
         break;
     case CURSOR_IN_BOX_WAIT_FOR_TOUCHSCREEN_DONE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             boxAppMan->cursorLocationHandlerState = CURSOR_IN_BOX_WAIT_FOR_INPUT;
         }
         break;
@@ -536,10 +536,10 @@ static int BoxAppMan_CursorInPartyInputHandler(BoxApplicationManager *boxAppMan)
         }
 
         if (BoxAppMan_TryMoveCursorFromUserInput(gSystem.heldKeys, boxAppMan)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_WAIT_FOR_MOVE_CURSOR;
@@ -552,7 +552,7 @@ static int BoxAppMan_CursorInPartyInputHandler(BoxApplicationManager *boxAppMan)
         }
         break;
     case CURSOR_IN_PARTY_WAIT_FOR_MOVE_CURSOR:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_WAIT_FOR_INPUT;
         }
         break;
@@ -566,43 +566,43 @@ static int BoxAppMan_CursorInPartyInputHandler(BoxApplicationManager *boxAppMan)
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) != PREVIEW_MON_UNDER_CURSOR && BoxAppMan_IsPreviewedMonHoldingMailOrHasBallCapsule(boxAppMan, &messageID)) {
                 Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, messageID);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_CONFIRM_MESSAGE;
             } else {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ClosePartyPopup);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ClosePartyPopup);
                 boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_RETURN_TO_BOX;
             }
         }
         break;
     case CURSOR_IN_PARTY_RETURN_TO_BOX:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ClosePartyPopup)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ClosePartyPopup)) {
             BoxAppMan_ReturnCursorToBox(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_WAIT_FOR_MOVE_CURSOR_TO_BOX;
         }
         break;
     case CURSOR_IN_PARTY_WAIT_FOR_MOVE_CURSOR_TO_BOX:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             BoxAppMan_RegisterCursorLocationInputHandler(boxAppMan, BoxAppMan_GetCursorLocationInputHandler(boxAppMan));
         }
         break;
     case CURSOR_IN_PARTY_CONFIRM_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_WAIT_FOR_INPUT;
         }
         break;
     case CURSOR_IN_PARTY_WAIT_FOR_TOUCHSCREEN_DONE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             boxAppMan->cursorLocationHandlerState = CURSOR_IN_PARTY_WAIT_FOR_INPUT;
         }
         break;
@@ -643,10 +643,10 @@ static int BoxAppMan_CursorOnHeaderInputHandler(BoxApplicationManager *boxAppMan
         }
 
         if (BoxAppMan_TryMoveCursorFromUserInput(gSystem.heldKeys, boxAppMan)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState = CURSOR_ON_HEADER_WAIT_FOR_MOVE_CURSOR;
@@ -656,7 +656,7 @@ static int BoxAppMan_CursorOnHeaderInputHandler(BoxApplicationManager *boxAppMan
         BoxAppMan_RegisterBoxTouchActionOrTryTouchCompareButton(boxAppMan);
         break;
     case CURSOR_ON_HEADER_WAIT_FOR_MOVE_CURSOR:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             BoxAppMan_RegisterCursorLocationInputHandler(boxAppMan, BoxAppMan_GetCursorLocationInputHandler(boxAppMan));
         }
         break;
@@ -698,10 +698,10 @@ static int BoxAppMan_CursorOnCloseInputHandler(BoxApplicationManager *boxAppMan)
         }
 
         if (BoxAppMan_TryMoveCursorFromUserInput(gSystem.heldKeys, boxAppMan)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState = CURSOR_CLOSE_WAIT_FOR_CURSOR_MOVE;
@@ -711,12 +711,12 @@ static int BoxAppMan_CursorOnCloseInputHandler(BoxApplicationManager *boxAppMan)
         BoxAppMan_RegisterBoxTouchActionOrTryTouchCompareButton(boxAppMan);
         break;
     case CURSOR_CLOSE_WAIT_FOR_BOX_CHANGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox)) {
             boxAppMan->cursorLocationHandlerState = CURSOR_CLOSE_WAIT_FOR_INPUT;
         }
         break;
     case CURSOR_CLOSE_WAIT_FOR_CURSOR_MOVE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             BoxAppMan_RegisterCursorLocationInputHandler(boxAppMan, BoxAppMan_GetCursorLocationInputHandler(boxAppMan));
         }
         break;
@@ -740,12 +740,12 @@ static int BoxAppMan_CursorOnPartyButtonInputHandler(BoxApplicationManager *boxA
     case CURSOR_ON_PARTY_BUTTON_STATE_WAIT_FOR_INPUT:
         if (JOY_NEW(PAD_BUTTON_A)) {
             if (BoxApp_GetBoxMode(&boxAppMan->boxApp) != PC_MODE_WITHDRAW) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PressBoxButton);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PressBoxButton);
                 boxAppMan->cursorLocationHandlerState = CURSOR_ON_PARTY_BUTTON_ANIMATE_PRESS_BUTTON;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_PickOne);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 boxAppMan->cursorLocationHandlerState = CURSOR_ON_PARTY_BUTTON_CONFIRM_MESSAGE;
             }
             break;
@@ -769,10 +769,10 @@ static int BoxAppMan_CursorOnPartyButtonInputHandler(BoxApplicationManager *boxA
         }
 
         if (BoxAppMan_TryMoveCursorFromUserInput(gSystem.heldKeys, boxAppMan)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState = CURSOR_ON_PARTY_BUTTON_WAIT_FOR_MOVE_CURSOR;
@@ -782,37 +782,37 @@ static int BoxAppMan_CursorOnPartyButtonInputHandler(BoxApplicationManager *boxA
         BoxAppMan_RegisterBoxTouchActionOrTryTouchCompareButton(boxAppMan);
         break;
     case CURSOR_ON_PARTY_BUTTON_ANIMATE_PRESS_BUTTON:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_PressBoxButton)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenPartyPopup);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_PressBoxButton)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenPartyPopup);
             boxAppMan->cursorLocationHandlerState = CURSOR_ON_PARTY_BUTTON_WAIT_FOR_OPEN_PARTY;
         }
 
         break;
     case CURSOR_ON_PARTY_BUTTON_WAIT_FOR_OPEN_PARTY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_OpenPartyPopup)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenPartyPopup)) {
             BoxAppMan_MoveCursorToParty(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
 
             boxAppMan->cursorLocationHandlerState = CURSOR_ON_PARTY_BUTTON_WAIT_FOR_MOVE_CURSOR;
         }
         break;
     case CURSOR_ON_PARTY_BUTTON_WAIT_FOR_CHANGE_BOX:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox)) {
             boxAppMan->cursorLocationHandlerState = CURSOR_ON_PARTY_BUTTON_STATE_WAIT_FOR_INPUT;
         }
         break;
     case CURSOR_ON_PARTY_BUTTON_WAIT_FOR_MOVE_CURSOR:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             BoxAppMan_RegisterCursorLocationInputHandler(boxAppMan, BoxAppMan_GetCursorLocationInputHandler(boxAppMan));
         }
         break;
     case CURSOR_ON_PARTY_BUTTON_CONFIRM_MESSAGE:
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             boxAppMan->cursorLocationHandlerState = 0;
         }
         break;
@@ -874,11 +874,11 @@ static int BoxAppMan_LogOffScreenFade(BoxApplicationManager *boxAppMan)
 {
     switch (boxAppMan->cursorLocationHandlerState) {
     case 0:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlackLogOff);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlackLogOff);
         boxAppMan->cursorLocationHandlerState++;
         break;
     case 1:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             return 1;
         }
     }
@@ -908,34 +908,34 @@ static void BoxAppMan_CloseBoxAction(BoxApplicationManager *boxAppMan, u32 *stat
         if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) != PREVIEW_MON_UNDER_CURSOR) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_HoldingMon);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = CLOSE_BOX_CANNOT_CLOSE;
             break;
         } else {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PressBoxButton);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PressBoxButton);
             *state = CLOSE_BOX_SHOW_MENU;
         }
 
         break;
 
     case CLOSE_BOX_SHOW_MENU:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_PressBoxButton)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_PressBoxButton)) {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_ConfirmExit);
             BoxMenu_FillYesNo(&boxAppMan->boxApp, 1);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = CLOSE_BOX_YES_NO;
         }
         break;
     case CLOSE_BOX_YES_NO:
         switch (BoxMenu_GetMenuNavigation(&boxAppMan->boxApp)) {
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_NO:
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = CLOSE_BOX_END;
             break;
         case BOX_MENU_YES:
@@ -945,18 +945,18 @@ static void BoxAppMan_CloseBoxAction(BoxApplicationManager *boxAppMan, u32 *stat
         }
         break;
     case CLOSE_BOX_CANNOT_CLOSE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = CLOSE_BOX_CONFIRM_MESSAGE;
     case CLOSE_BOX_CONFIRM_MESSAGE:
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = CLOSE_BOX_END;
         }
         break;
     case CLOSE_BOX_END:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -979,7 +979,7 @@ static void BoxAppMan_ContinueBoxOperationsAction(BoxApplicationManager *boxAppM
         if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) != PREVIEW_MON_UNDER_CURSOR) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_HoldingMon);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = CONTINUE_OPERATIONS_WAIT_FOR_MESSAGE;
             break;
         } else if (BoxApp_GetBoxMode(&boxAppMan->boxApp) == PC_MODE_MOVE_ITEMS && BoxApp_GetCursorItem(&boxAppMan->boxApp) != ITEM_NONE) {
@@ -989,14 +989,14 @@ static void BoxAppMan_ContinueBoxOperationsAction(BoxApplicationManager *boxAppM
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_ConfirmContinue);
             BoxMenu_FillYesNo(&boxAppMan->boxApp, 0);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = CONTINUE_OPERATIONS_YES_NO;
         }
         break;
     case CONTINUE_OPERATIONS_YES_NO:
         switch (BoxMenu_GetMenuNavigation(&boxAppMan->boxApp)) {
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_NO:
@@ -1004,24 +1004,24 @@ static void BoxAppMan_ContinueBoxOperationsAction(BoxApplicationManager *boxAppM
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
             break;
         case BOX_MENU_YES:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = CONTINUE_OPERATIONS_END;
             break;
         }
         break;
     case CONTINUE_OPERATIONS_WAIT_FOR_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = CONTINUE_OPERATIONS_CONFIRM_MESSAGE;
     case CONTINUE_OPERATIONS_CONFIRM_MESSAGE:
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = CONTINUE_OPERATIONS_END;
         }
         break;
     case CONTINUE_OPERATIONS_END:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1050,12 +1050,12 @@ static void BoxAppMan_MonCursorMenuAction(BoxApplicationManager *boxAppMan, u32 
             *state = MON_CURSOR_MENU_ITEM_SELECTED;
         } else {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = MON_CURSOR_MENU_SHOW_MENU;
         }
         break;
     case MON_CURSOR_MENU_SHOW_MENU:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = MON_CURSOR_MENU_NAVIGATE_MENU;
@@ -1066,12 +1066,12 @@ static void BoxAppMan_MonCursorMenuAction(BoxApplicationManager *boxAppMan, u32 
         case BOX_MENU_NAVIGATION_NONE:
             break;
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_CANCEL:
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = MON_CURSOR_MENU_END_WHEN_READY;
             break;
         default:
@@ -1085,16 +1085,16 @@ static void BoxAppMan_MonCursorMenuAction(BoxApplicationManager *boxAppMan, u32 
             if (BoxApp_GetCursorLocation(&boxAppMan->boxApp) == CURSOR_IN_BOX && BoxApp_IsCursorFastMode(&boxAppMan->boxApp) == TRUE) {
                 BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_MultiSelectAction);
             } else {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_PickUpMonAction);
             }
             break;
         case BOX_MENU_PLACE:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_PlaceMonAction);
             break;
         case BOX_MENU_SHIFT:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_ShiftMonAction);
             break;
         case BOX_MENU_WITHDRAW:
@@ -1123,21 +1123,21 @@ static void BoxAppMan_MonCursorMenuAction(BoxApplicationManager *boxAppMan, u32 
         case BOX_MENU_SET_ON_RIGHT:
             BoxApp_ToggleCompareMonSlot(&boxAppMan->boxApp);
             BoxApp_PreviewBoxMon(&boxAppMan->boxApp, boxAppMan->boxApp.cursor.mon, boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetCompareButtonUnpressed);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetCompareButtonUnpressed);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             *state = MON_CURSOR_MENU_END;
             break;
         }
         break;
     case MON_CURSOR_MENU_END_WHEN_READY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
     case MON_CURSOR_MENU_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1180,19 +1180,19 @@ static void BoxAppMan_MonItemMenuAction(BoxApplicationManager *boxAppMan, u32 *s
         if (BoxApp_IsPreviewedMonEgg(&boxAppMan->boxApp)) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_EggsCantHoldItems);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = MON_ITEM_MENU_CONFIRM_MESSAGE;
         } else if (BoxApp_IsCursorFastMode(&boxAppMan->boxApp)) {
             boxAppMan->menuItem = BoxMenu_GetDefaultMenuItem(&boxAppMan->boxApp);
             *state = MON_ITEM_MENU_SELECTED;
         } else {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = MON_ITEM_MENU_WAIT_FOR_MENU;
         }
         break;
     case MON_ITEM_MENU_WAIT_FOR_MENU:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = MON_ITEM_MENU_NAVIGATE_MENU;
@@ -1203,12 +1203,12 @@ static void BoxAppMan_MonItemMenuAction(BoxApplicationManager *boxAppMan, u32 *s
         case BOX_MENU_NAVIGATION_NONE:
             break;
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_ITEMS_CANCEL:
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = MON_ITEM_MENU_END_WHEN_READY;
             break;
         default:
@@ -1223,12 +1223,12 @@ static void BoxAppMan_MonItemMenuAction(BoxApplicationManager *boxAppMan, u32 *s
             if (BoxApp_GetCursorItem(&boxAppMan->boxApp) == ITEM_GRISEOUS_ORB && BoxPokemon_GetValue(boxAppMan->boxApp.pcMonPreview.mon, MON_DATA_SPECIES, NULL) != SPECIES_GIRATINA) {
                 StringTemplate_SetItemName(boxAppMan->MessageVariableBuffer, 0, ITEM_GRISEOUS_ORB);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_MonCantHoldItem);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 *state = MON_ITEM_MENU_CONFIRM_MESSAGE;
             } else if (BoxApp_GetCursorItem(&boxAppMan->boxApp) != ITEM_NONE) {
                 BoxApp_GiveItemFromCursor(&boxAppMan->boxApp, boxAppMan);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlaceItemDownFromCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlaceItemDownFromCursor);
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
                 *state = MON_ITEM_MENU_WAIT_FOR_ANIMATIONS;
             } else {
@@ -1240,13 +1240,13 @@ static void BoxAppMan_MonItemMenuAction(BoxApplicationManager *boxAppMan, u32 *s
             if (Item_IsMail(BoxApp_GetPreviewedMonHeldItem(&boxAppMan->boxApp))) {
                 Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_CantTakeMail);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 *state = MON_ITEM_MENU_CONFIRM_MESSAGE;
             } else {
                 BoxApp_PickUpHeldItem(&boxAppMan->boxApp, boxAppMan);
                 BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PickUpItemIntoCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PickUpItemIntoCursor);
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
                 *state = MON_ITEM_MENU_WAIT_FOR_ANIMATIONS;
             }
@@ -1258,17 +1258,17 @@ static void BoxAppMan_MonItemMenuAction(BoxApplicationManager *boxAppMan, u32 *s
             if (Item_IsMail(BoxApp_GetPreviewedMonHeldItem(&boxAppMan->boxApp))) {
                 Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_CantTakeMail);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 *state = MON_ITEM_MENU_CONFIRM_MESSAGE;
             } else if (boxAppMan->boxApp.cursorItem == ITEM_GRISEOUS_ORB && BoxPokemon_GetValue(boxAppMan->boxApp.pcMonPreview.mon, MON_DATA_SPECIES, NULL) != SPECIES_GIRATINA) {
                 StringTemplate_SetItemName(boxAppMan->MessageVariableBuffer, ITEM_NONE, ITEM_GRISEOUS_ORB);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_MonCantHoldItem);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 *state = MON_ITEM_MENU_CONFIRM_MESSAGE;
             } else {
                 BoxApp_SwapMonAndCursorItems(&boxAppMan->boxApp, boxAppMan);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SwapItems);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SwapItems);
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
                 *state = MON_ITEM_MENU_WAIT_FOR_ANIMATIONS;
             }
@@ -1279,25 +1279,25 @@ static void BoxAppMan_MonItemMenuAction(BoxApplicationManager *boxAppMan, u32 *s
         }
         break;
     case MON_ITEM_MENU_END_WHEN_READY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
     case MON_ITEM_MENU_WAIT_FOR_ANIMATIONS:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateHeldItemDisplay);
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateHeldItemDisplay);
             *state = MON_ITEM_MENU_END;
         }
         break;
     case MON_ITEM_MENU_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
     case MON_ITEM_MENU_CONFIRM_MESSAGE:
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = MON_ITEM_MENU_END;
         }
         break;
@@ -1328,12 +1328,12 @@ static void BoxAppMan_BoxHeaderMenuAction(BoxApplicationManager *boxAppMan, u32 
             *state = BOX_HEADER_MENU_ITEM_SELECTED;
         } else {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = BOX_HEADER_MENU_SHOW_MENU;
         }
         break;
     case BOX_HEADER_MENU_SHOW_MENU:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = BOX_HEADER_MENU_NAVIGATE_MENU;
@@ -1344,11 +1344,11 @@ static void BoxAppMan_BoxHeaderMenuAction(BoxApplicationManager *boxAppMan, u32 
         case BOX_MENU_NAVIGATION_NONE:
             break;
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_HEADER_CANCEL:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = BOX_HEADER_MENU_END_WHEN_READY;
             break;
         default:
@@ -1359,11 +1359,11 @@ static void BoxAppMan_BoxHeaderMenuAction(BoxApplicationManager *boxAppMan, u32 
     case BOX_HEADER_MENU_ITEM_SELECTED:
         switch (boxAppMan->menuItem) {
         case BOX_MENU_JUMP:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_BoxJumpAction);
             break;
         case BOX_MENU_WALLPAPER:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideMenu);
             *state = BOX_HEADER_MENU_END;
             break;
         case BOX_MENU_NAME:
@@ -1372,12 +1372,12 @@ static void BoxAppMan_BoxHeaderMenuAction(BoxApplicationManager *boxAppMan, u32 
         }
         break;
     case BOX_HEADER_MENU_END_WHEN_READY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
     case BOX_HEADER_MENU_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_WallpaperMenu);
         }
         break;
@@ -1407,15 +1407,15 @@ static void BoxAppMan_BoxJumpAction(BoxApplicationManager *boxAppMan, u32 *state
         } else {
             BoxApp_LoadCustomizationsFor(&boxAppMan->boxApp, boxAppMan->boxSelector.boxID);
             PCBoxes_SetCurrentBox(boxAppMan->pcBoxes, boxAppMan->boxSelector.boxID);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox);
             *state = JUMP_END;
         }
 
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideBoxSelectionPopup);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideBoxSelectionPopup);
         break;
     case JUMP_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1443,11 +1443,11 @@ static void BoxAppMan_WallpaperMenu(BoxApplicationManager *boxAppMan, u32 *state
     case WALLPAPER_MENU_PICK_THEME_INIT:
         BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_PickTheme);
         BoxMenu_FillWallpaperMenu(&boxAppMan->boxApp, boxAppMan->menuItem);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
         *state = WALLPAPER_MENU_PICK_THEME_WAIT_FOR_TASK;
         break;
     case WALLPAPER_MENU_PICK_THEME_WAIT_FOR_TASK:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = WALLPAPER_MENU_PICK_THEME_WAIT_FOR_USER;
@@ -1456,12 +1456,12 @@ static void BoxAppMan_WallpaperMenu(BoxApplicationManager *boxAppMan, u32 *state
         case BOX_MENU_NAVIGATION_NONE:
             break;
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_HEADER_CANCEL:
         default:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = WALLPAPER_MENU_END;
             break;
         case BOX_MENU_SCENERY_1:
@@ -1473,13 +1473,13 @@ static void BoxAppMan_WallpaperMenu(BoxApplicationManager *boxAppMan, u32 *state
             boxAppMan->menuItem = BoxMenu_GetSelectedMenuItem(&boxAppMan->boxApp);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_Wallpaper);
             BoxMenu_FillWallpaperSelectionMenu(&boxAppMan->boxApp, boxAppMan->menuItem);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = WALLPAPER_MENU_PICK_WALLPAPER_WAIT_FOR_TASK;
             break;
         }
         break;
     case WALLPAPER_MENU_PICK_WALLPAPER_WAIT_FOR_TASK:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu) == FALSE) {
             break;
         }
         *state = WALLPAPER_MENU_PICK_WALLPAPER_WAIT_FOR_USER;
@@ -1488,7 +1488,7 @@ static void BoxAppMan_WallpaperMenu(BoxApplicationManager *boxAppMan, u32 *state
         case BOX_MENU_NAVIGATION_NONE:
             break;
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_HEADER_CANCEL:
@@ -1500,7 +1500,7 @@ static void BoxAppMan_WallpaperMenu(BoxApplicationManager *boxAppMan, u32 *state
             if (boxAppMan->menuItem >= BOX_MENU_FIRST_WALLPAPER && boxAppMan->menuItem <= BOX_MENU_LAST_WALLPAPER) {
                 PCBoxes_SetWallpaper(boxAppMan->pcBoxes, USE_CURRENT_BOX, boxAppMan->menuItem - BOX_MENU_FIRST_WALLPAPER);
                 BoxApp_LoadWallpaper(&boxAppMan->boxApp, boxAppMan->pcBoxes);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 *state = WALLPAPER_MENU_TRANSITION_WALLPAPER;
             } else {
                 GF_ASSERT(FALSE);
@@ -1509,16 +1509,16 @@ static void BoxAppMan_WallpaperMenu(BoxApplicationManager *boxAppMan, u32 *state
         }
         break;
     case WALLPAPER_MENU_TRANSITION_WALLPAPER:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_TransitionWallpaper);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_TransitionWallpaper);
         *state = WALLPAPER_MENU_END;
         break;
     case WALLPAPER_MENU_UNREACHABLE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             *state = WALLPAPER_MENU_PICK_THEME_INIT;
         }
         break;
     case WALLPAPER_MENU_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1537,11 +1537,11 @@ static void BoxAppMan_MarkAction(BoxApplicationManager *boxAppMan, u32 *state)
     case MARK_START:
         BoxMenu_FillMarkingsMenu(&boxAppMan->boxApp);
         BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_MarkMon);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
         *state = MARK_PROCESS_USER_INPUT;
         break;
     case MARK_PROCESS_USER_INPUT:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         } else {
             u32 selectedItem = BoxMenu_GetMenuNavigation(&boxAppMan->boxApp);
@@ -1550,32 +1550,32 @@ static void BoxAppMan_MarkAction(BoxApplicationManager *boxAppMan, u32 *state)
             case BOX_MENU_NAVIGATION_NONE:
                 break;
             case BOX_MENU_NAVIGATION_UP_DOWN:
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
                 break;
             case BOX_MENU_NAVIGATION_B:
             case BOX_MENU_MARK_CANCEL:
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 *state = MARK_END;
                 break;
             case BOX_MENU_CONFIRM:
                 BoxApp_UpdatePreviewMonMarkings(&boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdatePreviewedMonMarkings);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetMonMarkingsTransparency);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdatePreviewedMonMarkings);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetMonMarkingsTransparency);
                 *state = MARK_END;
                 break;
             default:
                 if (selectedItem >= BOX_MENU_FIRST_MARKING && selectedItem <= BOX_MENU_LAST_MARKING) {
                     selectedItem -= BOX_MENU_FIRST_MARKING;
                     BoxMenu_ToggleMarking(&boxAppMan->boxApp, selectedItem);
-                    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMarkings);
+                    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMarkings);
                 }
                 break;
             }
         }
         break;
     case MARK_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1597,7 +1597,7 @@ static void BoxAppMan_MultiSelectAction(BoxApplicationManager *boxAppMan, u32 *s
     case MULTI_MOVE_START:
         if (JOY_HELD(PAD_BUTTON_A)) {
             BoxAppMan_ResetMultiSelectLocation(boxAppMan, &boxAppMan->boxApp);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_StartDrawMultiSelect);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_StartDrawMultiSelect);
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             *state = MULTI_MOVE_DEFINE_SELECTION;
         } else {
@@ -1616,19 +1616,19 @@ static void BoxAppMan_MultiSelectAction(BoxApplicationManager *boxAppMan, u32 *s
 
             case CURSOR_MOVE:
                 BoxAppMan_SetMultiSelectionEndLocation(boxAppMan, &boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ApplyMultiSelectMonShadingTask);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ApplyMultiSelectMonShadingTask);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
                 *state = MULTI_MOVE_WAIT_FOR_ANIMATIONS;
                 break;
             }
         } else {
             if (BoxApp_IsMultiSelectSingleSelect(&boxAppMan->boxApp)) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ClearMultiSelectShading);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ClearMultiSelectShading);
                 BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_PickUpMonAction);
             } else {
                 BoxAppMan_PickUpMultiSelectedMons(boxAppMan, &boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_BounceCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_BounceCursor);
                 Sound_PlayEffect(SEQ_SE_DP_BOX02_sseq);
                 *state = MULTI_MOVE_SELECTED_MONS;
             }
@@ -1636,7 +1636,7 @@ static void BoxAppMan_MultiSelectAction(BoxApplicationManager *boxAppMan, u32 *s
         break;
 
     case MULTI_MOVE_SELECTED_MONS:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
@@ -1648,23 +1648,23 @@ static void BoxAppMan_MultiSelectAction(BoxApplicationManager *boxAppMan, u32 *s
             break;
 
         case CURSOR_MOVE:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
             if ((BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) & PREVIEW_MON_HELD) == 0) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
             break;
 
         case CURSOR_MOVE_TO_LEFT_BOX:
             BoxApp_LoadLeftBoxCustomization(&boxAppMan->boxApp);
             PCBoxes_SetCurrentBox(boxAppMan->pcBoxes, BoxApp_GetCurrentBox(&boxAppMan->boxApp));
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox);
             *state = MULTI_MOVE_PREVIEW_MON;
             break;
 
         case CURSOR_MOVE_TO_RIGHT_BOX:
             BoxApp_LoadRightBoxCustomization(&boxAppMan->boxApp);
             PCBoxes_SetCurrentBox(boxAppMan->pcBoxes, BoxApp_GetCurrentBox(&boxAppMan->boxApp));
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox);
             *state = MULTI_MOVE_PREVIEW_MON;
             break;
 
@@ -1672,7 +1672,7 @@ static void BoxAppMan_MultiSelectAction(BoxApplicationManager *boxAppMan, u32 *s
             if (JOY_NEW(PAD_BUTTON_A)) {
                 if (BoxApp_IsBoxUnderSelectedMonsEmpty(&boxAppMan->boxApp)) {
                     BoxAppMan_PutDownSelectedMons(boxAppMan, &boxAppMan->boxApp);
-                    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlaceMonDownFromCursor);
+                    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlaceMonDownFromCursor);
                     Sound_PlayEffect(SEQ_SE_DP_BOX01_sseq);
                     *state = MULTI_MOVE_END;
                 } else {
@@ -1688,23 +1688,23 @@ static void BoxAppMan_MultiSelectAction(BoxApplicationManager *boxAppMan, u32 *s
         break;
 
     case MULTI_MOVE_PREVIEW_MON:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox)) {
             if (!(BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) & PREVIEW_MON_HELD)) {
                 BoxAppMan_TryPreviewCursorMon(boxAppMan);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             }
             *state = MULTI_MOVE_SELECTED_MONS;
         }
         break;
 
     case MULTI_MOVE_WAIT_FOR_ANIMATIONS:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             *state = MULTI_MOVE_DEFINE_SELECTION;
         }
         break;
 
     case MULTI_MOVE_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1748,36 +1748,36 @@ static void BoxAppMan_PickUpMonAction(BoxApplicationManager *boxAppMan, u32 *sta
             if (BoxAppMan_OnLastAliveMon(boxAppMan) == FALSE) {
                 Sound_PlayEffect(SEQ_SE_DP_BOX02_sseq);
                 BoxAppMan_PickUpMon(boxAppMan, &boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PickUpMonIntoCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PickUpMonIntoCursor);
                 *state = PICK_UP_PARTY_MON;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_LastMon);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 *state = PICK_UP_MON_CONFIRM_LAST_MON;
             }
         } else {
             Sound_PlayEffect(SEQ_SE_DP_BOX02_sseq);
             BoxAppMan_PickUpMon(boxAppMan, &boxAppMan->boxApp);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PickUpMonIntoCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PickUpMonIntoCursor);
             *state = PICK_UP_MON_DONE;
         }
         break;
     case PICK_UP_PARTY_MON:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_TryPreviewCursorMon(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlayAdjustPartyAnimation);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlayAdjustPartyAnimation);
             *state = PICK_UP_MON_DONE;
         }
         break;
     case PICK_UP_MON_CONFIRM_LAST_MON:
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = PICK_UP_MON_DONE;
         }
         break;
     case PICK_UP_MON_DONE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1795,7 +1795,7 @@ static void BoxAppMan_PlaceMonAction(BoxApplicationManager *boxAppMan, u32 *stat
     switch (*state) {
     case PLACE_MON_DOWN:
         BoxAppMan_PutDownCursorMon(boxAppMan, &boxAppMan->boxApp);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlaceMonDownFromCursor);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlaceMonDownFromCursor);
         Sound_PlayEffect(SEQ_SE_DP_BOX01_sseq);
 
         if (BoxApp_GetCursorLocation(&boxAppMan->boxApp) == CURSOR_IN_PARTY) {
@@ -1811,15 +1811,15 @@ static void BoxAppMan_PlaceMonAction(BoxApplicationManager *boxAppMan, u32 *stat
         *state = PLACE_MON_END;
         break;
     case PLACE_ADJUST_PARTY_ANIMATION:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_TryPreviewCursorMon(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MovePartyCursor);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MovePartyCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = PLACE_MON_END;
         }
         break;
     case PLACE_MON_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
@@ -1861,28 +1861,28 @@ static void BoxAppMan_ShiftMonAction(BoxApplicationManager *boxAppMan, u32 *stat
         if (BoxAppMan_CheckLastAliveMonReason(boxAppMan, &messageID)) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, messageID);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = SHIFT_CONFIRM_MESSAGE;
         } else {
             BoxAppMan_SwapMonInCursor(boxAppMan, &boxAppMan->boxApp);
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SwapMonsInBox);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SwapMonsInBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = SHIFT_END;
         }
     } break;
     case SHIFT_CONFIRM_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
         if (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = SHIFT_END;
         }
         break;
     case SHIFT_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
@@ -1907,72 +1907,72 @@ static void BoxAppMan_WithdrawMonAction(BoxApplicationManager *boxAppMan, u32 *s
     switch (*state) {
     case WITHDRAW_START:
         if (Party_GetCurrentCount(boxAppMan->party) != MAX_PARTY_SIZE) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_IN_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenPartyPopup);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenPartyPopup);
                 *state = WITHDRAW_WAIT_FOR_PARTY_POPUP;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_BOX02_sseq);
                 BoxAppMan_PickUpMon(boxAppMan, &boxAppMan->boxApp);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PickUpMonIntoCursor);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PickUpMonIntoCursor);
                 *state = WITHDRAW_WAIT_FOR_PICK_UP_MON;
             }
         } else {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideMenu);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_PartyFull);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = WITHDRAW_CONFIRM_PARTY_FULL;
         }
         break;
     case WITHDRAW_WAIT_FOR_PICK_UP_MON:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_PickUpMonIntoCursor)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenPartyPopup);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_PickUpMonIntoCursor)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenPartyPopup);
             *state = WITHDRAW_WAIT_FOR_PARTY_POPUP;
         }
         break;
     case WITHDRAW_WAIT_FOR_PARTY_POPUP:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_OpenPartyPopup)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenPartyPopup)) {
             BoxAppMan_MoveCursorToParty(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
             *state = WITHDRAW_WAIT_FOR_MOVE_CURSOR_TO_PARTY;
         }
         break;
     case WITHDRAW_WAIT_FOR_MOVE_CURSOR_TO_PARTY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor)) {
             BoxAppMan_PutDownCursorMon(boxAppMan, &boxAppMan->boxApp);
             BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlaceMonDownFromCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlaceMonDownFromCursor);
             *state = WITHDRAW_WAIT_FOR_MOVE_PLACE_MON_DOWN;
         }
         break;
     case WITHDRAW_WAIT_FOR_MOVE_PLACE_MON_DOWN:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_PlaceMonDownFromCursor)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ClosePartyPopup);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlaceMonDownFromCursor)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ClosePartyPopup);
             *state = WITHDRAW_RETURN_TO_BOX;
         }
         break;
     case WITHDRAW_RETURN_TO_BOX:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ClosePartyPopup)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ClosePartyPopup)) {
             BoxAppMan_ReturnCursorToBox(boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_MoveCursor);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_MoveCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = WITHDRAW_END;
         }
         break;
     case WITHDRAW_CONFIRM_PARTY_FULL:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = WITHDRAW_END;
         }
         break;
 
     case WITHDRAW_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -1996,8 +1996,8 @@ static void BoxAppMan_StoreMonAction(BoxApplicationManager *boxAppMan, u32 *stat
         if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR && BoxAppMan_OnLastAliveMon(boxAppMan) == TRUE) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_LastMon);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideMenu);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = STORE_MON_CONFIRM_CANNOT_STORE_MON;
         } else {
             int boxMessageID;
@@ -2005,12 +2005,12 @@ static void BoxAppMan_StoreMonAction(BoxApplicationManager *boxAppMan, u32 *stat
             if (BoxAppMan_IsPreviewedMonHoldingMailOrHasBallCapsule(boxAppMan, &boxMessageID)) {
                 Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, boxMessageID);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideMenu);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideMenu);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 *state = STORE_MON_CONFIRM_CANNOT_STORE_MON;
             } else {
                 BoxSelectorPopup_Init(boxAppMan, boxAppMan->boxApp.selectedBoxID, BoxText_PickDepositBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 *state = STORE_MON_SELECT_BOX;
             }
         }
@@ -2021,8 +2021,8 @@ static void BoxAppMan_StoreMonAction(BoxApplicationManager *boxAppMan, u32 *stat
         }
 
         if (boxAppMan->boxSelector.boxID == -1) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideBoxSelectionPopup);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideBoxSelectionPopup);
             *state = STORE_MON_END;
             break;
         }
@@ -2032,16 +2032,16 @@ static void BoxAppMan_StoreMonAction(BoxApplicationManager *boxAppMan, u32 *stat
         if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_IN_CURSOR) {
             if (BoxAppMan_TryStoreCursorMonInBox(boxAppMan, boxAppMan->boxSelector.boxID)) {
                 BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideBoxSelectionPopup);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideBoxSelectionPopup);
                 *state = STORE_MON_FROM_CURSOR;
                 break;
             }
         } else {
             if (BoxAppMan_TryStoreSelectedMonInBox(boxAppMan, boxAppMan->boxSelector.boxID)) {
                 BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideBoxSelectionPopup);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideBoxSelectionPopup);
                 *state = STORE_MON_FROM_PARTY;
                 break;
             }
@@ -2049,11 +2049,11 @@ static void BoxAppMan_StoreMonAction(BoxApplicationManager *boxAppMan, u32 *stat
 
         Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
         BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_BoxFull);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
         *state = STORE_MON_BOX_FULL;
         break;
     case STORE_MON_BOX_FULL:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
@@ -2063,31 +2063,31 @@ static void BoxAppMan_StoreMonAction(BoxApplicationManager *boxAppMan, u32 *stat
         }
         break;
     case STORE_MON_CONFIRM_CANNOT_STORE_MON:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = STORE_MON_END;
         }
         break;
     case STORE_MON_FROM_CURSOR:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_HideBoxSelectionPopup)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ReloadBoxMons);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideBoxSelectionPopup)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ReloadBoxMons);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = STORE_MON_END;
         }
         break;
     case STORE_MON_FROM_PARTY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_HideBoxSelectionPopup)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ReloadPartyMons);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideBoxSelectionPopup)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ReloadPartyMons);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = STORE_MON_END;
         }
         break;
     case STORE_MON_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -2180,51 +2180,51 @@ static void BoxAppMan_ReleaseMonAction(BoxApplicationManager *boxAppMan, u32 *st
         if (BoxAppMan_CheckReleaseMonValid(boxAppMan, &boxMessageID)) {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_ReleaseMon);
             BoxMenu_FillYesNo(&boxAppMan->boxApp, 1);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = RELEASE_MON_CONFIRM;
         } else {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, boxMessageID);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideMenu);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = RELEASE_MON_CANNOT_RELEASE;
         }
     } break;
 
     case RELEASE_MON_CONFIRM:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
         switch (BoxMenu_GetMenuNavigation(&boxAppMan->boxApp)) {
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_NO:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = RELEASE_MON_END;
             break;
         case BOX_MENU_YES:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = RELEASE_MON_RELEASE_ANIMATION;
             break;
         }
         break;
     case RELEASE_MON_RELEASE_ANIMATION:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
             StringTemplate_SetNickname(boxAppMan->MessageVariableBuffer, 0, BoxApp_GetPreviewedBoxMon(&boxAppMan->boxApp));
             BoxAppMan_CheckShouldMonReturn(boxAppMan);
 
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_IN_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlayReleaseCursorMonAnimation);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlayReleaseCursorMonAnimation);
                 boxAppMan->releasedFrom = RELEASED_FROM_CURSOR;
             } else {
                 if (BoxApp_GetCursorLocation(&boxAppMan->boxApp) == CURSOR_IN_BOX) {
-                    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlayReleaseBoxMonAnimation);
+                    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlayReleaseBoxMonAnimation);
                     boxAppMan->releasedFrom = RELEASED_FROM_BOX;
                 } else {
-                    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlayReleasePartyMonAnimation);
+                    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlayReleasePartyMonAnimation);
                     boxAppMan->releasedFrom = RELEASED_FROM_PARTY;
                 }
             }
@@ -2232,7 +2232,7 @@ static void BoxAppMan_ReleaseMonAction(BoxApplicationManager *boxAppMan, u32 *st
         }
         break;
     case RELEASE_MON_TRY_RELEASE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             if (BoxAppMan_CanReleaseMon(boxAppMan)) {
                 if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_IN_CURSOR) {
                     BoxAppMan_RemoveCursorMon(boxAppMan);
@@ -2247,67 +2247,67 @@ static void BoxAppMan_ReleaseMonAction(BoxApplicationManager *boxAppMan, u32 *st
                 *state = RELEASE_MON_CONFIRM_RETURNED;
             }
 
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
         }
         break;
     case RELEASE_MON_CONFIRM_RELEASED:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_GoodbyeForever);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = RELEASE_MON_CLOSE_MESSAGE_BOX;
         }
         break;
     case RELEASE_MON_CONFIRM_RETURNED:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_MonWasWorried);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = RELEASE_MON_CLOSE_MESSAGE_BOX;
         }
         break;
     case RELEASE_MON_CLOSE_MESSAGE_BOX:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = RELEASE_MON_PREPARE_END_RELEASE;
         }
         break;
     case RELEASE_MON_PREPARE_END_RELEASE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             if (BoxAppMan_CanReleaseMon(boxAppMan)) {
                 if (boxAppMan->releasedFrom == RELEASED_FROM_PARTY) {
-                    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PlayAdjustPartyAnimation);
+                    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PlayAdjustPartyAnimation);
                 }
 
                 BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
             }
 
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = RELEASE_MON_END;
         }
         break;
     case RELEASE_MON_CANNOT_RELEASE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = RELEASE_MON_END;
         }
         break;
     case RELEASE_MON_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -2460,12 +2460,12 @@ static void BoxAppMan_RenameBoxAction(BoxApplicationManager *boxAppMan, u32 *sta
 {
     switch (*state) {
     case RENAME_BOX_START:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack2);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack2);
         (*state)++;
         break;
     case RENAME_BOX_LAUNCH_TEXT_INPUT_APP:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack2)) {
-            BoxGraphics_Free(boxAppMan->unk_114);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack2)) {
+            BoxGraphics_Free(boxAppMan->boxGraphics);
             Heap_Destroy(HEAP_ID_BOX_GRAPHICS);
             PCBoxes_BufferBoxName(boxAppMan->pcBoxes, PCBoxes_GetCurrentBoxID(boxAppMan->pcBoxes), boxAppMan->namingScreenArgs->textInputStr);
             boxAppMan->ApplicationManager = ApplicationManager_New(&gNamingScreenAppTemplate, boxAppMan->namingScreenArgs, HEAP_ID_BOX_DATA);
@@ -2481,7 +2481,7 @@ static void BoxAppMan_RenameBoxAction(BoxApplicationManager *boxAppMan, u32 *sta
             PCBoxes_RenameBox(boxAppMan->pcBoxes, boxID, boxAppMan->namingScreenArgs->textInputStr);
 
             PCBoxes_LoadCustomization(boxAppMan->pcBoxes, &boxAppMan->boxApp.customization);
-            BoxGraphics_Load(&boxAppMan->unk_114, &boxAppMan->boxApp, boxAppMan);
+            BoxGraphics_Load(&boxAppMan->boxGraphics, &boxAppMan->boxApp, boxAppMan);
             BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_ReturnToBoxFade1Action);
         }
         break;
@@ -2498,12 +2498,12 @@ static void BoxAppMan_OpenSummaryAction(BoxApplicationManager *boxAppMan, u32 *o
 {
     switch (*openSummaryState) {
     case SUMMARY_START:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack2);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack2);
         (*openSummaryState)++;
         break;
     case SUMMARY_LAUNCH:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack2)) {
-            BoxGraphics_Free(boxAppMan->unk_114);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack2)) {
+            BoxGraphics_Free(boxAppMan->boxGraphics);
             Heap_Destroy(HEAP_ID_BOX_GRAPHICS);
             BoxAppMan_InitSummary(boxAppMan);
             boxAppMan->ApplicationManager = ApplicationManager_New(&gPokemonSummaryScreenApp, &boxAppMan->monSummary, HEAP_ID_BOX_DATA);
@@ -2521,7 +2521,7 @@ static void BoxAppMan_OpenSummaryAction(BoxApplicationManager *boxAppMan, u32 *o
                 BoxApp_SetCursorPosToSummaryMonPos(&boxAppMan->boxApp, boxAppMan);
             }
 
-            BoxGraphics_Load(&boxAppMan->unk_114, &boxAppMan->boxApp, boxAppMan);
+            BoxGraphics_Load(&boxAppMan->boxGraphics, &boxAppMan->boxApp, boxAppMan);
             BoxAppMan_RegisterBoxApplicationAction(boxAppMan, BoxAppMan_ReturnToBoxFade1Action);
             BoxAppMan_FlagRecordBoxUseInJournal(boxAppMan);
         }
@@ -2576,12 +2576,12 @@ static void BoxAppMan_GiveItemFromBagAction(BoxApplicationManager *boxAppMan, u3
 
     switch (*state) {
     case GIVE_FROM_BAG_START:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack2);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack2);
         (*state)++;
         break;
     case GIVE_FROM_BAG_INIT_BAG_APP:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack2)) {
-            BoxGraphics_Free(boxAppMan->unk_114);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack2)) {
+            BoxGraphics_Free(boxAppMan->boxGraphics);
             Heap_Destroy(HEAP_ID_BOX_GRAPHICS);
 
             Bag *bag = SaveData_GetBag(boxAppMan->saveData);
@@ -2609,45 +2609,45 @@ static void BoxAppMan_GiveItemFromBagAction(BoxApplicationManager *boxAppMan, u3
             }
 
             Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_BOX_GRAPHICS, 245760);
-            BoxGraphics_Load(&boxAppMan->unk_114, &boxAppMan->boxApp, boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetupScene);
+            BoxGraphics_Load(&boxAppMan->boxGraphics, &boxAppMan->boxApp, boxAppMan);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetupScene);
             (*state)++;
         }
         break;
     case GIVE_FROM_BAG_RETURN_TO_BOX:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_SetupScene)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack1);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetupScene)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack1);
             (*state)++;
         }
         break;
     case GIVE_FROM_BAG_DISPLAY_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScreenFadeBothToBlack1)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScreenFadeBothToBlack1)) {
             if (item == ITEM_NONE) {
                 BoxAppMan_ClearBoxApplicationAction(boxAppMan);
             } else if (item == ITEM_GRISEOUS_ORB && BoxPokemon_GetValue(boxAppMan->boxApp.pcMonPreview.mon, MON_DATA_SPECIES, NULL) != SPECIES_GIRATINA) {
                 StringTemplate_SetItemName(boxAppMan->MessageVariableBuffer, 0, item);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_MonCantHoldItem);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 (*state)++;
             } else {
                 StringTemplate_SetItemName(boxAppMan->MessageVariableBuffer, 0, item);
                 BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_HoldingItem);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
                 (*state)++;
             }
         }
         break;
     case GIVE_FROM_BAG_CONFIRM_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage)) {
             if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 (*state)++;
             }
         }
         break;
     case GIVE_FROM_BAG_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -2674,32 +2674,32 @@ static void BoxAppMan_MonItemHeldAction(BoxApplicationManager *boxAppMan, u32 *s
         if (Item_IsMail(item)) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_CantTakeMail);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = ITEM_HELD_CONFIRM_MESSAGE;
         } else {
             StringTemplate_SetItemName(boxAppMan->MessageVariableBuffer, 0, item);
             BoxMenu_FillYesNo(&boxAppMan->boxApp, 0);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_ConfirmTakeItem);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = ITEM_HELD_YES_NO;
         }
         break;
     case ITEM_HELD_YES_NO:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
         switch (BoxMenu_GetMenuNavigation(&boxAppMan->boxApp)) {
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_NO:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = ITEM_HELD_END;
             break;
         case BOX_MENU_YES:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_HideMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_HideMenu);
             *state = ITEM_HELD_ADD_TO_BAG;
             break;
         }
@@ -2707,33 +2707,33 @@ static void BoxAppMan_MonItemHeldAction(BoxApplicationManager *boxAppMan, u32 *s
     case ITEM_HELD_ADD_TO_BAG:
         if (Bag_TryAddItem(SaveData_GetBag(boxAppMan->saveData), item, 1, HEAP_ID_BOX_DATA)) {
             BoxApp_GiveItemToSelectedMon(&boxAppMan->boxApp, ITEM_NONE, boxAppMan);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateHeldItemDisplay);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateHeldItemDisplay);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = ITEM_HELD_DISPLAY_TOOK_ITEM_MESSAGE;
         } else {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_BagFull);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = ITEM_HELD_CONFIRM_MESSAGE;
         }
         break;
     case ITEM_HELD_DISPLAY_TOOK_ITEM_MESSAGE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_TookItem);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = ITEM_HELD_CONFIRM_MESSAGE;
         }
         break;
     case ITEM_HELD_CONFIRM_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage)) {
             if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 *state = ITEM_HELD_END;
             }
         }
         break;
     case ITEM_HELD_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -2761,32 +2761,32 @@ static void BoxAppMan_PutAwayItemAction(BoxApplicationManager *boxAppMan, u32 *s
         if (Item_IsMail(item)) {
             Sound_PlayEffect(SEQ_SE_DP_BOX03_sseq);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_CantTakeMail);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = PUT_AWAY_ITEM_CONFIRM_MESSAGE;
         } else {
             StringTemplate_SetItemName(boxAppMan->MessageVariableBuffer, 0, item);
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_PutAwayItem);
             BoxMenu_FillYesNo(&boxAppMan->boxApp, 0);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowMenu);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowMenu);
             *state = PUT_AWAY_ITEM_YES_NO;
         }
         break;
     case PUT_AWAY_ITEM_YES_NO:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114) == FALSE) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics) == FALSE) {
             break;
         }
 
         switch (BoxMenu_GetMenuNavigation(&boxAppMan->boxApp)) {
         case BOX_MENU_NAVIGATION_UP_DOWN:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMenuCursor);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMenuCursor);
             break;
         case BOX_MENU_NAVIGATION_B:
         case BOX_MENU_NO:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = PUT_AWAY_ITEM_END;
             break;
         case BOX_MENU_YES:
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
             *state = PUT_AWAY_ITEM_ADD_TO_BAG;
             break;
         }
@@ -2801,38 +2801,38 @@ static void BoxAppMan_PutAwayItemAction(BoxApplicationManager *boxAppMan, u32 *s
                 *state = PUT_AWAY_ITEM_ANIMATE_ITEM_AWAY;
             }
 
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ItemShrinkToNothing);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ItemShrinkToNothing);
         } else {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_BagFull);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = PUT_AWAY_ITEM_CONFIRM_MESSAGE;
         }
         break;
     case PUT_AWAY_ITEM_ANIMATE_ITEM_AWAY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ItemShrinkToNothing)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateHeldItemDisplay);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ItemShrinkToNothing)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateHeldItemDisplay);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
             *state = PUT_AWAY_ITEM_SHOW_STORED_MESSAGE;
         }
         break;
     case PUT_AWAY_ITEM_SHOW_STORED_MESSAGE:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, BoxText_PlaceItemInBag);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             *state = PUT_AWAY_ITEM_CONFIRM_MESSAGE;
         }
         break;
     case PUT_AWAY_ITEM_CONFIRM_MESSAGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage)) {
             if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B)) {
                 Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
                 *state = PUT_AWAY_ITEM_END;
             }
         }
         break;
     case PUT_AWAY_ITEM_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -2851,28 +2851,28 @@ static void BoxAppMan_DisplayItemInfoAction(BoxApplicationManager *boxAppMan, u3
 {
     switch (*state) {
     case ITEM_INFO_START:
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox);
         (*state)++;
         break;
     case ITEM_INFO_CLOSE_MENU:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseMessageBox)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayItemInfo);
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseMessageBox)) {
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayItemInfo);
             (*state)++;
         }
         break;
     case ITEM_INFO_DISPLAY:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayItemInfo)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayItemInfo)) {
             (*state)++;
         }
         break;
     case ITEM_INFO_CONFIRM:
         if (JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B | PAD_PLUS_KEY_MASK)) {
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_CloseItemInfo);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseItemInfo);
             (*state)++;
         }
         break;
     case ITEM_INFO_END:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_CloseItemInfo)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_CloseItemInfo)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -2909,24 +2909,24 @@ static BOOL BoxAppMan_TrySelectBoxFromPopup(BoxApplicationManager *boxAppMan)
         }
 
         BoxApp_SetBoxSelectionBoxID(&boxAppMan->boxApp, boxSelector->boxID);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ShowBoxSelectionPopup);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowBoxSelectionPopup);
         boxSelector->state = BOX_SELECTOR_DISPLAY_MESSAGE_START;
         break;
     case BOX_SELECTOR_DISPLAY_MESSAGE_START:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ShowBoxSelectionPopup)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ShowBoxSelectionPopup)) {
             BoxApp_SetBoxMessage(&boxAppMan->boxApp, boxSelector->boxMessageID);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage);
             boxSelector->state = BOX_SELECTOR_DISPLAY_MESSAGE_DONE;
         }
         break;
     case BOX_SELECTOR_DISPLAY_MESSAGE_DONE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_DisplayBoxMessage) == FALSE) {
             break;
         }
 
         boxSelector->state = BOX_SELECTOR_WAIT_FOR_USER;
     case BOX_SELECTOR_WAIT_FOR_USER:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollBoxSelectionPopup) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollBoxSelectionPopup) == FALSE) {
             break;
         }
 
@@ -2938,7 +2938,7 @@ static BOOL BoxAppMan_TrySelectBoxFromPopup(BoxApplicationManager *boxAppMan)
             }
 
             BoxApp_SetBoxSelectionBoxID(&boxAppMan->boxApp, boxSelector->boxID);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollBoxSelectionPopup);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollBoxSelectionPopup);
             break;
         }
 
@@ -2948,7 +2948,7 @@ static BOOL BoxAppMan_TrySelectBoxFromPopup(BoxApplicationManager *boxAppMan)
             }
 
             BoxApp_SetBoxSelectionBoxID(&boxAppMan->boxApp, boxSelector->boxID);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollBoxSelectionPopup);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollBoxSelectionPopup);
             break;
         }
 
@@ -2980,13 +2980,13 @@ static void BoxAppMan_ChangeToNewBoxAction(BoxApplicationManager *boxAppMan, u32
     case MOVE_BOX_START:
         PCBoxes_SetCurrentBox(boxAppMan->pcBoxes, BoxApp_GetCurrentBox(&boxAppMan->boxApp));
         BoxAppMan_TryPreviewCursorMon(boxAppMan);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox);
         (*state)++;
         break;
     case MOVE_BOX_WAIT_FOR_ANIMATION:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox)) {
             if (BoxApp_GetCursorLocation(&boxAppMan->boxApp) == CURSOR_IN_BOX && BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
                 (*state)++;
             } else {
                 BoxAppMan_ClearBoxApplicationAction(boxAppMan);
@@ -2994,7 +2994,7 @@ static void BoxAppMan_ChangeToNewBoxAction(BoxApplicationManager *boxAppMan, u32
         }
         break;
     case MOVE_BOX_END:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -3017,14 +3017,14 @@ static void BoxAppMan_TouchScreenBoxJump(BoxApplicationManager *boxAppMan, u32 *
         Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
         BoxApp_SetTouchDialSelected(&boxAppMan->boxApp, TOUCH_DIALS_BOX_JUMP);
         BoxApp_SetTouchDialOffset(&boxAppMan->boxApp, BoxApp_GetCurrentBox(&boxAppMan->boxApp));
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
         TouchDial_Init(&boxAppMan->touchDial, 0, 192, 56, 88);
         boxAppMan->touchDialBoxChanged = FALSE;
         boxAppMan->scrollEnded = TRUE;
         *state = TOUCH_BOX_JUMP_WAIT_FOR_INPUT_OR_JUMP;
         break;
     case TOUCH_BOX_JUMP_WAIT_FOR_INPUT_OR_JUMP:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial) == FALSE) {
             break;
         }
 
@@ -3043,7 +3043,7 @@ static void BoxAppMan_TouchScreenBoxJump(BoxApplicationManager *boxAppMan, u32 *
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             BoxApp_SetTouchDialSelected(&boxAppMan->boxApp, TOUCH_DIALS_NONE);
             BoxApp_SetTouchDialOffset(&boxAppMan->boxApp, BoxApp_GetCurrentBox(&boxAppMan->boxApp));
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
             *state = TOUCH_BOX_JUMP_END;
             break;
         }
@@ -3058,10 +3058,10 @@ static void BoxAppMan_TouchScreenBoxJump(BoxApplicationManager *boxAppMan, u32 *
                     BoxAppMan_TryPreviewCursorMon(boxAppMan);
 
                     if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR) {
-                        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ClearMonPreview);
+                        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ClearMonPreview);
                     }
 
-                    BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox);
+                    BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox);
                     boxAppMan->touchDialBoxChanged = FALSE;
                     boxAppMan->boxJumpDelayCounter = 0;
                     *state = TOUCH_BOX_JUMP_WAIT_FOR_BOX_CHANGE;
@@ -3093,7 +3093,7 @@ static void BoxAppMan_TouchScreenBoxJump(BoxApplicationManager *boxAppMan, u32 *
                 boxAppMan->touchDialScrollAmount = scrollAmount;
                 BoxApp_SetTouchDialOffset(&boxAppMan->boxApp, newOffset);
                 BoxApp_SetTouchDialScrollDelta(&boxAppMan->boxApp, scrollDelta);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollTouchDial);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollTouchDial);
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 *state = TOUCH_BOX_JUMP_END_SCROLL;
             }
@@ -3120,14 +3120,14 @@ static void BoxAppMan_TouchScreenBoxJump(BoxApplicationManager *boxAppMan, u32 *
             }
         }
 
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollTouchDial)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollTouchDial)) {
             *state = TOUCH_BOX_JUMP_WAIT_FOR_INPUT_OR_JUMP;
         }
         break;
     case TOUCH_BOX_JUMP_WAIT_FOR_BOX_CHANGE:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ChangeToNewBox)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ChangeToNewBox)) {
             if (BoxApp_GetPreviewMonSource(&boxAppMan->boxApp) == PREVIEW_MON_UNDER_CURSOR && BoxApp_IsMonUnderCursor(&boxAppMan->boxApp)) {
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
                 *state = TOUCH_BOX_JUMP_WAIT_FOR_MON_PREVIEW;
             } else {
                 *state = TOUCH_BOX_JUMP_WAIT_FOR_INPUT_OR_JUMP;
@@ -3135,12 +3135,12 @@ static void BoxAppMan_TouchScreenBoxJump(BoxApplicationManager *boxAppMan, u32 *
         }
         break;
     case TOUCH_BOX_JUMP_WAIT_FOR_MON_PREVIEW:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon)) {
             *state = TOUCH_BOX_JUMP_WAIT_FOR_INPUT_OR_JUMP;
         }
         break;
     case TOUCH_BOX_JUMP_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -3162,14 +3162,14 @@ static void BoxAppMan_MarkingsFilterAction(BoxApplicationManager *boxAppMan, u32
         BoxApp_SetTouchDialSelected(&boxAppMan->boxApp, TOUCH_DIALS_MARKINGS);
         BoxApp_SetMarkingsButtonsScrollOffset(&boxAppMan->boxApp, 0);
         BoxApp_SetTouchDialOffset(&boxAppMan->boxApp, 0);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
         TouchDial_Init(&boxAppMan->touchDial, 255, 192, 56, 88);
         boxAppMan->touchDialBoxChanged = FALSE;
         boxAppMan->scrollEnded = TRUE;
         *state = TOUCH_MARKINGS_WAIT_FOR_USER_INPUT;
         break;
     case TOUCH_MARKINGS_WAIT_FOR_USER_INPUT:
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial) == FALSE) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial) == FALSE) {
             break;
         }
 
@@ -3183,14 +3183,14 @@ static void BoxAppMan_MarkingsFilterAction(BoxApplicationManager *boxAppMan, u32
         if (JOY_NEW(PAD_PLUS_KEY_MASK | PAD_BUTTON_A | PAD_BUTTON_B)) {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             BoxApp_SetTouchDialSelected(&boxAppMan->boxApp, TOUCH_DIALS_NONE);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_OpenOrCloseSelectedTouchDial);
             *state = TOUCH_MARKINGS_END;
         }
 
         if (BoxAppMan_TryPressMarkingsButton(boxAppMan)) {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_UpdateMarkingsTouchButton);
-            BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_SetMonMarkingsTransparency);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_UpdateMarkingsTouchButton);
+            BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_SetMonMarkingsTransparency);
             break;
         }
 
@@ -3219,7 +3219,7 @@ static void BoxAppMan_MarkingsFilterAction(BoxApplicationManager *boxAppMan, u32
                 BoxApp_SetTouchDialOffset(&boxAppMan->boxApp, newOffset);
                 BoxApp_SetMarkingsButtonsScrollOffset(&boxAppMan->boxApp, newOffset);
                 BoxApp_SetTouchDialScrollDelta(&boxAppMan->boxApp, scrollDelta);
-                BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollTouchDial);
+                BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollTouchDial);
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 *state = TOUCH_MARKINGS_END_SCROLL;
             }
@@ -3249,12 +3249,12 @@ static void BoxAppMan_MarkingsFilterAction(BoxApplicationManager *boxAppMan, u32
             }
         }
 
-        if (BoxGraphics_IsSysTaskDone(boxAppMan->unk_114, FUNC_BoxGraphics_ScrollTouchDial)) {
+        if (BoxGraphics_IsSysTaskDone(boxAppMan->boxGraphics, FUNC_BoxGraphics_ScrollTouchDial)) {
             *state = TOUCH_MARKINGS_WAIT_FOR_USER_INPUT;
         }
         break;
     case TOUCH_MARKINGS_END:
-        if (BoxGraphics_CheckAllTasksDone(boxAppMan->unk_114)) {
+        if (BoxGraphics_CheckAllTasksDone(boxAppMan->boxGraphics)) {
             BoxAppMan_ClearBoxApplicationAction(boxAppMan);
         }
         break;
@@ -3971,7 +3971,7 @@ static void BoxAppMan_PutDownCursorMon(BoxApplicationManager *boxAppMan, BoxAppl
 
     if (isMonInPreview == FALSE && shayminIsSkyForm == TRUE) {
         BoxApp_LoadBoxMonIntoPreview(boxApp, boxMon, boxAppMan);
-        BoxGraphics_TaskHandler(boxAppMan->unk_114, FUNC_BoxGraphics_PreviewMon);
+        BoxGraphics_TaskHandler(boxAppMan->boxGraphics, FUNC_BoxGraphics_PreviewMon);
     }
 
     boxApp->cursor.previewMonSource = PREVIEW_MON_UNDER_CURSOR;

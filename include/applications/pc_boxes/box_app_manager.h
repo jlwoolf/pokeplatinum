@@ -92,7 +92,7 @@ typedef struct ReleaseMon {
 
 typedef struct BoxApplicationManager {
     BoxApplication boxApp;
-    BoxGraphics *unk_114;
+    BoxGraphics *boxGraphics;
     PokemonStorageSession *pokemonStorageSession;
     SaveData *saveData;
     PCBoxes *pcBoxes;

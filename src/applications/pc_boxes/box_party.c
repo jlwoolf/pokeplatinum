@@ -23,8 +23,8 @@
 #include "sys_task_manager.h"
 
 static const struct {
-    u16 unk_00;
-    u16 unk_02;
+    u16 x;
+    u16 y;
 } sBoxPartyMonPositions[] = {
     { 144, 28 },
     { 192, 36 },
@@ -46,46 +46,46 @@ static void BoxParty_DeleteMonSprites(BoxParty *param0);
 
 BOOL BoxParty_Load(BoxParty *param0, BoxGraphics *param1, const BoxApplication *param2, BgConfig *param3, SpriteList *param4, NARC *param5)
 {
-    param0->unk_00 = param1;
-    param0->unk_0C = param2;
-    param0->unk_08 = param4;
-    param0->unk_04 = param3;
-    param0->unk_38 = BoxGraphics_GetBoxMonSpriteManager(param1);
-    param0->unk_10 = BoxGraphics_GetBoxView(param1);
+    param0->boxGraphics = param1;
+    param0->boxApp = param2;
+    param0->spriteList = param4;
+    param0->bgConfig = param3;
+    param0->monSpriteManager = BoxGraphics_GetBoxMonSpriteManager(param1);
+    param0->boxView = BoxGraphics_GetBoxView(param1);
 
     if (BoxApp_GetBoxMode(param2) != PC_MODE_COMPARE) {
-        param0->unk_30 = 14;
-        param0->unk_34 = 0;
+        param0->tileOffset = 14;
+        param0->xOffset = 0;
     } else {
-        param0->unk_30 = 9;
-        param0->unk_34 = (9 - 14) * 8;
+        param0->tileOffset = 9;
+        param0->xOffset = (9 - 14) * 8;
     }
 
-    param0->unk_2B = 0;
-    param0->unk_2C = 0;
+    param0->windowOffset = 0;
+    param0->taskActive = 0;
 
-    BoxMonSprite_InitSlots(param0->unk_38, param0->unk_3C, 6);
+    BoxMonSprite_InitSlots(param0->monSpriteManager, param0->monSprites, 6);
 
-    param0->unk_1C = Heap_Alloc(HEAP_ID_BOX_GRAPHICS, sizeof(VecFx32) * 6 * 8);
-    param0->unk_14 = Graphics_GetScrnDataFromOpenNARC(param5, 6, 1, &(param0->unk_18), HEAP_ID_BOX_GRAPHICS);
+    param0->monPath = Heap_Alloc(HEAP_ID_BOX_GRAPHICS, sizeof(VecFx32) * 6 * 8);
+    param0->screenDataFile = Graphics_GetScrnDataFromOpenNARC(param5, 6, 1, &(param0->screenData), HEAP_ID_BOX_GRAPHICS);
 
-    if ((param0->unk_14 == NULL) || (param0->unk_1C == NULL)) {
+    if ((param0->screenDataFile == NULL) || (param0->monPath == NULL)) {
         return 0;
     }
 
-    BoxParty_InitMonPath(param0, param0->unk_1C);
+    BoxParty_InitMonPath(param0, param0->monPath);
 
     return 1;
 }
 
 void BoxParty_Free(BoxParty *param0)
 {
-    if (param0->unk_14) {
-        Heap_Free(param0->unk_14);
+    if (param0->screenDataFile) {
+        Heap_Free(param0->screenDataFile);
     }
 
-    if (param0->unk_1C != NULL) {
-        Heap_Free(param0->unk_1C);
+    if (param0->monPath != NULL) {
+        Heap_Free(param0->monPath);
     }
 
     BoxParty_DeleteMonSprites(param0);
@@ -93,23 +93,23 @@ void BoxParty_Free(BoxParty *param0)
 
 void BoxParty_Show(BoxParty *param0)
 {
-    param0->unk_2B = 0;
-    BoxParty_DrawWindow(param0, param0->unk_2B);
+    param0->windowOffset = 0;
+    BoxParty_DrawWindow(param0, param0->windowOffset);
     BoxParty_CreateMonSprites(param0, 1);
-    Bg_CopyTilemapBufferToVRAM(param0->unk_04, 2);
+    Bg_CopyTilemapBufferToVRAM(param0->bgConfig, 2);
 }
 
 void BoxParty_Hide(BoxParty *param0)
 {
     BoxParty_CreateMonSprites(param0, 0);
 
-    param0->unk_2B = 26;
-    param0->unk_2C = (BoxGraphics_StartVBlankTask(BoxParty_HideTask, param0, 0) != NULL);
+    param0->windowOffset = 26;
+    param0->taskActive = (BoxGraphics_StartVBlankTask(BoxParty_HideTask, param0, 0) != NULL);
 }
 
 BOOL BoxParty_IsHideDone(BoxParty *param0)
 {
-    return param0->unk_2C == 0;
+    return param0->taskActive == 0;
 }
 
 static void BoxParty_HideTask(SysTask *param0, void *param1)
@@ -117,32 +117,32 @@ static void BoxParty_HideTask(SysTask *param0, void *param1)
     BoxParty *v0 = (BoxParty *)param1;
     fx32 v1;
 
-    if (v0->unk_2B > 2) {
+    if (v0->windowOffset > 2) {
         v1 = -((2 * 8) << FX32_SHIFT);
-        v0->unk_2B -= 2;
+        v0->windowOffset -= 2;
     } else {
-        v1 = -((v0->unk_2B * 8) << FX32_SHIFT);
-        v0->unk_2B = 0;
+        v1 = -((v0->windowOffset * 8) << FX32_SHIFT);
+        v0->windowOffset = 0;
     }
 
-    BoxParty_DrawWindow(v0, v0->unk_2B);
-    Bg_CopyTilemapBufferToVRAM(v0->unk_04, 2);
+    BoxParty_DrawWindow(v0, v0->windowOffset);
+    Bg_CopyTilemapBufferToVRAM(v0->bgConfig, 2);
     BoxParty_ShiftMonY(v0, v1);
 
-    if (v0->unk_2B == 0) {
-        v0->unk_2C = 0;
+    if (v0->windowOffset == 0) {
+        v0->taskActive = 0;
         SysTask_Done(param0);
     }
 }
 
 void BoxParty_StartHide(BoxParty *param0)
 {
-    param0->unk_2C = (BoxGraphics_StartVBlankTask(BoxParty_ShowTask, param0, 0) != NULL);
+    param0->taskActive = (BoxGraphics_StartVBlankTask(BoxParty_ShowTask, param0, 0) != NULL);
 }
 
 BOOL BoxParty_IsShowDone(BoxParty *param0)
 {
-    if (param0->unk_2C == 0) {
+    if (param0->taskActive == 0) {
         BoxParty_DeleteMonSprites(param0);
         return 1;
     }
@@ -155,54 +155,54 @@ static void BoxParty_ShowTask(SysTask *param0, void *param1)
     BoxParty *v0 = (BoxParty *)param1;
     fx32 v1;
 
-    if (v0->unk_2B < (26 - 2)) {
+    if (v0->windowOffset < (26 - 2)) {
         v1 = ((2 * 8) << FX32_SHIFT);
-        v0->unk_2B += 2;
+        v0->windowOffset += 2;
     } else {
-        v1 = ((26 - v0->unk_2B) * 8) << FX32_SHIFT;
-        v0->unk_2B = 26;
+        v1 = ((26 - v0->windowOffset) * 8) << FX32_SHIFT;
+        v0->windowOffset = 26;
     }
 
-    if (v0->unk_2B > 2) {
+    if (v0->windowOffset > 2) {
         u32 v2, v3;
 
         v3 = (u32)((v1) >> FX32_SHIFT) / 8;
-        v2 = v0->unk_2B - 2 - v3;
+        v2 = v0->windowOffset - 2 - v3;
 
-        Bg_FillTilemapRect(v0->unk_04, 2, 0x0, v0->unk_30, v2, 15, v3, 17);
+        Bg_FillTilemapRect(v0->bgConfig, 2, 0x0, v0->tileOffset, v2, 15, v3, 17);
     }
 
-    BoxParty_DrawWindow(v0, v0->unk_2B);
-    Bg_CopyTilemapBufferToVRAM(v0->unk_04, 2);
+    BoxParty_DrawWindow(v0, v0->windowOffset);
+    Bg_CopyTilemapBufferToVRAM(v0->bgConfig, 2);
     BoxParty_ShiftMonY(v0, v1);
 
-    if (v0->unk_2B == 26) {
-        v0->unk_2C = 0;
+    if (v0->windowOffset == 26) {
+        v0->taskActive = 0;
         SysTask_Done(param0);
     }
 }
 
 void BoxParty_ShiftMonsDown(BoxParty *param0)
 {
-    int partyCount = Party_GetCurrentCount(param0->unk_0C->party);
+    int partyCount = Party_GetCurrentCount(param0->boxApp->party);
 
-    if (param0->unk_28 < partyCount) {
-        int v2 = partyCount - param0->unk_28;
+    if (param0->monIndex < partyCount) {
+        int v2 = partyCount - param0->monIndex;
 
-        for (int v1 = param0->unk_28; v1 < MAX_PARTY_SIZE - 1; v1++) {
-            BoxMonSprite_CopySlot(&(param0->unk_3C[v1 + 1]), &(param0->unk_3C[v1]), 1);
-            BoxMonSprite_InitSlots(param0->unk_38, &(param0->unk_3C[v1 + 1]), 1);
+        for (int v1 = param0->monIndex; v1 < MAX_PARTY_SIZE - 1; v1++) {
+            BoxMonSprite_CopySlot(&(param0->monSprites[v1 + 1]), &(param0->monSprites[v1]), 1);
+            BoxMonSprite_InitSlots(param0->monSpriteManager, &(param0->monSprites[v1 + 1]), 1);
 
-            if (param0->unk_3C[v1].unk_00 != NULL) {
-                BoxMonSprite_LoadIcon(param0->unk_38, &(param0->unk_3C[v1]), 1048 + 32 * v1);
+            if (param0->monSprites[v1].sprite != NULL) {
+                BoxMonSprite_LoadIcon(param0->monSpriteManager, &(param0->monSprites[v1]), 1048 + 32 * v1);
             }
         }
 
-        param0->unk_29 = v2;
-        param0->unk_2A = 0;
-        param0->unk_2C = (BoxGraphics_StartVBlankTask(BoxParty_ShiftMonsTask, param0, 0) != NULL);
+        param0->shiftMonCount = v2;
+        param0->pathStep = 0;
+        param0->taskActive = (BoxGraphics_StartVBlankTask(BoxParty_ShiftMonsTask, param0, 0) != NULL);
     } else {
-        param0->unk_2C = 0;
+        param0->taskActive = 0;
     }
 }
 
@@ -213,51 +213,51 @@ static void BoxParty_ShiftMonsTask(SysTask *param0, void *param1)
     int v2, v3, v4;
 
     v0 = (BoxParty *)param1;
-    v2 = v0->unk_28;
-    v4 = v0->unk_29;
-    v1 = ((VecFx32 *)(v0->unk_1C)) + ((v2 * 8) + v0->unk_2A);
+    v2 = v0->monIndex;
+    v4 = v0->shiftMonCount;
+    v1 = ((VecFx32 *)(v0->monPath)) + ((v2 * 8) + v0->pathStep);
 
     for (v3 = 0; v3 < v4; v3++) {
-        if (v0->unk_3C[v2].unk_00 != NULL) {
-            Sprite_SetPosition(v0->unk_3C[v2].unk_00, v1);
+        if (v0->monSprites[v2].sprite != NULL) {
+            Sprite_SetPosition(v0->monSprites[v2].sprite, v1);
         }
 
         v2++;
         v1 += 8;
     }
 
-    if (++(v0->unk_2A) >= 8) {
-        v0->unk_2C = 0;
+    if (++(v0->pathStep) >= 8) {
+        v0->taskActive = 0;
         SysTask_Done(param0);
     }
 }
 
 BOOL BoxParty_IsShiftDone(BoxParty *param0)
 {
-    return param0->unk_2C == 0;
+    return param0->taskActive == 0;
 }
 
 void BoxParty_MoveCursorToLastMon(BoxParty *param0)
 {
-    u32 v0 = Party_GetCurrentCount(param0->unk_0C->party) - 1;
+    u32 v0 = Party_GetCurrentCount(param0->boxApp->party) - 1;
 
-    if (param0->unk_28 > v0) {
+    if (param0->monIndex > v0) {
         VecFx32 v1;
 
-        v1 = *Sprite_GetPosition(param0->unk_3C[v0].unk_00);
-        param0->unk_20 = (((sBoxPartyMonPositions[v0].unk_00 + param0->unk_34) << FX32_SHIFT) - v1.x) / 8;
-        param0->unk_24 = ((sBoxPartyMonPositions[v0].unk_02 << FX32_SHIFT) - v1.y) / 8;
-        param0->unk_2A = 0;
-        param0->unk_28 = v0;
-        param0->unk_2C = (BoxGraphics_StartVBlankTask(BoxParty_MoveTask, param0, 0) != NULL);
+        v1 = *Sprite_GetPosition(param0->monSprites[v0].sprite);
+        param0->pathStepX = (((sBoxPartyMonPositions[v0].x + param0->xOffset) << FX32_SHIFT) - v1.x) / 8;
+        param0->pathStepY = ((sBoxPartyMonPositions[v0].y << FX32_SHIFT) - v1.y) / 8;
+        param0->pathStep = 0;
+        param0->monIndex = v0;
+        param0->taskActive = (BoxGraphics_StartVBlankTask(BoxParty_MoveTask, param0, 0) != NULL);
     } else {
-        param0->unk_2C = 0;
+        param0->taskActive = 0;
     }
 }
 
 BOOL BoxParty_IsMoveDone(BoxParty *param0)
 {
-    return param0->unk_2C == 0;
+    return param0->taskActive == 0;
 }
 
 static void BoxParty_MoveTask(SysTask *param0, void *param1)
@@ -267,22 +267,22 @@ static void BoxParty_MoveTask(SysTask *param0, void *param1)
     BOOL v2;
 
     v0 = (BoxParty *)param1;
-    v1 = *Sprite_GetPosition(v0->unk_3C[v0->unk_28].unk_00);
+    v1 = *Sprite_GetPosition(v0->monSprites[v0->monIndex].sprite);
 
-    if (++(v0->unk_2A) >= 8) {
-        v1.x = (sBoxPartyMonPositions[v0->unk_28].unk_00 + v0->unk_34) << FX32_SHIFT;
-        v1.y = sBoxPartyMonPositions[v0->unk_28].unk_02 << FX32_SHIFT;
+    if (++(v0->pathStep) >= 8) {
+        v1.x = (sBoxPartyMonPositions[v0->monIndex].x + v0->xOffset) << FX32_SHIFT;
+        v1.y = sBoxPartyMonPositions[v0->monIndex].y << FX32_SHIFT;
         v2 = 1;
     } else {
-        v1.x += v0->unk_20;
-        v1.y += v0->unk_24;
+        v1.x += v0->pathStepX;
+        v1.y += v0->pathStepY;
         v2 = 0;
     }
 
-    Sprite_SetPosition(v0->unk_3C[v0->unk_28].unk_00, &v1);
+    Sprite_SetPosition(v0->monSprites[v0->monIndex].sprite, &v1);
 
     if (v2) {
-        v0->unk_2C = 0;
+        v0->taskActive = 0;
         SysTask_Done(param0);
     }
 }
@@ -291,44 +291,44 @@ void BoxParty_ReloadMons(BoxParty *param0)
 {
     u32 v0;
 
-    if (param0->unk_0C->selectedBoxID == BoxApp_GetCurrentBox(param0->unk_0C)) {
-        BoxView_DrawAllBoxMons(param0->unk_10);
+    if (param0->boxApp->selectedBoxID == BoxApp_GetCurrentBox(param0->boxApp)) {
+        BoxView_DrawAllBoxMons(param0->boxView);
     }
 
-    v0 = BoxApp_GetCursorPartyPosition(param0->unk_0C);
-    BoxMonSprite_DeleteSlots(param0->unk_38, &param0->unk_3C[v0], 1);
-    param0->unk_28 = v0;
+    v0 = BoxApp_GetCursorPartyPosition(param0->boxApp);
+    BoxMonSprite_DeleteSlots(param0->monSpriteManager, &param0->monSprites[v0], 1);
+    param0->monIndex = v0;
 }
 
 void BoxParty_StartReleaseAnimation(BoxParty *param0, u32 param1)
 {
-    param0->unk_174 = 0;
-    param0->unk_28 = param1;
-    BoxMonSprite_SetAnim(param0->unk_38, &(param0->unk_3C[param1]), 1);
+    param0->state = 0;
+    param0->monIndex = param1;
+    BoxMonSprite_SetAnim(param0->monSpriteManager, &(param0->monSprites[param1]), 1);
 }
 
 BOOL BoxParty_UpdateReleaseAnimation(BoxParty *param0)
 {
-    BoxMonSprite *v0 = &(param0->unk_3C[param0->unk_28]);
+    BoxMonSprite *v0 = &(param0->monSprites[param0->monIndex]);
 
-    switch (param0->unk_174) {
+    switch (param0->state) {
     case 0:
-        if (BoxMonSprite_IsAnimDone(param0->unk_38, v0)) {
-            const BoxApplicationManager *v1 = BoxGraphics_GetAppManager(param0->unk_00);
+        if (BoxMonSprite_IsAnimDone(param0->monSpriteManager, v0)) {
+            const BoxApplicationManager *v1 = BoxGraphics_GetAppManager(param0->boxGraphics);
 
             if (BoxAppMan_HasCheckedCanReleaseMon(v1)) {
                 if (BoxAppMan_CanReleaseMon(v1)) {
-                    BoxMonSprite_DeleteSlots(param0->unk_38, v0, 1);
+                    BoxMonSprite_DeleteSlots(param0->monSpriteManager, v0, 1);
                     return 1;
                 } else {
-                    BoxMonSprite_SetAnim(param0->unk_38, v0, 2);
-                    param0->unk_174++;
+                    BoxMonSprite_SetAnim(param0->monSpriteManager, v0, 2);
+                    param0->state++;
                 }
             }
         }
         break;
     case 1:
-        if (BoxMonSprite_IsAnimDone(param0->unk_38, v0)) {
+        if (BoxMonSprite_IsAnimDone(param0->monSpriteManager, v0)) {
             return 1;
         }
         break;
@@ -339,15 +339,15 @@ BOOL BoxParty_UpdateReleaseAnimation(BoxParty *param0)
 
 void BoxParty_ApplyTransparency(BoxParty *param0)
 {
-    if (BoxApp_GetCursorLocation(param0->unk_0C) == CURSOR_IN_PARTY) {
+    if (BoxApp_GetCursorLocation(param0->boxApp) == CURSOR_IN_PARTY) {
         u32 v0;
         int v1;
 
-        v0 = BoxApp_GetMonSpriteTransparencyMask(param0->unk_0C);
+        v0 = BoxApp_GetMonSpriteTransparencyMask(param0->boxApp);
 
         for (v1 = 0; v1 < 6; v1++) {
-            if (param0->unk_3C[v1].unk_00 != NULL) {
-                BoxMonSprite_UpdateTransparency(param0->unk_38, &(param0->unk_3C[v1]), v0);
+            if (param0->monSprites[v1].sprite != NULL) {
+                BoxMonSprite_UpdateTransparency(param0->monSpriteManager, &(param0->monSprites[v1]), v0);
             }
         }
     }
@@ -355,30 +355,30 @@ void BoxParty_ApplyTransparency(BoxParty *param0)
 
 void BoxParty_UpdateMonItem(BoxParty *param0, u32 param1, u32 param2)
 {
-    if (param0->unk_3C[param1].unk_00 != NULL) {
-        BoxMonSprite_SetHeldItem(param0->unk_38, &param0->unk_3C[param1], param2);
-        BoxMonSprite_UpdateTransparency(param0->unk_38, &param0->unk_3C[param1], BoxApp_GetMonSpriteTransparencyMask(param0->unk_0C));
-        BoxMonSprite_UpdateFormIcon(param0->unk_38, &param0->unk_3C[param1], 0);
+    if (param0->monSprites[param1].sprite != NULL) {
+        BoxMonSprite_SetHeldItem(param0->monSpriteManager, &param0->monSprites[param1], param2);
+        BoxMonSprite_UpdateTransparency(param0->monSpriteManager, &param0->monSprites[param1], BoxApp_GetMonSpriteTransparencyMask(param0->boxApp));
+        BoxMonSprite_UpdateFormIcon(param0->monSpriteManager, &param0->monSprites[param1], 0);
     }
 }
 
 void BoxParty_UpdateMonMarkings(BoxParty *param0)
 {
-    u32 v0 = BoxApp_GetCursorPartyPosition(param0->unk_0C);
-    u32 v1 = BoxApp_GetPreviewedMonMarkings(param0->unk_0C);
+    u32 v0 = BoxApp_GetCursorPartyPosition(param0->boxApp);
+    u32 v1 = BoxApp_GetPreviewedMonMarkings(param0->boxApp);
 
-    if (param0->unk_3C[v0].unk_00 != NULL) {
-        BoxMonSprite_SetMarkings(param0->unk_38, &(param0->unk_3C[v0]), v1);
+    if (param0->monSprites[v0].sprite != NULL) {
+        BoxMonSprite_SetMarkings(param0->monSpriteManager, &(param0->monSprites[v0]), v1);
     }
 }
 
 void BoxParty_PlaceMonSprite(BoxParty *param0, u32 param1, u32 param2, BoxMonSprite *param3)
 {
-    BoxMonSprite_CopySlot(&param0->unk_3C[param1], param3, 1);
-    BoxMonSprite_LoadIcon(param0->unk_38, param3, param2);
-    BoxMonSprite_InitSlots(param0->unk_38, &param0->unk_3C[param1], 1);
+    BoxMonSprite_CopySlot(&param0->monSprites[param1], param3, 1);
+    BoxMonSprite_LoadIcon(param0->monSpriteManager, param3, param2);
+    BoxMonSprite_InitSlots(param0->monSpriteManager, &param0->monSprites[param1], 1);
 
-    param0->unk_28 = param1;
+    param0->monIndex = param1;
 }
 
 void BoxParty_AddMonSprite(BoxParty *param0, u32 param1, const BoxMonSprite *param2)
@@ -387,16 +387,16 @@ void BoxParty_AddMonSprite(BoxParty *param0, u32 param1, const BoxMonSprite *par
     u32 v1;
     BoxMonSprite *v2;
 
-    v0 = Party_GetCurrentCount(param0->unk_0C->party) - 1;
+    v0 = Party_GetCurrentCount(param0->boxApp->party) - 1;
     v1 = 1048 + 32 * v0;
-    v2 = &param0->unk_3C[v0];
+    v2 = &param0->monSprites[v0];
 
     BoxMonSprite_CopySlot(param2, v2, 1);
-    BoxMonSprite_LoadIcon(param0->unk_38, v2, v1);
-    Sprite_SetExplicitPriority(v2->unk_00, 1);
-    BoxGraphics_SetSpritePriority(v2->unk_00, 4 + v0);
+    BoxMonSprite_LoadIcon(param0->monSpriteManager, v2, v1);
+    Sprite_SetExplicitPriority(v2->sprite, 1);
+    BoxGraphics_SetSpritePriority(v2->sprite, 4 + v0);
 
-    param0->unk_28 = param1;
+    param0->monIndex = param1;
 }
 
 void BoxParty_SetMonSprite(BoxParty *param0, u32 param1, const BoxMonSprite *param2)
@@ -407,30 +407,30 @@ void BoxParty_SetMonSprite(BoxParty *param0, u32 param1, const BoxMonSprite *par
 
     v0 = param1;
     v1 = 1048 + 32 * v0;
-    v2 = &param0->unk_3C[v0];
+    v2 = &param0->monSprites[v0];
 
     BoxMonSprite_CopySlot(param2, v2, 1);
-    BoxMonSprite_LoadIcon(param0->unk_38, v2, v1);
-    Sprite_SetExplicitPriority(v2->unk_00, 1);
-    BoxGraphics_SetSpritePriority(v2->unk_00, 4 + v0);
+    BoxMonSprite_LoadIcon(param0->monSpriteManager, v2, v1);
+    Sprite_SetExplicitPriority(v2->sprite, 1);
+    BoxGraphics_SetSpritePriority(v2->sprite, 4 + v0);
 
-    param0->unk_28 = param1;
+    param0->monIndex = param1;
 }
 
 BoxMonSprite *BoxParty_GetMonSprite(BoxParty *param0, u32 param1)
 {
     GF_ASSERT(param1 < 6);
-    return &param0->unk_3C[param1];
+    return &param0->monSprites[param1];
 }
 
 void BoxParty_GetMonPosition(BoxParty *param0, u32 param1, s32 *param2, s32 *param3)
 {
     if (param1 == 6) {
-        *param2 = 192 + param0->unk_34;
+        *param2 = 192 + param0->xOffset;
         *param3 = 184;
     } else {
-        *param2 = sBoxPartyMonPositions[param1].unk_00 + param0->unk_34;
-        *param3 = sBoxPartyMonPositions[param1].unk_02;
+        *param2 = sBoxPartyMonPositions[param1].x + param0->xOffset;
+        *param3 = sBoxPartyMonPositions[param1].y;
     }
 }
 
@@ -452,7 +452,7 @@ static void BoxParty_DrawWindow(BoxParty *param0, u32 param1)
         v2 = 24 - v1;
     }
 
-    Bg_LoadToTilemapRect(param0->unk_04, 2, ((u8 *)param0->unk_18->rawData) + v0, param0->unk_30, v2, 15, v1);
+    Bg_LoadToTilemapRect(param0->bgConfig, 2, ((u8 *)param0->screenData->rawData) + v0, param0->tileOffset, v2, 15, v1);
 }
 
 static void BoxParty_InitMonPath(BoxParty *param0, VecFx32 *param1)
@@ -463,17 +463,17 @@ static void BoxParty_InitMonPath(BoxParty *param0, VecFx32 *param1)
     v4 = 0;
 
     for (v2 = 0; v2 < (6 - 1); v2++) {
-        v0 = ((sBoxPartyMonPositions[v2].unk_00 - sBoxPartyMonPositions[v2 + 1].unk_00) * FX32_ONE) / 8;
-        v1 = ((sBoxPartyMonPositions[v2].unk_02 - sBoxPartyMonPositions[v2 + 1].unk_02) * FX32_ONE) / 8;
+        v0 = ((sBoxPartyMonPositions[v2].x - sBoxPartyMonPositions[v2 + 1].x) * FX32_ONE) / 8;
+        v1 = ((sBoxPartyMonPositions[v2].y - sBoxPartyMonPositions[v2 + 1].y) * FX32_ONE) / 8;
 
         for (v3 = 0; v3 < (8 - 1); v3++) {
-            param1[v3].x = ((sBoxPartyMonPositions[v2 + 1].unk_00 + param0->unk_34) * FX32_ONE) + (v0 * (v3 + 1));
-            param1[v3].y = (sBoxPartyMonPositions[v2 + 1].unk_02 * FX32_ONE) + (v1 * (v3 + 1));
+            param1[v3].x = ((sBoxPartyMonPositions[v2 + 1].x + param0->xOffset) * FX32_ONE) + (v0 * (v3 + 1));
+            param1[v3].y = (sBoxPartyMonPositions[v2 + 1].y * FX32_ONE) + (v1 * (v3 + 1));
             param1[v3].z = 0;
         }
 
-        param1[v3].x = ((sBoxPartyMonPositions[v2].unk_00 + param0->unk_34) * FX32_ONE);
-        param1[v3].y = (sBoxPartyMonPositions[v2].unk_02 * FX32_ONE);
+        param1[v3].x = ((sBoxPartyMonPositions[v2].x + param0->xOffset) * FX32_ONE);
+        param1[v3].y = (sBoxPartyMonPositions[v2].y * FX32_ONE);
         param1[v3].z = 0;
         param1 += 8;
     }
@@ -485,18 +485,18 @@ static void BoxParty_ShiftMonY(BoxParty *param0, fx32 param1)
     int v1;
 
     for (v1 = 0; v1 < 6; v1++) {
-        if (param0->unk_3C[v1].unk_00 != NULL) {
-            v0 = *Sprite_GetPosition(param0->unk_3C[v1].unk_00);
+        if (param0->monSprites[v1].sprite != NULL) {
+            v0 = *Sprite_GetPosition(param0->monSprites[v1].sprite);
             v0.y += param1;
-            Sprite_SetPosition(param0->unk_3C[v1].unk_00, &v0);
+            Sprite_SetPosition(param0->monSprites[v1].sprite, &v0);
 
             if (param1 < 0) {
                 if (v0.y < 851968) {
-                    Sprite_SetDrawFlag(param0->unk_3C[v1].unk_00, TRUE);
+                    Sprite_SetDrawFlag(param0->monSprites[v1].sprite, TRUE);
                 }
             } else {
                 if (v0.y >= 851968) {
-                    Sprite_SetDrawFlag(param0->unk_3C[v1].unk_00, FALSE);
+                    Sprite_SetDrawFlag(param0->monSprites[v1].sprite, FALSE);
                 }
             }
         } else {
@@ -511,12 +511,12 @@ static void BoxParty_CreateMonSprites(BoxParty *param0, BOOL param1)
     int v1, v2, v3;
 
     v3 = (param1) ? 0 : 208;
-    v2 = Party_GetCurrentCount(param0->unk_0C->party);
+    v2 = Party_GetCurrentCount(param0->boxApp->party);
 
     for (v1 = 0; v1 < v2; v1++) {
-        v0 = Party_GetPokemonBySlotIndex(param0->unk_0C->party, v1);
-        BoxMonSprite_CreateFromBoxMon(param0->unk_38, (BoxPokemon *)v0, sBoxPartyMonPositions[v1].unk_00 + param0->unk_34, sBoxPartyMonPositions[v1].unk_02 + v3, 1, 4 + v1, 1048 + 32 * v1, &param0->unk_3C[v1]);
-        Sprite_SetDrawFlag(param0->unk_3C[v1].unk_00, param1);
+        v0 = Party_GetPokemonBySlotIndex(param0->boxApp->party, v1);
+        BoxMonSprite_CreateFromBoxMon(param0->monSpriteManager, (BoxPokemon *)v0, sBoxPartyMonPositions[v1].x + param0->xOffset, sBoxPartyMonPositions[v1].y + v3, 1, 4 + v1, 1048 + 32 * v1, &param0->monSprites[v1]);
+        Sprite_SetDrawFlag(param0->monSprites[v1].sprite, param1);
     }
 }
 
@@ -524,11 +524,11 @@ static void BoxParty_DeleteMonSprites(BoxParty *param0)
 {
     int v0, v1;
 
-    v1 = Party_GetCurrentCount(param0->unk_0C->party);
+    v1 = Party_GetCurrentCount(param0->boxApp->party);
 
     for (v0 = 0; v0 < v1; v0++) {
-        if (param0->unk_3C[v0].unk_00) {
-            BoxMonSprite_DeleteSlots(param0->unk_38, &(param0->unk_3C[v0]), 1);
+        if (param0->monSprites[v0].sprite) {
+            BoxMonSprite_DeleteSlots(param0->monSpriteManager, &(param0->monSprites[v0]), 1);
         }
     }
 }

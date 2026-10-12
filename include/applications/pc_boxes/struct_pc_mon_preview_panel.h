@@ -14,25 +14,25 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    BOOL unk_00;
-    Window *unk_04;
-    BgConfig *unk_08;
-    SpriteList *unk_0C;
-    const BoxApplication *unk_10;
-    BoxGraphics *unk_14;
-    FontSpecialCharsContext *unk_18;
-    FontSpecialCharsContext *unk_1C;
-    PokemonSpriteManager *unk_20;
-    PokemonSprite *unk_24;
-    void *unk_28;
-    NNSG2dCellDataBank *unk_2C;
-    Sprite *unk_30;
-    void *unk_34;
-    NNSG2dCellDataBank *unk_38;
-    Sprite *unk_3C[2];
-    String *unk_44;
-    String *unk_48;
-    SysTask *unk_4C;
+    BOOL isLoaded;
+    Window *windows;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    const BoxApplication *boxApp;
+    BoxGraphics *boxGraphics;
+    FontSpecialCharsContext *dexNumFont;
+    FontSpecialCharsContext *levelFont;
+    PokemonSpriteManager *pokemonSpriteManager;
+    PokemonSprite *monSprite;
+    void *cellBank;
+    NNSG2dCellDataBank *cellBankData;
+    Sprite *infoSprite;
+    void *typeIconBank;
+    NNSG2dCellDataBank *typeIconCellBank;
+    Sprite *typeIconSprites[2];
+    String *maleString;
+    String *femaleString;
+    SysTask *task;
     u8 padding_50[4];
 } PCMonPreviewPanel;
 

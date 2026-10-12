@@ -24,8 +24,8 @@
 #include "sys_task_manager.h"
 
 static const struct {
-    u32 unk_00;
-    u32 unk_04;
+    u32 tileOffset;
+    u32 paletteIndex;
 } sBoxHeldItemIconSlots[] = {
     { 1536 * 0x20, 7 },
     { 1552 * 0x20, 8 },
@@ -33,29 +33,29 @@ static const struct {
 };
 
 struct BoxHeldItemIcons_t {
-    BOOL unk_00;
-    BoxGraphics *unk_04;
-    const BoxApplication *unk_08;
-    BgConfig *unk_0C;
-    SpriteList *unk_10;
-    BoxMonSpriteManager *unk_14;
-    BoxCursorSprite *unk_18;
-    Sprite *unk_1C[3];
-    int unk_28[3];
-    int unk_34;
-    int unk_38;
+    BOOL isLoaded;
+    BoxGraphics *boxGraphics;
+    const BoxApplication *boxApp;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    BoxMonSpriteManager *monSpriteManager;
+    BoxCursorSprite *cursorSprite;
+    Sprite *sprites[3];
+    int slotStates[3];
+    int activeAnimCount;
+    int activeSlot;
 };
 
 typedef struct {
-    BoxHeldItemIcons *unk_00;
-    Sprite *unk_04;
-    VecFx32 unk_08;
-    VecFx32 unk_14;
-    fx32 unk_20;
-    fx32 unk_24;
-    int unk_28;
-    int unk_2C;
-    int unk_30;
+    BoxHeldItemIcons *heldItemIcons;
+    Sprite *sprite;
+    VecFx32 currentPos;
+    VecFx32 targetPos;
+    fx32 stepX;
+    fx32 stepY;
+    int priority;
+    int stepCount;
+    int state;
 } BoxHeldItemAnim;
 
 static void BoxHeldItem_InitSprites(BoxHeldItemIcons *param0);
@@ -75,14 +75,14 @@ BOOL BoxHeldItem_Load(BoxHeldItemIcons **param0, BoxGraphics *param1, const BoxA
     BoxHeldItemIcons *v0 = Heap_Alloc(HEAP_ID_BOX_GRAPHICS, sizeof(BoxHeldItemIcons));
 
     if (v0) {
-        v0->unk_04 = param1;
-        v0->unk_08 = param2;
-        v0->unk_0C = param3;
-        v0->unk_10 = param4;
-        v0->unk_14 = BoxGraphics_GetBoxMonSpriteManager(param1);
-        v0->unk_18 = BoxGraphics_GetCursorSprite(param1);
-        v0->unk_34 = 0;
-        v0->unk_00 = (BoxApp_GetBoxMode(param2) == PC_MODE_MOVE_ITEMS);
+        v0->boxGraphics = param1;
+        v0->boxApp = param2;
+        v0->bgConfig = param3;
+        v0->spriteList = param4;
+        v0->monSpriteManager = BoxGraphics_GetBoxMonSpriteManager(param1);
+        v0->cursorSprite = BoxGraphics_GetCursorSprite(param1);
+        v0->activeAnimCount = 0;
+        v0->isLoaded = (BoxApp_GetBoxMode(param2) == PC_MODE_MOVE_ITEMS);
 
         BoxHeldItem_InitSprites(v0);
         *param0 = v0;
@@ -101,14 +101,14 @@ void BoxHeldItem_Free(BoxHeldItemIcons *param0)
 
 static void BoxHeldItem_InitSprites(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         SpriteResourcesHeader v0;
         NNSG2dImageProxy v1;
         NNSG2dCharacterData *v2;
         void *v3;
         int v4;
 
-        BoxGraphics_InitSpriteResources(&v0, &v1, BoxGraphics_GetPaletteProxy(param0->unk_04), param0->unk_14->unk_1C, param0->unk_14->unk_20, 0);
+        BoxGraphics_InitSpriteResources(&v0, &v1, BoxGraphics_GetPaletteProxy(param0->boxGraphics), param0->monSpriteManager->formCellBankData, param0->monSpriteManager->formAnimBankData, 0);
         v3 = Graphics_GetCharData(NARC_INDEX_ITEMTOOL__ITEMDATA__ITEM_ICON, Item_FileID(1, 1), 0, &v2, HEAP_ID_BOX_GRAPHICS);
 
         if (v3) {
@@ -118,15 +118,15 @@ static void BoxHeldItem_InitSprites(BoxHeldItemIcons *param0)
 
             for (v5 = 0; v5 < 3; v5++) {
                 NNS_G2dInitImageProxy(&v1);
-                NNS_G2dLoadImage1DMapping(v2, sBoxHeldItemIconSlots[v5].unk_00, NNS_G2D_VRAM_TYPE_2DMAIN, &v1);
+                NNS_G2dLoadImage1DMapping(v2, sBoxHeldItemIconSlots[v5].tileOffset, NNS_G2D_VRAM_TYPE_2DMAIN, &v1);
 
-                param0->unk_1C[v5] = BoxGraphics_CreateSprite(param0->unk_10, &v0, 0, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+                param0->sprites[v5] = BoxGraphics_CreateSprite(param0->spriteList, &v0, 0, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
-                Sprite_SetExplicitPalette(param0->unk_1C[v5], sBoxHeldItemIconSlots[v5].unk_04);
-                Sprite_SetDrawFlag(param0->unk_1C[v5], FALSE);
-                Sprite_SetAffineOverwriteMode(param0->unk_1C[v5], 1);
+                Sprite_SetExplicitPalette(param0->sprites[v5], sBoxHeldItemIconSlots[v5].paletteIndex);
+                Sprite_SetDrawFlag(param0->sprites[v5], FALSE);
+                Sprite_SetAffineOverwriteMode(param0->sprites[v5], 1);
 
-                param0->unk_28[v5] = 0;
+                param0->slotStates[v5] = 0;
             }
 
             Heap_Free(v3);
@@ -135,8 +135,8 @@ static void BoxHeldItem_InitSprites(BoxHeldItemIcons *param0)
         int v6;
 
         for (v6 = 0; v6 < 3; v6++) {
-            param0->unk_1C[v6] = NULL;
-            param0->unk_28[v6] = 0;
+            param0->sprites[v6] = NULL;
+            param0->slotStates[v6] = 0;
         }
     }
 }
@@ -146,8 +146,8 @@ static void BoxHeldItem_DeleteSprites(BoxHeldItemIcons *param0)
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param0->unk_1C[v0]) {
-            Sprite_Delete(param0->unk_1C[v0]);
+        if (param0->sprites[v0]) {
+            Sprite_Delete(param0->sprites[v0]);
         }
     }
 }
@@ -157,8 +157,8 @@ static int BoxHeldItem_AllocSlot(BoxHeldItemIcons *param0, int param1)
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param0->unk_28[v0] == 0) {
-            param0->unk_28[v0] = param1;
+        if (param0->slotStates[v0] == 0) {
+            param0->slotStates[v0] = param1;
             return v0;
         }
     }
@@ -171,7 +171,7 @@ static int BoxHeldItem_FindSlot(BoxHeldItemIcons *param0, int param1)
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param0->unk_28[v0] == param1) {
+        if (param0->slotStates[v0] == param1) {
             return v0;
         }
     }
@@ -181,12 +181,12 @@ static int BoxHeldItem_FindSlot(BoxHeldItemIcons *param0, int param1)
 
 static void BoxHeldItem_SetSlotState(BoxHeldItemIcons *param0, int param1, int param2)
 {
-    param0->unk_28[param1] = param2;
+    param0->slotStates[param1] = param2;
 }
 
 void BoxHeldItem_Show(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00 == 0) {
+    if (param0->isLoaded == 0) {
         return;
     }
 
@@ -196,46 +196,46 @@ void BoxHeldItem_Show(BoxHeldItemIcons *param0)
 
 static void BoxHeldItem_ShowPreviewedItem(BoxHeldItemIcons *param0)
 {
-    u32 v0 = BoxApp_GetPreviewedMonHeldItem(param0->unk_08);
+    u32 v0 = BoxApp_GetPreviewedMonHeldItem(param0->boxApp);
 
     if (v0 != 0) {
         int v1 = BoxHeldItem_AllocSlot(param0, 1);
 
         BoxHeldItem_LoadItemIcon(param0, v1, v0);
-        Sprite_SetAnim(param0->unk_1C[v1], 6);
-        Sprite_SetDrawFlag(param0->unk_1C[v1], TRUE);
+        Sprite_SetAnim(param0->sprites[v1], 6);
+        Sprite_SetDrawFlag(param0->sprites[v1], TRUE);
     }
 }
 
 static void BoxHeldItem_ShowCursorItem(BoxHeldItemIcons *param0)
 {
-    u32 item = BoxApp_GetCursorItem(param0->unk_08);
+    u32 item = BoxApp_GetCursorItem(param0->boxApp);
 
     if (item != ITEM_NONE) {
         VecFx32 v1;
         u32 v2;
         int v3 = BoxHeldItem_AllocSlot(param0, 3);
 
-        BoxCursorSprite_GetPosition(param0->unk_18, &v1);
+        BoxCursorSprite_GetPosition(param0->cursorSprite, &v1);
 
         v1.x += (0 << FX32_SHIFT);
         v1.y += (8 << FX32_SHIFT);
 
-        if (BoxApp_GetCursorLocation(param0->unk_08) == CURSOR_IN_PARTY) {
+        if (BoxApp_GetCursorLocation(param0->boxApp) == CURSOR_IN_PARTY) {
             v2 = 1;
         } else {
             v2 = 2;
         }
 
-        Graphics_LoadObjectTiles(16, Item_FileID(item, 1), 0, sBoxHeldItemIconSlots[v3].unk_00, 0, 0, HEAP_ID_BOX_GRAPHICS);
-        Graphics_LoadPalette(NARC_INDEX_ITEMTOOL__ITEMDATA__ITEM_ICON, Item_FileID(item, 2), 1, sBoxHeldItemIconSlots[v3].unk_04 * 0x20, 0x20, HEAP_ID_BOX_GRAPHICS);
-        Sprite_SetExplicitPriority(param0->unk_1C[v3], v2);
+        Graphics_LoadObjectTiles(16, Item_FileID(item, 1), 0, sBoxHeldItemIconSlots[v3].tileOffset, 0, 0, HEAP_ID_BOX_GRAPHICS);
+        Graphics_LoadPalette(NARC_INDEX_ITEMTOOL__ITEMDATA__ITEM_ICON, Item_FileID(item, 2), 1, sBoxHeldItemIconSlots[v3].paletteIndex * 0x20, 0x20, HEAP_ID_BOX_GRAPHICS);
+        Sprite_SetExplicitPriority(param0->sprites[v3], v2);
 
-        BoxGraphics_SetSpritePriority(param0->unk_1C[v3], 2);
+        BoxGraphics_SetSpritePriority(param0->sprites[v3], 2);
 
-        Sprite_SetPosition(param0->unk_1C[v3], &v1);
-        Sprite_SetAnim(param0->unk_1C[v3], 0);
-        Sprite_SetDrawFlag(param0->unk_1C[v3], TRUE);
+        Sprite_SetPosition(param0->sprites[v3], &v1);
+        Sprite_SetAnim(param0->sprites[v3], 0);
+        Sprite_SetDrawFlag(param0->sprites[v3], TRUE);
     }
 }
 
@@ -243,17 +243,17 @@ static void BoxHeldItem_GetCursorPosition(BoxHeldItemIcons *param0, VecFx32 *par
 {
     param1->z = 0;
 
-    if (BoxApp_GetCursorLocation(param0->unk_08) == CURSOR_IN_PARTY) {
+    if (BoxApp_GetCursorLocation(param0->boxApp) == CURSOR_IN_PARTY) {
         s32 v0, v1;
 
-        BoxParty_GetMonPosition(BoxGraphics_GetBoxParty(param0->unk_04), BoxApp_GetCursorPartyPosition(param0->unk_08), &v0, &v1);
+        BoxParty_GetMonPosition(BoxGraphics_GetBoxParty(param0->boxGraphics), BoxApp_GetCursorPartyPosition(param0->boxApp), &v0, &v1);
 
         param1->x = (v0 + 10) << FX32_SHIFT;
         param1->y = (v1 + 8) << FX32_SHIFT;
         *param2 = 1;
     } else {
-        param1->x = 112 + BoxGraphics_GetCompareXOffset(param0->unk_04) + BoxApp_GetCursorBoxCol(param0->unk_08) * 24 + 10;
-        param1->y = 40 + BoxApp_GetCursorBoxRow(param0->unk_08) * 24 + 8;
+        param1->x = 112 + BoxGraphics_GetCompareXOffset(param0->boxGraphics) + BoxApp_GetCursorBoxCol(param0->boxApp) * 24 + 10;
+        param1->y = 40 + BoxApp_GetCursorBoxRow(param0->boxApp) * 24 + 8;
         param1->x <<= FX32_SHIFT;
         param1->y <<= FX32_SHIFT;
         *param2 = 2;
@@ -268,36 +268,36 @@ static void BoxHeldItem_LoadItemIcon(BoxHeldItemIcons *param0, int param1, int p
 
         BoxHeldItem_GetCursorPosition(param0, &v0, &v1);
 
-        Graphics_LoadObjectTiles(16, Item_FileID(param2, 1), 0, sBoxHeldItemIconSlots[param1].unk_00, 0, 0, HEAP_ID_BOX_GRAPHICS);
-        Graphics_LoadPalette(NARC_INDEX_ITEMTOOL__ITEMDATA__ITEM_ICON, Item_FileID(param2, 2), 1, sBoxHeldItemIconSlots[param1].unk_04 * 0x20, 0x20, HEAP_ID_BOX_GRAPHICS);
-        Sprite_SetExplicitPriority(param0->unk_1C[param1], v1);
+        Graphics_LoadObjectTiles(16, Item_FileID(param2, 1), 0, sBoxHeldItemIconSlots[param1].tileOffset, 0, 0, HEAP_ID_BOX_GRAPHICS);
+        Graphics_LoadPalette(NARC_INDEX_ITEMTOOL__ITEMDATA__ITEM_ICON, Item_FileID(param2, 2), 1, sBoxHeldItemIconSlots[param1].paletteIndex * 0x20, 0x20, HEAP_ID_BOX_GRAPHICS);
+        Sprite_SetExplicitPriority(param0->sprites[param1], v1);
 
-        BoxGraphics_SetSpritePriority(param0->unk_1C[param1], 3);
-        Sprite_SetPosition(param0->unk_1C[param1], &v0);
+        BoxGraphics_SetSpritePriority(param0->sprites[param1], 3);
+        Sprite_SetPosition(param0->sprites[param1], &v0);
     }
 }
 
 void BoxHeldItem_Refresh(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0, v1;
 
         v0 = BoxHeldItem_FindSlot(param0, 1);
 
         if (v0 >= 0) {
             BoxHeldItem_SetSlotState(param0, v0, 2);
-            Sprite_SetAnim(param0->unk_1C[v0], 2);
+            Sprite_SetAnim(param0->sprites[v0], 2);
         }
 
-        v1 = BoxApp_GetPreviewedMonHeldItem(param0->unk_08);
+        v1 = BoxApp_GetPreviewedMonHeldItem(param0->boxApp);
 
         if (v1 != 0) {
             v0 = BoxHeldItem_AllocSlot(param0, 1);
 
             if (v0 >= 0) {
                 BoxHeldItem_LoadItemIcon(param0, v0, v1);
-                Sprite_SetAnim(param0->unk_1C[v0], 1);
-                Sprite_SetDrawFlag(param0->unk_1C[v0], TRUE);
+                Sprite_SetAnim(param0->sprites[v0], 1);
+                Sprite_SetDrawFlag(param0->sprites[v0], TRUE);
             }
         }
     }
@@ -305,13 +305,13 @@ void BoxHeldItem_Refresh(BoxHeldItemIcons *param0)
 
 BOOL BoxHeldItem_IsAnimDone(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00 == 0) {
+    if (param0->isLoaded == 0) {
         return 1;
     } else {
         int v0 = BoxHeldItem_FindSlot(param0, 1);
 
         if (v0 >= 0) {
-            if (Sprite_IsAnimated(param0->unk_1C[v0])) {
+            if (Sprite_IsAnimated(param0->sprites[v0])) {
                 return 0;
             }
         }
@@ -319,7 +319,7 @@ BOOL BoxHeldItem_IsAnimDone(BoxHeldItemIcons *param0)
         v0 = BoxHeldItem_FindSlot(param0, 2);
 
         if (v0 >= 0) {
-            if (Sprite_IsAnimated(param0->unk_1C[v0])) {
+            if (Sprite_IsAnimated(param0->sprites[v0])) {
                 return 0;
             }
 
@@ -335,18 +335,18 @@ static void BoxHeldItem_StartAnim(BoxHeldItemIcons *param0, int param1, const Ve
     BoxHeldItemAnim *v0 = Heap_Alloc(HEAP_ID_BOX_GRAPHICS, sizeof(BoxHeldItemAnim));
 
     if (v0) {
-        v0->unk_00 = param0;
-        v0->unk_04 = param0->unk_1C[param1];
-        v0->unk_08 = *(Sprite_GetPosition(v0->unk_04));
-        v0->unk_14 = *param2;
-        v0->unk_20 = (v0->unk_14.x - v0->unk_08.x) / param4;
-        v0->unk_24 = (v0->unk_14.y - v0->unk_08.y) / param4;
-        v0->unk_2C = param4;
-        v0->unk_28 = param3;
-        v0->unk_30 = 0;
+        v0->heldItemIcons = param0;
+        v0->sprite = param0->sprites[param1];
+        v0->currentPos = *(Sprite_GetPosition(v0->sprite));
+        v0->targetPos = *param2;
+        v0->stepX = (v0->targetPos.x - v0->currentPos.x) / param4;
+        v0->stepY = (v0->targetPos.y - v0->currentPos.y) / param4;
+        v0->stepCount = param4;
+        v0->priority = param3;
+        v0->state = 0;
 
         if (BoxGraphics_StartVBlankTask(BoxHeldItem_AnimTask, v0, 0)) {
-            param0->unk_34++;
+            param0->activeAnimCount++;
         } else {
             Heap_Free(v0);
         }
@@ -357,22 +357,22 @@ static void BoxHeldItem_AnimTask(SysTask *param0, void *param1)
 {
     BoxHeldItemAnim *v0 = param1;
 
-    switch (v0->unk_30) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_2C) {
-            v0->unk_08.x += v0->unk_20;
-            v0->unk_08.y += v0->unk_24;
-            Sprite_SetPosition(v0->unk_04, &v0->unk_08);
-            v0->unk_2C--;
+        if (v0->stepCount) {
+            v0->currentPos.x += v0->stepX;
+            v0->currentPos.y += v0->stepY;
+            Sprite_SetPosition(v0->sprite, &v0->currentPos);
+            v0->stepCount--;
         } else {
-            Sprite_SetPosition(v0->unk_04, &v0->unk_14);
-            v0->unk_30++;
+            Sprite_SetPosition(v0->sprite, &v0->targetPos);
+            v0->state++;
         }
         break;
     case 1:
-        if (Sprite_IsAnimated(v0->unk_04) == 0) {
-            BoxGraphics_SetSpritePriority(v0->unk_04, v0->unk_28);
-            v0->unk_00->unk_34--;
+        if (Sprite_IsAnimated(v0->sprite) == 0) {
+            BoxGraphics_SetSpritePriority(v0->sprite, v0->priority);
+            v0->heldItemIcons->activeAnimCount--;
             SysTask_Done(param0);
             BoxGraphics_DeferFree(v0, NULL, NULL);
         }
@@ -382,19 +382,19 @@ static void BoxHeldItem_AnimTask(SysTask *param0, void *param1)
 
 void BoxHeldItem_StartReturnToPreview(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 1);
 
         if (v0 >= 0) {
             VecFx32 v1;
 
-            BoxCursorSprite_GetPosition(param0->unk_18, &v1);
+            BoxCursorSprite_GetPosition(param0->cursorSprite, &v1);
 
             v1.x += (0 << FX32_SHIFT);
             v1.y += (8 << FX32_SHIFT);
 
             BoxHeldItem_SetSlotState(param0, v0, 3);
-            Sprite_SetAnim(param0->unk_1C[v0], 3);
+            Sprite_SetAnim(param0->sprites[v0], 3);
             BoxHeldItem_StartAnim(param0, v0, &v1, 2, 12);
         }
     }
@@ -402,28 +402,28 @@ void BoxHeldItem_StartReturnToPreview(BoxHeldItemIcons *param0)
 
 BOOL BoxHeldItem_IsReturnToPreviewDone(BoxHeldItemIcons *param0)
 {
-    return param0->unk_34 == 0;
+    return param0->activeAnimCount == 0;
 }
 
 void BoxHeldItem_StartReturnToMon(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 1);
 
         if (v0 >= 0) {
             BoxHeldItem_SetSlotState(param0, v0, 2);
-            Sprite_SetAnim(param0->unk_1C[v0], 2);
+            Sprite_SetAnim(param0->sprites[v0], 2);
         }
     }
 }
 
 BOOL BoxHeldItem_IsReturnToMonDone(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 2);
 
         if (v0 >= 0) {
-            if (Sprite_IsAnimated(param0->unk_1C[v0])) {
+            if (Sprite_IsAnimated(param0->sprites[v0])) {
                 return 0;
             }
 
@@ -436,7 +436,7 @@ BOOL BoxHeldItem_IsReturnToMonDone(BoxHeldItemIcons *param0)
 
 void BoxHeldItem_StartReturnToCursor(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 3);
 
         if (v0 >= 0) {
@@ -445,7 +445,7 @@ void BoxHeldItem_StartReturnToCursor(BoxHeldItemIcons *param0)
 
             BoxHeldItem_GetCursorPosition(param0, &v1, &v2);
             BoxHeldItem_SetSlotState(param0, v0, 1);
-            Sprite_SetAnim(param0->unk_1C[v0], 4);
+            Sprite_SetAnim(param0->sprites[v0], 4);
             BoxHeldItem_StartAnim(param0, v0, &v1, 3, 12);
         }
     }
@@ -453,12 +453,12 @@ void BoxHeldItem_StartReturnToCursor(BoxHeldItemIcons *param0)
 
 BOOL BoxHeldItem_IsReturnToCursorDone(BoxHeldItemIcons *param0)
 {
-    return param0->unk_34 == 0;
+    return param0->activeAnimCount == 0;
 }
 
 void BoxHeldItem_StartSwap(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 3);
         int v1 = BoxHeldItem_FindSlot(param0, 1);
 
@@ -468,16 +468,16 @@ void BoxHeldItem_StartSwap(BoxHeldItemIcons *param0)
 
             BoxHeldItem_GetCursorPosition(param0, &v2, &v3);
             BoxHeldItem_SetSlotState(param0, v0, 1);
-            Sprite_SetAnim(param0->unk_1C[v0], 4);
+            Sprite_SetAnim(param0->sprites[v0], 4);
 
             BoxHeldItem_StartAnim(param0, v0, &v2, 3, 12);
-            BoxCursorSprite_GetPosition(param0->unk_18, &v2);
+            BoxCursorSprite_GetPosition(param0->cursorSprite, &v2);
 
             v2.x += (0 << FX32_SHIFT);
             v2.y += (8 << FX32_SHIFT);
 
             BoxHeldItem_SetSlotState(param0, v1, 3);
-            Sprite_SetAnim(param0->unk_1C[v1], 3);
+            Sprite_SetAnim(param0->sprites[v1], 3);
             BoxHeldItem_StartAnim(param0, v1, &v2, 2, 12);
         }
     }
@@ -485,42 +485,42 @@ void BoxHeldItem_StartSwap(BoxHeldItemIcons *param0)
 
 BOOL BoxHeldItem_IsSwapDone(BoxHeldItemIcons *param0)
 {
-    return param0->unk_34 == 0;
+    return param0->activeAnimCount == 0;
 }
 
 void BoxHeldItem_StartShrink(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 3);
 
         if (v0 >= 0) {
-            Sprite_SetAnim(param0->unk_1C[v0], 5);
-            param0->unk_38 = v0;
+            Sprite_SetAnim(param0->sprites[v0], 5);
+            param0->activeSlot = v0;
             return;
         }
 
         v0 = BoxHeldItem_FindSlot(param0, 1);
 
         if (v0 >= 0) {
-            Sprite_SetAnim(param0->unk_1C[v0], 2);
-            param0->unk_38 = v0;
+            Sprite_SetAnim(param0->sprites[v0], 2);
+            param0->activeSlot = v0;
             return;
         }
 
-        param0->unk_38 = -1;
+        param0->activeSlot = -1;
     }
 }
 
 BOOL BoxHeldItem_IsShrinkDone(BoxHeldItemIcons *param0)
 {
-    if (param0->unk_00) {
-        if (param0->unk_38 != -1) {
-            if (Sprite_IsAnimated(param0->unk_1C[param0->unk_38])) {
+    if (param0->isLoaded) {
+        if (param0->activeSlot != -1) {
+            if (Sprite_IsAnimated(param0->sprites[param0->activeSlot])) {
                 return 0;
             }
 
-            BoxHeldItem_SetSlotState(param0, param0->unk_38, 0);
-            param0->unk_38 = -1;
+            BoxHeldItem_SetSlotState(param0, param0->activeSlot, 0);
+            param0->activeSlot = -1;
         }
     }
 
@@ -529,7 +529,7 @@ BOOL BoxHeldItem_IsShrinkDone(BoxHeldItemIcons *param0)
 
 void BoxHeldItem_SetPosition(BoxHeldItemIcons *param0, const VecFx32 *param1)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 3);
 
         if (v0 >= 0) {
@@ -538,18 +538,18 @@ void BoxHeldItem_SetPosition(BoxHeldItemIcons *param0, const VecFx32 *param1)
             v1.x += (0 << FX32_SHIFT);
             v1.y += (8 << FX32_SHIFT);
 
-            Sprite_SetPosition(param0->unk_1C[v0], &v1);
+            Sprite_SetPosition(param0->sprites[v0], &v1);
         }
     }
 }
 
 void BoxHeldItem_SetPriority(BoxHeldItemIcons *param0, u32 param1)
 {
-    if (param0->unk_00) {
+    if (param0->isLoaded) {
         int v0 = BoxHeldItem_FindSlot(param0, 3);
 
         if (v0 >= 0) {
-            Sprite_SetExplicitPriority(param0->unk_1C[v0], param1);
+            Sprite_SetExplicitPriority(param0->sprites[v0], param1);
         }
     }
 }

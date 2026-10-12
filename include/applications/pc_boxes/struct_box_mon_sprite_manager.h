@@ -10,21 +10,21 @@
 #include "sprite.h"
 
 typedef struct {
-    void *unk_00;
-    NNSG2dAnimBankData *unk_04;
-    void *unk_08;
+    void *animBank;
+    NNSG2dAnimBankData *animBankData;
+    void *cellBank;
     u8 padding_0C;
-    NNSG2dCellDataBank *unk_10;
-    void *unk_14;
-    void *unk_18;
-    NNSG2dCellDataBank *unk_1C;
-    NNSG2dAnimBankData *unk_20;
-    SpriteList *unk_24;
+    NNSG2dCellDataBank *cellBankData;
+    void *formCellBank;
+    void *formAnimBank;
+    NNSG2dCellDataBank *formCellBankData;
+    NNSG2dAnimBankData *formAnimBankData;
+    SpriteList *spriteList;
     u8 padding_28[24];
-    const BoxApplication *unk_40;
-    BoxGraphics *unk_44;
-    NARC *unk_48;
-    u8 unk_4C[640];
+    const BoxApplication *boxApp;
+    BoxGraphics *boxGraphics;
+    NARC *iconNarc;
+    u8 iconBuffer[640];
 } BoxMonSpriteManager;
 
 #endif // POKEPLATINUM_STRUCT_BOX_MON_SPRITE_MANAGER_H

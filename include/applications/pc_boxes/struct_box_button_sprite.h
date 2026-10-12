@@ -9,16 +9,16 @@
 #include "sprite.h"
 
 typedef struct {
-    SpriteList *unk_00;
-    Sprite *unk_04;
-    void *unk_08;
-    void *unk_0C;
-    NNSG2dCellDataBank *unk_10;
-    NNSG2dAnimBankData *unk_14;
-    NNSG2dImageProxy unk_18;
-    SpriteList *unk_3C;
-    const BoxApplication *unk_40;
-    BoxGraphics *unk_44;
+    SpriteList *spriteList;
+    Sprite *sprite;
+    void *cellBank;
+    void *animBank;
+    NNSG2dCellDataBank *cellBankData;
+    NNSG2dAnimBankData *animBankData;
+    NNSG2dImageProxy imageProxy;
+    SpriteList *buttonSpriteList;
+    const BoxApplication *boxApp;
+    BoxGraphics *boxGraphics;
 } BoxButtonSprite;
 
 #endif // POKEPLATINUM_STRUCT_BOX_BUTTON_SPRITE_H
