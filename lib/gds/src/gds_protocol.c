@@ -4,7 +4,7 @@
 #include "gds_internal.h"
 
 // clang-format off
-static u8 Unk_ov61_0222E65C[] = {
+static u8 sGlobalTerminalGdsCryptTable[] = {
     0x93, 0x18, 0x33, 0x28, 0x0B, 0x07, 0x03, 0x82, 0x02, 0x43, 0x8A, 0x86, 0xDB, 0x38, 0x34, 0x19,
     0xD6, 0xF9, 0x59, 0xB2, 0xAD, 0x6A, 0x7D, 0xBC, 0xEE, 0xE0, 0x3A, 0x3F, 0xCA, 0x4C, 0x25, 0x68,
     0xF4, 0xA9, 0x5B, 0xF7, 0x22, 0x60, 0x5A, 0x6F, 0xFA, 0x1B, 0x79, 0xE9, 0x17, 0xB1, 0x00, 0x9C,
@@ -24,13 +24,13 @@ static u8 Unk_ov61_0222E65C[] = {
 };
 // clang-format on
 
-void ov61_0222E0B8(u8 *param0, int param1, u8 *param2)
+void GlobalTerminalGds_Encrypt(u8 *param0, int param1, u8 *param2)
 {
     for (int i = 0; i < param1; i++) {
         u8 v0;
         if (i != 0) {
             int v1 = (i + param1 + param0[0]) & 0xFF;
-            v0 = Unk_ov61_0222E65C[v1];
+            v0 = sGlobalTerminalGdsCryptTable[v1];
         } else {
             v0 = 0;
         }
@@ -39,13 +39,13 @@ void ov61_0222E0B8(u8 *param0, int param1, u8 *param2)
     }
 }
 
-void ov61_0222E110(u8 *param0, int param1, u8 *param2)
+void GlobalTerminalGds_Decrypt(u8 *param0, int param1, u8 *param2)
 {
     for (int i = 0; i < param1; i++) {
         u8 v0;
         if (i != 0) {
             int v1 = (i + param1 + param0[0]) & 0xFF;
-            v0 = Unk_ov61_0222E65C[v1];
+            v0 = sGlobalTerminalGdsCryptTable[v1];
         } else {
             v0 = 0;
         }
@@ -54,7 +54,7 @@ void ov61_0222E110(u8 *param0, int param1, u8 *param2)
     }
 }
 
-int ov61_0222E168(int param0)
+int GlobalTerminalGds_GetRequestSize(int param0)
 {
     int v0;
 
@@ -99,7 +99,7 @@ int ov61_0222E168(int param0)
     return v0 + 0x140;
 }
 
-static const int Unk_ov61_0222E550[] = {
+static const int sGlobalTerminalGdsCommandOrder[] = {
     0x5,
     0x3,
     0x2,
@@ -114,7 +114,7 @@ static const int Unk_ov61_0222E550[] = {
     0x3
 };
 
-int ov61_0222E2A8(int param0)
+int GlobalTerminalGds_GetResponseAllocSize(int param0)
 {
     const int v0[] = {
         0,
@@ -142,7 +142,7 @@ int ov61_0222E2A8(int param0)
             if (v4 == -1) {
                 break;
             }
-            int v3 = ov61_0222E2A8(v4);
+            int v3 = GlobalTerminalGds_GetResponseAllocSize(v4);
             if (v3 > v1) {
                 v1 = v3;
             }
@@ -194,7 +194,7 @@ int ov61_0222E2A8(int param0)
     return v1 + 8;
 }
 
-static const int Unk_ov61_0222E5B0[] = {
+static const int sGlobalTerminalGdsCommandOrderAlt[] = {
     0x5,
     0x3,
     0x2,

@@ -1,9 +1,9 @@
 libgds_srcs = files(
-    'src/ov61_0222CEDC.c',
-    'src/ov61_0222D498.c',
-    'src/ov61_0222DCDC.c',
-    'src/ov61_0222E0B8.c',
-    'src/ov61_0222E478.c'
+    'src/gds_session.c',
+    'src/gds_transport.c',
+    'src/gds_requests.c',
+    'src/gds_protocol.c',
+    'src/gds_scrub.c'
 )
 
 libgds_public_includes = include_directories('include')

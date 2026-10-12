@@ -22,25 +22,25 @@ typedef struct {
     u8 padding[5];
 } VsRecorderViewerTransferConnection;
 
-BOOL ov61_0222DCDC(VsRecorderViewerTransferConnection *param0);
-void ov61_0222DCFC(void);
-int ov61_0222DD08(void);
-int ov61_0222DD24(void);
-BOOL ov61_0222DD30(VsRecorderViewerTransferProfileData *param0, void *param1);
-BOOL ov61_0222DD8C(long param0, void *param1);
-BOOL ov61_0222DDCC(long param0, VsRecorderViewerTransferBoxData *param1, void *param2);
-BOOL ov61_0222DE34(long param0, void *param1);
-BOOL ov61_0222DE98(void *param0);
-BOOL ov61_0222DEB8(VsRecorderViewerRankingsUploadProfile *param0, void *param1);
-void *ov61_0222DE80(void);
-long ov61_0222DE74(void);
-long ov61_0222DE8C(long param0);
-BOOL ov61_0222DF08(VsRecorderViewerTransferRecordData *param0, void *param1);
-BOOL ov61_0222DF60(VsRecorderViewerTransferPlayTime *param0, void *param1);
-BOOL ov61_0222DFA8(VsRecorderViewerTransferValue *param0, void *param1);
-BOOL ov61_0222E000(VsRecorderViewerTransferValue *param0, void *param1);
-BOOL ov61_0222E058(u64 param0, u32 param1, void *param2);
-BOOL ov61_0222E08C(u64 param0, void *param1);
+BOOL GlobalTerminalGds_StartConnection(VsRecorderViewerTransferConnection *param0);
+void GlobalTerminalGds_EndConnection(void);
+int GlobalTerminalGds_GetConnectionState(void);
+int GlobalTerminalGds_GetErrorCode(void);
+BOOL GlobalTerminalGds_UploadProfilePhoto(VsRecorderViewerTransferProfileData *param0, void *param1);
+BOOL GlobalTerminalGds_UploadProfile(long param0, void *param1);
+BOOL GlobalTerminalGds_UploadProfileBox(long param0, VsRecorderViewerTransferBoxData *param1, void *param2);
+BOOL GlobalTerminalGds_UploadBox(long param0, void *param1);
+BOOL GlobalTerminalGds_UploadPlayTime(void *param0);
+BOOL GlobalTerminalGds_UploadPlayTimeProfile(VsRecorderViewerRankingsUploadProfile *param0, void *param1);
+void *GlobalTerminalGds_GetResponseData(void);
+long GlobalTerminalGds_GetResponseLength(void);
+long GlobalTerminalGds_GetMaxResponseAllocSize(long param0);
+BOOL GlobalTerminalGds_UploadBattleRecording(VsRecorderViewerTransferRecordData *param0, void *param1);
+BOOL GlobalTerminalGds_UploadRecord(VsRecorderViewerTransferPlayTime *param0, void *param1);
+BOOL GlobalTerminalGds_UploadRecordAlt(VsRecorderViewerTransferValue *param0, void *param1);
+BOOL GlobalTerminalGds_UploadRecordAlt2(VsRecorderViewerTransferValue *param0, void *param1);
+BOOL GlobalTerminalGds_UploadId(u64 param0, u32 param1, void *param2);
+BOOL GlobalTerminalGds_UploadIdAlt(u64 param0, void *param1);
 
 #ifdef __cplusplus
 }

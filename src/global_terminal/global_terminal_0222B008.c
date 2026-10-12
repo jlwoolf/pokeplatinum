@@ -89,9 +89,9 @@ int GlobalTerminalTransfer_Init(VsRecorderViewerTransferContext *param0, const V
     param0->unk_14C = -1;
     param0->unk_3E8 = 23004;
     param0->unk_3EC = 23004;
-    param0->unk_3B4 = Heap_Alloc(param1->heapID, ov61_0222DE8C(-1));
+    param0->unk_3B4 = Heap_Alloc(param1->heapID, GlobalTerminalGds_GetMaxResponseAllocSize(-1));
 
-    MI_CpuClear8(param0->unk_3B4, ov61_0222DE8C(-1));
+    MI_CpuClear8(param0->unk_3B4, GlobalTerminalGds_GetMaxResponseAllocSize(-1));
 
     param0->unk_3F4 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0695, param1->heapID);
     param0->unk_3F8 = StringTemplate_Default(param1->heapID);
@@ -101,7 +101,7 @@ int GlobalTerminalTransfer_Init(VsRecorderViewerTransferContext *param0, const V
     param0->unk_0C.unk_04 = GAME_VERSION;
     param0->unk_0C.language = GAME_LANGUAGE;
 
-    v0 = ov61_0222DCDC(&param0->unk_0C);
+    v0 = GlobalTerminalGds_StartConnection(&param0->unk_0C);
     GF_ASSERT(v0 == 1);
 
     param0->unk_3C4 = 1;
@@ -112,7 +112,7 @@ int GlobalTerminalTransfer_Init(VsRecorderViewerTransferContext *param0, const V
 
 void GlobalTerminalTransfer_Free(VsRecorderViewerTransferContext *param0)
 {
-    ov61_0222DCFC();
+    GlobalTerminalGds_EndConnection();
 
     param0->unk_3C4 = 0;
 
@@ -126,7 +126,7 @@ void GlobalTerminalTransfer_Free(VsRecorderViewerTransferContext *param0)
 
 static int GlobalTerminalTransfer_StateCleanup(VsRecorderViewerTransferContext *param0, GlobalTerminalTaskState *param1)
 {
-    ov61_0222DCFC();
+    GlobalTerminalGds_EndConnection();
     param0->unk_3C4 = 0;
     return 1;
 }
@@ -394,7 +394,7 @@ int GlobalTerminalTransfer_Main(VsRecorderViewerTransferContext *param0)
             if (param0->unk_40E > 0) {
                 param0->unk_40E--;
             } else {
-                switch (ov61_0222DD08()) {
+                switch (GlobalTerminalGds_GetConnectionState()) {
                 case 1:
                 case 7:
                 case 8:
@@ -462,41 +462,41 @@ static int GlobalTerminalTransfer_ProcessRequest(VsRecorderViewerTransferContext
 
     switch (param0->unk_3E8) {
     case 20000:
-        v0 = ov61_0222DD30(&param0->unk_190.unk_00_val1, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadProfilePhoto(&param0->unk_190.unk_00_val1, param0->unk_3B4);
         break;
     case 20001:
-        v0 = ov61_0222DD8C(param0->unk_190.unk_21C.val2.unk_00, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadProfile(param0->unk_190.unk_21C.val2.unk_00, param0->unk_3B4);
         break;
     case 21000:
-        v0 = ov61_0222DDCC(param0->unk_190.unk_21C.val1.unk_00, &param0->unk_190.unk_00_val2, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadProfileBox(param0->unk_190.unk_21C.val1.unk_00, &param0->unk_190.unk_00_val2, param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
         }
         break;
     case 21001:
-        v0 = ov61_0222DE34(param0->unk_190.unk_21C.val1.unk_00, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadBox(param0->unk_190.unk_21C.val1.unk_00, param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
         }
         break;
     case 22000:
-        v0 = ov61_0222DE98(param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadPlayTime(param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
         }
         break;
     case 22001:
-        v0 = ov61_0222DEB8(&param0->unk_190.unk_00_val3, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadPlayTimeProfile(&param0->unk_190.unk_00_val3, param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
         }
         break;
     case 23000:
-        v0 = ov61_0222DF08(param0->unk_190.unk_00_val4, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadBattleRecording(param0->unk_190.unk_00_val4, param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
@@ -505,13 +505,13 @@ static int GlobalTerminalTransfer_ProcessRequest(VsRecorderViewerTransferContext
     case 23001:
         switch (param0->unk_3F0) {
         case 0:
-            v0 = ov61_0222DF60(&param0->unk_190.unk_00_val5, param0->unk_3B4);
+            v0 = GlobalTerminalGds_UploadRecord(&param0->unk_190.unk_00_val5, param0->unk_3B4);
             break;
         case 1:
-            v0 = ov61_0222DFA8(&param0->unk_190.unk_00_val6, param0->unk_3B4);
+            v0 = GlobalTerminalGds_UploadRecordAlt(&param0->unk_190.unk_00_val6, param0->unk_3B4);
             break;
         case 2:
-            v0 = ov61_0222E000(
+            v0 = GlobalTerminalGds_UploadRecordAlt2(
                 &param0->unk_190.unk_00_val6, param0->unk_3B4);
             break;
         }
@@ -521,14 +521,14 @@ static int GlobalTerminalTransfer_ProcessRequest(VsRecorderViewerTransferContext
         }
         break;
     case 23002:
-        v0 = ov61_0222E058(param0->unk_190.unk_21C.val3.unk_00, 0x140, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadId(param0->unk_190.unk_21C.val3.unk_00, 0x140, param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
         }
         break;
     case 23003:
-        v0 = ov61_0222E08C(param0->unk_190.unk_21C.val3.unk_00, param0->unk_3B4);
+        v0 = GlobalTerminalGds_UploadIdAlt(param0->unk_190.unk_21C.val3.unk_00, param0->unk_3B4);
 
         if (v0 == 1) {
             (void)0;
@@ -554,7 +554,7 @@ static int GlobalTerminalTransfer_ProcessConnection(VsRecorderViewerTransferCont
         return 1;
     }
 
-    param0->unk_148 = ov61_0222DD08();
+    param0->unk_148 = GlobalTerminalGds_GetConnectionState();
 
     if (param0->unk_148 != param0->unk_14C) {
         switch (param0->unk_148) {
@@ -586,7 +586,7 @@ static int GlobalTerminalTransfer_ProcessConnection(VsRecorderViewerTransferCont
         case 9:
             param0->unk_17C.unk_04 = 0;
             param0->unk_17C.unk_08 = 0;
-            param0->unk_17C.unk_0C = ov61_0222DD24();
+            param0->unk_17C.unk_0C = GlobalTerminalGds_GetErrorCode();
             param0->unk_17C.unk_00 = 1;
             param0->unk_400.unk_0C = GlobalTerminalTransfer_OnFailReport;
             break;
@@ -618,7 +618,7 @@ static BOOL GlobalTerminalTransfer_OnCompleteSave(void *param0, void *param1)
     GlobalTerminalBattleRecordingResult *v3;
     int v4;
 
-    v2 = ov61_0222DE80();
+    v2 = GlobalTerminalGds_GetResponseData();
     v3 = (GlobalTerminalBattleRecordingResult *)(v2->unk_04);
     v4 = VsRecorderViewerRecording_SaveWithIdStep(v0->saveData, v3->unk_00, &v1->unk_04, &v1->unk_06);
 
@@ -653,8 +653,8 @@ static int GlobalTerminalTransfer_Dispatch(VsRecorderViewerTransferContext *para
     int v1;
     int v2 = 1;
 
-    v0 = ov61_0222DE80();
-    v1 = ov61_0222DE74();
+    v0 = GlobalTerminalGds_GetResponseData();
+    v1 = GlobalTerminalGds_GetResponseLength();
 
     GF_ASSERT(param0->unk_3EC == v0->unk_00);
 
