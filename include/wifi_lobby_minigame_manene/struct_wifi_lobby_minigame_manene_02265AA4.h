@@ -4,12 +4,12 @@
 #include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_02265D84.h"
 
 typedef struct {
-    WiFiLobbyMinigameManeneResultsSprite unk_00[2];
-    WiFiLobbyMinigameManeneResultsSprite unk_A0[2];
-    int unk_140;
-    int unk_144;
-    int unk_148;
-    int unk_14C;
+    WiFiLobbyMinigameManeneResultsSprite spritesA[2];
+    WiFiLobbyMinigameManeneResultsSprite spritesB[2];
+    int spriteCount;
+    int animDurationA;
+    int animDurationB;
+    int repeatCounter;
 } WiFiLobbyMinigameManeneResultsSprites;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02265AA4_H

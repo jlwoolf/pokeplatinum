@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_022649E4_SUB1_H
 
 typedef struct {
-    u8 unk_00;
+    u8 disconnected;
     u8 padding_01[3];
 } WiFiLobbyMinigameManeneDisconnectState;
 

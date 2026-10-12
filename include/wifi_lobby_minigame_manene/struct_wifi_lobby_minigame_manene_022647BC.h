@@ -7,11 +7,11 @@
 #include "sprite_system.h"
 
 typedef struct {
-    BOOL unk_00;
-    int unk_04;
-    ManagedSprite *unk_08[3];
-    WiFiLobbyMinigameManeneMotion unk_14[3][2];
-    WiFiLobbyMinigameManeneResources *unk_A4;
+    BOOL active;
+    int state;
+    ManagedSprite *sprites[3];
+    WiFiLobbyMinigameManeneMotion motions[3][2];
+    WiFiLobbyMinigameManeneResources *resources;
 } WiFiLobbyMinigameManeneSparkle;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_022647BC_H

@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02262A8C_SUB1_H
 
 typedef struct {
-    u32 unk_00;
-    u32 unk_04;
+    u32 touchX;
+    u32 touchY;
     u8 padding_08[4];
 } WiFiLobbyMinigameManeneTouchInput;
 

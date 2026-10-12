@@ -14,9 +14,9 @@ WiFiLobbyMinigameManeneCountdown *WiFiLobbyMinigameManene_CreateCountdown(int pa
 
     memset(v0, 0, sizeof(WiFiLobbyMinigameManeneCountdown));
 
-    v0->unk_04 = param0;
-    v0->unk_08 = ((30 * 40) - 0);
-    v0->unk_0C = param1;
+    v0->playerCount = param0;
+    v0->remainingFrames = ((30 * 40) - 0);
+    v0->resources = param1;
 
     return v0;
 }
@@ -28,7 +28,7 @@ void WiFiLobbyMinigameManene_FreeCountdown(WiFiLobbyMinigameManeneCountdown *par
 
 BOOL WiFiLobbyMinigameManene_TickCountdown(WiFiLobbyMinigameManeneCountdown *param0)
 {
-    if ((--param0->unk_08) <= 0) {
+    if ((--param0->remainingFrames) <= 0) {
         return 0;
     }
 

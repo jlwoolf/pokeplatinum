@@ -8,18 +8,18 @@
 #include "sprite_system.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
+    int state;
+    int phase;
     u8 padding_08[4];
-    ManagedSprite *unk_0C;
-    WiFiLobbyMinigameManeneMotion unk_10;
-    int unk_28;
-    int *unk_2C;
-    BOOL unk_30;
-    WiFiLobbyMinigameManene3DObject *unk_34;
-    WiFiLobbyMinigameManene3DObject *unk_38;
-    WiFiLobbyMinigameManeneResources *unk_3C;
-    int unk_40;
+    ManagedSprite *sprite;
+    WiFiLobbyMinigameManeneMotion scaleMotion;
+    int savedLevel;
+    int *levelPtr;
+    BOOL active;
+    WiFiLobbyMinigameManene3DObject *objectA;
+    WiFiLobbyMinigameManene3DObject *objectB;
+    WiFiLobbyMinigameManeneResources *resources;
+    int objectParam;
 } WiFiLobbyMinigameManenePlayerEffect;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02262D08_H

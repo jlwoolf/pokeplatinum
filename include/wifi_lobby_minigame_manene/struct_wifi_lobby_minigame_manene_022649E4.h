@@ -13,17 +13,17 @@
 #include "sprite_system.h"
 
 typedef struct {
-    NARC *unk_00;
-    NARC *unk_04;
-    SpriteSystem *unk_08;
-    SpriteManager *unk_0C;
-    BgConfig *unk_10;
-    PaletteData *unk_14;
-    G3DPipelineBuffers *unk_18;
+    NARC *maneneNarc;
+    NARC *bucketNarc;
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    BgConfig *bgConfig;
+    PaletteData *paletteData;
+    G3DPipelineBuffers *g3dPipeline;
     Camera *camera;
     u8 padding_20[4];
-    NNSFndAllocator unk_24;
-    WiFiLobbyMinigameManeneDisconnectState unk_2C;
+    NNSFndAllocator g3dAllocator;
+    WiFiLobbyMinigameManeneDisconnectState disconnectState;
 } WiFiLobbyMinigameManeneResources;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_022649E4_H

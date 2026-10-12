@@ -15,25 +15,25 @@
 #include "wifi_lobby_minigame_manene/struct_wifi_lobby_minigame_manene_022649E4.h"
 
 typedef struct {
-    WiFiLobbyMinigameManeneCountdown *unk_00;
-    WiFiLobbyMinigameManeneGame *unk_04;
-    BOOL unk_08;
-    BOOL unk_0C;
-    BOOL unk_10;
-    WiFiLobbyMinigameManeneSeed unk_14;
-    WiFiLobbyMinigameManeneScore unk_1C;
-    WiFiLobbyMinigameManeneScores unk_24;
-    u32 unk_44;
-    WiFiLobbyMinigameManeneResources unk_48;
-    u32 unk_78;
-    WiFiLobbyMinigameIntroAnimation *unk_7C;
-    WiFiPlazaLobbyMinigameManeneArgs *unk_80;
-    WiFiLobbyMinigamePlayerContext unk_84;
-    WiFiLobbyMinigameIntroScreen *unk_94;
-    WiFiLobbyMinigameRanking unk_98;
-    WiFiLobbyMinigameResultsScreen *unk_B0;
-    int unk_B4[4];
-    BOOL unk_C4;
+    WiFiLobbyMinigameManeneCountdown *countdown;
+    WiFiLobbyMinigameManeneGame *game;
+    BOOL started;
+    BOOL roundStarted;
+    BOOL roundEnded;
+    WiFiLobbyMinigameManeneSeed seedData;
+    WiFiLobbyMinigameManeneScore score;
+    WiFiLobbyMinigameManeneScores scores;
+    u32 netId;
+    WiFiLobbyMinigameManeneResources resources;
+    u32 gameSeed;
+    WiFiLobbyMinigameIntroAnimation *introAnimation;
+    WiFiPlazaLobbyMinigameManeneArgs *args;
+    WiFiLobbyMinigamePlayerContext playerContext;
+    WiFiLobbyMinigameIntroScreen *introScreen;
+    WiFiLobbyMinigameRanking ranking;
+    WiFiLobbyMinigameResultsScreen *resultsScreen;
+    int playerNetIds[4];
+    BOOL replayRequested;
 } WiFiLobbyMinigameManeneApp;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_0226139C_H

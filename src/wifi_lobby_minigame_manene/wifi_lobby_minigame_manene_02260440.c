@@ -38,9 +38,9 @@ static void CommCmd_HandleSeed(int param0, int param1, void *param2, void *param
 {
     WiFiLobbyMinigameManeneApp *v0 = param3;
 
-    v0->unk_14 = *((WiFiLobbyMinigameManeneSeed *)param2);
+    v0->seedData = *((WiFiLobbyMinigameManeneSeed *)param2);
 
-    LCRNG_SetSeed(v0->unk_14.seed);
+    LCRNG_SetSeed(v0->seedData.seed);
     WiFiLobbyMinigameManene_SetStarted(v0);
 }
 
@@ -54,14 +54,14 @@ static void CommCmd_HandlePlayerState(int param0, int param1, void *param2, void
 {
     WiFiLobbyMinigameManeneApp *v0 = param3;
     WiFiLobbyMinigameManenePlayerState *v1 = ((WiFiLobbyMinigameManenePlayerState *)param2);
-    v0->unk_04->unk_2858[param0].state = v1->state;
+    v0->game->playerStates[param0].state = v1->state;
 }
 
 static void CommCmd_HandleScore(int param0, int param1, void *param2, void *param3)
 {
     WiFiLobbyMinigameManeneApp *v0 = param3;
     WiFiLobbyMinigameManeneScore *v1 = ((WiFiLobbyMinigameManeneScore *)param2);
-    v0->unk_24.scores[param0].score = v1->score;
+    v0->scores.scores[param0].score = v1->score;
 }
 
 static void CommCmd_HandleNoop(int param0, int param1, void *param2, void *param3)

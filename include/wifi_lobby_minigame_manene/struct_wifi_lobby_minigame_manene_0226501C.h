@@ -9,22 +9,22 @@
 #include "easy3d_object.h"
 
 typedef struct {
-    Easy3DObject unk_00;
-    Easy3DModel unk_78;
-    Easy3DAnim unk_88[10];
-    WiFiLobbyMinigameManeneMatrix unk_150;
-    WiFiLobbyMinigameManeneQuaternion unk_190;
-    WiFiLobbyMinigameManeneQuaternion unk_1A0;
-    MtxFx43 unk_1B0;
-    VecFx32 unk_1E0;
-    BOOL unk_1EC;
-    BOOL unk_1F0;
-    int unk_1F4;
-    int unk_1F8;
-    f32 unk_1FC;
-    f32 unk_200;
-    f32 unk_204;
-    f32 unk_208;
+    Easy3DObject object;
+    Easy3DModel model;
+    Easy3DAnim anims[10];
+    WiFiLobbyMinigameManeneMatrix rotationMatrix;
+    WiFiLobbyMinigameManeneQuaternion rotation;
+    WiFiLobbyMinigameManeneQuaternion previousRotation;
+    MtxFx43 matrix;
+    VecFx32 position;
+    BOOL animationActive;
+    BOOL modelLoaded;
+    int animIndex;
+    int tiltFramesRemaining;
+    f32 tiltX;
+    f32 tiltY;
+    f32 tiltDecayX;
+    f32 tiltDecayY;
 } WiFiLobbyMinigameManene3DObject;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_0226501C_H
