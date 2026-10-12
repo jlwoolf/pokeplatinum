@@ -5,7 +5,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "contest_competition/struct_dance_competition_scene.h"
 
@@ -657,7 +657,7 @@ static void contest_competition_02249B54(DanceMoveSelectTask *param0)
 
 static void contest_competition_02249BC4(DanceMoveSelectScreen *param0, DanceMoveSelectLabel *param1, const String *param2, int param3, u32 param4, int param5, int param6, int param7, int param8, int param9)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
     Window v1;
     CharTransferAllocation v2;
     int v3;

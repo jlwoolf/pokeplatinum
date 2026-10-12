@@ -7,7 +7,7 @@
 #include "constants/species.h"
 
 #include "struct_defs/struct_02030A80.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "global_terminal/global_terminal_0222AE60.h"
 #include "global_terminal/global_terminal_0222B008.h"
@@ -81,8 +81,8 @@ typedef struct {
     int unk_2F6C;
 } VsRecorderViewerBoxContext;
 
-static void VsRecorderViewerBox_LoadProfileFromBox(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_FreeLoadedProfile(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerBox_LoadProfileFromBox(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_FreeLoadedProfile(VsRecorderState *param0);
 static BOOL VsRecorderViewerBox_HasAnyPokemon(VsRecorderViewerBoxData *param0);
 static void VsRecorderViewerBox_AdvanceToOccupiedSlot(VsRecorderViewerBoxContext *param0);
 static void VsRecorderViewerBox_HandleBoxNavInput(u32 param0, enum TouchScreenButtonState param1, void *param2);
@@ -90,75 +90,75 @@ static void VsRecorderViewerBox_HandleProfileBoxInput(u32 param0, enum TouchScre
 static void VsRecorderViewerBox_HandleBoxUploadInput(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerBox_HandleProfileBoxMenuInput(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerBox_HandleGridCursorInput(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void VsRecorderViewerBox_CreateHeaderSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_FreeHeaderSprites(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerBox_CreateHeaderSprites(VsRecorderState *param0);
+static void VsRecorderViewerBox_FreeHeaderSprites(VsRecorderState *param0);
 static void VsRecorderViewerBox_SetCursorToFirstOccupiedSlot(VsRecorderViewerBoxContext *param0);
-static BOOL VsRecorderViewerBox_Init(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_EnterFadeIn(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_OpenProfileBoxView(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_SetHeaderLayout(UnkStruct_0208C06C *param0, int param1);
-static BOOL VsRecorderViewerBox_SetupProfileBoxUpload(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateProfileBoxUploadInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UploadProfileBox(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_CloseProfileBoxUpload(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_FinishProfileBoxUpload(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_FinishBoxUpload(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_CreateStatusWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_CreateListWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_RemoveListWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_RemoveStatusWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_PrintStatusMessage(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_PrintTrainerNameMessage(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_PrintBoxName(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_ClearNameWindows(UnkStruct_0208C06C *param0);
+static BOOL VsRecorderViewerBox_Init(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_EnterFadeIn(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_OpenProfileBoxView(VsRecorderState *param0);
+static void VsRecorderViewerBox_SetHeaderLayout(VsRecorderState *param0, int param1);
+static BOOL VsRecorderViewerBox_SetupProfileBoxUpload(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateProfileBoxUploadInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UploadProfileBox(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_CloseProfileBoxUpload(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_FinishProfileBoxUpload(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_FinishBoxUpload(VsRecorderState *param0);
+static void VsRecorderViewerBox_CreateStatusWindows(VsRecorderState *param0);
+static void VsRecorderViewerBox_CreateListWindows(VsRecorderState *param0);
+static void VsRecorderViewerBox_RemoveListWindows(VsRecorderState *param0);
+static void VsRecorderViewerBox_RemoveStatusWindows(VsRecorderState *param0);
+static void VsRecorderViewerBox_PrintStatusMessage(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_PrintTrainerNameMessage(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_PrintBoxName(VsRecorderState *param0);
+static void VsRecorderViewerBox_ClearNameWindows(VsRecorderState *param0);
 static BOOL VsRecorderViewerBox_IsBitSet(int param0, int param1);
-static void VsRecorderViewerBox_PrintSpeciesName(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_CreatePokemonIcons(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_SetPokemonIconsVisible(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_DestroyPokemonIcons(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_CreatePreviewPokemonSprite(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_SetPreviewSpriteVisible(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_DeletePreviewSprite(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_LoadWallpaperAndRefresh(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_LoadWallpaper(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_SetupBoxView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateBoxNavInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_Exit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_SetupBoxListView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateBoxListInput(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_CreateProfileBoxWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_PrintProfileBoxMessage(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBox_CreateTitleWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_RemoveTitleWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_RemoveTwoWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_CreateProfileBoxStatusWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_RemoveProfileBoxStatusWindow(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UploadBox(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_InitProfileBoxStrings(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBox_FreeProfileBoxStrings(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_SelectProfileBox(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateGridInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_OpenProfileBoxGrid(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_ExitBoxList(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerBox_PrintSpeciesName(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_CreatePokemonIcons(VsRecorderState *param0);
+static void VsRecorderViewerBox_SetPokemonIconsVisible(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_DestroyPokemonIcons(VsRecorderState *param0);
+static void VsRecorderViewerBox_CreatePreviewPokemonSprite(VsRecorderState *param0);
+static void VsRecorderViewerBox_SetPreviewSpriteVisible(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_DeletePreviewSprite(VsRecorderState *param0);
+static void VsRecorderViewerBox_LoadWallpaperAndRefresh(VsRecorderState *param0);
+static void VsRecorderViewerBox_LoadWallpaper(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_SetupBoxView(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateBoxNavInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_Exit(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_SetupBoxListView(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateBoxListInput(VsRecorderState *param0);
+static void VsRecorderViewerBox_CreateProfileBoxWindows(VsRecorderState *param0);
+static void VsRecorderViewerBox_PrintProfileBoxMessage(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBox_CreateTitleWindow(VsRecorderState *param0);
+static void VsRecorderViewerBox_RemoveTitleWindow(VsRecorderState *param0);
+static void VsRecorderViewerBox_RemoveTwoWindows(VsRecorderState *param0);
+static void VsRecorderViewerBox_CreateProfileBoxStatusWindow(VsRecorderState *param0);
+static void VsRecorderViewerBox_RemoveProfileBoxStatusWindow(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UploadBox(VsRecorderState *param0);
+static void VsRecorderViewerBox_InitProfileBoxStrings(VsRecorderState *param0);
+static void VsRecorderViewerBox_FreeProfileBoxStrings(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_SelectProfileBox(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateGridInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_OpenProfileBoxGrid(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_ExitBoxList(VsRecorderState *param0);
 void VsRecorderViewerBox_OnProfileBoxTransferComplete(void *param0, const VsRecorderViewerTransferStatus *param1);
 void VsRecorderViewerBox_OnBoxTransferComplete(void *param0, const VsRecorderViewerTransferStatus *param1);
-static BOOL VsRecorderViewerBox_SetupBoxView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateBoxNavInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_Exit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_SetupBoxListView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateBoxListInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_ExitBoxList(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UploadBox(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(UnkStruct_0208C06C *param0);
+static BOOL VsRecorderViewerBox_SetupBoxView(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateBoxNavInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_Exit(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_SetupBoxListView(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateBoxListInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_ExitBoxList(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UploadBox(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(VsRecorderState *param0);
+static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(VsRecorderState *param0);
 
-static void VsRecorderViewerBox_LoadProfileFromBox(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_LoadProfileFromBox(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -166,7 +166,7 @@ static void VsRecorderViewerBox_LoadProfileFromBox(UnkStruct_0208C06C *param0, i
     GlobalTerminal_DeserializePlayerProfile(&v0->unk_38C[param1]->unk_00, v0->unk_2ED8.unk_00);
 }
 
-static void VsRecorderViewerBox_FreeLoadedProfile(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_FreeLoadedProfile(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     PlayerProfile_Free(v0->unk_2ED8.unk_00);
@@ -237,7 +237,7 @@ static const TouchScreenRect sVsRecorderViewerGridTouchRects[] = {
 
 static void VsRecorderViewerBox_HandleBoxNavInput(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerBoxContext *v1 = v0->unk_860;
 
     switch (param0) {
@@ -292,7 +292,7 @@ static void VsRecorderViewerBox_HandleBoxNavInput(u32 param0, enum TouchScreenBu
 
 static void VsRecorderViewerBox_HandleProfileBoxInput(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerBoxContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -314,7 +314,7 @@ static void VsRecorderViewerBox_HandleProfileBoxInput(u32 param0, enum TouchScre
 
 static void VsRecorderViewerBox_HandleBoxUploadInput(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerBoxContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -336,7 +336,7 @@ static void VsRecorderViewerBox_HandleBoxUploadInput(u32 param0, enum TouchScree
 
 static void VsRecorderViewerBox_HandleProfileBoxMenuInput(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerBoxContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -366,7 +366,7 @@ static void VsRecorderViewerBox_HandleProfileBoxMenuInput(u32 param0, enum Touch
 
 static void VsRecorderViewerBox_HandleGridCursorInput(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerBoxContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -406,7 +406,7 @@ static void VsRecorderViewerBox_HandleGridCursorInput(u32 param0, enum TouchScre
     }
 }
 
-static void VsRecorderViewerBox_CreateHeaderSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreateHeaderSprites(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -415,7 +415,7 @@ static void VsRecorderViewerBox_CreateHeaderSprites(UnkStruct_0208C06C *param0)
     VsRecorderViewerList_InitSpriteWithFont(param0, &v0->unk_348[1], NNS_G2D_VRAM_TYPE_2DSUB, 53, 128, 232, 36, -8, 1, 1);
 }
 
-static void VsRecorderViewerBox_FreeHeaderSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_FreeHeaderSprites(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -442,7 +442,7 @@ static void VsRecorderViewerBox_SerializeBoxData(SaveData *saveData, const PCBox
     GlobalTerminal_SerializePCBox(saveData, pcBoxes, boxID, param3, HEAP_ID_102);
 }
 
-static BOOL VsRecorderViewerBox_Init(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_Init(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerBoxContext));
 
@@ -473,7 +473,7 @@ static BOOL VsRecorderViewerBox_Init(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_EnterFadeIn(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_EnterFadeIn(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -514,7 +514,7 @@ static BOOL VsRecorderViewerBox_EnterFadeIn(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_OpenProfileBoxView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_OpenProfileBoxView(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -565,7 +565,7 @@ static BOOL VsRecorderViewerBox_OpenProfileBoxView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static void VsRecorderViewerBox_SetHeaderLayout(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_SetHeaderLayout(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -583,7 +583,7 @@ static void VsRecorderViewerBox_SetHeaderLayout(UnkStruct_0208C06C *param0, int 
     FontOAM_SetXY(v0->unk_348[1].unk_0C, 36, -8);
 }
 
-static BOOL VsRecorderViewerBox_SetupProfileBoxUpload(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_SetupProfileBoxUpload(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -618,7 +618,7 @@ static BOOL VsRecorderViewerBox_SetupProfileBoxUpload(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_UpdateProfileBoxUploadInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UpdateProfileBoxUploadInput(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     TouchScreenActions_HandleAction(v0->unk_330[1]);
@@ -626,7 +626,7 @@ static BOOL VsRecorderViewerBox_UpdateProfileBoxUploadInput(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_UploadProfileBox(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UploadProfileBox(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -703,7 +703,7 @@ static BOOL VsRecorderViewerBox_UploadProfileBox(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_CloseProfileBoxUpload(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_CloseProfileBoxUpload(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -741,7 +741,7 @@ static BOOL VsRecorderViewerBox_CloseProfileBoxUpload(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_FinishProfileBoxUpload(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_FinishProfileBoxUpload(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -774,7 +774,7 @@ static BOOL VsRecorderViewerBox_FinishProfileBoxUpload(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_FinishBoxUpload(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_FinishBoxUpload(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -804,7 +804,7 @@ static BOOL VsRecorderViewerBox_FinishBoxUpload(UnkStruct_0208C06C *param0)
 }
 
 // clang-format off
-BOOL(*const sVsRecorderViewerBoxStateTable[])(UnkStruct_0208C06C *) = {
+BOOL(*const sVsRecorderViewerBoxStateTable[])(VsRecorderState *) = {
     VsRecorderViewerBox_Init,
     VsRecorderViewerBox_EnterFadeIn,
     VsRecorderViewerBox_SetupBoxView,
@@ -820,7 +820,7 @@ BOOL(*const sVsRecorderViewerBoxStateTable[])(UnkStruct_0208C06C *) = {
 // clang-format on
 
 // clang-format off
-BOOL(*const sVsRecorderViewerBoxListStateTable[])(UnkStruct_0208C06C *) = {
+BOOL(*const sVsRecorderViewerBoxListStateTable[])(VsRecorderState *) = {
     VsRecorderViewerBox_Init,
     VsRecorderViewerBox_EnterFadeIn,
     VsRecorderViewerBox_SetupBoxListView,
@@ -862,7 +862,7 @@ static const u32 sVsRecorderViewerWindowFillValues[] = {
     0xCC
 };
 
-static void VsRecorderViewerBox_CreateStatusWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreateStatusWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -890,7 +890,7 @@ static const u8 sVsRecorderViewerListWindowRects[][4] = {
     { 0x12, 0xD, 0xB, 0x2 }
 };
 
-static void VsRecorderViewerBox_CreateListWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreateListWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -916,7 +916,7 @@ static void VsRecorderViewerBox_CreateListWindows(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_RemoveListWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_RemoveListWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -930,7 +930,7 @@ static void VsRecorderViewerBox_RemoveListWindows(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_RemoveStatusWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_RemoveStatusWindows(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerBoxContext *v1 = param0->unk_860;
@@ -941,7 +941,7 @@ static void VsRecorderViewerBox_RemoveStatusWindows(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_PrintStatusMessage(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_PrintStatusMessage(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1 = &v0->unk_1B4[2];
@@ -953,7 +953,7 @@ static void VsRecorderViewerBox_PrintStatusMessage(UnkStruct_0208C06C *param0, i
     String_Free(v2);
 }
 
-static void VsRecorderViewerBox_PrintTrainerNameMessage(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_PrintTrainerNameMessage(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -982,7 +982,7 @@ static void VsRecorderViewerBox_PrintTrainerNameMessage(UnkStruct_0208C06C *para
     StringTemplate_Free(v5);
 }
 
-static void VsRecorderViewerBox_PrintBoxName(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_PrintBoxName(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1002,7 +1002,7 @@ static void VsRecorderViewerBox_PrintBoxName(UnkStruct_0208C06C *param0)
     String_Free(v2);
 }
 
-static void VsRecorderViewerBox_ClearNameWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_ClearNameWindows(VsRecorderState *param0)
 {
     int v0;
     Window *v1;
@@ -1021,7 +1021,7 @@ static BOOL VsRecorderViewerBox_IsBitSet(int param0, int param1)
     return (param0 & param1) == param1;
 }
 
-static void VsRecorderViewerBox_PrintSpeciesName(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_PrintSpeciesName(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1055,7 +1055,7 @@ static void VsRecorderViewerBox_PrintSpeciesName(UnkStruct_0208C06C *param0, int
     String_Free(v2);
 }
 
-static void VsRecorderViewerBox_CreatePokemonIcons(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreatePokemonIcons(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     SpriteSystem *v1;
@@ -1115,7 +1115,7 @@ static void VsRecorderViewerBox_CreatePokemonIcons(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_SetPokemonIconsVisible(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_SetPokemonIconsVisible(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     int v1;
@@ -1132,7 +1132,7 @@ static void VsRecorderViewerBox_SetPokemonIconsVisible(UnkStruct_0208C06C *param
     }
 }
 
-static void VsRecorderViewerBox_DestroyPokemonIcons(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_DestroyPokemonIcons(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     int v1;
@@ -1159,7 +1159,7 @@ static void VsRecorderViewerBox_DestroyPokemonIcons(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_CreatePreviewPokemonSprite(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreatePreviewPokemonSprite(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     SpeciesData *speciesData;
@@ -1199,7 +1199,7 @@ static void VsRecorderViewerBox_CreatePreviewPokemonSprite(UnkStruct_0208C06C *p
     SpeciesData_Free(speciesData);
 }
 
-static void VsRecorderViewerBox_SetPreviewSpriteVisible(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_SetPreviewSpriteVisible(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1208,7 +1208,7 @@ static void VsRecorderViewerBox_SetPreviewSpriteVisible(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerBox_DeletePreviewSprite(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_DeletePreviewSprite(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1217,7 +1217,7 @@ static void VsRecorderViewerBox_DeletePreviewSprite(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_LoadWallpaperAndRefresh(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_LoadWallpaperAndRefresh(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1249,7 +1249,7 @@ static void VsRecorderViewerBox_LoadWallpaperAndRefresh(UnkStruct_0208C06C *para
     VsRecorderViewerBox_PrintStatusMessage(param0, 270);
 }
 
-static void VsRecorderViewerBox_LoadWallpaper(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_LoadWallpaper(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1275,7 +1275,7 @@ static void VsRecorderViewerBox_LoadWallpaper(UnkStruct_0208C06C *param0)
     VsRecorderViewerBox_CreatePokemonIcons(param0);
 }
 
-static BOOL VsRecorderViewerBox_SetupBoxView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_SetupBoxView(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1323,7 +1323,7 @@ static BOOL VsRecorderViewerBox_SetupBoxView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_UpdateBoxNavInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UpdateBoxNavInput(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1331,7 +1331,7 @@ static BOOL VsRecorderViewerBox_UpdateBoxNavInput(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_Exit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_Exit(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1390,7 +1390,7 @@ static BOOL VsRecorderViewerBox_Exit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_SetupBoxListView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_SetupBoxListView(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1438,7 +1438,7 @@ static BOOL VsRecorderViewerBox_SetupBoxListView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_UpdateBoxListInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UpdateBoxListInput(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1451,7 +1451,7 @@ static const u8 sVsRecorderViewerProfileBoxWindowRects[][4] = {
     { 0x9, 0xA, 0xE, 0x2 }
 };
 
-static void VsRecorderViewerBox_CreateProfileBoxWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreateProfileBoxWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1477,7 +1477,7 @@ static void VsRecorderViewerBox_CreateProfileBoxWindows(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerBox_PrintProfileBoxMessage(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBox_PrintProfileBoxMessage(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1496,7 +1496,7 @@ static void VsRecorderViewerBox_PrintProfileBoxMessage(UnkStruct_0208C06C *param
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerBox_CreateTitleWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreateTitleWindow(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1524,7 +1524,7 @@ static void VsRecorderViewerBox_CreateTitleWindow(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerBox_RemoveTitleWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_RemoveTitleWindow(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1532,7 +1532,7 @@ static void VsRecorderViewerBox_RemoveTitleWindow(UnkStruct_0208C06C *param0)
     Window_Remove(&v0->unk_234[0]);
 }
 
-static void VsRecorderViewerBox_RemoveTwoWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_RemoveTwoWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     int v1;
@@ -1547,7 +1547,7 @@ static const u8 sVsRecorderViewerTitleWindowRect[][4] = {
     { 0x4, 0x3, 0x18, 0x2 }
 };
 
-static void VsRecorderViewerBox_CreateProfileBoxStatusWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_CreateProfileBoxStatusWindow(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1581,7 +1581,7 @@ static void VsRecorderViewerBox_CreateProfileBoxStatusWindow(UnkStruct_0208C06C 
     }
 }
 
-static void VsRecorderViewerBox_RemoveProfileBoxStatusWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_RemoveProfileBoxStatusWindow(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     Window *v1;
@@ -1607,7 +1607,7 @@ static const VsRecorderViewerListConfig sVsRecorderViewerProfileBoxGridConfig = 
     NULL
 };
 
-static BOOL VsRecorderViewerBox_UploadBox(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UploadBox(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -1777,7 +1777,7 @@ static BOOL VsRecorderViewerBox_UploadBox(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static void VsRecorderViewerBox_InitProfileBoxStrings(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_InitProfileBoxStrings(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerBoxContext *v1 = param0->unk_860;
@@ -1792,7 +1792,7 @@ static void VsRecorderViewerBox_InitProfileBoxStrings(UnkStruct_0208C06C *param0
     }
 }
 
-static void VsRecorderViewerBox_FreeProfileBoxStrings(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBox_FreeProfileBoxStrings(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerBoxContext *v1 = param0->unk_860;
@@ -1810,7 +1810,7 @@ static void VsRecorderViewerBox_FreeProfileBoxStrings(UnkStruct_0208C06C *param0
     }
 }
 
-static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1826,7 +1826,7 @@ static BOOL VsRecorderViewerBox_UpdateProfileBoxGridInput(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1886,7 +1886,7 @@ static BOOL VsRecorderViewerBox_CloseProfileBoxGrid(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_SelectProfileBox(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_SelectProfileBox(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1978,7 +1978,7 @@ static BOOL VsRecorderViewerBox_SelectProfileBox(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_UpdateGridInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_UpdateGridInput(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -1986,7 +1986,7 @@ static BOOL VsRecorderViewerBox_UpdateGridInput(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_OpenProfileBoxGrid(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_OpenProfileBoxGrid(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -2054,7 +2054,7 @@ static BOOL VsRecorderViewerBox_OpenProfileBoxGrid(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -2107,7 +2107,7 @@ static BOOL VsRecorderViewerBox_OpenProfileBoxDetail(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -2163,7 +2163,7 @@ static BOOL VsRecorderViewerBox_CloseProfileBoxDetail(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerBox_ExitBoxList(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBox_ExitBoxList(VsRecorderState *param0)
 {
     VsRecorderViewerBoxContext *v0 = param0->unk_860;
 
@@ -2240,7 +2240,7 @@ void VsRecorderViewerBox_OnProfileBoxTransferComplete(void *param0, const VsReco
 
 void VsRecorderViewerBox_OnBoxTransferComplete(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderState *v0 = param0;
     VsRecorderViewerBoxContext *v1 = v0->unk_860;
 
     if (param1->unk_00 == 1) {

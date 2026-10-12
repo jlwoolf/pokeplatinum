@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_020298D8.h"
+#include "struct_defs/struct_image_clip_pokemon_sprite.h"
 
 #include "image_clip_app/image_clip_app.h"
 #include "image_clip_app/image_clip_app_02259098.h"
@@ -17,7 +17,7 @@ void ImageClipSpriteResource_SetZ(ImageClipSpriteResource *param0, int param1)
         ImageClipSprite *v0 = param0->unk_00;
         ImageClipSprite_SetPriority(v0, param1);
     } else {
-        UnkStruct_020298D8 *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->unk_00;
         ImageClipPokemonSprite_SetZ(v1, param1);
     }
 }
@@ -35,7 +35,7 @@ BOOL ImageClipSpriteResource_IsHit(ImageClipSpriteResource *param0, int param1, 
     }
 
     {
-        UnkStruct_020298D8 *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->unk_00;
 
         if (param1 == 0xffffffff) {
             return ImageClipPokemonSprite_IsScreenTouched(v1);
@@ -73,7 +73,7 @@ BOOL ImageClipSpriteResource_IsPixelHit(ImageClipSpriteResource *param0, int *pa
     }
 
     {
-        UnkStruct_020298D8 *v6 = param0->unk_00;
+        ImageClipPokemonSprite *v6 = param0->unk_00;
 
         v0 = param3[(100 + 18)];
         return ImageClipPokemonSprite_IsTouchedByTouch(v6, param1, param2, v0);
@@ -87,7 +87,7 @@ void ImageClipSpriteResource_SetPosition(ImageClipSpriteResource *param0, int pa
 
         ImageClipSprite_SetPosition(v0, param1, param2);
     } else {
-        UnkStruct_020298D8 *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->unk_00;
         int v2, v3;
 
         ImageClipPokemonSprite_GetSize(v1, &v2, &v3);
@@ -105,7 +105,7 @@ void ImageClipSpriteResource_GetPosition(ImageClipSpriteResource *param0, int *p
         ImageClipSprite *v0 = param0->unk_00;
         ImageClipSprite_GetPosition(v0, param1, param2);
     } else {
-        UnkStruct_020298D8 *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->unk_00;
         int v2, v3;
 
         ImageClipPokemonSprite_GetCenter(v1, param1, param2);
@@ -124,7 +124,7 @@ void ImageClipSpriteResource_GetSize(ImageClipSpriteResource *param0, int *param
         ImageClipSprite *v0 = param0->unk_00;
         ImageClipSprite_GetDimensions(v0, param1, param2);
     } else {
-        UnkStruct_020298D8 *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->unk_00;
         ImageClipPokemonSprite_GetSize(v1, param1, param2);
     }
 }
@@ -138,7 +138,7 @@ void ImageClipSpriteResource_GetBounds(ImageClipSpriteResource *param0, int *par
         *param4 = *param3;
     } else {
         ImageClipPixelBounds v1;
-        UnkStruct_020298D8 *v2 = param0->unk_00;
+        ImageClipPokemonSprite *v2 = param0->unk_00;
 
         ImageClipPokemonSprite_GetPixelBounds(v2, &v1);
 

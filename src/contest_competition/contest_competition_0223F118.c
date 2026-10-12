@@ -9,7 +9,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "contest_competition/contest_competition_02252A70.h"
 #include "contest_competition/struct_contest_text_label.h"
@@ -105,7 +105,7 @@ void contest_competition_0223F1E0(G3DPipelineBuffers *param0)
 
 void contest_competition_0223F1E8(enum HeapID heapID, BgConfig *param1, SpriteManager *param2, FontOAMManager *param3, ContestTextLabel *param4, const String *message, enum Font param6, TextColor param7, int param8, int param9, int param10, int param11, int param12, int param13, int param14)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
     Window v1;
     CharTransferAllocation v2;
     int v3;

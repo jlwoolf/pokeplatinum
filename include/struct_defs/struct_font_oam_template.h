@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_020127E8_H
-#define POKEPLATINUM_STRUCT_020127E8_H
+#ifndef POKEPLATINUM_STRUCT_FONT_OAM_TEMPLATE_H
+#define POKEPLATINUM_STRUCT_FONT_OAM_TEMPLATE_H
 
 #include <nnsys.h>
 
@@ -21,6 +21,6 @@ typedef struct {
     int unk_24;
     int unk_28;
     enum HeapID heapID;
-} UnkStruct_020127E8;
+} FontOAMTemplate;
 
-#endif // POKEPLATINUM_STRUCT_020127E8_H
+#endif // POKEPLATINUM_STRUCT_FONT_OAM_TEMPLATE_H

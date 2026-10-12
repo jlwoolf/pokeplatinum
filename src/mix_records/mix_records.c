@@ -6,7 +6,7 @@
 #include "generated/trainer_score_events.h"
 
 #include "struct_decls/struct_020961E8_decl.h"
-#include "struct_defs/struct_0203DE34.h"
+#include "struct_defs/struct_mix_records_app_args.h"
 #include "struct_defs/struct_020961E8_t.h"
 #include "struct_defs/struct_02096274.h"
 
@@ -180,7 +180,7 @@ int MixRecords_Init(ApplicationManager *appMan, int *param1)
         memset(v0, 0, sizeof(MixRecordsComm));
 
         v0->bgConfig = BgConfig_New(HEAP_ID_51);
-        v0->appArgs = (UnkStruct_0203DE34 *)ApplicationManager_Args(appMan);
+        v0->appArgs = (MixRecordsAppArgs *)ApplicationManager_Args(appMan);
         v0->saveData = v0->appArgs->saveData;
         v0->strTemplate = StringTemplate_Default(HEAP_ID_51);
         v0->msgLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0533, HEAP_ID_51);

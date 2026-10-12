@@ -24,7 +24,7 @@
 #include "struct_defs/seal_case.h"
 #include "struct_defs/species_sprite_data.h"
 #include "struct_defs/sprite_animation_frame.h"
-#include "struct_defs/struct_02078B40.h"
+#include "struct_defs/struct_serialized_pokemon.h"
 
 #include "ball_seal_info.h"
 #include "charcode_util.h"
@@ -5222,7 +5222,7 @@ BOOL Pokemon_SetBallSeal(int param0, Pokemon *mon, enum HeapID heapID)
 // Flattens a Pokemon into the unencrypted box-format struct used by battle
 // recordings. The Pokemon is decrypted for the duration of the copy and
 // re-encrypted afterwards if it was encrypted on entry.
-void Pokemon_Serialize(Pokemon *mon, UnkStruct_02078B40 *dest)
+void Pokemon_Serialize(Pokemon *mon, SerializedPokemon *dest)
 {
     if (mon->box.partyDecrypted == FALSE) {
         Pokemon_DecryptData(&mon->party, sizeof(PartyPokemon), mon->box.personality);
@@ -5302,7 +5302,7 @@ void Pokemon_Serialize(Pokemon *mon, UnkStruct_02078B40 *dest)
 
 // Rebuilds a Pokemon from the flat box-format struct written by
 // Pokemon_Serialize. The result is left encrypted.
-void Pokemon_Deserialize(UnkStruct_02078B40 *src, Pokemon *mon)
+void Pokemon_Deserialize(SerializedPokemon *src, Pokemon *mon)
 {
     MI_CpuClearFast(mon, sizeof(Pokemon));
 

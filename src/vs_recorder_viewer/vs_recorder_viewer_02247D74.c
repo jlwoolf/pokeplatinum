@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "struct_defs/struct_02030A80.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_022300D8.h"
@@ -29,17 +29,17 @@ typedef struct {
     Window unk_10[2];
 } VsRecorderViewerSubMenuContext;
 
-static void VsRecorderViewerSubMenu_CreateMessageWindow(UnkStruct_0208C06C *param0, BOOL param1);
-static void VsRecorderViewerSubMenu_RemoveMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerSubMenu_DrawMessage(UnkStruct_0208C06C *param0, int param1, int param2);
-static void VsRecorderViewerSubMenu_CreateOptionWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerSubMenu_RemoveOptionWindows(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSubMenu_Init(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSubMenu_Setup(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSubMenu_HandleOptions(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSubMenu_Exit(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerSubMenu_CreateMessageWindow(VsRecorderState *param0, BOOL param1);
+static void VsRecorderViewerSubMenu_RemoveMessageWindow(VsRecorderState *param0);
+static void VsRecorderViewerSubMenu_DrawMessage(VsRecorderState *param0, int param1, int param2);
+static void VsRecorderViewerSubMenu_CreateOptionWindows(VsRecorderState *param0);
+static void VsRecorderViewerSubMenu_RemoveOptionWindows(VsRecorderState *param0);
+static BOOL VsRecorderViewerSubMenu_Init(VsRecorderState *param0);
+static BOOL VsRecorderViewerSubMenu_Setup(VsRecorderState *param0);
+static BOOL VsRecorderViewerSubMenu_HandleOptions(VsRecorderState *param0);
+static BOOL VsRecorderViewerSubMenu_Exit(VsRecorderState *param0);
 
-static void VsRecorderViewerSubMenu_CreateMessageWindow(UnkStruct_0208C06C *param0, BOOL param1)
+static void VsRecorderViewerSubMenu_CreateMessageWindow(VsRecorderState *param0, BOOL param1)
 {
     Window *v0 = &param0->unk_8A4;
 
@@ -48,14 +48,14 @@ static void VsRecorderViewerSubMenu_CreateMessageWindow(UnkStruct_0208C06C *para
     Window_Add(param0->unk_14.unk_10, v0, 2, 1, 19, 30, 4, 14, 300);
 }
 
-static void VsRecorderViewerSubMenu_RemoveMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerSubMenu_RemoveMessageWindow(VsRecorderState *param0)
 {
     Window_ClearAndCopyToVRAM(&param0->unk_8A4);
     Window_Remove(&param0->unk_8A4);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
-static void VsRecorderViewerSubMenu_DrawMessage(UnkStruct_0208C06C *param0, int param1, int param2)
+static void VsRecorderViewerSubMenu_DrawMessage(VsRecorderState *param0, int param1, int param2)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -88,7 +88,7 @@ static void VsRecorderViewerSubMenu_DrawMessage(UnkStruct_0208C06C *param0, int 
     String_Free(v0);
 }
 
-static void VsRecorderViewerSubMenu_CreateOptionWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerSubMenu_CreateOptionWindows(VsRecorderState *param0)
 {
     VsRecorderViewerSubMenuContext *v0 = param0->unk_860;
     Window *v1;
@@ -124,7 +124,7 @@ static void VsRecorderViewerSubMenu_CreateOptionWindows(UnkStruct_0208C06C *para
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerSubMenu_RemoveOptionWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerSubMenu_RemoveOptionWindows(VsRecorderState *param0)
 {
     VsRecorderViewerSubMenuContext *v0 = param0->unk_860;
 
@@ -134,7 +134,7 @@ static void VsRecorderViewerSubMenu_RemoveOptionWindows(UnkStruct_0208C06C *para
     Window_Remove(&v0->unk_10[1]);
 }
 
-static BOOL VsRecorderViewerSubMenu_Init(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSubMenu_Init(VsRecorderState *param0)
 {
     VsRecorderViewerSubMenuContext *v0 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerSubMenuContext));
 
@@ -151,7 +151,7 @@ static BOOL VsRecorderViewerSubMenu_Init(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerSubMenu_Setup(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSubMenu_Setup(VsRecorderState *param0)
 {
     VsRecorderViewerSubMenuContext *v0 = param0->unk_860;
 
@@ -195,7 +195,7 @@ static const TouchScreenRect sVsRecorderViewerSubMenuTouchRects[] = {
     { 0x28, 0x48, 0x90, 0xE8 }
 };
 
-static BOOL VsRecorderViewerSubMenu_HandleOptions(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSubMenu_HandleOptions(VsRecorderState *param0)
 {
     VsRecorderViewerSubMenuContext *v0 = param0->unk_860;
 
@@ -288,7 +288,7 @@ static BOOL VsRecorderViewerSubMenu_HandleOptions(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerSubMenu_Exit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSubMenu_Exit(VsRecorderState *param0)
 {
     VsRecorderViewerSubMenuContext *v0 = param0->unk_860;
 
@@ -329,7 +329,7 @@ static BOOL VsRecorderViewerSubMenu_Exit(UnkStruct_0208C06C *param0)
 }
 
 // clang-format off
-BOOL(*const sVsRecorderViewerSubMenuStateFuncs[])(UnkStruct_0208C06C *) = {
+BOOL(*const sVsRecorderViewerSubMenuStateFuncs[])(VsRecorderState *) = {
     VsRecorderViewerSubMenu_Init,
     VsRecorderViewerSubMenu_Setup,
     VsRecorderViewerSubMenu_HandleOptions,

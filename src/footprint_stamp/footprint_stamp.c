@@ -9,7 +9,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "wifi_plaza_lobby/wifi_plaza_lobby_0222DDF0.h"
 #include "wifi_plaza_lobby/wifi_plaza_lobby_02231428.h"
@@ -1478,7 +1478,7 @@ static void FootprintStamp_UpdateSelectionSprites(FootprintStampApp *param0)
 
 static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintStampText *param1, const String *param2, enum Font param3, TextColor param4, int param5, int param6, int param7, int param8, int param9)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
     Window v1;
     CharTransferAllocation v2;
     int v3;

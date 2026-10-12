@@ -7,7 +7,7 @@
 
 #include "constants/communication/comm_error.h"
 
-#include "struct_defs/struct_0203330C.h"
+#include "struct_defs/struct_wireless_game_info.h"
 
 #include "comm_manager.h"
 #include "comm_local.h"
@@ -536,7 +536,7 @@ static void WirelessManager_FinishStartScan(void *wm_startscancallback)
         DC_InvalidateRange(&sWirelessManager->bssDesc, sizeof(WMbssDesc));
 
         if ((sWirelessManager->ggidScanCallback != NULL) && (callback->gameInfoLength >= 8)) {
-            UnkStruct_0203330C *v1 = (UnkStruct_0203330C *)callback->gameInfo.userGameInfo;
+            WirelessGameInfo *v1 = (WirelessGameInfo *)callback->gameInfo.userGameInfo;
 
             sWirelessManager->ggidScanCallback(callback->gameInfo.ggid, v1->unk_04);
         }

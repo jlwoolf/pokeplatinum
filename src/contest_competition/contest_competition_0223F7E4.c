@@ -5,7 +5,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "contest_competition/contest_competition_0223F118.h"
 #include "contest_competition/contest_competition_02241270.h"
@@ -984,7 +984,7 @@ static int contest_competition_02240094(ActingMoveMenu *param0, int param1, int 
 
 static void contest_competition_02240138(ActingMoveMenu *param0, ActingMoveMenuLabel *param1, const String *string, enum Font font, u32 textColor, int param5, int param6, int x, int y, int param9, ActingMoveMenuWindow *param10)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
     Window window;
     CharTransferAllocation v2;
     int v3;

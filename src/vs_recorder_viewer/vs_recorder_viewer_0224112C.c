@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "global_terminal/global_terminal_0222B008.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_02231690.h"
@@ -16,19 +16,19 @@
 #include "inlines.h"
 #include "system_data.h"
 
-static inline BOOL VsRecorderViewerTransfer_IsActive(UnkStruct_0208C06C *param0);
+static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0);
 
-static inline BOOL VsRecorderViewerTransfer_IsActive(UnkStruct_0208C06C *param0)
+static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0)
 {
     return param0->unk_14.unk_54.unk_3B8;
 }
 
-VsRecorderViewerTransferContext *VsRecorderViewerTransfer_GetTransfer(UnkStruct_0208C06C *param0)
+VsRecorderViewerTransferContext *VsRecorderViewerTransfer_GetTransfer(VsRecorderState *param0)
 {
     return &param0->unk_14.unk_54;
 }
 
-void VsRecorderViewerTransfer_Init(UnkStruct_0208C06C *param0)
+void VsRecorderViewerTransfer_Init(VsRecorderState *param0)
 {
     VsRecorderViewerTransferInitParams v0;
 
@@ -52,7 +52,7 @@ void VsRecorderViewerTransfer_Init(UnkStruct_0208C06C *param0)
     GlobalTerminalTransfer_Init(&param0->unk_14.unk_54, &v0);
 }
 
-BOOL VsRecorderViewerTransfer_IsIdle(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerTransfer_IsIdle(VsRecorderState *param0)
 {
     if (VsRecorderViewerTransfer_IsActive(param0) == 0) {
         return 0;
@@ -61,7 +61,7 @@ BOOL VsRecorderViewerTransfer_IsIdle(UnkStruct_0208C06C *param0)
     return GlobalTerminalTransfer_IsIdle(VsRecorderViewerTransfer_GetTransfer(param0));
 }
 
-void VsRecorderViewerTransfer_Main(UnkStruct_0208C06C *param0)
+void VsRecorderViewerTransfer_Main(VsRecorderState *param0)
 {
     if (VsRecorderViewerTransfer_IsActive(param0) == 0) {
         return;
@@ -70,7 +70,7 @@ void VsRecorderViewerTransfer_Main(UnkStruct_0208C06C *param0)
     GlobalTerminalTransfer_Main(VsRecorderViewerTransfer_GetTransfer(param0));
 }
 
-void VsRecorderViewerTransfer_Free(UnkStruct_0208C06C *param0)
+void VsRecorderViewerTransfer_Free(VsRecorderState *param0)
 {
     if (VsRecorderViewerTransfer_IsActive(param0) == 0) {
         return;

@@ -13,7 +13,7 @@
 #include "struct_defs/struct_0202FAA8.h"
 #include "struct_defs/struct_0202FD30.h"
 #include "struct_defs/struct_02030A80.h"
-#include "struct_defs/struct_02078B40.h"
+#include "struct_defs/struct_serialized_pokemon.h"
 
 #include "savedata/save_table.h"
 
@@ -276,7 +276,7 @@ void BattleRecording_GetPartyLayout(int battleType, int *battlerCount, int *part
 static void BattleRecording_BuildSummary(SaveData *saveData, BattleRecordingSummary *summary, const BattleRecordingData *data, int battleType, int battleNumber)
 {
     int v0, v1, v2, v3, v4, v5, v6;
-    const UnkStruct_02078B40 *v7;
+    const SerializedPokemon *v7;
     const u8 v8[2][4] = {
         { 0, 2, 3, 1 },
         { 3, 1, 0, 2 },
@@ -416,7 +416,7 @@ static BOOL BattleRecording_IsValid(SaveData *saveData, const BattleRecording *b
 
     {
         int v3, v4, v5;
-        const UnkStruct_02078B40 *v6;
+        const SerializedPokemon *v6;
 
         // Reject out-of-range species, held items and moves so a corrupted
         // recording cannot be loaded into the battle engine.

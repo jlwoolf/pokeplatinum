@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_STRUCT_02095EAC_T_H
 #define POKEPLATINUM_STRUCT_02095EAC_T_H
 
-#include "struct_defs/struct_0203DDFC.h"
+#include "struct_defs/struct_union_room_drawing_app_args.h"
 #include "struct_defs/struct_02095EAC_sub1.h"
 
 #include "union_room_drawing/struct_union_room_drawing_prev_point.h"
@@ -23,7 +23,7 @@
 struct UnionRoomDrawing {
     BgConfig *unk_00;
     BOOL unk_04;
-    UnkStruct_0203DDFC *unk_08;
+    UnionRoomDrawingAppArgs *unk_08;
     StringTemplate *unk_0C;
     MessageLoader *unk_10;
     String *unk_14[5];

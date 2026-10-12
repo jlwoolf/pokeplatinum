@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_020298D8_H
-#define POKEPLATINUM_STRUCT_020298D8_H
+#ifndef POKEPLATINUM_STRUCT_IMAGE_CLIP_POKEMON_SPRITE_H
+#define POKEPLATINUM_STRUCT_IMAGE_CLIP_POKEMON_SPRITE_H
 
 #include "image_clip_app/struct_image_clip_app_022596B0.h"
 
@@ -12,6 +12,6 @@ typedef struct {
     TouchScreenHitTable unk_04;
     ImageClipPixelBounds unk_08;
     Pokemon *unk_0C;
-} UnkStruct_020298D8;
+} ImageClipPokemonSprite;
 
-#endif // POKEPLATINUM_STRUCT_020298D8_H
+#endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_POKEMON_SPRITE_H

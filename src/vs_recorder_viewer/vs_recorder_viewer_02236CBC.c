@@ -3,7 +3,7 @@
 
 #include "constants/narc.h"
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 #include "struct_defs/wifi_battle_tower_data.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
@@ -46,30 +46,30 @@ typedef struct {
     int unk_D8;
 } VsRecorderViewerFrontierPrint;
 
-static void VsRecorderViewerFrontierPrint_SetExitPromptPosition(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerFrontierPrint_LoadExitPromptResources(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerFrontierPrint_CreateExitPrompt(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerFrontierPrint_FreeExitPrompt(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerFrontierPrint_LoadGraphics(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerFrontierPrint_SetExitPromptPosition(VsRecorderState *param0, int param1);
+static void VsRecorderViewerFrontierPrint_LoadExitPromptResources(VsRecorderState *param0, int param1);
+static void VsRecorderViewerFrontierPrint_CreateExitPrompt(VsRecorderState *param0);
+static void VsRecorderViewerFrontierPrint_FreeExitPrompt(VsRecorderState *param0);
+static void VsRecorderViewerFrontierPrint_LoadGraphics(VsRecorderState *param0);
 static void VsRecorderViewerFrontierPrint_GrayscalePaletteRange(u16 *param0, u16 param1, u16 param2);
-static void VsRecorderViewerFrontierPrint_CreateSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerFrontierPrint_FreeSprites(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerFrontierPrint_UpdateExpandAnimation(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerFrontierPrint_UpdateCollapseAnimation(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerFrontierPrint_SetSpriteRingPositions(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerFrontierPrint_Update(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerFrontierPrint_HandleTouchInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerFrontierPrint_Exit(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerFrontierPrint_CreateSprites(VsRecorderState *param0);
+static void VsRecorderViewerFrontierPrint_FreeSprites(VsRecorderState *param0);
+static BOOL VsRecorderViewerFrontierPrint_UpdateExpandAnimation(VsRecorderState *param0);
+static BOOL VsRecorderViewerFrontierPrint_UpdateCollapseAnimation(VsRecorderState *param0);
+static void VsRecorderViewerFrontierPrint_SetSpriteRingPositions(VsRecorderState *param0);
+static BOOL VsRecorderViewerFrontierPrint_Update(VsRecorderState *param0);
+static BOOL VsRecorderViewerFrontierPrint_HandleTouchInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerFrontierPrint_Exit(VsRecorderState *param0);
 
 // clang-format off
-BOOL(*const sVsRecorderViewerFrontierPrintStateTable[])(UnkStruct_0208C06C *) = {
+BOOL(*const sVsRecorderViewerFrontierPrintStateTable[])(VsRecorderState *) = {
     VsRecorderViewerFrontierPrint_Update,
     VsRecorderViewerFrontierPrint_HandleTouchInput,
     VsRecorderViewerFrontierPrint_Exit,
 };
 // clang-format on
 
-static void VsRecorderViewerFrontierPrint_SetExitPromptPosition(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerFrontierPrint_SetExitPromptPosition(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
 
@@ -82,7 +82,7 @@ static void VsRecorderViewerFrontierPrint_SetExitPromptPosition(UnkStruct_0208C0
     FontOAM_SetXY(v0->unk_9C[1].unk_0C, 36, -8);
 }
 
-static void VsRecorderViewerFrontierPrint_LoadExitPromptResources(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerFrontierPrint_LoadExitPromptResources(VsRecorderState *param0, int param1)
 {
     NARC *v0 = param0->unk_14.unk_00;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -95,7 +95,7 @@ static void VsRecorderViewerFrontierPrint_LoadExitPromptResources(UnkStruct_0208
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, 29, FALSE, 11924);
 }
 
-static void VsRecorderViewerFrontierPrint_CreateExitPrompt(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_CreateExitPrompt(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
 
@@ -119,7 +119,7 @@ static void VsRecorderViewerFrontierPrint_CreateExitPrompt(UnkStruct_0208C06C *p
     VsRecorderViewerFrontierPrint_SetExitPromptPosition(param0, 1);
 }
 
-static void VsRecorderViewerFrontierPrint_FreeExitPrompt(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_FreeExitPrompt(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
 
@@ -129,7 +129,7 @@ static void VsRecorderViewerFrontierPrint_FreeExitPrompt(UnkStruct_0208C06C *par
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static void VsRecorderViewerFrontierPrint_LoadGraphics(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_LoadGraphics(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
     NARC *v1 = param0->unk_14.unk_00;
@@ -216,7 +216,7 @@ static void VsRecorderViewerFrontierPrint_GrayscalePaletteRange(u16 *param0, u16
     }
 }
 
-static void VsRecorderViewerFrontierPrint_ApplyPrintStateGrayscale(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_ApplyPrintStateGrayscale(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
     BgConfig *v1 = param0->unk_14.unk_10;
@@ -253,7 +253,7 @@ static void VsRecorderViewerFrontierPrint_ApplyPrintStateGrayscale(UnkStruct_020
     PaletteData_SetAutoTransparent(v4, TRUE);
 }
 
-static void VsRecorderViewerFrontierPrint_CreateSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_CreateSprites(VsRecorderState *param0)
 {
     int v0;
     int v1 = 0;
@@ -404,7 +404,7 @@ static void VsRecorderViewerFrontierPrint_CreateSprites(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerFrontierPrint_FreeSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_FreeSprites(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerFrontierPrint *v1 = param0->unk_860;
@@ -448,7 +448,7 @@ static void VsRecorderViewerFrontierPrint_FreeSprites(UnkStruct_0208C06C *param0
     SpriteManager_UnloadAnimObjById(param0->unk_14.unk_08, 29292);
 }
 
-static BOOL VsRecorderViewerFrontierPrint_UpdateExpandAnimation(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerFrontierPrint_UpdateExpandAnimation(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
     int v1;
@@ -491,7 +491,7 @@ static BOOL VsRecorderViewerFrontierPrint_UpdateExpandAnimation(UnkStruct_0208C0
     return 1;
 }
 
-static BOOL VsRecorderViewerFrontierPrint_UpdateCollapseAnimation(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerFrontierPrint_UpdateCollapseAnimation(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
     int v1;
@@ -541,7 +541,7 @@ static BOOL VsRecorderViewerFrontierPrint_UpdateCollapseAnimation(UnkStruct_0208
     return 1;
 }
 
-static void VsRecorderViewerFrontierPrint_SetSpriteRingPositions(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerFrontierPrint_SetSpriteRingPositions(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
     int v1;
@@ -567,7 +567,7 @@ static void VsRecorderViewerFrontierPrint_SetSpriteRingPositions(UnkStruct_0208C
     }
 }
 
-static BOOL VsRecorderViewerFrontierPrint_Update(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerFrontierPrint_Update(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0;
 
@@ -664,7 +664,7 @@ static BOOL VsRecorderViewerFrontierPrint_Update(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerFrontierPrint_HandleTouchInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerFrontierPrint_HandleTouchInput(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
 
@@ -685,7 +685,7 @@ static BOOL VsRecorderViewerFrontierPrint_HandleTouchInput(UnkStruct_0208C06C *p
     return 0;
 }
 
-static BOOL VsRecorderViewerFrontierPrint_Exit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerFrontierPrint_Exit(VsRecorderState *param0)
 {
     VsRecorderViewerFrontierPrint *v0 = param0->unk_860;
 

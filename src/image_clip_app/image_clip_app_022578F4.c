@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_020298D8.h"
+#include "struct_defs/struct_image_clip_pokemon_sprite.h"
 
 #include "image_clip_app/image_clip_app.h"
 #include "image_clip_app/image_clip_app_02255D44.h"
@@ -375,7 +375,7 @@ void PhotoRenderer_SetSpriteDiffuse(PhotoRenderer *param0, GXRgb param1)
 
             SoftwareSprite_SetDiffuse(v1->unk_04, param1);
         } else {
-            UnkStruct_020298D8 *v2 = v0->unk_00;
+            ImageClipPokemonSprite *v2 = v0->unk_00;
 
             PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_R, (param1 >> 10) & 0x1f);
             PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_G, (param1 >> 5) & 0x1f);

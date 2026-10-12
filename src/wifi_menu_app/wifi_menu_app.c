@@ -9,7 +9,7 @@
 #include "struct_decls/struct_02012B20_decl.h"
 #include "struct_decls/wi_fi_list.h"
 #include "struct_defs/battle_frontier.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 #include "struct_defs/struct_0207DFAC.h"
 #include "struct_defs/struct_0207E060.h"
 #include "struct_defs/wi_fi_history.h"
@@ -5854,7 +5854,7 @@ static void WiFiMenuApp_InitTouchScreenSprites(WiFiMenuApp *param0, NARC *param1
     String *v4;
     FontOAMWindow *v5;
     int v6;
-    UnkStruct_020127E8 v7;
+    FontOAMTemplate v7;
     u32 v8;
     AffineSpriteListTemplate v9[3] = {
         { NULL,

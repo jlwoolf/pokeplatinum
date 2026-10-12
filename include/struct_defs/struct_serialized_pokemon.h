@@ -1,7 +1,7 @@
-#ifndef POKEPLATINUM_STRUCT_02078B40_H
-#define POKEPLATINUM_STRUCT_02078B40_H
+#ifndef POKEPLATINUM_STRUCT_SERIALIZED_POKEMON_H
+#define POKEPLATINUM_STRUCT_SERIALIZED_POKEMON_H
 
-typedef struct UnkStruct_02078B40_t {
+typedef struct SerializedPokemon_t {
     u32 personality;
     u16 partyDecrypted : 1;
     u16 boxDecrypted : 1;
@@ -47,6 +47,6 @@ typedef struct UnkStruct_02078B40_t {
     u16 unk_6A;
     u16 unk_6C;
     u16 unk_6E;
-} UnkStruct_02078B40;
+} SerializedPokemon;
 
-#endif // POKEPLATINUM_STRUCT_02078B40_H
+#endif // POKEPLATINUM_STRUCT_SERIALIZED_POKEMON_H

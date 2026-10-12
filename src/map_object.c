@@ -6,7 +6,7 @@
 #include "generated/movement_types.h"
 #include "generated/object_events_gfx.h"
 
-#include "struct_decls/struct_02061830_sub1_decl.h"
+#include "struct_decls/struct_map_object_manager_unused_decl.h"
 #include "struct_defs/struct_020EDF0C.h"
 
 #include "field/field_system.h"
@@ -45,7 +45,7 @@ typedef struct MapObjectManager {
     int unk_10;
     NARC *narc;
     MapObjectDrawManager drawManager;
-    UnkStruct_02061830_sub1 *unk_120;
+    MapObjectManagerUnused *unk_120;
     MapObject *mapObj;
     FieldSystem *fieldSystem;
 } MapObjectManager;

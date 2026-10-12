@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "struct_decls/struct_0205B43C_decl.h"
-#include "struct_defs/struct_0203330C.h"
+#include "struct_defs/struct_wireless_game_info.h"
 #include "struct_defs/struct_0205C22C.h"
 #include "struct_defs/struct_0205C924.h"
 #include "struct_defs/struct_0205C95C.h"
@@ -546,7 +546,7 @@ static int UnionRoomChat_HandleListTouch(UnionRoomChat *param0)
 {
     int v0, v1, v2, v3;
     WMBssDesc *v4;
-    UnkStruct_0203330C *v5;
+    WirelessGameInfo *v5;
 
     v0 = TouchScreen_CheckRectangleHeld(sListTouchRects);
     v3 = UnionRoomChat_IsTouchRepeating(param0);
@@ -592,7 +592,7 @@ static int UnionRoomChat_HandleListTouch(UnionRoomChat *param0)
                     v4 = CommServerClient_GetServerBssDesc(v1);
 
                     if (v4 != NULL) {
-                        v5 = (UnkStruct_0203330C *)&v4->gameInfo.userGameInfo;
+                        v5 = (WirelessGameInfo *)&v4->gameInfo.userGameInfo;
 
                         if ((param0->trainers->slots[v1].phase == 2) && (v5->unk_00 == param0->chatLog->entries[v2].trainerId)) {
                             Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
@@ -862,7 +862,7 @@ static void UnionRoomChat_PollNewMessages(UnionRoomChat *param0)
 {
     int v0, v1;
     WMBssDesc *v2;
-    UnkStruct_0203330C *v3;
+    WirelessGameInfo *v3;
     EasyChatSentence *v4;
     TrainerInfo *v5;
     EasyChatSentence v6;
@@ -875,7 +875,7 @@ static void UnionRoomChat_PollNewMessages(UnionRoomChat *param0)
         v2 = CommServerClient_GetServerBssDesc(v0);
 
         if (v2 != NULL) {
-            v3 = (UnkStruct_0203330C *)&v2->gameInfo.userGameInfo;
+            v3 = (WirelessGameInfo *)&v2->gameInfo.userGameInfo;
             v4 = (EasyChatSentence *)&v3->unk_08;
 
             if (UnionRoomChat_IsNewSentence(param0, v4, v3->unk_00)) {

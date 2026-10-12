@@ -11,7 +11,7 @@
 #include "struct_decls/struct_0202F41C_decl.h"
 #include "struct_defs/struct_02030A80.h"
 #include "struct_defs/struct_0208B878.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "global_terminal/global_terminal_0222B008.h"
 #include "global_terminal/global_terminal_0222BC4C.h"
@@ -66,7 +66,7 @@ StringTemplate *VsRecorderViewerList_NewStringTemplate(enum HeapID heapID)
     return StringTemplate_New(4, 64, heapID);
 }
 
-int VsRecorderViewerList_GetThemeColorA(UnkStruct_0208C06C *param0)
+int VsRecorderViewerList_GetThemeColorA(VsRecorderState *param0)
 {
     u32 v0[] = {
         0x73fa,
@@ -81,7 +81,7 @@ int VsRecorderViewerList_GetThemeColorA(UnkStruct_0208C06C *param0)
     return v0[param0->unk_14.unk_48];
 }
 
-int VsRecorderViewerList_GetThemeColorB(UnkStruct_0208C06C *param0)
+int VsRecorderViewerList_GetThemeColorB(VsRecorderState *param0)
 {
     u32 v0[] = {
         0x1642,
@@ -100,7 +100,7 @@ int VsRecorderViewerList_GetThemeColorB(UnkStruct_0208C06C *param0)
     return v0[param0->unk_14.unk_48];
 }
 
-int VsRecorderViewerList_GetThemeGraphicsFileIndex(UnkStruct_0208C06C *param0, int param1)
+int VsRecorderViewerList_GetThemeGraphicsFileIndex(VsRecorderState *param0, int param1)
 {
     int v0[] = {
         102,
@@ -156,7 +156,7 @@ int VsRecorderViewerList_GetThemeGraphicsFileIndex(UnkStruct_0208C06C *param0, i
     return v0[0];
 }
 
-void VsRecorderViewerList_LoadThemeGraphics(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerList_LoadThemeGraphics(VsRecorderState *param0, int param1)
 {
     PaletteData *v0 = param0->unk_14.unk_14;
     SpriteSystem *v1 = param0->unk_14.unk_04;
@@ -175,7 +175,7 @@ void VsRecorderViewerList_LoadThemeGraphics(UnkStruct_0208C06C *param0, int para
     SpriteSystem_LoadPaletteBufferFromOpenNarc(v0, 3, v1, v2, v3, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 2), 0, 3, NNS_G2D_VRAM_TYPE_2DSUB, 10000);
 }
 
-void VsRecorderViewerList_BlendPalettes(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_BlendPalettes(VsRecorderState *param0)
 {
     PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, 0, param0->unk_14.unk_44);
     PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, 0, param0->unk_14.unk_44);
@@ -192,17 +192,17 @@ u16 *VsRecorderViewerList_LoadPokedexAlphabetical(enum HeapID heapID, int unused
     return pokedexAlphabetical;
 }
 
-void VsRecorderViewerList_SetRecordTransferDone(UnkStruct_0208C06C *param0, BOOL param1)
+void VsRecorderViewerList_SetRecordTransferDone(VsRecorderState *param0, BOOL param1)
 {
     param0->unk_870 = param1;
 }
 
-BOOL VsRecorderViewerList_IsRecordTransferDone(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerList_IsRecordTransferDone(VsRecorderState *param0)
 {
     return param0->unk_870;
 }
 
-void VsRecorderViewerList_OpenSubMessage(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerList_OpenSubMessage(VsRecorderState *param0, int param1)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -228,7 +228,7 @@ void VsRecorderViewerList_OpenSubMessage(UnkStruct_0208C06C *param0, int param1)
     String_Free(v0);
 }
 
-void VsRecorderViewerList_CloseSubMessage(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_CloseSubMessage(VsRecorderState *param0)
 {
     if (param0->unk_8A0 == 0) {
         return;
@@ -246,14 +246,14 @@ void VsRecorderViewerList_CloseSubMessage(UnkStruct_0208C06C *param0)
     G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ, 7, 8);
 }
 
-void VsRecorderViewerList_RemoveMessageWindow(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_RemoveMessageWindow(VsRecorderState *param0)
 {
     Window_ClearAndCopyToVRAM(&param0->unk_8A4);
     Window_Remove(&param0->unk_8A4);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
-void VsRecorderViewerList_OpenMainMessage(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerList_OpenMainMessage(VsRecorderState *param0, int param1)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -277,7 +277,7 @@ void VsRecorderViewerList_OpenMainMessage(UnkStruct_0208C06C *param0, int param1
     String_Free(v0);
 }
 
-void VsRecorderViewerList_UpdateMessageText(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerList_UpdateMessageText(VsRecorderState *param0, int param1)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -294,7 +294,7 @@ void VsRecorderViewerList_UpdateMessageText(UnkStruct_0208C06C *param0, int para
     String_Free(v0);
 }
 
-void VsRecorderViewerList_CloseMainMessage(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_CloseMainMessage(VsRecorderState *param0)
 {
     if (param0->unk_8A0 == 0) {
         return;
@@ -308,7 +308,7 @@ void VsRecorderViewerList_CloseMainMessage(UnkStruct_0208C06C *param0)
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
-void VsRecorderViewerList_OpenSubMessageWithBlend(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerList_OpenSubMessageWithBlend(VsRecorderState *param0, int param1)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -340,16 +340,16 @@ void VsRecorderViewerList_OpenSubMessageWithBlend(UnkStruct_0208C06C *param0, in
     String_Free(v0);
 }
 
-static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1);
-static void VsRecorderViewerList_FreeProfileWindows(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1);
+static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1);
+static void VsRecorderViewerList_FreeProfileWindows(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1);
 static void VsRecorderViewerList_SetPokemonSpriteVisible(VsRecorderViewerProfilePanel *param0, int param1);
-static void VsRecorderViewerList_FreePokemonSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1);
-static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1);
+static void VsRecorderViewerList_FreePokemonSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1);
+static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1);
 static void VsRecorderViewerList_SetTrainerSpriteVisible(VsRecorderViewerProfilePanel *param0, int param1);
-static void VsRecorderViewerList_FreeTrainerSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1);
-static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1);
+static void VsRecorderViewerList_FreeTrainerSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1);
+static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1);
 
-static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     int v0;
     int v1;
@@ -530,7 +530,7 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
     }
 }
 
-static void VsRecorderViewerList_FreeProfileWindows(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_FreeProfileWindows(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     int v0;
 
@@ -547,7 +547,7 @@ static void VsRecorderViewerList_SetPokemonSpriteVisible(VsRecorderViewerProfile
     }
 }
 
-static void VsRecorderViewerList_FreePokemonSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_FreePokemonSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 100000);
     SpriteManager_UnloadPlttObjById(param1->unk_14.unk_08, 100000);
@@ -560,7 +560,7 @@ static void VsRecorderViewerList_FreePokemonSprite(VsRecorderViewerProfilePanel 
     }
 }
 
-static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     int v0;
     int v1;
@@ -632,7 +632,7 @@ static void VsRecorderViewerList_SetTrainerSpriteVisible(VsRecorderViewerProfile
     ManagedSprite_SetDrawFlag(param0->unk_08, param1);
 }
 
-static void VsRecorderViewerList_FreeTrainerSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_FreeTrainerSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 165535);
     SpriteManager_UnloadPlttObjById(param1->unk_14.unk_08, 165535);
@@ -680,7 +680,7 @@ int VsRecorderViewerList_GetAppearanceFileIndex(int param0, int param1)
     return sVsRecorderViewerListAppearanceFileIndices[v0][param1];
 }
 
-static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     int v0;
     SpriteSystem *v1;
@@ -739,14 +739,14 @@ static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel 
     ManagedSprite_TickFrame(param0->unk_08);
 }
 
-void VsRecorderViewerList_InitProfile(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+void VsRecorderViewerList_InitProfile(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     VsRecorderViewerList_InitProfileWindows(param0, param1);
     VsRecorderViewerList_LoadTrainerSprite(param0, param1);
     VsRecorderViewerList_LoadPokemonSprite(param0, param1);
 }
 
-void VsRecorderViewerList_FreeProfile(VsRecorderViewerProfilePanel *param0, UnkStruct_0208C06C *param1)
+void VsRecorderViewerList_FreeProfile(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
     VsRecorderViewerList_FreeProfileWindows(param0, param1);
     VsRecorderViewerList_SetProfileSpritesVisible(param0, 0);
@@ -760,7 +760,7 @@ void VsRecorderViewerList_SetProfileSpritesVisible(VsRecorderViewerProfilePanel 
     VsRecorderViewerList_SetTrainerSpriteVisible(param0, param1);
 }
 
-static void VsRecorderViewerList_DrawLocationString(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_DrawLocationString(VsRecorderViewerListWindow *param0, VsRecorderState *param1)
 {
     String *v0;
     String *v1;
@@ -797,7 +797,7 @@ static void VsRecorderViewerList_DrawLocationString(VsRecorderViewerListWindow *
     String_Free(v0);
 }
 
-void VsRecorderViewerList_InitWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1, const VsRecorderViewerListConfig *param2)
+void VsRecorderViewerList_InitWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1, const VsRecorderViewerListConfig *param2)
 {
     int v0;
     Window *v1;
@@ -837,7 +837,7 @@ void VsRecorderViewerList_InitWindow(VsRecorderViewerListWindow *param0, UnkStru
     Window_ScheduleCopyToVRAM(v1);
 }
 
-void VsRecorderViewerList_InitRecordWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1, MessageLoader *param2, const VsRecorderViewerListConfig *param3)
+void VsRecorderViewerList_InitRecordWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1, MessageLoader *param2, const VsRecorderViewerListConfig *param3)
 {
     int v0;
     Window *v1;
@@ -907,7 +907,7 @@ void VsRecorderViewerList_InitRecordWindow(VsRecorderViewerListWindow *param0, U
     Window_ScheduleCopyToVRAM(v1);
 }
 
-void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1, MessageLoader *param2, const VsRecorderViewerListConfig *param3, int param4, int param5, String *param6)
+void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1, MessageLoader *param2, const VsRecorderViewerListConfig *param3, int param4, int param5, String *param6)
 {
     int v0;
     Window *v1;
@@ -1029,7 +1029,7 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
     StringTemplate_Free(v7);
 }
 
-void VsRecorderViewerList_InitTwoColumnWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1, const VsRecorderViewerListConfig *param2, String *param3[20][2])
+void VsRecorderViewerList_InitTwoColumnWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1, const VsRecorderViewerListConfig *param2, String *param3[20][2])
 {
     int v0;
     Window *v1 = &param0->unk_18;
@@ -1064,7 +1064,7 @@ void VsRecorderViewerList_InitTwoColumnWindow(VsRecorderViewerListWindow *param0
     Window_ScheduleCopyToVRAM(v1);
 }
 
-int VsRecorderViewerList_UpdateTwoColumnWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1, String *param2[20][2])
+int VsRecorderViewerList_UpdateTwoColumnWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1, String *param2[20][2])
 {
     int v0;
     int v1 = 0;
@@ -1108,7 +1108,7 @@ int VsRecorderViewerList_UpdateTwoColumnWindow(VsRecorderViewerListWindow *param
     return v1;
 }
 
-int VsRecorderViewerList_UpdateRankingWindow(VsRecorderViewerListWindow *a0, UnkStruct_0208C06C *a1, int a2, int a3, String *a4)
+int VsRecorderViewerList_UpdateRankingWindow(VsRecorderViewerListWindow *a0, VsRecorderState *a1, int a2, int a3, String *a4)
 {
     int i;
     Window *sp58;
@@ -1209,7 +1209,7 @@ int VsRecorderViewerList_UpdateRankingWindow(VsRecorderViewerListWindow *a0, Unk
     return 0;
 }
 
-int VsRecorderViewerList_UpdateRecordWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1)
+int VsRecorderViewerList_UpdateRecordWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1)
 {
     int v0;
     int v1 = 0;
@@ -1261,7 +1261,7 @@ int VsRecorderViewerList_UpdateRecordWindow(VsRecorderViewerListWindow *param0, 
     return v1;
 }
 
-int VsRecorderViewerList_UpdateSpeciesWindow(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1)
+int VsRecorderViewerList_UpdateSpeciesWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1)
 {
     int v0;
     int v1 = 0;
@@ -1432,7 +1432,7 @@ void VsRecorderViewerList_ResetWindow(VsRecorderViewerListWindow *param0)
     memset(param0, 0, sizeof(VsRecorderViewerListWindow));
 }
 
-void VsRecorderViewerList_LoadArrowSprites(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1, int param2)
+void VsRecorderViewerList_LoadArrowSprites(VsRecorderViewerListWindow *param0, VsRecorderState *param1, int param2)
 {
     ManagedSprite *v0;
     SpriteTemplate v1;
@@ -1534,7 +1534,7 @@ void VsRecorderViewerList_UpdateArrowSpritesForScroll(VsRecorderViewerListWindow
     ManagedSprite_TickTwoFrames(param0->unk_2C[1]);
 }
 
-void VsRecorderViewerList_FreeArrowSprites(VsRecorderViewerListWindow *param0, UnkStruct_0208C06C *param1)
+void VsRecorderViewerList_FreeArrowSprites(VsRecorderViewerListWindow *param0, VsRecorderState *param1)
 {
     SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 200000);
     SpriteManager_UnloadCellObjById(param1->unk_14.unk_08, 200000);
@@ -1543,7 +1543,7 @@ void VsRecorderViewerList_FreeArrowSprites(VsRecorderViewerListWindow *param0, U
     Sprite_DeleteAndFreeResources(param0->unk_2C[1]);
 }
 
-static ManagedSprite *VsRecorderViewerList_NewScrollIndicatorSprite(VsRecorderViewerListScrollBar *param0, UnkStruct_0208C06C *param1, int param2, int param3)
+static ManagedSprite *VsRecorderViewerList_NewScrollIndicatorSprite(VsRecorderViewerListScrollBar *param0, VsRecorderState *param1, int param2, int param3)
 {
     ManagedSprite *v0;
     SpriteTemplate v1;
@@ -1583,12 +1583,12 @@ static void VsRecorderViewerList_FreeScrollIndicatorSprites(VsRecorderViewerList
     Sprite_DeleteAndFreeResources(param0->unk_18[1]);
 }
 
-void VsRecorderViewerList_InitScrollBar(VsRecorderViewerListScrollBar *param0, UnkStruct_0208C06C *param1)
+void VsRecorderViewerList_InitScrollBar(VsRecorderViewerListScrollBar *param0, VsRecorderState *param1)
 {
     VsRecorderViewerList_InitScrollBarWithAnim(param0, param1, 5);
 }
 
-void VsRecorderViewerList_InitScrollBarWithAnim(VsRecorderViewerListScrollBar *param0, UnkStruct_0208C06C *param1, int param2)
+void VsRecorderViewerList_InitScrollBarWithAnim(VsRecorderViewerListScrollBar *param0, VsRecorderState *param1, int param2)
 {
     param0->unk_18[0] = VsRecorderViewerList_NewScrollIndicatorSprite(param0, param1, 2, param2);
     param0->unk_18[1] = VsRecorderViewerList_NewScrollIndicatorSprite(param0, param1, 2, param2);
@@ -1693,13 +1693,13 @@ void VsRecorderViewerList_HandleScrollBarInput(VsRecorderViewerListScrollBar *pa
     }
 }
 
-void VsRecorderViewerList_IncrementTrainerScore(UnkStruct_0208C06C *param0, u32 param1)
+void VsRecorderViewerList_IncrementTrainerScore(VsRecorderState *param0, u32 param1)
 {
     GameRecords *v0 = SaveData_GetGameRecords(param0->saveData);
     GameRecords_IncrementTrainerScore(v0, param1);
 }
 
-void VsRecorderViewerList_StoreBattleRecording(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_StoreBattleRecording(VsRecorderState *param0)
 {
     int v0;
 
@@ -1723,7 +1723,7 @@ static void VsRecorderViewerList_Task_UpdateNetwork(SysTask *param0, void *param
     SysTask_Done(param0);
 }
 
-void VsRecorderViewerList_StartNetworkTask(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerList_StartNetworkTask(VsRecorderState *param0, int param1)
 {
     param0->unk_52C.unk_00 = param1;
     param0->unk_52C.unk_04 = 0;
@@ -1731,14 +1731,14 @@ void VsRecorderViewerList_StartNetworkTask(UnkStruct_0208C06C *param0, int param
     SysTask_ExecuteOnVBlank(VsRecorderViewerList_Task_UpdateNetwork, &param0->unk_52C, 4);
 }
 
-BOOL VsRecorderViewerList_IsNetworkTaskDone(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerList_IsNetworkTaskDone(VsRecorderState *param0)
 {
     return param0->unk_52C.unk_04;
 }
 
 static void VsRecorderViewerList_Task_DrawSprites(SysTask *param0, void *param1)
 {
-    UnkStruct_0208C06C *v0 = param1;
+    VsRecorderState *v0 = param1;
 
     if (v0->unk_14.unk_08 == NULL) {
         return;
@@ -1761,12 +1761,12 @@ static void VsRecorderViewerList_Task_DrawSprites(SysTask *param0, void *param1)
     v0->unk_14.unk_510 = 0;
 }
 
-void VsRecorderViewerList_StartDrawTask(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_StartDrawTask(VsRecorderState *param0)
 {
     param0->unk_41E8 = SysTask_ExecuteOnVBlank(VsRecorderViewerList_Task_DrawSprites, param0, 5);
 }
 
-BOOL VsRecorderViewerList_CheckRecordData(UnkStruct_0208C06C *param0, int param1, u8 param2)
+BOOL VsRecorderViewerList_CheckRecordData(VsRecorderState *param0, int param1, u8 param2)
 {
     int v0 = VsRecorderViewerRecording_SaveStep(param0->saveData, param1, param2, &param0->unk_834, &param0->unk_836);
 
@@ -1777,14 +1777,14 @@ BOOL VsRecorderViewerList_CheckRecordData(UnkStruct_0208C06C *param0, int param1
     return 1;
 }
 
-void VsRecorderViewerList_SetHasPendingRecording(UnkStruct_0208C06C *param0, BOOL param1)
+void VsRecorderViewerList_SetHasPendingRecording(VsRecorderState *param0, BOOL param1)
 {
     param0->unk_874 = param1;
 }
 
 void VsRecorderViewerList_LoadRecordList(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderState *v0 = param0;
     VsRecorderViewerListRecordStore *v1 = &v0->unk_8B4;
 
     if (param1->unk_00 == 1) {
@@ -1804,7 +1804,7 @@ void VsRecorderViewerList_LoadRecordList(void *param0, const VsRecorderViewerTra
     }
 }
 
-void VsRecorderViewerList_LoadBattleRecordings(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_LoadBattleRecordings(VsRecorderState *param0)
 {
     int v0;
     int v1;
@@ -1857,7 +1857,7 @@ void VsRecorderViewerList_LoadBattleRecordings(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerList_FreeBattleRecordings(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_FreeBattleRecordings(VsRecorderState *param0)
 {
     int v0;
 
@@ -1874,7 +1874,7 @@ void VsRecorderViewerList_FreeBattleRecordings(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerList_LoadIconResources(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_LoadIconResources(VsRecorderState *param0)
 {
     SpriteSystem *v0 = param0->unk_14.unk_04;
     SpriteManager *v1 = param0->unk_14.unk_08;
@@ -1885,7 +1885,7 @@ void VsRecorderViewerList_LoadIconResources(UnkStruct_0208C06C *param0)
     SpriteSystem_LoadAnimResObj(v0, v1, 19, PokeIcon64KAnimationFileIndex(), 0, 100000);
 }
 
-void VsRecorderViewerList_FreeIconResources(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_FreeIconResources(VsRecorderState *param0)
 {
     SpriteManager_UnloadPlttObjById(param0->unk_14.unk_08, 100000);
     SpriteManager_UnloadCellObjById(param0->unk_14.unk_08, 100000);
@@ -1903,7 +1903,7 @@ void VsRecorderViewerList_CloseIconNarc(NARC *param0)
     NARC_dtor(param0);
 }
 
-ManagedSprite *VsRecorderViewerList_NewPokemonIconSprite(UnkStruct_0208C06C *param0, NARC *param1, int param2, int param3, int param4, int param5)
+ManagedSprite *VsRecorderViewerList_NewPokemonIconSprite(VsRecorderState *param0, NARC *param1, int param2, int param3, int param4, int param5)
 {
     ManagedSprite *v0;
     SpriteSystem *v1;
@@ -1948,7 +1948,7 @@ ManagedSprite *VsRecorderViewerList_NewPokemonIconSprite(UnkStruct_0208C06C *par
     return v0;
 }
 
-void VsRecorderViewerList_FreePokemonIconSprite(UnkStruct_0208C06C *param0, int param1, ManagedSprite *param2)
+void VsRecorderViewerList_FreePokemonIconSprite(VsRecorderState *param0, int param1, ManagedSprite *param2)
 {
     int v0;
 
@@ -1960,7 +1960,7 @@ void VsRecorderViewerList_FreePokemonIconSprite(UnkStruct_0208C06C *param0, int 
     Sprite_DeleteAndFreeResources(param2);
 }
 
-void VsRecorderViewerList_DeletePokemonIconSprite(UnkStruct_0208C06C *param0, int param1, ManagedSprite *param2)
+void VsRecorderViewerList_DeletePokemonIconSprite(VsRecorderState *param0, int param1, ManagedSprite *param2)
 {
     int v0;
 
@@ -1971,7 +1971,7 @@ void VsRecorderViewerList_DeletePokemonIconSprite(UnkStruct_0208C06C *param0, in
     Sprite_DeleteAndFreeResources(param2);
 }
 
-static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel *param0, VsRecorderState *param1)
 {
     int v0;
     int v1;
@@ -2128,7 +2128,7 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
     }
 }
 
-static void VsRecorderViewerList_FreeSummaryWindows(VsRecorderViewerSummaryPanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_FreeSummaryWindows(VsRecorderViewerSummaryPanel *param0, VsRecorderState *param1)
 {
     int v0;
 
@@ -2177,7 +2177,7 @@ int VsRecorderViewerList_GetSummaryResultMessageID(VsRecorderViewerSummaryPanel 
     return 82;
 }
 
-static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel *param0, VsRecorderState *param1)
 {
     int v0;
     int v1;
@@ -2322,13 +2322,13 @@ static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel
     }
 }
 
-void VsRecorderViewerList_InitSummary(VsRecorderViewerSummaryPanel *param0, UnkStruct_0208C06C *param1)
+void VsRecorderViewerList_InitSummary(VsRecorderViewerSummaryPanel *param0, VsRecorderState *param1)
 {
     VsRecorderViewerList_InitSummaryWindows(param0, param1);
     VsRecorderViewerList_LoadSummarySprites(param0, param1);
 }
 
-void VsRecorderViewerList_FreeSummary(VsRecorderViewerSummaryPanel *param0, UnkStruct_0208C06C *param1)
+void VsRecorderViewerList_FreeSummary(VsRecorderViewerSummaryPanel *param0, VsRecorderState *param1)
 {
     int v0;
 
@@ -2366,13 +2366,13 @@ int VsRecorderViewerList_CalcCenteredTextX(Window *param0, String *param1)
     return v1;
 }
 
-void VsRecorderViewerList_ResetRecordState(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_ResetRecordState(VsRecorderState *param0)
 {
     param0->unk_834 = 0;
     param0->unk_836 = 0;
 }
 
-BOOL VsRecorderViewerList_ClearExtraSaveKey(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerList_ClearExtraSaveKey(VsRecorderState *param0)
 {
     MiscSaveBlock *v0 = SaveData_MiscSaveBlock(param0->saveData);
     u32 v1, v2;
@@ -2396,7 +2396,7 @@ void VsRecorderViewerList_SetBgPriorities(void)
     Bg_SetPriority(BG_LAYER_SUB_3, 1);
 }
 
-void VsRecorderViewerList_SetupRing(UnkStruct_0208C06C *param0, VsRecorderRing *param1, s16 param2, s16 param3)
+void VsRecorderViewerList_SetupRing(VsRecorderState *param0, VsRecorderRing *param1, s16 param2, s16 param3)
 {
     if (param0->unk_14.unk_30 == 0) {
         VsRecorderRing_SetVisible(param1, 1);
@@ -2423,14 +2423,14 @@ int VsRecorderViewerList_CountDigits(u64 param0)
     return v0;
 }
 
-void VsRecorderViewerList_LoadBgTilemap(UnkStruct_0208C06C *param0, int param1, int param2)
+void VsRecorderViewerList_LoadBgTilemap(VsRecorderState *param0, int param1, int param2)
 {
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.unk_00, param1, param0->unk_14.unk_10, param2, 0, 0, 0, HEAP_ID_102);
 }
 
 static void VsRecorderViewerList_Task_ShrinkRing(SysTask *param0, void *param1)
 {
-    UnkStruct_0208C06C *v0 = param1;
+    VsRecorderState *v0 = param1;
     s16 v1;
 
     if ((++v0->unk_41D8.unk_04) >= 7) {
@@ -2448,7 +2448,7 @@ static void VsRecorderViewerList_Task_ShrinkRing(SysTask *param0, void *param1)
     VsRecorderRing_SetOrbitRadii(v0->unk_41D8.unk_08, v1, v1);
 }
 
-static void VsRecorderViewerList_StartRingAnim(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerList_StartRingAnim(VsRecorderState *param0)
 {
     u32 v0, v1;
     s16 v2 = 0;
@@ -2488,23 +2488,23 @@ static void VsRecorderViewerList_StartRingAnim(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerList_PlayRingAnim(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_PlayRingAnim(VsRecorderState *param0)
 {
     VsRecorderViewerList_StartRingAnim(param0);
     Sound_PlayEffect(SEQ_SE_PL_BREC57_sseq);
 }
 
-BOOL VsRecorderViewerList_IsDrawSuspended(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerList_IsDrawSuspended(VsRecorderState *param0)
 {
     return param0->unk_14.unk_514;
 }
 
-void VsRecorderViewerList_SetDrawSuspended(UnkStruct_0208C06C *param0, BOOL param1)
+void VsRecorderViewerList_SetDrawSuspended(VsRecorderState *param0, BOOL param1)
 {
     param0->unk_14.unk_514 = param1;
 }
 
-void VsRecorderViewerList_InitSpriteWithFont(UnkStruct_0208C06C *param0, VsRecorderViewerTextSprite *param1, int param2, int param3, s16 param4, s16 param5, s16 param6, s16 param7, int param8, BOOL param9)
+void VsRecorderViewerList_InitSpriteWithFont(VsRecorderState *param0, VsRecorderViewerTextSprite *param1, int param2, int param3, s16 param4, s16 param5, s16 param6, s16 param7, int param8, BOOL param9)
 {
     param1->unk_08 = VsRecorderViewerMenu_CreateCursorSprite(param0, param2);
 
@@ -2522,7 +2522,7 @@ void VsRecorderViewerList_FreeSpriteWithFont(VsRecorderViewerTextSprite *param0)
     Sprite_DeleteAndFreeResources(param0->unk_08);
 }
 
-int VsRecorderViewerList_GetMessageIndex(UnkStruct_0208C06C *param0, int param1, int param2, int param3)
+int VsRecorderViewerList_GetMessageIndex(VsRecorderState *param0, int param1, int param2, int param3)
 {
     param0->unk_14.unk_4F0.unk_00 = param0->unk_04;
     param0->unk_14.unk_4F0.unk_04 = param0->unk_08;
@@ -2838,7 +2838,7 @@ int VsRecorderViewerList_GetMessageIndex(UnkStruct_0208C06C *param0, int param1,
     return param0->unk_14.unk_4F0.unk_0C;
 }
 
-void VsRecorderViewerList_OpenMessage(UnkStruct_0208C06C *param0, int param1, int param2, int param3)
+void VsRecorderViewerList_OpenMessage(VsRecorderState *param0, int param1, int param2, int param3)
 {
     param0->unk_14.unk_4F0.unk_00 = param0->unk_04;
     param0->unk_14.unk_4F0.unk_04 = param0->unk_08;
@@ -2850,7 +2850,7 @@ void VsRecorderViewerList_OpenMessage(UnkStruct_0208C06C *param0, int param1, in
     *param0->unk_10 = 18;
 }
 
-void VsRecorderViewerList_UpdateMessage(UnkStruct_0208C06C *param0)
+void VsRecorderViewerList_UpdateMessage(VsRecorderState *param0)
 {
     switch (param0->unk_14.unk_4F0.unk_10) {
     case 0:
@@ -2880,7 +2880,7 @@ void VsRecorderViewerList_UpdateMessage(UnkStruct_0208C06C *param0)
     }
 }
 
-BOOL VsRecorderViewerList_HasRecordingValue(UnkStruct_0208C06C *param0, u64 param1)
+BOOL VsRecorderViewerList_HasRecordingValue(VsRecorderState *param0, u64 param1)
 {
     u64 v0;
     int v1;
@@ -2900,7 +2900,7 @@ BOOL VsRecorderViewerList_HasRecordingValue(UnkStruct_0208C06C *param0, u64 para
     return 0;
 }
 
-void VsRecorderViewerList_CheckNameChars(UnkStruct_0208C06C *param0, String *param1)
+void VsRecorderViewerList_CheckNameChars(VsRecorderState *param0, String *param1)
 {
     VsRecorderViewerTransferContext *v0 = VsRecorderViewerTransfer_GetTransfer(param0);
     String *v1;

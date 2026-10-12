@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_022300D8.h"
@@ -25,17 +25,17 @@
 #include "font_oam.h"
 #include "vs_recorder_ring.h"
 
-static BOOL VsRecorderViewerSlideShow_HandleInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_Unused(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_FadeOut(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_HandleMenuExit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_SlideEntriesIn(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_SelectPrevious(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerSlideShow_SelectNext(UnkStruct_0208C06C *param0);
+static BOOL VsRecorderViewerSlideShow_HandleInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_Unused(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_FadeOut(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_HandleMenuExit(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_SlideEntriesIn(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_SelectPrevious(VsRecorderState *param0);
+static BOOL VsRecorderViewerSlideShow_SelectNext(VsRecorderState *param0);
 static int VsRecorderViewerSlideShow_CheckEdgeTap(void);
 
-static BOOL VsRecorderViewerSlideShow_HandleInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_HandleInput(VsRecorderState *param0)
 {
     if (TouchScreen_Tapped() && (param0->unk_89C == 0)) {
         VsRecorderViewerList_CloseSubMessage(param0);
@@ -81,7 +81,7 @@ static int VsRecorderViewerSlideShow_CheckEdgeTap(void)
     return 0;
 }
 
-static BOOL VsRecorderViewerSlideShow_Unused(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_Unused(VsRecorderState *param0)
 {
     BOOL v0 = 0;
 
@@ -93,7 +93,7 @@ static BOOL VsRecorderViewerSlideShow_Unused(UnkStruct_0208C06C *param0)
     return VsRecorderViewerSlideShow_HandleInput(param0);
 }
 
-static BOOL VsRecorderViewerSlideShow_FadeOut(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_FadeOut(VsRecorderState *param0)
 {
     switch (param0->unk_08) {
     case 0:
@@ -138,7 +138,7 @@ static BOOL VsRecorderViewerSlideShow_FadeOut(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerSlideShow_HandleMenuExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_HandleMenuExit(VsRecorderState *param0)
 {
     BOOL v0 = VsRecorderViewerEntry_AnimateEntries(param0);
 
@@ -154,7 +154,7 @@ static BOOL VsRecorderViewerSlideShow_HandleMenuExit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerSlideShow_HandleMenuAction(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_HandleMenuAction(VsRecorderState *param0)
 {
     BOOL v0;
 
@@ -220,7 +220,7 @@ void VsRecorderViewerSlideShow_SlideAnimTask(SysTask *param0, void *param1)
     }
 }
 
-static BOOL VsRecorderViewerSlideShow_SlideEntriesIn(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_SlideEntriesIn(VsRecorderState *param0)
 {
     VsRecorderViewerSlideShowTransition *v0;
 
@@ -353,7 +353,7 @@ static BOOL VsRecorderViewerSlideShow_SlideEntriesIn(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(VsRecorderState *param0)
 {
     VsRecorderViewerSlideShowTransition *v0;
 
@@ -468,7 +468,7 @@ static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(UnkStruct_0208C06C *param0
 }
 
 // clang-format off
-BOOL(*const sVsRecorderViewerSlideShowStateTable[])(UnkStruct_0208C06C * wk) = {
+BOOL(*const sVsRecorderViewerSlideShowStateTable[])(VsRecorderState * wk) = {
     VsRecorderViewerSlideShow_HandleInput,
     VsRecorderViewerSlideShow_Unused,
     VsRecorderViewerSlideShow_FadeOut,
@@ -481,7 +481,7 @@ BOOL(*const sVsRecorderViewerSlideShowStateTable[])(UnkStruct_0208C06C * wk) = {
 };
 // clang-format on
 
-static BOOL VsRecorderViewerSlideShow_SelectPrevious(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_SelectPrevious(VsRecorderState *param0)
 {
     switch (param0->unk_08) {
     case 0:
@@ -539,7 +539,7 @@ static BOOL VsRecorderViewerSlideShow_SelectPrevious(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerSlideShow_SelectNext(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerSlideShow_SelectNext(VsRecorderState *param0)
 {
     switch (param0->unk_08) {
     case 0:

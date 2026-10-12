@@ -1,7 +1,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_022300D8.h"
@@ -42,26 +42,26 @@ typedef struct {
     int unk_198;
 } VsRecorderViewerBattleVideo;
 
-static BOOL VsRecorderViewerBattleVideo_State_Init(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_FadeIn(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_SetupViewer(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_HandleTouch(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_SwitchView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_LoadRecordings(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_StartPlayback(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_Exit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(UnkStruct_0208C06C *param0);
+static BOOL VsRecorderViewerBattleVideo_State_Init(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_FadeIn(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_SetupViewer(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_HandleTouch(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_SwitchView(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_LoadRecordings(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_StartPlayback(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_Exit(VsRecorderState *param0);
+static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(VsRecorderState *param0);
 static void VsRecorderViewerBattleVideo_TouchCallback(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void VsRecorderViewerBattleVideo_LoadSelectedRecord(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBattleVideo_CreateMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBattleVideo_RemoveMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBattleVideo_SetMessageWindowText(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerBattleVideo_CreateStatusSprite(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerBattleVideo_FreeStatusSprite(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerBattleVideo_LoadSelectedRecord(VsRecorderState *param0);
+static void VsRecorderViewerBattleVideo_CreateMessageWindow(VsRecorderState *param0);
+static void VsRecorderViewerBattleVideo_RemoveMessageWindow(VsRecorderState *param0);
+static void VsRecorderViewerBattleVideo_SetMessageWindowText(VsRecorderState *param0, int param1);
+static void VsRecorderViewerBattleVideo_CreateStatusSprite(VsRecorderState *param0);
+static void VsRecorderViewerBattleVideo_FreeStatusSprite(VsRecorderState *param0);
 
 // clang-format off
-BOOL(*const sVsRecorderViewerBattleVideoStateTable[])(UnkStruct_0208C06C *) = {
+BOOL(*const sVsRecorderViewerBattleVideoStateTable[])(VsRecorderState *) = {
     VsRecorderViewerBattleVideo_State_Init,
     VsRecorderViewerBattleVideo_State_FadeIn,
     VsRecorderViewerBattleVideo_State_SetupViewer,
@@ -81,7 +81,7 @@ static const TouchScreenRect sVsRecorderViewerBattleVideoTouchRects[] = {
     { 0x98, 0xB8, 0x50, 0xB0 }
 };
 
-static BOOL VsRecorderViewerBattleVideo_State_Init(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_Init(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerBattleVideo));
 
@@ -99,7 +99,7 @@ static BOOL VsRecorderViewerBattleVideo_State_Init(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_FadeIn(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_FadeIn(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -160,7 +160,7 @@ static BOOL VsRecorderViewerBattleVideo_State_FadeIn(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_SetupViewer(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_SetupViewer(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -208,7 +208,7 @@ static BOOL VsRecorderViewerBattleVideo_State_SetupViewer(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_HandleTouch(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_HandleTouch(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -216,7 +216,7 @@ static BOOL VsRecorderViewerBattleVideo_State_HandleTouch(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_SwitchView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_SwitchView(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -280,7 +280,7 @@ static const TouchScreenRect sVsRecorderViewerBattleVideoSavePromptTouchRects[] 
     { 0x28, 0x48, 0x90, 0xE8 }
 };
 
-static void VsRecorderViewerBattleVideo_CreateSavePromptWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_CreateSavePromptWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
     Window *v1;
@@ -315,7 +315,7 @@ static void VsRecorderViewerBattleVideo_CreateSavePromptWindows(UnkStruct_0208C0
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerBattleVideo_RemoveSavePromptWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_RemoveSavePromptWindows(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -325,7 +325,7 @@ static void VsRecorderViewerBattleVideo_RemoveSavePromptWindows(UnkStruct_0208C0
     Window_Remove(&v0->unk_178[1]);
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -430,7 +430,7 @@ static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(UnkStruct_0208C06C *par
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_LoadRecordings(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_LoadRecordings(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -472,7 +472,7 @@ static BOOL VsRecorderViewerBattleVideo_State_LoadRecordings(UnkStruct_0208C06C 
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_StartPlayback(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_StartPlayback(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -517,7 +517,7 @@ static BOOL VsRecorderViewerBattleVideo_State_StartPlayback(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_Exit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_Exit(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -580,7 +580,7 @@ static BOOL VsRecorderViewerBattleVideo_State_Exit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -650,7 +650,7 @@ static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(UnkStruct_0208C06C *par
 
 static void VsRecorderViewerBattleVideo_TouchCallback(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerBattleVideo *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -678,7 +678,7 @@ static void VsRecorderViewerBattleVideo_TouchCallback(u32 param0, enum TouchScre
     }
 }
 
-static void VsRecorderViewerBattleVideo_LoadSelectedRecord(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_LoadSelectedRecord(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -687,7 +687,7 @@ static void VsRecorderViewerBattleVideo_LoadSelectedRecord(UnkStruct_0208C06C *p
     v0->unk_9C.unk_04 = param0->unk_87C[param0->unk_86C];
 }
 
-static void VsRecorderViewerBattleVideo_CreateMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_CreateMessageWindow(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
     Window *v1;
@@ -699,7 +699,7 @@ static void VsRecorderViewerBattleVideo_CreateMessageWindow(UnkStruct_0208C06C *
     VsRecorderViewerBattleVideo_SetMessageWindowText(param0, 121);
 }
 
-static void VsRecorderViewerBattleVideo_RemoveMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_RemoveMessageWindow(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -707,7 +707,7 @@ static void VsRecorderViewerBattleVideo_RemoveMessageWindow(UnkStruct_0208C06C *
     Window_Remove(&v0->unk_178[0]);
 }
 
-static void VsRecorderViewerBattleVideo_SetMessageWindowText(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerBattleVideo_SetMessageWindowText(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
     Window *v1;
@@ -726,7 +726,7 @@ static void VsRecorderViewerBattleVideo_SetMessageWindowText(UnkStruct_0208C06C 
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerBattleVideo_CreateStatusSprite(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_CreateStatusSprite(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
@@ -743,7 +743,7 @@ static void VsRecorderViewerBattleVideo_CreateStatusSprite(UnkStruct_0208C06C *p
     FontOAM_SetDrawFlag(v0->unk_158[0].unk_0C, 1);
 }
 
-static void VsRecorderViewerBattleVideo_FreeStatusSprite(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerBattleVideo_FreeStatusSprite(VsRecorderState *param0)
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 

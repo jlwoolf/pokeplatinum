@@ -9,7 +9,7 @@
 #include "constants/sound.h"
 #include "generated/trainer_classes.h"
 
-#include "struct_decls/struct_02078B40_decl.h"
+#include "struct_decls/struct_serialized_pokemon_decl.h"
 #include "struct_defs/chatot_cry.h"
 #include "struct_defs/pokemon.h"
 #include "struct_defs/species.h"
@@ -989,7 +989,7 @@ BOOL Pokemon_SetBallSeal(int param0, Pokemon *mon, enum HeapID heapID);
  * @param mon
  * @param[out] dest The struct to populate
  */
-void Pokemon_Serialize(Pokemon *mon, UnkStruct_02078B40 *dest);
+void Pokemon_Serialize(Pokemon *mon, SerializedPokemon *dest);
 
 /**
  * @brief Rebuilds a Pokemon from a flat, unencrypted box-format struct.
@@ -999,6 +999,6 @@ void Pokemon_Serialize(Pokemon *mon, UnkStruct_02078B40 *dest);
  * @param src The struct to read
  * @param[out] mon The Pokemon to populate
  */
-void Pokemon_Deserialize(UnkStruct_02078B40 *src, Pokemon *mon);
+void Pokemon_Deserialize(SerializedPokemon *src, Pokemon *mon);
 
 #endif // POKEPLATINUM_POKEMON_H

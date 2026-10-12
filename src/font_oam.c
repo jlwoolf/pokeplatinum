@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -94,8 +94,8 @@ static int FontOAM_BuildChunkList(int param0, int param1, enum HeapID heapID, Fo
 static void FontOAM_InitImageProxies(const Window *param0, const FontOAMChunk *param1, NNSG2dImageProxy *param2, int param3, int param4, enum HeapID heapID);
 static int FontOAM_UploadChunk(const Window *param0, const FontOAMChunk *param1, NNSG2dImageProxy *param2, int param3, int param4, int param5, int param6, enum HeapID heapID);
 static int FontOAM_GetChunkListSize(const FontOAMChunk *param0, int param1);
-static void FontOAM_CreateSprites(const UnkStruct_020127E8 *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2, FontOAM *param3);
-static Sprite *FontOAM_CreateSprite(const UnkStruct_020127E8 *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2);
+static void FontOAM_CreateSprites(const FontOAMTemplate *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2, FontOAM *param3);
+static Sprite *FontOAM_CreateSprite(const FontOAMTemplate *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2);
 static void FontOAM_DeleteSprites(FontOAM *param0);
 static FontOAMChunk *FontOAMChunk_New(enum HeapID heapID);
 static void FontOAMChunk_Free(FontOAMChunk *param0);
@@ -160,10 +160,10 @@ void FontOAMManager_Free(FontOAMManager *param0)
     Heap_Free(param0);
 }
 
-// Builds a FontOAM from a template (UnkStruct_020127E8): the template supplies
+// Builds a FontOAM from a template (FontOAMTemplate): the template supplies
 // the manager, the source window, the sprite list and palette, an optional
 // parent sprite to follow, the VRAM offset, the position, and the priorities.
-FontOAM *FontOAM_New(const UnkStruct_020127E8 *param0)
+FontOAM *FontOAM_New(const FontOAMTemplate *param0)
 {
     FontOAM *v0;
     FontOAMChunk v1;
@@ -396,7 +396,7 @@ int FontOAMWindow_GetSize(const FontOAMWindow *param0, int param1)
 
 // Like FontOAM_New, but reuses a precomputed FontOAMWindow layout instead of
 // tiling the window again.
-FontOAM *FontOAM_NewFromWindow(const UnkStruct_020127E8 *param0, const FontOAMWindow *param1)
+FontOAM *FontOAM_NewFromWindow(const FontOAMTemplate *param0, const FontOAMWindow *param1)
 {
     FontOAM *v0;
     NNSG2dImageProxy *v1;
@@ -763,7 +763,7 @@ static int FontOAM_GetChunkListSize(const FontOAMChunk *param0, int param1)
 
 // Creates one sprite per chunk and records each sprite's pixel offset from the
 // FontOAM's origin (chunk tile coordinates times the 8-pixel tile size).
-static void FontOAM_CreateSprites(const UnkStruct_020127E8 *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2, FontOAM *param3)
+static void FontOAM_CreateSprites(const FontOAMTemplate *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2, FontOAM *param3)
 {
     FontOAMChunk *v0;
     int v1 = 0;
@@ -792,7 +792,7 @@ static void FontOAM_DeleteSprites(FontOAM *param0)
 
 // Adds one sprite for `param1` to the template's sprite list, using the cell
 // bank selected by the chunk's size class and the chunk's image proxy.
-static Sprite *FontOAM_CreateSprite(const UnkStruct_020127E8 *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2)
+static Sprite *FontOAM_CreateSprite(const FontOAMTemplate *param0, const FontOAMChunk *param1, const NNSG2dImageProxy *param2)
 {
     SpriteListTemplate v0;
     SpriteResourcesHeader v1;

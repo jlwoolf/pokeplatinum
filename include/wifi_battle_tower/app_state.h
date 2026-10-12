@@ -4,7 +4,7 @@
 #include <dwc.h>
 #include <nnsys.h>
 
-#include "struct_defs/struct_0206BC70.h"
+#include "struct_defs/struct_wifi_battle_tower_app_args.h"
 #include "struct_defs/wifi_battle_tower_data.h"
 #include "struct_defs/wifi_player_profile.h"
 #include "struct_defs/world_exchange.h"
@@ -82,7 +82,7 @@ enum WifiBattleTowerState {
 };
 
 typedef struct WifiBattleTowerAppState {
-    UnkStruct_0206BC70 *args;
+    WifiBattleTowerAppArgs *args;
     BgConfig *bgConfig;
     int unk_08;
     int unk_0C;
