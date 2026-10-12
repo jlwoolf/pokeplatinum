@@ -9,9 +9,9 @@
 #include "fieldmap/linear_interpolation_task_fx32.h"
 #include "fieldmap/linear_interpolation_task_s32.h"
 #include "fieldmap/quadratic_interpolation_task_fx32.h"
-#include "fieldmap/struct_fieldmap_021DDF24.h"
-#include "fieldmap/struct_fieldmap_021DE47C.h"
-#include "fieldmap/struct_fieldmap_021DE5A4.h"
+#include "fieldmap/struct_brightness_fade_task.h"
+#include "fieldmap/struct_encounter_sprite_renderer.h"
+#include "fieldmap/struct_encounter_sprite_resources.h"
 
 #include "bg_window.h"
 #include "enc_effects.h"
@@ -32,7 +32,7 @@ typedef struct EncounterEffect {
     NARC *narc;
 } EncounterEffect;
 
-typedef struct UnkStruct_fieldmap_021DE6BC {
+typedef struct EncounterTextFade {
     LinearInterpolationTaskS32 unk_00;
     LinearInterpolationTaskS32 unk_14;
     Window *unk_28;
@@ -40,9 +40,9 @@ typedef struct UnkStruct_fieldmap_021DE6BC {
     u8 unk_2D;
     u8 unk_2E;
     u8 unk_2F;
-} UnkStruct_fieldmap_021DE6BC;
+} EncounterTextFade;
 
-typedef struct UnkStruct_fieldmap_021DE79C {
+typedef struct EncounterTextChar {
     LinearInterpolationTaskS32 unk_00;
     LinearInterpolationTaskS32 unk_14;
     Window *unk_28;
@@ -50,11 +50,11 @@ typedef struct UnkStruct_fieldmap_021DE79C {
     u8 unk_2D;
     u8 unk_2E;
     u8 unk_2F;
-} UnkStruct_fieldmap_021DE79C;
+} EncounterTextChar;
 
-typedef struct UnkStruct_fieldmap_021DE928 {
+typedef struct EncounterTextScroll {
     Window *unk_00;
-    UnkStruct_fieldmap_021DE79C *unk_04[48];
+    EncounterTextChar *unk_04[48];
     u8 unk_C4;
     u8 unk_C5;
     u8 unk_C6;
@@ -63,21 +63,21 @@ typedef struct UnkStruct_fieldmap_021DE928 {
     u8 unk_C9;
     u8 unk_CA;
     u8 unk_CB[1];
-} UnkStruct_fieldmap_021DE928;
+} EncounterTextScroll;
 
-typedef struct UnkStruct_fieldmap_021DEA98 {
+typedef struct EncounterTextLine {
     Window *unk_00;
     LinearInterpolationTaskS32 unk_04;
     u8 unk_18;
     u8 unk_19;
     u8 unk_1A[2];
-} UnkStruct_fieldmap_021DEA98;
+} EncounterTextLine;
 
-typedef struct UnkStruct_fieldmap_021DEC18 {
-    UnkStruct_fieldmap_021DEA98 *unk_00[8];
+typedef struct EncounterTextLines {
+    EncounterTextLine *unk_00[8];
     u8 unk_20;
     u8 unk_21[3];
-} UnkStruct_fieldmap_021DEC18;
+} EncounterTextLines;
 
 typedef struct ScreenSplitEffect {
     QuadraticInterpolationTaskFX32 xInterpolationTask;
@@ -100,7 +100,7 @@ typedef struct ScreenSliceEffect {
     BOOL *done;
 } ScreenSliceEffect;
 
-typedef struct UnkStruct_fieldmap_021DED04 {
+typedef struct EncounterScreenWave {
     LinearInterpolationTaskS32 unk_00;
     u32 unk_14;
     u8 unk_18[192];
@@ -108,7 +108,7 @@ typedef struct UnkStruct_fieldmap_021DED04 {
     HBlankTask *unk_DC;
     SysTask *unk_E0;
     BOOL *unk_E4;
-} UnkStruct_fieldmap_021DED04;
+} EncounterScreenWave;
 
 enum Screen {
     SCREEN_TOP = 1,
@@ -136,34 +136,34 @@ ScreenSplitEffect *ScreenSplitEffect_New(void);
 void ScreenSplitEffect_Delete(ScreenSplitEffect *screenSplitEfx);
 void EncounterEffect_ScreenSplit(EncounterEffect *encEffect, ScreenSplitEffect *screenSplitEfx, u32 numSteps, fx32 initialSpeedX, fx32 initialSpeedY);
 void FieldMap_021DE3D0(NARC *param0, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5, BgConfig *param6, u32 param7);
-void EncounterEffect_InitSpriteCollection(UnkStruct_fieldmap_021DE47C *param0, int param1, int param2);
-void FieldMap_021DE4AC(UnkStruct_fieldmap_021DE47C *param0);
-void FieldMap_021DE4CC(NARC *param0, UnkStruct_fieldmap_021DE47C *param1, UnkStruct_fieldmap_021DE5A4 *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8);
-void FieldMap_021DE5A4(UnkStruct_fieldmap_021DE47C *param0, UnkStruct_fieldmap_021DE5A4 *param1);
+void EncounterEffect_InitSpriteCollection(EncounterSpriteRenderer *param0, int param1, int param2);
+void FieldMap_021DE4AC(EncounterSpriteRenderer *param0);
+void FieldMap_021DE4CC(NARC *param0, EncounterSpriteRenderer *param1, EncounterSpriteResources *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8);
+void FieldMap_021DE5A4(EncounterSpriteRenderer *param0, EncounterSpriteResources *param1);
 void EncounterEffect_BlendTrainerSpritePltt(Sprite *mugshotSprite, enum HeapID heapID, enum TrainerClass trainerClass, u8 fraction, u16 target);
-Sprite *FieldMap_021DE62C(UnkStruct_fieldmap_021DE47C *param0, UnkStruct_fieldmap_021DE5A4 *param1, fx32 param2, fx32 param3, fx32 param4, int param5);
+Sprite *FieldMap_021DE62C(EncounterSpriteRenderer *param0, EncounterSpriteResources *param1, fx32 param2, fx32 param3, fx32 param4, int param5);
 VecFx32 VecFx32_FromXYZ(fx32 param0, fx32 param1, fx32 param2);
-UnkStruct_fieldmap_021DE6BC *FieldMap_021DE6A4(u32 heapID);
-void FieldMap_021DE6BC(UnkStruct_fieldmap_021DE6BC *param0);
-void FieldMap_021DE6C4(UnkStruct_fieldmap_021DE6BC *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9);
-BOOL FieldMap_021DE71C(UnkStruct_fieldmap_021DE6BC *param0);
-void FieldMap_021DE79C(UnkStruct_fieldmap_021DE79C *param0);
-void FieldMap_021DE7A4(UnkStruct_fieldmap_021DE79C *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9);
-BOOL FieldMap_021DE7FC(UnkStruct_fieldmap_021DE79C *param0);
-UnkStruct_fieldmap_021DE928 *FieldMap_021DE8F8(u32 heapID);
-void FieldMap_021DE928(UnkStruct_fieldmap_021DE928 *param0);
-void FieldMap_021DE948(UnkStruct_fieldmap_021DE928 *param0, u8 param1, u8 param2, Window *param3, u8 param4);
-BOOL FieldMap_021DE988(UnkStruct_fieldmap_021DE928 *param0);
-void FieldMap_021DEA98(UnkStruct_fieldmap_021DEA98 *param0);
-void FieldMap_021DEAA0(UnkStruct_fieldmap_021DEA98 *param0, u8 param1, u16 param2, u16 param3, Window *param4, u8 param5);
-BOOL FieldMap_021DEAC8(UnkStruct_fieldmap_021DEA98 *param0);
-UnkStruct_fieldmap_021DEC18 *FieldMap_021DEBEC(u32 heapID);
-void FieldMap_021DEC18(UnkStruct_fieldmap_021DEC18 *param0);
-void FieldMap_021DEC38(UnkStruct_fieldmap_021DEC18 *param0, u8 param1, Window *param2, u8 param3);
-BOOL FieldMap_021DECB8(UnkStruct_fieldmap_021DEC18 *param0);
-UnkStruct_fieldmap_021DED04 *FieldMap_021DECEC(void);
-void FieldMap_021DED04(UnkStruct_fieldmap_021DED04 *param0);
-void FieldMap_021DED20(EncounterEffect *param0, UnkStruct_fieldmap_021DED04 *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6);
+EncounterTextFade *FieldMap_021DE6A4(u32 heapID);
+void FieldMap_021DE6BC(EncounterTextFade *param0);
+void FieldMap_021DE6C4(EncounterTextFade *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9);
+BOOL FieldMap_021DE71C(EncounterTextFade *param0);
+void FieldMap_021DE79C(EncounterTextChar *param0);
+void FieldMap_021DE7A4(EncounterTextChar *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9);
+BOOL FieldMap_021DE7FC(EncounterTextChar *param0);
+EncounterTextScroll *FieldMap_021DE8F8(u32 heapID);
+void FieldMap_021DE928(EncounterTextScroll *param0);
+void FieldMap_021DE948(EncounterTextScroll *param0, u8 param1, u8 param2, Window *param3, u8 param4);
+BOOL FieldMap_021DE988(EncounterTextScroll *param0);
+void FieldMap_021DEA98(EncounterTextLine *param0);
+void FieldMap_021DEAA0(EncounterTextLine *param0, u8 param1, u16 param2, u16 param3, Window *param4, u8 param5);
+BOOL FieldMap_021DEAC8(EncounterTextLine *param0);
+EncounterTextLines *FieldMap_021DEBEC(u32 heapID);
+void FieldMap_021DEC18(EncounterTextLines *param0);
+void FieldMap_021DEC38(EncounterTextLines *param0, u8 param1, Window *param2, u8 param3);
+BOOL FieldMap_021DECB8(EncounterTextLines *param0);
+EncounterScreenWave *FieldMap_021DECEC(void);
+void FieldMap_021DED04(EncounterScreenWave *param0);
+void FieldMap_021DED20(EncounterEffect *param0, EncounterScreenWave *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6);
 u32 CutInEffects_ForBattle(const FieldBattleDTO *param0);
 void FieldMap_021DEF8C(int *param0);
 void FieldMap_021DEFA0(FieldSystem *fieldSystem);

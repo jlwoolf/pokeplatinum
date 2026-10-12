@@ -37,7 +37,7 @@
 #include "fieldmap/fieldmap_021F10E8.h"
 #include "fieldmap/secret_base_props.h"
 #include "fieldmap/signpost.h"
-#include "fieldmap/struct_fieldmap_021ED0A4.h"
+#include "fieldmap/struct_map_object_draw_manager.h"
 #include "fieldmap/texture_resource_manager.h"
 #include "distortion_world/distortion_world.h"
 
@@ -127,7 +127,7 @@ static void MapObjectsToPreload_Free(MapObjectsToPreload *mapObjectsToPreload);
 
 static inline void inline_fieldmap(FieldSystem *fieldSystem)
 {
-    UnkStruct_fieldmap_021ED0A4 *v0 = MapObjectMan_GetDrawManager(fieldSystem->mapObjMan);
+    MapObjectDrawManager *v0 = MapObjectMan_GetDrawManager(fieldSystem->mapObjMan);
     BillboardList *v1 = FieldMap_021EDC8C(v0);
 
     BillboardList_ResetRedraw(v1);

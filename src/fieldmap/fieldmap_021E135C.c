@@ -23,9 +23,9 @@ typedef struct {
     int unk_08;
     int unk_0C;
     int unk_10;
-} UnkStruct_fieldmap_021E135C;
+} WarpAnimation;
 
-static void FieldMap_021E135C(UnkStruct_fieldmap_021E135C *param0)
+static void FieldMap_021E135C(WarpAnimation *param0)
 {
     switch (param0->unk_10) {
     case 0:
@@ -47,7 +47,7 @@ static void FieldMap_021E135C(UnkStruct_fieldmap_021E135C *param0)
 
 static void FieldMap_021E139C(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021E135C *v0 = param1;
+    WarpAnimation *v0 = param1;
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->fieldSystem->playerAvatar);
     VecFx32 v2;
 
@@ -80,7 +80,7 @@ static void FieldMap_021E139C(SysTask *param0, void *param1)
 
 static void FieldMap_021E1470(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021E135C *v0 = param1;
+    WarpAnimation *v0 = param1;
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->fieldSystem->playerAvatar);
     VecFx32 v2;
     int v3;
@@ -129,9 +129,9 @@ static void FieldMap_021E1470(SysTask *param0, void *param1)
 
 void FieldSystem_StartWarpAnimation(FieldSystem *fieldSystem, BOOL param1, BOOL *param2)
 {
-    UnkStruct_fieldmap_021E135C *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E135C));
+    WarpAnimation *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(WarpAnimation));
 
-    MI_CpuClear8(v0, sizeof(UnkStruct_fieldmap_021E135C));
+    MI_CpuClear8(v0, sizeof(WarpAnimation));
 
     v0->fieldSystem = fieldSystem;
     v0->unk_04 = param2;

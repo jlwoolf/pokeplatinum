@@ -15,7 +15,7 @@
 #include "functypes/funcptr_020EDF0C.h"
 #include "functypes/funcptr_020EDF0C_1.h"
 #include "functypes/funcptr_020EDF0C_2.h"
-#include "fieldmap/struct_fieldmap_021ED0A4.h"
+#include "fieldmap/struct_map_object_draw_manager.h"
 
 #include "map_header_data.h"
 #include "narc.h"
@@ -101,7 +101,7 @@ void MapObjectMan_SetStatusFlagOff(MapObjectManager *mapObjMan, u32 flag);
 u32 MapObjectMan_CheckStatus(const MapObjectManager *mapObjMan, u32 flag);
 void MapObjectMan_SetTaskBasePriority(MapObjectManager *mapObjMan, int basePriority);
 int MapObjectMan_GetTaskBasePriority(const MapObjectManager *mapObjMan);
-UnkStruct_fieldmap_021ED0A4 *MapObjectMan_GetDrawManager(const MapObjectManager *mapObjMan);
+MapObjectDrawManager *MapObjectMan_GetDrawManager(const MapObjectManager *mapObjMan);
 void MapObjectMan_SetMapObject(MapObjectManager *mapObjMan, MapObject *mapObj);
 const MapObject *MapObjectMan_GetMapObjectConst(const MapObjectManager *mapObjMan);
 MapObject *MapObjectMan_GetMapObject(const MapObjectManager *mapObjMan);

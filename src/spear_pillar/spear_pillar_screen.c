@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "fieldmap/struct_fieldmap_021DDF24_sub1.h"
+#include "fieldmap/struct_brightness_fade_state.h"
 #include "spear_pillar/struct_spear_pillar_screen_scroll.h"
 #include "spear_pillar/struct_spear_pillar_capture_config.h"
 #include "frontier_facilities/frontier_facilities_0223E894.h"

@@ -41,7 +41,7 @@ typedef struct {
 typedef struct {
     u32 unk_00;
     u32 unk_04;
-} UnkStruct_fieldmap_02200230;
+} FieldEffectModelPair;
 
 static void FieldMap_021F1118(UnkStruct_021F1118 *param0, u32 param1, u32 param2, FieldEffectManager *param3);
 static void FieldMap_021F113C(UnkStruct_021F1118 *param0);
@@ -50,7 +50,7 @@ static UnkStruct_021F1118 *FieldMap_021F1174(UnkStruct_021F114C *param0, u32 par
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_0220021C;
 
-static const UnkStruct_fieldmap_02200230 Unk_FieldMap_02200230[] = {
+static const FieldEffectModelPair Unk_FieldMap_02200230[] = {
     { 0x5B, 0x45 },
     { 0x5C, 0x46 },
     { 0x5D, 0x47 },
@@ -261,7 +261,7 @@ static const OverworldAnimManagerFuncs Unk_FieldMap_0220021C = {
 
 void FieldEffect_InitRenderObject(FieldEffectManager *param0)
 {
-    const UnkStruct_fieldmap_02200230 *v0 = Unk_FieldMap_02200230;
+    const FieldEffectModelPair *v0 = Unk_FieldMap_02200230;
     u32 v1 = NELEMS(Unk_FieldMap_02200230);
 
     FieldMap_021F1188(param0, v1);

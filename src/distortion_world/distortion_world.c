@@ -35,7 +35,7 @@
 #include "fieldmap/fieldmap_021EB1A0.h"
 #include "fieldmap/fieldmap_021ECE40.h"
 #include "fieldmap/fieldmap_021F348C.h"
-#include "fieldmap/struct_fieldmap_021ED0A4.h"
+#include "fieldmap/struct_map_object_draw_manager.h"
 #include "distortion_world/camera_configuration.h"
 
 #include "bg_window.h"
@@ -8885,7 +8885,7 @@ void DistWorld_ApplyGiratinaSpritePalette(FieldSystem *fieldSystem)
 
     if (dwSystem->playingGiratinaArrival == TRUE) {
         CmdRunDataPlayGiratinaArrival *runData = GetLoadedEventDataBuffer(dwSystem);
-        UnkStruct_fieldmap_021ED0A4 *v2 = MapObjectMan_GetDrawManager(dwSystem->fieldSystem->mapObjMan);
+        MapObjectDrawManager *v2 = MapObjectMan_GetDrawManager(dwSystem->fieldSystem->mapObjMan);
         TextureResourceManager *texMgr = FieldMap_021EDCB0(v2);
         TextureResource *texResource = TextureResourceManager_FindTextureResource(texMgr, 0xe6);
         NNSGfdPlttKey paletteKey = TextureResource_GetPaletteKey(texResource);

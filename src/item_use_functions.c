@@ -18,7 +18,7 @@
 #include "fieldmap/fieldmap_021DFB54.h"
 #include "fieldmap/fieldmap_021F007C.h"
 #include "fieldmap/save_info_window.h"
-#include "fieldmap/struct_fieldmap_021F0468_decl.h"
+#include "fieldmap/struct_sweet_scent_task_decl.h"
 #include "field_events/field_warp.h"
 #include "savedata/save_table.h"
 
@@ -755,7 +755,7 @@ static void UseHoneyFromMenu(ItemMenuUseContext *usageContext, const ItemUseCont
 {
     FieldSystem *fieldSystem;
     StartMenu *menu;
-    UnkStruct_fieldmap_021F0468 *v2;
+    SweetScentTask *v2;
     int v3;
 
     fieldSystem = FieldTask_GetFieldSystem(usageContext->fieldTask);

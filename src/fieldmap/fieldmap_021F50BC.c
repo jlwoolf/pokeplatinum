@@ -25,7 +25,7 @@ typedef struct {
     FieldEffectManager *unk_00;
     UnkStruct_021F50E8 *unk_04;
     MapObject *unk_08;
-} UnkStruct_fieldmap_021F511C;
+} FieldEffectRenderer05Params;
 
 typedef struct {
     int unk_00;
@@ -36,8 +36,8 @@ typedef struct {
     int unk_14;
     VecFx32 unk_18;
     VecFx32 unk_24;
-    UnkStruct_fieldmap_021F511C unk_30;
-} UnkStruct_fieldmap_021F5158;
+    FieldEffectRenderer05Params unk_30;
+} FieldEffectRenderer05Anim;
 
 static void FieldMap_021F50E8(UnkStruct_021F50E8 *param0);
 static void FieldMap_021F5110(UnkStruct_021F50E8 *param0);
@@ -75,7 +75,7 @@ static void FieldMap_021F5110(UnkStruct_021F50E8 *param0)
 OverworldAnimManager *FieldMap_021F511C(MapObject *param0)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021F511C v2;
+    FieldEffectRenderer05Params v2;
     FieldEffectManager *v3;
     VecFx32 v4;
     OverworldAnimManager *v5;
@@ -98,8 +98,8 @@ static int FieldMap_021F5158(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v2;
 
-    UnkStruct_fieldmap_021F5158 *v0 = param1;
-    const UnkStruct_fieldmap_021F511C *v1 = OverworldAnimManager_GetUserData(param0);
+    FieldEffectRenderer05Anim *v0 = param1;
+    const FieldEffectRenderer05Params *v1 = OverworldAnimManager_GetUserData(param0);
 
     v0->unk_30 = *v1;
     v0->unk_08 = MapObject_GetLocalID(v0->unk_30.unk_08);
@@ -119,7 +119,7 @@ static void FieldMap_021F51A0(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F51A4(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F5158 *v0;
+    FieldEffectRenderer05Anim *v0;
     MapObject *v1;
     VecFx32 v2;
 
@@ -148,7 +148,7 @@ static void FieldMap_021F51A4(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F5204(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F5158 *v0 = param1;
+    FieldEffectRenderer05Anim *v0 = param1;
 
     {
         VecFx32 v1, v2 = { FX32_ONE, FX32_ONE, FX32_ONE };
@@ -174,7 +174,7 @@ static void FieldMap_021F5204(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200A50 = {
-    (sizeof(UnkStruct_fieldmap_021F5158)),
+    (sizeof(FieldEffectRenderer05Anim)),
     FieldMap_021F5158,
     FieldMap_021F51A0,
     FieldMap_021F51A4,

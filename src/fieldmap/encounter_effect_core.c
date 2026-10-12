@@ -15,10 +15,10 @@
 #include "fieldmap/linear_interpolation_task_fx32.h"
 #include "fieldmap/linear_interpolation_task_s32.h"
 #include "fieldmap/quadratic_interpolation_task_fx32.h"
-#include "fieldmap/struct_fieldmap_021DE47C.h"
-#include "fieldmap/struct_fieldmap_021DE5A4.h"
-#include "fieldmap/struct_fieldmap_021E52A8_sub1.h"
-#include "fieldmap/struct_fieldmap_021E52A8_sub2.h"
+#include "fieldmap/struct_encounter_sprite_renderer.h"
+#include "fieldmap/struct_encounter_sprite_resources.h"
+#include "fieldmap/struct_gym_leader_sprite_state.h"
+#include "fieldmap/struct_gym_leader_bg_state.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"
@@ -583,8 +583,8 @@ typedef struct TrainerGrassEncounterEffect {
     LinearInterpolationTaskS32 pokeballRotation;
     QuadraticInterpolationTaskFX32 unk_2C;
     ScreenSliceEffect *screenSliceEfx;
-    UnkStruct_fieldmap_021DE47C unk_48;
-    UnkStruct_fieldmap_021DE5A4 unk_1E8;
+    EncounterSpriteRenderer unk_48;
+    EncounterSpriteResources unk_1E8;
     Sprite *pokeballSprites[2];
     Camera *camera;
     QuadraticInterpolationTaskFX32 unk_228;
@@ -595,13 +595,13 @@ typedef struct {
     LinearInterpolationTaskFX32 unk_00;
     LinearInterpolationTaskS32 unk_14;
     ScreenSplitEffect *unk_28;
-    UnkStruct_fieldmap_021DE47C unk_2C;
-    UnkStruct_fieldmap_021DE5A4 unk_1CC;
+    EncounterSpriteRenderer unk_2C;
+    EncounterSpriteResources unk_1CC;
     Sprite *unk_200[2];
     Camera *camera;
     QuadraticInterpolationTaskFX32 unk_20C;
     s32 unk_224;
-} UnkStruct_fieldmap_021E2EB0;
+} TrainerGrassHigherEncounterEffect;
 
 typedef struct {
     QuadraticInterpolationTaskFX32 unk_00;
@@ -609,21 +609,21 @@ typedef struct {
     LinearInterpolationTaskS32 unk_2C;
     ScreenShakeEffect unk_40;
     BOOL unk_4C;
-    UnkStruct_fieldmap_021DE47C unk_50;
-    UnkStruct_fieldmap_021DE5A4 unk_1F0;
+    EncounterSpriteRenderer unk_50;
+    EncounterSpriteResources unk_1F0;
     Sprite *unk_224[2];
     Camera *camera;
     QuadraticInterpolationTaskFX32 unk_230;
     s32 unk_248;
-} UnkStruct_fieldmap_021E31A4;
+} TrainerWaterLowerEncounterEffect;
 
 typedef struct {
-    UnkStruct_fieldmap_021DE47C unk_00;
-    UnkStruct_fieldmap_021DE5A4 unk_1A0;
+    EncounterSpriteRenderer unk_00;
+    EncounterSpriteResources unk_1A0;
     Sprite *unk_1D4[3];
     LinearInterpolationTaskS32 unk_1E0[3];
     LinearInterpolationTaskS32 unk_21C[3];
-    UnkStruct_fieldmap_021DE6BC *unk_258[3];
+    EncounterTextFade *unk_258[3];
     BOOL unk_264[3];
     Window *unk_270;
     ScreenShakeEffect unk_274;
@@ -631,34 +631,34 @@ typedef struct {
     Camera *camera;
     QuadraticInterpolationTaskFX32 unk_288;
     s32 unk_2A0;
-} UnkStruct_fieldmap_021E3560;
+} TrainerWaterHigherEncounterEffect;
 
 typedef struct {
     QuadraticInterpolationTaskFX32 unk_00;
     QuadraticInterpolationTaskFX32 unk_18;
     QuadraticInterpolationTaskFX32 unk_30;
     LinearInterpolationTaskS32 unk_48;
-    UnkStruct_fieldmap_021DE47C unk_5C;
-    UnkStruct_fieldmap_021DE5A4 unk_1FC;
+    EncounterSpriteRenderer unk_5C;
+    EncounterSpriteResources unk_1FC;
     Sprite *unk_230;
     Camera *camera;
     QuadraticInterpolationTaskFX32 unk_238;
     s32 unk_250;
-} UnkStruct_fieldmap_021E3AD0;
+} TrainerCaveLowerEncounterEffect;
 
 typedef struct {
-    UnkStruct_fieldmap_021DE47C unk_00;
-    UnkStruct_fieldmap_021DE5A4 unk_1A0;
+    EncounterSpriteRenderer unk_00;
+    EncounterSpriteResources unk_1A0;
     Sprite *unk_1D4[3];
     LinearInterpolationTaskS32 unk_1E0[3];
     LinearInterpolationTaskS32 unk_21C[3];
     BOOL unk_258[3];
     Window *unk_264;
-    UnkStruct_fieldmap_021DE928 *unk_268;
+    EncounterTextScroll *unk_268;
     Camera *camera;
     QuadraticInterpolationTaskFX32 unk_270;
     s16 unk_288;
-} UnkStruct_fieldmap_021E3D8C;
+} TrainerCaveHigherEncounterEffect;
 
 void EncounterEffect_Trainer_Grass_LowerLevel(SysTask *task, void *param)
 {
@@ -827,14 +827,14 @@ void EncounterEffect_Trainer_Grass_LowerLevel(SysTask *task, void *param)
 void EncounterEffect_Trainer_Grass_HigherLevel(SysTask *param0, void *param1)
 {
     EncounterEffect *encEffect = param1;
-    UnkStruct_fieldmap_021E2EB0 *v1 = encEffect->param;
+    TrainerGrassHigherEncounterEffect *v1 = encEffect->param;
     BOOL v2;
     fx32 v3;
 
     switch (encEffect->state) {
     case 0:
-        encEffect->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E2EB0));
-        memset(encEffect->param, 0, sizeof(UnkStruct_fieldmap_021E2EB0));
+        encEffect->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(TrainerGrassHigherEncounterEffect));
+        memset(encEffect->param, 0, sizeof(TrainerGrassHigherEncounterEffect));
         v1 = encEffect->param;
 
         v1->camera = encEffect->fieldSystem->camera;
@@ -971,7 +971,7 @@ void EncounterEffect_Trainer_Grass_HigherLevel(SysTask *param0, void *param1)
 void EncounterEffect_Trainer_Water_LowerLevel(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E31A4 *v1 = v0->param;
+    TrainerWaterLowerEncounterEffect *v1 = v0->param;
     BOOL v2;
     BOOL v3;
     fx32 v4;
@@ -980,8 +980,8 @@ void EncounterEffect_Trainer_Water_LowerLevel(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E31A4));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E31A4));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(TrainerWaterLowerEncounterEffect));
+        memset(v0->param, 0, sizeof(TrainerWaterLowerEncounterEffect));
         v1 = v0->param;
 
         v1->camera = v0->fieldSystem->camera;
@@ -1143,7 +1143,7 @@ void EncounterEffect_Trainer_Water_LowerLevel(SysTask *param0, void *param1)
 void EncounterEffect_Trainer_Water_HigherLevel(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E3560 *v1 = v0->param;
+    TrainerWaterHigherEncounterEffect *v1 = v0->param;
     BOOL v2;
     int v3;
     VecFx32 v4;
@@ -1151,8 +1151,8 @@ void EncounterEffect_Trainer_Water_HigherLevel(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E3560));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E3560));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(TrainerWaterHigherEncounterEffect));
+        memset(v0->param, 0, sizeof(TrainerWaterHigherEncounterEffect));
         v1 = v0->param;
 
         v1->camera = v0->fieldSystem->camera;
@@ -1356,15 +1356,15 @@ void EncounterEffect_Trainer_Water_HigherLevel(SysTask *param0, void *param1)
 void EncounterEffect_Trainer_Cave_LowerLevel(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E3AD0 *v1 = v0->param;
+    TrainerCaveLowerEncounterEffect *v1 = v0->param;
     BOOL v2;
     fx32 v3;
     VecFx32 v4;
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E3AD0));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E3AD0));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(TrainerCaveLowerEncounterEffect));
+        memset(v0->param, 0, sizeof(TrainerCaveLowerEncounterEffect));
         v1 = v0->param;
 
         v1->camera = v0->fieldSystem->camera;
@@ -1481,7 +1481,7 @@ void EncounterEffect_Trainer_Cave_LowerLevel(SysTask *param0, void *param1)
 void EncounterEffect_Trainer_Cave_HigherLevel(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E3D8C *v1 = v0->param;
+    TrainerCaveHigherEncounterEffect *v1 = v0->param;
     VecFx32 v2;
     BOOL v3;
     int v4;
@@ -1489,8 +1489,8 @@ void EncounterEffect_Trainer_Cave_HigherLevel(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E3D8C));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E3D8C));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(TrainerCaveHigherEncounterEffect));
+        memset(v0->param, 0, sizeof(TrainerCaveHigherEncounterEffect));
         v1 = v0->param;
 
         v1->camera = v0->fieldSystem->camera;
@@ -1694,29 +1694,29 @@ void EncounterEffect_Trainer_Cave_HigherLevel(SysTask *param0, void *param1)
 typedef struct {
     LinearInterpolationTaskS32 unk_00;
     QuadraticInterpolationTaskFX32 unk_14;
-    UnkStruct_fieldmap_021DE47C unk_2C;
-    UnkStruct_fieldmap_021DE5A4 unk_1CC;
+    EncounterSpriteRenderer unk_2C;
+    EncounterSpriteResources unk_1CC;
     Sprite *unk_200;
     s32 unk_204;
-} UnkStruct_fieldmap_021E4260;
+} FrontierEncounterEffect;
 
 typedef struct {
-    UnkStruct_fieldmap_021DE47C unk_00;
-    UnkStruct_fieldmap_021DE5A4 unk_1A0;
+    EncounterSpriteRenderer unk_00;
+    EncounterSpriteResources unk_1A0;
     Sprite *unk_1D4[4];
     QuadraticInterpolationTaskFX32 unk_1E4[2];
-} UnkStruct_fieldmap_021E44C0;
+} DoubleEncounterEffect;
 
 void EncounterEffect_Frontier(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E4260 *v1 = v0->param;
+    FrontierEncounterEffect *v1 = v0->param;
     BOOL v2;
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E4260));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E4260));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(FrontierEncounterEffect));
+        memset(v0->param, 0, sizeof(FrontierEncounterEffect));
         v1 = v0->param;
 
         EncounterEffect_InitSpriteCollection(&v1->unk_2C, 1, 1);
@@ -1823,15 +1823,15 @@ void EncounterEffect_Frontier(SysTask *param0, void *param1)
 void EncounterEffect_Double(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E44C0 *v1 = v0->param;
+    DoubleEncounterEffect *v1 = v0->param;
     BOOL v2;
     int v3;
     VecFx32 v4;
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E44C0));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E44C0));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(DoubleEncounterEffect));
+        memset(v0->param, 0, sizeof(DoubleEncounterEffect));
         v1 = v0->param;
 
         EncounterEffect_InitSpriteCollection(&v1->unk_00, 4, 1);
@@ -1949,8 +1949,8 @@ static const s32 Unk_FieldMap_021F9E94[6][8] = {
 };
 
 typedef struct {
-    UnkStruct_fieldmap_021DE47C unk_00;
-    UnkStruct_fieldmap_021DE5A4 unk_1A0;
+    EncounterSpriteRenderer unk_00;
+    EncounterSpriteResources unk_1A0;
     Sprite *unk_1D4[6];
     QuadraticInterpolationTaskFX32 unk_1EC[6];
     QuadraticInterpolationTaskFX32 unk_27C[6];
@@ -1959,24 +1959,24 @@ typedef struct {
     BOOL unk_414[6];
     s32 unk_42C;
     s32 unk_430;
-} UnkStruct_fieldmap_021E4738;
+} GalacticGruntEncounterEffect;
 
 typedef struct {
     Window *unk_00;
-    UnkStruct_fieldmap_021DEC18 *unk_04;
-    UnkStruct_fieldmap_021DE47C unk_08;
-    UnkStruct_fieldmap_021DE5A4 unk_1A8;
+    EncounterTextLines *unk_04;
+    EncounterSpriteRenderer unk_08;
+    EncounterSpriteResources unk_1A8;
     Sprite *unk_1DC;
     LinearInterpolationTaskS32 unk_1E0;
     LinearInterpolationTaskS32 unk_1F4;
     LinearInterpolationTaskS32 unk_208;
     s32 unk_21C;
-} UnkStruct_fieldmap_021E4B3C;
+} GalacticBossEncounterEffect;
 
 void EncounterEffect_GalacticGrunt(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E4738 *v1 = v0->param;
+    GalacticGruntEncounterEffect *v1 = v0->param;
     BOOL v2;
     int v3;
     VecFx32 v4;
@@ -1984,8 +1984,8 @@ void EncounterEffect_GalacticGrunt(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E4738));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E4738));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(GalacticGruntEncounterEffect));
+        memset(v0->param, 0, sizeof(GalacticGruntEncounterEffect));
         v1 = v0->param;
 
         EncounterEffect_InitSpriteCollection(&v1->unk_00, 6, 1);
@@ -2125,13 +2125,13 @@ void EncounterEffect_GalacticGrunt(SysTask *param0, void *param1)
 void EncounterEffect_GalacticBoss(SysTask *param0, void *param1)
 {
     EncounterEffect *v0 = param1;
-    UnkStruct_fieldmap_021E4B3C *v1 = v0->param;
+    GalacticBossEncounterEffect *v1 = v0->param;
     BOOL v2;
 
     switch (v0->state) {
     case 0:
-        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E4B3C));
-        memset(v0->param, 0, sizeof(UnkStruct_fieldmap_021E4B3C));
+        v0->param = Heap_Alloc(HEAP_ID_FIELD1, sizeof(GalacticBossEncounterEffect));
+        memset(v0->param, 0, sizeof(GalacticBossEncounterEffect));
         v1 = v0->param;
 
         EncounterEffect_InitSpriteCollection(&v1->unk_08, 1, 1);
@@ -2770,19 +2770,19 @@ typedef struct {
     s16 unk_02;
     Sprite *unk_04[4];
     LinearInterpolationTaskFX32 unk_14[4];
-} UnkStruct_fieldmap_021E5128;
+} GymLeaderSprite;
 
 typedef struct {
     QuadraticInterpolationTaskFX32 unk_00;
     LinearInterpolationTaskS32 unk_18;
     LinearInterpolationTaskFX32 unk_2C;
-    UnkStruct_fieldmap_021DED04 *unk_40;
-    UnkStruct_fieldmap_021DE47C unk_44;
-    UnkStruct_fieldmap_021DE5A4 unk_1E4[2];
+    EncounterScreenWave *unk_40;
+    EncounterSpriteRenderer unk_44;
+    EncounterSpriteResources unk_1E4[2];
     Sprite *mugshotSprite;
-    UnkStruct_fieldmap_021E5128 unk_250;
-    UnkStruct_fieldmap_021E52A8_sub1 unk_2B4;
-    UnkStruct_fieldmap_021E52A8_sub2 unk_2BC;
+    GymLeaderSprite unk_250;
+    GymLeaderSpriteState unk_2B4;
+    GymLeaderBgState unk_2BC;
     Window unk_2E0;
     BOOL unk_2F0;
     s32 unk_2F4;
@@ -2794,19 +2794,19 @@ typedef struct {
     QuadraticInterpolationTaskFX32 unk_18;
     QuadraticInterpolationTaskFX32 unk_30;
     LinearInterpolationTaskS32 unk_48;
-    UnkStruct_fieldmap_021DE47C unk_5C;
-    UnkStruct_fieldmap_021DE5A4 unk_1FC[4];
+    EncounterSpriteRenderer unk_5C;
+    EncounterSpriteResources unk_1FC[4];
     Sprite *unk_2CC[4];
     VecFx32 unk_2DC;
     VecFx32 unk_2E8;
-    UnkStruct_fieldmap_021E5128 unk_2F4;
+    GymLeaderSprite unk_2F4;
     Window unk_358;
     u32 unk_368;
     s32 unk_36C;
     s32 unk_370;
-} UnkStruct_fieldmap_021E5890;
+} LeaderVolknerEncounterEffect;
 
-static void FieldMap_021E5128(UnkStruct_fieldmap_021E5128 *param0, UnkStruct_fieldmap_021DE47C *param1, UnkStruct_fieldmap_021DE5A4 *param2, fx32 param3, fx32 param4, u32 param5)
+static void FieldMap_021E5128(GymLeaderSprite *param0, EncounterSpriteRenderer *param1, EncounterSpriteResources *param2, fx32 param3, fx32 param4, u32 param5)
 {
     int v0;
 
@@ -2829,7 +2829,7 @@ static void FieldMap_021E5128(UnkStruct_fieldmap_021E5128 *param0, UnkStruct_fie
     }
 }
 
-static void FieldMap_021E519C(UnkStruct_fieldmap_021E5128 *param0)
+static void FieldMap_021E519C(GymLeaderSprite *param0)
 {
     int v0;
 
@@ -2838,7 +2838,7 @@ static void FieldMap_021E519C(UnkStruct_fieldmap_021E5128 *param0)
     }
 }
 
-static BOOL FieldMap_021E51B4(UnkStruct_fieldmap_021E5128 *param0)
+static BOOL FieldMap_021E51B4(GymLeaderSprite *param0)
 {
     int v0;
     BOOL v1;
@@ -3212,19 +3212,19 @@ static u32 FieldSystem_GetTrainerGender(FieldSystem *fieldSystem)
 
 static BOOL EncounterEffect_EliteFourChampion(EncounterEffect *encEffect, enum HeapID heapID, const EliterFourChampionEncounterParam *param)
 {
-    UnkStruct_fieldmap_021E5890 *v0 = encEffect->param;
+    LeaderVolknerEncounterEffect *v0 = encEffect->param;
     BOOL v1, v2;
     VecFx32 v3;
     VecFx32 v4;
     int v5;
     fx32 v6;
-    UnkStruct_fieldmap_021DE5A4 *v7;
+    EncounterSpriteResources *v7;
     int v8;
 
     switch (encEffect->state) {
     case 0:
-        encEffect->param = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021E5890));
-        memset(encEffect->param, 0, sizeof(UnkStruct_fieldmap_021E5890));
+        encEffect->param = Heap_Alloc(heapID, sizeof(LeaderVolknerEncounterEffect));
+        memset(encEffect->param, 0, sizeof(LeaderVolknerEncounterEffect));
         v0 = encEffect->param;
 
         EncounterEffect_InitSpriteCollection(&v0->unk_5C, 10, 4);

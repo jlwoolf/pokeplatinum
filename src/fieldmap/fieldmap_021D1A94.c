@@ -5,8 +5,8 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "fieldmap/struct_fieldmap_021D1A94_decl.h"
-#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
+#include "fieldmap/struct_field_effect_system_decl.h"
+#include "fieldmap/struct_field_effect_decl.h"
 #include "field_events/struct_field_effect.h"
 
 #include "field_system.h"
@@ -14,35 +14,35 @@
 #include "sys_task.h"
 #include "sys_task_manager.h"
 
-struct UnkStruct_fieldmap_021D1A94_t {
+struct FieldEffectSystem_t {
     FieldSystem *fieldSystem;
     enum HeapID heapID;
     int unk_08;
-    UnkStruct_fieldmap_021D1BEC *unk_0C;
+    FieldEffect *unk_0C;
     SysTaskManager *sysTaskManager;
 };
 
-struct UnkStruct_fieldmap_021D1BEC_t {
-    UnkStruct_fieldmap_021D1A94 *unk_00;
+struct FieldEffect_t {
+    FieldEffectSystem *unk_00;
     SysTask *sysTask1;
     SysTask *sysTask2;
     const FieldEffectTemplate *unk_0C;
     void *unk_10;
 };
 
-UnkStruct_fieldmap_021D1A94 *FieldMap_021D1A94(FieldSystem *fieldSystem, enum HeapID heapID, int param2)
+FieldEffectSystem *FieldMap_021D1A94(FieldSystem *fieldSystem, enum HeapID heapID, int param2)
 {
-    UnkStruct_fieldmap_021D1A94 *v0;
+    FieldEffectSystem *v0;
     u32 v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021D1A94));
+    v0 = Heap_Alloc(heapID, sizeof(FieldEffectSystem));
 
     v0->fieldSystem = fieldSystem;
     v0->heapID = heapID;
     v0->unk_08 = param2;
-    v0->unk_0C = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021D1BEC) * param2);
+    v0->unk_0C = Heap_Alloc(heapID, sizeof(FieldEffect) * param2);
 
-    MI_CpuClear32(v0->unk_0C, sizeof(UnkStruct_fieldmap_021D1BEC) * param2);
+    MI_CpuClear32(v0->unk_0C, sizeof(FieldEffect) * param2);
 
     v1 = SysTaskManager_GetRequiredSize(param2);
 
@@ -52,7 +52,7 @@ UnkStruct_fieldmap_021D1A94 *FieldMap_021D1A94(FieldSystem *fieldSystem, enum He
     return v0;
 }
 
-void FieldMap_021D1AE4(UnkStruct_fieldmap_021D1A94 *param0)
+void FieldMap_021D1AE4(FieldEffectSystem *param0)
 {
     int v0;
 
@@ -65,14 +65,14 @@ void FieldMap_021D1AE4(UnkStruct_fieldmap_021D1A94 *param0)
     Heap_Free(param0);
 }
 
-void FieldMap_021D1B18(UnkStruct_fieldmap_021D1A94 *param0)
+void FieldMap_021D1B18(FieldEffectSystem *param0)
 {
     SysTaskManager_ExecuteTasks(param0->sysTaskManager);
 }
 
 static void FieldMap_021D1B24(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021D1BEC *v0 = param1;
+    FieldEffect *v0 = param1;
 
     if (FieldSystem_IsRunningFieldMapInner(v0->unk_00->fieldSystem)) {
         if (v0->unk_0C->unk_10) {
@@ -83,7 +83,7 @@ static void FieldMap_021D1B24(SysTask *param0, void *param1)
 
 static void FieldMap_021D1B48(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021D1BEC *v0 = param1;
+    FieldEffect *v0 = param1;
 
     if (FieldSystem_IsRunningFieldMapInner(v0->unk_00->fieldSystem)) {
         if (v0->unk_0C->unk_14) {
@@ -92,10 +92,10 @@ static void FieldMap_021D1B48(SysTask *param0, void *param1)
     }
 }
 
-UnkStruct_fieldmap_021D1BEC *FieldMap_021D1B6C(UnkStruct_fieldmap_021D1A94 *param0, const FieldEffectTemplate *param1)
+FieldEffect *FieldMap_021D1B6C(FieldEffectSystem *param0, const FieldEffectTemplate *param1)
 {
     int v0;
-    UnkStruct_fieldmap_021D1BEC *v1;
+    FieldEffect *v1;
 
     for (v1 = param0->unk_0C, v0 = 0; v0 < param0->unk_08; v1++, v0++) {
         if (v1->sysTask1 == NULL) {
@@ -123,7 +123,7 @@ UnkStruct_fieldmap_021D1BEC *FieldMap_021D1B6C(UnkStruct_fieldmap_021D1A94 *para
     return NULL;
 }
 
-void FieldMap_021D1BEC(UnkStruct_fieldmap_021D1BEC *param0)
+void FieldMap_021D1BEC(FieldEffect *param0)
 {
     if (param0->sysTask1 == NULL) {
         return;
@@ -140,10 +140,10 @@ void FieldMap_021D1BEC(UnkStruct_fieldmap_021D1BEC *param0)
     SysTask_Done(param0->sysTask1);
     SysTask_Done(param0->sysTask2);
 
-    MI_CpuClear32(param0, sizeof(UnkStruct_fieldmap_021D1BEC));
+    MI_CpuClear32(param0, sizeof(FieldEffect));
 }
 
-void *FieldMap_021D1C2C(UnkStruct_fieldmap_021D1BEC *param0)
+void *FieldMap_021D1C2C(FieldEffect *param0)
 {
     return param0->unk_10;
 }

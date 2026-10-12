@@ -109,7 +109,7 @@ typedef struct FieldSystem_t {
     UnionRoomTrainers *unk_80;
     UnionRoomChat *unk_84;
     TradeRoom *tradeRoom;
-    UnkStruct_fieldmap_021EB0E0 *unk_8C;
+    FieldCamera *unk_8C;
     int menuCursorPos;
     RadarChain *chain;
     BagCursor *bagCursor;

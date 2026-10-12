@@ -17,9 +17,9 @@
 #include "fieldmap/linear_interpolation_task_fx32.h"
 #include "fieldmap/linear_interpolation_task_s32.h"
 #include "fieldmap/quadratic_interpolation_task_fx32.h"
-#include "fieldmap/struct_fieldmap_021DDF24.h"
-#include "fieldmap/struct_fieldmap_021DE47C.h"
-#include "fieldmap/struct_fieldmap_021DE5A4.h"
+#include "fieldmap/struct_brightness_fade_task.h"
+#include "fieldmap/struct_encounter_sprite_renderer.h"
+#include "fieldmap/struct_encounter_sprite_resources.h"
 
 #include "bg_window.h"
 #include "camera.h"
@@ -72,7 +72,7 @@ typedef struct ScreenFlash {
     BOOL *done;
 } ScreenFlash;
 
-typedef struct UnkStruct_fieldmap_02202120 {
+typedef struct CutInEffect {
     u16 unk_00;
     u8 unk_02;
     u8 unk_03;
@@ -81,7 +81,7 @@ typedef struct UnkStruct_fieldmap_02202120 {
     void *unk_0C;
     u32 unk_10;
     u32 unk_14;
-} UnkStruct_fieldmap_02202120;
+} CutInEffect;
 
 static void FieldMap_021DE89C(Window *param0, s32 param1, s32 param2, s32 param3, s32 param4, u8 param5);
 static void FieldMap_021DEB04(Window *param0, u16 param1, u16 param2, u8 param3);
@@ -98,7 +98,7 @@ static void ScreenSplitEffect_Finish(ScreenSplitEffect *param0);
 static void FieldMap_021DEDE8(SysTask *param0, void *param1);
 static void FieldMap_021DEE24(SysTask *param0, void *param1);
 static void FieldMap_021DEE50(HBlankTask *param0, void *param1);
-static void FieldMap_021DEE84(UnkStruct_fieldmap_021DED04 *param0);
+static void FieldMap_021DEE84(EncounterScreenWave *param0);
 static void FieldMap_021DE67C(Sprite *param0, void *param1, u32 param2);
 static void FieldMap_021DF258(SysTask *param0, void *param1);
 static void FieldMap_021DF28C(SysTask *param0, void *param1);
@@ -173,7 +173,7 @@ static const u16 Unk_FieldMap_021F9A2C[8][2] = {
     { 0xB4, 0x9D }
 };
 
-static UnkStruct_fieldmap_02202120 *Unk_FieldMap_02202120 = NULL;
+static CutInEffect *Unk_FieldMap_02202120 = NULL;
 
 void EncounterEffect_Start(enum EncEffectCutIn effect, FieldSystem *fieldSystem, BOOL *done)
 {
@@ -716,7 +716,7 @@ void FieldMap_021DE3D0(NARC *param0, u32 param1, u32 param2, u32 param3, u32 par
     Bg_ScheduleTilemapTransfer(param6, param7);
 }
 
-void EncounterEffect_InitSpriteCollection(UnkStruct_fieldmap_021DE47C *param0, int param1, int param2)
+void EncounterEffect_InitSpriteCollection(EncounterSpriteRenderer *param0, int param1, int param2)
 {
     int v0;
 
@@ -727,7 +727,7 @@ void EncounterEffect_InitSpriteCollection(UnkStruct_fieldmap_021DE47C *param0, i
     }
 }
 
-void FieldMap_021DE4AC(UnkStruct_fieldmap_021DE47C *param0)
+void FieldMap_021DE4AC(EncounterSpriteRenderer *param0)
 {
     int v0;
 
@@ -738,7 +738,7 @@ void FieldMap_021DE4AC(UnkStruct_fieldmap_021DE47C *param0)
     }
 }
 
-void FieldMap_021DE4CC(NARC *param0, UnkStruct_fieldmap_021DE47C *param1, UnkStruct_fieldmap_021DE5A4 *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
+void FieldMap_021DE4CC(NARC *param0, EncounterSpriteRenderer *param1, EncounterSpriteResources *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
 {
     param2->unk_00[0] = SpriteResourceCollection_AddTilesFromEx(param1->unk_190[0], param0, param5, 0, param8, NNS_G2D_VRAM_TYPE_2DMAIN, 4, HEAP_ID_SAVE);
     param2->unk_00[1] = SpriteResourceCollection_AddPaletteFrom(param1->unk_190[1], param0, param3, 0, param8, NNS_G2D_VRAM_TYPE_2DMAIN, param4, HEAP_ID_FIELD1);
@@ -751,7 +751,7 @@ void FieldMap_021DE4CC(NARC *param0, UnkStruct_fieldmap_021DE47C *param1, UnkStr
     SpriteResourcesHeader_Init(&param2->unk_10, param8, param8, param8, param8, 0xffffffff, 0xffffffff, 0, 0, param1->unk_190[0], param1->unk_190[1], param1->unk_190[2], param1->unk_190[3], NULL, NULL);
 }
 
-void FieldMap_021DE5A4(UnkStruct_fieldmap_021DE47C *param0, UnkStruct_fieldmap_021DE5A4 *param1)
+void FieldMap_021DE5A4(EncounterSpriteRenderer *param0, EncounterSpriteResources *param1)
 {
     int v0;
 
@@ -781,7 +781,7 @@ void EncounterEffect_BlendTrainerSpritePltt(Sprite *mugshotSprite, enum HeapID h
     Heap_Free(nclrBuffer);
 }
 
-Sprite *FieldMap_021DE62C(UnkStruct_fieldmap_021DE47C *param0, UnkStruct_fieldmap_021DE5A4 *param1, fx32 param2, fx32 param3, fx32 param4, int param5)
+Sprite *FieldMap_021DE62C(EncounterSpriteRenderer *param0, EncounterSpriteResources *param1, fx32 param2, fx32 param3, fx32 param4, int param5)
 {
     SpriteListTemplate v0;
     Sprite *v1;
@@ -813,20 +813,20 @@ static void FieldMap_021DE67C(Sprite *param0, void *param1, u32 param2)
     GX_LoadOBJPltt(param1, NNS_G2dGetImagePaletteLocation(v0, NNS_G2D_VRAM_TYPE_2DMAIN), param2);
 }
 
-UnkStruct_fieldmap_021DE6BC *FieldMap_021DE6A4(u32 heapID)
+EncounterTextFade *FieldMap_021DE6A4(u32 heapID)
 {
-    UnkStruct_fieldmap_021DE6BC *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021DE6BC));
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021DE6BC));
+    EncounterTextFade *v0 = Heap_Alloc(heapID, sizeof(EncounterTextFade));
+    memset(v0, 0, sizeof(EncounterTextFade));
 
     return v0;
 }
 
-void FieldMap_021DE6BC(UnkStruct_fieldmap_021DE6BC *param0)
+void FieldMap_021DE6BC(EncounterTextFade *param0)
 {
     Heap_Free(param0);
 }
 
-void FieldMap_021DE6C4(UnkStruct_fieldmap_021DE6BC *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
+void FieldMap_021DE6C4(EncounterTextFade *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
 {
     GF_ASSERT(param0->unk_2E == 0);
 
@@ -840,7 +840,7 @@ void FieldMap_021DE6C4(UnkStruct_fieldmap_021DE6BC *param0, int param1, int para
     param0->unk_2E = 1;
 }
 
-BOOL FieldMap_021DE71C(UnkStruct_fieldmap_021DE6BC *param0)
+BOOL FieldMap_021DE71C(EncounterTextFade *param0)
 {
     BOOL v0;
     s16 v1, v2, v3, v4;
@@ -862,20 +862,20 @@ BOOL FieldMap_021DE71C(UnkStruct_fieldmap_021DE6BC *param0)
     return v0;
 }
 
-static UnkStruct_fieldmap_021DE79C *FieldMap_021DE784(u32 heapID)
+static EncounterTextChar *FieldMap_021DE784(u32 heapID)
 {
-    UnkStruct_fieldmap_021DE79C *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021DE79C));
+    EncounterTextChar *v0 = Heap_Alloc(heapID, sizeof(EncounterTextChar));
 
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021DE79C));
+    memset(v0, 0, sizeof(EncounterTextChar));
     return v0;
 }
 
-void FieldMap_021DE79C(UnkStruct_fieldmap_021DE79C *param0)
+void FieldMap_021DE79C(EncounterTextChar *param0)
 {
     Heap_Free(param0);
 }
 
-void FieldMap_021DE7A4(UnkStruct_fieldmap_021DE79C *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
+void FieldMap_021DE7A4(EncounterTextChar *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
 {
     GF_ASSERT(param0->unk_2E == 0);
 
@@ -889,7 +889,7 @@ void FieldMap_021DE7A4(UnkStruct_fieldmap_021DE79C *param0, int param1, int para
     param0->unk_2E = 1;
 }
 
-BOOL FieldMap_021DE7FC(UnkStruct_fieldmap_021DE79C *param0)
+BOOL FieldMap_021DE7FC(EncounterTextChar *param0)
 {
     BOOL v0;
     s16 v1, v2, v3, v4;
@@ -946,13 +946,13 @@ static void FieldMap_021DE89C(Window *param0, s32 param1, s32 param2, s32 param3
     Window_FillRectWithColor(param0, param5, param3, param1, param4 - param3, param2 - param1);
 }
 
-UnkStruct_fieldmap_021DE928 *FieldMap_021DE8F8(u32 heapID)
+EncounterTextScroll *FieldMap_021DE8F8(u32 heapID)
 {
-    UnkStruct_fieldmap_021DE928 *v0;
+    EncounterTextScroll *v0;
     int v1;
 
-    v0 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021DE928));
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021DE928));
+    v0 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(EncounterTextScroll));
+    memset(v0, 0, sizeof(EncounterTextScroll));
 
     for (v1 = 0; v1 < 48; v1++) {
         v0->unk_04[v1] = FieldMap_021DE784(heapID);
@@ -961,7 +961,7 @@ UnkStruct_fieldmap_021DE928 *FieldMap_021DE8F8(u32 heapID)
     return v0;
 }
 
-void FieldMap_021DE928(UnkStruct_fieldmap_021DE928 *param0)
+void FieldMap_021DE928(EncounterTextScroll *param0)
 {
     int v0;
 
@@ -972,7 +972,7 @@ void FieldMap_021DE928(UnkStruct_fieldmap_021DE928 *param0)
     Heap_Free(param0);
 }
 
-void FieldMap_021DE948(UnkStruct_fieldmap_021DE928 *param0, u8 param1, u8 param2, Window *param3, u8 param4)
+void FieldMap_021DE948(EncounterTextScroll *param0, u8 param1, u8 param2, Window *param3, u8 param4)
 {
     param0->unk_00 = param3;
     param0->unk_C9 = param4;
@@ -984,7 +984,7 @@ void FieldMap_021DE948(UnkStruct_fieldmap_021DE928 *param0, u8 param1, u8 param2
     param0->unk_CA = 1;
 }
 
-BOOL FieldMap_021DE988(UnkStruct_fieldmap_021DE928 *param0)
+BOOL FieldMap_021DE988(EncounterTextScroll *param0)
 {
     int v0, v1, v2;
     int v3;
@@ -1026,19 +1026,19 @@ BOOL FieldMap_021DE988(UnkStruct_fieldmap_021DE928 *param0)
     return 0;
 }
 
-UnkStruct_fieldmap_021DEA98 *FieldMap_021DEA80(u32 heapID)
+EncounterTextLine *FieldMap_021DEA80(u32 heapID)
 {
-    UnkStruct_fieldmap_021DEA98 *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021DEA98));
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021DEA98));
+    EncounterTextLine *v0 = Heap_Alloc(heapID, sizeof(EncounterTextLine));
+    memset(v0, 0, sizeof(EncounterTextLine));
     return v0;
 }
 
-void FieldMap_021DEA98(UnkStruct_fieldmap_021DEA98 *param0)
+void FieldMap_021DEA98(EncounterTextLine *param0)
 {
     Heap_Free(param0);
 }
 
-void FieldMap_021DEAA0(UnkStruct_fieldmap_021DEA98 *param0, u8 param1, u16 param2, u16 param3, Window *param4, u8 param5)
+void FieldMap_021DEAA0(EncounterTextLine *param0, u8 param1, u16 param2, u16 param3, Window *param4, u8 param5)
 {
     param0->unk_00 = param4;
     param0->unk_19 = param5;
@@ -1047,7 +1047,7 @@ void FieldMap_021DEAA0(UnkStruct_fieldmap_021DEA98 *param0, u8 param1, u16 param
     LinearInterpolationTaskS32_Init(&param0->unk_04, param2, param3, param1);
 }
 
-BOOL FieldMap_021DEAC8(UnkStruct_fieldmap_021DEA98 *param0)
+BOOL FieldMap_021DEAC8(EncounterTextLine *param0)
 {
     BOOL v0;
     u16 v1;
@@ -1111,13 +1111,13 @@ static void FieldMap_021DEB04(Window *param0, u16 param1, u16 param2, u8 param3)
     }
 }
 
-UnkStruct_fieldmap_021DEC18 *FieldMap_021DEBEC(u32 heapID)
+EncounterTextLines *FieldMap_021DEBEC(u32 heapID)
 {
-    UnkStruct_fieldmap_021DEC18 *v0;
+    EncounterTextLines *v0;
     int v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021DEC18));
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021DEC18));
+    v0 = Heap_Alloc(heapID, sizeof(EncounterTextLines));
+    memset(v0, 0, sizeof(EncounterTextLines));
 
     for (v1 = 0; v1 < 8; v1++) {
         v0->unk_00[v1] = FieldMap_021DEA80(heapID);
@@ -1126,7 +1126,7 @@ UnkStruct_fieldmap_021DEC18 *FieldMap_021DEBEC(u32 heapID)
     return v0;
 }
 
-void FieldMap_021DEC18(UnkStruct_fieldmap_021DEC18 *param0)
+void FieldMap_021DEC18(EncounterTextLines *param0)
 {
     int v0;
 
@@ -1137,7 +1137,7 @@ void FieldMap_021DEC18(UnkStruct_fieldmap_021DEC18 *param0)
     Heap_Free(param0);
 }
 
-void FieldMap_021DEC38(UnkStruct_fieldmap_021DEC18 *param0, u8 param1, Window *param2, u8 param3)
+void FieldMap_021DEC38(EncounterTextLines *param0, u8 param1, Window *param2, u8 param3)
 {
     int v0;
 
@@ -1149,7 +1149,7 @@ void FieldMap_021DEC38(UnkStruct_fieldmap_021DEC18 *param0, u8 param1, Window *p
     FieldMap_021DE89C(param2, 93, 99, 0, 256, param3);
 }
 
-BOOL FieldMap_021DECB8(UnkStruct_fieldmap_021DEC18 *param0)
+BOOL FieldMap_021DECB8(EncounterTextLines *param0)
 {
     int v0;
     BOOL v1;
@@ -1170,15 +1170,15 @@ BOOL FieldMap_021DECB8(UnkStruct_fieldmap_021DEC18 *param0)
     return 0;
 }
 
-UnkStruct_fieldmap_021DED04 *FieldMap_021DECEC(void)
+EncounterScreenWave *FieldMap_021DECEC(void)
 {
-    UnkStruct_fieldmap_021DED04 *v0 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021DED04));
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021DED04));
+    EncounterScreenWave *v0 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(EncounterScreenWave));
+    memset(v0, 0, sizeof(EncounterScreenWave));
 
     return v0;
 }
 
-void FieldMap_021DED04(UnkStruct_fieldmap_021DED04 *param0)
+void FieldMap_021DED04(EncounterScreenWave *param0)
 {
     if (param0->unk_E0 != NULL) {
         FieldMap_021DEE84(param0);
@@ -1187,7 +1187,7 @@ void FieldMap_021DED04(UnkStruct_fieldmap_021DED04 *param0)
     Heap_Free(param0);
 }
 
-void FieldMap_021DED20(EncounterEffect *param0, UnkStruct_fieldmap_021DED04 *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6)
+void FieldMap_021DED20(EncounterEffect *param0, EncounterScreenWave *param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6)
 {
     int v0;
     int v1;
@@ -1224,7 +1224,7 @@ void FieldMap_021DED20(EncounterEffect *param0, UnkStruct_fieldmap_021DED04 *par
 
 static void FieldMap_021DEDE8(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021DED04 *v0 = param1;
+    EncounterScreenWave *v0 = param1;
 
     v0->unk_DC = HBlankSystem_StartTask(v0->unk_D8, FieldMap_021DEE50, v0);
     v0->unk_E0 = SysTask_ExecuteAfterVBlank(FieldMap_021DEE24, v0, 1024);
@@ -1234,7 +1234,7 @@ static void FieldMap_021DEDE8(SysTask *param0, void *param1)
 
 static void FieldMap_021DEE24(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021DED04 *v0 = param1;
+    EncounterScreenWave *v0 = param1;
     BOOL v1;
 
     switch (v0->unk_14) {
@@ -1253,7 +1253,7 @@ static void FieldMap_021DEE24(SysTask *param0, void *param1)
 
 static void FieldMap_021DEE50(HBlankTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021DED04 *v0 = param1;
+    EncounterScreenWave *v0 = param1;
     int v1;
     int v2 = GX_GetVCount();
 
@@ -1268,7 +1268,7 @@ static void FieldMap_021DEE50(HBlankTask *param0, void *param1)
     }
 }
 
-static void FieldMap_021DEE84(UnkStruct_fieldmap_021DED04 *param0)
+static void FieldMap_021DEE84(EncounterScreenWave *param0)
 {
     GX_SetVisibleWnd(GX_WNDMASK_NONE);
 
@@ -1351,8 +1351,8 @@ void FieldMap_021DEFA0(FieldSystem *fieldSystem)
 {
     GF_ASSERT(Unk_FieldMap_02202120 == NULL);
 
-    Unk_FieldMap_02202120 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_02202120));
-    memset(Unk_FieldMap_02202120, 0, sizeof(UnkStruct_fieldmap_02202120));
+    Unk_FieldMap_02202120 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(CutInEffect));
+    memset(Unk_FieldMap_02202120, 0, sizeof(CutInEffect));
 
     Unk_FieldMap_02202120->unk_00 = 0;
     Unk_FieldMap_02202120->unk_02 = 0;
@@ -1478,7 +1478,7 @@ void FieldMap_021DF224(void)
 
 static void FieldMap_021DF258(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_02202120 *v0 = param1;
+    CutInEffect *v0 = param1;
 
     switch (v0->unk_00) {
     case 0:
@@ -1496,7 +1496,7 @@ static void FieldMap_021DF258(SysTask *param0, void *param1)
 
 static void FieldMap_021DF28C(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_02202120 *v0 = param1;
+    CutInEffect *v0 = param1;
 
     switch (v0->unk_00) {
     case 2:

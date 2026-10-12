@@ -26,13 +26,13 @@ typedef struct {
     SysTask *unk_24;
     Simple3DModel unk_28[3];
     Simple3DRenderObj unk_64[3];
-} UnkStruct_fieldmap_021F1388;
+} FieldEffectRenderer00Context;
 
 typedef struct {
     FieldEffectManager *unk_00;
-    UnkStruct_fieldmap_021F1388 *unk_04;
+    FieldEffectRenderer00Context *unk_04;
     MapObject *unk_08;
-} UnkStruct_fieldmap_021F1570;
+} FieldEffectRenderer00Params;
 
 typedef struct {
     int unk_00;
@@ -40,19 +40,19 @@ typedef struct {
     int unk_08;
     int unk_0C;
     int unk_10;
-    UnkStruct_fieldmap_021F1570 unk_14;
-} UnkStruct_fieldmap_021F15B4;
+    FieldEffectRenderer00Params unk_14;
+} FieldEffectRenderer00Anim;
 
-static void FieldMap_021F1388(UnkStruct_fieldmap_021F1388 *param0);
-static void FieldMap_021F13AC(UnkStruct_fieldmap_021F1388 *param0);
-static void FieldMap_021F13B8(UnkStruct_fieldmap_021F1388 *param0, VecFx32 *param1);
+static void FieldMap_021F1388(FieldEffectRenderer00Context *param0);
+static void FieldMap_021F13AC(FieldEffectRenderer00Context *param0);
+static void FieldMap_021F13B8(FieldEffectRenderer00Context *param0, VecFx32 *param1);
 static int FieldMap_021F13C8(int param0);
-static void FieldMap_021F13D4(UnkStruct_fieldmap_021F1388 *param0, int param1);
+static void FieldMap_021F13D4(FieldEffectRenderer00Context *param0, int param1);
 static void FieldMap_021F1400(fx32 *param0, fx32 param1, fx32 param2);
 static void FieldMap_021F1424(SysTask *param0, void *param1);
-static void FieldMap_021F14FC(UnkStruct_fieldmap_021F1388 *param0);
-static void FieldMap_021F153C(UnkStruct_fieldmap_021F1388 *param0);
-static void FieldMap_021F1554(UnkStruct_fieldmap_021F1388 *param0, int param1);
+static void FieldMap_021F14FC(FieldEffectRenderer00Context *param0);
+static void FieldMap_021F153C(FieldEffectRenderer00Context *param0);
+static void FieldMap_021F1554(FieldEffectRenderer00Context *param0, int param1);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_022002AC;
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200298;
@@ -62,7 +62,7 @@ static const int Unk_FieldMap_02200278[3];
 
 void *FieldMap_021F134C(FieldEffectManager *param0)
 {
-    UnkStruct_fieldmap_021F1388 *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(UnkStruct_fieldmap_021F1388)), 0, 0);
+    FieldEffectRenderer00Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer00Context)), 0, 0);
     v0->unk_20 = param0;
 
     FieldMap_021F14FC(v0);
@@ -73,14 +73,14 @@ void *FieldMap_021F134C(FieldEffectManager *param0)
 
 void FieldMap_021F1370(void *param0)
 {
-    UnkStruct_fieldmap_021F1388 *v0 = param0;
+    FieldEffectRenderer00Context *v0 = param0;
 
     FieldMap_021F13AC(v0);
     FieldMap_021F153C(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_021F1388(UnkStruct_fieldmap_021F1388 *param0)
+static void FieldMap_021F1388(FieldEffectRenderer00Context *param0)
 {
     FieldSystem *fieldSystem = FieldEffectManager_GetFieldSystem(param0->unk_20);
     int v1 = MapObjectMan_GetTaskBasePriority(fieldSystem->mapObjMan) - 1;
@@ -89,12 +89,12 @@ static void FieldMap_021F1388(UnkStruct_fieldmap_021F1388 *param0)
     param0->unk_24 = v2;
 }
 
-static void FieldMap_021F13AC(UnkStruct_fieldmap_021F1388 *param0)
+static void FieldMap_021F13AC(FieldEffectRenderer00Context *param0)
 {
     SysTask_Done(param0->unk_24);
 }
 
-static void FieldMap_021F13B8(UnkStruct_fieldmap_021F1388 *param0, VecFx32 *param1)
+static void FieldMap_021F13B8(FieldEffectRenderer00Context *param0, VecFx32 *param1)
 {
     *param1 = param0->unk_14;
 }
@@ -104,7 +104,7 @@ static int FieldMap_021F13C8(int param0)
     return param0 / FX32_ONE;
 }
 
-static void FieldMap_021F13D4(UnkStruct_fieldmap_021F1388 *param0, int param1)
+static void FieldMap_021F13D4(FieldEffectRenderer00Context *param0, int param1)
 {
     param0->unk_10 = Unk_FieldMap_02200284[param0->unk_04];
     param0->unk_14 = Unk_FieldMap_022002E4[param0->unk_04];
@@ -130,7 +130,7 @@ static void FieldMap_021F1400(fx32 *param0, fx32 param1, fx32 param2)
 static void FieldMap_021F1424(SysTask *param0, void *param1)
 {
     int v0;
-    UnkStruct_fieldmap_021F1388 *v1 = param1;
+    FieldEffectRenderer00Context *v1 = param1;
 
     v0 = GetTimeOfDay();
 
@@ -165,7 +165,7 @@ static void FieldMap_021F1424(SysTask *param0, void *param1)
     }
 }
 
-static void FieldMap_021F14FC(UnkStruct_fieldmap_021F1388 *param0)
+static void FieldMap_021F14FC(FieldEffectRenderer00Context *param0)
 {
     int v0;
 
@@ -175,7 +175,7 @@ static void FieldMap_021F14FC(UnkStruct_fieldmap_021F1388 *param0)
     }
 }
 
-static void FieldMap_021F153C(UnkStruct_fieldmap_021F1388 *param0)
+static void FieldMap_021F153C(FieldEffectRenderer00Context *param0)
 {
     int v0;
 
@@ -184,7 +184,7 @@ static void FieldMap_021F153C(UnkStruct_fieldmap_021F1388 *param0)
     }
 }
 
-static void FieldMap_021F1554(UnkStruct_fieldmap_021F1388 *param0, int param1)
+static void FieldMap_021F1554(FieldEffectRenderer00Context *param0, int param1)
 {
     NNS_G3dMdlUseMdlAlpha(param0->unk_28[0].g3DModel);
     NNS_G3dMdlSetMdlAlphaAll(param0->unk_28[0].g3DModel, param1);
@@ -193,7 +193,7 @@ static void FieldMap_021F1554(UnkStruct_fieldmap_021F1388 *param0, int param1)
 void FieldMap_021F1570(MapObject *param0)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021F1570 v2;
+    FieldEffectRenderer00Params v2;
     FieldEffectManager *v3;
     VecFx32 v4;
 
@@ -213,8 +213,8 @@ void FieldMap_021F1570(MapObject *param0)
 
 static int FieldMap_021F15B4(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F15B4 *v0;
-    const UnkStruct_fieldmap_021F1570 *v1;
+    FieldEffectRenderer00Anim *v0;
+    const FieldEffectRenderer00Params *v1;
 
     v0 = param1;
     v1 = OverworldAnimManager_GetUserData(param0);
@@ -240,7 +240,7 @@ static void FieldMap_021F1600(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F1604(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F15B4 *v0 = param1;
+    FieldEffectRenderer00Anim *v0 = param1;
     MapObject *v1 = v0->unk_14.unk_08;
 
     if (MapObject_MatchesGraphicsAndLocalID(v1, v0->unk_00, v0->unk_04, v0->unk_08) == 0) {
@@ -270,7 +270,7 @@ static void FieldMap_021F1604(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F1670(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F15B4 *v0 = param1;
+    FieldEffectRenderer00Anim *v0 = param1;
 
     if (v0->unk_0C == 0) {
         VecFx32 v1, v2;
@@ -289,7 +289,7 @@ static void FieldMap_021F1670(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_022002AC = {
-    sizeof(UnkStruct_fieldmap_021F15B4),
+    sizeof(FieldEffectRenderer00Anim),
     FieldMap_021F15B4,
     FieldMap_021F1600,
     FieldMap_021F1604,
@@ -299,7 +299,7 @@ static const OverworldAnimManagerFuncs Unk_FieldMap_022002AC = {
 OverworldAnimManager *FieldMap_021F16D4(MapObject *param0, int param1)
 {
     int v0;
-    UnkStruct_fieldmap_021F1570 v1;
+    FieldEffectRenderer00Params v1;
     FieldEffectManager *v2;
     VecFx32 v3;
 
@@ -317,7 +317,7 @@ OverworldAnimManager *FieldMap_021F16D4(MapObject *param0, int param1)
 
 static void FieldMap_021F1718(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F15B4 *v0 = param1;
+    FieldEffectRenderer00Anim *v0 = param1;
     MapObject *v1 = v0->unk_14.unk_08;
 
     if (MapObject_MatchesGraphicsAndLocalID(v1, v0->unk_00, v0->unk_04, v0->unk_08) == 0) {
@@ -342,7 +342,7 @@ static void FieldMap_021F1718(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F176C(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F15B4 *v0 = param1;
+    FieldEffectRenderer00Anim *v0 = param1;
 
     if (v0->unk_0C == 1) {
         return;
@@ -362,7 +362,7 @@ static void FieldMap_021F176C(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200298 = {
-    (sizeof(UnkStruct_fieldmap_021F15B4)),
+    (sizeof(FieldEffectRenderer00Anim)),
     FieldMap_021F15B4,
     FieldMap_021F1600,
     FieldMap_021F1718,

@@ -11,8 +11,8 @@
 #include "overworld_anim_manager.h"
 #include "simple3d.h"
 
-typedef struct UnkStruct_fieldmap_021DF8FC_t UnkStruct_fieldmap_021DF8FC;
-typedef struct UnkStruct_fieldmap_021DF8C8_t UnkStruct_fieldmap_021DF8C8;
+typedef struct FieldEffectGraphicsManager_t FieldEffectGraphicsManager;
+typedef struct FieldEffectBillboardResource_t FieldEffectBillboardResource;
 
 typedef struct FieldEffectRenderer {
     u32 id;
@@ -28,7 +28,7 @@ typedef struct FieldEffectManager {
     FieldEffectRenderer *renderers;
     NARC *fldEffNARC;
     OverworldAnimManagerList *animManList;
-    UnkStruct_fieldmap_021DF8FC *unk_20;
+    FieldEffectGraphicsManager *unk_20;
 } FieldEffectManager;
 
 FieldEffectManager *FieldEffectManager_New(FieldSystem *fieldSystem, u32 rendererCount, enum HeapID heapID);

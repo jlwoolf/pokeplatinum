@@ -15,8 +15,8 @@
 #include "fieldmap/hblank_system.h"
 #include "fieldmap/map_name_popup.h"
 #include "fieldmap/fieldmap_021D431C.h"
-#include "fieldmap/struct_fieldmap_021D432C_decl.h"
-#include "fieldmap/struct_fieldmap_021D4E00_decl.h"
+#include "fieldmap/struct_door_animation_decl.h"
+#include "fieldmap/struct_door_animation_env_decl.h"
 
 #include "camera.h"
 #include "field_bgm.h"
@@ -51,7 +51,7 @@ typedef struct MapTransition {
     int state; // main task state
     int subState; // state of the current fade-out/fade-in sub-task
     Location location; // destination map and warp
-    void *animation; // UnkStruct_fieldmap_021D432C door/warp animation context
+    void *animation; // DoorAnimation door/warp animation context
     int transitionType; // index into the sFadeOutFuncs/sFadeInFuncs tables
 } MapTransition;
 
@@ -317,17 +317,17 @@ static BOOL MapTransition_FadeOutDoor(FieldTask *taskMan)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v1 = FieldTask_GetEnv(taskMan);
-    UnkStruct_fieldmap_021D432C *v2;
+    DoorAnimation *v2;
 
     switch (v1->subState) {
     case 0:
         v1->animation = FieldMap_021D431C();
-        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        v2 = (DoorAnimation *)v1->animation;
         FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
         (v1->subState)++;
         break;
     case 1:
-        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        v2 = (DoorAnimation *)v1->animation;
 
         if (FieldMap_021D433C(fieldSystem, v2)) {
             FieldMap_021D432C(v1->animation);
@@ -350,17 +350,17 @@ static BOOL MapTransition_FadeOutWarp(FieldTask *taskMan)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v1 = FieldTask_GetEnv(taskMan);
-    UnkStruct_fieldmap_021D432C *v2;
+    DoorAnimation *v2;
 
     switch (v1->subState) {
     case 0:
         v1->animation = FieldMap_021D431C();
-        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        v2 = (DoorAnimation *)v1->animation;
         FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
         (v1->subState)++;
         break;
     case 1:
-        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        v2 = (DoorAnimation *)v1->animation;
 
         if (FieldMap_021D4A24(fieldSystem, v2, PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar))) {
             FieldMap_021D432C(v1->animation);
@@ -429,7 +429,7 @@ static BOOL MapTransition_FadeOutEnterCave(FieldTask *taskMan)
 
     switch (v1->subState) {
     case 0: {
-        UnkStruct_fieldmap_021D4E00 *v3;
+        DoorAnimationEnv *v3;
 
         v3 = FieldMap_021D4E00();
         FieldTask_InitCall(taskMan, FieldMap_021D4FA0, v3);
@@ -451,7 +451,7 @@ static BOOL MapTransition_FadeOutExitCave(FieldTask *taskMan)
 
     switch (v1->subState) {
     case 0: {
-        UnkStruct_fieldmap_021D4E00 *v3;
+        DoorAnimationEnv *v3;
 
         v3 = FieldMap_021D4E00();
         FieldTask_InitCall(taskMan, FieldMap_021D4F14, v3);
@@ -471,7 +471,7 @@ static BOOL MapTransition_FadeInDoor(FieldTask *taskMan)
     MapObject *mapObj;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v2 = FieldTask_GetEnv(taskMan);
-    UnkStruct_fieldmap_021D432C *v3;
+    DoorAnimation *v3;
 
     switch (v2->subState) {
     case 0: {
@@ -484,7 +484,7 @@ static BOOL MapTransition_FadeInDoor(FieldTask *taskMan)
             MapObject_SetHidden(v5, 1);
             (v2->subState) = 1;
         } else {
-            UnkStruct_fieldmap_021D4E00 *v6;
+            DoorAnimationEnv *v6;
 
             v6 = FieldMap_021D4E00();
             FieldTask_InitCall(taskMan, FieldMap_021D5020, v6);
@@ -492,13 +492,13 @@ static BOOL MapTransition_FadeInDoor(FieldTask *taskMan)
         }
     } break;
     case 1:
-        v2->animation = (UnkStruct_fieldmap_021D432C *)FieldMap_021D431C();
-        v3 = (UnkStruct_fieldmap_021D432C *)v2->animation;
+        v2->animation = (DoorAnimation *)FieldMap_021D431C();
+        v3 = (DoorAnimation *)v2->animation;
         FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v3);
         (v2->subState)++;
         break;
     case 2:
-        v3 = (UnkStruct_fieldmap_021D432C *)v2->animation;
+        v3 = (DoorAnimation *)v2->animation;
 
         if (FieldMap_021D453C(fieldSystem, v3)) {
             FieldMap_021D432C(v3);
@@ -524,7 +524,7 @@ static BOOL MapTransition_FadeIn(FieldTask *taskMan)
     MapObject *mapObj;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v2 = FieldTask_GetEnv(taskMan);
-    UnkStruct_fieldmap_021D432C *v3;
+    DoorAnimation *v3;
 
     switch (v2->subState) {
     case 0: {
@@ -539,7 +539,7 @@ static BOOL MapTransition_FadeIn(FieldTask *taskMan)
             v2->subState = 1;
             FieldTask_InitJump(taskMan, MapTransition_FadeInDoor, v2);
         } else {
-            UnkStruct_fieldmap_021D4E00 *v6;
+            DoorAnimationEnv *v6;
 
             v6 = FieldMap_021D4E00();
             FieldTask_InitCall(taskMan, FieldMap_021D5150, v6);
@@ -558,17 +558,17 @@ static BOOL MapTransition_FadeInWarp(FieldTask *taskMan)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v1 = FieldTask_GetEnv(taskMan);
-    UnkStruct_fieldmap_021D432C *v2;
+    DoorAnimation *v2;
 
     switch (v1->subState) {
     case 0:
         v1->animation = FieldMap_021D431C();
-        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        v2 = (DoorAnimation *)v1->animation;
         FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
         (v1->subState)++;
         break;
     case 1:
-        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        v2 = (DoorAnimation *)v1->animation;
 
         if (FieldMap_021D4858(fieldSystem, v2, PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar))) {
             FieldMap_021D432C(v1->animation);
@@ -642,7 +642,7 @@ static BOOL MapTransition_FadeInExitCave(FieldTask *taskMan)
 
     switch (v1->subState) {
     case 0: {
-        UnkStruct_fieldmap_021D4E00 *v3;
+        DoorAnimationEnv *v3;
 
         v3 = FieldMap_021D4E00();
         FieldTask_InitCall(taskMan, FieldMap_021D4E10, v3);

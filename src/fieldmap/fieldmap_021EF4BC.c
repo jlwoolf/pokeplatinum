@@ -11,7 +11,7 @@
 #include "sys_task.h"
 #include "sys_task_manager.h"
 
-typedef struct UnkStruct_fieldmap_021EF4F8_t {
+typedef struct PoisonEffect_t {
     u32 unk_00;
     int unk_04;
     int unk_08;
@@ -24,22 +24,22 @@ typedef struct UnkStruct_fieldmap_021EF4F8_t {
     SysTask *unk_31C;
     SysTask *unk_320;
     SysTask *unk_324;
-} UnkStruct_fieldmap_021EF4F8;
+} PoisonEffect;
 
 static void FieldMap_021EF5A8(SysTask *param0, void *param1);
 static void FieldMap_021EF6B0(SysTask *param0, void *param1);
 static void FieldMap_021EF6E4(SysTask *param0, void *param1);
-static void FieldMap_021EF634(UnkStruct_fieldmap_021EF4F8 *param0);
+static void FieldMap_021EF634(PoisonEffect *param0);
 static void FieldMap_021EF66C(u16 *param0, int param1, int param2);
 static void FieldMap_021EF6C0(HBlankTask *param0, void *param1);
-static void FieldMap_021EF6CC(UnkStruct_fieldmap_021EF4F8 *param0);
-static void FieldMap_021EF6F0(UnkStruct_fieldmap_021EF4F8 *param0);
-static void FieldMap_021EF710(UnkStruct_fieldmap_021EF4F8 *param0);
+static void FieldMap_021EF6CC(PoisonEffect *param0);
+static void FieldMap_021EF6F0(PoisonEffect *param0);
+static void FieldMap_021EF710(PoisonEffect *param0);
 
-UnkStruct_fieldmap_021EF4F8 *FieldMap_021EF4BC(enum HeapID heapID, HBlankSystem *param1)
+PoisonEffect *FieldMap_021EF4BC(enum HeapID heapID, HBlankSystem *param1)
 {
-    UnkStruct_fieldmap_021EF4F8 *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_fieldmap_021EF4F8));
-    memset(v0, 0, sizeof(UnkStruct_fieldmap_021EF4F8));
+    PoisonEffect *v0 = Heap_Alloc(heapID, sizeof(PoisonEffect));
+    memset(v0, 0, sizeof(PoisonEffect));
 
     v0->unk_00 = 0;
     v0->bufferManager = BufferManager_New(heapID, v0->unk_0C, v0->unk_18C);
@@ -48,7 +48,7 @@ UnkStruct_fieldmap_021EF4F8 *FieldMap_021EF4BC(enum HeapID heapID, HBlankSystem 
     return v0;
 }
 
-void FieldMap_021EF4F8(UnkStruct_fieldmap_021EF4F8 *param0)
+void FieldMap_021EF4F8(PoisonEffect *param0)
 {
     if (param0->unk_00 == 1) {
         FieldMap_021EF710(param0);
@@ -58,7 +58,7 @@ void FieldMap_021EF4F8(UnkStruct_fieldmap_021EF4F8 *param0)
     Heap_Free(param0);
 }
 
-void Field_DoPoisonEffect(UnkStruct_fieldmap_021EF4F8 *param0)
+void Field_DoPoisonEffect(PoisonEffect *param0)
 {
     GF_ASSERT(param0->unk_00 == 0);
 
@@ -78,7 +78,7 @@ void Field_DoPoisonEffect(UnkStruct_fieldmap_021EF4F8 *param0)
 
 static void FieldMap_021EF5A8(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021EF4F8 *v0 = param1;
+    PoisonEffect *v0 = param1;
     u16 *v1;
 
     switch (v0->unk_08) {
@@ -114,7 +114,7 @@ static void FieldMap_021EF5A8(SysTask *param0, void *param1)
     }
 }
 
-static void FieldMap_021EF634(UnkStruct_fieldmap_021EF4F8 *param0)
+static void FieldMap_021EF634(PoisonEffect *param0)
 {
     const u16 *v0;
     int v1 = GX_GetVCount();
@@ -157,7 +157,7 @@ static void FieldMap_021EF66C(u16 *param0, int param1, int param2)
 
 static void FieldMap_021EF6B0(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021EF4F8 *v0 = param1;
+    PoisonEffect *v0 = param1;
 
     v0->unk_318 = 0;
     G3X_SetHOffset(0);
@@ -165,11 +165,11 @@ static void FieldMap_021EF6B0(SysTask *param0, void *param1)
 
 static void FieldMap_021EF6C0(HBlankTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021EF4F8 *v0 = param1;
+    PoisonEffect *v0 = param1;
     FieldMap_021EF6CC(v0);
 }
 
-static void FieldMap_021EF6CC(UnkStruct_fieldmap_021EF4F8 *param0)
+static void FieldMap_021EF6CC(PoisonEffect *param0)
 {
     if (param0->unk_00 == 1) {
         if (param0->unk_318 == 1) {
@@ -180,11 +180,11 @@ static void FieldMap_021EF6CC(UnkStruct_fieldmap_021EF4F8 *param0)
 
 static void FieldMap_021EF6E4(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021EF4F8 *v0 = param1;
+    PoisonEffect *v0 = param1;
     FieldMap_021EF6F0(v0);
 }
 
-static void FieldMap_021EF6F0(UnkStruct_fieldmap_021EF4F8 *param0)
+static void FieldMap_021EF6F0(PoisonEffect *param0)
 {
     if (param0->unk_00 == 1) {
         BufferManager_SwapBuffers(param0->bufferManager);
@@ -192,7 +192,7 @@ static void FieldMap_021EF6F0(UnkStruct_fieldmap_021EF4F8 *param0)
     }
 }
 
-static void FieldMap_021EF710(UnkStruct_fieldmap_021EF4F8 *param0)
+static void FieldMap_021EF710(PoisonEffect *param0)
 {
     HBlankTask_Delete(param0->unk_314);
     param0->unk_314 = NULL;

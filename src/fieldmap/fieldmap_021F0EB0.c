@@ -24,22 +24,22 @@ typedef struct {
     fx32 unk_28;
     FieldSystem *fieldSystem;
     Camera *camera;
-} UnkStruct_fieldmap_021F0FB8;
+} CameraDistanceTask;
 
 static void FieldMap_021F0F2C(SysTask *param0, void *param1);
-static void FieldMap_021F0FB8(UnkStruct_fieldmap_021F0FB8 *param0);
-static void FieldMap_021F0FC8(UnkStruct_fieldmap_021F0FB8 *param0);
-static void FieldMap_021F0FE0(UnkStruct_fieldmap_021F0FB8 *param0);
-static int FieldMap_021F0FF8(UnkStruct_fieldmap_021F0FB8 *param0);
+static void FieldMap_021F0FB8(CameraDistanceTask *param0);
+static void FieldMap_021F0FC8(CameraDistanceTask *param0);
+static void FieldMap_021F0FE0(CameraDistanceTask *param0);
+static int FieldMap_021F0FF8(CameraDistanceTask *param0);
 
-static void (*const Unk_FieldMap_0220020C[4])(UnkStruct_fieldmap_021F0FB8 *);
+static void (*const Unk_FieldMap_0220020C[4])(CameraDistanceTask *);
 
 SysTask *FieldMap_021F0EB0(FieldSystem *fieldSystem, enum HeapID heapID)
 {
     SysTask *task;
-    UnkStruct_fieldmap_021F0FB8 *v1 = Heap_AllocAtEnd(heapID, (sizeof(UnkStruct_fieldmap_021F0FB8)));
+    CameraDistanceTask *v1 = Heap_AllocAtEnd(heapID, (sizeof(CameraDistanceTask)));
 
-    memset(v1, 0, (sizeof(UnkStruct_fieldmap_021F0FB8)));
+    memset(v1, 0, (sizeof(CameraDistanceTask)));
 
     v1->heapID = heapID;
     v1->unk_0C = 0;
@@ -54,13 +54,13 @@ SysTask *FieldMap_021F0EB0(FieldSystem *fieldSystem, enum HeapID heapID)
 
 BOOL FieldMap_021F0EF0(SysTask *param0)
 {
-    UnkStruct_fieldmap_021F0FB8 *v0 = SysTask_GetParam(param0);
+    CameraDistanceTask *v0 = SysTask_GetParam(param0);
     return v0->unk_08;
 }
 
 void FieldMap_021F0EFC(SysTask *param0)
 {
-    UnkStruct_fieldmap_021F0FB8 *v0 = SysTask_GetParam(param0);
+    CameraDistanceTask *v0 = SysTask_GetParam(param0);
 
     Heap_Free(v0);
     SysTask_Done(param0);
@@ -68,7 +68,7 @@ void FieldMap_021F0EFC(SysTask *param0)
 
 void FieldMap_021F0F10(SysTask *param0, int param1, fx32 param2, u32 param3)
 {
-    UnkStruct_fieldmap_021F0FB8 *v0 = SysTask_GetParam(param0);
+    CameraDistanceTask *v0 = SysTask_GetParam(param0);
 
     v0->unk_04 = 0;
     v0->unk_08 = 0;
@@ -80,16 +80,16 @@ void FieldMap_021F0F10(SysTask *param0, int param1, fx32 param2, u32 param3)
 
 static void FieldMap_021F0F2C(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F0FB8 *v0 = param1;
+    CameraDistanceTask *v0 = param1;
     Unk_FieldMap_0220020C[v0->unk_0C](v0);
 }
 
-static void FieldMap_021F0F40(UnkStruct_fieldmap_021F0FB8 *param0)
+static void FieldMap_021F0F40(CameraDistanceTask *param0)
 {
     param0->unk_08 = 1;
 }
 
-static void FieldMap_021F0F48(UnkStruct_fieldmap_021F0FB8 *param0)
+static void FieldMap_021F0F48(CameraDistanceTask *param0)
 {
     switch (param0->unk_04) {
     case 0:
@@ -105,7 +105,7 @@ static void FieldMap_021F0F48(UnkStruct_fieldmap_021F0FB8 *param0)
     }
 }
 
-static void FieldMap_021F0F80(UnkStruct_fieldmap_021F0FB8 *param0)
+static void FieldMap_021F0F80(CameraDistanceTask *param0)
 {
     switch (param0->unk_04) {
     case 0:
@@ -121,12 +121,12 @@ static void FieldMap_021F0F80(UnkStruct_fieldmap_021F0FB8 *param0)
     }
 }
 
-static void FieldMap_021F0FB8(UnkStruct_fieldmap_021F0FB8 *param0)
+static void FieldMap_021F0FB8(CameraDistanceTask *param0)
 {
     Camera_SetDistance(param0->unk_20, param0->camera);
 }
 
-static void FieldMap_021F0FC8(UnkStruct_fieldmap_021F0FB8 *param0)
+static void FieldMap_021F0FC8(CameraDistanceTask *param0)
 {
     fx32 v0 = param0->unk_1C;
 
@@ -134,7 +134,7 @@ static void FieldMap_021F0FC8(UnkStruct_fieldmap_021F0FB8 *param0)
     param0->unk_18 = param0->unk_20 + param0->unk_14;
 }
 
-static void FieldMap_021F0FE0(UnkStruct_fieldmap_021F0FB8 *param0)
+static void FieldMap_021F0FE0(CameraDistanceTask *param0)
 {
     fx32 v0 = param0->unk_1C;
     fx32 v1 = param0->unk_10 - param0->unk_20;
@@ -143,7 +143,7 @@ static void FieldMap_021F0FE0(UnkStruct_fieldmap_021F0FB8 *param0)
     param0->unk_18 = param0->unk_10;
 }
 
-static int FieldMap_021F0FF8(UnkStruct_fieldmap_021F0FB8 *param0)
+static int FieldMap_021F0FF8(CameraDistanceTask *param0)
 {
     param0->unk_20 += param0->unk_28;
     param0->unk_24++;
@@ -157,7 +157,7 @@ static int FieldMap_021F0FF8(UnkStruct_fieldmap_021F0FB8 *param0)
     return 0;
 }
 
-static void (*const Unk_FieldMap_0220020C[4])(UnkStruct_fieldmap_021F0FB8 *) = {
+static void (*const Unk_FieldMap_0220020C[4])(CameraDistanceTask *) = {
     FieldMap_021F0F40,
     FieldMap_021F0F48,
     FieldMap_021F0F80,

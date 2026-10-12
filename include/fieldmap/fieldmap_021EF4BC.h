@@ -1,12 +1,12 @@
 #ifndef POKEPLATINUM_FIELDMAP_021EF4BC_H
 #define POKEPLATINUM_FIELDMAP_021EF4BC_H
 
-#include "fieldmap/struct_fieldmap_021EF4F8_decl.h"
+#include "fieldmap/struct_poison_effect_decl.h"
 
 #include "hblank_system.h"
 
-UnkStruct_fieldmap_021EF4F8 *FieldMap_021EF4BC(enum HeapID heapID, HBlankSystem *param1);
-void FieldMap_021EF4F8(UnkStruct_fieldmap_021EF4F8 *param0);
-void Field_DoPoisonEffect(UnkStruct_fieldmap_021EF4F8 *param0);
+PoisonEffect *FieldMap_021EF4BC(enum HeapID heapID, HBlankSystem *param1);
+void FieldMap_021EF4F8(PoisonEffect *param0);
+void Field_DoPoisonEffect(PoisonEffect *param0);
 
 #endif // POKEPLATINUM_FIELDMAP_021EF4BC_H

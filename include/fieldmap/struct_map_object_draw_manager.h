@@ -1,15 +1,15 @@
-#ifndef POKEPLATINUM_STRUCT_FIELDMAP_021ED0A4_H
-#define POKEPLATINUM_STRUCT_FIELDMAP_021ED0A4_H
+#ifndef POKEPLATINUM_STRUCT_MAP_OBJECT_DRAW_MANAGER_H
+#define POKEPLATINUM_STRUCT_MAP_OBJECT_DRAW_MANAGER_H
 
 #include "struct_decls/map_object_manager.h"
 
 #include "fieldmap/resource_heap.h"
-#include "fieldmap/struct_fieldmap_021EDF3C.h"
+#include "fieldmap/struct_map_object_draw_task_manager.h"
 
 #include "billboard.h"
 #include "resource_collection.h"
 
-typedef struct UnkStruct_fieldmap_021ED0A4_t {
+typedef struct MapObjectDrawManager_t {
     int unk_00;
     int unk_04;
     int unk_08;
@@ -26,11 +26,11 @@ typedef struct UnkStruct_fieldmap_021ED0A4_t {
     ResourceCollection *unk_E8;
     ResourceCollection *unk_EC;
     TextureResourceManager *unk_F0;
-    UnkStruct_fieldmap_021ED110 *unk_F4;
+    BillboardResourceEntry *unk_F4;
     ResourceHeap *unk_F8;
     ResourceHeap *unk_FC;
-    UnkStruct_fieldmap_021EDF3C *unk_100;
+    MapObjectDrawTaskManager *unk_100;
     const MapObjectManager *unk_104;
-} UnkStruct_fieldmap_021ED0A4;
+} MapObjectDrawManager;
 
-#endif // POKEPLATINUM_STRUCT_FIELDMAP_021ED0A4_H
+#endif // POKEPLATINUM_STRUCT_MAP_OBJECT_DRAW_MANAGER_H

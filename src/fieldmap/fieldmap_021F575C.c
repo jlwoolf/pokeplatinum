@@ -19,13 +19,13 @@ typedef struct {
 typedef struct {
     FieldEffectManager *unk_00;
     UnkStruct_021F5788 *unk_04;
-} UnkStruct_fieldmap_021F57C8;
+} BuriedSphereSparkleParams;
 
 typedef struct {
     Simple3DAnimation unk_00;
     Simple3DRenderObj unk_24;
-    UnkStruct_fieldmap_021F57C8 unk_78;
-} UnkStruct_fieldmap_021F580C;
+    BuriedSphereSparkleParams unk_78;
+} BuriedSphereSparkleAnim;
 
 static void FieldMap_021F5788(UnkStruct_021F5788 *param0);
 static void FieldMap_021F57B4(UnkStruct_021F5788 *param0);
@@ -63,7 +63,7 @@ static void FieldMap_021F57B4(UnkStruct_021F5788 *param0)
 
 void FieldMap_DisplayBuriedSphereSparkle(FieldSystem *fieldSystem, int x, int z)
 {
-    UnkStruct_fieldmap_021F57C8 v2;
+    BuriedSphereSparkleParams v2;
     VecFx32 v3;
 
     v2.unk_00 = fieldSystem->fieldEffMan;
@@ -78,8 +78,8 @@ void FieldMap_DisplayBuriedSphereSparkle(FieldSystem *fieldSystem, int x, int z)
 
 static int FieldMap_021F580C(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F580C *v0 = param1;
-    const UnkStruct_fieldmap_021F57C8 *v1 = OverworldAnimManager_GetUserData(param0);
+    BuriedSphereSparkleAnim *v0 = param1;
+    const BuriedSphereSparkleParams *v1 = OverworldAnimManager_GetUserData(param0);
 
     v0->unk_78 = *v1;
 
@@ -91,13 +91,13 @@ static int FieldMap_021F580C(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F5844(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F580C *v0 = param1;
+    BuriedSphereSparkleAnim *v0 = param1;
     Simple3D_FreeAnimation(&v0->unk_00);
 }
 
 static void FieldMap_021F5850(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F580C *v0 = param1;
+    BuriedSphereSparkleAnim *v0 = param1;
 
     if (Simple3D_HasAnimationReachedEnd(&v0->unk_00) == 1) {
         FieldEffectManager_FinishAnimManager(param0);
@@ -110,14 +110,14 @@ static void FieldMap_021F5850(OverworldAnimManager *param0, void *param1)
 static void FieldMap_021F5878(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021F580C *v1 = param1;
+    BuriedSphereSparkleAnim *v1 = param1;
 
     OverworldAnimManager_GetPosition(param0, &v0);
     Simple3D_DrawRenderObjWithPos(&v1->unk_24, &v0);
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200B54 = {
-    (sizeof(UnkStruct_fieldmap_021F580C)),
+    (sizeof(BuriedSphereSparkleAnim)),
     FieldMap_021F580C,
     FieldMap_021F5844,
     FieldMap_021F5850,

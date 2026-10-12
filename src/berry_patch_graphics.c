@@ -10,7 +10,7 @@
 #include "fieldmap/berry_patch_effects.h"
 #include "fieldmap/fieldmap_021ECC20.h"
 #include "fieldmap/fieldmap_021ECE40.h"
-#include "fieldmap/struct_fieldmap_021ED01C.h"
+#include "fieldmap/struct_billboard_anim_state.h"
 
 #include "berry_patch_manager.h"
 #include "berry_patches.h"
@@ -27,7 +27,7 @@ typedef struct BerryPatchGraphics {
     int graphicsResourceID;
     enum BerryGrowthStage lastGrowthStage;
     Billboard *graphicsObject;
-    UnkStruct_fieldmap_021ED01C graphicsState;
+    BillboardAnimState graphicsState;
 } BerryPatchGraphics;
 
 static int BerryPatchGraphics_GetGraphicsResourceID(int berryID, enum BerryGrowthStage growthStage);

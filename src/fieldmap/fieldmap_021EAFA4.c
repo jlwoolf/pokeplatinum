@@ -6,9 +6,9 @@
 #include "camera.h"
 #include "heap.h"
 
-static void FieldMap_021EB0E0(UnkStruct_fieldmap_021EB0E0 *param0, Camera *const camera);
+static void FieldMap_021EB0E0(FieldCamera *param0, Camera *const camera);
 
-VecFx32 FieldMap_GetPositionFromTouchCoordinates(u16 touchX, u16 touchY, const UnkStruct_fieldmap_021EB0E0 *param2)
+VecFx32 FieldMap_GetPositionFromTouchCoordinates(u16 touchX, u16 touchY, const FieldCamera *param2)
 {
     s8 v0, v1;
     VecFx32 v2;
@@ -62,15 +62,15 @@ VecFx32 FieldMap_GetPositionFromTouchCoordinates(u16 touchX, u16 touchY, const U
     return v3;
 }
 
-UnkStruct_fieldmap_021EB0E0 *FieldMap_021EB0C8(Camera *const camera)
+FieldCamera *FieldMap_021EB0C8(Camera *const camera)
 {
-    UnkStruct_fieldmap_021EB0E0 *v0 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021EB0E0));
+    FieldCamera *v0 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(FieldCamera));
     FieldMap_021EB0E0(v0, camera);
 
     return v0;
 }
 
-static void FieldMap_021EB0E0(UnkStruct_fieldmap_021EB0E0 *param0, Camera *const camera)
+static void FieldMap_021EB0E0(FieldCamera *param0, Camera *const camera)
 {
     CameraAngle angle;
 
@@ -96,7 +96,7 @@ static void FieldMap_021EB0E0(UnkStruct_fieldmap_021EB0E0 *param0, Camera *const
     param0->camera = camera;
 }
 
-void FieldMap_021EB184(UnkStruct_fieldmap_021EB0E0 **param0)
+void FieldMap_021EB184(FieldCamera **param0)
 {
     if (*param0 == NULL) {
         return;
