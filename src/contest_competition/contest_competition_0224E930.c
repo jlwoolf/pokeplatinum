@@ -40,10 +40,10 @@ void contest_competition_0224E930(DancePerformanceResult *param0, int contestant
 {
     MI_CpuClear8(param0, sizeof(DancePerformanceResult));
 
-    param0->unk_37 = contestantID;
-    param0->unk_38 = param2;
-    param0->unk_30 = param3;
-    param0->unk_39 = param4;
+    param0->contestantID = contestantID;
+    param0->state = param2;
+    param0->rngSeed = param3;
+    param0->contestRank = param4;
 }
 
 void contest_competition_0224E958(DancePerformanceResult *param0)
@@ -51,17 +51,17 @@ void contest_competition_0224E958(DancePerformanceResult *param0)
     u32 v0;
     int v1, v2, v3;
 
-    v0 = param0->unk_30;
-    v1 = param0->unk_37;
-    v2 = param0->unk_38;
-    v3 = param0->unk_39;
+    v0 = param0->rngSeed;
+    v1 = param0->contestantID;
+    v2 = param0->state;
+    v3 = param0->contestRank;
 
     MI_CpuClear8(param0, sizeof(DancePerformanceResult));
 
-    param0->unk_30 = v0;
-    param0->unk_37 = v1;
-    param0->unk_38 = v2;
-    param0->unk_39 = v3;
+    param0->rngSeed = v0;
+    param0->contestantID = v1;
+    param0->state = v2;
+    param0->contestRank = v3;
 }
 
 void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResult *param1, u32 param2, u32 param3)
@@ -72,15 +72,15 @@ void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResu
     s32 v7;
     int v8;
     u32 v9;
-    int v10 = contest_competition_0223F0BC(param0->unk_A3C.unk_2F, 4);
+    int v10 = contest_competition_0223F0BC(param0->scoreState.contestRank, 4);
 
-    if (param0->unk_A3C.unk_2F == 0) {
+    if (param0->scoreState.contestRank == 0) {
         v9 = (param3 / 4 + 10000 / 2) / 10000;
     } else {
         v9 = (param3 / 6 + 10000 / 2) / 10000;
     }
 
-    switch (param0->unk_00->data.contestRank) {
+    switch (param0->contest->data.contestRank) {
     case CONTEST_RANK_NORMAL:
     case CONTEST_RANK_GREAT:
         v8 = 0;
@@ -101,7 +101,7 @@ void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResu
     v3 = 0;
 
     while (TRUE) {
-        v2 = Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % v1;
+        v2 = Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % v1;
 
         if (v2 == 0) {
             continue;
@@ -115,7 +115,7 @@ void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResu
                     continue;
                 }
 
-                if ((v2 & 1) && ((Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) & 0xff) < 128)) {
+                if ((v2 & 1) && ((Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) & 0xff) < 128)) {
                     continue;
                 }
             }
@@ -123,7 +123,7 @@ void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResu
             v5[v2] = 1;
             v3++;
 
-            if (v3 >= param0->unk_A3C.unk_2E) {
+            if (v3 >= param0->scoreState.roundCount) {
                 break;
             }
         }
@@ -133,41 +133,41 @@ void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResu
 
     for (v0 = 0; v0 < v10 / 2; v0++) {
         if (v5[v0] == 1) {
-            param1->unk_00_val1.unk_00[v3] = (v0 * v6 + 10000 / 2) / 10000;
+            param1->performanceData.scores[v3] = (v0 * v6 + 10000 / 2) / 10000;
             v3++;
         }
     }
 
-    v4 = contest_competition_0224EBE0(param0->unk_00->data.contestRank, param1->unk_39);
+    v4 = contest_competition_0224EBE0(param0->contest->data.contestRank, param1->contestRank);
 
-    for (v0 = 0; v0 < param0->unk_A3C.unk_2E; v0++) {
+    for (v0 = 0; v0 < param0->scoreState.roundCount; v0++) {
         s32 v11;
 
-        v11 = param1->unk_00_val1.unk_00[v0] + (Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % (2 + v4)) - (1 + v4 / 2);
+        v11 = param1->performanceData.scores[v0] + (Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % (2 + v4)) - (1 + v4 / 2);
 
         if (v11 < 0) {
             v11 = 0;
         }
 
-        if (v11 - param1->unk_00_val1.unk_00[v0] >= v9) {
-            v11 = param1->unk_00_val1.unk_00[v0] + v9 - 1;
+        if (v11 - param1->performanceData.scores[v0] >= v9) {
+            v11 = param1->performanceData.scores[v0] + v9 - 1;
         }
 
-        param1->unk_00_val1.unk_00[v0] = v11;
-        param1->unk_00_val1.unk_28[v0] = 1;
+        param1->performanceData.scores[v0] = v11;
+        param1->performanceData.points[v0] = 1;
     }
 
     {
         int v12;
 
-        v12 = Unk_contest_competition_02254A84[param0->unk_00->data.contestRank];
-        param1->unk_00_val1.unk_20[0] = 0 + (Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % 4);
+        v12 = Unk_contest_competition_02254A84[param0->contest->data.contestRank];
+        param1->performanceData.ranks[0] = 0 + (Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % 4);
 
-        for (v0 = 1; v0 < param0->unk_A3C.unk_2E; v0++) {
-            if ((v0 < param0->unk_A3C.unk_2E - 1) && (v12 > Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % 100)) {
-                param1->unk_00_val1.unk_20[v0] = param1->unk_00_val1.unk_20[v0 - 1];
+        for (v0 = 1; v0 < param0->scoreState.roundCount; v0++) {
+            if ((v0 < param0->scoreState.roundCount - 1) && (v12 > Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % 100)) {
+                param1->performanceData.ranks[v0] = param1->performanceData.ranks[v0 - 1];
             } else {
-                param1->unk_00_val1.unk_20[v0] = 0 + (Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % 4);
+                param1->performanceData.ranks[v0] = 0 + (Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % 4);
             }
         }
     }
@@ -321,9 +321,9 @@ static int contest_competition_0224ECC4(int contestRank, int contestType, int pa
 
 void contest_competition_0224ED8C(int param0, DanceCompetition *param1, DancePerformanceResult *param2, u32 param3, u32 param4, u32 param5, const DanceMoveDefinition *param6, DanceContestantTask *param7)
 {
-    if ((param2->unk_38 == 0) && (param0 == 0)) {
+    if ((param2->state == 0) && (param0 == 0)) {
         contest_competition_0224EDE0(param1, param2, param3, param4, param5, param6, param7);
-    } else if ((param2->unk_38 != 0) && (param0 == 1)) {
+    } else if ((param2->state != 0) && (param0 == 1)) {
         contest_competition_0224EE90(param1, param2, param3, param4, param5, param6, param7);
     }
 }
@@ -333,12 +333,12 @@ static void contest_competition_0224EDE0(DanceCompetition *param0, DancePerforma
     DancePacket v0;
     u32 v1 = param4 / 2;
 
-    if ((param1->unk_38 != 0) || (param1->unk_36 >= param5->unk_05)) {
+    if ((param1->state != 0) || (param1->moveIndex >= param5->beatCount)) {
         return;
     }
 
-    if (param1->unk_34 > 0) {
-        param1->unk_34--;
+    if (param1->delay > 0) {
+        param1->delay--;
         return;
     }
 
@@ -346,7 +346,7 @@ static void contest_competition_0224EDE0(DanceCompetition *param0, DancePerforma
         int v2;
 
         for (v2 = 0; v2 < 8; v2++) {
-            if (param1->unk_00_val1.unk_28[v2] == 1) {
+            if (param1->performanceData.points[v2] == 1) {
                 break;
             }
         }
@@ -355,13 +355,13 @@ static void contest_competition_0224EDE0(DanceCompetition *param0, DancePerforma
             return;
         }
 
-        if (param1->unk_00_val1.unk_00[v2] <= param2) {
-            contest_competition_0224DE54(param1->unk_37, param1->unk_00_val1.unk_20[v2], param2, param4, &param5->unk_08, &v0, NULL, param1->unk_38, param1->unk_36, param5->unk_05, param0->unk_A3C.unk_2F);
+        if (param1->performanceData.scores[v2] <= param2) {
+            contest_competition_0224DE54(param1->contestantID, param1->performanceData.ranks[v2], param2, param4, &param5->scores, &v0, NULL, param1->state, param1->moveIndex, param5->beatCount, param0->scoreState.contestRank);
             contest_competition_0224D6B0(param6, &v0);
 
-            param1->unk_00_val1.unk_28[v2] = 0;
-            param1->unk_36++;
-            param1->unk_34 = param4 / 10000 - 2;
+            param1->performanceData.points[v2] = 0;
+            param1->moveIndex++;
+            param1->delay = param4 / 10000 - 2;
         }
     }
 }
@@ -374,36 +374,36 @@ static void contest_competition_0224EE90(DanceCompetition *param0, DancePerforma
 
     v2 = param4 / 2;
 
-    if ((param1->unk_38 == 0) || (param1->unk_36 >= param5->unk_05) || (param0->unk_1AD4[param1->unk_36].unk_08_2 == 0)) {
+    if ((param1->state == 0) || (param1->moveIndex >= param5->beatCount) || (param0->movePackets[param1->moveIndex].isValid == 0)) {
         return;
     }
 
-    if (param1->unk_34 > 0) {
-        param1->unk_34--;
+    if (param1->delay > 0) {
+        param1->delay--;
         return;
     }
 
-    v1 = &param0->unk_1AD4[param1->unk_36];
+    v1 = &param0->movePackets[param1->moveIndex];
     v3 = param2 - param3 / 2;
 
-    if (param1->unk_00_val2.unk_05 == 0) {
+    if (param1->rawData.flag == 0) {
         u32 v4;
         s32 v5;
         int v6, v7;
         int v8, v9, v10;
 
-        if (param1->unk_36 == 0) {
+        if (param1->moveIndex == 0) {
             v10 = -1;
             v9 = 0;
         } else {
-            v10 = param0->unk_1AD4[param1->unk_36 - 1].unk_06;
-            v9 = param0->unk_1AD4[param1->unk_36 - 1].unk_03;
+            v10 = param0->movePackets[param1->moveIndex - 1].moveSlot;
+            v9 = param0->movePackets[param1->moveIndex - 1].judgeID;
         }
 
-        v6 = contest_competition_0224EC24(param0->unk_00->data.contestRank, param0->unk_00->data.contestType, param1->unk_39, v1->unk_06, v10, param0->unk_A3C.unk_2F, param0->unk_1B26);
-        v7 = contest_competition_0224ECC4(param0->unk_00->data.contestRank, param0->unk_00->data.contestType, param1->unk_39, v1->unk_06, v10, v1->unk_03, v9, param0->unk_1B26);
-        v4 = (v1->unk_06 * v2 + 10000 / 2) / 10000;
-        v5 = (Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % (2 + v6)) - (1 + v6 / 2);
+        v6 = contest_competition_0224EC24(param0->contest->data.contestRank, param0->contest->data.contestType, param1->contestRank, v1->moveSlot, v10, param0->scoreState.contestRank, param0->contestRank);
+        v7 = contest_competition_0224ECC4(param0->contest->data.contestRank, param0->contest->data.contestType, param1->contestRank, v1->moveSlot, v10, v1->judgeID, v9, param0->contestRank);
+        v4 = (v1->moveSlot * v2 + 10000 / 2) / 10000;
+        v5 = (Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % (2 + v6)) - (1 + v6 / 2);
 
         if (v5 + (s32)v4 < 0) {
             v4 = 0;
@@ -411,27 +411,27 @@ static void contest_competition_0224EE90(DanceCompetition *param0, DancePerforma
             v4 += v5;
         }
 
-        if ((Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % 100) < (0 + v6 + v7)) {
+        if ((Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % 100) < (0 + v6 + v7)) {
             do {
-                v8 = 0 + (Contest_GetSeededRNGNext(param1->unk_30, &param1->unk_30) % 4);
-            } while (contest_competition_0224DD28(v8) == v1->unk_03);
+                v8 = 0 + (Contest_GetSeededRNGNext(param1->rngSeed, &param1->rngSeed) % 4);
+            } while (contest_competition_0224DD28(v8) == v1->judgeID);
         } else {
-            v8 = contest_competition_0224DD5C(v1->unk_03);
+            v8 = contest_competition_0224DD5C(v1->judgeID);
         }
 
-        param1->unk_00_val2.unk_00 = v4;
-        param1->unk_00_val2.unk_04 = v8;
-        param1->unk_00_val2.unk_05 = 1;
+        param1->rawData.value = v4;
+        param1->rawData.score = v8;
+        param1->rawData.flag = 1;
     }
 
     {
-        if (param1->unk_00_val2.unk_00 <= v3) {
-            contest_competition_0224DE54(param1->unk_37, param1->unk_00_val2.unk_04, param2, param4, &param5->unk_08, &v0, param0->unk_1AD4, param1->unk_38, param1->unk_36, param5->unk_05, param0->unk_A3C.unk_2F);
+        if (param1->rawData.value <= v3) {
+            contest_competition_0224DE54(param1->contestantID, param1->rawData.score, param2, param4, &param5->scores, &v0, param0->movePackets, param1->state, param1->moveIndex, param5->beatCount, param0->scoreState.contestRank);
             contest_competition_0224D6B0(param6, &v0);
 
-            param1->unk_00_val2.unk_05 = 0;
-            param1->unk_36++;
-            param1->unk_34 = param4 / 10000 - 2;
+            param1->rawData.flag = 0;
+            param1->moveIndex++;
+            param1->delay = param4 / 10000 - 2;
         }
     }
 }

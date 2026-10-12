@@ -6,9 +6,9 @@
 #include "char_transfer.h"
 
 typedef struct {
-    FontOAM *unk_00;
-    CharTransferAllocation unk_04;
-    u16 unk_10;
+    FontOAM *fontOAM;
+    CharTransferAllocation charTransfer;
+    u16 width;
 } ContestTextLabel;
 
 #endif // POKEPLATINUM_STRUCT_CONTEST_TEXT_LABEL_H

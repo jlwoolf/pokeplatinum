@@ -5,14 +5,14 @@
 #include "contest_competition/struct_acting_competition.h"
 
 typedef struct {
-    ActingCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    s32 unk_0C;
-    s32 unk_10;
-    u8 unk_14;
+    ActingCompetition *competition;
+    ContestPacketHeader header;
+    s32 moveID;
+    s32 timer;
+    u8 state;
     u8 contestantID;
-    u8 unk_16;
-    s16 unk_18;
+    u8 messageState;
+    s16 contestMoveEffect;
 } ActingContestantMoveTask;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_CONTESTANT_MOVE_TASK_H

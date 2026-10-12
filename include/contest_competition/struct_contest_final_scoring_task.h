@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_CONTEST_FINAL_SCORING_TASK_H
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    s32 unk_04;
+    u16 state;
+    u16 nextState;
+    s32 timer;
 } ContestFinalScoringTask;
 
 #endif // POKEPLATINUM_STRUCT_CONTEST_FINAL_SCORING_TASK_H

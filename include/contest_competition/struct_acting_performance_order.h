@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_ACTING_PERFORMANCE_ORDER_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01[4];
-    u16 unk_06;
-    u8 unk_08;
+    u8 contestantID;
+    u8 order[4];
+    u16 unused_06;
+    u8 unused_08;
 } ActingPerformanceOrder;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_PERFORMANCE_ORDER_H

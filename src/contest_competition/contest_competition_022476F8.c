@@ -81,15 +81,15 @@ static void contest_competition_02247840(SysTask *param0, void *param1);
 
 void contest_competition_022476F8(VisualCompetitionScene *param0, int param1)
 {
-    if (param0->unk_08[param1] == NULL) {
+    if (param0->pokemonSprites[param1] == NULL) {
         GF_ASSERT(param0->pokemonSpriteDataArray[param1].tiles == NULL);
         return;
     }
 
-    PokemonSprite_Delete(param0->unk_08[param1]);
+    PokemonSprite_Delete(param0->pokemonSprites[param1]);
     Heap_Free(param0->pokemonSpriteDataArray[param1].tiles);
 
-    param0->unk_08[param1] = NULL;
+    param0->pokemonSprites[param1] = NULL;
     param0->pokemonSpriteDataArray[param1].tiles = NULL;
 }
 
@@ -121,7 +121,7 @@ void contest_competition_022477B8(VisualCompetition *param0, int param1, int par
     VisualPhotoMoveTask *v0 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoMoveTask));
     MI_CpuClear8(v0, sizeof(VisualPhotoMoveTask));
 
-    v0->unk_04 = SpriteSystem_NewSprite(param0->unk_0C.unk_1C, param0->unk_0C.unk_20, &Unk_contest_competition_022543F8);
+    v0->unk_04 = SpriteSystem_NewSprite(param0->scene.spriteSystem, param0->scene.spriteManager, &Unk_contest_competition_022543F8);
     ManagedSprite_SetPositionXYWithSubscreenOffset(v0->unk_04, param1, param2, (256 * FX32_ONE));
 
     if (param4 == 1) {
@@ -132,8 +132,8 @@ void contest_competition_022477B8(VisualCompetition *param0, int param1, int par
 
     v0->unk_08 = param1 << 8;
     v0->unk_0C = param2 << 8;
-    v0->unk_00 = &param0->unk_4F7;
-    param0->unk_4F7++;
+    v0->unk_00 = &param0->counter;
+    param0->counter++;
 
     SysTask_Start(contest_competition_02247840, v0, 50000);
     Sound_PlayEffect(SEQ_SE_DP_CON_003_sseq);
@@ -171,20 +171,20 @@ void contest_competition_022478D0(VisualCompetition *param0, int param1)
 {
     PokemonSpriteTemplate v0;
 
-    GF_ASSERT(param0->unk_0C.unk_18 == NULL);
+    GF_ASSERT(param0->scene.trainerSprite == NULL);
 
-    SpriteSystem_SetTrainerFrontSpriteTemplate(&v0, param0->unk_00->data.opponentData[param1].unk_0A);
-    param0->unk_0C.unk_18 = PokemonSpriteManager_CreateSprite(param0->unk_0C.unk_04, &v0, 320, 32, (-0x200 - 0x40), 3, NULL, NULL);
+    SpriteSystem_SetTrainerFrontSpriteTemplate(&v0, param0->contest->data.opponentData[param1].unk_0A);
+    param0->scene.trainerSprite = PokemonSpriteManager_CreateSprite(param0->scene.pokemonSpriteManager, &v0, 320, 32, (-0x200 - 0x40), 3, NULL, NULL);
 }
 
 void contest_competition_02247918(VisualCompetition *param0)
 {
-    if (param0->unk_0C.unk_18 == NULL) {
+    if (param0->scene.trainerSprite == NULL) {
         return;
     }
 
-    PokemonSprite_Delete(param0->unk_0C.unk_18);
-    param0->unk_0C.unk_18 = NULL;
+    PokemonSprite_Delete(param0->scene.trainerSprite);
+    param0->scene.trainerSprite = NULL;
 }
 
 static void contest_competition_VisualContest_FormatString(VisualCompetition *param0, enum VisualContestMessageFormatting stringTemplateFormatting, const VisualMessageArgs *param2)
@@ -197,8 +197,8 @@ static void contest_competition_VisualContest_FormatString(VisualCompetition *pa
     case VISUAL_CONTEST_MESSAGE_FORMAT_NONE:
         break;
     case VISUAL_CONTEST_MESSAGE_FORMAT_STRING_NICKNAME:
-        StringTemplate_SetString(param0->unk_0C.unk_3C, 0, param0->unk_00->data.trainerNames[param2->contestantID], param0->unk_00->data.trainerGenders[param2->contestantID], 1, GAME_LANGUAGE);
-        StringTemplate_SetNickname(param0->unk_0C.unk_3C, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->contestantID]));
+        StringTemplate_SetString(param0->scene.stringTemplate, 0, param0->contest->data.trainerNames[param2->contestantID], param0->contest->data.trainerGenders[param2->contestantID], 1, GAME_LANGUAGE);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     default:
         GF_ASSERT(FALSE);
@@ -211,8 +211,8 @@ static void contest_competition_02247990(VisualCompetition *param0, MessageLoade
     String *message;
     int textDelay;
 
-    if (param0->unk_00->isLinkContest == FALSE) {
-        textDelay = Options_TextFrameDelay(param0->unk_00->options);
+    if (param0->contest->isLinkContest == FALSE) {
+        textDelay = Options_TextFrameDelay(param0->contest->options);
     } else {
         textDelay = TEXT_SPEED_FAST;
     }
@@ -220,10 +220,10 @@ static void contest_competition_02247990(VisualCompetition *param0, MessageLoade
     message = MessageLoader_GetNewString(param1, messageID);
     contest_competition_VisualContest_FormatString(param0, stringTemplateFormatting, param4);
 
-    StringTemplate_Format(param0->unk_0C.unk_3C, param0->unk_0C.unk_40, message);
-    Window_FillTilemap(&param0->unk_0C.unk_28[0], 0xff);
+    StringTemplate_Format(param0->scene.stringTemplate, param0->scene.string, message);
+    Window_FillTilemap(&param0->scene.windows[0], 0xff);
 
-    param0->unk_0C.unk_C4 = Text_AddPrinterWithParams(&param0->unk_0C.unk_28[0], FONT_MESSAGE, param0->unk_0C.unk_40, 0, 0, textDelay, NULL);
+    param0->scene.printerID = Text_AddPrinterWithParams(&param0->scene.windows[0], FONT_MESSAGE, param0->scene.string, 0, 0, textDelay, NULL);
     String_Free(message);
 }
 
@@ -234,12 +234,12 @@ void contest_competition_02247A08(VisualCompetition *param0, u32 param1, const V
     u32 messageID = Unk_contest_competition_0225442C[param1].messageID;
     enum VisualContestMessageFormatting stringTemplateFormatting = Unk_contest_competition_0225442C[param1].stringTemplateFormatting;
 
-    contest_competition_02247990(param0, param0->unk_0C.visualCompetitionMessages, messageID, stringTemplateFormatting, param2);
+    contest_competition_02247990(param0, param0->scene.visualCompetitionMessages, messageID, stringTemplateFormatting, param2);
 }
 
 int contest_competition_02247A3C(VisualCompetition *param0)
 {
-    return Text_IsPrinterActive(param0->unk_0C.unk_C4);
+    return Text_IsPrinterActive(param0->scene.printerID);
 }
 
 void include_contest_competition_022476F8(void)

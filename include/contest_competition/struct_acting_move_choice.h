@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_ACTING_MOVE_CHOICE_H
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
+    u16 moveID;
+    u16 state;
 } ActingMoveChoice;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_MOVE_CHOICE_H

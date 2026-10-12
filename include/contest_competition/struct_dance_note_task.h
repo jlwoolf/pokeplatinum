@@ -5,13 +5,13 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    SysTask *unk_00;
-    ManagedSprite *unk_04;
-    s32 unk_08;
-    s32 unk_0C;
-    s32 unk_10;
-    s32 unk_14;
-    u16 unk_18;
+    SysTask *task;
+    ManagedSprite *sprite;
+    s32 x;
+    s32 y;
+    s32 velocityX;
+    s32 velocityY;
+    u16 frame;
 } DanceNoteTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_NOTE_TASK_H

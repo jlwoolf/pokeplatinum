@@ -4,11 +4,11 @@
 #include "contest_competition/struct_visual_competition.h"
 
 typedef struct {
-    VisualCompetition *unk_00;
-    fx32 unk_04;
-    fx32 unk_08;
-    u8 unk_0C;
-    u8 unk_0D;
+    VisualCompetition *competition;
+    fx32 scaleX;
+    fx32 scaleY;
+    u8 state;
+    u8 done;
     u8 contestantID;
 } VisualBallMovement;
 

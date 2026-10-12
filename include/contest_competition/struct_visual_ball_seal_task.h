@@ -6,14 +6,14 @@
 #include "contest_competition/struct_contest_packet_queue.h"
 
 typedef struct {
-    VisualCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
+    VisualCompetition *competition;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
     u8 state;
-    s8 unk_11;
-    u8 unk_12;
-    s8 unk_13;
-    s8 unk_14;
+    s8 row;
+    u8 column;
+    s8 stepDelay;
+    s8 holdDelay;
 } VisualBallSealTask;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_BALL_SEAL_TASK_H

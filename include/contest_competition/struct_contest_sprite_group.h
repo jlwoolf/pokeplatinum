@@ -5,8 +5,8 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    ManagedSprite *unk_00[6];
-    SysTask *unk_18;
+    ManagedSprite *sprites[6];
+    SysTask *task;
 } ContestSpriteGroup;
 
 #endif // POKEPLATINUM_STRUCT_CONTEST_SPRITE_GROUP_H

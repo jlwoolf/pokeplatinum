@@ -374,7 +374,7 @@ static void contest_competition_022493DC(DanceMoveSelectScreen *param0)
     Heap_Free(v2);
 
     LoadPaletteFromFile(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 31, HEAP_ID_23, 0x200, 0, param0->unk_E0[0]);
-    LoadPaletteFromFile(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 38, HEAP_ID_23, 32, 16 * param0->unk_04->unk_00->contestType, &param0->unk_E0[0][2 * 16]);
+    LoadPaletteFromFile(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 38, HEAP_ID_23, 32, 16 * param0->unk_04->contestData->contestType, &param0->unk_E0[0][2 * 16]);
     LoadPaletteFromFile(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 33, HEAP_ID_23, 0x200, 0, param0->unk_E0[1]);
 }
 
@@ -405,9 +405,9 @@ void contest_competition_02249640(DanceMoveSelectScreen *param0, int param1, int
 
     param0->unk_08 = param3;
 
-    v3 = param0->unk_04->unk_60;
-    v4 = param0->unk_04->unk_58;
-    v5 = param0->unk_04->unk_5C;
+    v3 = param0->unk_04->bgConfig;
+    v4 = param0->unk_04->spriteSystem;
+    v5 = param0->unk_04->spriteManager;
 
     if (param0->unk_8A == -1) {
         param2 = 1;
@@ -430,7 +430,7 @@ void contest_competition_02249640(DanceMoveSelectScreen *param0, int param1, int
     }
 
     if ((v0->unk_02 != 0xffff) && ((param2 == 1) || (v0->unk_02 != v1->unk_02))) {
-        PaletteData_LoadBuffer(param0->unk_04->unk_90, param0->unk_E0[v0->unk_02], PLTTBUF_SUB_BG, 0, PALETTE_SIZE_BYTES * 16);
+        PaletteData_LoadBuffer(param0->unk_04->paletteData, param0->unk_E0[v0->unk_02], PLTTBUF_SUB_BG, 0, PALETTE_SIZE_BYTES * 16);
     }
 
     for (v2 = 0; v2 < 4; v2++) {
@@ -517,8 +517,8 @@ static void contest_competition_02249828(DanceMoveSelectScreen *param0)
     String *v0, *v1;
     u32 v2, v3;
     MessageLoader *contestTextMessageLoader = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_CONTEST_TEXT, HEAP_ID_23);
-    v2 = Contest_GetContestRankTitleMessageID(param0->unk_04->unk_00->contestRank, param0->unk_04->unk_00->competitionType, param0->unk_00->isLinkContest);
-    v3 = Contest_GetFullContestTypeMessageID(param0->unk_04->unk_00->contestType, param0->unk_04->unk_00->competitionType);
+    v2 = Contest_GetContestRankTitleMessageID(param0->unk_04->contestData->contestRank, param0->unk_04->contestData->competitionType, param0->unk_00->isLinkContest);
+    v3 = Contest_GetFullContestTypeMessageID(param0->unk_04->contestData->contestType, param0->unk_04->contestData->competitionType);
     v0 = MessageLoader_GetNewString(contestTextMessageLoader, v2);
     v1 = MessageLoader_GetNewString(contestTextMessageLoader, v3);
 
@@ -540,7 +540,7 @@ static void contest_competition_022498F4(DanceMoveSelectScreen *param0)
     String *v0;
     MessageLoader *danceMessageLoader = param0->unk_04->danceMessageLoader;
 
-    if (param0->unk_04->unk_A14[param0->unk_04->unk_00->playerContestantID] == 1) {
+    if (param0->unk_04->contestantIsHuman[param0->unk_04->contestData->playerContestantID] == 1) {
         v0 = MessageLoader_GetNewString(danceMessageLoader, DanceCompetition_Text_Jump);
     } else {
         v0 = MessageLoader_GetNewString(danceMessageLoader, DanceCompetition_Text_Up);
@@ -668,8 +668,8 @@ static void contest_competition_02249BC4(DanceMoveSelectScreen *param0, DanceMov
 
     GF_ASSERT(param1->unk_00 == NULL);
 
-    v5 = param0->unk_04->unk_60;
-    v6 = param0->unk_04->unk_5C;
+    v5 = param0->unk_04->bgConfig;
+    v6 = param0->unk_04->spriteManager;
 
     {
         v7 = Font_CalcStringWidth(param3, param2, 0);
@@ -751,7 +751,7 @@ static void contest_competition_02249CFC(DanceMoveSelectScreen *param0, int para
         v3 = 6 - 1;
     }
 
-    v0 = param0->unk_04->unk_5C;
+    v0 = param0->unk_04->spriteManager;
 
     for (v1 = v2; v1 <= v3; v1++) {
         if (param0->unk_1C[v1].unk_00 != NULL) {
@@ -793,7 +793,7 @@ static void contest_competition_02249DA0(SysTask *param0, void *param1)
     int v2, v3;
     int v4;
 
-    v1 = v0->unk_04->unk_60;
+    v1 = v0->unk_04->bgConfig;
 
     switch (v0->unk_8C.unk_00) {
     case 0:
@@ -913,7 +913,7 @@ static void contest_competition_0224A088(SysTask *param0, void *param1)
     DanceMoveSelectScreen *v0 = param1;
 
     if (v0->unk_88 != 0xffff) {
-        Bg_LoadTiles(v0->unk_04->unk_60, 4, v0->unk_C4[v0->unk_88], 0x8000 - (0x800 * 4), 0);
+        Bg_LoadTiles(v0->unk_04->bgConfig, 4, v0->unk_C4[v0->unk_88], 0x8000 - (0x800 * 4), 0);
         v0->unk_88 = 0xffff;
     }
 
@@ -931,5 +931,5 @@ static void contest_competition_0224A0C8(SysTask *param0, void *param1)
 
 void contest_competition_0224A0E0(DanceMoveSelectScreen *param0, u16 param1, u8 param2)
 {
-    PaletteData_Blend(param0->unk_04->unk_90, PLTTBUF_SUB_BG, 0 * 16, 16 * 4, param2, param1);
+    PaletteData_Blend(param0->unk_04->paletteData, PLTTBUF_SUB_BG, 0 * 16, 16 * 4, param2, param1);
 }

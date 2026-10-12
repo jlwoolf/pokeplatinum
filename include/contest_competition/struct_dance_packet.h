@@ -2,16 +2,16 @@
 #define POKEPLATINUM_STRUCT_DANCE_PACKET_H
 
 typedef struct {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u8 unk_08_0 : 1;
-    u8 unk_08_1 : 1;
-    u8 unk_08_2 : 1;
+    u16 moveID;
+    u8 contestantID;
+    u8 judgeID;
+    u8 score;
+    u8 turn;
+    u8 moveSlot;
+    u8 contestantOrder;
+    u8 isLastMove : 1;
+    u8 isCombo : 1;
+    u8 isValid : 1;
     u8 : 5;
 } DancePacket;
 

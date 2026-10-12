@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_DANCE_CAMERA_H
 
 typedef struct {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    fx32 unk_0C;
+    s32 x;
+    s32 y;
+    s32 z;
+    fx32 angle;
 } DanceCamera;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_CAMERA_H

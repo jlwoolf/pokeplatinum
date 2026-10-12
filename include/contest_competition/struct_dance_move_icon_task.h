@@ -9,15 +9,15 @@
 struct DanceCompetition_t;
 
 typedef struct {
-    SysTask *unk_00;
-    ManagedSprite *unk_04;
-    struct DanceCompetition_t *unk_08;
-    DancePhotoSprite *unk_0C;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    s8 unk_14;
+    SysTask *task;
+    ManagedSprite *sprite;
+    struct DanceCompetition_t *competition;
+    DancePhotoSprite *photoSprite;
+    u8 unused_10;
+    u8 contestantID;
+    u8 state;
+    u8 index;
+    s8 yOffset;
 } DanceMoveIconTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_MOVE_ICON_TASK_H

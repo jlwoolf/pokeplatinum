@@ -2,27 +2,27 @@
 #define POKEPLATINUM_STRUCT_DANCE_MOVE_DATA_H
 
 typedef struct {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0C;
-    u8 unk_10;
+    s32 startX;
+    s32 targetY;
+    s32 savedX;
+    s32 currentY;
+    u8 state;
     union {
         struct {
-            s16 unk_00;
-            s16 unk_02;
-        } unk_14_val1;
+            s16 velocity;
+            s16 acceleration;
+        } bounce;
         struct {
-            s32 unk_00;
-            s32 unk_04;
-        } unk_14_val2;
+            s32 velocity1;
+            s32 velocity2;
+        } slide;
         struct {
-            u32 unk_00;
-            int unk_04;
-            int unk_08;
-            int unk_0C;
-            int unk_10;
-        } unk_14_val3;
+            u32 angle;
+            int angleVelocity1;
+            int angleVelocity2;
+            int xVelocity;
+            int yVelocity;
+        } arc;
     };
 } DanceMoveData;
 

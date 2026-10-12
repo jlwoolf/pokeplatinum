@@ -5,18 +5,18 @@
 #include "contest_competition/struct_dance_move_definition.h"
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02[CONTEST_NUM_PARTICIPANTS];
-    u32 unk_08;
-    u32 unk_0C;
-    u16 unk_10;
-    u32 unk_14[CONTEST_NUM_PARTICIPANTS];
-    DanceMoveDefinition unk_24;
-    DanceMessageArgs unk_30;
-    u8 unk_36;
-    u8 unk_37;
-    u8 unk_38;
+    u8 state;
+    u8 moveIndex;
+    u8 contestantIDs[CONTEST_NUM_PARTICIPANTS];
+    u32 duration;
+    u32 beatInterval;
+    u16 beat;
+    u32 moveIDs[CONTEST_NUM_PARTICIPANTS];
+    DanceMoveDefinition moveDefinition;
+    DanceMessageArgs messageArgs;
+    u8 messageID;
+    u8 delay;
+    u8 flag;
 } DanceMoveState;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_MOVE_STATE_H

@@ -19,35 +19,35 @@
 #include "sys_task_manager.h"
 
 typedef struct DanceCompetition_t {
-    Contest *unk_00;
-    SysTask *unk_04;
-    SysTask *unk_08;
-    ParticleSystem *unk_0C;
-    G3DPipelineBuffers *unk_10;
-    DanceCompetitionScene unk_14;
-    DanceScoreState unk_A3C;
-    DanceMoveState unk_A6C;
-    DancePayloadBuffer unk_AA1[4];
-    DanceContestant unk_EA4[4];
-    DanceContestantSprite unk_FC8[4];
-    DanceSavedData unk_1050;
-    DanceCamera unk_1064;
-    void *unk_1074;
-    u8 unk_1078;
-    u64 unk_107C;
-    u64 unk_1084;
-    u32 unk_108C;
-    u32 unk_1090;
-    u16 unk_1094;
-    u16 unk_1096;
-    u8 unk_1098;
-    ContestPacketQueue unk_109C;
-    DancePacket unk_1AB0[4];
-    DancePacket unk_1AD4[8];
-    DanceCompetitionTask unk_1B1C;
-    u8 unk_1B24;
-    u8 unk_1B25;
-    u8 unk_1B26;
+    Contest *contest;
+    SysTask *task;
+    SysTask *vBlankTask;
+    ParticleSystem *particleSystem;
+    G3DPipelineBuffers *g3dPipeline;
+    DanceCompetitionScene scene;
+    DanceScoreState scoreState;
+    DanceMoveState moveState;
+    DancePayloadBuffer payloadBuffers[4];
+    DanceContestant contestants[4];
+    DanceContestantSprite contestantSprites[4];
+    DanceSavedData savedData;
+    DanceCamera camera;
+    void *moveSelectScreen;
+    u8 flag;
+    u64 timestamp;
+    u64 prevTimestamp;
+    u32 frameCounter;
+    u32 lastTick;
+    u16 unused_1094;
+    u16 handlerIndex;
+    u8 flag2;
+    ContestPacketQueue packetQueue;
+    DancePacket contestantPackets[4];
+    DancePacket movePackets[8];
+    DanceCompetitionTask competitionTask;
+    u8 initialized;
+    u8 isReady;
+    u8 contestRank;
 } DanceCompetition;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_COMPETITION_H

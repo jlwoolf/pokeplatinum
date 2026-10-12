@@ -8,13 +8,13 @@
 #include "contest_competition/struct_contest_packet_queue.h"
 
 typedef struct {
-    DanceCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    u8 unk_10;
-    u8 unk_11[4];
-    DanceContestantInfo unk_18[4];
-    DanceMoveState unk_C8;
+    DanceCompetition *competition;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    u8 state;
+    u8 contestantIDs[4];
+    DanceContestantInfo contestantInfo[4];
+    DanceMoveState moveState;
 } DanceMoveTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_MOVE_TASK_H

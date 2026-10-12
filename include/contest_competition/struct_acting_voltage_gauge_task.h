@@ -6,9 +6,9 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    ActingCompetition *unk_00;
-    SysTask *unk_04;
-    u8 unk_08;
+    ActingCompetition *competition;
+    SysTask *task;
+    u8 state;
 } ActingVoltageGaugeTask;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_VOLTAGE_GAUGE_TASK_H

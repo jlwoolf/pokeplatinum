@@ -7,11 +7,11 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    ManagedSprite *unk_00;
-    ContestTextLabel *unk_04;
-    SysTask *unk_08;
-    s32 unk_0C;
-    u8 unk_10;
+    ManagedSprite *sprite;
+    ContestTextLabel *textLabel;
+    SysTask *task;
+    s32 frame;
+    u8 state;
 } DanceSpriteTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_SPRITE_TASK_H

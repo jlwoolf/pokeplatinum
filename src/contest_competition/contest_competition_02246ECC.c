@@ -1260,9 +1260,9 @@ void contest_competition_02246ECC(ActingCompetition *param0, ActingMonMoves *par
 {
     ActingMonRoundMoves *v1 = Heap_Alloc(HEAP_ID_21, sizeof(ActingMonRoundMoves));
 
-    for (int contestantID = param0->unk_00->data.connectionCount; contestantID < CONTEST_NUM_PARTICIPANTS; contestantID++) {
+    for (int contestantID = param0->contest->data.connectionCount; contestantID < CONTEST_NUM_PARTICIPANTS; contestantID++) {
         contest_competition_02246F24(param0, v1, contestantID);
-        contest_competition_02246F9C(param0, v1, contestantID, &param1->moveIDs[contestantID], &param1->unk_08[contestantID]);
+        contest_competition_02246F9C(param0, v1, contestantID, &param1->moveIDs[contestantID], &param1->moveSlots[contestantID]);
     }
 
     Heap_Free(v1);
@@ -1275,9 +1275,9 @@ static void contest_competition_02246F24(ActingCompetition *param0, ActingMonRou
     MI_CpuClear8(param1, sizeof(ActingMonRoundMoves));
 
     for (v0 = 0; v0 < LEARNED_MOVES_MAX; v0++) {
-        param1->unk_00[v0].moveID = Pokemon_GetValue(param0->unk_00->data.contestMons[contestantID], MON_DATA_MOVE1 + v0, NULL);
+        param1->unk_00[v0].moveID = Pokemon_GetValue(param0->contest->data.contestMons[contestantID], MON_DATA_MOVE1 + v0, NULL);
 
-        if (contest_competition_02243A98(&param0->unk_220, contestantID, param1->unk_00[v0].moveID) == TRUE) {
+        if (contest_competition_02243A98(&param0->matchState, contestantID, param1->unk_00[v0].moveID) == TRUE) {
             param1->unk_00[v0].moveContestEffect = MoveTable_LoadParam(param1->unk_00[v0].moveID, MOVEATTRIBUTE_CONTEST_EFFECT);
             param1->unk_00[v0].moveContestType = MoveTable_LoadParam(param1->unk_00[v0].moveID, MOVEATTRIBUTE_CONTEST_TYPE);
         } else {
@@ -1285,7 +1285,7 @@ static void contest_competition_02246F24(ActingCompetition *param0, ActingMonRou
         }
     }
 
-    param1->unk_30 = param0->unk_00->data.cameraFlashVariant[contestantID];
+    param1->unk_30 = param0->contest->data.cameraFlashVariant[contestantID];
 }
 
 static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRoundMoves *param1, int contestantID, u16 *destMoveID, u8 *param4)
@@ -1295,10 +1295,10 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
     int v6;
     u8 v7[1 + 2];
 
-    v5 = &param0->unk_220;
+    v5 = &param0->matchState;
 
     for (v1 = 0; v1 < 4; v1++) {
-        if (v5->unk_01[v1] == contestantID) {
+        if (v5->contestantOrder[v1] == contestantID) {
             break;
         }
     }
@@ -1312,7 +1312,7 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
                 v7[v4] = 0;
             }
 
-            v2 = Unk_contest_competition_02253BBC[Unk_contest_competition_02253C30[v1].unk_01](v5, contestantID, param1, v7, param0->unk_00->data.contestType);
+            v2 = Unk_contest_competition_02253BBC[Unk_contest_competition_02253C30[v1].unk_01](v5, contestantID, param1, v7, param0->contest->data.contestType);
 
             if (v2 == 1) {
                 switch (Unk_contest_competition_02253C30[v1].unk_03) {
@@ -1330,16 +1330,16 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
                     break;
                 }
 
-                v6 = Unk_contest_competition_02253C30[v1].unk_04[param0->unk_00->data.cameraFlashVariant[contestantID]];
+                v6 = Unk_contest_competition_02253C30[v1].unk_04[param0->contest->data.cameraFlashVariant[contestantID]];
 
-                if (param0->unk_00->data.cameraFlashVariant[contestantID] != 0) {
+                if (param0->contest->data.cameraFlashVariant[contestantID] != 0) {
                     v6 += Unk_contest_competition_02253C30[v1].unk_04[0];
                 }
 
                 switch (Unk_contest_competition_02253C30[v1].unk_02) {
                 case 240:
                     for (v3 = 0; v3 < 4; v3++) {
-                        if (param0->unk_00->data.contestType == param1->unk_00[v3].moveContestType) {
+                        if (param0->contest->data.contestType == param1->unk_00[v3].moveContestType) {
                             param1->unk_00[v3].unk_02 += v6;
 
                             for (v4 = 0; v4 < (1 + 2); v4++) {
@@ -1386,11 +1386,11 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
         int v10, v11, v12, v13, v14, v15;
 
         for (v1 = 0; v1 < 4; v1++) {
-            v8[v1] = Contest_GetRNGNext(param0->unk_00);
+            v8[v1] = Contest_GetRNGNext(param0->contest);
         }
 
         for (v1 = 0; v1 < (1 + 2); v1++) {
-            v9[v1] = Contest_GetRNGNext(param0->unk_00);
+            v9[v1] = Contest_GetRNGNext(param0->contest);
         }
 
         for (v10 = 0; param1->unk_00[v10].moveID == MOVE_NONE; v10++) {
@@ -1413,7 +1413,7 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
 
         v15 = v11;
 
-        if (param0->unk_00->isLinkContest == FALSE) {
+        if (param0->contest->isLinkContest == FALSE) {
             int v16, v17, v18, v19;
 
             v16 = 0;
@@ -1432,10 +1432,10 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
                     0,
                 };
 
-                v18 = Contest_GetRNGNext(param0->unk_00) & 0xff;
+                v18 = Contest_GetRNGNext(param0->contest) & 0xff;
 
-                if (v18 < v20[param0->unk_00->data.contestRank]) {
-                    v19 = param0->unk_220.unk_0E[param0->unk_00->data.playerContestantID];
+                if (v18 < v20[param0->contest->data.contestRank]) {
+                    v19 = param0->matchState.contestantIDs[param0->contest->data.playerContestantID];
                     param1->unk_00[v15].unk_04[v19] -= 100;
                 }
             }
@@ -1465,7 +1465,7 @@ static void contest_competition_02246F9C(ActingCompetition *param0, ActingMonRou
 
 static int contest_competition_022472F8(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
-    if (param0->unk_00 == 4) {
+    if (param0->turn == 4) {
         return 1;
     }
 
@@ -1474,7 +1474,7 @@ static int contest_competition_022472F8(ActingMatchState *param0, int param1, Ac
 
 static int contest_competition_02247308(ActingMatchState *param0, int param1, ActingMonRoundMoves *param2, u8 *param3, int contestType)
 {
-    if (param0->unk_30.unk_A0[param1].contestMoveEffect != CONTEST_EFFECT_NONE) {
+    if (param0->turnState.previousMoves[param1].contestMoveEffect != CONTEST_EFFECT_NONE) {
         return 1;
     }
 
@@ -1602,10 +1602,10 @@ static int contest_competition_022473F8(ActingMatchState *param0, int param1, Ac
 {
     int v0, v1;
 
-    v0 = param0->unk_12[param1];
+    v0 = param0->scores[param1];
 
     for (v1 = 0; v1 < 4; v1++) {
-        if (v0 > param0->unk_12[v1]) {
+        if (v0 > param0->scores[v1]) {
             break;
         }
     }
@@ -1621,11 +1621,11 @@ static int contest_competition_02247424(ActingMatchState *param0, int param1, Ac
 {
     int v0, v1;
 
-    if (param0->unk_00 == 4) {
-        v0 = param0->unk_12[param1];
+    if (param0->turn == 4) {
+        v0 = param0->scores[param1];
 
         for (v1 = 0; v1 < 4; v1++) {
-            if (v0 > param0->unk_12[v1]) {
+            if (v0 > param0->scores[v1]) {
                 break;
             }
         }
@@ -1681,7 +1681,7 @@ static int contest_competition_02247490(ActingMatchState *param0, int param1, Ac
     v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 10 * 4) {
+        if (param0->appealHistory[v0] == 10 * 4) {
             param3[v0] = 1;
             v1++;
         }
@@ -1711,7 +1711,7 @@ static int contest_competition_022474D8(ActingMatchState *param0, int param1, Ac
     v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 10 * 3) {
+        if (param0->appealHistory[v0] == 10 * 3) {
             v1++;
             param3[v0] = 1;
         }
@@ -1755,7 +1755,7 @@ static int contest_competition_02247550(ActingMatchState *param0, int param1, Ac
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 10 * 4) {
+        if (param0->appealHistory[v0] == 10 * 4) {
             v1++;
             param3[v0] = 1;
         }
@@ -1773,7 +1773,7 @@ static int contest_competition_0224757C(ActingMatchState *param0, int param1, Ac
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 10 * 3) {
+        if (param0->appealHistory[v0] == 10 * 3) {
             v1++;
             param3[v0] = 1;
         }
@@ -1791,7 +1791,7 @@ static int contest_competition_022475A8(ActingMatchState *param0, int param1, Ac
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] <= 10 * 1) {
+        if (param0->appealHistory[v0] <= 10 * 1) {
             v1++;
             param3[v0] = 1;
         }
@@ -1809,7 +1809,7 @@ static int contest_competition_022475D4(ActingMatchState *param0, int param1, Ac
     int v0, v1;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] < 10 * 2) {
+        if (param0->appealHistory[v0] < 10 * 2) {
             return 0;
         }
     }
@@ -1826,7 +1826,7 @@ static int contest_competition_02247600(ActingMatchState *param0, int param1, Ac
     int v0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] > 10 * 2) {
+        if (param0->appealHistory[v0] > 10 * 2) {
             return 0;
         }
     }
@@ -1843,7 +1843,7 @@ static int contest_competition_0224762C(ActingMatchState *param0, int param1, Ac
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] <= 10 * 2) {
+        if (param0->appealHistory[v0] <= 10 * 2) {
             param3[v0] = 1;
             v1++;
         }
@@ -1861,7 +1861,7 @@ static int contest_competition_02247658(ActingMatchState *param0, int param1, Ac
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 10 * 4) {
+        if (param0->appealHistory[v0] == 10 * 4) {
             param3[v0] = 1;
             v1++;
         }
@@ -1879,7 +1879,7 @@ static int contest_competition_02247684(ActingMatchState *param0, int param1, Ac
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 0) {
+        if (param0->appealHistory[v0] == 0) {
             param3[v0] = 1;
             v1++;
         }
@@ -1909,7 +1909,7 @@ static int contest_competition_022476B0(ActingMatchState *param0, int param1, Ac
     v1 = 0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        if (param0->unk_22[v0] == 10 * 4) {
+        if (param0->appealHistory[v0] == 10 * 4) {
             param3[v0] = 1;
             v1++;
         }

@@ -343,7 +343,7 @@ void contest_competition_0224A134(DanceCompetition *param0)
     int v2;
 
     for (i = 0; i < CONTEST_NUM_PARTICIPANTS; i++) {
-        GF_ASSERT(param0->unk_14.pokemonSpriteDataArray[i].tiles == NULL);
+        GF_ASSERT(param0->scene.pokemonSpriteDataArray[i].tiles == NULL);
     }
 
     MI_CpuClear8(&v1, sizeof(PhotoSpriteConfig));
@@ -352,22 +352,22 @@ void contest_competition_0224A134(DanceCompetition *param0)
     for (i = 0; i < CONTEST_NUM_PARTICIPANTS; i++) {
         int v3;
 
-        v3 = param0->unk_A3C.unk_05[i];
-        v2 = Pokemon_DPSpriteYOffset(param0->unk_00->data.contestMons[v3], 2);
+        v3 = param0->scoreState.judgeVotes[i];
+        v2 = Pokemon_DPSpriteYOffset(param0->contest->data.contestMons[v3], 2);
 
         v1.unk_04 = Unk_contest_competition_022546F4[i][0];
         v1.unk_08 = Unk_contest_competition_022546F4[i][1] + v2;
 
-        param0->unk_14.unk_04[v3].unk_04 = v1.unk_04;
-        param0->unk_14.unk_04[v3].unk_08 = v1.unk_08;
-        param0->unk_14.unk_04[v3].unk_0C = Unk_contest_competition_022546F4[i][2];
-        param0->unk_14.unk_04[v3].unk_00 = PhotoSprite_CreateForContestNoBackdrop(&v1, param0->unk_00->data.photos[v3]);
+        param0->scene.photoSprites[v3].x = v1.unk_04;
+        param0->scene.photoSprites[v3].y = v1.unk_08;
+        param0->scene.photoSprites[v3].z = Unk_contest_competition_022546F4[i][2];
+        param0->scene.photoSprites[v3].photoSprite = PhotoSprite_CreateForContestNoBackdrop(&v1, param0->contest->data.photos[v3]);
 
-        PhotoSprite_MoveTo(param0->unk_14.unk_04[v3].unk_00, param0->unk_14.unk_04[v3].unk_04, param0->unk_14.unk_04[v3].unk_08);
+        PhotoSprite_MoveTo(param0->scene.photoSprites[v3].photoSprite, param0->scene.photoSprites[v3].x, param0->scene.photoSprites[v3].y);
 
         if (i > 0) {
-            PhotoSprite_SetVisible(param0->unk_14.unk_04[v3].unk_00, 0);
-            PhotoSprite_AdjustPriority(param0->unk_14.unk_04[v3].unk_00, -100);
+            PhotoSprite_SetVisible(param0->scene.photoSprites[v3].photoSprite, 0);
+            PhotoSprite_AdjustPriority(param0->scene.photoSprites[v3].photoSprite, -100);
         }
     }
 }
@@ -377,7 +377,7 @@ void contest_competition_0224A1EC(DanceCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        PhotoSprite_Free(param0->unk_04[v0].unk_00);
+        PhotoSprite_Free(param0->photoSprites[v0].photoSprite);
 
         param0->pokemonSpriteDataArray[v0].tiles = NULL;
     }
@@ -443,7 +443,7 @@ void contest_competition_0224A214(DanceCompetitionScene *param0, int param1, int
     {
         u16 *v6;
 
-        v6 = Bg_GetTilemapBuffer(param0->unk_60, 3);
+        v6 = Bg_GetTilemapBuffer(param0->bgConfig, 3);
         v6 = &v6[32 * 0x13 + v5];
 
         if (param2 == 0) {
@@ -487,7 +487,7 @@ void contest_competition_0224A214(DanceCompetitionScene *param0, int param1, int
             }
         }
 
-        Bg_ScheduleTilemapTransfer(param0->unk_60, 3);
+        Bg_ScheduleTilemapTransfer(param0->bgConfig, 3);
     }
 }
 
@@ -572,8 +572,8 @@ static int contest_competition_0224A46C(DanceCompetitionScene *param0, SpriteSys
     ManagedSprite_SetAnimateFlag(v0, 1);
 
     for (v1 = 0; v1 < (((16 * 2) / 2) * 4 + 4); v1++) {
-        if (param0->unk_D8[v1] == NULL) {
-            param0->unk_D8[v1] = v0;
+        if (param0->sprites[v1] == NULL) {
+            param0->sprites[v1] = v0;
             return v1;
         }
     }
@@ -587,9 +587,9 @@ void contest_competition_0224A580(DanceCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < (((16 * 2) / 2) * 4 + 4); v0++) {
-        if (param0->unk_D8[v0] != NULL) {
-            Sprite_DeleteAndFreeResources(param0->unk_D8[v0]);
-            param0->unk_D8[v0] = NULL;
+        if (param0->sprites[v0] != NULL) {
+            Sprite_DeleteAndFreeResources(param0->sprites[v0]);
+            param0->sprites[v0] = NULL;
         }
     }
 }
@@ -614,8 +614,8 @@ void contest_competition_0224A61C(DanceCompetitionScene *param0, SpriteSystem *p
     int v1;
 
     for (v1 = 0; v1 < 3; v1++) {
-        param0->unk_960[v1] = SpriteSystem_NewSprite(param1, param2, &Unk_contest_competition_02254794);
-        ManagedSprite_SetDrawFlag(param0->unk_960[v1], 0);
+        param0->judgeSprites[v1] = SpriteSystem_NewSprite(param1, param2, &Unk_contest_competition_02254794);
+        ManagedSprite_SetDrawFlag(param0->judgeSprites[v1], 0);
     }
 }
 
@@ -624,8 +624,8 @@ void contest_competition_0224A650(DanceCompetitionScene *param0)
     int v0, v1;
 
     for (v0 = 0; v0 < 3; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_960[v0]);
-        param0->unk_960[v0] = NULL;
+        Sprite_DeleteAndFreeResources(param0->judgeSprites[v0]);
+        param0->judgeSprites[v0] = NULL;
     }
 }
 
@@ -638,14 +638,14 @@ void contest_competition_0224A674(DanceCompetitionScene *param0)
     String *miss = MessageLoader_GetNewString(param0->danceMessageLoader, DanceCompetition_Text_Miss);
 
     for (v0 = 0; v0 < 3; v0++) {
-        contest_competition_0223F1E8(HEAP_ID_23, param0->unk_60, param0->unk_5C, param0->unk_94, &param0->unk_96C[0][v0], excellent, FONT_SYSTEM, TEXT_COLOR(0xb, 0xc, 0), 0, 33001, 0, 0, 1, 1, 12);
-        FontOAM_SetDrawFlag(param0->unk_96C[0][v0].unk_00, 0);
+        contest_competition_0223F1E8(HEAP_ID_23, param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->textLabels[0][v0], excellent, FONT_SYSTEM, TEXT_COLOR(0xb, 0xc, 0), 0, 33001, 0, 0, 1, 1, 12);
+        FontOAM_SetDrawFlag(param0->textLabels[0][v0].fontOAM, 0);
 
-        contest_competition_0223F1E8(HEAP_ID_23, param0->unk_60, param0->unk_5C, param0->unk_94, &param0->unk_96C[1][v0], good, FONT_SYSTEM, TEXT_COLOR(0xb, 0xc, 0), 0, 33001, 0, 0, 1, 1, 12);
-        FontOAM_SetDrawFlag(param0->unk_96C[1][v0].unk_00, 0);
+        contest_competition_0223F1E8(HEAP_ID_23, param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->textLabels[1][v0], good, FONT_SYSTEM, TEXT_COLOR(0xb, 0xc, 0), 0, 33001, 0, 0, 1, 1, 12);
+        FontOAM_SetDrawFlag(param0->textLabels[1][v0].fontOAM, 0);
 
-        contest_competition_0223F1E8(HEAP_ID_23, param0->unk_60, param0->unk_5C, param0->unk_94, &param0->unk_96C[2][v0], miss, FONT_SYSTEM, TEXT_COLOR(0xb, 0xc, 0), 0, 33001, 0, 0, 1, 1, 12);
-        FontOAM_SetDrawFlag(param0->unk_96C[2][v0].unk_00, 0);
+        contest_competition_0223F1E8(HEAP_ID_23, param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->textLabels[2][v0], miss, FONT_SYSTEM, TEXT_COLOR(0xb, 0xc, 0), 0, 33001, 0, 0, 1, 1, 12);
+        FontOAM_SetDrawFlag(param0->textLabels[2][v0].fontOAM, 0);
     }
 
     String_Free(excellent);
@@ -659,7 +659,7 @@ void contest_competition_0224A7B8(DanceCompetitionScene *param0)
 
     for (v1 = 0; v1 < 3; v1++) {
         for (v0 = 0; v0 < 3; v0++) {
-            contest_competition_0223F2E4(&param0->unk_96C[v1][v0]);
+            contest_competition_0223F2E4(&param0->textLabels[v1][v0]);
         }
     }
 }
@@ -672,10 +672,10 @@ void contest_competition_0224A7E0(DanceCompetitionScene *param0, SpriteSystem *p
 
     v4 = (param5 == 0) ? param5 : (param5 - 1);
 
-    v5 = &param0->unk_92C[v4];
+    v5 = &param0->spriteTasks[v4];
 
-    if (v5->unk_08 != NULL) {
-        SysTask_Done(v5->unk_08);
+    if (v5->task != NULL) {
+        SysTask_Done(v5->task);
     }
 
     MI_CpuClear8(v5, sizeof(DanceSpriteTask));
@@ -683,23 +683,23 @@ void contest_competition_0224A7E0(DanceCompetitionScene *param0, SpriteSystem *p
     v2 = Unk_contest_competition_022546CC[param5][0];
     v3 = Unk_contest_competition_022546CC[param5][1];
 
-    v5->unk_00 = param0->unk_960[v4];
+    v5->sprite = param0->judgeSprites[v4];
 
-    ManagedSprite_SetAnim(v5->unk_00, param3);
-    ManagedSprite_SetPositionXYWithSubscreenOffset(v5->unk_00, v2, v3, (256 * FX32_ONE));
-    Sprite_TickFrame(v5->unk_00->sprite);
-    ManagedSprite_SetDrawFlag(v5->unk_00, 1);
+    ManagedSprite_SetAnim(v5->sprite, param3);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(v5->sprite, v2, v3, (256 * FX32_ONE));
+    Sprite_TickFrame(v5->sprite->sprite);
+    ManagedSprite_SetDrawFlag(v5->sprite, 1);
 
     for (v1 = 0; v1 < 3; v1++) {
-        FontOAM_SetDrawFlag(param0->unk_96C[v1][v4].unk_00, 0);
+        FontOAM_SetDrawFlag(param0->textLabels[v1][v4].fontOAM, 0);
     }
 
-    v5->unk_04 = &param0->unk_96C[param3][v4];
+    v5->textLabel = &param0->textLabels[param3][v4];
 
-    contest_competition_0223F2F8(v5->unk_04, v2, v3, 1);
-    FontOAM_SetDrawFlag(v5->unk_04->unk_00, 1);
+    contest_competition_0223F2F8(v5->textLabel, v2, v3, 1);
+    FontOAM_SetDrawFlag(v5->textLabel->fontOAM, 1);
 
-    v5->unk_08 = SysTask_Start(contest_competition_0224A8D4, v5, ((30000 + 10000) + 200));
+    v5->task = SysTask_Start(contest_competition_0224A8D4, v5, ((30000 + 10000) + 200));
 }
 
 static void contest_competition_0224A8D4(SysTask *param0, void *param1)
@@ -707,32 +707,32 @@ static void contest_competition_0224A8D4(SysTask *param0, void *param1)
     DanceSpriteTask *v0 = param1;
     int v1, v2;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        FontOAM_GetXY(v0->unk_04->unk_00, &v1, &v2);
+        FontOAM_GetXY(v0->textLabel->fontOAM, &v1, &v2);
         v2 += -4;
-        FontOAM_SetXY(v0->unk_04->unk_00, v1, v2);
-        ManagedSprite_OffsetPositionXY(v0->unk_00, 0, -4);
+        FontOAM_SetXY(v0->textLabel->fontOAM, v1, v2);
+        ManagedSprite_OffsetPositionXY(v0->sprite, 0, -4);
 
-        v0->unk_0C++;
+        v0->frame++;
 
-        if (v0->unk_0C > 4) {
-            v0->unk_0C = 0;
+        if (v0->frame > 4) {
+            v0->frame = 0;
 
-            v0->unk_10++;
+            v0->state++;
         }
         break;
     case 1:
-        v0->unk_0C++;
+        v0->frame++;
 
-        if (v0->unk_0C > 14) {
-            v0->unk_10++;
+        if (v0->frame > 14) {
+            v0->state++;
         }
         break;
     default:
-        FontOAM_SetDrawFlag(v0->unk_04->unk_00, 0);
-        ManagedSprite_SetDrawFlag(v0->unk_00, 0);
-        v0->unk_08 = NULL;
+        FontOAM_SetDrawFlag(v0->textLabel->fontOAM, 0);
+        ManagedSprite_SetDrawFlag(v0->sprite, 0);
+        v0->task = NULL;
         SysTask_Done(param0);
         return;
     }
@@ -743,9 +743,9 @@ void contest_competition_0224A95C(DanceCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param0->unk_92C[v0].unk_08 != NULL) {
-            SysTask_Done(param0->unk_92C[v0].unk_08);
-            param0->unk_92C[v0].unk_08 = NULL;
+        if (param0->spriteTasks[v0].task != NULL) {
+            SysTask_Done(param0->spriteTasks[v0].task);
+            param0->spriteTasks[v0].task = NULL;
         }
     }
 }
@@ -769,27 +769,27 @@ void contest_competition_0224A9F8(DanceCompetitionScene *param0, SpriteSystem *p
     ManagedSprite *v0 = SpriteSystem_NewSprite(param1, param2, &Unk_contest_competition_022547C8);
     Sprite_TickFrame(v0->sprite);
 
-    param0->unk_1E8 = v0;
+    param0->comboSprite = v0;
 }
 
 void contest_competition_0224AA1C(DanceCompetitionScene *param0)
 {
     int v0, v1;
 
-    if (param0->unk_1E8 != NULL) {
-        Sprite_DeleteAndFreeResources(param0->unk_1E8);
-        param0->unk_1E8 = NULL;
+    if (param0->comboSprite != NULL) {
+        Sprite_DeleteAndFreeResources(param0->comboSprite);
+        param0->comboSprite = NULL;
     }
 }
 
 void contest_competition_0224AA38(DanceCompetition *param0)
 {
-    param0->unk_14.unk_1EC = SysTask_Start(contest_competition_0224AA68, param0, (((30000 + 10000) + 100) + 10));
+    param0->scene.task = SysTask_Start(contest_competition_0224AA68, param0, (((30000 + 10000) + 100) + 10));
 }
 
 void contest_competition_0224AA58(DanceCompetition *param0)
 {
-    SysTask_Done(param0->unk_14.unk_1EC);
+    SysTask_Done(param0->scene.task);
 }
 
 static void contest_competition_0224AA68(SysTask *param0, void *param1)
@@ -797,11 +797,11 @@ static void contest_competition_0224AA68(SysTask *param0, void *param1)
     DanceCompetition *v0 = param1;
     int v1, v2, v3;
 
-    v3 = v0->unk_00->data.playerContestantID;
-    v1 = v0->unk_14.unk_04[v3].unk_04;
-    v2 = v0->unk_14.unk_04[v3].unk_08;
+    v3 = v0->contest->data.playerContestantID;
+    v1 = v0->scene.photoSprites[v3].x;
+    v2 = v0->scene.photoSprites[v3].y;
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(v0->unk_14.unk_1E8, v1, v2 - 8 * 5, (256 * FX32_ONE));
+    ManagedSprite_SetPositionXYWithSubscreenOffset(v0->scene.comboSprite, v1, v2 - 8 * 5, (256 * FX32_ONE));
 }
 
 void contest_competition_0224AA94(SpriteSystem *param0, SpriteManager *param1, NARC *param2)
@@ -821,14 +821,14 @@ void contest_competition_0224AAE4(SpriteManager *param0)
 void contest_competition_0224AB08(DanceCompetitionScene *param0, SpriteSystem *param1, SpriteManager *param2)
 {
     for (int i = 0; i < CONTEST_NUM_PARTICIPANTS; i++) {
-        param0->unk_200[i].unk_04 = SpriteSystem_NewSprite(param1, param2, &Unk_contest_competition_02254830);
-        Sprite_TickFrame(param0->unk_200[i].unk_04->sprite);
-        ManagedSprite_SetAffineOverwriteMode(param0->unk_200[i].unk_04, AFFINE_OVERWRITE_MODE_NORMAL);
-        param0->unk_200[i].unk_13 = i;
-        param0->unk_200[i].unk_0C = &param0->unk_04[i];
-        param0->unk_200[i].unk_14 = Pokemon_DPSpriteYOffset(param0->unk_00->contestMons[i], 2);
-        contest_competition_0224AC78(&param0->unk_200[i], 1, 1);
-        param0->unk_200[i].unk_00 = SysTask_Start(contest_competition_0224ABFC, &param0->unk_200[i], (((30000 + 10000) + 100) + 1000));
+        param0->moveIconTasks[i].sprite = SpriteSystem_NewSprite(param1, param2, &Unk_contest_competition_02254830);
+        Sprite_TickFrame(param0->moveIconTasks[i].sprite->sprite);
+        ManagedSprite_SetAffineOverwriteMode(param0->moveIconTasks[i].sprite, AFFINE_OVERWRITE_MODE_NORMAL);
+        param0->moveIconTasks[i].index = i;
+        param0->moveIconTasks[i].photoSprite = &param0->photoSprites[i];
+        param0->moveIconTasks[i].yOffset = Pokemon_DPSpriteYOffset(param0->contestData->contestMons[i], 2);
+        contest_competition_0224AC78(&param0->moveIconTasks[i], 1, 1);
+        param0->moveIconTasks[i].task = SysTask_Start(contest_competition_0224ABFC, &param0->moveIconTasks[i], (((30000 + 10000) + 100) + 1000));
     }
 
     contest_competition_0224ABDC(param0, 0);
@@ -839,9 +839,9 @@ void contest_competition_0224ABB0(DanceCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_200[v0].unk_04);
-        SysTask_Done(param0->unk_200[v0].unk_00);
-        param0->unk_200[v0].unk_04 = NULL;
+        Sprite_DeleteAndFreeResources(param0->moveIconTasks[v0].sprite);
+        SysTask_Done(param0->moveIconTasks[v0].task);
+        param0->moveIconTasks[v0].sprite = NULL;
     }
 }
 
@@ -850,7 +850,7 @@ void contest_competition_0224ABDC(DanceCompetitionScene *param0, int param1)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        ManagedSprite_SetDrawFlag(param0->unk_200[v0].unk_04, param1);
+        ManagedSprite_SetDrawFlag(param0->moveIconTasks[v0].sprite, param1);
     }
 }
 
@@ -860,35 +860,35 @@ static void contest_competition_0224ABFC(SysTask *param0, void *param1)
     int v1, v2, v3, v4;
     f32 v5;
 
-    v1 = v0->unk_0C->unk_04;
-    v2 = v0->unk_0C->unk_08;
-    v3 = v0->unk_0C->unk_0C;
+    v1 = v0->photoSprite->x;
+    v2 = v0->photoSprite->y;
+    v3 = v0->photoSprite->z;
 
     {
         int v6;
 
         v6 = contest_competition_0224B06C(v3);
-        v4 = (80 / 2 - v0->unk_14) * v6 / 0x100;
+        v4 = (80 / 2 - v0->yOffset) * v6 / 0x100;
         v2 += v4;
         v5 = (100 * v6 / 0x100);
         v5 /= 100.0f;
     }
 
-    if (v0->unk_12 == 0) {
+    if (v0->state == 0) {
         s16 v7, v8;
 
-        Sprite_GetPositionXYWithSubscreenOffset2(v0->unk_04, &v7, &v8, (256 * FX32_ONE));
+        Sprite_GetPositionXYWithSubscreenOffset2(v0->sprite, &v7, &v8, (256 * FX32_ONE));
         v2 = v8;
     }
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(v0->unk_04, v1, v2, (256 * FX32_ONE));
-    ManagedSprite_SetAffineScale(v0->unk_04, v5, v5);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(v0->sprite, v1, v2, (256 * FX32_ONE));
+    ManagedSprite_SetAffineScale(v0->sprite, v5, v5);
 }
 
 void contest_competition_0224AC78(DanceMoveIconTask *param0, int param1, int param2)
 {
-    param0->unk_11 = param1;
-    param0->unk_12 = param2;
+    param0->contestantID = param1;
+    param0->state = param2;
 }
 
 void contest_competition_0224AC80(SpriteSystem *param0, SpriteManager *param1, NARC *param2)
@@ -936,10 +936,10 @@ BOOL contest_competition_0224AD70(DanceCompetition *param0, int param1, int para
     DanceNoteTask *v3;
     int v4, v5, v6;
 
-    v3 = param0->unk_14.unk_290[param1];
+    v3 = param0->scene.noteTasks[param1];
 
     for (v4 = 0; v4 < 16; v4++) {
-        if (v3->unk_00 == NULL) {
+        if (v3->task == NULL) {
             break;
         }
 
@@ -950,42 +950,42 @@ BOOL contest_competition_0224AD70(DanceCompetition *param0, int param1, int para
         return 0;
     }
 
-    v0 = SpriteSystem_NewSprite(param0->unk_14.unk_58, param0->unk_14.unk_5C, &Unk_contest_competition_02254864);
+    v0 = SpriteSystem_NewSprite(param0->scene.spriteSystem, param0->scene.spriteManager, &Unk_contest_competition_02254864);
 
     if (v0 == NULL) {
         return 0;
     }
 
-    v5 = param0->unk_14.unk_04[param1].unk_04;
-    v6 = param0->unk_14.unk_04[param1].unk_08;
+    v5 = param0->scene.photoSprites[param1].x;
+    v6 = param0->scene.photoSprites[param1].y;
 
     ManagedSprite_SetAnim(v0, param2);
     ManagedSprite_SetPositionXYWithSubscreenOffset(v0, v5, v6, (256 * FX32_ONE));
     Sprite_SetAnimateFlag(v0->sprite, 1);
     Sprite_TickFrame(v0->sprite);
 
-    v1 = Contest_GetRNGNext(param0->unk_00);
+    v1 = Contest_GetRNGNext(param0->contest);
     v2 = 0x500;
 
     CP_SetDiv32_32(v1, v2);
     MI_CpuClear8(v3, sizeof(DanceNoteTask));
 
-    v3->unk_04 = v0;
-    v3->unk_08 = v5 << 8;
-    v3->unk_0C = v6 << 8;
-    v3->unk_10 = CP_GetDivRemainder32() + 0x0;
+    v3->sprite = v0;
+    v3->x = v5 << 8;
+    v3->y = v6 << 8;
+    v3->velocityX = CP_GetDivRemainder32() + 0x0;
 
-    if (v3->unk_10 & 1) {
-        v3->unk_10 = -v3->unk_10;
+    if (v3->velocityX & 1) {
+        v3->velocityX = -v3->velocityX;
     }
 
-    v1 = Contest_GetRNGNext(param0->unk_00);
+    v1 = Contest_GetRNGNext(param0->contest);
     v2 = 0xf00;
 
     CP_SetDivImm32_32(v1, v2);
 
-    v3->unk_14 = -(0x400 + CP_GetDivRemainder32());
-    v3->unk_00 = SysTask_Start(contest_competition_0224AE84, v3, (30000 + 10000));
+    v3->velocityY = -(0x400 + CP_GetDivRemainder32());
+    v3->task = SysTask_Start(contest_competition_0224AE84, v3, (30000 + 10000));
 
     return 1;
 }
@@ -995,37 +995,37 @@ static void contest_competition_0224AE84(SysTask *param0, void *param1)
     DanceNoteTask *v0 = param1;
     s32 v1, v2;
 
-    v0->unk_08 += v0->unk_10;
-    v0->unk_0C += v0->unk_14;
-    v0->unk_14 += 0x200;
-    v0->unk_18++;
+    v0->x += v0->velocityX;
+    v0->y += v0->velocityY;
+    v0->velocityY += 0x200;
+    v0->frame++;
 
-    if ((v0->unk_18 > 10) || (v0->unk_08 > ((256 + 16) << 8)) || (v0->unk_08 < ((-256 - 16) * 0x100)) || (v0->unk_0C > ((192 + 16) << 8))) {
-        Sprite_DeleteAndFreeResources(v0->unk_04);
+    if ((v0->frame > 10) || (v0->x > ((256 + 16) << 8)) || (v0->x < ((-256 - 16) * 0x100)) || (v0->y > ((192 + 16) << 8))) {
+        Sprite_DeleteAndFreeResources(v0->sprite);
         SysTask_Done(param0);
-        v0->unk_04 = NULL;
-        v0->unk_00 = NULL;
+        v0->sprite = NULL;
+        v0->task = NULL;
         return;
     }
 
-    CP_SetDiv32_32(v0->unk_08, 0x100);
+    CP_SetDiv32_32(v0->x, 0x100);
     v1 = CP_GetDivResult32();
 
-    CP_SetDivImm32_32(v0->unk_0C, 0x100);
+    CP_SetDivImm32_32(v0->y, 0x100);
     v2 = CP_GetDivResult32();
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(v0->unk_04, v1, v2, (256 * FX32_ONE));
+    ManagedSprite_SetPositionXYWithSubscreenOffset(v0->sprite, v1, v2, (256 * FX32_ONE));
 }
 
 static void contest_competition_0224AF3C(DanceCompetition *param0, int param1, int param2, int param3)
 {
     int v0, v1, v2, v3, v4;
 
-    if ((param2 == 2) || (param0->unk_A3C.unk_0A[param1] == 0)) {
+    if ((param2 == 2) || (param0->scoreState.scores[param1] == 0)) {
         return;
     }
 
-    v3 = param0->unk_A3C.unk_0A[param1];
+    v3 = param0->scoreState.scores[param1];
     CP_SetDiv32_32(v3, 2);
 
     if (param3 == 0) {
@@ -1065,21 +1065,21 @@ void contest_competition_0224AFF8(SpriteManager *param0)
 
 BOOL contest_competition_0224B01C(DanceCompetition *param0)
 {
-    DanceScoreTask *v1 = &param0->unk_14.unk_910;
-    ManagedSprite *v0 = SpriteSystem_NewSprite(param0->unk_14.unk_58, param0->unk_14.unk_5C, &Unk_contest_competition_0225472C);
+    DanceScoreTask *v1 = &param0->scene.scoreTask;
+    ManagedSprite *v0 = SpriteSystem_NewSprite(param0->scene.spriteSystem, param0->scene.spriteManager, &Unk_contest_competition_0225472C);
 
     ManagedSprite_SetPositionXYWithSubscreenOffset(v0, -1, (0x16 * 8), (256 * FX32_ONE));
     Sprite_TickFrame(v0->sprite);
     ManagedSprite_SetDrawFlag(v0, 0);
 
-    v1->unk_04 = v0;
+    v1->sprite = v0;
     return 1;
 }
 
 void contest_competition_0224B058(DanceCompetition *param0)
 {
-    DanceScoreTask *v0 = &param0->unk_14.unk_910;
-    Sprite_DeleteAndFreeResources(v0->unk_04);
+    DanceScoreTask *v0 = &param0->scene.scoreTask;
+    Sprite_DeleteAndFreeResources(v0->sprite);
 }
 
 void contest_competition_0224B068(DanceCompetitionScene *param0, int param1)
@@ -1105,7 +1105,7 @@ static int contest_competition_0224B06C(int param0)
 
 void contest_competition_0224B09C(PokemonSprite *param0, DancePhotoSprite *param1)
 {
-    s32 v0 = param1->unk_0C;
+    s32 v0 = param1->z;
     s32 v1 = contest_competition_0224B06C(v0);
 
     {
@@ -1117,7 +1117,7 @@ void contest_competition_0224B09C(PokemonSprite *param0, DancePhotoSprite *param
             v2 = FX32_ONE * v1 / 0x100;
         }
 
-        PhotoSprite_SetScale(param1->unk_00, v2, v2, FX32_ONE);
+        PhotoSprite_SetScale(param1->photoSprite, v2, v2, FX32_ONE);
     }
 }
 
@@ -1126,7 +1126,7 @@ void contest_competition_0224B0CC(DanceCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        contest_competition_0224B09C(param0->unk_48[v0], &param0->unk_04[v0]);
+        contest_competition_0224B09C(param0->pokemonSprites[v0], &param0->photoSprites[v0]);
     }
 }
 
@@ -1136,35 +1136,35 @@ static BOOL contest_competition_0224B0E8(DanceCompetition *param0, int param1, c
     int v1, v2, v3;
     int v4, v5;
 
-    v4 = contest_competition_0223F0BC(param0->unk_A3C.unk_2F, 3);
-    v0 = (param2->unk_02 == param1) ? 0 : 1;
-    v1 = 256 / contest_competition_0223F0BC(param0->unk_A3C.unk_2F, 4) * param2->unk_06;
+    v4 = contest_competition_0223F0BC(param0->scoreState.contestRank, 3);
+    v0 = (param2->contestantID == param1) ? 0 : 1;
+    v1 = 256 / contest_competition_0223F0BC(param0->scoreState.contestRank, 4) * param2->moveSlot;
     v5 = (256 - v4) / 2;
     v1 += v5;
-    v2 = Unk_contest_competition_022549BC[param2->unk_07];
+    v2 = Unk_contest_competition_022549BC[param2->contestantOrder];
 
     {
         s16 v6, v7;
         int v8;
 
         for (v8 = 0; v8 < (((16 * 2) / 2) * 4 + 4); v8++) {
-            if (param0->unk_14.unk_D8[v8] != NULL) {
-                Sprite_GetPositionXYWithSubscreenOffset2(param0->unk_14.unk_D8[v8], &v6, &v7, (256 * FX32_ONE));
+            if (param0->scene.sprites[v8] != NULL) {
+                Sprite_GetPositionXYWithSubscreenOffset2(param0->scene.sprites[v8], &v6, &v7, (256 * FX32_ONE));
 
-                if ((v6 == v1) && (v7 == v2) && (ManagedSprite_GetActiveAnim(param0->unk_14.unk_D8[v8]) != 2)) {
+                if ((v6 == v1) && (v7 == v2) && (ManagedSprite_GetActiveAnim(param0->scene.sprites[v8]) != 2)) {
                     return 0;
                 }
             }
         }
     }
 
-    contest_competition_0224A46C(&param0->unk_14, param0->unk_14.unk_58, param0->unk_14.unk_5C, v0, param2->unk_03, v1, v2, param2->unk_07);
+    contest_competition_0224A46C(&param0->scene, param0->scene.spriteSystem, param0->scene.spriteManager, v0, param2->judgeID, v1, v2, param2->contestantOrder);
 
-    if ((param2->unk_07 == 0) && (v0 == 1)) {
+    if ((param2->contestantOrder == 0) && (v0 == 1)) {
         v1 += 256 / 2 - v5;
-        v2 = Unk_contest_competition_022549BC[param0->unk_A3C.unk_05[param0->unk_00->data.playerContestantID]];
+        v2 = Unk_contest_competition_022549BC[param0->scoreState.judgeVotes[param0->contest->data.playerContestantID]];
 
-        contest_competition_0224A46C(&param0->unk_14, param0->unk_14.unk_58, param0->unk_14.unk_5C, 2, param2->unk_03, v1, v2, param0->unk_A3C.unk_05[param0->unk_00->data.playerContestantID]);
+        contest_competition_0224A46C(&param0->scene, param0->scene.spriteSystem, param0->scene.spriteManager, 2, param2->judgeID, v1, v2, param0->scoreState.judgeVotes[param0->contest->data.playerContestantID]);
     }
 
     return 1;
@@ -1174,14 +1174,14 @@ void contest_competition_0224B20C(DanceCompetition *param0, const DancePacket *p
 {
     int v0, v1, v2;
 
-    v1 = param1->unk_02;
+    v1 = param1->contestantID;
 
-    if (param0->unk_00->data.playerContestantID == param0->unk_00->data.leaderContestantID) {
+    if (param0->contest->data.playerContestantID == param0->contest->data.leaderContestantID) {
         (void)0;
     }
 
     {
-        switch (param1->unk_05) {
+        switch (param1->turn) {
         case 0:
             v2 = 2;
             break;
@@ -1199,15 +1199,15 @@ void contest_competition_0224B20C(DanceCompetition *param0, const DancePacket *p
             break;
         }
 
-        param0->unk_A3C.unk_0A[v1] += v2;
+        param0->scoreState.scores[v1] += v2;
     }
 
-    if (param1->unk_07 == 0) {
+    if (param1->contestantOrder == 0) {
         for (v0 = 0; v0 < 8; v0++) {
-            if (param0->unk_1AD4[v0].unk_08_2 == 0) {
-                param0->unk_1AD4[v0] = *param1;
+            if (param0->movePackets[v0].isValid == 0) {
+                param0->movePackets[v0] = *param1;
                 break;
-            } else if (param0->unk_1AD4[v0].unk_06 == param1->unk_06) {
+            } else if (param0->movePackets[v0].moveSlot == param1->moveSlot) {
                 break;
             }
         }
@@ -1217,77 +1217,77 @@ void contest_competition_0224B20C(DanceCompetition *param0, const DancePacket *p
         }
     }
 
-    if (param1->unk_04 == 0) {
-        param0->unk_14.unk_A19[param1->unk_02]++;
-        param0->unk_14.unk_A1D[param1->unk_02]++;
+    if (param1->score == 0) {
+        param0->scene.comboCount[param1->contestantID]++;
+        param0->scene.noteCount[param1->contestantID]++;
     } else {
-        param0->unk_14.unk_A19[param1->unk_02] = 0;
-        param0->unk_14.unk_A1D[param1->unk_02] = 0;
+        param0->scene.comboCount[param1->contestantID] = 0;
+        param0->scene.noteCount[param1->contestantID] = 0;
     }
 
-    if (param1->unk_04 != 2) {
-        param0->unk_14.unk_A28[param1->unk_02]++;
+    if (param1->score != 2) {
+        param0->scene.hitCount[param1->contestantID]++;
     } else {
-        param0->unk_14.unk_A21[param1->unk_02]++;
-        param0->unk_14.unk_A28[param1->unk_02] = 0;
+        param0->scene.missCount[param1->contestantID]++;
+        param0->scene.hitCount[param1->contestantID] = 0;
     }
 
-    if (param1->unk_07 > 0) {
-        switch (param1->unk_04) {
+    if (param1->contestantOrder > 0) {
+        switch (param1->score) {
         case 0:
-            param0->unk_14.unk_A25++;
+            param0->scene.perfectCount++;
             break;
         case 1:
-            param0->unk_14.unk_A26++;
+            param0->scene.goodCount++;
             break;
         case 2:
-            param0->unk_14.unk_A27++;
+            param0->scene.badCount++;
             break;
         }
     }
 
-    contest_competition_0224A7E0(&param0->unk_14, param0->unk_14.unk_58, param0->unk_14.unk_5C, param1->unk_04, param1->unk_02, param1->unk_07);
-    contest_competition_0224B0E8(param0, param0->unk_00->data.playerContestantID, param1);
-    contest_competition_0224B528(param0, param1->unk_02, param1->unk_07, param1->unk_03, param1->unk_08_0, param0->unk_A3C.unk_0A[v1]);
-    contest_competition_0224AF3C(param0, param1->unk_02, param1->unk_04, param1->unk_07);
+    contest_competition_0224A7E0(&param0->scene, param0->scene.spriteSystem, param0->scene.spriteManager, param1->score, param1->contestantID, param1->contestantOrder);
+    contest_competition_0224B0E8(param0, param0->contest->data.playerContestantID, param1);
+    contest_competition_0224B528(param0, param1->contestantID, param1->contestantOrder, param1->judgeID, param1->isLastMove, param0->scoreState.scores[v1]);
+    contest_competition_0224AF3C(param0, param1->contestantID, param1->score, param1->contestantOrder);
     contest_competition_0224C89C(param0, param1);
 
-    if (param1->unk_02 == param0->unk_00->data.playerContestantID) {
-        if (param1->unk_04 == 0) {
-            contest_competition_0224CB00(param0, param1->unk_06, 1);
-        } else if (param1->unk_04 == 1) {
-            contest_competition_0224CB00(param0, param1->unk_06, 0);
+    if (param1->contestantID == param0->contest->data.playerContestantID) {
+        if (param1->score == 0) {
+            contest_competition_0224CB00(param0, param1->moveSlot, 1);
+        } else if (param1->score == 1) {
+            contest_competition_0224CB00(param0, param1->moveSlot, 0);
         }
     }
 
-    if ((param1->unk_07 == 0) && (param1->unk_08_0 == 1)) {
-        if (param0->unk_14.unk_A1D[param1->unk_02] == param0->unk_A3C.unk_2E) {
+    if ((param1->contestantOrder == 0) && (param1->isLastMove == 1)) {
+        if (param0->scene.noteCount[param1->contestantID] == param0->scoreState.roundCount) {
             contest_competition_0224CB80(param0, 1);
-        } else if (param0->unk_14.unk_A21[param1->unk_02] == 0) {
+        } else if (param0->scene.missCount[param1->contestantID] == 0) {
             contest_competition_0224CB80(param0, 0);
         }
-    } else if ((param1->unk_07 > 0) && (param1->unk_08_0 == 1)) {
-        if (param0->unk_A3C.unk_2E * (4 - 1) == param0->unk_14.unk_A25 + param0->unk_14.unk_A26 + param0->unk_14.unk_A27) {
-            if (param0->unk_A3C.unk_2E * (4 - 1) == param0->unk_14.unk_A25) {
+    } else if ((param1->contestantOrder > 0) && (param1->isLastMove == 1)) {
+        if (param0->scoreState.roundCount * (4 - 1) == param0->scene.perfectCount + param0->scene.goodCount + param0->scene.badCount) {
+            if (param0->scoreState.roundCount * (4 - 1) == param0->scene.perfectCount) {
                 contest_competition_0224CB80(param0, 1);
-            } else if (param0->unk_14.unk_A27 == 0) {
+            } else if (param0->scene.badCount == 0) {
                 contest_competition_0224CB80(param0, 0);
             }
         }
     }
 
-    if (param1->unk_08_0 == 1) {
+    if (param1->isLastMove == 1) {
         Sound_PlayEffect(SEQ_SE_DP_CON_028_sseq);
     } else {
         Sound_PlayEffect(SEQ_SE_DP_CON_027_3_sseq);
     }
 
-    if ((param0->unk_14.unk_A2C == 0) || ((param0->unk_14.unk_A2C > 0) && ((param1->unk_07 == 0) || (param1->unk_02 == param0->unk_00->data.playerContestantID)))) {
-        switch (param1->unk_04) {
+    if ((param0->scene.playerContestantID == 0) || ((param0->scene.playerContestantID > 0) && ((param1->contestantOrder == 0) || (param1->contestantID == param0->contest->data.playerContestantID)))) {
+        switch (param1->score) {
         case 0:
-            if (param0->unk_14.unk_A1D[param1->unk_02] == param0->unk_A3C.unk_2E) {
+            if (param0->scene.noteCount[param1->contestantID] == param0->scoreState.roundCount) {
                 Sound_PlayEffect(SEQ_SE_DP_CON_023_sseq);
-            } else if (param0->unk_14.unk_A1D[param1->unk_02] == param0->unk_A3C.unk_2E - 1) {
+            } else if (param0->scene.noteCount[param1->contestantID] == param0->scoreState.roundCount - 1) {
                 Sound_PlayEffect(SEQ_SE_DP_CON_022_sseq);
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_CON_021_sseq);
@@ -1297,7 +1297,7 @@ void contest_competition_0224B20C(DanceCompetition *param0, const DancePacket *p
             Sound_PlayEffect(SEQ_SE_DP_CON_024_sseq);
             break;
         case 2:
-            if (param1->unk_08_1 == 1) {
+            if (param1->isCombo == 1) {
                 Sound_PlayEffect(SEQ_SE_DP_CON_026_sseq);
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_CARD10_sseq);
@@ -1310,19 +1310,19 @@ void contest_competition_0224B20C(DanceCompetition *param0, const DancePacket *p
 static void contest_competition_0224B528(DanceCompetition *param0, int param1, int param2, int param3, int param4, int param5)
 {
     int v0, v1;
-    DanceContestant *v2 = &param0->unk_EA4[param1];
+    DanceContestant *v2 = &param0->contestants[param1];
     v1 = -1;
 
-    for (v0 = v2->unk_20; v0 < (16 * 2); v0++) {
-        if (v2->unk_00[v0] == 0) {
+    for (v0 = v2->poseTimer; v0 < (16 * 2); v0++) {
+        if (v2->name[v0] == 0) {
             v1 = v0;
             break;
         }
     }
 
     if (v1 == -1) {
-        for (v0 = 0; v0 < v2->unk_20; v0++) {
-            if (v2->unk_00[v0] == 0) {
+        for (v0 = 0; v0 < v2->poseTimer; v0++) {
+            if (v2->name[v0] == 0) {
                 v1 = v0;
                 break;
             }
@@ -1334,21 +1334,21 @@ static void contest_competition_0224B528(DanceCompetition *param0, int param1, i
         return;
     }
 
-    v2->unk_00[v1] = param3;
-    v2->unk_21 = param2;
-    v2->unk_22 = param4;
-    v2->unk_23 = param5;
+    v2->name[v1] = param3;
+    v2->moveArg1 = param2;
+    v2->moveArg2 = param4;
+    v2->moveArg3 = param5;
 }
 
 void contest_competition_0224B59C(DanceCompetition *param0)
 {
-    param0->unk_08 = SysTask_Start(contest_competition_0224B5F0, param0, ((30000 + 9000) + 10));
+    param0->vBlankTask = SysTask_Start(contest_competition_0224B5F0, param0, ((30000 + 9000) + 10));
 }
 
 void contest_competition_0224B5B8(DanceCompetition *param0)
 {
-    SysTask_Done(param0->unk_08);
-    param0->unk_08 = NULL;
+    SysTask_Done(param0->vBlankTask);
+    param0->vBlankTask = NULL;
 }
 
 BOOL contest_competition_0224B5C8(DanceCompetition *param0)
@@ -1357,9 +1357,9 @@ BOOL contest_competition_0224B5C8(DanceCompetition *param0)
     int v1;
 
     for (v1 = 0; v1 < 4; v1++) {
-        v0 = &param0->unk_EA4[v1];
+        v0 = &param0->contestants[v1];
 
-        if (v0->unk_00[v0->unk_20] != 0) {
+        if (v0->name[v0->poseTimer] != 0) {
             return 0;
         }
     }
@@ -1375,8 +1375,8 @@ static void contest_competition_0224B5F0(SysTask *param0, void *param1)
     u32 v5;
 
     for (v4 = 0; v4 < 4; v4++) {
-        v1 = &v0->unk_EA4[v4];
-        v2 = v1->unk_00[v1->unk_20];
+        v1 = &v0->contestants[v4];
+        v2 = v1->name[v1->poseTimer];
         v3 = 0;
 
         if (v2 == 0) {
@@ -1385,25 +1385,25 @@ static void contest_competition_0224B5F0(SysTask *param0, void *param1)
 
         contest_competition_0224BD28(v0, v4, 4);
 
-        v5 = v0->unk_A3C.unk_18 / 10000;
+        v5 = v0->scoreState.maxScore / 10000;
         v5--;
 
         switch (v2) {
         case 1:
-            if (v0->unk_14.unk_A14[v4] == 1) {
-                v3 = contest_competition_0224B7BC(&v1->unk_24, v0->unk_14.unk_48[v4], &v0->unk_14.unk_04[v4], v1->unk_21, v1->unk_22, v1->unk_23, &v0->unk_14.unk_200[v4], v5);
+            if (v0->scene.contestantIsHuman[v4] == 1) {
+                v3 = contest_competition_0224B7BC(&v1->moveData, v0->scene.pokemonSprites[v4], &v0->scene.photoSprites[v4], v1->moveArg1, v1->moveArg2, v1->moveArg3, &v0->scene.moveIconTasks[v4], v5);
             } else {
-                v3 = contest_competition_0224B8D0(&v1->unk_24, v0->unk_14.unk_48[v4], &v0->unk_14.unk_04[v4], v1->unk_21, v1->unk_22, v1->unk_23, 0, v5);
+                v3 = contest_competition_0224B8D0(&v1->moveData, v0->scene.pokemonSprites[v4], &v0->scene.photoSprites[v4], v1->moveArg1, v1->moveArg2, v1->moveArg3, 0, v5);
             }
             break;
         case 2:
-            v3 = contest_competition_0224B8D0(&v1->unk_24, v0->unk_14.unk_48[v4], &v0->unk_14.unk_04[v4], v1->unk_21, v1->unk_22, v1->unk_23, 1, v5);
+            v3 = contest_competition_0224B8D0(&v1->moveData, v0->scene.pokemonSprites[v4], &v0->scene.photoSprites[v4], v1->moveArg1, v1->moveArg2, v1->moveArg3, 1, v5);
             break;
         case 3:
-            v3 = contest_competition_0224BA50(&v1->unk_24, v0->unk_14.unk_48[v4], &v0->unk_14.unk_04[v4], v1->unk_21, v1->unk_22, v1->unk_23, 1, v5);
+            v3 = contest_competition_0224BA50(&v1->moveData, v0->scene.pokemonSprites[v4], &v0->scene.photoSprites[v4], v1->moveArg1, v1->moveArg2, v1->moveArg3, 1, v5);
             break;
         case 4:
-            v3 = contest_competition_0224BA50(&v1->unk_24, v0->unk_14.unk_48[v4], &v0->unk_14.unk_04[v4], v1->unk_21, v1->unk_22, v1->unk_23, 0, v5);
+            v3 = contest_competition_0224BA50(&v1->moveData, v0->scene.pokemonSprites[v4], &v0->scene.photoSprites[v4], v1->moveArg1, v1->moveArg2, v1->moveArg3, 0, v5);
             break;
         default:
             GF_ASSERT(FALSE);
@@ -1411,14 +1411,14 @@ static void contest_competition_0224B5F0(SysTask *param0, void *param1)
         }
 
         if (v3 == 1) {
-            v1->unk_00[v1->unk_20] = 0;
-            v1->unk_20++;
+            v1->name[v1->poseTimer] = 0;
+            v1->poseTimer++;
 
-            if (v1->unk_20 >= (16 * 2)) {
-                v1->unk_20 = 0;
+            if (v1->poseTimer >= (16 * 2)) {
+                v1->poseTimer = 0;
             }
 
-            MI_CpuClear8(&v1->unk_24, sizeof(DanceMoveData));
+            MI_CpuClear8(&v1->moveData, sizeof(DanceMoveData));
             contest_competition_0224BD28(v0, v4, 3);
         }
     }
@@ -1445,31 +1445,31 @@ static inline void inline_contest_competition_0224B7BC(DanceMoveData *param0, Po
         v4 += v5 >> 8;
     }
 
-    v0 = param0->unk_08 - param0->unk_00;
-    v1 = param0->unk_0C - param0->unk_04;
+    v0 = param0->savedX - param0->startX;
+    v1 = param0->currentY - param0->targetY;
 
     v0 = v0 * v4 / 100;
     v1 = v1 * v4 / 100;
 
-    v2 = param0->unk_00 + v0;
-    v3 = param0->unk_04 + v1;
+    v2 = param0->startX + v0;
+    v3 = param0->targetY + v1;
 
-    param2->unk_04 = v2 / 0x100;
-    param2->unk_08 = v3 / 0x100;
+    param2->x = v2 / 0x100;
+    param2->y = v3 / 0x100;
 
-    PhotoSprite_MoveTo(param2->unk_00, param2->unk_04, param2->unk_08);
+    PhotoSprite_MoveTo(param2->photoSprite, param2->x, param2->y);
 }
 
 static BOOL contest_competition_0224B7BC(DanceMoveData *param0, PokemonSprite *param1, DancePhotoSprite *param2, int param3, int param4, int param5, DanceMoveIconTask *param6, u32 param7)
 {
     BOOL v0 = 0;
 
-    switch (param0->unk_10) {
+    switch (param0->state) {
     case 0:
-        param0->unk_00 = param2->unk_04 * 0x100;
-        param0->unk_04 = param2->unk_08 * 0x100;
-        param0->unk_08 = param0->unk_00;
-        param0->unk_0C = param0->unk_04;
+        param0->startX = param2->x * 0x100;
+        param0->targetY = param2->y * 0x100;
+        param0->savedX = param0->startX;
+        param0->currentY = param0->targetY;
 
         {
             int v1;
@@ -1477,26 +1477,26 @@ static BOOL contest_competition_0224B7BC(DanceMoveData *param0, PokemonSprite *p
             v1 = 0x500 / (param7 / 2);
 
             if (param4 == 1) {
-                param0->unk_14_val1.unk_00 = -0x500 * 200 / 100;
-                param0->unk_14_val1.unk_02 = v1 * 200 / 100;
+                param0->bounce.velocity = -0x500 * 200 / 100;
+                param0->bounce.acceleration = v1 * 200 / 100;
             } else {
-                param0->unk_14_val1.unk_00 = -0x500;
-                param0->unk_14_val1.unk_02 = v1;
+                param0->bounce.velocity = -0x500;
+                param0->bounce.acceleration = v1;
             }
         }
 
         contest_competition_0224AC78(param6, 1, 0);
-        param0->unk_10++;
+        param0->state++;
 
     case 1:
-        param0->unk_0C += param0->unk_14_val1.unk_00;
-        param0->unk_14_val1.unk_00 += param0->unk_14_val1.unk_02;
+        param0->currentY += param0->bounce.velocity;
+        param0->bounce.velocity += param0->bounce.acceleration;
 
-        if (param0->unk_0C >= param0->unk_04) {
-            param0->unk_0C = param0->unk_04;
+        if (param0->currentY >= param0->targetY) {
+            param0->currentY = param0->targetY;
             contest_competition_0224AC78(param6, 1, 1);
             v0 = 1;
-            param0->unk_10++;
+            param0->state++;
         }
         break;
     default:
@@ -1512,12 +1512,12 @@ static BOOL contest_competition_0224B8D0(DanceMoveData *param0, PokemonSprite *p
     BOOL v0 = 0;
     s32 v1;
 
-    switch (param0->unk_10) {
+    switch (param0->state) {
     case 0:
-        param0->unk_00 = param2->unk_04 * 0x100;
-        param0->unk_04 = param2->unk_08 * 0x100;
-        param0->unk_08 = param0->unk_00;
-        param0->unk_0C = param0->unk_04;
+        param0->startX = param2->x * 0x100;
+        param0->targetY = param2->y * 0x100;
+        param0->savedX = param0->startX;
+        param0->currentY = param0->targetY;
 
         {
             int v2, v3;
@@ -1525,45 +1525,45 @@ static BOOL contest_competition_0224B8D0(DanceMoveData *param0, PokemonSprite *p
             v2 = param7 * 30 / 100;
             v3 = param7 - v2;
 
-            param0->unk_14_val2.unk_00 = 16 * 0x100 / v2;
-            param0->unk_14_val2.unk_04 = 16 * 0x100 / v3;
+            param0->slide.velocity1 = 16 * 0x100 / v2;
+            param0->slide.velocity2 = 16 * 0x100 / v3;
 
             if (param6 == 0) {
-                param0->unk_14_val2.unk_00 *= -1;
-                param0->unk_14_val2.unk_04 *= -1;
+                param0->slide.velocity1 *= -1;
+                param0->slide.velocity2 *= -1;
             }
         }
 
-        param0->unk_10++;
+        param0->state++;
     case 1:
         if (param4 == 1) {
-            param0->unk_0C += param0->unk_14_val2.unk_00 * 200 / 100;
+            param0->currentY += param0->slide.velocity1 * 200 / 100;
             v1 = 16 * 200 / 100;
         } else {
-            param0->unk_0C += param0->unk_14_val2.unk_00;
+            param0->currentY += param0->slide.velocity1;
             v1 = 16;
         }
 
-        if (abs(param0->unk_0C - param0->unk_04) >= v1 * 0x100) {
+        if (abs(param0->currentY - param0->targetY) >= v1 * 0x100) {
             if (param6 == 1) {
-                param0->unk_0C = param0->unk_04 + v1 * 0x100;
+                param0->currentY = param0->targetY + v1 * 0x100;
             } else {
-                param0->unk_0C = param0->unk_04 - v1 * 0x100;
+                param0->currentY = param0->targetY - v1 * 0x100;
             }
 
-            param0->unk_10++;
+            param0->state++;
         }
         break;
     case 2:
         if (param4 == 1) {
-            param0->unk_0C -= param0->unk_14_val2.unk_04 * 200 / 100;
+            param0->currentY -= param0->slide.velocity2 * 200 / 100;
         } else {
-            param0->unk_0C -= param0->unk_14_val2.unk_04;
+            param0->currentY -= param0->slide.velocity2;
         }
 
-        if (((param6 == 1) && (param0->unk_0C <= param0->unk_04)) || ((param6 == 0) && (param0->unk_0C >= param0->unk_04))) {
-            param0->unk_0C = param0->unk_04;
-            param0->unk_10++;
+        if (((param6 == 1) && (param0->currentY <= param0->targetY)) || ((param6 == 0) && (param0->currentY >= param0->targetY))) {
+            param0->currentY = param0->targetY;
+            param0->state++;
             v0 = 1;
         }
         break;
@@ -1580,12 +1580,12 @@ static BOOL contest_competition_0224BA50(DanceMoveData *param0, PokemonSprite *p
     BOOL v0 = 0;
     s32 v1;
 
-    switch (param0->unk_10) {
+    switch (param0->state) {
     case 0:
-        param0->unk_00 = param2->unk_04 * 0x100;
-        param0->unk_04 = param2->unk_08 * 0x100;
-        param0->unk_08 = param0->unk_00;
-        param0->unk_0C = param0->unk_04;
+        param0->startX = param2->x * 0x100;
+        param0->targetY = param2->y * 0x100;
+        param0->savedX = param0->startX;
+        param0->currentY = param0->targetY;
 
         {
             int v2, v3;
@@ -1593,55 +1593,55 @@ static BOOL contest_competition_0224BA50(DanceMoveData *param0, PokemonSprite *p
             v2 = param7 * 30 / 100;
             v3 = param7 - v2;
 
-            param0->unk_14_val3.unk_04 = (65536 / 360 * 5 * 0x100) / v2;
-            param0->unk_14_val3.unk_08 = -(65536 / 360 * 5 * 0x100) / v3;
-            param0->unk_14_val3.unk_0C = 16 * 0x100 / v2;
-            param0->unk_14_val3.unk_10 = -(16 * 0x100 / v3);
+            param0->arc.angleVelocity1 = (65536 / 360 * 5 * 0x100) / v2;
+            param0->arc.angleVelocity2 = -(65536 / 360 * 5 * 0x100) / v3;
+            param0->arc.xVelocity = 16 * 0x100 / v2;
+            param0->arc.yVelocity = -(16 * 0x100 / v3);
 
             if (param6 == 1) {
-                param0->unk_14_val3.unk_04 *= -1;
-                param0->unk_14_val3.unk_08 *= -1;
-                param0->unk_14_val3.unk_0C *= -1;
-                param0->unk_14_val3.unk_10 *= -1;
+                param0->arc.angleVelocity1 *= -1;
+                param0->arc.angleVelocity2 *= -1;
+                param0->arc.xVelocity *= -1;
+                param0->arc.yVelocity *= -1;
             }
         }
 
-        param0->unk_10++;
+        param0->state++;
     case 1:
         if (param4 == 1) {
-            param0->unk_08 += param0->unk_14_val3.unk_0C * 200 / 100;
+            param0->savedX += param0->arc.xVelocity * 200 / 100;
             v1 = 16 * 200 / 100;
-            param0->unk_14_val3.unk_00 += param0->unk_14_val3.unk_04 * 200 / 100;
+            param0->arc.angle += param0->arc.angleVelocity1 * 200 / 100;
         } else {
-            param0->unk_08 += param0->unk_14_val3.unk_0C;
+            param0->savedX += param0->arc.xVelocity;
             v1 = 16;
-            param0->unk_14_val3.unk_00 += param0->unk_14_val3.unk_04;
+            param0->arc.angle += param0->arc.angleVelocity1;
         }
 
-        if (abs(param0->unk_08 - param0->unk_00) >= v1 * 0x100) {
+        if (abs(param0->savedX - param0->startX) >= v1 * 0x100) {
             if (param6 == 1) {
-                param0->unk_08 = param0->unk_00 - v1 * 0x100;
+                param0->savedX = param0->startX - v1 * 0x100;
             } else {
-                param0->unk_08 = param0->unk_00 + v1 * 0x100;
+                param0->savedX = param0->startX + v1 * 0x100;
             }
 
-            param0->unk_0C = param0->unk_04;
-            param0->unk_10++;
+            param0->currentY = param0->targetY;
+            param0->state++;
         }
         break;
     case 2:
         if (param4 == 1) {
-            param0->unk_08 += param0->unk_14_val3.unk_10 * 200 / 100;
-            param0->unk_14_val3.unk_00 += param0->unk_14_val3.unk_08 * 200 / 100;
+            param0->savedX += param0->arc.yVelocity * 200 / 100;
+            param0->arc.angle += param0->arc.angleVelocity2 * 200 / 100;
         } else {
-            param0->unk_08 += param0->unk_14_val3.unk_10;
-            param0->unk_14_val3.unk_00 += param0->unk_14_val3.unk_08;
+            param0->savedX += param0->arc.yVelocity;
+            param0->arc.angle += param0->arc.angleVelocity2;
         }
 
-        if (((param6 == 1) && (param0->unk_08 >= param0->unk_00)) || ((param6 == 0) && (param0->unk_08 <= param0->unk_00))) {
-            param0->unk_08 = param0->unk_00;
-            param0->unk_14_val3.unk_00 = 0;
-            param0->unk_10++;
+        if (((param6 == 1) && (param0->savedX >= param0->startX)) || ((param6 == 0) && (param0->savedX <= param0->startX))) {
+            param0->savedX = param0->startX;
+            param0->arc.angle = 0;
+            param0->state++;
             v0 = 1;
         }
         break;
@@ -1649,7 +1649,7 @@ static BOOL contest_competition_0224BA50(DanceMoveData *param0, PokemonSprite *p
         return 1;
     }
 
-    PhotoSprite_SetRotation(param2->unk_00, param0->unk_14_val3.unk_00 / 0x100);
+    PhotoSprite_SetRotation(param2->photoSprite, param0->arc.angle / 0x100);
     inline_contest_competition_0224B7BC(param0, param1, param2, param3, param5, param4);
     return v0;
 }
@@ -1659,23 +1659,23 @@ void contest_competition_0224BC4C(DanceCompetition *param0)
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        param0->unk_1AD4[v0].unk_08_2 = 0;
+        param0->movePackets[v0].isValid = 0;
     }
 }
 
 void contest_competition_0224BC68(DanceCompetition *param0, int param1, int param2)
 {
-    GF_ASSERT(param0->unk_FC8[param1].unk_04 == NULL);
-    MI_CpuClear8(&param0->unk_FC8[param1], sizeof(DanceContestantSprite));
+    GF_ASSERT(param0->contestantSprites[param1].task == NULL);
+    MI_CpuClear8(&param0->contestantSprites[param1], sizeof(DanceContestantSprite));
 
-    param0->unk_FC8[param1].unk_00 = param0;
-    param0->unk_FC8[param1].unk_1A = param1;
-    param0->unk_FC8[param1].unk_19 = param2;
-    param0->unk_FC8[param1].unk_08 = param0->unk_14.unk_48[param1];
-    param0->unk_FC8[param1].unk_0C = &param0->unk_14.unk_04[param1];
-    param0->unk_FC8[param1].unk_24_2 = 1;
-    param0->unk_FC8[param1].unk_24_3 = 1;
-    param0->unk_FC8[param1].unk_04 = SysTask_Start(contest_competition_0224BE50, &param0->unk_FC8[param1], (30000 + 9000));
+    param0->contestantSprites[param1].competition = param0;
+    param0->contestantSprites[param1].contestantID = param1;
+    param0->contestantSprites[param1].param = param2;
+    param0->contestantSprites[param1].sprite = param0->scene.pokemonSprites[param1];
+    param0->contestantSprites[param1].photoSprite = &param0->scene.photoSprites[param1];
+    param0->contestantSprites[param1].flag2 = 1;
+    param0->contestantSprites[param1].flag3 = 1;
+    param0->contestantSprites[param1].task = SysTask_Start(contest_competition_0224BE50, &param0->contestantSprites[param1], (30000 + 9000));
 }
 
 void contest_competition_0224BD00(DanceCompetition *param0)
@@ -1683,46 +1683,46 @@ void contest_competition_0224BD00(DanceCompetition *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_FC8[v0].unk_04 != NULL) {
-            SysTask_Done(param0->unk_FC8[v0].unk_04);
-            param0->unk_FC8[v0].unk_04 = NULL;
+        if (param0->contestantSprites[v0].task != NULL) {
+            SysTask_Done(param0->contestantSprites[v0].task);
+            param0->contestantSprites[v0].task = NULL;
         }
     }
 }
 
 void contest_competition_0224BD28(DanceCompetition *param0, int param1, int param2)
 {
-    if (param0->unk_FC8[param1].unk_04 == NULL) {
+    if (param0->contestantSprites[param1].task == NULL) {
         return;
     }
 
     switch (param2) {
     case 0:
-        param0->unk_FC8[param1].unk_24_5 = 0;
-        param0->unk_FC8[param1].unk_24_4 = 0;
+        param0->contestantSprites[param1].flag5 = 0;
+        param0->contestantSprites[param1].flag4 = 0;
         break;
     case 1:
-        param0->unk_FC8[param1].unk_24_5 = 1;
+        param0->contestantSprites[param1].flag5 = 1;
         break;
     case 2:
-        param0->unk_FC8[param1].unk_24_4 = 1;
+        param0->contestantSprites[param1].flag4 = 1;
         break;
     case 3:
-        param0->unk_FC8[param1].unk_24_1 = 0;
-        param0->unk_FC8[param1].unk_24_0 = 0;
-        param0->unk_FC8[param1].unk_24_2 = 1;
+        param0->contestantSprites[param1].flag1 = 0;
+        param0->contestantSprites[param1].flag0 = 0;
+        param0->contestantSprites[param1].flag2 = 1;
         break;
     case 4:
-        if (param0->unk_FC8[param1].unk_24_1 == 0) {
-            param0->unk_FC8[param1].unk_24_1 = 1;
+        if (param0->contestantSprites[param1].flag1 == 0) {
+            param0->contestantSprites[param1].flag1 = 1;
 
-            if (param0->unk_FC8[param1].unk_24_2 == 0) {
-                param0->unk_FC8[param1].unk_20 = param0->unk_FC8[param1].unk_14;
+            if (param0->contestantSprites[param1].flag2 == 0) {
+                param0->contestantSprites[param1].prevRotation = param0->contestantSprites[param1].rotation;
             }
         }
         break;
     case 5:
-        param0->unk_FC8[param1].unk_24_0 = 1;
+        param0->contestantSprites[param1].flag0 = 1;
         break;
     default:
         GF_ASSERT(FALSE);
@@ -1732,11 +1732,11 @@ void contest_competition_0224BD28(DanceCompetition *param0, int param1, int para
 
 int contest_competition_0224BDF0(DanceCompetition *param0, int param1)
 {
-    if (param0->unk_FC8[param1].unk_04 == NULL) {
+    if (param0->contestantSprites[param1].task == NULL) {
         return 1;
     }
 
-    if ((param0->unk_FC8[param1].unk_24_5 == 1) || (param0->unk_FC8[param1].unk_19 == 0)) {
+    if ((param0->contestantSprites[param1].flag5 == 1) || (param0->contestantSprites[param1].param == 0)) {
         return 1;
     }
 
@@ -1745,11 +1745,11 @@ int contest_competition_0224BDF0(DanceCompetition *param0, int param1)
 
 int contest_competition_0224BE24(DanceCompetition *param0, int param1)
 {
-    if (param0->unk_FC8[param1].unk_04 == NULL) {
+    if (param0->contestantSprites[param1].task == NULL) {
         return 1;
     }
 
-    if (param0->unk_FC8[param1].unk_24_1 == 1) {
+    if (param0->contestantSprites[param1].flag1 == 1) {
         return 1;
     }
 
@@ -1770,37 +1770,37 @@ static void contest_competition_0224BE64(DanceContestantSprite *param0)
     u32 v2;
     int v3, v4;
 
-    if ((param0->unk_24_5 == 1) || (param0->unk_19 == 0)) {
+    if ((param0->flag5 == 1) || (param0->param == 0)) {
         return;
     }
 
-    v0 = param0->unk_00->unk_107C;
+    v0 = param0->competition->timestamp;
     v0 *= 10000;
-    v0 %= param0->unk_00->unk_A3C.unk_18;
-    v1 = v0 * 0x2000 / (param0->unk_00->unk_A3C.unk_18 / 2);
+    v0 %= param0->competition->scoreState.maxScore;
+    v1 = v0 * 0x2000 / (param0->competition->scoreState.maxScore / 2);
     v3 = 1;
 
-    if (v0 >= (param0->unk_00->unk_A3C.unk_18 / 2)) {
+    if (v0 >= (param0->competition->scoreState.maxScore / 2)) {
         v1 = 0x2000 - (v1 - 0x2000);
         v3 = 0;
     }
 
-    v2 = param0->unk_10;
-    v4 = param0->unk_24_6;
+    v2 = param0->moveOffsetX;
+    v4 = param0->flag6;
 
-    param0->unk_10 = (-0x200 - 0x80) * 0x100 + v1;
-    param0->unk_24_6 = v3;
+    param0->moveOffsetX = (-0x200 - 0x80) * 0x100 + v1;
+    param0->flag6 = v3;
 
-    if (param0->unk_24_4 == 1) {
-        if ((param0->unk_10 == (-0x200 - 0x80) * 0x100) || (v4 == 0) && (v3 == 1)) {
-            param0->unk_10 = (-0x200 - 0x80) * 0x100;
-            param0->unk_24_4 = 0;
-            param0->unk_24_5 = 1;
+    if (param0->flag4 == 1) {
+        if ((param0->moveOffsetX == (-0x200 - 0x80) * 0x100) || (v4 == 0) && (v3 == 1)) {
+            param0->moveOffsetX = (-0x200 - 0x80) * 0x100;
+            param0->flag4 = 0;
+            param0->flag5 = 1;
         }
     }
 
-    param0->unk_0C->unk_0C = param0->unk_10 / 0x100;
-    contest_competition_0224B09C(param0->unk_08, param0->unk_0C);
+    param0->photoSprite->z = param0->moveOffsetX / 0x100;
+    contest_competition_0224B09C(param0->sprite, param0->photoSprite);
 }
 
 static void contest_competition_0224BF58(DanceContestantSprite *param0)
@@ -1809,25 +1809,25 @@ static void contest_competition_0224BF58(DanceContestantSprite *param0)
     s32 v1, v2;
     u64 v3, v4;
 
-    v0 = param0->unk_14;
-    v3 = param0->unk_00->unk_107C;
+    v0 = param0->rotation;
+    v3 = param0->competition->timestamp;
     v3 *= 10000;
-    v3 %= param0->unk_00->unk_A3C.unk_18 * 2;
-    v4 = v3 * 360 / (param0->unk_00->unk_A3C.unk_18 * 2);
+    v3 %= param0->competition->scoreState.maxScore * 2;
+    v4 = v3 * 360 / (param0->competition->scoreState.maxScore * 2);
     v4 <<= 8;
 
-    param0->unk_14 = v4;
+    param0->rotation = v4;
 
-    if (param0->unk_24_1 > 0) {
+    if (param0->flag1 > 0) {
         return;
     }
 
-    if (param0->unk_24_3 == 1) {
+    if (param0->flag3 == 1) {
         v0 = v4;
-        param0->unk_24_3 = 0;
+        param0->flag3 = 0;
     }
 
-    if (param0->unk_24_2 == 1) {
+    if (param0->flag2 == 1) {
         u32 v5;
         u32 v6, v7;
 
@@ -1837,30 +1837,30 @@ static void contest_competition_0224BF58(DanceContestantSprite *param0)
             v5 = v4;
         }
 
-        v6 = param0->unk_20;
+        v6 = param0->prevRotation;
         v7 = v0;
 
-        if ((param0->unk_20 == v4) || ((v7 <= v6) && (v6 <= v5)) || ((param0->unk_20 <= v4) && (v0 > v4))) {
-            param0->unk_24_2 = 0;
+        if ((param0->prevRotation == v4) || ((v7 <= v6) && (v6 <= v5)) || ((param0->prevRotation <= v4) && (v0 > v4))) {
+            param0->flag2 = 0;
         } else {
             return;
         }
     }
 
-    if (param0->unk_24_0 == 1) {
+    if (param0->flag0 == 1) {
         if ((v4 == 0) || (v0 > v4)) {
             v4 = 0;
-            param0->unk_24_0 = 0;
-            param0->unk_24_1 = 1;
-            param0->unk_20 = v4;
+            param0->flag0 = 0;
+            param0->flag1 = 1;
+            param0->prevRotation = v4;
         }
     }
 
-    v2 = (param0->unk_19 == 0) ? 3 : 3;
-    v1 = CalcCosineDegrees(param0->unk_14 >> 8) * v2 / FX32_ONE;
+    v2 = (param0->param == 0) ? 3 : 3;
+    v1 = CalcCosineDegrees(param0->rotation >> 8) * v2 / FX32_ONE;
 
-    param0->unk_0C->unk_04 = v1 + Unk_contest_competition_022546F4[param0->unk_19][0] - v2;
-    PhotoSprite_MoveTo(param0->unk_0C->unk_00, param0->unk_0C->unk_04, param0->unk_0C->unk_08);
+    param0->photoSprite->x = v1 + Unk_contest_competition_022546F4[param0->param][0] - v2;
+    PhotoSprite_MoveTo(param0->photoSprite->photoSprite, param0->photoSprite->x, param0->photoSprite->y);
 }
 
 static void contest_competition_0224C0C0(DanceCompetition *param0, int param1, const DanceMessageArgs *param2)
@@ -1875,29 +1875,29 @@ static void contest_competition_0224C0C0(DanceCompetition *param0, int param1, c
     case 0:
         break;
     case 1:
-        StringTemplate_SetNickname(param0->unk_14.unk_88, 0, Pokemon_GetBoxPokemon(param0->unk_14.unk_00->contestMons[param2->contestantID]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 2:
-        messageID = Contest_GetContestRankTitleMessageID(param0->unk_00->data.contestRank, param0->unk_00->data.competitionType, param0->unk_00->isLinkContest);
-        StringTemplate_SetContestRankName(param0->unk_14.unk_88, 0, messageID);
+        messageID = Contest_GetContestRankTitleMessageID(param0->contest->data.contestRank, param0->contest->data.competitionType, param0->contest->isLinkContest);
+        StringTemplate_SetContestRankName(param0->scene.stringTemplate, 0, messageID);
         break;
     case 3:
-        StringTemplate_SetNumber(param0->unk_14.unk_88, 0, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 0, param2->moveSlot, 1, 0, 1);
         break;
     case 4:
-        StringTemplate_SetString(param0->unk_14.unk_88, 0, param0->unk_00->data.trainerNames[param2->contestantID], param0->unk_00->data.trainerGenders[param2->contestantID], 1, GAME_LANGUAGE);
-        StringTemplate_SetNickname(param0->unk_14.unk_88, 1, Pokemon_GetBoxPokemon(param0->unk_14.unk_00->contestMons[param2->contestantID]));
+        StringTemplate_SetString(param0->scene.stringTemplate, 0, param0->contest->data.trainerNames[param2->contestantID], param0->contest->data.trainerGenders[param2->contestantID], 1, GAME_LANGUAGE);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 5:
-        StringTemplate_SetNickname(param0->unk_14.unk_88, 0, Pokemon_GetBoxPokemon(param0->unk_14.unk_00->contestMons[param2->contestantID]));
-        StringTemplate_SetNumber(param0->unk_14.unk_88, 1, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 1, param2->moveSlot, 1, 0, 1);
         break;
     case 6:
-        messageID = Contest_GetContestRankTitleMessageID(param0->unk_00->data.contestRank, param0->unk_00->data.competitionType, param0->unk_00->isLinkContest);
-        StringTemplate_SetContestRankName(param0->unk_14.unk_88, 0, messageID);
-        StringTemplate_SetNumber(param0->unk_14.unk_88, 1, param2->unk_04, 1, 0, 1);
-        StringTemplate_SetString(param0->unk_14.unk_88, 2, param0->unk_00->data.trainerNames[param2->contestantID], param0->unk_00->data.trainerGenders[param2->contestantID], 1, GAME_LANGUAGE);
-        StringTemplate_SetNickname(param0->unk_14.unk_88, 3, Pokemon_GetBoxPokemon(param0->unk_14.unk_00->contestMons[param2->contestantID]));
+        messageID = Contest_GetContestRankTitleMessageID(param0->contest->data.contestRank, param0->contest->data.competitionType, param0->contest->isLinkContest);
+        StringTemplate_SetContestRankName(param0->scene.stringTemplate, 0, messageID);
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 1, param2->moveSlot, 1, 0, 1);
+        StringTemplate_SetString(param0->scene.stringTemplate, 2, param0->contest->data.trainerNames[param2->contestantID], param0->contest->data.trainerGenders[param2->contestantID], 1, GAME_LANGUAGE);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 3, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     default:
         GF_ASSERT(FALSE);
@@ -1910,8 +1910,8 @@ static void contest_competition_0224C244(DanceCompetition *param0, MessageLoader
     String *message;
     int textDelay;
 
-    if (param0->unk_00->isLinkContest == FALSE) {
-        textDelay = Options_TextFrameDelay(param0->unk_00->options);
+    if (param0->contest->isLinkContest == FALSE) {
+        textDelay = Options_TextFrameDelay(param0->contest->options);
     } else {
         textDelay = TEXT_SPEED_FAST;
     }
@@ -1919,10 +1919,10 @@ static void contest_competition_0224C244(DanceCompetition *param0, MessageLoader
     message = MessageLoader_GetNewString(messageLoader, messageID);
     contest_competition_0224C0C0(param0, param3, param4);
 
-    StringTemplate_Format(param0->unk_14.unk_88, param0->unk_14.danceMessage, message);
-    Window_FillTilemap(&param0->unk_14.unk_64[0], 0xff);
+    StringTemplate_Format(param0->scene.stringTemplate, param0->scene.danceMessage, message);
+    Window_FillTilemap(&param0->scene.windows[0], 0xff);
 
-    param0->unk_14.unk_A18 = Text_AddPrinterWithParams(&param0->unk_14.unk_64[0], FONT_MESSAGE, param0->unk_14.danceMessage, 0, 0, textDelay, NULL);
+    param0->scene.printerID = Text_AddPrinterWithParams(&param0->scene.windows[0], FONT_MESSAGE, param0->scene.danceMessage, 0, 0, textDelay, NULL);
     String_Free(message);
 }
 
@@ -1935,12 +1935,12 @@ void contest_competition_0224C2CC(DanceCompetition *param0, u32 param1, const Da
     messageID = Unk_contest_competition_0225470C[param1].danceMessageID;
     v1 = Unk_contest_competition_0225470C[param1].unk_02;
 
-    contest_competition_0224C244(param0, param0->unk_14.danceMessageLoader, messageID, v1, param2);
+    contest_competition_0224C244(param0, param0->scene.danceMessageLoader, messageID, v1, param2);
 }
 
 int contest_competition_0224C300(DanceCompetition *param0)
 {
-    return Text_IsPrinterActive(param0->unk_14.unk_A18);
+    return Text_IsPrinterActive(param0->scene.printerID);
 }
 
 void contest_competition_0224C310(SpriteSystem *param0, SpriteManager *param1, NARC *param2)
@@ -1961,38 +1961,38 @@ void contest_competition_0224C384(DanceCompetition *param0, SpriteSystem *param1
 {
     DanceComboTask *v0;
 
-    GF_ASSERT(param0->unk_14.unk_1FC == NULL);
+    GF_ASSERT(param0->scene.comboTask == NULL);
 
     v0 = Heap_Alloc(HEAP_ID_23, sizeof(DanceComboTask));
     MI_CpuClear8(v0, sizeof(DanceComboTask));
 
-    param0->unk_14.unk_1FC = v0;
+    param0->scene.comboTask = v0;
 
-    v0->unk_08 = param0;
-    v0->unk_04 = SpriteSystem_NewSprite(param0->unk_14.unk_58, param0->unk_14.unk_5C, &Unk_contest_competition_022547FC);
+    v0->competition = param0;
+    v0->sprite = SpriteSystem_NewSprite(param0->scene.spriteSystem, param0->scene.spriteManager, &Unk_contest_competition_022547FC);
 
-    Sprite_TickFrame(v0->unk_04->sprite);
-    ManagedSprite_SetDrawFlag(v0->unk_04, 0);
+    Sprite_TickFrame(v0->sprite->sprite);
+    ManagedSprite_SetDrawFlag(v0->sprite, 0);
 
-    v0->unk_00 = SysTask_Start(contest_competition_0224C414, v0, ((30000 + 10000) + 15));
+    v0->task = SysTask_Start(contest_competition_0224C414, v0, ((30000 + 10000) + 15));
 }
 
 void contest_competition_0224C3E4(DanceCompetition *param0)
 {
-    SysTask_Done(param0->unk_14.unk_1FC->unk_00);
-    Sprite_DeleteAndFreeResources(param0->unk_14.unk_1FC->unk_04);
-    Heap_Free(param0->unk_14.unk_1FC);
+    SysTask_Done(param0->scene.comboTask->task);
+    Sprite_DeleteAndFreeResources(param0->scene.comboTask->sprite);
+    Heap_Free(param0->scene.comboTask);
 
-    param0->unk_14.unk_1FC = NULL;
+    param0->scene.comboTask = NULL;
 }
 
 static void contest_competition_0224C414(SysTask *param0, void *param1)
 {
     DanceComboTask *v0 = param1;
 
-    switch (v0->unk_0C) {
+    switch (v0->state) {
     case 0:
-        v0->unk_0C++;
+        v0->state++;
         break;
     case 1:
         break;
@@ -2000,7 +2000,7 @@ static void contest_competition_0224C414(SysTask *param0, void *param1)
         break;
     }
 
-    Sprite_TickFrame(v0->unk_04->sprite);
+    Sprite_TickFrame(v0->sprite->sprite);
 }
 
 void contest_competition_0224C434(DanceScoreTask *param0, u32 param1, u32 param2, int param3)
@@ -2010,14 +2010,14 @@ void contest_competition_0224C434(DanceScoreTask *param0, u32 param1, u32 param2
     int v2 = (256 - v1) / 2;
     v0 = param1 * v1 / param2;
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_04, v0 - 1 + v2, (0x16 * 8), (256 * FX32_ONE));
-    ManagedSprite_SetDrawFlag(param0->unk_04, 1);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->sprite, v0 - 1 + v2, (0x16 * 8), (256 * FX32_ONE));
+    ManagedSprite_SetDrawFlag(param0->sprite, 1);
 }
 
 void contest_competition_0224C47C(DanceScoreTask *param0, int param1)
 {
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_04, -1, (0x16 * 8), (256 * FX32_ONE));
-    ManagedSprite_SetDrawFlag(param0->unk_04, param1);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->sprite, -1, (0x16 * 8), (256 * FX32_ONE));
+    ManagedSprite_SetDrawFlag(param0->sprite, param1);
 }
 
 void contest_competition_0224C49C(DanceComboTask *param0, u32 param1, u32 param2, int param3)
@@ -2042,13 +2042,13 @@ void contest_competition_0224C49C(DanceComboTask *param0, u32 param1, u32 param2
     v4 = (0x12 * 8);
     v4 -= CalcSineDegrees(v5) * 10 / FX32_ONE;
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_04, v3, v4, (256 * FX32_ONE));
-    ManagedSprite_SetDrawFlag(param0->unk_04, 1);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->sprite, v3, v4, (256 * FX32_ONE));
+    ManagedSprite_SetDrawFlag(param0->sprite, 1);
 }
 
 void contest_competition_0224C540(DanceComboTask *param0)
 {
-    ManagedSprite_SetDrawFlag(param0->unk_04, 0);
+    ManagedSprite_SetDrawFlag(param0->sprite, 0);
 }
 
 void contest_competition_0224C54C(DanceComboTask *param0, int param1)
@@ -2056,8 +2056,8 @@ void contest_competition_0224C54C(DanceComboTask *param0, int param1)
     int v0 = contest_competition_0223F0BC(param1, 3);
     int v1 = (256 - v0) / 2;
 
-    ManagedSprite_SetDrawFlag(param0->unk_04, 1);
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_04, v1, (0x12 * 8), (256 * FX32_ONE));
+    ManagedSprite_SetDrawFlag(param0->sprite, 1);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param0->sprite, v1, (0x12 * 8), (256 * FX32_ONE));
 }
 
 int contest_competition_0224C57C(enum PokemonContestRank contestRank)
@@ -2074,42 +2074,42 @@ void contest_competition_0224C5A0(DanceCompetition *param0, u32 param1, const Da
 
     GF_ASSERT(param1 < NELEMS(Unk_contest_competition_0225470C));
 
-    if (param0->unk_1B25 == 1) {
+    if (param0->isReady == 1) {
         return;
     }
 
-    Window_DrawMessageBoxWithScrollCursor(&param0->unk_14.unk_64[1], 1, 1, 14);
-    Bg_ScheduleTilemapTransfer(param0->unk_14.unk_60, 1);
+    Window_DrawMessageBoxWithScrollCursor(&param0->scene.windows[1], 1, 1, 14);
+    Bg_ScheduleTilemapTransfer(param0->scene.bgConfig, 1);
 
     u32 messageID = Unk_contest_competition_0225470C[param1].danceMessageID;
     v1 = Unk_contest_competition_0225470C[param1].unk_02;
-    String *message = MessageLoader_GetNewString(param0->unk_14.danceMessageLoader, messageID);
+    String *message = MessageLoader_GetNewString(param0->scene.danceMessageLoader, messageID);
 
     contest_competition_0224C0C0(param0, v1, param2);
 
-    StringTemplate_Format(param0->unk_14.unk_88, param0->unk_14.danceMessage, message);
-    Window_FillTilemap(&param0->unk_14.unk_64[1], 0xff);
-    Text_AddPrinterWithParams(&param0->unk_14.unk_64[1], FONT_MESSAGE, param0->unk_14.danceMessage, 0, 0, TEXT_SPEED_INSTANT, NULL);
+    StringTemplate_Format(param0->scene.stringTemplate, param0->scene.danceMessage, message);
+    Window_FillTilemap(&param0->scene.windows[1], 0xff);
+    Text_AddPrinterWithParams(&param0->scene.windows[1], FONT_MESSAGE, param0->scene.danceMessage, 0, 0, TEXT_SPEED_INSTANT, NULL);
     String_Free(message);
 
-    param0->unk_1B25 = 1;
+    param0->isReady = 1;
 }
 
 void contest_competition_0224C640(DanceCompetition *param0)
 {
-    Window_EraseMessageBox(&param0->unk_14.unk_64[1], 1);
-    Bg_ScheduleTilemapTransfer(param0->unk_14.unk_60, 1);
-    param0->unk_1B25 = 0;
+    Window_EraseMessageBox(&param0->scene.windows[1], 1);
+    Bg_ScheduleTilemapTransfer(param0->scene.bgConfig, 1);
+    param0->isReady = 0;
 }
 
 s64 contest_competition_0224C660(DanceCompetition *param0, const DanceMoveDefinition *param1, int param2)
 {
     s64 v0;
 
-    v0 = (param0->unk_A3C.unk_1C * param1->unk_04) * param2;
-    v0 += ((param0->unk_A3C.unk_20 + param0->unk_A3C.unk_24) * param2 + param0->unk_A3C.unk_20) / 10000;
+    v0 = (param0->scoreState.scorePerBeat * param1->duration) * param2;
+    v0 += ((param0->scoreState.bonus1 + param0->scoreState.bonus2) * param2 + param0->scoreState.bonus1) / 10000;
 
-    return v0 - param0->unk_107C;
+    return v0 - param0->timestamp;
 }
 
 s64 contest_competition_0224C6A8(DanceCompetition *param0, const DanceMoveDefinition *param1, int param2)
@@ -2130,11 +2130,11 @@ void contest_competition_0224C6B0(DanceCompetition *param0, int param1, u8 *para
     MI_CpuClear8(v0, sizeof(DanceMoveIconMoveTask));
 
     v0->unk_00 = param0;
-    v0->unk_04 = &param0->unk_14.unk_04[param1];
-    v0->unk_08 = &param0->unk_14.unk_200[param1];
+    v0->unk_04 = &param0->scene.photoSprites[param1];
+    v0->unk_08 = &param0->scene.moveIconTasks[param1];
     v0->unk_0C = param2;
 
-    if (param0->unk_14.unk_A14[param1] == 1) {
+    if (param0->scene.contestantIsHuman[param1] == 1) {
         SysTask_Start(contest_competition_0224C718, v0, (30000 + 10000));
     } else {
         SysTask_Start(contest_competition_0224C7B8, v0, (30000 + 10000));
@@ -2148,7 +2148,7 @@ static void contest_competition_0224C718(SysTask *param0, void *param1)
     switch (v0->unk_10) {
     case 0:
         contest_competition_0224AC78(v0->unk_08, 1, 0);
-        v0->unk_1C = v0->unk_04->unk_08 * 0x100;
+        v0->unk_1C = v0->unk_04->y * 0x100;
         v0->unk_18 = v0->unk_1C;
         v0->unk_14 = 0x500;
         v0->unk_10++;
@@ -2167,8 +2167,8 @@ static void contest_competition_0224C718(SysTask *param0, void *param1)
             }
         }
 
-        v0->unk_04->unk_08 = v0->unk_18 / 0x100;
-        PhotoSprite_MoveTo(v0->unk_04->unk_00, v0->unk_04->unk_04, v0->unk_04->unk_08);
+        v0->unk_04->y = v0->unk_18 / 0x100;
+        PhotoSprite_MoveTo(v0->unk_04->photoSprite, v0->unk_04->x, v0->unk_04->y);
         break;
     default:
         *(v0->unk_0C) = 1;
@@ -2187,7 +2187,7 @@ static void contest_competition_0224C7B8(SysTask *param0, void *param1)
 
     switch (v0->unk_10) {
     case 0:
-        v0->unk_28 = v0->unk_04->unk_04 * 0x100;
+        v0->unk_28 = v0->unk_04->x * 0x100;
         v0->unk_24 = v0->unk_28;
         v0->unk_10++;
     case 1:
@@ -2205,8 +2205,8 @@ static void contest_competition_0224C7B8(SysTask *param0, void *param1)
             }
         }
 
-        v0->unk_04->unk_04 = v0->unk_24 / 0x100 + v1;
-        PhotoSprite_MoveTo(v0->unk_04->unk_00, v0->unk_04->unk_04, v0->unk_04->unk_08);
+        v0->unk_04->x = v0->unk_24 / 0x100 + v1;
+        PhotoSprite_MoveTo(v0->unk_04->photoSprite, v0->unk_04->x, v0->unk_04->y);
         break;
     default:
         *(v0->unk_0C) = 1;
@@ -2228,22 +2228,22 @@ void contest_competition_0224C84C(void)
 
 void contest_competition_0224C864(DanceCompetition *param0, int param1)
 {
-    u16 *v0 = PaletteData_GetUnfadedBuffer(param0->unk_14.unk_90, 0);
-    BlendPalettes(v0, param0->unk_1050.unk_00, (0x1fff ^ ((1 << 4) | (1 << 3) | (1 << 2))), Unk_contest_competition_022546DC[param1].unk_02, Unk_contest_competition_022546DC[param1].unk_00);
+    u16 *v0 = PaletteData_GetUnfadedBuffer(param0->scene.paletteData, 0);
+    BlendPalettes(v0, param0->savedData.data, (0x1fff ^ ((1 << 4) | (1 << 3) | (1 << 2))), Unk_contest_competition_022546DC[param1].unk_02, Unk_contest_competition_022546DC[param1].unk_00);
 }
 
 void contest_competition_0224C89C(DanceCompetition *param0, const DancePacket *param1)
 {
     int v0;
 
-    if (param1->unk_07 != 0) {
+    if (param1->contestantOrder != 0) {
         return;
     }
 
-    switch (param1->unk_04) {
+    switch (param1->score) {
     case 0:
     case 1:
-        switch (param1->unk_03) {
+        switch (param1->judgeID) {
         case 1:
             v0 = 1;
             break;
@@ -2271,16 +2271,16 @@ void contest_competition_0224C8E8(DanceCompetition *param0, u32 param1)
 {
     int v0;
     u32 v1;
-    u32 v2 = param0->unk_A3C.unk_18 >> 1;
+    u32 v2 = param0->scoreState.maxScore >> 1;
 
     for (v0 = 0; v0 < 8; v0++) {
-        if (param0->unk_1AD4[v0].unk_08_2 == 1) {
-            v1 = (param0->unk_1AD4[v0].unk_06 + contest_competition_0223F0BC(param0->unk_A3C.unk_2F, 4) / 2) * v2;
+        if (param0->movePackets[v0].isValid == 1) {
+            v1 = (param0->movePackets[v0].moveSlot + contest_competition_0223F0BC(param0->scoreState.contestRank, 4) / 2) * v2;
             CP_SetDiv32_32(v1, 10000);
             v1 = CP_GetDivResult32();
 
             if (v1 == param1) {
-                contest_competition_0224C89C(param0, &param0->unk_1AD4[v0]);
+                contest_competition_0224C89C(param0, &param0->movePackets[v0]);
                 return;
             }
         }
@@ -2291,36 +2291,36 @@ void contest_competition_0224C9A4(DanceCompetition *param0)
 {
     DanceBeatTask *v0;
 
-    GF_ASSERT(param0->unk_14.unk_1F0.unk_04 == NULL);
+    GF_ASSERT(param0->scene.beatTask.task == NULL);
 
-    v0 = &param0->unk_14.unk_1F0;
-    v0->unk_00 = param0;
-    v0->unk_04 = SysTask_Start(contest_competition_0224CA28, v0, (30000 + 10000));
+    v0 = &param0->scene.beatTask;
+    v0->competition = param0;
+    v0->task = SysTask_Start(contest_competition_0224CA28, v0, (30000 + 10000));
 }
 
 void contest_competition_0224C9D4(DanceCompetition *param0)
 {
-    if (param0->unk_14.unk_1F0.unk_04 == NULL) {
+    if (param0->scene.beatTask.task == NULL) {
         return;
     }
 
-    SysTask_Done(param0->unk_14.unk_1F0.unk_04);
-    param0->unk_14.unk_1F0.unk_04 = NULL;
+    SysTask_Done(param0->scene.beatTask.task);
+    param0->scene.beatTask.task = NULL;
 }
 
 void contest_competition_0224C9F0(DanceCompetition *param0, int param1)
 {
-    DanceBeatTask *v0 = &param0->unk_14.unk_1F0;
-    GF_ASSERT(v0->unk_04 != NULL);
+    DanceBeatTask *v0 = &param0->scene.beatTask;
+    GF_ASSERT(v0->task != NULL);
 
     if (param1 == 0) {
-        v0->unk_0A = 4 * 16;
+        v0->state = 4 * 16;
     } else {
-        v0->unk_0A = 3 * 16;
+        v0->state = 3 * 16;
     }
 
-    v0->unk_0B = 1;
-    v0->unk_08 = (10 << 8);
+    v0->flag = 1;
+    v0->beat = (10 << 8);
 
     Sound_PlayEffect(SEQ_SE_DP_CON_031_sseq);
 }
@@ -2329,51 +2329,51 @@ static void contest_competition_0224CA28(SysTask *param0, void *param1)
 {
     DanceBeatTask *v0 = param1;
 
-    if (v0->unk_0B == 0) {
+    if (v0->flag == 0) {
         return;
     }
 
     {
         u16 *v1;
 
-        v1 = PaletteData_GetUnfadedBuffer(v0->unk_00->unk_14.unk_90, 0);
-        BlendPalette(&v1[v0->unk_0A], &v0->unk_00->unk_1050.unk_00[v0->unk_0A], 16, v0->unk_08 >> 8, 0x7fff);
+        v1 = PaletteData_GetUnfadedBuffer(v0->competition->scene.paletteData, 0);
+        BlendPalette(&v1[v0->state], &v0->competition->savedData.data[v0->state], 16, v0->beat >> 8, 0x7fff);
     }
 
-    if (v0->unk_08 == 0) {
-        v0->unk_0B = 0;
-    } else if (v0->unk_08 > 0x100) {
-        v0->unk_08 -= 0x100;
+    if (v0->beat == 0) {
+        v0->flag = 0;
+    } else if (v0->beat > 0x100) {
+        v0->beat -= 0x100;
     } else {
-        v0->unk_08 = 0;
+        v0->beat = 0;
     }
 }
 
 void contest_competition_0224CA90(DanceCompetition *param0, u32 param1, s32 param2, s32 param3, s32 param4, fx32 param5)
 {
-    param0->unk_1064.unk_00 = param2;
-    param0->unk_1064.unk_04 = param3;
-    param0->unk_1064.unk_08 = param4;
-    param0->unk_1064.unk_0C = param5;
+    param0->camera.x = param2;
+    param0->camera.y = param3;
+    param0->camera.z = param4;
+    param0->camera.angle = param5;
 
-    ParticleSystem_CreateEmitterWithCallback(param0->unk_0C, param1, contest_competition_0224CAC0, param0);
+    ParticleSystem_CreateEmitterWithCallback(param0->particleSystem, param1, contest_competition_0224CAC0, param0);
 }
 
 static void contest_competition_0224CAC0(SPLEmitter *param0)
 {
     DanceCompetition *v0 = ParticleSystem_GetEmitterCallbackParam();
-    DanceCamera *v1 = &v0->unk_1064;
+    DanceCamera *v1 = &v0->camera;
 
-    SPLEmitter_SetPosX(param0, v1->unk_00);
-    SPLEmitter_SetPosY(param0, v1->unk_04);
-    SPLEmitter_SetPosZ(param0, v1->unk_08);
+    SPLEmitter_SetPosX(param0, v1->x);
+    SPLEmitter_SetPosY(param0, v1->y);
+    SPLEmitter_SetPosZ(param0, v1->z);
 
-    ParticleSystem_SetEmitterEmissionCount(param0, v1->unk_0C);
+    ParticleSystem_SetEmitterEmissionCount(param0, v1->angle);
 }
 
 static void contest_competition_0224CB00(DanceCompetition *param0, int param1, int param2)
 {
-    s32 v0 = Unk_contest_competition_022546C4[param0->unk_A3C.unk_2F][param1];
+    s32 v0 = Unk_contest_competition_022546C4[param0->scoreState.contestRank][param1];
 
     if (param2 == 0) {
         contest_competition_0224CA90(param0, 0, v0, -17700, -5248, FX32_ONE);
@@ -2411,7 +2411,7 @@ static void contest_competition_0224CB80(DanceCompetition *param0, int param1)
     }
 
     contest_competition_0224CD84(param0, (0x1fff ^ ((1 << 4) | (1 << 3) | (1 << 2))), 8, 16, 0, 0x7fff);
-    PaletteData_StartFade(param0->unk_14.unk_90, 0x4, 0x3fff, -1, 16, 0, 0x7fff);
+    PaletteData_StartFade(param0->scene.paletteData, 0x4, 0x3fff, -1, 16, 0, 0x7fff);
 
     G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, 16);
 
@@ -2427,18 +2427,18 @@ static void contest_competition_0224CD60(SysTask *param0, void *param1)
 
 void contest_competition_0224CD84(DanceCompetition *param0, u32 param1, u32 param2, int param3, int param4, u16 param5)
 {
-    DanceSavedData *v0 = &param0->unk_1050;
-    v0->unk_08 = param3 << 8;
-    v0->unk_0A = param4 << 8;
-    v0->unk_0E = param5;
-    v0->unk_06 = param1;
-    v0->unk_0C = ((param4 - param3) * 0x100) / param2;
-    v0->unk_10 = 1;
+    DanceSavedData *v0 = &param0->savedData;
+    v0->current = param3 << 8;
+    v0->target = param4 << 8;
+    v0->duration = param5;
+    v0->blendMode = param1;
+    v0->step = ((param4 - param3) * 0x100) / param2;
+    v0->active = 1;
 }
 
 void contest_competition_0224CDB4(DanceCompetition *param0, int param1)
 {
-    param0->unk_1050.unk_11 = param1;
+    param0->savedData.state = param1;
 }
 
 void contest_competition_0224CDC0(DanceCompetition *param0, int param1, int param2)
@@ -2456,9 +2456,9 @@ void contest_competition_0224CDC0(DanceCompetition *param0, int param1, int para
 
     for (v0 = 0; v0 < 4; v0++) {
         if (v0 == param1) {
-            PhotoSprite_SetTint(param0->unk_14.unk_04[v0].unk_00, v1);
+            PhotoSprite_SetTint(param0->scene.photoSprites[v0].photoSprite, v1);
         } else {
-            PhotoSprite_SetTint(param0->unk_14.unk_04[v0].unk_00, v2);
+            PhotoSprite_SetTint(param0->scene.photoSprites[v0].photoSprite, v2);
         }
     }
 
@@ -2470,7 +2470,7 @@ void contest_competition_0224CE08(DanceCompetition *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        PhotoSprite_SetTint(param0->unk_14.unk_04[v0].unk_00, 0x7fff);
+        PhotoSprite_SetTint(param0->scene.photoSprites[v0].photoSprite, 0x7fff);
     }
 }
 
@@ -2482,7 +2482,7 @@ void contest_competition_0224CE28(DanceCompetition *param0)
     u8 v5[4];
 
     for (v0 = 0; v0 < 4; v0++) {
-        v3[v0] = param0->unk_A3C.unk_0A[v0];
+        v3[v0] = param0->scoreState.scores[v0];
         v4[v0] = v0;
     }
 
@@ -2520,7 +2520,7 @@ void contest_competition_0224CEE4(DanceCompetition *param0, int param1, GXRgb pa
     DancePhotoDisplay *v0 = Heap_Alloc(HEAP_ID_23, sizeof(DancePhotoDisplay));
     MI_CpuClear8(v0, sizeof(DancePhotoDisplay));
 
-    v0->unk_00 = param0->unk_14.unk_04[param1].unk_00;
+    v0->unk_00 = param0->scene.photoSprites[param1].photoSprite;
     v0->unk_08 = param2;
     v0->unk_0A = param3;
     v0->unk_10 = param4;

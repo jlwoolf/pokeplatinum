@@ -22,7 +22,7 @@ int contest_competition_02243AC4(ActingMatchState *param0, int param1)
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_0E[v0] == param0->unk_0E[param1]) {
+        if (param0->contestantIDs[v0] == param0->contestantIDs[param1]) {
             v1++;
         }
     }
@@ -83,11 +83,11 @@ void contest_competition_02243B0C(ActingMatchState *param0)
     u8 v5[4];
 
     for (v0 = 0; v0 < 4; v0++) {
-        v3[v0] = param0->unk_1A[v0];
+        v3[v0] = param0->turnScores[v0];
         v4[v0] = v0;
 
         for (v1 = 0; v1 < 4; v1++) {
-            if (v0 == param0->unk_01[v1]) {
+            if (v0 == param0->contestantOrder[v1]) {
                 v5[v0] = v1;
                 break;
             }
@@ -96,18 +96,18 @@ void contest_competition_02243B0C(ActingMatchState *param0)
 
     {
         for (v0 = 0; v0 < 4; v0++) {
-            switch (param0->unk_30.unk_00[v0].unk_28_4) {
+            switch (param0->turnState.performances[v0].judgeAppealState) {
             case 0:
             default:
                 break;
             case 1:
-                v3[v0] = Unk_contest_competition_022539C0[param0->unk_30.unk_00[v0].unk_28_6];
+                v3[v0] = Unk_contest_competition_022539C0[param0->turnState.performances[v0].appealOrder];
                 break;
             case 2:
-                v3[v0] = Unk_contest_competition_022539B0[param0->unk_30.unk_00[v0].unk_28_6];
+                v3[v0] = Unk_contest_competition_022539B0[param0->turnState.performances[v0].appealOrder];
                 break;
             case 3:
-                v3[v0] = Unk_contest_competition_022539B8[param0->unk_30.unk_00[v0].unk_28_6];
+                v3[v0] = Unk_contest_competition_022539B8[param0->turnState.performances[v0].appealOrder];
                 break;
             }
         }
@@ -132,6 +132,6 @@ void contest_competition_02243B0C(ActingMatchState *param0)
     }
 
     for (v0 = 0; v0 < 4; v0++) {
-        param0->unk_01[v0] = v4[v0];
+        param0->contestantOrder[v0] = v4[v0];
     }
 }

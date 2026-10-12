@@ -5,7 +5,7 @@
 
 typedef struct {
     u16 moveIDs[CONTEST_NUM_PARTICIPANTS];
-    u8 unk_08[CONTEST_NUM_PARTICIPANTS];
+    u8 moveSlots[CONTEST_NUM_PARTICIPANTS];
 } ActingMonMoves;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_MON_MOVES_H

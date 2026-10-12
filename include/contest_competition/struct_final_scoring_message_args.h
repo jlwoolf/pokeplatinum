@@ -3,10 +3,10 @@
 
 typedef struct {
     u8 contestantID;
-    u8 unk_01;
-    u16 unk_02;
+    u8 moveSlot;
+    u16 unused_02;
     u8 contestantEntryNum;
-    u8 unk_05;
+    u8 unused_05;
 } FinalScoringMessageArgs;
 
 #endif // POKEPLATINUM_STRUCT_FINAL_SCORING_MESSAGE_ARGS_H

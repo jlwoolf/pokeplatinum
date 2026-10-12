@@ -8,18 +8,18 @@
 #include "contest_competition/struct_acting_sync_packet.h"
 
 typedef struct {
-    ActingCompetition *unk_00;
-    ContestPacketHeader unk_04;
+    ActingCompetition *competition;
+    ContestPacketHeader header;
     u8 state;
     u8 contestantID;
     u16 moveID;
-    u8 unk_10;
-    ActingSyncPacket unk_14;
-    ActingMessageParams unk_F2;
+    u8 timer;
+    ActingSyncPacket syncPacket;
+    ActingMessageParams messageParams;
     u8 actingMessagesID;
-    ActingMessageParams unk_FA;
+    ActingMessageParams messageParams2;
     u8 actingMessagesID2;
-    ActingMoveAnimArgs unk_104;
+    ActingMoveAnimArgs animArgs;
 } ActingMoveAnimTask;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_MOVE_ANIM_TASK_H

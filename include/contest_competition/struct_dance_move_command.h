@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_DANCE_MOVE_COMMAND_H
 
 typedef struct {
-    u8 unk_00[4];
+    u8 command[4];
 } DanceMoveCommand;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_MOVE_COMMAND_H

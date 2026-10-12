@@ -7,17 +7,17 @@
 #include "contest_competition/struct_final_scoring_message_args.h"
 
 typedef struct {
-    ContestFinalScoring *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    FinalScoringMessageArgs unk_14;
+    ContestFinalScoring *finalScoring;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    u8 state;
+    u8 contestantID;
+    u8 timer;
+    FinalScoringMessageArgs messageArgs;
     u8 announcerMessagesID;
-    u8 unk_1B;
-    u8 unk_1C;
-    u8 unk_1D;
+    u8 delay;
+    u8 flag;
+    u8 messageState;
 } FinalScoringContestantTask;
 
 #endif // POKEPLATINUM_STRUCT_FINAL_SCORING_CONTESTANT_TASK_H
