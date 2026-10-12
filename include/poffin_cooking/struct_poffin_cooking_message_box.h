@@ -8,17 +8,17 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    int unk_00;
-    BgConfig *unk_04;
-    Window *unk_08[4];
-    int unk_18;
-    PoffinCookingMessages *unk_1C;
-    int unk_20;
-    PoffinCookingSession *unk_24;
-    BOOL unk_28;
-    SysTask *unk_2C;
-    int unk_30;
-    void *unk_34;
+    int heapID;
+    BgConfig *bgConfig;
+    Window *windows[4];
+    int frameType;
+    PoffinCookingMessages *messages;
+    int playerCount;
+    PoffinCookingSession *session;
+    BOOL loaded;
+    SysTask *task;
+    int timer;
+    void *waitDial;
 } PoffinCookingMessageBox;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_MESSAGE_BOX_H

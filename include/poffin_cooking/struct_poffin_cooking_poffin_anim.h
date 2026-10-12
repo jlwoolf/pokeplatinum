@@ -7,17 +7,17 @@
 #include "sprite.h"
 
 typedef struct {
-    BOOL unk_00;
-    BOOL unk_04;
-    Sprite *unk_08[4];
-    Sprite *unk_18[4];
-    PoffinCookingSpriteSet unk_28[4];
-    int unk_108;
-    PoffinCookingMotionAnim unk_10C[4];
-    PoffinCookingMotionAnim unk_16C[4];
-    int unk_1CC[4];
-    int unk_1DC[4];
-    int unk_1EC;
+    BOOL active;
+    BOOL animating;
+    Sprite *poffinSprites[4];
+    Sprite *burstSprites[4];
+    PoffinCookingSpriteSet spriteSets[4];
+    int count;
+    PoffinCookingMotionAnim motionX[4];
+    PoffinCookingMotionAnim motionY[4];
+    int states[4];
+    int delays[4];
+    int nextIndex;
 } PoffinCookingPoffinAnim;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_POFFIN_ANIM_H

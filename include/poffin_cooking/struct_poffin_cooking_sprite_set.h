@@ -5,9 +5,9 @@
 #include "sprite_resource.h"
 
 typedef struct {
-    SpriteResource *unk_00[4];
-    BOOL unk_10;
-    SpriteResourcesHeader unk_14;
+    SpriteResource *resources[4];
+    BOOL sharedPalette;
+    SpriteResourcesHeader header;
 } PoffinCookingSpriteSet;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_SPRITE_SET_H

@@ -2,11 +2,11 @@
 #define POKEPLATINUM_STRUCT_POFFIN_COOKING_SCALE_ANIM_H
 
 typedef struct {
-    fx32 unk_00;
-    fx32 unk_04;
-    fx32 unk_08;
-    int unk_0C;
-    int unk_10;
+    fx32 current;
+    fx32 start;
+    fx32 delta;
+    int elapsed;
+    int duration;
 } PoffinCookingScaleAnim;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_SCALE_ANIM_H

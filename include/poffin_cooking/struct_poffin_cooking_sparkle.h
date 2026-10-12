@@ -8,12 +8,12 @@
 #include "sprite.h"
 
 typedef struct {
-    BOOL unk_00;
-    BOOL unk_04;
-    VecFx32 unk_08;
-    PoffinCookingMotionAnim unk_14;
-    PoffinCookingMotionAnim unk_2C;
-    Sprite *unk_44;
+    BOOL active;
+    BOOL motionDone;
+    VecFx32 position;
+    PoffinCookingMotionAnim motionX;
+    PoffinCookingMotionAnim motionY;
+    Sprite *sprite;
 } PoffinCookingSparkle;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_SPARKLE_H

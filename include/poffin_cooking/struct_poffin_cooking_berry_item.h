@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_POFFIN_COOKING_BERRY_ITEM_H
 
 typedef struct {
-    u32 unk_00;
+    u32 itemID;
 } PoffinCookingBerryItem;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_BERRY_ITEM_H

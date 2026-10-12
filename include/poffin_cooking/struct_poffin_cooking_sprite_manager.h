@@ -6,9 +6,9 @@
 #include "sprite_util.h"
 
 typedef struct {
-    SpriteList *unk_00;
-    G2dRenderer unk_04;
-    SpriteResourceCollection *unk_190[4];
+    SpriteList *spriteList;
+    G2dRenderer renderer;
+    SpriteResourceCollection *resourceCollections[4];
 } PoffinCookingSpriteManager;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_SPRITE_MANAGER_H

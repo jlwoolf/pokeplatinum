@@ -4,10 +4,10 @@
 #include "sprite.h"
 
 typedef struct {
-    Sprite *unk_00;
-    int unk_04;
-    int unk_08;
-    BOOL unk_0C;
+    Sprite *sprite;
+    int frame;
+    int framesRemaining;
+    BOOL active;
 } PoffinCookingArrow;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_ARROW_H

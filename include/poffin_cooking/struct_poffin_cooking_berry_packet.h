@@ -5,8 +5,8 @@
 #include "poffin_cooking/struct_poffin_cooking_blend_state.h"
 
 typedef struct {
-    PoffinCookingBerryItem unk_00[4];
-    PoffinCookingBlendState unk_10;
+    PoffinCookingBerryItem berries[4];
+    PoffinCookingBlendState blendState;
 } PoffinCookingBerryPacket;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_BERRY_PACKET_H

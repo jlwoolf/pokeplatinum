@@ -6,22 +6,22 @@
 #include "string_template.h"
 
 typedef struct {
-    MessageLoader *unk_00;
-    StringTemplate *unk_04;
-    String *unk_08;
-    String *unk_0C;
-    String *unk_10;
-    String *unk_14;
-    String *unk_18;
-    String *unk_1C;
-    String *unk_20;
-    String *unk_24;
-    String *unk_28;
-    String *unk_2C;
-    String *unk_30;
-    String *unk_34;
-    String *unk_38[5];
-    String *unk_4C[10];
+    MessageLoader *messageLoader;
+    StringTemplate *stringTemplate;
+    String *formattedString;
+    String *string00;
+    String *string01;
+    String *string02;
+    String *string20;
+    String *string21;
+    String *string22;
+    String *string23;
+    String *string24;
+    String *string25;
+    String *string08;
+    String *string09;
+    String *strings03[5];
+    String *strings10[10];
 } PoffinCookingMessages;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_MESSAGES_H
