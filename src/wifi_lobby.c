@@ -104,7 +104,7 @@ int WiFiLobby_Main(ApplicationManager *appMan, int *param1)
     case 4: {
         const ApplicationManagerTemplate *appTemplate;
 
-        appTemplate = VsRecorder_GetAppTemplate(appState->args->unk_0C);
+        appTemplate = VsRecorder_GetAppTemplate(appState->args->param);
         appState->appMan = ApplicationManager_New(appTemplate, appState->args->fieldSystem, HEAP_ID_116);
         (*param1)++;
     } break;

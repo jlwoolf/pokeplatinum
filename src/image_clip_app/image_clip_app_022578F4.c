@@ -328,8 +328,8 @@ void PhotoRenderer_FreeBackground(PhotoRenderer *param0)
 
 void PhotoRenderer_GetPokemonSpriteCenter(PhotoRenderer *param0, int *param1, int *param2)
 {
-    *param1 = PokemonSprite_GetAttribute(param0->context.pokemonSprite.unk_00, MON_SPRITE_X_CENTER);
-    *param2 = PokemonSprite_GetAttribute(param0->context.pokemonSprite.unk_00, MON_SPRITE_Y_CENTER);
+    *param1 = PokemonSprite_GetAttribute(param0->context.pokemonSprite.sprite, MON_SPRITE_X_CENTER);
+    *param2 = PokemonSprite_GetAttribute(param0->context.pokemonSprite.sprite, MON_SPRITE_Y_CENTER);
 }
 
 int PhotoRenderer_GetSpriteCount(PhotoRenderer *param0)

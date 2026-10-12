@@ -1421,7 +1421,7 @@ static int SpinTrade_State49(SpinTrade *param0)
         if (param0->unk_0C >= (30 * 4)) {
             param0->unk_0C = 0;
 
-            if (param0->unk_D0->unk_3C == 0) {
+            if (param0->unk_D0->pendingSendCount == 0) {
                 CommManager_SetErrorHandling(0, 0);
                 CommManager_SetMaxNumConnections(1);
                 CommManager_UnionRestartSearch();

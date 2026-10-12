@@ -194,7 +194,7 @@ int GlobalTerminal_Init(ApplicationManager *appMan, int *unused)
         NetworkIcon_Init();
         GlobalTerminal_SetNextState(v0, 13, 8);
     } else {
-        if (v0->appState->args->unk_08) {
+        if (v0->appState->args->mode) {
             v0->state = 1;
         } else {
             v0->state = 0;

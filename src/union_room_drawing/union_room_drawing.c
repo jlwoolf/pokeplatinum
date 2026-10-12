@@ -526,7 +526,7 @@ static void UnionRoomDrawing_InitState(UnionRoomDrawing *param0)
     param0->penColor = 0;
     param0->penSize = 1;
     param0->drawingState = 1;
-    param0->clientReadySent = 0;
+    param0->yesNoMenuInitialized = 0;
     param0->connectedCount = 2;
     param0->connectedBitmap = WirelessManager_GetConnectedBitmap();
     param0->clientReadySent = 0;
@@ -1281,7 +1281,7 @@ static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int pa
         UnionRoomDrawing_SetMaxConnections(param0, 0);
     }
 
-    param0->connectedCount = CommSys_ConnectedCount();
+    param0->prevConnectedCount = CommSys_ConnectedCount();
     UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
@@ -1289,8 +1289,8 @@ static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int pa
 
 static int UnionRoomDrawing_StateWaitPlayerLeft(UnionRoomDrawing *param0, int param1)
 {
-    if ((param0->connectedCount != 0) && (CommSys_ConnectedCount() != param0->connectedCount)) {
-        param0->connectedCount = 0;
+    if ((param0->prevConnectedCount != 0) && (CommSys_ConnectedCount() != param0->prevConnectedCount)) {
+        param0->prevConnectedCount = 0;
     }
 
     if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
@@ -1304,11 +1304,11 @@ static int UnionRoomDrawing_StateWaitPlayerLeft(UnionRoomDrawing *param0, int pa
 
 static int UnionRoomDrawing_StatePlayerLeftDone(UnionRoomDrawing *param0, int param1)
 {
-    if ((param0->connectedCount != 0) && (CommSys_ConnectedCount() != param0->connectedCount)) {
-        param0->connectedCount = 0;
+    if ((param0->prevConnectedCount != 0) && (CommSys_ConnectedCount() != param0->prevConnectedCount)) {
+        param0->prevConnectedCount = 0;
     }
 
-    if ((++param0->inputTimer > 60) && (param0->connectedCount == 0)) {
+    if ((++param0->inputTimer > 60) && (param0->prevConnectedCount == 0)) {
         UnionRoomDrawing_EraseMessageBox(param0);
         UnionRoomDrawing_SetNextState(param0, 4);
 
@@ -1767,7 +1767,7 @@ static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0)
             param0->nextState = 19;
             CommManager_SetMaxNumConnections(1);
 
-            if (param0->clientReadySent) {
+            if (param0->yesNoMenuInitialized) {
                 UnionRoomDrawing_ResetYesNoMenu(param0);
                 Sprite_SetAnim(param0->toolSprites[8], sPenColorSpriteData[8][2]);
             }
@@ -1840,9 +1840,9 @@ static void UnionRoomDrawing_ApplyNextState(UnionRoomDrawing *param0, int param1
 
 static BOOL UnionRoomDrawing_InitYesNoMenu(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1)
 {
-    if (!param0->clientReadySent) {
+    if (!param0->yesNoMenuInitialized) {
         YesNoTouchMenu_InitWithParams(param0->yesNoMenu, param1);
-        param0->clientReadySent = 1;
+        param0->yesNoMenuInitialized = 1;
         return 1;
     } else {
         return 0;
@@ -1851,9 +1851,9 @@ static BOOL UnionRoomDrawing_InitYesNoMenu(UnionRoomDrawing *param0, YesNoTouchM
 
 static void UnionRoomDrawing_ResetYesNoMenu(UnionRoomDrawing *param0)
 {
-    if (param0->clientReadySent) {
+    if (param0->yesNoMenuInitialized) {
         YesNoTouchMenu_Reset(param0->yesNoMenu);
-        param0->clientReadySent = 0;
+        param0->yesNoMenuInitialized = 0;
     }
 }
 

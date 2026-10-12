@@ -67,7 +67,7 @@ struct UnionRoomDrawing {
     u8 drawingTiles[14400]; // canvas tile data (30 * 15 tiles of 32 bytes)
     UnionRoomDrawingChunk sendChunk; // chunk currently being streamed to clients
     UnionRoomDrawingChunk recvChunks[5]; // per-net-ID receive buffers for incoming chunks
-    s32 connectedCount;
+    s32 prevConnectedCount;
     u32 ackedNetIds; // server: net IDs that accepted the join handshake
     u16 ackedCount; // client: connected count reported by the server
     s16 commTimer;
@@ -75,7 +75,7 @@ struct UnionRoomDrawing {
     UnionRoomDrawingStatus drawingStatusBroadcast[5]; // server: statuses relayed to all players
     YesNoTouchMenu *yesNoMenu;
     int drawingState; // 1 = idle/ready, 2 = drawing in progress
-    int clientReadySent;
+    int yesNoMenuInitialized;
     int clientReadySent; // server: a client has reported ready
     int readyToDraw;
     int disconnectHandled;

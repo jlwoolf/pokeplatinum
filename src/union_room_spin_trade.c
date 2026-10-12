@@ -121,7 +121,7 @@ static BOOL UnionRoomSpinTrade_StateGroupDone(UnionRoomSpinTradeTask *param0)
             CommManager_SetErrorHandling(1, 1);
 
             param0->partyMenu = FieldSystem_OpenPartyMenu_SelectForSpinTrade(param0->fieldSystem, param0->selectedMonSlot);
-            param0->session->unk_00 = 1;
+            param0->session->appState = 1;
             param0->state = 2;
         }
     }
@@ -150,7 +150,7 @@ static BOOL UnionRoomSpinTrade_StateEggMenuDone(UnionRoomSpinTradeTask *param0)
         } else {
             param0->session->selectedMonSlot = v0;
             FieldSystem_StartChildProcess(param0->fieldSystem, &sSpinTradeAppTemplate, param0->session);
-            param0->session->unk_00 = 3;
+            param0->session->appState = 3;
             param0->state = 4;
         }
     }

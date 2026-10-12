@@ -251,7 +251,7 @@ static int BattleSalon_WaitWifiApp(WifiBattleTowerTask *param0, FieldSystem *fie
         return 1;
     }
 
-    param0->result = param0->appState->unk_20;
+    param0->result = param0->appState->fromMenu;
     Heap_Free(param0->appState);
 
     return 2;

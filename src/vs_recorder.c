@@ -115,10 +115,10 @@ static void VsRecorder_Init(ApplicationManager *appMan, int mode)
 
     MI_CpuFill8(v0->vsRecorder, 0, sizeof(VsRecorderState));
 
-    v0->vsRecorder->unk_868 = &v0->playbackRequest;
+    v0->vsRecorder->playbackRequest = &v0->playbackRequest;
     v0->vsRecorder->saveData = v0->saveData;
-    v0->vsRecorder->unk_00 = mode;
-    v0->vsRecorder->unk_81C[v0->vsRecorder->unk_534.mainEntryCount] = VsRecorderGraphics_GetMenuForMode(v0->vsRecorder, v0->vsRecorder->unk_00);
+    v0->vsRecorder->mode = mode;
+    v0->vsRecorder->menuStack[v0->vsRecorder->menu.mainEntryCount] = VsRecorderGraphics_GetMenuForMode(v0->vsRecorder, v0->vsRecorder->mode);
 
     int eventType;
 
@@ -242,7 +242,7 @@ static BOOL VsRecorder_RunViewer(VsRecorderAppData *param0, enum HeapID heapID)
 {
     switch (param0->state) {
     case 0:
-        if (param0->vsRecorder->unk_00 == 0) {
+        if (param0->vsRecorder->mode == 0) {
             param0->appMan = ApplicationManager_New(&gVsRecorderViewerTemplate, param0, heapID);
         } else {
             param0->appMan = ApplicationManager_New(&gVsRecorderViewerWiFiTemplate, param0, heapID);
@@ -268,7 +268,7 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
 {
     switch (param0->state) {
     case 0:
-        if (param0->vsRecorder->unk_00 != 0) {
+        if (param0->vsRecorder->mode != 0) {
             Overlay_UnloadByID(FS_OVERLAY_ID(global_terminal));
             Overlay_UnloadHttpOverlay();
         }
@@ -281,7 +281,7 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
         param0->battleDTO = FieldBattleDTO_New(heapID, 0x0);
 
         if (BattleRecording_Exists() == 0) {
-            BattleRecording_Load(param0->saveData, heapID, &v0, param0->battleDTO, param0->vsRecorder->unk_86C);
+            BattleRecording_Load(param0->saveData, heapID, &v0, param0->battleDTO, param0->vsRecorder->selectedDataIndex);
         } else {
             BattleRecording_RestoreBattleInfo(param0->battleDTO, param0->saveData);
             v0 = 1;
@@ -295,7 +295,7 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
             Overlay_UnloadByID(FS_OVERLAY_ID(vs_recorder_viewer));
         }
 
-        param0->vsRecorder->unk_874 = 1;
+        param0->vsRecorder->subMode = 1;
 
         if (v0 != 1) {
             Heap_Free(param0->battleDTO->bagCursor);
@@ -324,11 +324,11 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
             break;
         }
 
-        param0->vsRecorder->unk_874 = param0->battleDTO->recordingStopped;
+        param0->vsRecorder->subMode = param0->battleDTO->recordingStopped;
 
-        if (param0->vsRecorder->unk_00 != 0) {
-            if (param0->vsRecorder->unk_874 == 0) {
-                *param0->vsRecorder->unk_878 = 1;
+        if (param0->vsRecorder->mode != 0) {
+            if (param0->vsRecorder->subMode == 0) {
+                *param0->vsRecorder->recordFlagPtr = 1;
             }
         }
 
@@ -350,7 +350,7 @@ static BOOL VsRecorder_RunBattlePlayback(VsRecorderAppData *param0, enum HeapID 
 
         param0->state = 0;
 
-        if (param0->vsRecorder->unk_00 != 0) {
+        if (param0->vsRecorder->mode != 0) {
             Overlay_LoadHttpOverlay();
             Overlay_LoadByID(FS_OVERLAY_ID(global_terminal), 2);
         }
