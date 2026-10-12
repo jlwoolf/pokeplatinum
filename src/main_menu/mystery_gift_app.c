@@ -12,10 +12,10 @@
 #include "applications/title_screen.h"
 #include "main_menu/distribution_cartridge.h"
 #include "main_menu/main_menu_util.h"
-#include "main_menu/ov97_0222D04C.h"
-#include "main_menu/ov97_02232054.h"
-#include "main_menu/ov97_02238534.h"
-#include "main_menu/ov97_02238D74.h"
+#include "main_menu/mystery_gift_share.h"
+#include "main_menu/mystery_gift_util.h"
+#include "main_menu/wireless_distribution.h"
+#include "main_menu/mystery_gift_wifi.h"
 #include "main_menu/wonder_cards_app.h"
 #include "savedata/save_table.h"
 
@@ -238,8 +238,8 @@ static enum MysteryGiftAppState DisconnectLocalWireless(ApplicationManager *appM
 static void MakeStateChangeListMenuFromEntryTemplates(ApplicationManager *appMan, StateTransitionMenuOptionTemplate *entries, int numEntries, Window *window, u32 msgBoxEntryId);
 static void ShowMysteryGiftMenuOptions(ApplicationManager *appMan, int windowBaseTile, u32 textEntryId);
 static void ShowMessageBox(ApplicationManager *appMan, Window *window, u32 entryId);
-static void ov97_022302D4(void);
-static void ov97_02230224(MysteryGiftAppData *appData);
+static void TeardownLocalWirelessDistribution(void);
+static void UpdateSearchPartyState(MysteryGiftAppData *appData);
 static void UpdateLocalWirelessDistributionState(MysteryGiftAppData *appData);
 static int ShowMessageBoxIntoStateTransition(ApplicationManager *appMan, Window *window, int textEntryId, enum MysteryGiftAppState nextState);
 static void RunParticleAnimationFrame(SysTask *sysTask, MysteryGiftParticle *particle);
@@ -313,8 +313,8 @@ static ListMenuTemplate sMysteryGiftAppListMenuTemplate = {
 };
 
 static int sWirelessDistribState;
-static int Unk_ov97_0223F1B4;
-static void *Unk_ov97_0223F1AC;
+static int sWirelessDistributionTimer;
+static void *sWirelessDistributionContext;
 
 static void ToggleWaitDial(MysteryGiftAppData *appData, BOOL show)
 {
@@ -413,7 +413,7 @@ static enum MysteryGiftAppState SetupFriendOrGBADistribution(ApplicationManager 
     EraseStdFrameIfInUse(&appData->menuWindows[2], FALSE);
 
     if (appData->receptionMethod != RECEIVE_FROM_GBA_CARTRIDGE) {
-        ov97_0222D200(appData, 15);
+        MysteryGiftShare_StartClient(appData, 15);
         appData->wirelessCommsTimeout = (60 * 120);
         NetworkIcon_Init();
         ToggleWaitDial(appData, TRUE);
@@ -443,7 +443,7 @@ static enum MysteryGiftAppState SendGiftRequestIfCanReceive(ApplicationManager *
     }
 
     if (appData->receptionMethod == RECEIVE_FROM_FRIEND) {
-        ov97_0222D234(appData->unk_438);
+        MysteryGiftShare_ConnectToServer(appData->unk_438);
     }
 
     ShowMessageBox(appMan, &appData->messageBox, MysteryGiftMenu_Text_RequestSentPleaseWait);
@@ -471,7 +471,7 @@ static WonderCard *GetReceivedWonderCard(ApplicationManager *appMan)
 
     switch (appData->receptionMethod) {
     case RECEIVE_FROM_FRIEND:
-        memcpy(wonderCard, ov97_0222D2B8(0, NULL, 0), sizeof(WonderCard));
+        memcpy(wonderCard, MysteryGiftShare_GetWonderCardBuffer(0, NULL, 0), sizeof(WonderCard));
         MainMenuUtil_DecryptReceivedWonderCard(&appData->eventData, &appData->eventData.wonderCard, HEAP_ID_MYSTERY_GIFT_APP);
         break;
     case RECEIVE_FROM_LOCAL_WIRELESS:
@@ -688,7 +688,7 @@ static enum MysteryGiftAppState ReturnToReceptionMethodChoiceAfterRefusingGift(A
     NetworkIcon_Destroy();
 
     if (appData->receptionMethod == RECEIVE_FROM_FRIEND) {
-        ov97_0222D2DC();
+        MysteryGiftShare_End();
     }
 
     return ShowMysteryGiftReceptionMethodsMenu(appMan);
@@ -727,7 +727,7 @@ static enum MysteryGiftAppState DisconnectLocalWireless(ApplicationManager *appM
     if (sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_40
         || sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_41
         || sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_48) {
-        if (ov97_022389C8()) {
+        if (WirelessDistribution_Stop()) {
             sWirelessDistribState = WIRELESS_DISTRIBUTION_STATE_43;
         }
     }
@@ -769,7 +769,7 @@ static enum MysteryGiftAppState ShowMysteryGiftReceptionMethodsMenu(ApplicationM
 
     if (appData->unk_62C == 30) {
         appData->unk_630 = 1;
-        ov97_02230224(appData);
+        UpdateSearchPartyState(appData);
     }
 
     EraseStdFrameIfInUse(&appData->menuWindows[0], FALSE);
@@ -791,7 +791,7 @@ static enum MysteryGiftAppState ExitToWonderCardsApp(ApplicationManager *appMan)
 
     if (appData->unk_62C == 30) {
         appData->unk_630 = 1;
-        ov97_02230224(appData);
+        UpdateSearchPartyState(appData);
     }
 
     MainMenuUtil_StartScreenFadeToState(FADE_TYPE_BRIGHTNESS_OUT, MG_APP_STATE_EXIT_TO_WONDER_CARDS_APP, (int *)appData->statePtr, MG_APP_STATE_WAIT_SCREEN_TRANSITION);
@@ -1032,7 +1032,7 @@ static void SearchForWiFiDistributionEvent(ApplicationManager *appMan, enum Myst
 {
     MysteryGiftAppData *appData = ApplicationManager_Data(appMan);
 
-    switch (ov97_02238EAC(appMan, &appData->nasAuthState)) {
+    switch (MysteryGiftWifi_Main(appMan, &appData->nasAuthState)) {
     case 0:
         break;
     case 1:
@@ -1143,7 +1143,7 @@ static void FreeMultiplayerCommResources(MysteryGiftAppData *appData)
     case RECEPTION_METHOD_NONE:
         break;
     case RECEIVE_FROM_FRIEND:
-        ov97_0222D2DC();
+        MysteryGiftShare_End();
         NetworkIcon_Destroy();
         break;
     case RECEIVE_FROM_GBA_CARTRIDGE:
@@ -1167,7 +1167,7 @@ static int MysteryGiftApp_Init(ApplicationManager *appMan, int *unused)
     GXLayers_DisableEngineALayers();
     GXLayers_DisableEngineBLayers();
 
-    ov97_02232054();
+    MysteryGiftUtil_SetupGxBanks();
     SetupGraphics(appData->bgConfig);
 
     SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
@@ -1992,7 +1992,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
     CTRDG_IsExisting();
 
     if (appData->unk_62C != 29) {
-        ov97_02230224(appData);
+        UpdateSearchPartyState(appData);
     }
 
     switch (*state) {
@@ -2029,7 +2029,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
             ToggleWaitDial(appData, FALSE);
             GetReceivedWonderCard(appMan);
 
-            appData->canReceiveGiftStatus = ov97_02232148(appData->saveData, &appData->eventData);
+            appData->canReceiveGiftStatus = MysteryGiftUtil_GetEventReceiveStatus(appData->saveData, &appData->eventData);
 
             if (appData->canReceiveGiftStatus == MYSTERY_GIFT_CANT_RECEIVE_WRONG_VERSION) {
                 ToggleWaitDial(appData, FALSE);
@@ -2039,7 +2039,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
                     Window_Add(appData->bgConfig, &appData->wonderCardTitleWindow, BG_LAYER_MAIN_0, 3, 2, 26, TEXT_LINES_TILES(2), 0, BASE_TILE_WONDERCARD_TITLE);
                 }
 
-                ShowWonderCardTitle(appMan, &appData->wonderCardTitleWindow, ov97_02238D54());
+                ShowWonderCardTitle(appMan, &appData->wonderCardTitleWindow, WirelessDistribution_GetData());
                 ShowMessageBox(appMan, &appData->messageBox, MysteryGiftMenu_Text_ReceiveThisGift);
                 ShowConfirmReceiveGiftMenu_LocalWireless(appMan);
                 *state = MG_APP_STATE_WAIT_CONFIRM_RECEIVE_LOCAL_WIRELESS_GIFT;
@@ -2048,7 +2048,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
 
         if (sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_47
             || sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_46) {
-            ov97_022302D4();
+            TeardownLocalWirelessDistribution();
             *state = MG_APP_STATE_NO_GIFT_FOUND;
         }
         break;
@@ -2133,17 +2133,17 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
             || sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_45
             || sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_46) {
             if (sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_47) {
-                ov97_022302D4();
+                TeardownLocalWirelessDistribution();
             }
 
             *state = ReturnToReceptionMethodChoiceAfterRefusingGift(appMan);
         }
         break;
     case MG_APP_STATE_SEARCH_FOR_FRIEND_GIFT:
-        if ((appData->unk_438 = ov97_0222D250(appData)) != -1) {
+        if ((appData->unk_438 = MysteryGiftShare_FindReceivedEventData(appData)) != -1) {
             ToggleWaitDial(appData, FALSE);
 
-            appData->canReceiveGiftStatus = ov97_02232148(appData->saveData, &appData->eventData);
+            appData->canReceiveGiftStatus = MysteryGiftUtil_GetEventReceiveStatus(appData->saveData, &appData->eventData);
 
             if (!Window_IsInUse(&appData->wonderCardTitleWindow)) {
                 Window_Add(appData->bgConfig, &appData->wonderCardTitleWindow, BG_LAYER_MAIN_0, 3, 2, 26, TEXT_LINES_TILES(2), 0, BASE_TILE_WONDERCARD_TITLE);
@@ -2157,7 +2157,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
 
         if (JOY_NEW(PAD_BUTTON_B) || --appData->wirelessCommsTimeout == 0) {
             ToggleWaitDial(appData, FALSE);
-            ov97_0222D2DC();
+            MysteryGiftShare_End();
             NetworkIcon_Destroy();
             *state = MG_APP_STATE_NO_GIFT_FOUND;
         }
@@ -2179,7 +2179,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
                 *state = MG_APP_STATE_RECEIVING_FROM_FRIEND;
             }
         } else if (netID != 0 && CommSys_IsPlayerConnected(netID) == FALSE) {
-            ov97_0222D2DC();
+            MysteryGiftShare_End();
             NetworkIcon_Destroy();
             SetDownloadArrowAnim(appData, HIDE_DOWNLOADING_ARROW);
             ToggleWaitDial(appData, FALSE);
@@ -2188,7 +2188,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
         }
 
         if (JOY_NEW(PAD_BUTTON_B) || --appData->wirelessCommsTimeout == 0) {
-            ov97_0222D2DC();
+            MysteryGiftShare_End();
             NetworkIcon_Destroy();
             SetDownloadArrowAnim(appData, HIDE_DOWNLOADING_ARROW);
             ToggleWaitDial(appData, FALSE);
@@ -2196,7 +2196,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
         }
     } break;
     case MG_APP_STATE_RECEIVING_FROM_FRIEND:
-        if (ov97_0222D2A0()) {
+        if (MysteryGiftShare_HasReceivedEventData()) {
             *state = MG_APP_STATE_SAVE_GIFT_FROM_FRIEND;
         }
 
@@ -2206,7 +2206,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
             || --appData->wirelessCommsTimeout == 0
             || (netID != 0 && CommSys_IsPlayerConnected(netID) == FALSE)) {
             ToggleWaitDial(appData, FALSE);
-            ov97_0222D2DC();
+            MysteryGiftShare_End();
             NetworkIcon_Destroy();
             *state = MG_APP_STATE_NO_GIFT_FOUND;
         }
@@ -2221,7 +2221,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
         int netID = CommSys_CurNetId();
 
         if (netID != 0 && CommSys_IsPlayerConnected(netID) == FALSE) {
-            ov97_0222D2DC();
+            MysteryGiftShare_End();
             appData->cancelSave = TRUE;
             MainMenuUtil_CancelSave();
             ToggleWaitDial(appData, FALSE);
@@ -2262,7 +2262,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
     case MG_APP_STATE_RECEIVE_FROM_FRIEND_SUCCESS:
         if (--appData->delay == 0) {
             ToggleWaitDial(appData, FALSE);
-            ov97_0222D2DC();
+            MysteryGiftShare_End();
             NetworkIcon_Destroy();
             Sound_PlayEffect(SEQ_SE_DP_UG_020_sseq);
             SetDownloadArrowAnim(appData, HIDE_DOWNLOADING_ARROW);
@@ -2304,7 +2304,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
             DistributionCartridge_ReadData(&appData->eventData, sizeof(MysteryGiftEventData));
         }
 
-        appData->canReceiveGiftStatus = ov97_02232148(appData->saveData, &appData->eventData);
+        appData->canReceiveGiftStatus = MysteryGiftUtil_GetEventReceiveStatus(appData->saveData, &appData->eventData);
 
         if (appData->canReceiveGiftStatus == MYSTERY_GIFT_CANT_RECEIVE_WRONG_VERSION) {
             ToggleWaitDial(appData, FALSE);
@@ -2471,7 +2471,7 @@ static int MysteryGiftApp_Exit(ApplicationManager *appMan, int *unused)
     return TRUE;
 }
 
-static void ov97_02230224(MysteryGiftAppData *param0)
+static void UpdateSearchPartyState(MysteryGiftAppData *param0)
 {
     int v0;
 
@@ -2498,7 +2498,7 @@ static void ov97_02230224(MysteryGiftAppData *param0)
     }
 }
 
-static void ov97_02230280(int param0)
+static void OnWirelessDistributionReceived(int param0)
 {
     switch (param0) {
     case 0:
@@ -2523,21 +2523,21 @@ static void ov97_02230280(int param0)
     }
 }
 
-static void ov97_022302D4(void)
+static void TeardownLocalWirelessDistribution(void)
 {
     WirelessDriver_Shutdown();
-    Heap_Free(Unk_ov97_0223F1AC);
+    Heap_Free(sWirelessDistributionContext);
     NetworkIcon_Destroy();
 
-    Unk_ov97_0223F1AC = NULL;
+    sWirelessDistributionContext = NULL;
 }
 
 static void UpdateLocalWirelessDistributionState(MysteryGiftAppData *appData)
 {
     if (sWirelessDistribState == WIRELESS_DISTRIBUTION_STATE_44) {
-        ov97_022302D4();
+        TeardownLocalWirelessDistribution();
 
-        if (ov97_02238CA0()) {
+        if (WirelessDistribution_VerifyData()) {
             sWirelessDistribState = WIRELESS_DISTRIBUTION_STATE_45;
         } else {
             sWirelessDistribState = WIRELESS_DISTRIBUTION_STATE_46;
@@ -2560,9 +2560,9 @@ static void UpdateLocalWirelessDistributionState(MysteryGiftAppData *appData)
         break;
     case WIRELESS_DISTRIBUTION_STATE_38:
         if (WirelessDriver_IsReady() == 1) {
-            Unk_ov97_0223F1B4 = 0;
-            Unk_ov97_0223F1AC = Heap_Alloc(HEAP_ID_MYSTERY_GIFT_APP, ov97_02238D4C());
-            ov97_02238A4C(appData->wirelessDistributionBuffer, ov97_02230280, Unk_ov97_0223F1AC);
+            sWirelessDistributionTimer = 0;
+            sWirelessDistributionContext = Heap_Alloc(HEAP_ID_MYSTERY_GIFT_APP, WirelessDistribution_GetContextSize());
+            WirelessDistribution_Start(appData->wirelessDistributionBuffer, OnWirelessDistributionReceived, sWirelessDistributionContext);
             sWirelessDistribState = WIRELESS_DISTRIBUTION_STATE_39;
             NetworkIcon_Init();
         }
@@ -2572,7 +2572,7 @@ static void UpdateLocalWirelessDistributionState(MysteryGiftAppData *appData)
     case WIRELESS_DISTRIBUTION_STATE_40:
         break;
     case WIRELESS_DISTRIBUTION_STATE_41:
-        Unk_ov97_0223F1B4++;
+        sWirelessDistributionTimer++;
         break;
     case WIRELESS_DISTRIBUTION_STATE_42:
         break;
@@ -2594,7 +2594,7 @@ static void UpdateLocalWirelessDistributionState(MysteryGiftAppData *appData)
         case WIRELESS_DISTRIBUTION_STATE_40:
         case WIRELESS_DISTRIBUTION_STATE_41:
         case WIRELESS_DISTRIBUTION_STATE_48:
-            if (ov97_022389C8()) {
+            if (WirelessDistribution_Stop()) {
                 sWirelessDistribState = WIRELESS_DISTRIBUTION_STATE_43;
             }
             break;

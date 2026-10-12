@@ -1450,26 +1450,26 @@ Overlay main_menu
 	After http
 	Object main.nef.p/src_main_menu_main_menu.c.o
 	Object main.nef.p/src_main_menu_ranger_link.c.o
-	Object main.nef.p/src_main_menu_ov97_0222D04C.c.o
-	Object main.nef.p/src_main_menu_ov97_0222D2F8.c.o
+	Object main.nef.p/src_main_menu_mystery_gift_share.c.o
+	Object main.nef.p/src_main_menu_mystery_gift_share_commands.c.o
 	Object main.nef.p/src_main_menu_mystery_gift_app.c.o
 	Object main.nef.p/src_main_menu_wonder_cards_app.c.o
-	Object main.nef.p/src_main_menu_ov97_02232054.c.o
-	Object main.nef.p/src_main_menu_ov97_02232200.c.o
-	Object main.nef.p/src_main_menu_ov97_02232DC8.c.o
-	Object main.nef.p/src_main_menu_ov97_02233408.c.o
-	Object main.nef.p/src_main_menu_ov97_022337FC.c.o
-	Object main.nef.p/src_main_menu_ov97_02233814.c.o
+	Object main.nef.p/src_main_menu_mystery_gift_util.c.o
+	Object main.nef.p/src_main_menu_wireless_comm_wm.c.o
+	Object main.nef.p/src_main_menu_wireless_comm.c.o
+	Object main.nef.p/src_main_menu_wireless_comm_state.c.o
+	Object main.nef.p/src_main_menu_wireless_comm_callbacks.c.o
+	Object main.nef.p/src_main_menu_wireless_comm_requests.c.o
 	Object main.nef.p/src_main_menu_gba_migrator.c.o
-	Object main.nef.p/src_main_menu_ov97_02235D18.c.o
+	Object main.nef.p/src_main_menu_gba_cart.c.o
 	Object main.nef.p/src_main_menu_gba_player.c.o
 	Object main.nef.p/src_main_menu_gba_pokemon.c.o
 	Object main.nef.p/src_main_menu_distribution_cartridge.c.o
 	Object main.nef.p/src_main_menu_main_menu_util.c.o
-	Object main.nef.p/src_main_menu_ov97_02238534.c.o
-	Object main.nef.p/src_main_menu_ov97_02238D74.c.o
+	Object main.nef.p/src_main_menu_wireless_distribution.c.o
+	Object main.nef.p/src_main_menu_mystery_gift_wifi.c.o
 	Object main.nef.p/src_main_menu_gba_convert_string.c.o
-	Library libcrypto_ov97.a
+	Library libcrypto_main_menu.a
 }
 
 Overlay gts

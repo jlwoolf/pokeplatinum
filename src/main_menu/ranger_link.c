@@ -8,10 +8,10 @@
 
 #include "applications/title_screen.h"
 #include "main_menu/main_menu_util.h"
-#include "main_menu/ov97_02232DC8.h"
-#include "main_menu/ov97_02233408.h"
-#include "main_menu/struct_ov97_02232E38.h"
-#include "main_menu/struct_ov97_022335A8.h"
+#include "main_menu/wireless_comm.h"
+#include "main_menu/wireless_comm_state.h"
+#include "main_menu/struct_wireless_comm_params.h"
+#include "main_menu/struct_wireless_comm_bssid_high.h"
 #include "main_menu/wonder_cards_app.h"
 #include "pch/global_pch.h"
 #include "savedata/save_table.h"
@@ -484,7 +484,7 @@ static u16 sRangerCharsTrainerName[TRAINER_NAME_LEN + 1] = { 0 };
 
 static u16 sRangerCharsTrainerID[10] = { 0 };
 
-static u8 Unk_ov97_0223E53C[42] = {
+static u8 sRangerCommPayload[42] = {
     0x0,
     0x1,
     0x2,
@@ -497,7 +497,7 @@ static u8 Unk_ov97_0223E53C[42] = {
     0x9
 };
 
-static UnkStruct_ov97_02232E38 WirelessCommInfo = {
+static WirelessCommParams WirelessCommInfo = {
     0x16,
     0x1,
     OS_LANGUAGE_JAPANESE,
@@ -639,8 +639,8 @@ static void ShowPlayerCommsDetails(RangerLinkManager *param0)
     u32 appNumHigh, appNumLow;
     u8 macAddr[6];
     OS_GetMacAddress(macAddr);
-    UnkStruct_ov97_022335A8 appNumber = ov97_022335A8(macAddr);
-    ov97_022335EC(appNumber.unk_00.val2, &appNumHigh, &appNumLow);
+    WirelessCommBssidHigh appNumber = WirelessComm_MakeBssidHigh(macAddr);
+    WirelessComm_SplitNumber(appNumber.unk_00.val2, &appNumHigh, &appNumLow);
 
     StringTemplate_SetNumber(strTemplate, 0, appNumHigh, 4, PADDING_MODE_ZEROES, CHARSET_MODE_EN);
     StringTemplate_SetNumber(strTemplate, 1, appNumLow, 4, PADDING_MODE_ZEROES, CHARSET_MODE_EN);
@@ -844,21 +844,21 @@ static void SetTimeout(RangerLinkManager *param0, int param1)
 static BOOL CheckCommunicationInterrupted(RangerLinkManager *rangerLinkMan, enum RangerLinkRangerCommState *state, BOOL param2, u32 cancelKey)
 {
     if (--rangerLinkMan->timeout == 0) {
-        ov97_022333BC();
+        WirelessComm_Stop();
         *state = RANGER_COMM_STATE_CONNECTION_LOST;
         return FALSE;
     }
 
     if (param2) {
-        if (!ov97_02233388()) {
-            ov97_022333BC();
+        if (!WirelessComm_IsLinkActive()) {
+            WirelessComm_Stop();
             *state = RANGER_COMM_STATE_GOTO_CONNECTION_LOST;
             return FALSE;
         }
     }
 
     if (cancelKey && JOY_NEW(cancelKey)) {
-        ov97_022333BC();
+        WirelessComm_Stop();
         *state = RANGER_COMM_STATE_CONNECTION_CANCELED;
         return TRUE;
     }
@@ -871,10 +871,10 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
     enum RangerLinkRangerCommState *state = &rangerLinkMan->wirelessState;
 
     if (rangerLinkMan->wirelessActive == TRUE) {
-        NetworkIcon_SetStrength(WM_LINK_LEVEL_3 - ov97_02233230());
+        NetworkIcon_SetStrength(WM_LINK_LEVEL_3 - WirelessComm_GetLinkLevel());
 
-        ov97_022330DC();
-        ov97_0223346C(1);
+        WirelessComm_Update();
+        WirelessComm_SetChannel(1);
     }
 
     switch (*state) {
@@ -886,20 +886,20 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         break;
     case RANGER_COMM_STATE_WAIT_READY:
         if (WirelessDriver_IsReady()) {
-            ov97_02232E38(&WirelessCommInfo, rangerLinkMan->wirelessCommBuffer);
+            WirelessComm_Init(&WirelessCommInfo, rangerLinkMan->wirelessCommBuffer);
             rangerLinkMan->wirelessActive = TRUE;
             NetworkIcon_Init();
             *state = RANGER_COMM_STATE_2;
         }
         break;
     case RANGER_COMM_STATE_2:
-        ov97_02233120();
+        WirelessComm_Start();
         SetTimeout(rangerLinkMan, 1600);
         rangerLinkMan->waitDial = Window_AddWaitDial(&rangerLinkMan->messageBoxWindow, BASE_TILE_MESSAGE_BOX_FRAME);
         *state = RANGER_COMM_STATE_3;
         break;
     case RANGER_COMM_STATE_3: {
-        int v0 = ov97_02233248();
+        int v0 = WirelessComm_GetNumConnected();
 
         if (v0) {
             rangerLinkMan->unk_164 = v0 - 1;
@@ -910,8 +910,8 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         CheckCommunicationInterrupted(rangerLinkMan, state, FALSE, PAD_BUTTON_B);
     } break;
     case RANGER_COMM_STATE_4:
-        if (ov97_0223316C(rangerLinkMan->unk_164)) {
-            ov97_022331A8(rangerLinkMan->unk_164);
+        if (WirelessComm_IsParentAvailable(rangerLinkMan->unk_164)) {
+            WirelessComm_SelectParent(rangerLinkMan->unk_164);
             *state = RANGER_COMM_STATE_7;
             rangerLinkMan->timeout = 1800;
         }
@@ -921,7 +921,7 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
     case RANGER_COMM_STATE_7:
         CheckCommunicationInterrupted(rangerLinkMan, state, FALSE, PAD_BUTTON_B);
 
-        if (ov97_02233388()) {
+        if (WirelessComm_IsLinkActive()) {
             *state = RANGER_COMM_STATE_29;
         }
         break;
@@ -942,14 +942,14 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         CheckCommunicationInterrupted(rangerLinkMan, state, TRUE, PAD_BUTTON_B);
         break;
     case RANGER_COMM_STATE_8:
-        ov97_02233268();
+        WirelessComm_StartSend();
         *state = RANGER_COMM_STATE_9;
         rangerLinkMan->timeout = 1800;
         CheckCommunicationInterrupted(rangerLinkMan, state, TRUE, PAD_BUTTON_B);
         break;
     case RANGER_COMM_STATE_9:
-        if (ov97_022332F4()) {
-            ov97_0223329C();
+        if (WirelessComm_IsReceiveComplete()) {
+            WirelessComm_StartReceive();
             *state = RANGER_COMM_STATE_WAIT_RANGER_RESPONSE;
             rangerLinkMan->timeout = 3200;
             MainMenuUtil_ShowWindowAtPos(rangerLinkMan->bgConfig, &rangerLinkMan->messageBox, 2, 19, MysteryGiftMenu_Text_PleaseTouchRangerGameScreen);
@@ -962,7 +962,7 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         CheckCommunicationInterrupted(rangerLinkMan, state, TRUE, PAD_BUTTON_B);
         break;
     case RANGER_COMM_STATE_WAIT_RANGER_RESPONSE:
-        if (ov97_022332F4()) {
+        if (WirelessComm_IsReceiveComplete()) {
             MainMenuUtil_ShowWindowAtPos(rangerLinkMan->bgConfig, &rangerLinkMan->messageBox, 2, 19, MysteryGiftMenu_Text_AwaitingTransferFromRanger);
             Sprite_SetDrawFlag(rangerLinkMan->downloadArrow, TRUE);
             ShowPlayerCommsDetails(rangerLinkMan);
@@ -972,12 +972,12 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         CheckCommunicationInterrupted(rangerLinkMan, state, TRUE, PAD_BUTTON_B);
         break;
     case RANGER_COMM_STATE_11:
-        ov97_022332C8(Unk_ov97_0223E53C, NELEMS(Unk_ov97_0223E53C), 1);
+        WirelessComm_SendData(sRangerCommPayload, NELEMS(sRangerCommPayload), 1);
         *state = RANGER_COMM_STATE_12;
         rangerLinkMan->timeout = 3200;
         break;
     case RANGER_COMM_STATE_12:
-        if (ov97_02233320()) {
+        if (WirelessComm_IsSendComplete()) {
             *state = RANGER_COMM_STATE_13;
             rangerLinkMan->timeout = 60;
             MainMenuUtil_ShowWindowAtPos(rangerLinkMan->bgConfig, &rangerLinkMan->messageBox, 2, 19, MysteryGiftMenu_Text_AwaitingTransferFromRanger);
@@ -1006,12 +1006,12 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         }
         break;
     case RANGER_COMM_STATE_16:
-        ov97_022332C8(Unk_ov97_0223E53C, 42, 2);
+        WirelessComm_SendData(sRangerCommPayload, 42, 2);
         *state = RANGER_COMM_STATE_17;
         rangerLinkMan->timeout = 1200;
         break;
     case RANGER_COMM_STATE_17:
-        if (ov97_0223334C()) {
+        if (WirelessComm_IsAwaitingData()) {
             MainMenuUtil_ContinueSaving();
 
             *state = RANGER_COMM_STATE_18;
@@ -1020,35 +1020,35 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         }
 
         if (--rangerLinkMan->timeout == 0) {
-            ov97_022333BC();
+            WirelessComm_Stop();
             *state = RANGER_COMM_STATE_CONNECTION_LOST;
             rangerLinkMan->timeout = 120;
         }
 
-        if (!ov97_02233388()) {
-            ov97_022333BC();
+        if (!WirelessComm_IsLinkActive()) {
+            WirelessComm_Stop();
             *state = RANGER_COMM_STATE_GOTO_CONNECTION_LOST;
             rangerLinkMan->timeout = 120;
         }
         break;
     case RANGER_COMM_STATE_18:
         if (MainMenuUtil_GetSavingStatus() == MAIN_MENU_UTIL_SAVE_FAILURE) {
-            ov97_022333BC();
+            WirelessComm_Stop();
             *state = RANGER_COMM_STATE_GOTO_CONNECTION_LOST;
             rangerLinkMan->timeout = 120;
         } else if (MainMenuUtil_GetSavingStatus() != MAIN_MENU_UTIL_SAVE_SUCCESS) {
             MainMenuUtil_SaveState();
         } else {
-            if (ov97_02233320() || (!ov97_02233388())) {
+            if (WirelessComm_IsSendComplete() || (!WirelessComm_IsLinkActive())) {
                 *state = RANGER_COMM_STATE_TRANSFER_COMPLETED;
                 rangerLinkMan->timeout = 1;
-                ov97_022333BC();
+                WirelessComm_Stop();
                 break;
             }
         }
 
         if (--rangerLinkMan->timeout == 0) {
-            ov97_022333BC();
+            WirelessComm_Stop();
             *state = RANGER_COMM_STATE_CONNECTION_LOST;
             rangerLinkMan->timeout = 10;
         }
@@ -1067,7 +1067,7 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         }
         break;
     case RANGER_COMM_STATE_WAIT_TRANSFER_COMPLETED:
-        if (ov97_022333FC()) {
+        if (WirelessComm_HasStopped()) {
             if (rangerLinkMan->wirelessStarted == TRUE) {
                 WirelessDriver_Shutdown();
                 NetworkIcon_Destroy();
@@ -1094,7 +1094,7 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         *state = RANGER_COMM_STATE_SHUTDOWN_WIRELESS_AND_REBOOT;
         break;
     case RANGER_COMM_STATE_SHUTDOWN_WIRELESS_AND_REBOOT:
-        if (ov97_022333FC()) {
+        if (WirelessComm_HasStopped()) {
             if (rangerLinkMan->wirelessStarted == TRUE) {
                 WirelessDriver_Shutdown();
                 NetworkIcon_Destroy();
@@ -1107,7 +1107,7 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         }
         break;
     case RANGER_COMM_STATE_CONNECTION_CANCELED:
-        if (ov97_022333FC()) {
+        if (WirelessComm_HasStopped()) {
             if (rangerLinkMan->wirelessStarted == TRUE) {
                 WirelessDriver_Shutdown();
                 NetworkIcon_Destroy();

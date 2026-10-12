@@ -12,7 +12,7 @@
 #include "main_menu/application_template.h"
 #include "main_menu/distribution_cartridge.h"
 #include "main_menu/main_menu_util.h"
-#include "main_menu/ov97_02235D18.h"
+#include "main_menu/gba_cart.h"
 #include "main_menu/ranger_link.h"
 #include "savedata/save_table.h"
 
@@ -356,7 +356,7 @@ static BOOL ShowWFCUserInfoErasedMsg(MainMenuAppData *appData)
 
 static void DetectGBAGame(MainMenuAppData *appData)
 {
-    int gbaCartInfoLoadError = ov97_02235D2C(NULL);
+    int gbaCartInfoLoadError = GBACart_LoadInfo(NULL);
 
     appData->agbGameType = 0;
 

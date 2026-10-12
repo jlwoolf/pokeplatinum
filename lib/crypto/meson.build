@@ -11,7 +11,7 @@ libcrypto_static_srcs = files(
     'asm/rc4_fast.s'
 )
 
-libcrypto_ov97_srcs = files(
+libcrypto_main_menu_srcs = files(
     'asm/rc4.s',
     'src/sign.c',
     'src/bignum.c',
@@ -26,8 +26,8 @@ libcrypto_static = static_library('crypto_static',
     dependencies: nitrosdk_dep
 )
 
-libcrypto_ov97 = static_library('crypto_ov97',
-    sources: libcrypto_ov97_srcs,
+libcrypto_main_menu = static_library('crypto_main_menu',
+    sources: libcrypto_main_menu_srcs,
     c_args: libcrypto_c_args,
     pic: false,
     include_directories: libcrypto_public_includes,
