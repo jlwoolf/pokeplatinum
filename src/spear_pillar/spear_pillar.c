@@ -49,43 +49,43 @@ int SpearPillar_Init(ApplicationManager *appMan, int *param1)
 
     v0 = ApplicationManager_NewData(appMan, sizeof(SpearPillar), HEAP_ID_111);
     memset(v0, 0, sizeof(SpearPillar));
-    v0->unk_D0 = ApplicationManager_Args(appMan);
+    v0->taskArgs = ApplicationManager_Args(appMan);
 
-    SpearPillar_InitContext(&v0->unk_0C);
+    SpearPillar_InitContext(&v0->context);
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6 * 2, 1, HEAP_ID_111);
     SetVBlankCallback(SpearPillar_VBlankCallback, v0);
 
-    v0->unk_0C.unk_50.unk_00 = 31;
-    v0->unk_0C.unk_50.unk_01 = 31;
-    v0->unk_0C.unk_50.unk_02 = 31;
-    v0->unk_0C.unk_C1 = 31;
+    v0->context.blend.unk_00 = 31;
+    v0->context.blend.unk_01 = 31;
+    v0->context.blend.unk_02 = 31;
+    v0->context.blendLevel = 31;
 
     Sound_Set2PokemonCriesAllowed(1);
 
     {
-        Window *v1 = &v0->unk_0C.unk_30;
-        int v2 = Options_Frame(v0->unk_D0->options);
+        Window *v1 = &v0->context.window;
+        int v2 = Options_Frame(v0->taskArgs->options);
 
         Window_Init(v1);
-        Window_Add(v0->unk_0C.unk_0C, v1, 1, 2, 19, 27, 4, 14, 1);
+        Window_Add(v0->context.bgConfig, v1, 1, 2, 19, 27, 4, 14, 1);
         Window_FillTilemap(v1, 0xFF);
         Window_CopyToVRAM(v1);
 
-        LoadMessageBoxGraphics(v0->unk_0C.unk_0C, 1, 500, 15, v2, HEAP_ID_111);
-        PaletteData_LoadBufferFromFileStart(v0->unk_0C.unk_10, NARC_INDEX_GRAPHIC__PL_WINFRAME, GetMessageBoxPaletteNARCMember(v2), HEAP_ID_111, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(15));
-        PaletteData_LoadBufferFromFileStart(v0->unk_0C.unk_10, NARC_INDEX_GRAPHIC__PL_FONT, 7, HEAP_ID_111, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(14));
+        LoadMessageBoxGraphics(v0->context.bgConfig, 1, 500, 15, v2, HEAP_ID_111);
+        PaletteData_LoadBufferFromFileStart(v0->context.paletteData, NARC_INDEX_GRAPHIC__PL_WINFRAME, GetMessageBoxPaletteNARCMember(v2), HEAP_ID_111, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(15));
+        PaletteData_LoadBufferFromFileStart(v0->context.paletteData, NARC_INDEX_GRAPHIC__PL_FONT, 7, HEAP_ID_111, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(14));
         Window_DrawMessageBoxWithScrollCursor(v1, 0, 500, 15);
 
-        SpearPillar_EraseMessage(&v0->unk_0C);
+        SpearPillar_EraseMessage(&v0->context);
     }
 
     return 1;
 }
 
 static const struct {
-    SpearPillarSceneInitFunc unk_00;
-    SpearPillarSceneMainFunc unk_04;
-    SpearPillarSceneExitFunc unk_08;
+    SpearPillarSceneInitFunc initFunc;
+    SpearPillarSceneMainFunc mainFunc;
+    SpearPillarSceneExitFunc exitFunc;
 } sSpearPillarScenes[] = {
     { SpearPillarDialgaPalkia_Init, SpearPillarDialgaPalkia_Main, SpearPillarDialgaPalkia_Exit },
     { SpearPillarLakeTrio_Init, SpearPillarLakeTrio_Main, SpearPillarLakeTrio_Exit },
@@ -98,21 +98,21 @@ int SpearPillar_Main(ApplicationManager *appMan, int *param1)
 
     switch (*param1) {
     case 0: {
-        v0->unk_08 = sSpearPillarScenes[v0->unk_04].unk_00(v0);
+        v0->sceneData = sSpearPillarScenes[v0->sceneIndex].initFunc(v0);
         *param1 = 1;
     } break;
     case 1: {
-        BOOL v1 = sSpearPillarScenes[v0->unk_04].unk_04(v0->unk_08);
+        BOOL v1 = sSpearPillarScenes[v0->sceneIndex].mainFunc(v0->sceneData);
 
         if (v1 == 0) {
             *param1 = 2;
         }
     } break;
     case 2: {
-        BOOL v2 = sSpearPillarScenes[v0->unk_04].unk_08(v0->unk_08);
+        BOOL v2 = sSpearPillarScenes[v0->sceneIndex].exitFunc(v0->sceneData);
 
         if (v2 == 0) {
-            if ((++v0->unk_04) != NELEMS(sSpearPillarScenes)) {
+            if ((++v0->sceneIndex) != NELEMS(sSpearPillarScenes)) {
                 *param1 = 0;
             } else {
                 *param1 = 3;
@@ -127,7 +127,7 @@ int SpearPillar_Main(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    SpriteSystem_DrawSprites(v0->unk_0C.unk_08);
+    SpriteSystem_DrawSprites(v0->context.spriteManager);
 
     return 0;
 }
@@ -138,11 +138,11 @@ int SpearPillar_Exit(ApplicationManager *appMan, int *param1)
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
-    Window_EraseMessageBox(&v0->unk_0C.unk_30, 1);
-    Window_ClearAndCopyToVRAM(&v0->unk_0C.unk_30);
-    Window_Remove(&v0->unk_0C.unk_30);
+    Window_EraseMessageBox(&v0->context.window, 1);
+    Window_ClearAndCopyToVRAM(&v0->context.window);
+    Window_Remove(&v0->context.window);
 
-    SpearPillar_FreeContext(&v0->unk_0C);
+    SpearPillar_FreeContext(&v0->context);
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
 
     GXLayers_SwapDisplay();
@@ -155,7 +155,7 @@ int SpearPillar_Exit(ApplicationManager *appMan, int *param1)
 
 static void SpearPillar_InitSpriteSystem(SpearPillarContext *param0)
 {
-    param0->unk_04 = SpriteSystem_Alloc(HEAP_ID_111);
+    param0->spriteSystem = SpriteSystem_Alloc(HEAP_ID_111);
 
     {
         const RenderOamTemplate v0 = {
@@ -175,7 +175,7 @@ static void SpearPillar_InitSpriteSystem(SpearPillarContext *param0)
             GX_OBJVRAMMODE_CHAR_1D_64K,
             GX_OBJVRAMMODE_CHAR_1D_32K
         };
-        BOOL v2 = SpriteSystem_Init(param0->unk_04, &v0, &v1, 16 + 16);
+        BOOL v2 = SpriteSystem_Init(param0->spriteSystem, &v0, &v1, 16 + 16);
 
         GF_ASSERT(v2);
     }
@@ -191,12 +191,12 @@ static void SpearPillar_InitSpriteSystem(SpearPillarContext *param0)
             16,
         };
 
-        param0->unk_08 = SpriteManager_New(param0->unk_04);
+        param0->spriteManager = SpriteManager_New(param0->spriteSystem);
 
-        v3 = SpriteSystem_InitSprites(param0->unk_04, param0->unk_08, 64 + 64);
+        v3 = SpriteSystem_InitSprites(param0->spriteSystem, param0->spriteManager, 64 + 64);
         GF_ASSERT(v3);
 
-        v3 = SpriteSystem_InitManagerWithCapacities(param0->unk_04, param0->unk_08, &v4);
+        v3 = SpriteSystem_InitManagerWithCapacities(param0->spriteSystem, param0->spriteManager, &v4);
         GF_ASSERT(v3);
     }
 }
@@ -210,24 +210,24 @@ static void SpearPillar_InitContext(SpearPillarContext *param0)
     GX_SetVisiblePlane(0);
     GXS_SetVisiblePlane(0);
 
-    param0->unk_00 = NARC_ctor(NARC_INDEX_ARC__DEMO_TENGAN_GRA, HEAP_ID_111);
-    param0->unk_0C = BgConfig_New(HEAP_ID_111);
-    param0->unk_10 = PaletteData_New(HEAP_ID_111);
-    param0->unk_14 = G3DPipeline_Init(HEAP_ID_111, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, NULL);
+    param0->narc = NARC_ctor(NARC_INDEX_ARC__DEMO_TENGAN_GRA, HEAP_ID_111);
+    param0->bgConfig = BgConfig_New(HEAP_ID_111);
+    param0->paletteData = PaletteData_New(HEAP_ID_111);
+    param0->pipelineBuffers = G3DPipeline_Init(HEAP_ID_111, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, NULL);
     param0->camera = Camera_Alloc(HEAP_ID_111);
-    param0->unk_2C = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_SPEAR_PILLAR, HEAP_ID_111);
+    param0->messageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_SPEAR_PILLAR, HEAP_ID_111);
 
-    PaletteData_SetAutoTransparent(param0->unk_10, TRUE);
-    PaletteData_AllocBuffer(param0->unk_10, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
-    PaletteData_AllocBuffer(param0->unk_10, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
-    PaletteData_AllocBuffer(param0->unk_10, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
-    PaletteData_AllocBuffer(param0->unk_10, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
+    PaletteData_SetAutoTransparent(param0->paletteData, TRUE);
+    PaletteData_AllocBuffer(param0->paletteData, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
+    PaletteData_AllocBuffer(param0->paletteData, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
+    PaletteData_AllocBuffer(param0->paletteData, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
+    PaletteData_AllocBuffer(param0->paletteData, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_111);
 
-    SpearPillar_InitBg(param0->unk_0C);
+    SpearPillar_InitBg(param0->bgConfig);
     SpearPillar_InitSpriteSystem(param0);
 
     G3X_AlphaBlend(1);
-    HeapExp_FndInitAllocator(&param0->unk_1C, HEAP_ID_111, 32);
+    HeapExp_FndInitAllocator(&param0->allocator, HEAP_ID_111, 32);
 }
 
 static void SpearPillar_FreeContext(SpearPillarContext *param0)
@@ -240,28 +240,28 @@ static void SpearPillar_FreeContext(SpearPillarContext *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG1, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 0);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_0);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_1);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_3);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_0);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_1);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_2);
-    Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_SUB_3);
-    Heap_Free(param0->unk_0C);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_0);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_1);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_2);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_3);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_0);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_1);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_2);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_SUB_3);
+    Heap_Free(param0->bgConfig);
 
-    PaletteData_FreeBuffer(param0->unk_10, PLTTBUF_MAIN_BG);
-    PaletteData_FreeBuffer(param0->unk_10, PLTTBUF_SUB_BG);
-    PaletteData_FreeBuffer(param0->unk_10, PLTTBUF_MAIN_OBJ);
-    PaletteData_FreeBuffer(param0->unk_10, PLTTBUF_SUB_OBJ);
-    PaletteData_Free(param0->unk_10);
+    PaletteData_FreeBuffer(param0->paletteData, PLTTBUF_MAIN_BG);
+    PaletteData_FreeBuffer(param0->paletteData, PLTTBUF_SUB_BG);
+    PaletteData_FreeBuffer(param0->paletteData, PLTTBUF_MAIN_OBJ);
+    PaletteData_FreeBuffer(param0->paletteData, PLTTBUF_SUB_OBJ);
+    PaletteData_Free(param0->paletteData);
 
-    NARC_dtor(param0->unk_00);
-    G3DPipelineBuffers_Free(param0->unk_14);
+    NARC_dtor(param0->narc);
+    G3DPipelineBuffers_Free(param0->pipelineBuffers);
     Camera_Delete(param0->camera);
-    SpriteSystem_FreeResourcesAndManager(param0->unk_04, param0->unk_08);
-    SpriteSystem_Free(param0->unk_04);
-    MessageLoader_Free(param0->unk_2C);
+    SpriteSystem_FreeResourcesAndManager(param0->spriteSystem, param0->spriteManager);
+    SpriteSystem_Free(param0->spriteSystem);
+    MessageLoader_Free(param0->messageLoader);
 
     G3X_AlphaBlend(0);
 }
@@ -436,8 +436,8 @@ static void SpearPillar_VBlankCallback(void *param0)
 
     VramTransfer_Process();
     SpriteSystem_TransferOam();
-    PaletteData_CommitFadedBuffers(v0->unk_0C.unk_10);
-    Bg_RunScheduledUpdates(v0->unk_0C.unk_0C);
+    PaletteData_CommitFadedBuffers(v0->context.paletteData);
+    Bg_RunScheduledUpdates(v0->context.bgConfig);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }

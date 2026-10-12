@@ -38,10 +38,10 @@ typedef struct SpearPillarCaptureBuffer_t {
 } SpearPillarCaptureBuffer;
 
 typedef struct SpearPillarCapture_t {
-    GXVRamLCDC unk_00;
-    SpearPillarCaptureConfig unk_04;
-    BOOL unk_30;
-    SysTask *unk_34;
+    GXVRamLCDC lcdcBank;
+    SpearPillarCaptureConfig config;
+    BOOL initialized;
+    SysTask *task;
 } SpearPillarCapture;
 
 static SysTask *SpearPillarScreen_StartScrollTask(SpearPillarScreenScroll *param0);
@@ -98,15 +98,15 @@ void SpearPillarScreen_Scroll(SpearPillarScreenScroll *param0, u8 param1, u8 par
 
 SpearPillarCapture *SpearPillarScreen_StartCapture(SpearPillarCaptureConfig *param0)
 {
-    SysTask *v0 = SysTask_StartAndAllocateParam(SpearPillarScreen_CaptureTask, sizeof(SpearPillarCapture), 5, param0->unk_28);
+    SysTask *v0 = SysTask_StartAndAllocateParam(SpearPillarScreen_CaptureTask, sizeof(SpearPillarCapture), 5, param0->heapID);
     SpearPillarCapture *v1 = SysTask_GetParam(v0);
 
-    v1->unk_04 = *param0;
-    v1->unk_34 = v0;
-    v1->unk_30 = 0;
-    v1->unk_00 = GX_GetBankForLCDC();
+    v1->config = *param0;
+    v1->task = v0;
+    v1->initialized = 0;
+    v1->lcdcBank = GX_GetBankForLCDC();
 
-    SpearPillarScreen_InitCapture(&v1->unk_04);
+    SpearPillarScreen_InitCapture(&v1->config);
     SysTask_ExecuteAfterVBlank(SpearPillarScreen_SetupCaptureTask, v1, 0);
 
     return v1;
@@ -115,9 +115,9 @@ SpearPillarCapture *SpearPillarScreen_StartCapture(SpearPillarCaptureConfig *par
 void SpearPillarScreen_StopCapture(SpearPillarCapture **param0, GXDispMode param1, GXBGMode param2, GXBG0As param3)
 {
     GX_SetGraphicsMode(param1, param2, param3);
-    GX_SetBankForLCDC((*param0)->unk_00);
+    GX_SetBankForLCDC((*param0)->lcdcBank);
 
-    switch ((*param0)->unk_04.dispMode) {
+    switch ((*param0)->config.dispMode) {
     case GX_DISPMODE_VRAM_A:
         MI_CpuClearFast((void *)HW_LCDC_VRAM_A, HW_VRAM_A_SIZE);
         break;
@@ -135,7 +135,7 @@ void SpearPillarScreen_StopCapture(SpearPillarCapture **param0, GXDispMode param
         break;
     }
 
-    SysTask_FinishAndFreeParam((*param0)->unk_34);
+    SysTask_FinishAndFreeParam((*param0)->task);
     *param0 = NULL;
 }
 
@@ -143,8 +143,8 @@ static void SpearPillarScreen_CaptureTask(SysTask *param0, void *param1)
 {
     SpearPillarCapture *v0 = param1;
 
-    if (v0->unk_30) {
-        GX_SetCapture(v0->unk_04.captureSize, v0->unk_04.captureMode, v0->unk_04.captureSrcA, v0->unk_04.captureSrcB, v0->unk_04.captureDest, v0->unk_04.unk_20, v0->unk_04.unk_24);
+    if (v0->initialized) {
+        GX_SetCapture(v0->config.captureSize, v0->config.captureMode, v0->config.captureSrcA, v0->config.captureSrcB, v0->config.captureDest, v0->config.blendCoeffA, v0->config.blendCoeffB);
     }
 }
 
@@ -152,7 +152,7 @@ static void SpearPillarScreen_SetupCaptureTask(SysTask *param0, void *param1)
 {
     SpearPillarCapture *v0 = (SpearPillarCapture *)param1;
 
-    switch (v0->unk_04.dispMode) {
+    switch (v0->config.dispMode) {
     case GX_DISPMODE_VRAM_A:
         GX_SetBankForLCDC(GX_VRAM_LCDC_A);
         break;
@@ -170,9 +170,9 @@ static void SpearPillarScreen_SetupCaptureTask(SysTask *param0, void *param1)
         break;
     }
 
-    GX_SetGraphicsMode(v0->unk_04.dispMode, v0->unk_04.bgMode, v0->unk_04.bg0As);
+    GX_SetGraphicsMode(v0->config.dispMode, v0->config.bgMode, v0->config.bg0As);
 
-    v0->unk_30 = 1;
+    v0->initialized = 1;
     SysTask_Done(param0);
 }
 

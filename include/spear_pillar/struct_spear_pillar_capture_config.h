@@ -12,9 +12,9 @@ typedef struct {
     GXCaptureSrcA captureSrcA;
     GXCaptureSrcB captureSrcB;
     GXCaptureDest captureDest;
-    int unk_20;
-    int unk_24;
-    int unk_28;
+    int blendCoeffA;
+    int blendCoeffB;
+    int heapID;
 } SpearPillarCaptureConfig;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_CAPTURE_CONFIG_H

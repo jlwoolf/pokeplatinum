@@ -5,22 +5,22 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    ManagedSprite *unk_00;
-    ManagedSprite *unk_04;
-    int unk_08;
-    int unk_0C;
+    ManagedSprite *sprite;
+    ManagedSprite *targetSprite;
+    int index;
+    int state;
     s16 unk_10;
     s16 unk_12;
-    s16 unk_14;
+    s16 yPos;
     s16 unk_16;
     s16 unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    int unk_28[4];
+    int orbitAngle;
+    int wobbleAngle;
+    int jitterRange;
+    int params[4];
     int unk_38;
-    BOOL unk_3C;
-    SysTask *unk_40;
+    BOOL followTarget;
+    SysTask *task;
 } SpearPillarSprite;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_SPRITE_H

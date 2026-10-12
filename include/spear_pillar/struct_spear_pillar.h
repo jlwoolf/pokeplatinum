@@ -7,10 +7,10 @@
 
 typedef struct {
     BOOL unk_00;
-    int unk_04;
-    void *unk_08;
-    SpearPillarContext unk_0C;
-    SpearPillarTaskArgs *unk_D0;
+    int sceneIndex;
+    void *sceneData;
+    SpearPillarContext context;
+    SpearPillarTaskArgs *taskArgs;
 } SpearPillar;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_H

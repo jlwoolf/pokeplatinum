@@ -70,7 +70,7 @@ static BOOL SpearPillarSprite_MoveTowardTarget(SpearPillarSprite *param0, s16 pa
     BOOL v6;
     fx32 v7, v8;
 
-    ManagedSprite_GetPositionFxXYWithSubscreenOffset(param0->unk_00, &v2, &v3, FX32_CONST(192));
+    ManagedSprite_GetPositionFxXYWithSubscreenOffset(param0->sprite, &v2, &v3, FX32_CONST(192));
 
     v0 = FX_FX32_TO_F32(v2);
     v1 = FX_FX32_TO_F32(v3);
@@ -81,13 +81,13 @@ static BOOL SpearPillarSprite_MoveTowardTarget(SpearPillarSprite *param0, s16 pa
         v7 = FX_F32_TO_FX32(v4);
         v8 = FX_F32_TO_FX32(v5);
 
-        param0->unk_20 += 8;
-        param0->unk_20 %= 360;
+        param0->wobbleAngle += 8;
+        param0->wobbleAngle %= 360;
 
-        v7 += (CalcSineDegrees_Wraparound(param0->unk_20) * 1);
-        v8 += (CalcCosineDegrees_Wraparound(param0->unk_20) * 1);
+        v7 += (CalcSineDegrees_Wraparound(param0->wobbleAngle) * 1);
+        v8 += (CalcCosineDegrees_Wraparound(param0->wobbleAngle) * 1);
 
-        ManagedSprite_OffsetPositionFxXY(param0->unk_00, v7, v8);
+        ManagedSprite_OffsetPositionFxXY(param0->sprite, v7, v8);
     }
 
     return v6;
@@ -102,28 +102,28 @@ static void SpearPillarSprite_StateOrbit(SpearPillarSprite *param0)
 {
     fx32 v0, v1;
 
-    param0->unk_1C += 8;
-    param0->unk_1C %= 360;
+    param0->orbitAngle += 8;
+    param0->orbitAngle %= 360;
 
-    v0 = (128 << FX32_SHIFT) + (CalcSineDegrees_Wraparound(param0->unk_1C) * 64);
-    v1 = (48 << FX32_SHIFT) + (CalcCosineDegrees_Wraparound(param0->unk_1C) * 24);
+    v0 = (128 << FX32_SHIFT) + (CalcSineDegrees_Wraparound(param0->orbitAngle) * 64);
+    v1 = (48 << FX32_SHIFT) + (CalcCosineDegrees_Wraparound(param0->orbitAngle) * 24);
 
-    ManagedSprite_SetPositionFxXYWithSubscreenOffset(param0->unk_00, v0, v1, FX32_CONST(192));
+    ManagedSprite_SetPositionFxXYWithSubscreenOffset(param0->sprite, v0, v1, FX32_CONST(192));
 
-    param0->unk_14 = v1 / FX32_ONE;
+    param0->yPos = v1 / FX32_ONE;
 }
 
 static void SpearPillarSprite_StateOrbitAround(SpearPillarSprite *param0, int param1, int param2, int param3, int param4)
 {
     fx32 v0, v1;
 
-    param0->unk_1C += 8;
-    param0->unk_1C %= 360;
+    param0->orbitAngle += 8;
+    param0->orbitAngle %= 360;
 
-    v0 = (param1 << FX32_SHIFT) + (CalcSineDegrees_Wraparound(param0->unk_1C) * param3);
-    v1 = (param2 << FX32_SHIFT) + (CalcCosineDegrees_Wraparound(param0->unk_1C) * param4);
+    v0 = (param1 << FX32_SHIFT) + (CalcSineDegrees_Wraparound(param0->orbitAngle) * param3);
+    v1 = (param2 << FX32_SHIFT) + (CalcCosineDegrees_Wraparound(param0->orbitAngle) * param4);
 
-    ManagedSprite_SetPositionFxXYWithSubscreenOffset(param0->unk_00, v0, v1, FX32_CONST(192));
+    ManagedSprite_SetPositionFxXYWithSubscreenOffset(param0->sprite, v0, v1, FX32_CONST(192));
 }
 
 static void SpearPillarSprite_StateWander(SpearPillarSprite *param0)
@@ -141,50 +141,50 @@ static void SpearPillarSprite_StateWander(SpearPillarSprite *param0)
         { 168, 123 },
         { 108, 93 },
     };
-    BOOL v3 = SpearPillarSprite_MoveTowardTarget(param0, v2[param0->unk_28[2]][0], v2[param0->unk_28[2]][1], 3.0f, 10);
+    BOOL v3 = SpearPillarSprite_MoveTowardTarget(param0, v2[param0->params[2]][0], v2[param0->params[2]][1], 3.0f, 10);
 
     if (v3 == 0) {
-        param0->unk_28[2]++;
-        param0->unk_28[2] %= NELEMS(v2);
-        param0->unk_28[2] = LCRNG_Next() % NELEMS(v2);
-        param0->unk_0C = 3;
+        param0->params[2]++;
+        param0->params[2] %= NELEMS(v2);
+        param0->params[2] = LCRNG_Next() % NELEMS(v2);
+        param0->state = 3;
     }
 
-    ManagedSprite_GetPositionFxXYWithSubscreenOffset(param0->unk_00, &v0, &v1, FX32_CONST(192));
+    ManagedSprite_GetPositionFxXYWithSubscreenOffset(param0->sprite, &v0, &v1, FX32_CONST(192));
 
-    param0->unk_14 = (v1 / FX32_ONE);
+    param0->yPos = (v1 / FX32_ONE);
 }
 
 static void SpearPillarSprite_StateJitter(SpearPillarSprite *param0)
 {
     fx32 v0, v1;
 
-    param0->unk_20 += 8;
-    param0->unk_20 %= 360;
+    param0->wobbleAngle += 8;
+    param0->wobbleAngle %= 360;
 
-    if (param0->unk_20 < 12) {
-        param0->unk_24++;
-        param0->unk_24 %= 3;
-        param0->unk_28[0] = (LCRNG_Next() % param0->unk_24) + 1;
-        param0->unk_28[1] = (LCRNG_Next() % param0->unk_24) + 1;
-        param0->unk_0C = 2;
+    if (param0->wobbleAngle < 12) {
+        param0->jitterRange++;
+        param0->jitterRange %= 3;
+        param0->params[0] = (LCRNG_Next() % param0->jitterRange) + 1;
+        param0->params[1] = (LCRNG_Next() % param0->jitterRange) + 1;
+        param0->state = 2;
     }
 
-    ManagedSprite_GetPositionFxXYWithSubscreenOffset(param0->unk_00, &v0, &v1, FX32_CONST(192));
+    ManagedSprite_GetPositionFxXYWithSubscreenOffset(param0->sprite, &v0, &v1, FX32_CONST(192));
 
-    v0 += (CalcSineDegrees_Wraparound(param0->unk_20) * (3 * param0->unk_28[0]));
-    v1 += (CalcCosineDegrees_Wraparound(param0->unk_20) * (3 * param0->unk_28[1]));
+    v0 += (CalcSineDegrees_Wraparound(param0->wobbleAngle) * (3 * param0->params[0]));
+    v1 += (CalcCosineDegrees_Wraparound(param0->wobbleAngle) * (3 * param0->params[1]));
 
-    ManagedSprite_SetPositionFxXYWithSubscreenOffset(param0->unk_00, v0, v1, FX32_CONST(192));
+    ManagedSprite_SetPositionFxXYWithSubscreenOffset(param0->sprite, v0, v1, FX32_CONST(192));
 
-    param0->unk_14 = v1 / FX32_ONE;
+    param0->yPos = v1 / FX32_ONE;
 }
 
 static void SpearPillarSprite_UpdateScale(SpearPillarSprite *param0)
 {
     f32 v0;
 
-    v0 = param0->unk_14;
+    v0 = param0->yPos;
     v0 /= 100.0f;
     v0 = 0.8f - v0;
 
@@ -196,48 +196,48 @@ static void SpearPillarSprite_UpdateScale(SpearPillarSprite *param0)
         v0 = 0.6f;
     }
 
-    ManagedSprite_SetAffineScale(param0->unk_00, v0, v0);
-    ManagedSprite_SetPriority(param0->unk_00, param0->unk_14);
+    ManagedSprite_SetAffineScale(param0->sprite, v0, v0);
+    ManagedSprite_SetPriority(param0->sprite, param0->yPos);
 }
 
 void SpearPillarSprite_Task(SysTask *param0, void *param1)
 {
     SpearPillarSprite *v0 = param1;
 
-    sSpearPillarSpriteStates[v0->unk_0C](v0);
+    sSpearPillarSpriteStates[v0->state](v0);
 
     SpearPillarSprite_UpdateScale(v0);
-    ManagedSprite_TickTwoFrames(v0->unk_00);
+    ManagedSprite_TickTwoFrames(v0->sprite);
 }
 
 void SpearPillarSprite_ShadowTask(SysTask *param0, void *param1)
 {
     SpearPillarSprite *v0 = param1;
 
-    if (v0->unk_0C) {
+    if (v0->state) {
         SpearPillarSprite_StateOrbitAround(v0, 128, 48 - 12, 32, 12);
     } else {
         s16 v1, v2;
         BOOL v3;
 
-        if (v0->unk_04 && v0->unk_3C) {
-            ManagedSprite_GetPositionXY(v0->unk_04, &v1, &v2);
+        if (v0->targetSprite && v0->followTarget) {
+            ManagedSprite_GetPositionXY(v0->targetSprite, &v1, &v2);
 
             v3 = SpearPillarSprite_MoveTowardTarget(v0, v1, v2, 3.0f, 1);
 
             {
                 f32 v4, v5;
 
-                ManagedSprite_GetAffineScale(v0->unk_00, &v4, &v5);
+                ManagedSprite_GetAffineScale(v0->sprite, &v4, &v5);
 
                 if (v4 > 0.10f) {
                     v4 = v4 - 0.002f;
                 }
 
-                ManagedSprite_SetAffineScale(v0->unk_00, v4, v4);
+                ManagedSprite_SetAffineScale(v0->sprite, v4, v4);
             }
         }
     }
 
-    ManagedSprite_TickTwoFrames(v0->unk_00);
+    ManagedSprite_TickTwoFrames(v0->sprite);
 }

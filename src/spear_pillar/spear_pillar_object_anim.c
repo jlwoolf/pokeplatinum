@@ -30,12 +30,12 @@ static const int sSpearPillarObjectAnimFrames[][5] = {
 
 void SpearPillarObject_StartAnim(SpearPillarObject *param0, SpearPillarObjectAnimStep *param1)
 {
-    param0->unk_160 = 1;
-    param0->unk_184 = param1;
-    param0->unk_180 = 0;
-    param0->unk_178 = param1[param0->unk_180].frameCount;
-    param0->unk_17C = param1[param0->unk_180].frameCount;
-    param0->unk_158 = param1[param0->unk_180].animID;
+    param0->isAnimating = 1;
+    param0->animSteps = param1;
+    param0->stepIndex = 0;
+    param0->framesRemaining = param1[param0->stepIndex].frameCount;
+    param0->stepFrameCount = param1[param0->stepIndex].frameCount;
+    param0->animID = param1[param0->stepIndex].animID;
 }
 
 void SpearPillarObject_UpdateAnim(SpearPillarObject *param0)
@@ -44,78 +44,78 @@ void SpearPillarObject_UpdateAnim(SpearPillarObject *param0)
     int v1;
     int v2;
     fx32 v3;
-    fx32 v4 = Easy3DAnim_GetFrame(&param0->unk_88[0]);
+    fx32 v4 = Easy3DAnim_GetFrame(&param0->anims[0]);
     fx32 v5;
 
     v0 = v4 >> FX32_SHIFT;
     v0 %= 4;
-    v5 = v4 + param0->unk_154;
+    v5 = v4 + param0->animSpeed;
     v1 = v5 >> FX32_SHIFT;
     v1 %= 4;
-    v2 = sSpearPillarObjectAnimFrames[param0->unk_158 - 1][param0->unk_15C];
+    v2 = sSpearPillarObjectAnimFrames[param0->animID - 1][param0->animFrame];
 
     if (v2 == 0xFF) {
         return;
     }
 
     if (v1 != v0) {
-        param0->unk_15C++;
+        param0->animFrame++;
         v3 = FX32_CONST(v2 * 4);
     } else {
         v3 = v5;
     }
 
-    Easy3DAnim_SetFrame(&param0->unk_88[0], v3);
+    Easy3DAnim_SetFrame(&param0->anims[0], v3);
 }
 
 void SpearPillarObject_UpdateMovement(SpearPillarObject *param0)
 {
     int v0;
-    SpearPillarObjectAnimStep *v1 = param0->unk_184;
+    SpearPillarObjectAnimStep *v1 = param0->animSteps;
 
-    if ((param0->unk_178 == 0xFF) || (param0->unk_180 == 0xFF)) {
+    if ((param0->framesRemaining == 0xFF) || (param0->stepIndex == 0xFF)) {
         return;
     }
 
-    v0 = v1[param0->unk_180].animID;
+    v0 = v1[param0->stepIndex].animID;
 
     if (v0 == 0) {
-        param0->unk_160 = 0;
-        param0->unk_180 = 0xFF;
-        param0->unk_178 = 0xFF;
-        param0->unk_17C = 0xFF;
+        param0->isAnimating = 0;
+        param0->stepIndex = 0xFF;
+        param0->framesRemaining = 0xFF;
+        param0->stepFrameCount = 0xFF;
     } else {
-        if (param0->unk_15C >= 4) {
-            param0->unk_178--;
-            param0->unk_15C = 0;
+        if (param0->animFrame >= 4) {
+            param0->framesRemaining--;
+            param0->animFrame = 0;
 
-            if (param0->unk_178 == 0) {
-                param0->unk_180++;
-                param0->unk_158 = v1[param0->unk_180].animID;
-                param0->unk_178 = v1[param0->unk_180].frameCount;
-                param0->unk_17C = v1[param0->unk_180].frameCount;
+            if (param0->framesRemaining == 0) {
+                param0->stepIndex++;
+                param0->animID = v1[param0->stepIndex].animID;
+                param0->framesRemaining = v1[param0->stepIndex].frameCount;
+                param0->stepFrameCount = v1[param0->stepIndex].frameCount;
 
-                if (param0->unk_158 == 0) {
-                    param0->unk_160 = 0;
-                    param0->unk_180 = 0xFF;
-                    param0->unk_178 = 0xFF;
-                    param0->unk_17C = 0xFF;
+                if (param0->animID == 0) {
+                    param0->isAnimating = 0;
+                    param0->stepIndex = 0xFF;
+                    param0->framesRemaining = 0xFF;
+                    param0->stepFrameCount = 0xFF;
                 }
             }
         } else {
-            if ((param0->unk_15C == 0) && (param0->unk_178 == param0->unk_17C)) {
+            if ((param0->animFrame == 0) && (param0->framesRemaining == param0->stepFrameCount)) {
                 return;
             }
 
-            switch (param0->unk_158) {
+            switch (param0->animID) {
             case 1:
             case 2:
             case 9:
-                param0->unk_00.position.z -= v1[param0->unk_180].moveDelta;
+                param0->object.position.z -= v1[param0->stepIndex].moveDelta;
                 break;
             case 4:
             case 3:
-                param0->unk_00.position.x += v1[param0->unk_180].moveDelta;
+                param0->object.position.x += v1[param0->stepIndex].moveDelta;
                 break;
             }
         }
