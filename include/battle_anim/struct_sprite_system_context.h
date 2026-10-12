@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV12_02223764_SUB1_H
-#define POKEPLATINUM_STRUCT_OV12_02223764_SUB1_H
+#ifndef POKEPLATINUM_STRUCT_SPRITE_SYSTEM_CONTEXT_H
+#define POKEPLATINUM_STRUCT_SPRITE_SYSTEM_CONTEXT_H
 
 #include "palette.h"
 #include "sprite_system.h"
@@ -10,4 +10,4 @@ typedef struct SpriteSystemContext {
     PaletteData *plttData;
 } SpriteSystemContext;
 
-#endif // POKEPLATINUM_STRUCT_OV12_02223764_SUB1_H
+#endif // POKEPLATINUM_STRUCT_SPRITE_SYSTEM_CONTEXT_H

@@ -35,17 +35,17 @@
 #include "battle/party_gauge.h"
 #include "battle/trainer_ai.h"
 #include "battle_anim/battle_anim_system.h"
-#include "battle_anim/const_ov12_0223B0A0.h"
-#include "battle_anim/ov12_02235E94.h"
-#include "battle_anim/ov12_02237EFC.h"
-#include "battle_anim/ov12_022380BC.h"
+#include "battle_anim/battler_sprite_const.h"
+#include "battle_anim/ball_throw.h"
+#include "battle_anim/particle_effect.h"
+#include "battle_anim/battler_sprite.h"
 #include "battle_anim/struct_ball_rotation_decl.h"
-#include "battle_anim/struct_ov12_02223764.h"
-#include "battle_anim/struct_ov12_02235FE0_decl.h"
-#include "battle_anim/struct_ov12_02236030.h"
-#include "battle_anim/struct_ov12_02237728.h"
-#include "battle_anim/struct_ov12_02237F38.h"
-#include "battle_anim/struct_ov12_022380DC.h"
+#include "battle_anim/struct_battle_mon_obj_data.h"
+#include "battle_anim/struct_ball_capsule_seal_effect_decl.h"
+#include "battle_anim/struct_ball_capsule_config.h"
+#include "battle_anim/struct_ball_throw.h"
+#include "battle_anim/struct_particle_effect_template.h"
+#include "battle_anim/struct_battler_sprite_context.h"
 #include "battle_sub_menus/battle_bag.h"
 #include "battle_sub_menus/battle_bag_utils.h"
 #include "battle_sub_menus/battle_party.h"
@@ -1573,7 +1573,7 @@ void BattleDisplay_RestoreSprite(BattleSystem *battleSys, BattlerData *battlerDa
     BattlerSpriteContext battlerSpriteCtx;
 
     BattleDisplay_PopulateBattlerContext(battleSys, animation, &battlerSpriteCtx, battlerData->battler);
-    ov12_022382BC(&battlerSpriteCtx, HEAP_ID_BATTLE);
+    BattlerSprite_PopMonSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
     BattleController_EmitClearCommand(battleSys, battlerData->battler, animation->command);
 }
 
@@ -1687,7 +1687,7 @@ void BattleDisplay_RefreshSprite(BattleSystem *battleSys, BattlerData *battlerDa
     BattlerSpriteContext battlerSpriteCtx;
 
     BattleDisplay_PopulateBattlerContext(battleSys, animation, &battlerSpriteCtx, battlerData->battler);
-    ov12_02238390(&battlerSpriteCtx, HEAP_ID_BATTLE);
+    BattlerSprite_LoadSubstituteSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
     BattleController_EmitClearCommand(battleSys, battlerData->battler, animation->command);
 }
 
@@ -2001,21 +2001,21 @@ static void Task_ShowEncounter(SysTask *task, void *data)
 
         ballCapCfg.battlerType = monShowData->battlerType;
         ballCapCfg.mon = BattleSystem_GetPartyPokemon(monShowData->battleSys, monShowData->battler, monShowData->selectedPartySlot);
-        monShowData->ballCapsuleSealEffect = ov12_02236004(HEAP_ID_BATTLE, &ballCapCfg);
+        monShowData->ballCapsuleSealEffect = BallCapsuleSealEffect_New(HEAP_ID_BATTLE, &ballCapCfg);
 
-        ov12_02236320(monShowData->ballCapsuleSealEffect);
+        BallCapsuleSealEffect_Start(monShowData->ballCapsuleSealEffect);
         monShowData->state++;
         break;
     case 2:
-        if (ov12_02237890(monShowData->battlerData->ballRotation) != 0) {
+        if (BallRotation_GetMode(monShowData->battlerData->ballRotation) != 0) {
             break;
         }
 
-        if (ov12_02236374(monShowData->ballCapsuleSealEffect) != 1) {
+        if (BallCapsuleSealEffect_IsReady(monShowData->ballCapsuleSealEffect) != 1) {
             break;
         }
 
-        if (ov12_02237810(monShowData->battlerData->ballRotation) == 1) {
+        if (BallRotation_IsDone(monShowData->battlerData->ballRotation) == 1) {
             if (monShowData->battlerType == BATTLER_TYPE_PLAYER_SIDE_SLOT_2) {
                 monShowData->delay++;
 
@@ -2052,7 +2052,7 @@ static void Task_ShowEncounter(SysTask *task, void *data)
             PokemonSprite_StartFade(monShowData->battlerData->monSprite, 16, 16, 0, sFadeColors[monShowData->capturedBall]);
             PokemonSprite_SetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_HIDE, FALSE);
 
-            ov12_022363B4(monShowData->ballCapsuleSealEffect);
+            BallCapsuleSealEffect_PlayDefault(monShowData->ballCapsuleSealEffect);
 
             if (monShowData->face == FACE_FRONT) {
                 Sound_PlayPannedEffect(SEQ_SE_DP_SLOT01_sseq_1, BATTLE_SOUND_PAN_RIGHT);
@@ -2069,11 +2069,11 @@ static void Task_ShowEncounter(SysTask *task, void *data)
         }
         break;
     case 3:
-        if (ov12_022377F8(monShowData->battlerData->ballRotation) != 1) {
+        if (BallRotation_IsActive(monShowData->battlerData->ballRotation) != 1) {
             monShowData->state++;
         }
     case 4:
-        if (PokemonSprite_GetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_SCALE_X) == 0x100 && ov12_022363C4(monShowData->ballCapsuleSealEffect) == 0) {
+        if (PokemonSprite_GetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_SCALE_X) == 0x100 && BallCapsuleSealEffect_IsActive(monShowData->ballCapsuleSealEffect) == 0) {
             if (monShowData->face == FACE_FRONT) {
                 PokemonSprite_InitAnim(monShowData->battlerData->monSprite, 1);
                 PokemonSprite_SetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_SHADOW_IS_AFFINE, FALSE);
@@ -2171,16 +2171,16 @@ static void Task_ShowEncounter(SysTask *task, void *data)
         }
         break;
     case 5:
-        if (ov12_022363C4(monShowData->ballCapsuleSealEffect) == 0) {
+        if (BallCapsuleSealEffect_IsActive(monShowData->ballCapsuleSealEffect) == 0) {
             monShowData->state = 6;
         }
         break;
     case 6:
         if (PokemonAnimManager_HasAnimCompleted(BattleSystem_GetPokemonAnimManager(monShowData->battleSys), monShowData->battler) == TRUE
             && PokemonSprite_IsAnimActive(monShowData->battlerData->monSprite) == FALSE) {
-            ov12_0223783C(monShowData->battlerData->ballRotation);
+            BallRotation_Free(monShowData->battlerData->ballRotation);
             monShowData->battlerData->ballRotation = NULL;
-            ov12_02236428(monShowData->ballCapsuleSealEffect);
+            BallCapsuleSealEffect_Free(monShowData->ballCapsuleSealEffect);
 
             if (monShowData->isShiny) {
                 MoveAnimation moveAnim;
@@ -2245,7 +2245,7 @@ static void Task_ShowPokemon(SysTask *task, void *data)
             ballThrow.mode = BALL_THROW_MODE_SEND_OUT;
         }
 
-        monShowData->ballRotation = ov12_02237728(&ballThrow);
+        monShowData->ballRotation = BallRotation_New(&ballThrow);
         PokemonSpriteManager *monSpriteMan = BattleSystem_GetPokemonSpriteManager(monShowData->battleSys);
         SpriteAnimFrame animFrames[MAX_ANIMATION_FRAMES];
 
@@ -2279,20 +2279,20 @@ static void Task_ShowPokemon(SysTask *task, void *data)
         ballCapCfg.mon = BattleSystem_GetPartyPokemon(monShowData->battleSys, monShowData->battler, monShowData->selectedPartySlot);
         ballCapCfg.ballTypeOverride = monShowData->capturedBall;
 
-        monShowData->ballCapsuleSealEffect = ov12_02236004(HEAP_ID_BATTLE, &ballCapCfg);
-        ov12_02236320(monShowData->ballCapsuleSealEffect);
+        monShowData->ballCapsuleSealEffect = BallCapsuleSealEffect_New(HEAP_ID_BATTLE, &ballCapCfg);
+        BallCapsuleSealEffect_Start(monShowData->ballCapsuleSealEffect);
         monShowData->state++;
         break;
     case 2:
-        if (ov12_02237890(monShowData->ballRotation) != 0 && monShowData->isQuickSendOut == 0) {
+        if (BallRotation_GetMode(monShowData->ballRotation) != 0 && monShowData->isQuickSendOut == 0) {
             break;
         }
 
-        if (ov12_02236374(monShowData->ballCapsuleSealEffect) != 1) {
+        if (BallCapsuleSealEffect_IsReady(monShowData->ballCapsuleSealEffect) != 1) {
             break;
         }
 
-        if (ov12_02237810(monShowData->ballRotation) == 1) {
+        if (BallRotation_IsDone(monShowData->ballRotation) == 1) {
             if (monShowData->btlMonObjData) {
                 BattleMonOBJData_Free(monShowData->btlMonObjData);
             }
@@ -2300,7 +2300,7 @@ static void Task_ShowPokemon(SysTask *task, void *data)
             PokemonSprite_StartFade(monShowData->battlerData->monSprite, 16, 16, 0, sFadeColors[monShowData->capturedBall]);
             PokemonSprite_SetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_HIDE, FALSE);
 
-            ov12_022363B4(monShowData->ballCapsuleSealEffect);
+            BallCapsuleSealEffect_PlayDefault(monShowData->ballCapsuleSealEffect);
 
             if (monShowData->face == FACE_FRONT) {
                 Sound_PlayPannedEffect(SEQ_SE_DP_SLOT01_sseq_1, BATTLE_SOUND_PAN_RIGHT);
@@ -2312,11 +2312,11 @@ static void Task_ShowPokemon(SysTask *task, void *data)
         }
         break;
     case 3:
-        if (ov12_022377F8(monShowData->ballRotation) != 1) {
+        if (BallRotation_IsActive(monShowData->ballRotation) != 1) {
             monShowData->state++;
         }
     case 4:
-        if (PokemonSprite_GetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_SCALE_X) == 0x100 && ov12_022363C4(monShowData->ballCapsuleSealEffect) == 0) {
+        if (PokemonSprite_GetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_SCALE_X) == 0x100 && BallCapsuleSealEffect_IsActive(monShowData->ballCapsuleSealEffect) == 0) {
             if (monShowData->face == FACE_FRONT) {
                 PokemonSprite_InitAnim(monShowData->battlerData->monSprite, 1);
                 PokemonSprite_SetAttribute(monShowData->battlerData->monSprite, MON_SPRITE_SHADOW_IS_AFFINE, FALSE);
@@ -2412,15 +2412,15 @@ static void Task_ShowPokemon(SysTask *task, void *data)
         }
         break;
     case 5:
-        if (ov12_022363C4(monShowData->ballCapsuleSealEffect) == 0) {
+        if (BallCapsuleSealEffect_IsActive(monShowData->ballCapsuleSealEffect) == 0) {
             monShowData->state = 6;
         }
         break;
     case 6:
         if (PokemonAnimManager_HasAnimCompleted(BattleSystem_GetPokemonAnimManager(monShowData->battleSys), monShowData->battler) == TRUE
             && PokemonSprite_IsAnimActive(monShowData->battlerData->monSprite) == FALSE) {
-            ov12_0223783C(monShowData->ballRotation);
-            ov12_02236428(monShowData->ballCapsuleSealEffect);
+            BallRotation_Free(monShowData->ballRotation);
+            BallCapsuleSealEffect_Free(monShowData->ballCapsuleSealEffect);
 
             if (monShowData->isShiny) {
                 MoveAnimation moveAnim;
@@ -2459,7 +2459,7 @@ static void Task_ShowPokemon(SysTask *task, void *data)
         MoveAnimation moveAnim;
 
         BattleDisplay_PopulateBattlerContext(monShowData->battleSys, &monShowData->moveAnim, &battlerSpriteCtx, monShowData->battler);
-        ov12_02238390(&battlerSpriteCtx, HEAP_ID_BATTLE);
+        BattlerSprite_LoadSubstituteSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
         BattleController_SetMoveAnimation(monShowData->battleSys, NULL, &moveAnim, 1, 16, monShowData->battler, monShowData->battler, NULL);
         BattleDisplay_PlayMoveAnimation(monShowData->battleSys, monShowData->battlerData, battleAnimSys, &moveAnim);
 
@@ -2496,7 +2496,7 @@ static void Task_ReturnPokemon(SysTask *task, void *data)
         MoveAnimation moveAnim;
 
         BattleDisplay_PopulateBattlerContext(monReturnData->battleSys, &monReturnData->moveAnim, &battlerSpriteCtx, monReturnData->battler);
-        ov12_022382BC(&battlerSpriteCtx, HEAP_ID_BATTLE);
+        BattlerSprite_PopMonSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
         BattleController_SetMoveAnimation(monReturnData->battleSys, NULL, &moveAnim, 1, 16, monReturnData->battler, monReturnData->battler, NULL);
         BattleDisplay_PlayMoveAnimation(monReturnData->battleSys, monReturnData->battlerData, battleAnimSys, &moveAnim);
         monReturnData->battlerData->isAlternateSprite = 0;
@@ -2524,7 +2524,7 @@ static void Task_ReturnPokemon(SysTask *task, void *data)
             ballThrow.paletteSys = BattleSystem_GetPaletteData(monReturnData->battleSys);
             ballThrow.bgPrio = 1;
             ballThrow.surface = 0;
-            monReturnData->ballRotation = ov12_02237728(&ballThrow);
+            monReturnData->ballRotation = BallRotation_New(&ballThrow);
         } else {
             BallThrow ballThrow;
             int ballThrowTypes[] = { 0, 1, 2, 3, 4, 5 };
@@ -2538,7 +2538,7 @@ static void Task_ReturnPokemon(SysTask *task, void *data)
             ballThrow.paletteSys = BattleSystem_GetPaletteData(monReturnData->battleSys);
             ballThrow.bgPrio = 1;
             ballThrow.surface = 0;
-            monReturnData->ballRotation = ov12_02237728(&ballThrow);
+            monReturnData->ballRotation = BallRotation_New(&ballThrow);
         }
 
         monReturnData->state = 5;
@@ -2579,8 +2579,8 @@ static void Task_ReturnPokemon(SysTask *task, void *data)
 
         break;
     case 7:
-        if (ov12_022377F8(monReturnData->ballRotation) == 0) {
-            ov12_0223783C(monReturnData->ballRotation);
+        if (BallRotation_IsActive(monReturnData->ballRotation) == 0) {
+            BallRotation_Free(monReturnData->ballRotation);
             monReturnData->state = 8;
         }
         break;
@@ -2879,11 +2879,11 @@ static void Task_ThrowTrainerBall(SysTask *task, void *data)
             ballThrow.surface = 0;
             ballThrow.battleSys = trainerThrowBallData->battleSys;
 
-            trainerThrowBallData->battlerData->ballRotation = ov12_02237728(&ballThrow);
+            trainerThrowBallData->battlerData->ballRotation = BallRotation_New(&ballThrow);
 
-            ov12_02237E34(trainerThrowBallData->battlerData->ballRotation, 100);
-            ov12_02237E40(trainerThrowBallData->battlerData->ballRotation, 2);
-            ov12_02237E30(trainerThrowBallData->battlerData->ballRotation, 0);
+            BallRotation_SetPriority(trainerThrowBallData->battlerData->ballRotation, 100);
+            BallRotation_SetExplicitPriority(trainerThrowBallData->battlerData->ballRotation, 2);
+            BallRotation_SetFrameTicking(trainerThrowBallData->battlerData->ballRotation, 0);
 
             ManagedSprite_SetAnimationFrame(trainerThrowBallData->battlerData->managedSprite, 0);
             ManagedSprite_SetAnim(trainerThrowBallData->battlerData->managedSprite, 1);
@@ -2897,16 +2897,16 @@ static void Task_ThrowTrainerBall(SysTask *task, void *data)
             ManagedSprite_OffsetPositionXY(trainerThrowBallData->battlerData->managedSprite, 5, 0);
             ManagedSprite_GetPositionXY(trainerThrowBallData->battlerData->managedSprite, &x, &y);
 
-            if (x >= (256 - 48) - 48 && ov12_02237890(trainerThrowBallData->battlerData->ballRotation) != 0) {
-                ov12_02237E0C(trainerThrowBallData->battlerData->ballRotation, 1);
-                ov12_0223786C(trainerThrowBallData->battlerData->ballRotation, 0);
+            if (x >= (256 - 48) - 48 && BallRotation_GetMode(trainerThrowBallData->battlerData->ballRotation) != 0) {
+                BallRotation_SetDrawFlag(trainerThrowBallData->battlerData->ballRotation, 1);
+                BallRotation_SetMode(trainerThrowBallData->battlerData->ballRotation, 0);
 
                 if (battleType & BATTLE_TYPE_DOUBLES && (battleType & BATTLE_TYPE_2vs2) == 0) {
                     BattlerData *battlerData = BattleSystem_GetBattlerData(trainerThrowBallData->battleSys, BattleSystem_GetPartner(trainerThrowBallData->battleSys, trainerThrowBallData->battler));
 
-                    ov12_02237E0C(battlerData->ballRotation, 1);
-                    ov12_0223786C(battlerData->ballRotation, 0);
-                    ov12_02237E4C(battlerData->ballRotation, 12);
+                    BallRotation_SetDrawFlag(battlerData->ballRotation, 1);
+                    BallRotation_SetMode(battlerData->ballRotation, 0);
+                    BallRotation_SetDelay(battlerData->ballRotation, 12);
                 }
             } else if (x >= (256 + 40)) {
                 SpriteManager *spriteMan = BattleSystem_GetSpriteManager(trainerThrowBallData->battleSys);
@@ -2934,20 +2934,20 @@ static void Task_ThrowTrainerBall(SysTask *task, void *data)
             animFrame = ManagedSprite_GetAnimationFrame(trainerThrowBallData->battlerData->managedSprite);
 
             if (v5[trainerThrowBallData->backSpriteIdx][animFrame][0] != 0x7FFF) {
-                ov12_02237E0C(trainerThrowBallData->battlerData->ballRotation, 1);
-                ov12_02237E18(trainerThrowBallData->battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
+                BallRotation_SetDrawFlag(trainerThrowBallData->battlerData->ballRotation, 1);
+                BallRotation_SetPosition(trainerThrowBallData->battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
 
-                if (animFrame == 3 && ov12_02237890(trainerThrowBallData->battlerData->ballRotation) != 0) {
-                    ov12_0223786C(trainerThrowBallData->battlerData->ballRotation, 0);
-                    ov12_02237E30(trainerThrowBallData->battlerData->ballRotation, 1);
+                if (animFrame == 3 && BallRotation_GetMode(trainerThrowBallData->battlerData->ballRotation) != 0) {
+                    BallRotation_SetMode(trainerThrowBallData->battlerData->ballRotation, 0);
+                    BallRotation_SetFrameTicking(trainerThrowBallData->battlerData->ballRotation, 1);
 
                     if (battleType & BATTLE_TYPE_DOUBLES && (battleType & BATTLE_TYPE_2vs2) == 0) {
                         BattlerData *battlerData = BattleSystem_GetBattlerData(trainerThrowBallData->battleSys, BattleSystem_GetPartner(trainerThrowBallData->battleSys, trainerThrowBallData->battler));
 
-                        ov12_02237E18(battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
-                        ov12_02237E0C(battlerData->ballRotation, 1);
-                        ov12_0223786C(battlerData->ballRotation, 0);
-                        ov12_02237E30(battlerData->ballRotation, 1);
+                        BallRotation_SetPosition(battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
+                        BallRotation_SetDrawFlag(battlerData->ballRotation, 1);
+                        BallRotation_SetMode(battlerData->ballRotation, 0);
+                        BallRotation_SetFrameTicking(battlerData->ballRotation, 1);
                     }
                 }
             }
@@ -2975,12 +2975,12 @@ static void Task_ThrowTrainerBall(SysTask *task, void *data)
             trainerThrowBallData->state = 4;
         } else if (trainerThrowBallData->battlerData->ballRotation != NULL) {
             if (v5[trainerThrowBallData->backSpriteIdx][animFrame][0] != 0x7FFF) {
-                ov12_02237E18(trainerThrowBallData->battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
+                BallRotation_SetPosition(trainerThrowBallData->battlerData->ballRotation, x + v5[trainerThrowBallData->backSpriteIdx][animFrame][0], y + v5[trainerThrowBallData->backSpriteIdx][animFrame][1]);
 
-                if (animFrame == 3 && ov12_02237890(trainerThrowBallData->battlerData->ballRotation) != trainerThrowBallData->ballTargetState) {
-                    ov12_0223786C(trainerThrowBallData->battlerData->ballRotation, trainerThrowBallData->ballTargetState);
-                    ov12_02237E40(trainerThrowBallData->battlerData->ballRotation, 1);
-                    ov12_02237E30(trainerThrowBallData->battlerData->ballRotation, 1);
+                if (animFrame == 3 && BallRotation_GetMode(trainerThrowBallData->battlerData->ballRotation) != trainerThrowBallData->ballTargetState) {
+                    BallRotation_SetMode(trainerThrowBallData->battlerData->ballRotation, trainerThrowBallData->ballTargetState);
+                    BallRotation_SetExplicitPriority(trainerThrowBallData->battlerData->ballRotation, 1);
+                    BallRotation_SetFrameTicking(trainerThrowBallData->battlerData->ballRotation, 1);
 
                     if (trainerThrowBallData->ballTargetState != 3) {
                         Sound_PlayEffect(SEQ_SE_DP_NAGERU_sseq);
@@ -2999,11 +2999,11 @@ static void Task_ThrowTrainerBall(SysTask *task, void *data)
         }
         break;
     case 5:
-        if (ov12_022377F8(trainerThrowBallData->battlerData->ballRotation) == 1) {
+        if (BallRotation_IsActive(trainerThrowBallData->battlerData->ballRotation) == 1) {
             break;
         }
 
-        ov12_0223783C(trainerThrowBallData->battlerData->ballRotation);
+        BallRotation_Free(trainerThrowBallData->battlerData->ballRotation);
 
         trainerThrowBallData->battlerData->ballRotation = NULL;
         trainerThrowBallData->state = 6;
@@ -4794,7 +4794,7 @@ static void Task_SetMoveAnimation(SysTask *task, void *data)
         MoveAnimation moveAnim;
 
         BattleDisplay_PopulateBattlerContext(setMoveAnimationData->battleSys, &setMoveAnimationData->moveAnim, &battlerSpriteCtx, setMoveAnimationData->battler);
-        ov12_022382BC(&battlerSpriteCtx, HEAP_ID_BATTLE);
+        BattlerSprite_PopMonSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
 
         BattleController_SetMoveAnimation(setMoveAnimationData->battleSys, NULL, &moveAnim, 1, 16, setMoveAnimationData->battler, setMoveAnimationData->battler, NULL);
         BattleDisplay_PlayMoveAnimation(setMoveAnimationData->battleSys, setMoveAnimationData->battlerData, setMoveAnimationData->battleAnimSys, &moveAnim);
@@ -4841,7 +4841,7 @@ static void Task_SetMoveAnimation(SysTask *task, void *data)
         MoveAnimation moveAnim;
 
         BattleDisplay_PopulateBattlerContext(setMoveAnimationData->battleSys, &setMoveAnimationData->moveAnim, &battlerSpriteCtx, setMoveAnimationData->battler);
-        ov12_02238390(&battlerSpriteCtx, HEAP_ID_BATTLE);
+        BattlerSprite_LoadSubstituteSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
 
         BattleController_SetMoveAnimation(setMoveAnimationData->battleSys, NULL, &moveAnim, 1, 16, setMoveAnimationData->battler, setMoveAnimationData->battler, NULL);
         BattleDisplay_PlayMoveAnimation(setMoveAnimationData->battleSys, setMoveAnimationData->battlerData, setMoveAnimationData->battleAnimSys, &moveAnim);
@@ -4984,7 +4984,7 @@ static void Task_PlayFaintingSequence(SysTask *task, void *data)
         MoveAnimation moveAnim;
 
         BattleDisplay_PopulateBattlerContext(faintingSequenceData->battleSys, &faintingSequenceData->moveAnim, &battlerSpriteCtx, faintingSequenceData->battler);
-        ov12_022382BC(&battlerSpriteCtx, HEAP_ID_BATTLE);
+        BattlerSprite_PopMonSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
 
         BattleController_SetMoveAnimation(faintingSequenceData->battleSys, NULL, &moveAnim, 1, 16, faintingSequenceData->battler, faintingSequenceData->battler, NULL);
         BattleDisplay_PlayMoveAnimation(faintingSequenceData->battleSys, faintingSequenceData->battlerData, battleAnimSys, &moveAnim);
@@ -5146,7 +5146,7 @@ static void Task_ToggleVanish(SysTask *task, void *data)
         MoveAnimation moveAnim;
 
         BattleDisplay_PopulateBattlerContext(toggleVanishData->battleSys, &toggleVanishData->moveAnim, &battlerSpriteCtx, toggleVanishData->battler);
-        ov12_02238390(&battlerSpriteCtx, HEAP_ID_BATTLE);
+        BattlerSprite_LoadSubstituteSprite(&battlerSpriteCtx, HEAP_ID_BATTLE);
 
         BattleController_SetMoveAnimation(toggleVanishData->battleSys, NULL, &moveAnim, 1, 16, toggleVanishData->battler, toggleVanishData->battler, NULL);
         BattleDisplay_PlayMoveAnimation(toggleVanishData->battleSys, toggleVanishData->battlerData, battleAnimSys, &moveAnim);
@@ -5295,19 +5295,19 @@ static void SysTask_SetupUI(SysTask *task, void *data)
     case 0:
         ParticleEffectTemplate particleEffectTemplate;
 
-        uiSetupTaskData->animContext = ov12_02237EFC(HEAP_ID_BATTLE, NULL);
+        uiSetupTaskData->animContext = ParticleEffectContext_New(HEAP_ID_BATTLE, NULL);
 
         particleEffectTemplate.resourceID = sTerrainFlashAnimIDs[terrain];
         particleEffectTemplate.cameraProjection = 1;
 
-        uiSetupTaskData->animObjects[0] = ov12_02237F38(uiSetupTaskData->animContext, &particleEffectTemplate);
+        uiSetupTaskData->animObjects[0] = ParticleEffectContext_CreateEffect(uiSetupTaskData->animContext, &particleEffectTemplate);
 
         particleEffectTemplate.resourceID = sTerrainFlashAnimIDs[terrain] + 1;
         particleEffectTemplate.cameraProjection = 1;
 
-        uiSetupTaskData->animObjects[1] = ov12_02237F38(uiSetupTaskData->animContext, &particleEffectTemplate);
+        uiSetupTaskData->animObjects[1] = ParticleEffectContext_CreateEffect(uiSetupTaskData->animContext, &particleEffectTemplate);
 
-        ov12_02238004(uiSetupTaskData->animObjects[0]);
+        ParticleEffect_Start(uiSetupTaskData->animObjects[0]);
         Sound_PlayEffect(SEQ_SE_DP_PASA2_sseq);
 
         uiSetupTaskData->step = 1;
@@ -5336,7 +5336,7 @@ static void SysTask_SetupUI(SysTask *task, void *data)
         }
 
         if (uiSetupTaskData->frameCount == 20) {
-            ov12_02238004(uiSetupTaskData->animObjects[1]);
+            ParticleEffect_Start(uiSetupTaskData->animObjects[1]);
         }
 
         if (uiSetupTaskData->frameCount == 23) {
@@ -5367,8 +5367,8 @@ static void SysTask_SetupUI(SysTask *task, void *data)
         }
         break;
     case 2:
-        if (ov12_0223802C(uiSetupTaskData->animObjects[1]) == 0) {
-            ov12_02237F74(uiSetupTaskData->animContext);
+        if (ParticleEffect_IsActive(uiSetupTaskData->animObjects[1]) == 0) {
+            ParticleEffectContext_Free(uiSetupTaskData->animContext);
             uiSetupTaskData->step++;
         }
         break;
@@ -5378,8 +5378,8 @@ static void SysTask_SetupUI(SysTask *task, void *data)
         SysTask_Done(task);
         break;
     case 4:
-        ov12_02237F98(uiSetupTaskData->animContext);
-        ov12_02237F74(uiSetupTaskData->animContext);
+        ParticleEffectContext_FreeEffects(uiSetupTaskData->animContext);
+        ParticleEffectContext_Free(uiSetupTaskData->animContext);
         uiSetupTaskData->step++;
     case 5:
         MI_CpuCopy16(BattleSystem_GetSavedBgPalettes(uiSetupTaskData->battleSys), PaletteData_GetUnfadedBuffer(paletteData, 0), PALETTE_SIZE_BYTES * 7);

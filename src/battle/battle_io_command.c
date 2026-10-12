@@ -20,9 +20,9 @@
 #include "battle/idle_bounce_anim.h"
 #include "battle/message_defs.h"
 #include "battle/party_gauge.h"
-#include "battle_anim/ov12_02235E94.h"
-#include "battle_anim/ov12_022380BC.h"
-#include "battle_anim/struct_ov12_02237728.h"
+#include "battle_anim/ball_throw.h"
+#include "battle_anim/battler_sprite.h"
+#include "battle_anim/struct_ball_throw.h"
 
 #include "bg_window.h"
 #include "character_sprite.h"
@@ -148,12 +148,12 @@ void BattlerData_InitSendOutBallThrow(BattleSystem *battleSys, BattlerData *batt
     ballThrow.surface = 0;
     ballThrow.bgPrio = 1;
 
-    battlerData->ballRotation = ov12_02237728(&ballThrow);
+    battlerData->ballRotation = BallRotation_New(&ballThrow);
 
-    ov12_02237E34(battlerData->ballRotation, 100);
-    ov12_02237E40(battlerData->ballRotation, 2);
-    ov12_02237E0C(battlerData->ballRotation, 0);
-    ov12_02237E30(battlerData->ballRotation, 0);
+    BallRotation_SetPriority(battlerData->ballRotation, 100);
+    BallRotation_SetExplicitPriority(battlerData->ballRotation, 2);
+    BallRotation_SetDrawFlag(battlerData->ballRotation, 0);
+    BallRotation_SetFrameTicking(battlerData->ballRotation, 0);
 }
 
 static const BattleCommandPtr sBattleCommands[] = {
@@ -701,7 +701,7 @@ static void BtlIOCmd_ChangeWeatherForm(BattleSystem *battleSys, BattlerData *bat
     y = LoadPokemonSpriteYOffset(message->species, message->gender, face, message->formNum, message->personality);
     PokemonSpriteData_SetYOffset(BattleSystem_GetPokemonSpriteData(battleSys), battlerData->battler, y);
 
-    y = ov12_022384CC(battlerData->battlerType, 1) + y;
+    y = BattlerSprite_GetEncounterOffset(battlerData->battlerType, 1) + y;
     PokemonSprite_SetAttribute(battlerData->monSprite, MON_SPRITE_Y_CENTER, y);
 
     BattleController_EmitClearCommand(battleSys, battlerData->battler, message->command);

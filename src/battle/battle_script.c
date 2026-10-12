@@ -37,8 +37,8 @@
 #include "battle/btlcmd.h"
 #include "battle/common.h"
 #include "battle/terrain.h"
-#include "battle_anim/ov12_02235E94.h"
-#include "battle_anim/struct_ov12_02237728.h"
+#include "battle_anim/ball_throw.h"
+#include "battle_anim/struct_ball_throw.h"
 
 #include "bg_window.h"
 #include "char_transfer.h"
@@ -10392,37 +10392,37 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
                 ballThrow.type = 15;
             }
 
-            data->ballRotation = ov12_02237728(&ballThrow);
+            data->ballRotation = BallRotation_New(&ballThrow);
             data->seqNum = SEQ_CATCH_MON_CHECK_BATTLE_TYPE;
 
             Sound_PlayEffect(SEQ_SE_DP_NAGERU_sseq);
             data->battleSys->ballsThrown++;
-            ov12_022368C8(data->ballRotation, 0);
+            BallRotation_StartAction(data->ballRotation, 0);
         } else {
             BattlerData *battlerData = BattleSystem_GetBattlerData(data->battleSys, 0);
 
-            if (ov12_02237890(battlerData->ballRotation) != 4) {
+            if (BallRotation_GetMode(battlerData->ballRotation) != 4) {
                 data->ballRotation = battlerData->ballRotation;
                 battlerData->ballRotation = NULL;
                 data->seqNum = SEQ_CATCH_MON_CHECK_BATTLE_TYPE;
 
                 Sound_PlayEffect(SEQ_SE_DP_NAGERU_sseq);
                 data->battleSys->ballsThrown++;
-                ov12_022368C8(data->ballRotation, 0);
+                BallRotation_StartAction(data->ballRotation, 0);
             }
         }
         break;
     case SEQ_CATCH_MON_CHECK_BATTLE_TYPE:
-        if (ov12_022368D0(data->ballRotation, 0) == FALSE) {
+        if (BallRotation_UpdateAction(data->ballRotation, 0) == FALSE) {
             u32 battleType = BattleSystem_GetBattleType(data->battleSys);
 
             if (battleType & BATTLE_TYPE_TRAINER) {
                 Sound_PlayPannedEffect(SEQ_SE_DP_KON_sseq, BATTLE_SOUND_PAN_RIGHT);
-                ov12_022368C8(data->ballRotation, 2);
+                BallRotation_StartAction(data->ballRotation, 2);
                 data->seqNum = SEQ_CATCH_MON_PRINT_TRAINER_BLOCKED_BALL;
             } else {
                 Sound_PlayPannedEffect(SEQ_SE_DP_BOWA4_sseq, BATTLE_SOUND_PAN_RIGHT);
-                ov12_022368C8(data->ballRotation, 1);
+                BallRotation_StartAction(data->ballRotation, 1);
 
                 data->seqNum = SEQ_CATCH_MON_CALC_SHAKES;
                 data->tmpData[CATCH_MON_DELAY] = 23;
@@ -10444,13 +10444,13 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
         }
         break;
     case SEQ_CATCH_MON_WAIT_BALL_LAND:
-        if (ov12_022368D0(data->ballRotation, 1) == FALSE && BattleIO_QueueIsEmpty(data->battleCtx)) {
-            ov12_022368C8(data->ballRotation, 3);
+        if (BallRotation_UpdateAction(data->ballRotation, 1) == FALSE && BattleIO_QueueIsEmpty(data->battleCtx)) {
+            BallRotation_StartAction(data->ballRotation, 3);
             data->seqNum = SEQ_CATCH_MON_WAIT_BALL_OPEN;
         }
         break;
     case SEQ_CATCH_MON_WAIT_BALL_OPEN:
-        if (ov12_022368D0(data->ballRotation, 3) == FALSE) {
+        if (BallRotation_UpdateAction(data->ballRotation, 3) == FALSE) {
             data->seqNum = SEQ_CATCH_MON_DO_SHAKES;
         }
         break;
@@ -10463,13 +10463,13 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
                 data->seqNum = SEQ_CATCH_MON_POKEMON_BREAK_FREE;
             }
         } else {
-            ov12_022368C8(data->ballRotation, 4);
+            BallRotation_StartAction(data->ballRotation, 4);
             data->seqNum = SEQ_CATCH_MON_DECREMENT_REMAINING_SHAKES;
             data->tmpData[CATCH_MON_DELAY] = 12;
         }
         break;
     case SEQ_CATCH_MON_DECREMENT_REMAINING_SHAKES:
-        if (ov12_022368D0(data->ballRotation, 4) == FALSE) {
+        if (BallRotation_UpdateAction(data->ballRotation, 4) == FALSE) {
             if (--data->tmpData[CATCH_MON_DELAY] == 0) {
                 data->tmpData[CATCH_MON_REMAINING_SHAKES]--;
                 data->seqNum = SEQ_CATCH_MON_DO_SHAKES;
@@ -10478,13 +10478,13 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
         break;
     case SEQ_CATCH_MON_WAIT_SHAKES_FINISH:
         if (--data->tmpData[CATCH_MON_DELAY] == 0) {
-            ov12_022368C8(data->ballRotation, 6);
+            BallRotation_StartAction(data->ballRotation, 6);
             Sound_PlayPannedEffect(SEQ_SE_DP_GETTING_sseq, BATTLE_SOUND_PAN_RIGHT);
             data->seqNum = SEQ_CATCH_MON_PRINT_POKEMON_WAS_CAUGHT;
         }
         break;
     case SEQ_CATCH_MON_PRINT_POKEMON_WAS_CAUGHT:
-        if (ov12_022368D0(data->ballRotation, 6) == FALSE) {
+        if (BallRotation_UpdateAction(data->ballRotation, 6) == FALSE) {
             BattleMessage msg;
 
             msg.id = BattleStrings_Text_GotchaPokemonWasCaught;
@@ -10501,11 +10501,11 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
     case SEQ_CATCH_MON_WAIT_PRINT_POKEMON_WAS_CAUGHT:
         if (Text_IsPrinterActive(data->tmpData[CATCH_MON_MSG_INDEX]) == FALSE) {
             data->seqNum = SEQ_CATCH_MON_SET_CAUGHT_SPECIES;
-            ov12_022368C8(data->ballRotation, 7);
+            BallRotation_StartAction(data->ballRotation, 7);
         }
         break;
     case SEQ_CATCH_MON_SET_CAUGHT_SPECIES:
-        if (ov12_022368D0(data->ballRotation, 7) == FALSE) {
+        if (BallRotation_UpdateAction(data->ballRotation, 7) == FALSE) {
             if (--data->tmpData[CATCH_MON_DELAY] == 0) {
                 BattleSystem_SetCaughtBattlerIndex(data->battleSys, battler);
                 mon = BattleSystem_GetPartyPokemon(data->battleSys, battler, data->battleCtx->selectedPartySlot[battler]);
@@ -10551,7 +10551,7 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
         if (PaletteData_GetSelectedBuffersMask(paletteData) == 0) {
             PokedexEntryScreenParams dexEntryScreenParams;
 
-            ov12_0223783C(data->ballRotation);
+            BallRotation_Free(data->ballRotation);
             PokemonSpriteManager_DeleteAll(monSpriteMan);
             BattleSystem_HideBattleScreen(data->battleSys);
             Terrain_SetVisibility(BattleSystem_GetTerrainForSide(data->battleSys, BATTLE_SIDE_PLAYER), FALSE);
@@ -10606,7 +10606,7 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
 
             mon = BattleSystem_GetPartyPokemon(data->battleSys, battler, data->battleCtx->selectedPartySlot[battler]);
 
-            ov12_0223783C(data->ballRotation);
+            BallRotation_Free(data->ballRotation);
             PokemonSpriteManager_DeleteAll(monSpriteMan);
             BattlerData_SetTrainerVisibility(BattleSystem_GetBattlerData(data->battleSys, 0), FALSE);
             BattleSystem_HideBattleScreen(data->battleSys);
@@ -10782,10 +10782,10 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
         }
         break;
     case SEQ_CATCH_MON_PRINT_TRAINER_BLOCKED_BALL:
-        if (ov12_022368D0(data->ballRotation, 2) == FALSE) {
+        if (BallRotation_UpdateAction(data->ballRotation, 2) == FALSE) {
             BattleMessage msg;
 
-            ov12_0223783C(data->ballRotation);
+            BallRotation_Free(data->ballRotation);
 
             msg.id = BattleStrings_Text_TheTrainerBlockedTheBall;
             msg.tags = 0;
@@ -10824,7 +10824,7 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
         break;
     case SEQ_CATCH_MON_WAIT_SHOW_POKEMON:
         if (--data->tmpData[CATCH_MON_DELAY] == 0) {
-            ov12_0223783C(data->ballRotation);
+            BallRotation_Free(data->ballRotation);
             data->seqNum = SEQ_CATCH_MON_PRINT_POKEMON_BROKE_FREE;
         }
         break;
@@ -10851,7 +10851,7 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
     case SEQ_CATCH_MON_DONE:
         if (PaletteData_GetSelectedBuffersMask(paletteData) == 0) {
             if (BattleSystem_GetBattleType(data->battleSys) & (BATTLE_TYPE_PAL_PARK | BATTLE_TYPE_CATCH_TUTORIAL)) {
-                ov12_0223783C(data->ballRotation);
+                BallRotation_Free(data->ballRotation);
                 PokemonSpriteManager_DeleteAll(monSpriteMan);
             }
 

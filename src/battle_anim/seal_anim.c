@@ -1,4 +1,4 @@
-#include "battle_anim/ov12_02237E54.h"
+#include "battle_anim/seal_anim.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -20,7 +20,7 @@ int SealAnim_GetDistance(s16 x1, s16 y1, s16 x2, s16 y2)
     return distance;
 }
 
-int ov12_02237E80(BallSeal *param0)
+int SealAnim_GetDistanceToCenter(BallSeal *param0)
 {
     int v0;
     s16 v1 = BallSeal_GetX(param0);
@@ -30,7 +30,7 @@ int ov12_02237E80(BallSeal *param0)
     return v0;
 }
 
-int ov12_02237EA0(BallSeal *param0)
+int SealAnim_GetSpawnDelay(BallSeal *param0)
 {
     int v0;
     int v1;
@@ -51,7 +51,7 @@ int ov12_02237EA0(BallSeal *param0)
     v0 = CapsuleMenu_IsAlphabetSeal(v3);
 
     if (v0 == 0) {
-        v2 = ov12_02237E80(param0);
+        v2 = SealAnim_GetDistanceToCenter(param0);
 
         if (v2 >= (60 - 4)) {
             v4 = 3;

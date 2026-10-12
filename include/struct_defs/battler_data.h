@@ -5,9 +5,9 @@
 
 #include "battle/healthbox.h"
 #include "battle_anim/struct_ball_rotation_decl.h"
-#include "battle_anim/struct_ov12_02223764.h"
-#include "battle_anim/struct_ov12_02237F98_decl.h"
-#include "battle_anim/struct_ov12_02238004_decl.h"
+#include "battle_anim/struct_battle_mon_obj_data.h"
+#include "battle_anim/struct_particle_effect_context_decl.h"
+#include "battle_anim/struct_particle_effect_decl.h"
 
 #include "bg_window.h"
 #include "narc.h"

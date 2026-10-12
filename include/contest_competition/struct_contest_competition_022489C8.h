@@ -1,8 +1,8 @@
 #ifndef POKEPLATINUM_STRUCT_CONTEST_COMPETITION_022489C8_H
 #define POKEPLATINUM_STRUCT_CONTEST_COMPETITION_022489C8_H
 
-#include "battle_anim/struct_ov12_02235FE0_decl.h"
-#include "battle_anim/struct_ov12_02236030.h"
+#include "battle_anim/struct_ball_capsule_seal_effect_decl.h"
+#include "battle_anim/struct_ball_capsule_config.h"
 
 #include "pokemon.h"
 

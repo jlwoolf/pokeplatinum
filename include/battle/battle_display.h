@@ -12,8 +12,8 @@
 
 typedef struct UISetupTaskData {
     BattleSystem *battleSys;
-    UnkStruct_ov12_02237F98 *animContext;
-    UnkStruct_ov12_02238004 *animObjects[3];
+    ParticleEffectContext *animContext;
+    ParticleEffect *animObjects[3];
     u8 step;
     u8 frameCount;
     u8 fadeStep;

@@ -8,7 +8,7 @@
 
 #include "applications/capsule_menu/main.h"
 #include "battle_anim/struct_ball_rotation_decl.h"
-#include "battle_anim/struct_ov12_02235FE0_decl.h"
+#include "battle_anim/struct_ball_capsule_seal_effect_decl.h"
 #include "image_clip_app/struct_image_clip_app_02258A48.h"
 
 #include "bg_window.h"

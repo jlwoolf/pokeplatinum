@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV12_02237728_H
-#define POKEPLATINUM_STRUCT_OV12_02237728_H
+#ifndef POKEPLATINUM_STRUCT_BALL_THROW_H
+#define POKEPLATINUM_STRUCT_BALL_THROW_H
 
 #include "struct_decls/battle_system.h"
 
@@ -28,4 +28,4 @@ typedef struct BallThrow {
     BattleSystem *battleSys;
 } BallThrow;
 
-#endif // POKEPLATINUM_STRUCT_OV12_02237728_H
+#endif // POKEPLATINUM_STRUCT_BALL_THROW_H

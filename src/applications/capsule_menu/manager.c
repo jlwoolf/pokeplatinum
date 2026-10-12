@@ -13,9 +13,9 @@
 #include "applications/capsule_menu/graphics.h"
 #include "applications/capsule_menu/main.h"
 #include "applications/capsule_menu/placement.h"
-#include "battle_anim/ov12_02235E94.h"
-#include "battle_anim/struct_ov12_02236030.h"
-#include "battle_anim/struct_ov12_02237728.h"
+#include "battle_anim/ball_throw.h"
+#include "battle_anim/struct_ball_capsule_config.h"
+#include "battle_anim/struct_ball_throw.h"
 
 #include "ball_seal_info.h"
 #include "bg_window.h"
@@ -854,7 +854,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
                 ballThrow.paletteSys = appMan->graphicsMan.paletteData;
                 ballThrow.ballID = Pokemon_GetValue(appMan->pokemon, MON_DATA_POKEBALL, NULL);
 
-                appMan->graphicsMan.ballRotation = ov12_02237728(&ballThrow);
+                appMan->graphicsMan.ballRotation = BallRotation_New(&ballThrow);
                 appMan->throwStateID++;
             }
             break;
@@ -871,20 +871,20 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
             Pokemon_SetValue(appMan->pokemon, MON_DATA_BALL_CAPSULE_ID, (u8 *)&capsuleIndex);
             Pokemon_SetValue(appMan->pokemon, MON_DATA_BALL_CAPSULE, &capsule);
 
-            appMan->graphicsMan.sealEffect = ov12_02236004(HEAP_ID_53, &ballCapCfg);
-            ov12_02236320(appMan->graphicsMan.sealEffect);
+            appMan->graphicsMan.sealEffect = BallCapsuleSealEffect_New(HEAP_ID_53, &ballCapCfg);
+            BallCapsuleSealEffect_Start(appMan->graphicsMan.sealEffect);
         }
             appMan->throwStateID++;
             appMan->yesNoResult = 0;
             break;
         case THROW_WAIT_FOR_END_STATE_ID:
-            if (ov12_02236374(appMan->graphicsMan.sealEffect) != 1) {
+            if (BallCapsuleSealEffect_IsReady(appMan->graphicsMan.sealEffect) != 1) {
                 break;
             }
 
-            if (ov12_02237810(appMan->graphicsMan.ballRotation) == 1) {
+            if (BallRotation_IsDone(appMan->graphicsMan.ballRotation) == 1) {
                 ov76_0223DE78(appMan);
-                ov12_022363B4(appMan->graphicsMan.sealEffect);
+                BallCapsuleSealEffect_PlayDefault(appMan->graphicsMan.sealEffect);
                 CapsuleManager_SetThrownMonSpriteHidden(appMan, 0);
                 CapsuleManager_ZeroThrownMonScale(appMan);
                 Sound_PlayEffect(SEQ_SE_DP_CUSTOM05_sseq);
@@ -894,12 +894,12 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
         case THROW_WAIT_FOR_ROTATION_END_STATE_ID: {
             BOOL v4 = ov76_0223DE78(appMan);
 
-            if (ov12_022377F8(appMan->graphicsMan.ballRotation) != 0) {
+            if (BallRotation_IsActive(appMan->graphicsMan.ballRotation) != 0) {
                 break;
             }
 
             if (v4 == 0) {
-                ov12_0223783C(appMan->graphicsMan.ballRotation);
+                BallRotation_Free(appMan->graphicsMan.ballRotation);
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 0);
                 CapsuleManager_LoadThrownMonAnim(appMan);
                 appMan->yesNoResult = 0;
@@ -907,7 +907,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
             }
         } break;
         case THROW_WAIT_FOR_ANIMS_END_STATE_ID:
-            if (ov12_022363C4(appMan->graphicsMan.sealEffect) != 0) {
+            if (BallCapsuleSealEffect_IsActive(appMan->graphicsMan.sealEffect) != 0) {
                 break;
             }
 
@@ -919,7 +919,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
                 break;
             }
 
-            ov12_02236428(appMan->graphicsMan.sealEffect);
+            BallCapsuleSealEffect_Free(appMan->graphicsMan.sealEffect);
             appMan->throwStateID++;
             break;
         case THROW_WAIT_AFTER_ANIMS_END_STATE_ID:
@@ -941,7 +941,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
                 ballThrow.paletteSys = appMan->graphicsMan.paletteData;
                 ballThrow.ballID = Pokemon_GetValue(appMan->pokemon, MON_DATA_POKEBALL, NULL);
 
-                appMan->graphicsMan.ballRotation = ov12_02237728(&ballThrow);
+                appMan->graphicsMan.ballRotation = BallRotation_New(&ballThrow);
 
                 CapsuleManager_SetNormalAlpha();
                 GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
@@ -952,12 +952,12 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
         case THROW_WAIT_FREE_STATE_ID: {
             BOOL v6 = ov76_0223DEF4(appMan);
 
-            if ((ov12_022377F8(appMan->graphicsMan.ballRotation) == 0) && (v6 == 0)) {
+            if ((BallRotation_IsActive(appMan->graphicsMan.ballRotation) == 0) && (v6 == 0)) {
                 PaletteData_StartFade(appMan->graphicsMan.paletteData, 2, 0x80B, 0, 10, 0, 0);
                 PaletteData_StartFade(appMan->graphicsMan.paletteData, 8, 0xFFFF, 0, 10, 0, 0);
                 CapsuleManager_SetThrownMonSpriteHidden(appMan, 1);
                 CapsuleManager_FreeThrownMonSprite(appMan);
-                ov12_0223783C(appMan->graphicsMan.ballRotation);
+                BallRotation_Free(appMan->graphicsMan.ballRotation);
                 appMan->throwStateID++;
             }
         } break;

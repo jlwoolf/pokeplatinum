@@ -21,10 +21,10 @@
 #include "battle_anim/battle_anim_util.h"
 #include "battle_anim/battle_particle_util.h"
 #include "battle_anim/is_form_symmetrical.h"
-#include "battle_anim/ov12_022380BC.h"
+#include "battle_anim/battler_sprite.h"
 #include "battle_anim/script_func_tables.h"
-#include "battle_anim/struct_ov12_02223764.h"
-#include "battle_anim/struct_ov12_022380DC.h"
+#include "battle_anim/struct_battle_mon_obj_data.h"
+#include "battle_anim/struct_battler_sprite_context.h"
 #include "global/utility.h"
 #include "contest_competition/contest_competition_022413D8.h"
 
@@ -941,11 +941,11 @@ static void BattleAnimScriptCmd_StartBattlerSlideIn(BattleAnimSystem *system)
     BattlerSpriteContext_InitFromSystem(system, &battlerSpriteCtx, animParticipantMode);
 
     if (animParticipantMode == 2) {
-        ov12_02238390(&battlerSpriteCtx, system->heapID);
+        BattlerSprite_LoadSubstituteSprite(&battlerSpriteCtx, system->heapID);
     } else if (animParticipantMode == 3) {
-        ov12_022380CC(&battlerSpriteCtx, system->heapID);
+        BattlerSprite_LoadMonSpriteAlt(&battlerSpriteCtx, system->heapID);
     } else {
-        ov12_022380BC(&battlerSpriteCtx, system->heapID);
+        BattlerSprite_LoadMonSprite(&battlerSpriteCtx, system->heapID);
     }
 }
 
@@ -959,7 +959,7 @@ static void BattleAnimScriptCmd_StartBattlerSlideOut(BattleAnimSystem *system)
     BattleAnimScript_Next(system);
 
     BattlerSpriteContext_InitFromSystem(system, &battlerSpriteCtx, animParticipantMode);
-    ov12_022382BC(&battlerSpriteCtx, system->heapID);
+    BattlerSprite_PopMonSprite(&battlerSpriteCtx, system->heapID);
 }
 
 static void BattleAnimScriptCmd_BeginLoop(BattleAnimSystem *system)
