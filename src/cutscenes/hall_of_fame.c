@@ -235,24 +235,24 @@ typedef struct {
     VecFx16 unk_826;
     VecFx16 unk_82C;
     HallOfFameMan *hallOfFameMan;
-} UnkStruct_ov86_0223CAE4;
+} HallOfFameSpotlight;
 
-static void inline inline_ov86_0223CB74(UnkStruct_ov86_0223CAE4 *wk);
+static void inline HallOfFameSpotlight_UpdateVerts(HallOfFameSpotlight *wk);
 static BOOL HallOfFame_State_FadeIn(HallOfFameMan *hallOfFameMan);
 static BOOL HallOfFame_State_FadeOut(HallOfFameMan *hallOfFameMan);
 static BOOL HallOfFame_State_ShowIndividualPokemon(HallOfFameMan *hallOfFameMan);
 static BOOL HallOfFame_State_ShowPartyAndPlayer(HallOfFameMan *hallOfFameMan);
 static BOOL HallOfFame_State_WipeToBlack(HallOfFameMan *hallOfFameMan);
 static BOOL HallOfFame_IsSysTaskDone(HallOfFameMan *hallOfFameMan, int taskID);
-static void ov86_0223B6CC(SysTask *task, void *data);
+static void HallOfFame_VBlankCallback(SysTask *task, void *data);
 static SysTask *HallOfFame_ExecuteSysTaskOnVBlank(SysTaskFunc callback, void *param, int priority);
-static void ov86_0223B74C(HallOfFameMan *hallOfFameMan);
-static void ov86_0223B8C4(HallOfFameMan *hallOfFameMan);
-static void ov86_0223B900(HallOfFameMan *hallOfFameMan);
+static void HallOfFame_InitBg(HallOfFameMan *hallOfFameMan);
+static void HallOfFame_FreeBg(HallOfFameMan *hallOfFameMan);
+static void HallOfFame_InitG3d(HallOfFameMan *hallOfFameMan);
 static void HallOfFame_InitCamera(HallOfFameMan *hallOfFameMan);
 static void HallOfFame_DeleteCamera(HallOfFameMan *hallOfFameMan);
-static void ov86_0223BA44(HallOfFameMan *hallOfFameMan);
-static void ov86_0223BAC8(HallOfFameMan *hallOfFameMan, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank, NARC *narc);
+static void HallOfFame_InitSprites(HallOfFameMan *hallOfFameMan);
+static void HallOfFame_CreateSprites(HallOfFameMan *hallOfFameMan, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank, NARC *narc);
 static void HallOfFame_DeleteSprites(HallOfFameMan *hallOfFameMan);
 static void HallOfFame_ShowPokemonSprite(HallOfFameMan *hallOfFameMan, int monIndex, int taskID);
 static void HallOfFame_SlideInPokemonSprite(SysTask *task, void *data);
@@ -277,23 +277,23 @@ static void HallOfFame_ShowPlayerText(HallOfFameMan *hallOfFameMan);
 static void HallOfFame_ShowPartySprites(HallOfFameMan *hallOfFameMan, int taskID);
 static void HallOfFame_SlideInPartySprites(SysTask *task, void *data);
 static SysTask *HallOfFame_InitSpotlightsTask(HallOfFameMan *hallOfFameMan);
-static void ov86_0223CA10(SysTask *task, void *data);
-static void ov86_0223CA64(SysTask *task, void *data);
-static void ov86_0223CAA0(SysTask *task, fx16 param1, fx32 param2);
-static void ov86_0223CB74(SysTask *task, void *data);
-static void ov86_0223CD00(SysTask *task);
+static void HallOfFameSpotlights_BeginDisplayList(SysTask *task, void *data);
+static void HallOfFameSpotlights_EndDisplayList(SysTask *task, void *data);
+static void HallOfFameSpotlights_AddSpotlight(SysTask *task, fx16 param1, fx32 param2);
+static void HallOfFameSpotlight_DrawCallback(SysTask *task, void *data);
+static void HallOfFameSpotlights_Draw(SysTask *task);
 static void HallOfFame_FreeSpotlightTasks(SysTask *task);
-static BOOL ov86_0223CD80(void);
+static BOOL HallOfFameSpotlights_IsDone(void);
 static SysTask *HallOfFame_InitConfettiTask(HallOfFameMan *hallOfFameMan);
 static void HallOfFame_SysTaskDone(SysTask *task);
 static void HallOfFame_SetConfettiActive(SysTask *task);
 static void HallOfFame_DoConfettiAnimation(SysTask *task, void *data);
-static void ov86_0223D220(SysTask *task);
+static void HallOfFameConfetti_DrawCallback(SysTask *task);
 static void HallOfFameMovement_Init(HallOfFameMovement *movement, fx32 start, fx32 end, int numSteps);
 static fx32 HallOfFameMovement_Run(HallOfFameMovement *movement);
 static BOOL HallOfFameMovement_IsDone(HallOfFameMovement *movement);
 static int HallOfFame_GetMetStringIndex(HallOfFameMan *hallOfFameMan, Pokemon *mon, const TrainerInfo *trainerInfo);
-static SysTask *ov86_0223CAE4(HallOfFameSpotlights *spotlights, fx16 param1, fx32 param2, int taskID);
+static SysTask *HallOfFameSpotlight_Create(HallOfFameSpotlights *spotlights, fx16 param1, fx32 param2, int taskID);
 
 BOOL HallOfFameManager_Init(ApplicationManager *appMan, int *state)
 {
@@ -323,26 +323,26 @@ BOOL HallOfFameManager_Init(ApplicationManager *appMan, int *state)
         }
     }
 
-    ov86_0223B74C(hallOfFameMan);
-    ov86_0223B900(hallOfFameMan);
-    ov86_0223BA44(hallOfFameMan);
+    HallOfFame_InitBg(hallOfFameMan);
+    HallOfFame_InitG3d(hallOfFameMan);
+    HallOfFame_InitSprites(hallOfFameMan);
 
     hallOfFameMan->taskConfetti = NULL;
     hallOfFameMan->taskSpotlights = HallOfFame_InitSpotlightsTask(hallOfFameMan);
 
-    ov86_0223CAA0(hallOfFameMan->taskSpotlights, -FX16_CONST(0.714f), FX32_CONST(20));
-    ov86_0223CAA0(hallOfFameMan->taskSpotlights, -FX16_CONST(0.429f), FX32_CONST(60));
-    ov86_0223CAA0(hallOfFameMan->taskSpotlights, -FX16_CONST(0.143f), FX32_CONST(40));
-    ov86_0223CAA0(hallOfFameMan->taskSpotlights, FX16_CONST(0.143f), FX32_CONST(140));
-    ov86_0223CAA0(hallOfFameMan->taskSpotlights, FX16_CONST(0.429f), FX32_CONST(120));
-    ov86_0223CAA0(hallOfFameMan->taskSpotlights, FX16_CONST(0.714f), FX32_CONST(160));
+    HallOfFameSpotlights_AddSpotlight(hallOfFameMan->taskSpotlights, -FX16_CONST(0.714f), FX32_CONST(20));
+    HallOfFameSpotlights_AddSpotlight(hallOfFameMan->taskSpotlights, -FX16_CONST(0.429f), FX32_CONST(60));
+    HallOfFameSpotlights_AddSpotlight(hallOfFameMan->taskSpotlights, -FX16_CONST(0.143f), FX32_CONST(40));
+    HallOfFameSpotlights_AddSpotlight(hallOfFameMan->taskSpotlights, FX16_CONST(0.143f), FX32_CONST(140));
+    HallOfFameSpotlights_AddSpotlight(hallOfFameMan->taskSpotlights, FX16_CONST(0.429f), FX32_CONST(120));
+    HallOfFameSpotlights_AddSpotlight(hallOfFameMan->taskSpotlights, FX16_CONST(0.714f), FX32_CONST(160));
 
     hallOfFameMan->taskConfetti = HallOfFame_InitConfettiTask(hallOfFameMan);
 
     GX_SetDispSelect(GX_DISP_SELECT_MAIN_SUB);
 
     hallOfFameMan->state = 0;
-    hallOfFameMan->task_1C28 = HallOfFame_ExecuteSysTaskOnVBlank(ov86_0223B6CC, hallOfFameMan, 6);
+    hallOfFameMan->task_1C28 = HallOfFame_ExecuteSysTaskOnVBlank(HallOfFame_VBlankCallback, hallOfFameMan, 6);
 
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_8, SEQ_BLD_EV_DENDO2_sseq, 1);
 
@@ -361,7 +361,7 @@ BOOL HallOfFameManager_Exit(ApplicationManager *appMan, int *state)
         HallOfFame_FreeSpotlightTasks(hallOfFameMan->taskSpotlights);
         HallOfFame_DeleteSprites(hallOfFameMan);
         HallOfFame_DeleteCamera(hallOfFameMan);
-        ov86_0223B8C4(hallOfFameMan);
+        HallOfFame_FreeBg(hallOfFameMan);
 
         StringTemplate_Free(hallOfFameMan->strTemplate);
         String_Free(hallOfFameMan->string_1C30);
@@ -374,7 +374,7 @@ BOOL HallOfFameManager_Exit(ApplicationManager *appMan, int *state)
         break;
     }
     case 1:
-        if (ov86_0223CD80()) {
+        if (HallOfFameSpotlights_IsDone()) {
             return TRUE;
         }
     }
@@ -577,7 +577,7 @@ static BOOL HallOfFame_IsSysTaskDone(HallOfFameMan *hallOfFameMan, int taskID)
     return hallOfFameMan->tasks[taskID] == NULL;
 }
 
-static void ov86_0223B6CC(SysTask *task, void *data)
+static void HallOfFame_VBlankCallback(SysTask *task, void *data)
 {
     HallOfFameMan *hallOfFameMan = data;
 
@@ -588,12 +588,12 @@ static void ov86_0223B6CC(SysTask *task, void *data)
     G3X_Reset();
     NNS_G3dGePushMtx();
 
-    ov86_0223CD00(hallOfFameMan->taskSpotlights);
+    HallOfFameSpotlights_Draw(hallOfFameMan->taskSpotlights);
 
     NNS_G3dGePopMtx(1);
     NNS_G3dGePushMtx();
 
-    ov86_0223D220(hallOfFameMan->taskConfetti);
+    HallOfFameConfetti_DrawCallback(hallOfFameMan->taskConfetti);
 
     NNS_G3dGePopMtx(1);
     G3_SwapBuffers(GX_SORTMODE_MANUAL, GX_BUFFERMODE_Z);
@@ -607,7 +607,7 @@ static SysTask *HallOfFame_ExecuteSysTaskOnVBlank(SysTaskFunc callback, void *pa
     return SysTask_ExecuteOnVBlank(callback, param, priority);
 }
 
-static void ov86_0223B74C(HallOfFameMan *hallOfFameMan)
+static void HallOfFame_InitBg(HallOfFameMan *hallOfFameMan)
 {
     NARC *narc;
     static const GXBanks v1 = {
@@ -703,7 +703,7 @@ static void ov86_0223B74C(HallOfFameMan *hallOfFameMan)
     NARC_dtor(narc);
 }
 
-static void ov86_0223B8C4(HallOfFameMan *hallOfFameMan)
+static void HallOfFame_FreeBg(HallOfFameMan *hallOfFameMan)
 {
     GX_SetVisibleWnd(GX_WNDMASK_NONE);
 
@@ -714,7 +714,7 @@ static void ov86_0223B8C4(HallOfFameMan *hallOfFameMan)
     Heap_Free(hallOfFameMan->bgConfig);
 }
 
-static void ov86_0223B900(HallOfFameMan *hallOfFameMan)
+static void HallOfFame_InitG3d(HallOfFameMan *hallOfFameMan)
 {
     NNS_G3dInit();
 
@@ -767,7 +767,7 @@ static void HallOfFame_DeleteCamera(HallOfFameMan *hallOfFameMan)
     Camera_Delete(hallOfFameMan->camera);
 }
 
-static void ov86_0223BA44(HallOfFameMan *hallOfFameMan)
+static void HallOfFame_InitSprites(HallOfFameMan *hallOfFameMan)
 {
     NNSG2dCellDataBank *cellBank;
     NNSG2dAnimBankData *animBank;
@@ -780,13 +780,13 @@ static void ov86_0223BA44(HallOfFameMan *hallOfFameMan)
     hallOfFameMan->unk_1D0 = Graphics_GetCellBankFromOpenNARC(narc, 77, FALSE, &cellBank, HEAP_ID_HALL_OF_FAME);
     hallOfFameMan->unk_1D4 = Graphics_GetAnimBankFromOpenNARC(narc, 78, FALSE, &animBank, HEAP_ID_HALL_OF_FAME);
 
-    ov86_0223BAC8(hallOfFameMan, cellBank, animBank, narc);
+    HallOfFame_CreateSprites(hallOfFameMan, cellBank, animBank, narc);
 
     NARC_dtor(narc);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void ov86_0223BAC8(HallOfFameMan *hallOfFameMan, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank, NARC *narc)
+static void HallOfFame_CreateSprites(HallOfFameMan *hallOfFameMan, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank, NARC *narc)
 {
     static const TileRegion tileRegions[2] = {
         FRAME_0_REGION,
@@ -1486,65 +1486,65 @@ static void HallOfFame_SlideInPartySprites(SysTask *task, void *data)
     }
 }
 
-static u32 Unk_ov86_0223D564 = 0;
-static BOOL Unk_ov86_0223D540 = TRUE;
+static u32 sSpotlightTaskCount = 0;
+static BOOL sSpotlightsActive = TRUE;
 
 static SysTask *HallOfFame_InitSpotlightsTask(HallOfFameMan *hallOfFameMan)
 {
     HallOfFameSpotlights *spotlights = Heap_Alloc(HEAP_ID_HALL_OF_FAME, sizeof(HallOfFameSpotlights));
 
     if (spotlights) {
-        Unk_ov86_0223D540 = TRUE;
-        Unk_ov86_0223D564 = 2;
+        sSpotlightsActive = TRUE;
+        sSpotlightTaskCount = 2;
 
         spotlights->taskID = 0;
-        spotlights->task = HallOfFame_ExecuteSysTaskOnVBlank(ov86_0223CA64, spotlights, 5);
+        spotlights->task = HallOfFame_ExecuteSysTaskOnVBlank(HallOfFameSpotlights_EndDisplayList, spotlights, 5);
         spotlights->hallOfFameMan = hallOfFameMan;
 
-        return HallOfFame_ExecuteSysTaskOnVBlank(ov86_0223CA10, spotlights, 3);
+        return HallOfFame_ExecuteSysTaskOnVBlank(HallOfFameSpotlights_BeginDisplayList, spotlights, 3);
     }
 
     return NULL;
 }
 
-static void ov86_0223CA10(SysTask *task, void *data)
+static void HallOfFameSpotlights_BeginDisplayList(SysTask *task, void *data)
 {
-    if (Unk_ov86_0223D540) {
+    if (sSpotlightsActive) {
         HallOfFameSpotlights *spotlights = data;
 
         G3_BeginMakeDL(&spotlights->info, spotlights->ptr, sizeof(spotlights->ptr));
         G3B_MaterialColorDiffAmb(&spotlights->info, GX_RGB(31, 31, 31), GX_RGB(16, 16, 16), 0);
         G3B_MaterialColorSpecEmi(&spotlights->info, GX_RGB(16, 16, 16), GX_RGB(0, 0, 0), 0);
     } else {
-        Unk_ov86_0223D564--;
+        sSpotlightTaskCount--;
         SysTask_Done(task);
     }
 }
 
-static void ov86_0223CA64(SysTask *task, void *data)
+static void HallOfFameSpotlights_EndDisplayList(SysTask *task, void *data)
 {
-    if (Unk_ov86_0223D540) {
+    if (sSpotlightsActive) {
         HallOfFameSpotlights *spotlights = data;
         spotlights->ptrSize = G3_EndMakeDL(&spotlights->info);
         DC_FlushRange(spotlights->ptr, spotlights->ptrSize);
     } else {
-        Unk_ov86_0223D564--;
+        sSpotlightTaskCount--;
         SysTask_Done(task);
     }
 }
 
-static void ov86_0223CAA0(SysTask *task, fx16 param1, fx32 param2)
+static void HallOfFameSpotlights_AddSpotlight(SysTask *task, fx16 param1, fx32 param2)
 {
     HallOfFameSpotlights *spotlights = SysTask_GetParam(task);
 
     if (spotlights->taskID < MAX_SPOTLIGHT_TASKS) {
-        spotlights->tasks[spotlights->taskID] = ov86_0223CAE4(spotlights, param1, param2, spotlights->taskID);
-        Unk_ov86_0223D564++;
+        spotlights->tasks[spotlights->taskID] = HallOfFameSpotlight_Create(spotlights, param1, param2, spotlights->taskID);
+        sSpotlightTaskCount++;
         spotlights->taskID++;
     }
 }
 
-static SysTask *ov86_0223CAE4(HallOfFameSpotlights *spotlights, fx16 param1, fx32 param2, int taskID)
+static SysTask *HallOfFameSpotlight_Create(HallOfFameSpotlights *spotlights, fx16 param1, fx32 param2, int taskID)
 {
     static const int colors[] = {
         GX_RGB(31, 31, 12),
@@ -1564,7 +1564,7 @@ static SysTask *ov86_0223CAE4(HallOfFameSpotlights *spotlights, fx16 param1, fx3
         0xb00,
         0xa00
     };
-    UnkStruct_ov86_0223CAE4 *v2 = Heap_Alloc(HEAP_ID_HALL_OF_FAME, sizeof(UnkStruct_ov86_0223CAE4));
+    HallOfFameSpotlight *v2 = Heap_Alloc(HEAP_ID_HALL_OF_FAME, sizeof(HallOfFameSpotlight));
 
     if (v2) {
         v2->info = &(spotlights->info);
@@ -1578,13 +1578,13 @@ static SysTask *ov86_0223CAE4(HallOfFameSpotlights *spotlights, fx16 param1, fx3
         VEC_Fx16Set(&(v2->unk_81A), param1 - 80, -FX16_ONE, 0);
         VEC_Fx16Set(&(v2->unk_820), param1 + 80, -FX16_ONE, 0);
 
-        return HallOfFame_ExecuteSysTaskOnVBlank(ov86_0223CB74, v2, 4);
+        return HallOfFame_ExecuteSysTaskOnVBlank(HallOfFameSpotlight_DrawCallback, v2, 4);
     }
 
     return NULL;
 }
 
-static void inline inline_ov86_0223CB74(UnkStruct_ov86_0223CAE4 *param0)
+static void inline HallOfFameSpotlight_UpdateVerts(HallOfFameSpotlight *param0)
 {
     int v0 = param0->unk_808 >> FX32_SHIFT;
     fx32 v1 = param0->unk_818 + FX_Mul(CalcCosineDegrees(v0), 10240);
@@ -1594,10 +1594,10 @@ static void inline inline_ov86_0223CB74(UnkStruct_ov86_0223CAE4 *param0)
     VEC_Fx16Set(&(param0->unk_82C), v1 + 576, v2, 0);
 }
 
-static void ov86_0223CB74(SysTask *task, void *data)
+static void HallOfFameSpotlight_DrawCallback(SysTask *task, void *data)
 {
-    if (Unk_ov86_0223D540) {
-        UnkStruct_ov86_0223CAE4 *v0 = data;
+    if (sSpotlightsActive) {
+        HallOfFameSpotlight *v0 = data;
 
         v0->unk_808 += v0->unk_80C;
 
@@ -1611,7 +1611,7 @@ static void ov86_0223CB74(SysTask *task, void *data)
             }
         }
 
-        inline_ov86_0223CB74(v0);
+        HallOfFameSpotlight_UpdateVerts(v0);
 
         G3B_PolygonAttr(v0->info, GX_LIGHTMASK_NONE, GX_POLYGONMODE_MODULATE, GX_CULL_BACK, v0->unk_814, 16, 0);
         G3B_Begin(v0->info, GX_BEGIN_QUADS);
@@ -1624,12 +1624,12 @@ static void ov86_0223CB74(SysTask *task, void *data)
 
         G3B_End(v0->info);
     } else {
-        Unk_ov86_0223D564--;
+        sSpotlightTaskCount--;
         SysTask_Done(task);
     }
 }
 
-static void ov86_0223CD00(SysTask *task)
+static void HallOfFameSpotlights_Draw(SysTask *task)
 {
     if (task != NULL) {
         HallOfFameSpotlights *spotlights = SysTask_GetParam(task);
@@ -1642,7 +1642,7 @@ static void ov86_0223CD00(SysTask *task)
 
 static void HallOfFame_FreeSpotlightTasks(SysTask *task)
 {
-    Unk_ov86_0223D540 = FALSE;
+    sSpotlightsActive = FALSE;
 
     if (task != NULL) {
         HallOfFameSpotlights *spotlights = SysTask_GetParam(task);
@@ -1656,9 +1656,9 @@ static void HallOfFame_FreeSpotlightTasks(SysTask *task)
     }
 }
 
-static BOOL ov86_0223CD80(void)
+static BOOL HallOfFameSpotlights_IsDone(void)
 {
-    return Unk_ov86_0223D564 == 0;
+    return sSpotlightTaskCount == 0;
 }
 
 static SysTask *HallOfFame_InitConfettiTask(HallOfFameMan *hallOfFameMan)
@@ -1820,7 +1820,7 @@ static void HallOfFame_DoConfettiAnimation(SysTask *task, void *data)
     }
 }
 
-static void ov86_0223D220(SysTask *task)
+static void HallOfFameConfetti_DrawCallback(SysTask *task)
 {
     if (task) {
         HallOfFameConfettiAnimation *confettiAnim = SysTask_GetParam(task);
