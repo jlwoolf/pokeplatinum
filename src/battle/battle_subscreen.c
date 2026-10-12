@@ -95,10 +95,10 @@ static void SysTask_AnimateMoveButtonPress(SysTask *unused, void *subscreen);
 static void SysTask_AnimateTargetButtonPress(SysTask *unused, void *subscreen);
 static void GetBattlerTargetFlags(BattleSubscreen *btlSubscreen, int selectedTarget, u8 *outFlags, int checkPresence);
 static void GetTargetSlotFlags(BattleSubscreen *btlSubscreen, u8 *outFlags, BOOL checkPresence);
-static void ov16_Dummy2(BattleSubscreen *unused1, int unused2);
+static void BattleSubscreen_Dummy2(BattleSubscreen *unused1, int unused2);
 void BattleSubscreen_StartPanelSlide(BattleSubscreen *btlSubscreen, int slideSpeed, int targetOffset);
 static void SysTask_SlidePanel(SysTask *task, void *subscreen);
-static void ov16_Dummy1(BattleSubscreen *unused1, int unused2);
+static void BattleSubscreen_Dummy1(BattleSubscreen *unused1, int unused2);
 static void BattleSubscreen_NewFontOAM(BattleSubscreen *btlSubscreen, FontOAMEntry *fontOAMEntry, const String *str, enum Font font, TextColor textColor, int plttOffset, int plttResID, int x, int y, int centerX, TextWindowLayout *precomputedLayout);
 static void BattleSubscreen_FreeFontOAMs(BattleSubscreen *btlSubscreen);
 static void BattleSubscreen_LoadPokeIconResources(BattleSubscreen *btlSubscreen);
@@ -110,7 +110,7 @@ static void SysTask_SlideInPanel(SysTask *task, void *panelState);
 static void SysTask_ApplySlideInBgOffsets(SysTask *unused, void *panelState);
 static void HBlankCallback_SlideInPanel(void *panelState);
 static TextColor GetPPTextColor(int currPP, int maxPP);
-void ov16_Dummy3(BattleSubscreen *unused1, int unused2);
+void BattleSubscreen_Dummy3(BattleSubscreen *unused1, int unused2);
 BOOL useless_0226BCD0(BattleSubscreen *btlSubscreen);
 static void SysTask_PulseCursorHighlight(SysTask *unused, void *subscreen);
 static void SysTask_AnimatePartyBalls(SysTask *unused, void *subscreen);
@@ -256,7 +256,7 @@ static const int sActionMenuButtonResults[NELEMS(sActionMenuTouchRects) - 1] = {
     0x4
 };
 
-__attribute__((aligned(4))) static const u8 Unused_ov16_02270A08[NELEMS(sActionMenuTouchRects) - 1] = {
+__attribute__((aligned(4))) static const u8 sActionMenuButtonSlots[NELEMS(sActionMenuTouchRects) - 1] = {
     0x1,
     0x2,
     0x3,
@@ -412,7 +412,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x3, 0x3, 0x0 },
         sActionMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_OpenActionMenu,
@@ -425,7 +425,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x3, 0x3, 0x0 },
         sActionMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_OpenActionMenu,
@@ -438,7 +438,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x3, 0x3, 0x0 },
         sActionMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_DrawActionMenu,
@@ -451,7 +451,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x3, 0x3, 0x0 },
         sActionMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_DrawActionMenu,
@@ -464,7 +464,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x3, 0x3, 0x0 },
         sFirstBattleMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_OpenFirstBattleMenu,
@@ -477,7 +477,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x3, 0x3, 0x0 },
         sFirstBattleMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_DrawFirstBattleMenu,
@@ -490,7 +490,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x1, 0x3, 0x0 },
         sActionMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_OpenActionMenu,
@@ -503,7 +503,7 @@ static const BattleMenuConfig sBattleMenuConfigs[] = {
         { 0x2, 0x1, 0x3, 0x0 },
         sActionMenuTouchRects,
         sActionMenuButtonResults,
-        Unused_ov16_02270A08,
+        sActionMenuButtonSlots,
         BattleSystem_Cursor_Menu,
         SaveActionMenuCursorPos,
         BattleSubscreen_DrawActionMenu,
@@ -1855,7 +1855,7 @@ static int BattleSubscreen_ProcessActionInput(BattleSubscreen *btlSubscreen, int
         break;
     }
 
-    ov16_Dummy2(btlSubscreen, unused);
+    BattleSubscreen_Dummy2(btlSubscreen, unused);
     StartMenuTransitionTask(SysTask_AnimateMenuButtonPress, btlSubscreen);
 
     btlSubscreen->menuButtonPressAnimState.ButtonPressAnimationState.keyframes = sMenuButtonPressKeyframes[selectedAction - 1];
@@ -1906,7 +1906,7 @@ static int BattleSubscreen_ProcessMoveInput(BattleSubscreen *btlSubscreen, int s
         break;
     }
 
-    ov16_Dummy2(btlSubscreen, unused);
+    BattleSubscreen_Dummy2(btlSubscreen, unused);
     StartMenuTransitionTask(SysTask_AnimateMoveButtonPress, btlSubscreen);
 
     btlSubscreen->menuButtonPressAnimState.ButtonPressAnimationState.keyframes = keyFrames;
@@ -1934,7 +1934,7 @@ static int BattleSubscreen_ProcessYesNoInput(BattleSubscreen *btlSubscreen, int 
         break;
     }
 
-    ov16_Dummy2(btlSubscreen, unused);
+    BattleSubscreen_Dummy2(btlSubscreen, unused);
     StartMenuTransitionTask(SysTask_AnimateMenuButtonPress, btlSubscreen);
 
     if (selectedButton == TRUE) {
@@ -1985,7 +1985,7 @@ static int BattleSubscreen_ProcessTargetInput(BattleSubscreen *btlSubscreen, int
         }
         break;
     case 0xff:
-        ov16_Dummy2(btlSubscreen, NELEMS(sTargetSelectButtonSlots) - 1);
+        BattleSubscreen_Dummy2(btlSubscreen, NELEMS(sTargetSelectButtonSlots) - 1);
         StartMenuTransitionTask(SysTask_AnimateMenuButtonPress, btlSubscreen);
 
         btlSubscreen->menuButtonPressAnimState.ButtonPressAnimationState.keyframes = sTargetSelectButtonPressKeyframes[NELEMS(sTargetSelectButtonPressKeyframes) - 1];
@@ -2003,7 +2003,7 @@ static int BattleSubscreen_ProcessTargetInput(BattleSubscreen *btlSubscreen, int
     Bg_FillTilemap(bgConfig, 5, 0x6000 / 0x20 - 1);
     Bg_ScheduleTilemapTransfer(bgConfig, 5);
 
-    ov16_Dummy1(btlSubscreen, selectedTarget);
+    BattleSubscreen_Dummy1(btlSubscreen, selectedTarget);
     StartMenuTransitionTask(SysTask_AnimateTargetButtonPress, btlSubscreen);
 
     btlSubscreen->menuButtonPressAnimState.TargetSelectAnimationState.selectedTarget = selectedTarget;
@@ -2021,7 +2021,7 @@ static int BattleSubscreen_ProcessStopInput(BattleSubscreen *btlSubscreen, int s
         break;
     }
 
-    ov16_Dummy2(btlSubscreen, unused);
+    BattleSubscreen_Dummy2(btlSubscreen, unused);
     StartMenuTransitionTask(SysTask_AnimateMenuButtonPress, btlSubscreen);
 
     btlSubscreen->menuButtonPressAnimState.ButtonPressAnimationState.keyframes = sStopButtonPressKeyframes;
@@ -2621,11 +2621,11 @@ static void StopMenuTransitionTask(BattleSubscreen *btlSubscreen)
     }
 }
 
-static void ov16_Dummy1(BattleSubscreen *unused1, int unused2) // CLEANUP
+static void BattleSubscreen_Dummy1(BattleSubscreen *unused1, int unused2) // CLEANUP
 {
 }
 
-static void ov16_Dummy2(BattleSubscreen *unused1, int unused2) // CLEANUP
+static void BattleSubscreen_Dummy2(BattleSubscreen *unused1, int unused2) // CLEANUP
 {
 }
 
@@ -2946,7 +2946,7 @@ static void SysTask_SlideInPanel(SysTask *task, void *panelState)
         SysTask_Done(slideInPanelState->task);
         DisableHBlank();
         GXS_SetVisibleWnd(GX_WNDMASK_NONE);
-        ov16_Dummy3(slideInPanelState->btlSubscreen, 1);
+        BattleSubscreen_Dummy3(slideInPanelState->btlSubscreen, 1);
         slideInPanelState->phase++;
         break;
     default:
@@ -3081,7 +3081,7 @@ static void SysTask_ResetSubscreenBg(SysTask *task, void *unused)
     SysTask_Done(task);
 }
 
-void ov16_Dummy3(BattleSubscreen *unused1, int unused2)
+void BattleSubscreen_Dummy3(BattleSubscreen *unused1, int unused2)
 {
 }
 
