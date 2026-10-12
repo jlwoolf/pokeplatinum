@@ -16,8 +16,8 @@ typedef struct {
     const Options *options;
     GameRecords *records;
     const TrainerInfo *trainerInfo;
-    BOOL *unk_18;
-    BOOL unk_1C;
+    BOOL *appResult;
+    BOOL speedUpOnTouch;
 } DressUpAppData;
 
 #endif // POKEPLATINUM_STRUCT_DRESS_UP_APP_DATA_H

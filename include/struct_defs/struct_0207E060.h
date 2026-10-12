@@ -21,7 +21,7 @@ typedef struct WFCTrainerInfo {
     // Communication app state, shared so that both sides can tell whether they
     // are running a compatible activity (see WiFiMenuApp_GetAdjustedCommState and wfc_host_match.c).
     u8 commState;
-    u8 unk_1C;
+    u8 reserved;
     // Trainer appearance and gender, used to draw the friend's sprite.
     u8 appearance;
     u8 gender;

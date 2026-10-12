@@ -277,14 +277,14 @@ const VsRecorderMenuEntry *VsRecorderGraphics_GetMenuForMode(VsRecorderState *st
 void VsRecorderGraphics_CountEnabledEntries(VsRecorderState *state)
 {
     int i;
-    const VsRecorderMenuEntry *entries = state->unk_818;
-    state->unk_534.subEntryCount = 0;
+    const VsRecorderMenuEntry *entries = state->currentMenu;
+    state->menu.subEntryCount = 0;
 
     for (i = 0; i < 5; i++) {
         if (entries[i].enabled == 0) {
             continue;
         }
 
-        state->unk_534.subEntryCount++;
+        state->menu.subEntryCount++;
     }
 }

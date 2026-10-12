@@ -8,8 +8,8 @@
 typedef struct {
     FieldSystem *fieldSystem;
     SaveData *saveData;
-    int unk_08;
-    u8 unk_0C;
+    int mode;
+    u8 param;
     u8 padding_0D[3];
 } GlobalTerminalAppArgs;
 

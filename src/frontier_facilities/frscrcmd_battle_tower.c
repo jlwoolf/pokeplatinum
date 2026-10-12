@@ -95,10 +95,10 @@ BOOL FrontierScrCmd_CallBattleTowerFunction(FrontierScriptContext *ctx)
         BattleTower_SaveWifiState(battleTower);
         break;
     case BT_FUNC_UNK_58:
-        MI_CpuClear8(battleTower->unk_884, 70);
+        MI_CpuClear8(battleTower->scratchBuffer, 70);
         break;
     case BT_FUNC_UNK_59:
-        battleTower->unk_8D6 = 1;
+        battleTower->pendingFlag = 1;
         break;
     case BT_FUNC_CHECK_IS_NULL:
         if (battleTower == NULL) {
@@ -222,7 +222,7 @@ BOOL FrontierScrCmd_89(FrontierScriptContext *param0)
         break;
     }
 
-    if (CommTool_SendTempData(CommSys_CurNetId(), battleTower->unk_83E) == 1) {
+    if (CommTool_SendTempData(CommSys_CurNetId(), battleTower->trainerIdBuffer) == 1) {
         *v4 = 1;
     } else {
         *v4 = 0;

@@ -58,10 +58,10 @@ void BattleTower_SetBeatPalmer(BattleTower *battleTower, u16 value)
 
 u16 FrontierFacilities_IncrementWinStreak(BattleTower *battleTower)
 {
-    ++battleTower->unk_0D;
+    ++battleTower->opponentIndex;
 
     if (battleTower->challengeMode != BATTLE_TOWER_MODE_6) {
-        battleTower->unk_08 = BattleSalon_AdvanceRng(battleTower->unk_08);
+        battleTower->rngState = BattleSalon_AdvanceRng(battleTower->rngState);
     }
 
     return ++battleTower->nextOpponentNum;
@@ -69,9 +69,9 @@ u16 FrontierFacilities_IncrementWinStreak(BattleTower *battleTower)
 
 u16 FrontierFacilities_GetTotalStreak(BattleTower *battleTower)
 {
-    if ((u32)battleTower->unk_1A + battleTower->unk_0D > 0xFFFF) {
+    if ((u32)battleTower->statIndex + battleTower->opponentIndex > 0xFFFF) {
         return 0xFFFF;
     } else {
-        return battleTower->unk_1A + battleTower->unk_0D;
+        return battleTower->statIndex + battleTower->opponentIndex;
     }
 }

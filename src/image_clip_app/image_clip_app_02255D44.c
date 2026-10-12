@@ -250,7 +250,7 @@ int VisualCompetitionApp_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 3:
-        if (v2->unk_1C == 1) {
+        if (v2->speedUpOnTouch == 1) {
             RenderControlFlags_SetSpeedUpOnTouch(TRUE);
 
             v0->unk_73C = ContestScoreDisplay_DrawMessageWithString(&v0->unk_5C4, 26, 385, 47);
@@ -364,11 +364,11 @@ int VisualCompetitionApp_Exit(ApplicationManager *appMan, int *param1)
         VisualCompetition_SaveDressUpPhoto(v2->photo, &v0->unk_458, v2->trainerInfo);
     }
 
-    if (v2->unk_18 != NULL) {
+    if (v2->appResult != NULL) {
         if (v0->unk_71C == 1) {
-            *v2->unk_18 = 1;
+            *v2->appResult = 1;
         } else {
-            *v2->unk_18 = 0;
+            *v2->appResult = 0;
         }
     }
 

@@ -11,8 +11,8 @@ typedef struct DaycareMail {
     Mail mail;
     u16 otName[TRAINER_NAME_LEN + 1];
     u16 monName[MON_NAME_LEN + 1];
-    u8 unk_5E_0 : 4;
-    u8 unk_5E_4 : 4;
+    u8 unused_5E_0 : 4;
+    u8 unused_5E_4 : 4;
 } DaycareMail;
 
 typedef struct DaycareMon {

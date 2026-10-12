@@ -57,19 +57,19 @@ u32 WifiBattleTowerSave_GetField(WifiBattleTowerSave *save, int fieldId, void *o
     case BT_WIFI_SAVE_FIELD_NEXT_OPPONENT_NUM:
         return (u32)save->nextOpponentNum;
     case BT_WIFI_SAVE_FIELD_UNK_03:
-        return (u32)save->unk_03;
+        return (u32)save->counter1;
     case BT_WIFI_SAVE_FIELD_UNK_04:
-        return save->unk_04;
+        return save->counter2;
     case BT_WIFI_SAVE_FIELD_UNK_06:
-        return save->unk_06;
+        return save->counter3;
     case BT_WIFI_SAVE_FIELD_PARTY_SLOTS:
         MI_CpuCopy8(save->partySlots, outBuf, 4);
         return 0;
     case BT_WIFI_SAVE_FIELD_PARTNER_DATA:
-        MI_CpuCopy8(&save->unk_2C, outBuf, sizeof(BattleTowerPartnerData));
+        MI_CpuCopy8(&save->partnerData, outBuf, sizeof(BattleTowerPartnerData));
         return 0;
     case BT_WIFI_SAVE_FIELD_UNK_00_0:
-        return save->unk_00_0;
+        return save->flag;
     case BT_WIFI_SAVE_FIELD_TRAINER_IDS:
         MI_CpuCopy8(save->trainerIDs, outBuf, BT_OPPONENTS_COUNT * 2 * sizeof(u16));
         return 0;
@@ -96,22 +96,22 @@ void WifiBattleTowerSave_SetField(WifiBattleTowerSave *save, int fieldId, const 
         save->nextOpponentNum = inBuf8[0];
         break;
     case BT_WIFI_SAVE_FIELD_UNK_03:
-        save->unk_03 = inBuf8[0];
+        save->counter1 = inBuf8[0];
         break;
     case BT_WIFI_SAVE_FIELD_UNK_04:
-        save->unk_04 = inBuf16[0];
+        save->counter2 = inBuf16[0];
         break;
     case BT_WIFI_SAVE_FIELD_UNK_06:
-        save->unk_06 = inBuf16[0];
+        save->counter3 = inBuf16[0];
         break;
     case BT_WIFI_SAVE_FIELD_PARTY_SLOTS:
         MI_CpuCopy8(inBuf8, save->partySlots, 4);
         break;
     case BT_WIFI_SAVE_FIELD_PARTNER_DATA:
-        MI_CpuCopy8(inBuf16, &save->unk_2C, sizeof(BattleTowerPartnerData));
+        MI_CpuCopy8(inBuf16, &save->partnerData, sizeof(BattleTowerPartnerData));
         break;
     case BT_WIFI_SAVE_FIELD_UNK_00_0:
-        save->unk_00_0 = inBuf8[0];
+        save->flag = inBuf8[0];
         break;
     case BT_WIFI_SAVE_FIELD_TRAINER_IDS:
         MI_CpuCopy8(inBuf16, save->trainerIDs, 2 * 14);
@@ -127,16 +127,16 @@ void WifiBattleTowerSave_SetField(WifiBattleTowerSave *save, int fieldId, const 
 
 void WifiBattleTowerSave_AddCounters(WifiBattleTowerSave *save, u8 param1, u16 param2, u16 param3)
 {
-    if (save->unk_03 + param1 < (u8)(-1)) {
-        save->unk_03 += param1;
+    if (save->counter1 + param1 < (u8)(-1)) {
+        save->counter1 += param1;
     }
 
-    if (save->unk_04 + param2 < (u16)(-1)) {
-        save->unk_04 += param2;
+    if (save->counter2 + param2 < (u16)(-1)) {
+        save->counter2 += param2;
     }
 
-    if (save->unk_06 + param3 < (u16)(-1)) {
-        save->unk_06 += param3;
+    if (save->counter3 + param3 < (u16)(-1)) {
+        save->counter3 += param3;
     }
 }
 
@@ -245,8 +245,8 @@ u16 WifiBattleTowerRecord_CalcRatingScore(WifiBattleTowerRecord *record, WifiBat
     u16 progressScore, penaltyA, penaltyB, efficiencyBonus, performanceScore;
 
     progressScore = (save->nextOpponentNum - 1) * 1000;
-    penaltyA = save->unk_04 * 10;
-    penaltyB = save->unk_03 * 20;
+    penaltyA = save->counter2 * 10;
+    penaltyB = save->counter1 * 20;
 
     if (penaltyA + penaltyB > 950) {
         performanceScore = 0;
@@ -254,10 +254,10 @@ u16 WifiBattleTowerRecord_CalcRatingScore(WifiBattleTowerRecord *record, WifiBat
         performanceScore = 950 - (penaltyA + penaltyB);
     }
 
-    if (save->unk_06 > (1000 - 30)) {
+    if (save->counter3 > (1000 - 30)) {
         efficiencyBonus = 0;
     } else {
-        efficiencyBonus = (1000 - save->unk_06) / 30;
+        efficiencyBonus = (1000 - save->counter3) / 30;
     }
 
     u16 ratingScore = progressScore + performanceScore + efficiencyBonus;
@@ -364,14 +364,14 @@ u32 WifiBattleTowerRecord_GetRngState(WifiBattleTowerRecord *record)
 void FrontierEasyChatMessages_SetSentence(SaveData *saveData, int sentenceIdx, EasyChatSentence *sentence)
 {
     BattleFrontierSave *frontier = SaveData_SaveTable(saveData, SAVE_TABLE_ENTRY_FRONTIER);
-    EasyChatSentence_Copy(&frontier->unk_950.easyChatMessages.sentences[sentenceIdx], sentence);
+    EasyChatSentence_Copy(&frontier->wifiBattleTower.easyChatMessages.sentences[sentenceIdx], sentence);
 }
 
 EasyChatSentence *FrontierEasyChatMessages_GetSentence(SaveData *saveData, int sentenceIdx)
 {
     BattleFrontierSave *frontier = SaveData_SaveTable(saveData, SAVE_TABLE_ENTRY_FRONTIER);
 
-    return &frontier->unk_950.easyChatMessages.sentences[sentenceIdx];
+    return &frontier->wifiBattleTower.easyChatMessages.sentences[sentenceIdx];
 }
 
 void WifiBattleTowerDownloadData_MarkOpponent(WifiBattleTowerDownloadData *downloadData, u8 rank, u8 opponentIdx, RTCDate *date)
@@ -533,11 +533,11 @@ WifiBattleTowerSave *SaveData_GetWifiBattleTowerSave(SaveData *saveData)
 WifiBattleTowerRecord *SaveData_GetWifiBattleTowerRecord(SaveData *saveData)
 {
     BattleFrontierSave *frontier = SaveData_SaveTable(saveData, SAVE_TABLE_ENTRY_FRONTIER);
-    return &frontier->unk_950.wifiBattleTowerRecord;
+    return &frontier->wifiBattleTower.wifiBattleTowerRecord;
 }
 
 WifiBattleTowerDownloadData *SaveData_GetWifiBattleTowerDownloadData(SaveData *saveData)
 {
     BattleFrontierSave *frontier = SaveData_SaveTable(saveData, SAVE_TABLE_ENTRY_FRONTIER);
-    return &frontier->unk_950.wifiBattleTowerDownloadData;
+    return &frontier->wifiBattleTower.wifiBattleTowerDownloadData;
 }

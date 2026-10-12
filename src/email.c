@@ -123,7 +123,7 @@ static void WorldExchange_InitTrainerFields(SaveData *saveData, WorldExchangeTra
     trainer->trainerId = TrainerInfo_ID(trainerInfo);
 
     CharCode_Copy(trainer->trainerName, TrainerInfo_Name(trainerInfo));
-    trainer->unk_10 = 0;
+    trainer->unused_10 = 0;
 
     strcpy(trainer->email, emailString);
     trainer->emailInitialised = Email_GetValue(saveData, 0);

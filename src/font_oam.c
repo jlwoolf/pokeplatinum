@@ -172,24 +172,24 @@ FontOAM *FontOAM_New(const FontOAMTemplate *param0)
 
     GF_ASSERT(param0);
 
-    v0 = FontOAMManager_GetFreeOAM(param0->unk_00);
+    v0 = FontOAMManager_GetFreeOAM(param0->fontOAMManager);
     GF_ASSERT(v0);
 
-    v0->parentSprite = param0->unk_10;
-    v0->x = param0->unk_18;
-    v0->y = param0->unk_1C;
+    v0->parentSprite = param0->parentSprite;
+    v0->x = param0->x;
+    v0->y = param0->y;
 
     // Empty circular list head; the builder appends chunks after it.
     v1.next = &v1;
     v1.prev = &v1;
 
-    v2 = FontOAM_BuildChunkList(param0->unk_04->width, param0->unk_04->height, param0->heapID, &v1);
+    v2 = FontOAM_BuildChunkList(param0->window->width, param0->window->height, param0->heapID, &v1);
     v3 = Heap_AllocAtEnd(param0->heapID, sizeof(NNSG2dImageProxy) * v2);
 
     v0->sprites = Heap_Alloc(param0->heapID, sizeof(FontOAMSprite) * v2);
     v0->spriteCount = v2;
 
-    FontOAM_InitImageProxies(param0->unk_04, &v1, v3, param0->unk_14, param0->unk_28, param0->heapID);
+    FontOAM_InitImageProxies(param0->window, &v1, v3, param0->charOffset, param0->vramType, param0->heapID);
     FontOAM_CreateSprites(param0, &v1, v3, v0);
     Heap_Free(v3);
     FontOAMChunkList_Free(&v1);
@@ -402,20 +402,20 @@ FontOAM *FontOAM_NewFromWindow(const FontOAMTemplate *param0, const FontOAMWindo
     NNSG2dImageProxy *v1;
 
     GF_ASSERT(param0);
-    v0 = FontOAMManager_GetFreeOAM(param0->unk_00);
+    v0 = FontOAMManager_GetFreeOAM(param0->fontOAMManager);
 
     GF_ASSERT(v0);
 
-    v0->parentSprite = param0->unk_10;
-    v0->x = param0->unk_18;
-    v0->y = param0->unk_1C;
+    v0->parentSprite = param0->parentSprite;
+    v0->x = param0->x;
+    v0->y = param0->y;
 
     v1 = Heap_AllocAtEnd(param0->heapID, sizeof(NNSG2dImageProxy) * param1->chunkCount);
 
     v0->sprites = Heap_Alloc(param0->heapID, sizeof(FontOAMSprite) * param1->chunkCount);
     v0->spriteCount = param1->chunkCount;
 
-    FontOAM_InitImageProxies(param0->unk_04, &param1->chunks, v1, param0->unk_14, param0->unk_28, param0->heapID);
+    FontOAM_InitImageProxies(param0->window, &param1->chunks, v1, param0->charOffset, param0->vramType, param0->heapID);
     FontOAM_CreateSprites(param0, &param1->chunks, v1, v0);
     Heap_Free(v1);
 
@@ -799,32 +799,32 @@ static Sprite *FontOAM_CreateSprite(const FontOAMTemplate *param0, const FontOAM
 
     v1.imageProxy = param2;
     v1.charData = NULL;
-    v1.paletteProxy = param0->unk_0C;
-    v1.cellBank = param0->unk_00->cellBanks[param1->sizeClass];
+    v1.paletteProxy = param0->paletteProxy;
+    v1.cellBank = param0->fontOAMManager->cellBanks[param1->sizeClass];
     v1.cellAnimBank = NULL;
     v1.multiCellBank = NULL;
     v1.multiCellAnimBank = NULL;
     v1.isVRamTransfer = 0;
-    v1.priority = param0->unk_20;
+    v1.priority = param0->resourcePriority;
 
-    v0.list = param0->unk_08;
+    v0.list = param0->spriteList;
     v0.resourceData = &v1;
-    v0.priority = param0->unk_24;
-    v0.vramType = param0->unk_28;
+    v0.priority = param0->spritePriority;
+    v0.vramType = param0->vramType;
     v0.heapID = param0->heapID;
     v0.position.x = 0;
     v0.position.y = 0;
     v0.position.z = 0;
 
-    if (param0->unk_10) {
+    if (param0->parentSprite) {
         const VecFx32 *v2;
 
-        v2 = Sprite_GetPosition(param0->unk_10);
+        v2 = Sprite_GetPosition(param0->parentSprite);
         v0.position = *v2;
     }
 
-    v0.position.x += (param0->unk_18 << FX32_SHIFT) + ((param1->x * 8) << FX32_SHIFT);
-    v0.position.y += (param0->unk_1C << FX32_SHIFT) + ((param1->y * 8) << FX32_SHIFT);
+    v0.position.x += (param0->x << FX32_SHIFT) + ((param1->x * 8) << FX32_SHIFT);
+    v0.position.y += (param0->y << FX32_SHIFT) + ((param1->y * 8) << FX32_SHIFT);
 
     return SpriteList_Add(&v0);
 }

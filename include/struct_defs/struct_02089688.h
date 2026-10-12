@@ -27,7 +27,7 @@ typedef struct {
     u16 groupRanges[5][2];
     // Index into the phase function table (see sPhaseFuncs).
     int phase;
-    int unk_2C4; // Unused; written once in NumberEntry_SetPhase.
+    int unused_2C4; // Unused; written once in NumberEntry_SetPhase.
     // Sub-step within the current phase.
     int phaseStep;
     // Frame counter used by the group-change animation.

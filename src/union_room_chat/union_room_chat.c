@@ -594,7 +594,7 @@ static int UnionRoomChat_HandleListTouch(UnionRoomChat *param0)
                     if (v4 != NULL) {
                         v5 = (WirelessGameInfo *)&v4->gameInfo.userGameInfo;
 
-                        if ((param0->trainers->slots[v1].phase == 2) && (v5->unk_00 == param0->chatLog->entries[v2].trainerId)) {
+                        if ((param0->trainers->slots[v1].phase == 2) && (v5->trainerId == param0->chatLog->entries[v2].trainerId)) {
                             Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
                             param0->trainers->slots[v1].startWarpEffect = 1;
                             break;
@@ -876,10 +876,10 @@ static void UnionRoomChat_PollNewMessages(UnionRoomChat *param0)
 
         if (v2 != NULL) {
             v3 = (WirelessGameInfo *)&v2->gameInfo.userGameInfo;
-            v4 = (EasyChatSentence *)&v3->unk_08;
+            v4 = (EasyChatSentence *)&v3->easyChatSentence;
 
-            if (UnionRoomChat_IsNewSentence(param0, v4, v3->unk_00)) {
-                UnionRoomChat_AddMessage(param0, CommServerClient_GetServerTrainerInfo(v0), v4, v3->unk_00);
+            if (UnionRoomChat_IsNewSentence(param0, v4, v3->trainerId)) {
+                UnionRoomChat_AddMessage(param0, CommServerClient_GetServerTrainerInfo(v0), v4, v3->trainerId);
             }
         }
     }

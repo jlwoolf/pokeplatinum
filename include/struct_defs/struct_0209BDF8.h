@@ -16,18 +16,18 @@ typedef struct UnionRoomComm {
     int confirmed; // Local player's confirm flag (command 7).
     int playerCount; // Expected number of connected players.
     u32 confirmedBitmap; // Server-side bitmap of players that confirmed.
-    int unk_34; // Written but never read.
+    int unused_34; // Written but never read.
     u16 serverPlayerCount; // Player count reported by the server.
-    int unk_3C; // Read but never written.
+    int pendingSendCount; // Read but never written.
     u16 stageFlags; // Bitmap of completed connection stages (command 8).
     u16 participantBitmap; // Bitmap of players taking part in the trade (command 9).
-    u16 unk_44; // Unused.
+    u16 unused_44; // Unused.
     s16 trainerDataBitmap; // Bitmap of players whose party data has arrived.
     u16 badEggBitmap; // Bitmap of players reporting a bad egg (command 16).
     u16 eggOkBitmap; // Bitmap of players reporting their eggs are OK (command 17).
     u8 *sendTrainerData; // Per-player outgoing party buffers (5 slots).
     u8 *recvTrainerData; // Per-player incoming party buffers (5 slots).
-    int unk_54; // Unused.
+    int unused_54; // Unused.
 } UnionRoomComm;
 
 #endif // POKEPLATINUM_STRUCT_0209BDF8_H

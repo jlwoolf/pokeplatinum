@@ -24,11 +24,11 @@ typedef struct {
     // Non-zero while the per-VBlank update task is running.
     BOOL active;
     SysTask *updateTask;
-    int unk_F8;
+    int targetOrbitIndex;
     // Horizontal and vertical orbit radii in pixels.
     int orbitRadiusX;
     int orbitRadiusY;
-    int unk_104;
+    int animFrame;
 } VsRecorderRing;
 
 #endif // POKEPLATINUM_STRUCT_0208B878_H

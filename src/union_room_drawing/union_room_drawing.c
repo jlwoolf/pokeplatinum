@@ -169,15 +169,15 @@ int UnionRoomDrawing_Init(ApplicationManager *appMan, int *param1)
 
         v0 = ApplicationManager_NewData(appMan, sizeof(UnionRoomDrawing), HEAP_ID_DRAWING);
         memset(v0, 0, sizeof(UnionRoomDrawing));
-        v0->unk_00 = BgConfig_New(HEAP_ID_DRAWING);
+        v0->bgConfig = BgConfig_New(HEAP_ID_DRAWING);
 
-        v0->unk_0C = StringTemplate_Default(HEAP_ID_DRAWING);
-        v0->unk_10 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_DRAWING, HEAP_ID_DRAWING);
+        v0->strTemplate = StringTemplate_Default(HEAP_ID_DRAWING);
+        v0->msgLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_DRAWING, HEAP_ID_DRAWING);
 
         SetAutorepeat(4, 8);
 
         UnionRoomDrawing_SetGXBanks();
-        UnionRoomDrawing_InitBgLayers(v0->unk_00);
+        UnionRoomDrawing_InitBgLayers(v0->bgConfig);
 
         SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
         SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
@@ -185,7 +185,7 @@ int UnionRoomDrawing_Init(ApplicationManager *appMan, int *param1)
 
         {
             UnionRoomDrawingAppArgs *v2 = (UnionRoomDrawingAppArgs *)ApplicationManager_Args(appMan);
-            v0->unk_08 = v2;
+            v0->appArgs = v2;
         }
 
         v1 = NARC_ctor(NARC_INDEX_GRAPHIC__OEKAKI, HEAP_ID_DRAWING);
@@ -194,7 +194,7 @@ int UnionRoomDrawing_Init(ApplicationManager *appMan, int *param1)
 
         EnableTouchPad();
         InitializeTouchPad(2);
-        SetVBlankCallback(UnionRoomDrawing_VBlankCallback, v0->unk_00);
+        SetVBlankCallback(UnionRoomDrawing_VBlankCallback, v0->bgConfig);
 
         UnionRoomDrawing_InitState(v0);
         UnionRoomDrawing_InitTransfers();
@@ -260,11 +260,11 @@ int UnionRoomDrawing_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 1:
-        if (sStateHandlers[v0->unk_368].handler != NULL) {
-            *param1 = sStateHandlers[v0->unk_368].handler(v0, *param1);
+        if (sStateHandlers[v0->state].handler != NULL) {
+            *param1 = sStateHandlers[v0->state].handler(v0, *param1);
         }
 
-        UnionRoomDrawing_DrawPlayerNames(v0->unk_2DC, 0, TEXT_COLOR(14, 13, 15), v0);
+        UnionRoomDrawing_DrawPlayerNames(v0->playerWindows, 0, TEXT_COLOR(14, 13, 15), v0);
 
         if (CommSys_CurNetId() == 0) {
             int v1 = UnionRoomDrawing_UpdateConnectionState(v0);
@@ -274,11 +274,11 @@ int UnionRoomDrawing_Main(ApplicationManager *appMan, int *param1)
             }
         }
 
-        UnionRoomDrawing_AnimateCursorColor(&v0->unk_43D8);
+        UnionRoomDrawing_AnimateCursorColor(&v0->cursorColorAngle);
         break;
     case 2:
-        if ((sStateHandlers[v0->unk_368].handler != NULL) && sStateHandlers[v0->unk_368].runInState2) {
-            *param1 = sStateHandlers[v0->unk_368].handler(v0, *param1);
+        if ((sStateHandlers[v0->state].handler != NULL) && sStateHandlers[v0->state].runInState2) {
+            *param1 = sStateHandlers[v0->state].handler(v0, *param1);
         }
         break;
     case 3:
@@ -288,7 +288,7 @@ int UnionRoomDrawing_Main(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    SpriteList_Update(v0->unk_34);
+    SpriteList_Update(v0->spriteList);
 
     return 0;
 }
@@ -304,34 +304,34 @@ int UnionRoomDrawing_Exit(ApplicationManager *appMan, int *param1)
     case 0:
         journalEntryOnlineEvent = JournalEntry_CreateEventDrewPictures(39);
 
-        JournalEntry_SaveData(v1->unk_04, journalEntryOnlineEvent, JOURNAL_ONLINE_EVENT);
+        JournalEntry_SaveData(v1->journalEntry, journalEntryOnlineEvent, JOURNAL_ONLINE_EVENT);
         SetVBlankCallback(NULL, NULL);
-        SpriteTransfer_ResetCharTransfer(v0->unk_1D4[0][0]);
-        SpriteTransfer_ResetCharTransfer(v0->unk_1D4[1][0]);
-        SpriteTransfer_ResetPlttTransfer(v0->unk_1D4[0][1]);
-        SpriteTransfer_ResetPlttTransfer(v0->unk_1D4[1][1]);
+        SpriteTransfer_ResetCharTransfer(v0->spriteResources[0][0]);
+        SpriteTransfer_ResetCharTransfer(v0->spriteResources[1][0]);
+        SpriteTransfer_ResetPlttTransfer(v0->spriteResources[0][1]);
+        SpriteTransfer_ResetPlttTransfer(v0->spriteResources[1][1]);
 
         for (v2 = 0; v2 < 4; v2++) {
-            SpriteResourceCollection_Delete(v0->unk_1C4[v2]);
+            SpriteResourceCollection_Delete(v0->spriteResourceCollections[v2]);
         }
 
-        SpriteList_Delete(v0->unk_34);
+        SpriteList_Delete(v0->spriteList);
         RenderOam_Free();
         CharTransfer_Free();
         PlttTransfer_Free();
 
         UnionRoomDrawing_RemoveWindows(v0);
-        UnionRoomDrawing_FreeBgLayers(v0->unk_00);
+        UnionRoomDrawing_FreeBgLayers(v0->bgConfig);
 
         DisableTouchPad();
-        MessageLoader_Free(v0->unk_10);
-        StringTemplate_Free(v0->unk_0C);
+        MessageLoader_Free(v0->msgLoader);
+        StringTemplate_Free(v0->strTemplate);
         (*param1)++;
         break;
     case 1:
         CommManager_SetMaxNumConnections(1);
         CommManager_UnionRestartSearch();
-        UnionRoomTrainers_Reset(v1->unk_00);
+        UnionRoomTrainers_Reset(v1->trainers);
 
         GX_SetDispSelect(GX_DISP_SELECT_MAIN_SUB);
 
@@ -340,7 +340,7 @@ int UnionRoomDrawing_Exit(ApplicationManager *appMan, int *param1)
         (*param1)++;
         break;
     case 2:
-        if (v0->unk_9464) {
+        if (v0->readyToDraw) {
             if (WirelessManager_GetConnectedBitmap() == 1) {
                 (*param1)++;
             }
@@ -353,7 +353,7 @@ int UnionRoomDrawing_Exit(ApplicationManager *appMan, int *param1)
 
         UnionRoomDrawing_FreeState(v0);
 
-        Heap_Free(v0->unk_08);
+        Heap_Free(v0->appArgs);
         ApplicationManager_FreeData(appMan);
         SetVBlankCallback(NULL, NULL);
         Heap_Destroy(HEAP_ID_DRAWING);
@@ -514,26 +514,26 @@ static void UnionRoomDrawing_InitState(UnionRoomDrawing *param0)
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        param0->unk_14[v0] = String_Init(7 + 1, HEAP_ID_DRAWING);
+        param0->playerNameStrings[v0] = String_Init(7 + 1, HEAP_ID_DRAWING);
         param0->drawingStatus[v0].pointCount = 0;
         param0->prevPoints[v0].hasPrev = 0;
-        param0->unk_398[v0][0] = NULL;
-        param0->unk_398[v0][1] = NULL;
+        param0->trainerInfo[v0][0] = NULL;
+        param0->trainerInfo[v0][1] = NULL;
     }
 
-    param0->unk_28 = String_Init(10, HEAP_ID_DRAWING);
-    param0->unk_2C = String_Init(40 * 2, HEAP_ID_DRAWING);
-    param0->unk_43DA = 0;
-    param0->unk_43DB = 1;
+    param0->headerString = String_Init(10, HEAP_ID_DRAWING);
+    param0->messageString = String_Init(40 * 2, HEAP_ID_DRAWING);
+    param0->penColor = 0;
+    param0->penSize = 1;
     param0->drawingState = 1;
-    param0->unk_945C = 0;
+    param0->clientReadySent = 0;
     param0->connectedCount = 2;
     param0->connectedBitmap = WirelessManager_GetConnectedBitmap();
     param0->clientReadySent = 0;
-    param0->unk_9464 = 0;
-    param0->unk_368 = 0;
-    param0->unk_9468 = 0;
-    param0->unk_946C = 0;
+    param0->readyToDraw = 0;
+    param0->state = 0;
+    param0->disconnectHandled = 0;
+    param0->disconnectedBitmap = 0;
 
     if (CommSys_CurNetId() == 0) {
         UnionRoomDrawing_SetNextState(param0, 4);
@@ -541,26 +541,26 @@ static void UnionRoomDrawing_InitState(UnionRoomDrawing *param0)
         UnionRoomDrawing_SetNextState(param0, 4);
     }
 
-    MessageLoader_GetString(param0->unk_10, 7, param0->unk_28);
+    MessageLoader_GetString(param0->msgLoader, 7, param0->headerString);
 
-    param0->unk_442C = Heap_Alloc(HEAP_ID_DRAWING, 30 * 16 * 32);
-    param0->unk_9454 = YesNoTouchMenu_New(HEAP_ID_DRAWING);
-    param0->unk_378 = 0;
+    param0->canvasBuffer = Heap_Alloc(HEAP_ID_DRAWING, 30 * 16 * 32);
+    param0->yesNoMenu = YesNoTouchMenu_New(HEAP_ID_DRAWING);
+    param0->connectedCountSnapshot = 0;
 }
 
 static void UnionRoomDrawing_FreeState(UnionRoomDrawing *param0)
 {
     int v0;
 
-    Heap_Free(param0->unk_442C);
-    YesNoTouchMenu_Free(param0->unk_9454);
+    Heap_Free(param0->canvasBuffer);
+    YesNoTouchMenu_Free(param0->yesNoMenu);
 
     for (v0 = 0; v0 < 5; v0++) {
-        String_Free(param0->unk_14[v0]);
+        String_Free(param0->playerNameStrings[v0]);
     }
 
-    String_Free(param0->unk_2C);
-    String_Free(param0->unk_28);
+    String_Free(param0->messageString);
+    String_Free(param0->headerString);
 }
 
 static void UnionRoomDrawing_FreeBgLayers(BgConfig *param0)
@@ -576,7 +576,7 @@ static void UnionRoomDrawing_FreeBgLayers(BgConfig *param0)
 
 static void UnionRoomDrawing_LoadGraphics(UnionRoomDrawing *param0, NARC *param1)
 {
-    BgConfig *v0 = param0->unk_00;
+    BgConfig *v0 = param0->bgConfig;
 
     Graphics_LoadPaletteFromOpenNARC(param1, 0, 0, 0, 16 * 2 * 2, HEAP_ID_DRAWING);
     Graphics_LoadPaletteFromOpenNARC(param1, 1, 4, 0, 16 * 2 * 2, HEAP_ID_DRAWING);
@@ -586,7 +586,7 @@ static void UnionRoomDrawing_LoadGraphics(UnionRoomDrawing *param0, NARC *param1
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 4, v0, 2, 0, 32 * 24 * 2, 1, HEAP_ID_DRAWING);
     Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 3, v0, 5, 0, 32 * 8 * 0x20, 1, HEAP_ID_DRAWING);
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 5, v0, 5, 0, 32 * 24 * 2, 1, HEAP_ID_DRAWING);
-    LoadMessageBoxGraphics(v0, BG_LAYER_MAIN_0, 1, 10, Options_Frame(param0->unk_08->options), HEAP_ID_DRAWING);
+    LoadMessageBoxGraphics(v0, BG_LAYER_MAIN_0, 1, 10, Options_Frame(param0->appArgs->options), HEAP_ID_DRAWING);
     LoadStandardWindowGraphics(v0, BG_LAYER_MAIN_0, 1 + (18 + 12), 11, 0, HEAP_ID_DRAWING);
 }
 
@@ -612,27 +612,27 @@ static void UnionRoomDrawing_InitSprites(UnionRoomDrawing *param0, NARC *param1)
     NNS_G2dInitOamManagerModule();
 
     RenderOam_Init(0, 126, 0, 32, 0, 126, 0, 32, 39);
-    param0->unk_34 = SpriteList_InitRendering(50 + 3, &param0->unk_38, HEAP_ID_DRAWING);
-    SetSubScreenViewRect(&param0->unk_38, 0, 256 * FX32_ONE);
+    param0->spriteList = SpriteList_InitRendering(50 + 3, &param0->g2dRenderer, HEAP_ID_DRAWING);
+    SetSubScreenViewRect(&param0->g2dRenderer, 0, 256 * FX32_ONE);
 
     for (v0 = 0; v0 < 4; v0++) {
-        param0->unk_1C4[v0] = SpriteResourceCollection_New(2, v0, HEAP_ID_DRAWING);
+        param0->spriteResourceCollections[v0] = SpriteResourceCollection_New(2, v0, HEAP_ID_DRAWING);
     }
 
-    param0->unk_1D4[0][0] = SpriteResourceCollection_AddTilesFrom(param0->unk_1C4[0], param1, 6, 1, 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_DRAWING);
-    param0->unk_1D4[0][1] = SpriteResourceCollection_AddPaletteFrom(param0->unk_1C4[1], param1, 0, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 7, HEAP_ID_DRAWING);
-    param0->unk_1D4[0][2] = SpriteResourceCollection_AddFrom(param0->unk_1C4[2], param1, 7, 1, 0, 2, HEAP_ID_DRAWING);
-    param0->unk_1D4[0][3] = SpriteResourceCollection_AddFrom(param0->unk_1C4[3], param1, 8, 1, 0, 3, HEAP_ID_DRAWING);
-    param0->unk_1D4[1][0] = SpriteResourceCollection_AddTilesFrom(param0->unk_1C4[0], param1, 6, 1, 1, NNS_G2D_VRAM_TYPE_2DSUB, HEAP_ID_DRAWING);
-    param0->unk_1D4[1][1] = SpriteResourceCollection_AddPaletteFrom(param0->unk_1C4[1], param1, 0, 0, 1, NNS_G2D_VRAM_TYPE_2DSUB, 3, HEAP_ID_DRAWING);
-    param0->unk_1D4[1][2] = SpriteResourceCollection_AddFrom(param0->unk_1C4[2], param1, 7, 1, 1, 2, HEAP_ID_DRAWING);
-    param0->unk_1D4[1][3] = SpriteResourceCollection_AddFrom(param0->unk_1C4[3], param1, 8, 1, 1, 3, HEAP_ID_DRAWING);
+    param0->spriteResources[0][0] = SpriteResourceCollection_AddTilesFrom(param0->spriteResourceCollections[0], param1, 6, 1, 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_DRAWING);
+    param0->spriteResources[0][1] = SpriteResourceCollection_AddPaletteFrom(param0->spriteResourceCollections[1], param1, 0, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 7, HEAP_ID_DRAWING);
+    param0->spriteResources[0][2] = SpriteResourceCollection_AddFrom(param0->spriteResourceCollections[2], param1, 7, 1, 0, 2, HEAP_ID_DRAWING);
+    param0->spriteResources[0][3] = SpriteResourceCollection_AddFrom(param0->spriteResourceCollections[3], param1, 8, 1, 0, 3, HEAP_ID_DRAWING);
+    param0->spriteResources[1][0] = SpriteResourceCollection_AddTilesFrom(param0->spriteResourceCollections[0], param1, 6, 1, 1, NNS_G2D_VRAM_TYPE_2DSUB, HEAP_ID_DRAWING);
+    param0->spriteResources[1][1] = SpriteResourceCollection_AddPaletteFrom(param0->spriteResourceCollections[1], param1, 0, 0, 1, NNS_G2D_VRAM_TYPE_2DSUB, 3, HEAP_ID_DRAWING);
+    param0->spriteResources[1][2] = SpriteResourceCollection_AddFrom(param0->spriteResourceCollections[2], param1, 7, 1, 1, 2, HEAP_ID_DRAWING);
+    param0->spriteResources[1][3] = SpriteResourceCollection_AddFrom(param0->spriteResourceCollections[3], param1, 8, 1, 1, 3, HEAP_ID_DRAWING);
 
-    SpriteTransfer_RequestChar(param0->unk_1D4[0][0]);
-    SpriteTransfer_RequestChar(param0->unk_1D4[1][0]);
+    SpriteTransfer_RequestChar(param0->spriteResources[0][0]);
+    SpriteTransfer_RequestChar(param0->spriteResources[1][0]);
 
-    SpriteTransfer_RequestPlttWholeRange(param0->unk_1D4[0][1]);
-    SpriteTransfer_RequestPlttWholeRange(param0->unk_1D4[1][1]);
+    SpriteTransfer_RequestPlttWholeRange(param0->spriteResources[0][1]);
+    SpriteTransfer_RequestPlttWholeRange(param0->spriteResources[1][1]);
 }
 
 static const u16 sPenColorSpriteData[][3] = {
@@ -654,14 +654,14 @@ static void UnionRoomDrawing_CreateSprites(UnionRoomDrawing *param0)
 {
     int v0;
 
-    SpriteResourcesHeader_Init(&param0->unk_1F4, 0, 0, 0, 0, 0xffffffff, 0xffffffff, 0, 0, param0->unk_1C4[0], param0->unk_1C4[1], param0->unk_1C4[2], param0->unk_1C4[3], NULL, NULL);
-    SpriteResourcesHeader_Init(&param0->unk_218, 1, 1, 1, 1, 0xffffffff, 0xffffffff, 0, 0, param0->unk_1C4[0], param0->unk_1C4[1], param0->unk_1C4[2], param0->unk_1C4[3], NULL, NULL);
+    SpriteResourcesHeader_Init(&param0->spriteHeader0, 0, 0, 0, 0, 0xffffffff, 0xffffffff, 0, 0, param0->spriteResourceCollections[0], param0->spriteResourceCollections[1], param0->spriteResourceCollections[2], param0->spriteResourceCollections[3], NULL, NULL);
+    SpriteResourcesHeader_Init(&param0->spriteHeader1, 1, 1, 1, 1, 0xffffffff, 0xffffffff, 0, 0, param0->spriteResourceCollections[0], param0->spriteResourceCollections[1], param0->spriteResourceCollections[2], param0->spriteResourceCollections[3], NULL, NULL);
 
     {
         AffineSpriteListTemplate v1;
 
-        v1.list = param0->unk_34;
-        v1.resourceData = &param0->unk_1F4;
+        v1.list = param0->spriteList;
+        v1.resourceData = &param0->spriteHeader0;
         v1.position.z = 0;
         v1.affineScale.x = FX32_ONE;
         v1.affineScale.y = FX32_ONE;
@@ -672,45 +672,45 @@ static void UnionRoomDrawing_CreateSprites(UnionRoomDrawing *param0)
         v1.heapID = HEAP_ID_DRAWING;
 
         for (v0 = 0; v0 < 5; v0++) {
-            v1.resourceData = &param0->unk_218;
+            v1.resourceData = &param0->spriteHeader1;
             v1.position.x = FX32_ONE * (24 + v0 * 40);
             v1.position.y = FX32_ONE * (32 + 32);
             v1.vramType = NNS_G2D_VRAM_TYPE_2DSUB;
 
-            param0->unk_23C[v0] = SpriteList_AddAffine(&v1);
+            param0->playerCursors[v0] = SpriteList_AddAffine(&v1);
 
-            Sprite_SetAnimateFlag(param0->unk_23C[v0], 1);
-            Sprite_SetAnim(param0->unk_23C[v0], v0);
-            Sprite_SetDrawFlag(param0->unk_23C[v0], FALSE);
+            Sprite_SetAnimateFlag(param0->playerCursors[v0], 1);
+            Sprite_SetAnim(param0->playerCursors[v0], v0);
+            Sprite_SetDrawFlag(param0->playerCursors[v0], FALSE);
         }
 
         for (v0 = 0; v0 < 9 + 3; v0++) {
-            v1.resourceData = &param0->unk_218;
+            v1.resourceData = &param0->spriteHeader1;
             v1.position.x = FX32_ONE * (sPenColorSpriteData[v0][0]);
             v1.position.y = FX32_ONE * (sPenColorSpriteData[v0][1]);
 
-            param0->unk_2AC[v0] = SpriteList_AddAffine(&v1);
+            param0->toolSprites[v0] = SpriteList_AddAffine(&v1);
 
-            Sprite_SetAnimateFlag(param0->unk_2AC[v0], 1);
-            Sprite_SetAnim(param0->unk_2AC[v0], sPenColorSpriteData[v0][2]);
+            Sprite_SetAnimateFlag(param0->toolSprites[v0], 1);
+            Sprite_SetAnim(param0->toolSprites[v0], sPenColorSpriteData[v0][2]);
 
             if (v0 >= 8) {
-                Sprite_SetExplicitPriority(param0->unk_2AC[v0], 2);
+                Sprite_SetExplicitPriority(param0->toolSprites[v0], 2);
             }
         }
 
-        Sprite_SetAnim(param0->unk_2AC[0], 6);
+        Sprite_SetAnim(param0->toolSprites[0], 6);
 
         for (v0 = 0; v0 < 5; v0++) {
             v1.position.x = FX32_ONE * 24;
             v1.position.y = FX32_ONE * (32 + 32 * v0) + (256 * FX32_ONE);
 
-            param0->unk_274[v0] = SpriteList_AddAffine(&v1);
+            param0->penColorSprites[v0] = SpriteList_AddAffine(&v1);
 
-            Sprite_SetAnimateFlag(param0->unk_274[v0], 1);
-            Sprite_SetAnim(param0->unk_274[v0], v0);
-            Sprite_SetPriority(param0->unk_274[v0], 1);
-            Sprite_SetDrawFlag(param0->unk_274[v0], FALSE);
+            Sprite_SetAnimateFlag(param0->penColorSprites[v0], 1);
+            Sprite_SetAnim(param0->penColorSprites[v0], v0);
+            Sprite_SetPriority(param0->penColorSprites[v0], 1);
+            Sprite_SetDrawFlag(param0->penColorSprites[v0], FALSE);
         }
     }
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
@@ -719,27 +719,27 @@ static void UnionRoomDrawing_CreateSprites(UnionRoomDrawing *param0)
 
 static void UnionRoomDrawing_CreateWindows(UnionRoomDrawing *param0, ApplicationManager *appMan)
 {
-    Window_Add(param0->unk_00, &param0->unk_33C, 0, 2, 1, 27, 4, 13, 1 + (18 + 12) + 9);
-    Window_FillTilemap(&param0->unk_33C, 0xf0f);
-    Window_Add(param0->unk_00, &param0->drawingWindow, 1, 1, 2, 30, 15, 0, 1);
+    Window_Add(param0->bgConfig, &param0->messageWindow, 0, 2, 1, 27, 4, 13, 1 + (18 + 12) + 9);
+    Window_FillTilemap(&param0->messageWindow, 0xf0f);
+    Window_Add(param0->bgConfig, &param0->drawingWindow, 1, 1, 2, 30, 15, 0, 1);
     Window_FillTilemap(&param0->drawingWindow, 0x202);
-    Window_Add(param0->unk_00, &param0->unk_34C, 1, 25, 21, 7, 2, 13, 1 + 30 * 15);
-    Window_FillTilemap(&param0->unk_34C, 0x0);
+    Window_Add(param0->bgConfig, &param0->headerWindow, 1, 25, 21, 7, 2, 13, 1 + 30 * 15);
+    Window_FillTilemap(&param0->headerWindow, 0x0);
 
     {
-        u32 v0 = Font_CalcCenterAlignment(FONT_MESSAGE, param0->unk_28, 0, (7 - 1) * 8) + 2;
-        Text_AddPrinterWithParamsAndColor(&param0->unk_34C, FONT_MESSAGE, param0->unk_28, v0, 0, TEXT_SPEED_INSTANT, TEXT_COLOR(7, 1, 0), NULL);
+        u32 v0 = Font_CalcCenterAlignment(FONT_MESSAGE, param0->headerString, 0, (7 - 1) * 8) + 2;
+        Text_AddPrinterWithParamsAndColor(&param0->headerWindow, FONT_MESSAGE, param0->headerString, v0, 0, TEXT_SPEED_INSTANT, TEXT_COLOR(7, 1, 0), NULL);
     }
 
     {
         int v1;
 
         for (v1 = 0; v1 < 5; v1++) {
-            Window_Add(param0->unk_00, &param0->unk_2DC[v1], 4, 24 / 8 + 2, 32 / 8 + v1 * 4 - 1, 10, 2, 13, 1 + v1 * (10 * 2));
-            Window_FillTilemap(&param0->unk_2DC[v1], 0);
+            Window_Add(param0->bgConfig, &param0->playerWindows[v1], 4, 24 / 8 + 2, 32 / 8 + v1 * 4 - 1, 10, 2, 13, 1 + v1 * (10 * 2));
+            Window_FillTilemap(&param0->playerWindows[v1], 0);
         }
 
-        UnionRoomDrawing_DrawPlayerNames(param0->unk_2DC, 0, TEXT_COLOR(14, 13, 15), param0);
+        UnionRoomDrawing_DrawPlayerNames(param0->playerWindows, 0, TEXT_COLOR(14, 13, 15), param0);
     }
 }
 
@@ -748,12 +748,12 @@ static void UnionRoomDrawing_RemoveWindows(UnionRoomDrawing *param0)
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        Window_Remove(&param0->unk_2DC[v0]);
+        Window_Remove(&param0->playerWindows[v0]);
     }
 
-    Window_Remove(&param0->unk_34C);
+    Window_Remove(&param0->headerWindow);
     Window_Remove(&param0->drawingWindow);
-    Window_Remove(&param0->unk_33C);
+    Window_Remove(&param0->messageWindow);
 }
 
 static void UnionRoomDrawing_SetSpritePosition(Sprite *param0, int param1, int param2)
@@ -810,14 +810,14 @@ static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
         case 5:
         case 6:
         case 7:
-            if (param0->unk_43DA != v0) {
-                param0->unk_43DA = v0;
-                UnionRoomDrawing_SetPenColorSprite(param0->unk_2AC, v0);
+            if (param0->penColor != v0) {
+                param0->penColor = v0;
+                UnionRoomDrawing_SetPenColorSprite(param0->toolSprites, v0);
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
             }
             break;
         case 8:
-            if (param0->unk_368 == 4) {
+            if (param0->state == 4) {
                 if (CommSys_CurNetId() == 0) {
                     if (param0->connectedBitmap != WirelessManager_GetConnectedBitmap()) {
                         Sound_PlayEffect(SEQ_SE_DP_CUSTOM06_sseq);
@@ -828,7 +828,7 @@ static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
                     param0->drawingState = 2;
                     UnionRoomDrawing_ShowMessage(param0, 1, TEXT_SPEED_FAST);
                     UnionRoomDrawing_SetNextState(param0, 5);
-                    UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 1);
+                    UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 1);
                     v2 = 1;
                     Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 } else {
@@ -837,7 +837,7 @@ static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
                     } else {
                         UnionRoomDrawing_ShowMessage(param0, 1, TEXT_SPEED_FAST);
                         UnionRoomDrawing_SetNextState(param0, 5);
-                        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 1);
+                        UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 1);
                         v2 = 1;
                         Sound_PlayEffect(SE_CONFIRM_sseq_3);
                     }
@@ -851,14 +851,14 @@ static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
 
             for (v3 = 0; v3 < 3; v3++) {
                 if ((v0 - 9) == v3) {
-                    Sprite_SetAnim(param0->unk_2AC[9 + v3], 29 + 2 * v3 + 1);
+                    Sprite_SetAnim(param0->toolSprites[9 + v3], 29 + 2 * v3 + 1);
                 } else {
-                    Sprite_SetAnim(param0->unk_2AC[9 + v3], 29 + 2 * v3);
+                    Sprite_SetAnim(param0->toolSprites[9 + v3], 29 + 2 * v3);
                 }
             }
 
-            if (param0->unk_43DB != (0 + v0 - 9)) {
-                param0->unk_43DB = 0 + v0 - 9;
+            if (param0->penSize != (0 + v0 - 9)) {
+                param0->penSize = 0 + v0 - 9;
                 Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
             }
         } break;
@@ -866,11 +866,11 @@ static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
     }
 
     v1 = TouchScreen_CheckRectangleHeld(sCanvasTouchRect);
-    Sprite_SetDrawFlag(param0->unk_23C[CommSys_CurNetId()], FALSE);
+    Sprite_SetDrawFlag(param0->playerCursors[CommSys_CurNetId()], FALSE);
 
     if (v1 != 0xffffffff) {
-        UnionRoomDrawing_SetSpritePosition(param0->unk_23C[CommSys_CurNetId()], gSystem.touchX, gSystem.touchY);
-        Sprite_SetDrawFlag(param0->unk_23C[CommSys_CurNetId()], TRUE);
+        UnionRoomDrawing_SetSpritePosition(param0->playerCursors[CommSys_CurNetId()], gSystem.touchX, gSystem.touchY);
+        Sprite_SetDrawFlag(param0->playerCursors[CommSys_CurNetId()], TRUE);
     }
 
     {
@@ -878,7 +878,7 @@ static void UnionRoomDrawing_HandleTouchInput(UnionRoomDrawing *param0)
         int v5;
 
         if (WriteAutoSamplingDataToBuffer(&v4, TOUCH_PAD_EXTERNAL_BUFFER_WRITE_METHOD_ALL_DATA_WITHOUT_WRAPPING, 64) == 1) {
-            UnionRoomDrawing_UpdateLocalStatus(&param0->localDrawingStatus, &v4, param0->unk_43DA, param0->unk_43DB);
+            UnionRoomDrawing_UpdateLocalStatus(&param0->localDrawingStatus, &v4, param0->penColor, param0->penSize);
 
             if (v2 == 1) {
                 param0->localDrawingStatus.pointCount = 0;
@@ -965,18 +965,18 @@ static int UnionRoomDrawing_StateResumeDrawing(UnionRoomDrawing *param0, int par
     UnionRoomDrawing_SetNextState(param0, 4);
     UnionRoomDrawing_RedrawDrawingWindow(param0);
 
-    param0->unk_9468 = 0;
+    param0->disconnectHandled = 0;
 
     return param1;
 }
 
 static int UnionRoomDrawing_StatePromptStopDrawing(UnionRoomDrawing *param0, int param1)
 {
-    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
         YesNoTouchMenuParams v0;
         BOOL v1;
 
-        v0.bgConfig = param0->unk_00;
+        v0.bgConfig = param0->bgConfig;
         v0.bgLayer = BG_LAYER_MAIN_0;
         v0.baseTile = (1 + (18 + 12) + 9 + 27 * 4) + 8 * 4;
         v0.palette = 8;
@@ -1019,7 +1019,7 @@ static int UnionRoomDrawing_StateHandleStopDrawing(UnionRoomDrawing *param0, int
         return param1;
     }
 
-    v0 = YesNoTouchMenu_ProcessInput(param0->unk_9454);
+    v0 = YesNoTouchMenu_ProcessInput(param0->yesNoMenu);
 
     switch (v0) {
     case YES_NO_TOUCH_MENU_YES:
@@ -1033,13 +1033,13 @@ static int UnionRoomDrawing_StateHandleStopDrawing(UnionRoomDrawing *param0, int
             v1.type = 0;
             v1.netId = CommSys_CurNetId();
 
-            param0->unk_9420 = 1;
-            param0->unk_941E = 0;
+            param0->flag = 1;
+            param0->commTimer = 0;
 
             UnionRoomDrawing_SetNextState(param0, 7);
 
             CommSys_SendData(126, &v1, sizeof(UnionRoomDrawingConnAck));
-            Window_EraseMessageBox(&param0->unk_33C, 1);
+            Window_EraseMessageBox(&param0->messageWindow, 1);
         }
 
         UnionRoomDrawing_ResetYesNoMenu(param0);
@@ -1047,8 +1047,8 @@ static int UnionRoomDrawing_StateHandleStopDrawing(UnionRoomDrawing *param0, int
         break;
     case YES_NO_TOUCH_MENU_NO:
         UnionRoomDrawing_SetNextState(param0, 4);
-        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
-        Window_EraseMessageBox(&param0->unk_33C, 1);
+        UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 0);
+        Window_EraseMessageBox(&param0->messageWindow, 1);
         UnionRoomDrawing_ResetYesNoMenu(param0);
         Window_CopyToVRAM(&param0->drawingWindow);
 
@@ -1067,7 +1067,7 @@ static int UnionRoomDrawing_StateHandleStopDrawing(UnionRoomDrawing *param0, int
 static int UnionRoomDrawing_StateClientAck(UnionRoomDrawing *param0, int param1)
 {
     param0->localDrawingStatus.pointCount = 0;
-    param0->unk_941E = 0;
+    param0->commTimer = 0;
 
     UnionRoomDrawing_RedrawDrawingWindow(param0);
 
@@ -1079,7 +1079,7 @@ static int UnionRoomDrawing_StateWaitAllAcked(UnionRoomDrawing *param0, int para
     param0->localDrawingStatus.pointCount = 0;
 
     if ((param0->ackedCount != CommSys_ConnectedCount()) || (param0->ackedCount != UnionRoomDrawing_CountConnected())) {
-        param0->unk_941E = 0;
+        param0->commTimer = 0;
 
         UnionRoomDrawing_SetNextState(param0, 9);
         UnionRoomDrawing_RedrawDrawingWindow(param0);
@@ -1087,9 +1087,9 @@ static int UnionRoomDrawing_StateWaitAllAcked(UnionRoomDrawing *param0, int para
         return param1;
     }
 
-    param0->unk_941E++;
+    param0->commTimer++;
 
-    if (param0->unk_941E > 30) {
+    if (param0->commTimer > 30) {
         UnionRoomDrawingConnAck v0;
 
         MI_CpuClear8(&v0, sizeof(UnionRoomDrawingConnAck));
@@ -1098,7 +1098,7 @@ static int UnionRoomDrawing_StateWaitAllAcked(UnionRoomDrawing *param0, int para
         v0.netId = CommSys_CurNetId();
 
         CommSys_SendData(126, &v0, sizeof(UnionRoomDrawingConnAck));
-        param0->unk_941E = 0;
+        param0->commTimer = 0;
         UnionRoomDrawing_SetNextState(param0, 10);
     }
 
@@ -1110,10 +1110,10 @@ static int UnionRoomDrawing_StateWaitAllAcked(UnionRoomDrawing *param0, int para
 static int UnionRoomDrawing_StateRejoinDrawing(UnionRoomDrawing *param0, int param1)
 {
     param0->localDrawingStatus.pointCount = 0;
-    param0->unk_9420 = 0;
+    param0->flag = 0;
 
     UnionRoomDrawing_SetNextState(param0, 4);
-    UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
+    UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 0);
     UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
@@ -1132,8 +1132,8 @@ static int UnionRoomDrawing_StateShowSessionEnded(UnionRoomDrawing *param0, int 
 
 static int UnionRoomDrawing_StateWaitSessionEnded(UnionRoomDrawing *param0, int param1)
 {
-    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
-        param0->unk_374 = 0;
+    if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
+        param0->inputTimer = 0;
         UnionRoomDrawing_SetNextState(param0, 12);
     }
 
@@ -1144,7 +1144,7 @@ static int UnionRoomDrawing_StateWaitSessionEnded(UnionRoomDrawing *param0, int 
 
 static int UnionRoomDrawing_StateFadeOut(UnionRoomDrawing *param0, int param1)
 {
-    if (++param0->unk_374 > 60) {
+    if (++param0->inputTimer > 60) {
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_CIRCLE_OUT, FADE_TYPE_CIRCLE_OUT, COLOR_BLACK, 16, 1, HEAP_ID_DRAWING);
         param1 = 3;
     }
@@ -1155,11 +1155,11 @@ static int UnionRoomDrawing_StateFadeOut(UnionRoomDrawing *param0, int param1)
 
 static int UnionRoomDrawing_StatePromptLeaderLeave(UnionRoomDrawing *param0, int param1)
 {
-    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
         YesNoTouchMenuParams v0;
         BOOL v1;
 
-        v0.bgConfig = param0->unk_00;
+        v0.bgConfig = param0->bgConfig;
         v0.bgLayer = BG_LAYER_MAIN_0;
         v0.baseTile = (1 + (18 + 12) + 9 + 27 * 4) + 8 * 4;
         v0.palette = 8;
@@ -1178,7 +1178,7 @@ static int UnionRoomDrawing_StatePromptLeaderLeave(UnionRoomDrawing *param0, int
 
 static int UnionRoomDrawing_StateHandleLeaderLeave(UnionRoomDrawing *param0, int param1)
 {
-    int v0 = YesNoTouchMenu_ProcessInput(param0->unk_9454);
+    int v0 = YesNoTouchMenu_ProcessInput(param0->yesNoMenu);
 
     if ((param0->connectedCount != UnionRoomDrawing_CountConnected()) || (param0->ackedNetIds != 0)) {
         UnionRoomDrawing_RedrawDrawingWindow(param0);
@@ -1189,14 +1189,14 @@ static int UnionRoomDrawing_StateHandleLeaderLeave(UnionRoomDrawing *param0, int
     case YES_NO_TOUCH_MENU_YES:
         UnionRoomDrawing_SetNextState(param0, 15);
         CommSys_SendDataServer(127, NULL, 0);
-        StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(0));
+        StringTemplate_SetPlayerName(param0->strTemplate, 0, CommInfo_TrainerInfo(0));
         param1 = 2;
         UnionRoomDrawing_ResetYesNoMenu(param0);
         break;
     case YES_NO_TOUCH_MENU_NO:
         UnionRoomDrawing_SetNextState(param0, 4);
-        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
-        Window_EraseMessageBox(&param0->unk_33C, 1);
+        UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 0);
+        Window_EraseMessageBox(&param0->messageWindow, 1);
         UnionRoomDrawing_ResetYesNoMenu(param0);
 
         if (CommSys_CurNetId() == 0) {
@@ -1212,7 +1212,7 @@ static int UnionRoomDrawing_StateHandleLeaderLeave(UnionRoomDrawing *param0, int
 
 static int UnionRoomDrawing_StateShowLeaderLeft(UnionRoomDrawing *param0, int param1)
 {
-    StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(0));
+    StringTemplate_SetPlayerName(param0->strTemplate, 0, CommInfo_TrainerInfo(0));
 
     UnionRoomDrawing_ShowMessage(param0, 3, TEXT_SPEED_FAST);
     UnionRoomDrawing_SetNextState(param0, 16);
@@ -1223,7 +1223,7 @@ static int UnionRoomDrawing_StateShowLeaderLeft(UnionRoomDrawing *param0, int pa
 
 static int UnionRoomDrawing_StateWaitLeaderLeft(UnionRoomDrawing *param0, int param1)
 {
-    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
         UnionRoomDrawing_SetNextState(param0, 17);
         CommTiming_StartSync(200);
     }
@@ -1259,7 +1259,7 @@ static int UnionRoomDrawing_StateShowNoMembers(UnionRoomDrawing *param0, int par
 
 static int UnionRoomDrawing_StateWaitNoMembers(UnionRoomDrawing *param0, int param1)
 {
-    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
         UnionRoomDrawing_SetNextState(param0, 12);
     }
 
@@ -1269,8 +1269,8 @@ static int UnionRoomDrawing_StateWaitNoMembers(UnionRoomDrawing *param0, int par
 
 static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int param1)
 {
-    if ((param0->unk_30 != 0xff) && (UnionRoomDrawing_IsMessageDone(param0->unk_30) == 0)) {
-        Text_RemovePrinter(param0->unk_30);
+    if ((param0->textPrinterID != 0xff) && (UnionRoomDrawing_IsMessageDone(param0->textPrinterID) == 0)) {
+        Text_RemovePrinter(param0->textPrinterID);
     }
 
     UnionRoomDrawing_ShowMessage(param0, 2, TEXT_SPEED_FAST);
@@ -1281,7 +1281,7 @@ static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int pa
         UnionRoomDrawing_SetMaxConnections(param0, 0);
     }
 
-    param0->unk_9414 = CommSys_ConnectedCount();
+    param0->connectedCount = CommSys_ConnectedCount();
     UnionRoomDrawing_RedrawDrawingWindow(param0);
 
     return param1;
@@ -1289,13 +1289,13 @@ static int UnionRoomDrawing_StateShowPlayerLeft(UnionRoomDrawing *param0, int pa
 
 static int UnionRoomDrawing_StateWaitPlayerLeft(UnionRoomDrawing *param0, int param1)
 {
-    if ((param0->unk_9414 != 0) && (CommSys_ConnectedCount() != param0->unk_9414)) {
-        param0->unk_9414 = 0;
+    if ((param0->connectedCount != 0) && (CommSys_ConnectedCount() != param0->connectedCount)) {
+        param0->connectedCount = 0;
     }
 
-    if (UnionRoomDrawing_IsMessageDone(param0->unk_30)) {
+    if (UnionRoomDrawing_IsMessageDone(param0->textPrinterID)) {
         UnionRoomDrawing_SetNextState(param0, 23);
-        param0->unk_374 = 0;
+        param0->inputTimer = 0;
     }
 
     UnionRoomDrawing_RedrawDrawingWindow(param0);
@@ -1304,11 +1304,11 @@ static int UnionRoomDrawing_StateWaitPlayerLeft(UnionRoomDrawing *param0, int pa
 
 static int UnionRoomDrawing_StatePlayerLeftDone(UnionRoomDrawing *param0, int param1)
 {
-    if ((param0->unk_9414 != 0) && (CommSys_ConnectedCount() != param0->unk_9414)) {
-        param0->unk_9414 = 0;
+    if ((param0->connectedCount != 0) && (CommSys_ConnectedCount() != param0->connectedCount)) {
+        param0->connectedCount = 0;
     }
 
-    if ((++param0->unk_374 > 60) && (param0->unk_9414 == 0)) {
+    if ((++param0->inputTimer > 60) && (param0->connectedCount == 0)) {
         UnionRoomDrawing_EraseMessageBox(param0);
         UnionRoomDrawing_SetNextState(param0, 4);
 
@@ -1326,12 +1326,12 @@ void UnionRoomDrawing_HandleCommState(UnionRoomDrawing *param0, int param1, u8 p
 {
     switch (param1) {
     case 1:
-        if ((param0->unk_368 == 6) || (param0->unk_368 == 14)) {
+        if ((param0->state == 6) || (param0->state == 14)) {
             UnionRoomDrawing_ResetYesNoMenu(param0);
         }
 
-        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
-        StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(param2));
+        UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 0);
+        StringTemplate_SetPlayerName(param0->strTemplate, 0, CommInfo_TrainerInfo(param2));
 
         param0->drawingPlayerNetId = param2;
         param0->ackedNetIds = 0;
@@ -1340,11 +1340,11 @@ void UnionRoomDrawing_HandleCommState(UnionRoomDrawing *param0, int param1, u8 p
         UnionRoomDrawing_EraseMessageBox(param0);
         break;
     case 21:
-        if (param0->unk_9420 == 1) {
+        if (param0->flag == 1) {
             return;
         }
 
-        StringTemplate_SetPlayerName(param0->unk_0C, 0, CommInfo_TrainerInfo(param2));
+        StringTemplate_SetPlayerName(param0->strTemplate, 0, CommInfo_TrainerInfo(param2));
 
         if (param2 == CommSys_CurNetId()) {
             return;
@@ -1354,13 +1354,13 @@ void UnionRoomDrawing_HandleCommState(UnionRoomDrawing *param0, int param1, u8 p
             param0->ackedNetIds &= 0xffff ^ param2;
         }
 
-        if ((param0->unk_368 == 6) || (param0->unk_368 == 14)) {
+        if ((param0->state == 6) || (param0->state == 14)) {
             UnionRoomDrawing_ResetYesNoMenu(param0);
 
             Window_CopyToVRAM(&param0->drawingWindow);
         }
 
-        UnionRoomDrawing_SetEraserSprite(param0->unk_2AC, 0);
+        UnionRoomDrawing_SetEraserSprite(param0->toolSprites, 0);
         break;
     case 15:
         break;
@@ -1567,10 +1567,10 @@ static void UnionRoomDrawing_UpdateRemoteCursors(UnionRoomDrawing *param0)
     for (v0 = 0; v0 < 5; v0++) {
         if (v0 != CommSys_CurNetId()) {
             if ((v1[v0].pointCount != 0) && (CommInfo_TrainerInfo(v0) != NULL)) {
-                Sprite_SetDrawFlag(param0->unk_23C[v0], TRUE);
-                UnionRoomDrawing_SetSpritePosition(param0->unk_23C[v0], v1[v0].x[v1[v0].pointCount - 1], v1[v0].y[v1[v0].pointCount - 1]);
+                Sprite_SetDrawFlag(param0->playerCursors[v0], TRUE);
+                UnionRoomDrawing_SetSpritePosition(param0->playerCursors[v0], v1[v0].x[v1[v0].pointCount - 1], v1[v0].y[v1[v0].pointCount - 1]);
             } else {
-                Sprite_SetDrawFlag(param0->unk_23C[v0], FALSE);
+                Sprite_SetDrawFlag(param0->playerCursors[v0], FALSE);
             }
         }
     }
@@ -1623,10 +1623,10 @@ static void UnionRoomDrawing_DrawPlayerNames(Window *param0, int param1, u32 par
     }
 
     for (v0 = 0; v0 < 5; v0++) {
-        if (param3->unk_398[v0][0] == NULL) {
-            Sprite_SetDrawFlag(param3->unk_274[v0], FALSE);
+        if (param3->trainerInfo[v0][0] == NULL) {
+            Sprite_SetDrawFlag(param3->penColorSprites[v0], FALSE);
         } else {
-            Sprite_SetDrawFlag(param3->unk_274[v0], TRUE);
+            Sprite_SetDrawFlag(param3->penColorSprites[v0], TRUE);
         }
     }
 
@@ -1635,13 +1635,13 @@ static void UnionRoomDrawing_DrawPlayerNames(Window *param0, int param1, u32 par
     }
 
     for (v0 = 0; v0 < 5; v0++) {
-        if (param3->unk_398[v0][0] != NULL) {
-            TrainerInfo_NameString(param3->unk_398[v0][0], param3->unk_14[v0]);
+        if (param3->trainerInfo[v0][0] != NULL) {
+            TrainerInfo_NameString(param3->trainerInfo[v0][0], param3->playerNameStrings[v0]);
 
             if (v1 == v0) {
-                Text_AddPrinterWithParamsAndColor(&param0[v0], FONT_MESSAGE, param3->unk_14[v0], 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(3, 4, 15), NULL);
+                Text_AddPrinterWithParamsAndColor(&param0[v0], FONT_MESSAGE, param3->playerNameStrings[v0], 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(3, 4, 15), NULL);
             } else {
-                Text_AddPrinterWithParamsAndColor(&param0[v0], FONT_MESSAGE, param3->unk_14[v0], 0, 0, TEXT_SPEED_NO_TRANSFER, param2, NULL);
+                Text_AddPrinterWithParamsAndColor(&param0[v0], FONT_MESSAGE, param3->playerNameStrings[v0], 0, 0, TEXT_SPEED_NO_TRANSFER, param2, NULL);
             }
         }
 
@@ -1687,12 +1687,12 @@ static int UnionRoomDrawing_UpdateTrainerInfo(UnionRoomDrawing *param0)
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        param0->unk_398[v0][1] = param0->unk_398[v0][0];
-        param0->unk_398[v0][0] = CommInfo_TrainerInfo(v0);
+        param0->trainerInfo[v0][1] = param0->trainerInfo[v0][0];
+        param0->trainerInfo[v0][0] = CommInfo_TrainerInfo(v0);
     }
 
     for (v0 = 0; v0 < 5; v0++) {
-        if (param0->unk_398[v0][1] != param0->unk_398[v0][0]) {
+        if (param0->trainerInfo[v0][1] != param0->trainerInfo[v0][0]) {
             v1 = 1;
         }
     }
@@ -1704,21 +1704,21 @@ static void UnionRoomDrawing_ShowMessage(UnionRoomDrawing *param0, int param1, i
 {
     String *v0 = String_Init(40 * 2, HEAP_ID_DRAWING);
 
-    MessageLoader_GetString(param0->unk_10, param1, v0);
-    StringTemplate_Format(param0->unk_0C, param0->unk_2C, v0);
+    MessageLoader_GetString(param0->msgLoader, param1, v0);
+    StringTemplate_Format(param0->strTemplate, param0->messageString, v0);
     String_Free(v0);
 
-    Window_FillTilemap(&param0->unk_33C, 0xf0f);
-    Window_DrawMessageBoxWithScrollCursor(&param0->unk_33C, 0, 1, 10);
+    Window_FillTilemap(&param0->messageWindow, 0xf0f);
+    Window_DrawMessageBoxWithScrollCursor(&param0->messageWindow, 0, 1, 10);
 
     if (param2 == 0) {
         param2 = 0;
     }
 
-    param0->unk_30 = Text_AddPrinterWithParams(&param0->unk_33C, FONT_MESSAGE, param0->unk_2C, 0, 0, param2, NULL);
+    param0->textPrinterID = Text_AddPrinterWithParams(&param0->messageWindow, FONT_MESSAGE, param0->messageString, 0, 0, param2, NULL);
 
     if (param2 == 0) {
-        param0->unk_30 = 0xff;
+        param0->textPrinterID = 0xff;
     }
 }
 
@@ -1737,7 +1737,7 @@ static int UnionRoomDrawing_IsMessageDone(int param0)
 
 static void UnionRoomDrawing_EraseMessageBox(UnionRoomDrawing *param0)
 {
-    Window_EraseMessageBox(&param0->unk_33C, 0);
+    Window_EraseMessageBox(&param0->messageWindow, 0);
 }
 
 static void UnionRoomDrawing_SetMaxConnections(UnionRoomDrawing *param0, int param1)
@@ -1759,17 +1759,17 @@ static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0)
 
     switch (v0) {
     case 1:
-        if (param0->unk_368 <= 14) {
+        if (param0->state <= 14) {
             if (WirelessManager_GetConnectedBitmap() != 1) {
-                param0->unk_9464 = 1;
+                param0->readyToDraw = 1;
             }
 
-            param0->unk_36C = 19;
+            param0->nextState = 19;
             CommManager_SetMaxNumConnections(1);
 
-            if (param0->unk_945C) {
+            if (param0->clientReadySent) {
                 UnionRoomDrawing_ResetYesNoMenu(param0);
-                Sprite_SetAnim(param0->unk_2AC[8], sPenColorSpriteData[8][2]);
+                Sprite_SetAnim(param0->toolSprites[8], sPenColorSpriteData[8][2]);
             }
 
             return 2;
@@ -1780,7 +1780,7 @@ static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0)
     case 4:
         UnionRoom_BroadcastActivity(1);
 
-        if (v0 < param0->unk_378) {
+        if (v0 < param0->connectedCountSnapshot) {
             if (param0->drawingState == 2) {
                 UnionRoomDrawing_SetMaxConnections(param0, 0);
             } else {
@@ -1793,28 +1793,28 @@ static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0)
         break;
     }
 
-    if (v0 < param0->unk_378) {
+    if (v0 < param0->connectedCountSnapshot) {
         param0->connectedCount = CommSys_ConnectedCount();
         param0->connectedBitmap = WirelessManager_GetConnectedBitmap();
 
-        if (param0->unk_9468) {
-            if (!(param0->connectedBitmap & param0->unk_946C)) {
+        if (param0->disconnectHandled) {
+            if (!(param0->connectedBitmap & param0->disconnectedBitmap)) {
                 UnionRoomDrawing_SetMaxConnections(param0, 1);
 
                 param0->drawingState = 1;
-                param0->unk_9468 = 0;
-                param0->unk_946C = 0;
+                param0->disconnectHandled = 0;
+                param0->disconnectedBitmap = 0;
             }
         }
     }
 
-    param0->unk_378 = UnionRoomDrawing_CountConnected();
+    param0->connectedCountSnapshot = UnionRoomDrawing_CountConnected();
 
     if (param0->connectedCount < CommSys_ConnectedCount()) {
         param0->drawingState = 2;
-        param0->unk_9468 = 1;
-        param0->unk_946C = param0->connectedBitmap ^ WirelessManager_GetConnectedBitmap();
-        GF_ASSERT((param0->unk_946C == 2) || (param0->unk_946C == 4) || (param0->unk_946C == 8) || (param0->unk_946C == 16));
+        param0->disconnectHandled = 1;
+        param0->disconnectedBitmap = param0->connectedBitmap ^ WirelessManager_GetConnectedBitmap();
+        GF_ASSERT((param0->disconnectedBitmap == 2) || (param0->disconnectedBitmap == 4) || (param0->disconnectedBitmap == 8) || (param0->disconnectedBitmap == 16));
     }
 
     return 1;
@@ -1822,17 +1822,17 @@ static int UnionRoomDrawing_UpdateConnectionState(UnionRoomDrawing *param0)
 
 static void UnionRoomDrawing_SetNextState(UnionRoomDrawing *param0, int param1)
 {
-    param0->unk_36C = param1;
+    param0->nextState = param1;
 }
 
 static void UnionRoomDrawing_ApplyNextState(UnionRoomDrawing *param0, int param1)
 {
-    if (param0->unk_368 != param0->unk_36C) {
+    if (param0->state != param0->nextState) {
         if (param1 != 2) {
-            param0->unk_368 = param0->unk_36C;
+            param0->state = param0->nextState;
         } else {
-            if (sStateHandlers[param0->unk_36C].runInState2) {
-                param0->unk_368 = param0->unk_36C;
+            if (sStateHandlers[param0->nextState].runInState2) {
+                param0->state = param0->nextState;
             }
         }
     }
@@ -1840,9 +1840,9 @@ static void UnionRoomDrawing_ApplyNextState(UnionRoomDrawing *param0, int param1
 
 static BOOL UnionRoomDrawing_InitYesNoMenu(UnionRoomDrawing *param0, YesNoTouchMenuParams *param1)
 {
-    if (!param0->unk_945C) {
-        YesNoTouchMenu_InitWithParams(param0->unk_9454, param1);
-        param0->unk_945C = 1;
+    if (!param0->clientReadySent) {
+        YesNoTouchMenu_InitWithParams(param0->yesNoMenu, param1);
+        param0->clientReadySent = 1;
         return 1;
     } else {
         return 0;
@@ -1851,9 +1851,9 @@ static BOOL UnionRoomDrawing_InitYesNoMenu(UnionRoomDrawing *param0, YesNoTouchM
 
 static void UnionRoomDrawing_ResetYesNoMenu(UnionRoomDrawing *param0)
 {
-    if (param0->unk_945C) {
-        YesNoTouchMenu_Reset(param0->unk_9454);
-        param0->unk_945C = 0;
+    if (param0->clientReadySent) {
+        YesNoTouchMenu_Reset(param0->yesNoMenu);
+        param0->clientReadySent = 0;
     }
 }
 

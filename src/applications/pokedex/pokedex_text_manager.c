@@ -61,17 +61,17 @@ PokedexTextData *PokedexTextManager_NextTextDataNew(const PokedexDisplayBox *dis
     GF_ASSERT(textData);
     CharTransfer_AllocRange(size, TRUE, displayBox->vramType, &textData->allocation);
 
-    v0.unk_00 = displayBox->textMan->unk_00;
-    v0.unk_04 = displayBox->window;
-    v0.unk_08 = displayBox->textMan->spriteList;
-    v0.unk_0C = displayBox->paletteProxy;
-    v0.unk_10 = displayBox->sprite;
-    v0.unk_14 = textData->allocation.offset;
-    v0.unk_18 = displayBox->x;
-    v0.unk_1C = displayBox->y;
-    v0.unk_20 = displayBox->spriteResourcePriority;
-    v0.unk_24 = displayBox->spriteListPriority;
-    v0.unk_28 = displayBox->vramType;
+    v0.fontOAMManager = displayBox->textMan->unk_00;
+    v0.window = displayBox->window;
+    v0.spriteList = displayBox->textMan->spriteList;
+    v0.paletteProxy = displayBox->paletteProxy;
+    v0.parentSprite = displayBox->sprite;
+    v0.charOffset = textData->allocation.offset;
+    v0.x = displayBox->x;
+    v0.y = displayBox->y;
+    v0.resourcePriority = displayBox->spriteResourcePriority;
+    v0.spritePriority = displayBox->spriteListPriority;
+    v0.vramType = displayBox->vramType;
     v0.heapID = displayBox->heapID;
 
     textData->fontOAM = FontOAM_New(&v0);

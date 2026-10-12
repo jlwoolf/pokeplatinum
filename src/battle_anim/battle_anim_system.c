@@ -427,7 +427,7 @@ BOOL BattleAnimSystem_StartMove(BattleAnimSystem *system, MoveAnimation *moveAni
     }
 
     system->context->command = moveAnim->command;
-    system->context->unk_01 = moveAnim->unk_01;
+    system->context->unk_01 = moveAnim->contextState;
     system->context->move = moveAnim->move;
     system->context->damage = moveAnim->damage;
     system->context->power = moveAnim->power;

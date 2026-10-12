@@ -1507,17 +1507,17 @@ static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintSta
 
     param8 -= 8;
 
-    v0.unk_00 = param0->unk_10;
-    v0.unk_04 = &v1;
-    v0.unk_08 = SpriteManager_GetSpriteList(v6);
-    v0.unk_0C = SpriteManager_FindPlttResourceProxy(v6, param6);
-    v0.unk_10 = NULL;
-    v0.unk_14 = v2.offset;
-    v0.unk_18 = param7;
-    v0.unk_1C = param8;
-    v0.unk_20 = 0;
-    v0.unk_24 = 51;
-    v0.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v0.fontOAMManager = param0->unk_10;
+    v0.window = &v1;
+    v0.spriteList = SpriteManager_GetSpriteList(v6);
+    v0.paletteProxy = SpriteManager_FindPlttResourceProxy(v6, param6);
+    v0.parentSprite = NULL;
+    v0.charOffset = v2.offset;
+    v0.x = param7;
+    v0.y = param8;
+    v0.resourcePriority = 0;
+    v0.spritePriority = 51;
+    v0.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v0.heapID = HEAP_ID_118;
 
     v4 = FontOAM_New(&v0);

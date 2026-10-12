@@ -73,17 +73,17 @@ void ImageClipUi_InitTextButton(ImageClipUiTextButton *param0, ImageClipUiTextBu
 
     ImageClipUi_Init(&param0->unk_00, &param1->unk_00);
 
-    v0.unk_00 = param1->unk_14;
-    v0.unk_04 = param1->unk_10;
-    v0.unk_08 = param1->unk_00.unk_00->list;
-    v0.unk_0C = param1->unk_18;
-    v0.unk_10 = param0->unk_00.unk_00;
-    v0.unk_14 = param1->unk_24;
-    v0.unk_18 = param1->unk_1C;
-    v0.unk_1C = param1->unk_20;
-    v0.unk_20 = 0;
-    v0.unk_24 = 0;
-    v0.unk_28 = param1->unk_00.unk_00->vramType;
+    v0.fontOAMManager = param1->unk_14;
+    v0.window = param1->unk_10;
+    v0.spriteList = param1->unk_00.unk_00->list;
+    v0.paletteProxy = param1->unk_18;
+    v0.parentSprite = param0->unk_00.unk_00;
+    v0.charOffset = param1->unk_24;
+    v0.x = param1->unk_1C;
+    v0.y = param1->unk_20;
+    v0.resourcePriority = 0;
+    v0.spritePriority = 0;
+    v0.vramType = param1->unk_00.unk_00->vramType;
     v0.heapID = param1->unk_00.unk_00->heapID;
 
     param0->unk_10 = FontOAM_New(&v0);

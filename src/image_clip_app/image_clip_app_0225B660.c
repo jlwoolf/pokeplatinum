@@ -71,14 +71,14 @@ int DressUpPhotoViewer_Init(ApplicationManager *appMan, int *param1)
 
     v1 = ApplicationManager_Args(appMan);
 
-    if (v1->unk_08 == 0) {
-        v0->photo = ImageClips_GetDressUpPhoto(v1->imageClips, v1->unk_04);
+    if (v1->photoType == 0) {
+        v0->photo = ImageClips_GetDressUpPhoto(v1->imageClips, v1->slot);
     } else {
-        v0->unk_04 = ImageClips_GetContestPhoto(v1->imageClips, v1->unk_04);
+        v0->unk_04 = ImageClips_GetContestPhoto(v1->imageClips, v1->slot);
     }
 
-    v0->unk_08 = v1->unk_04;
-    v0->unk_0C = v1->unk_08;
+    v0->unk_08 = v1->slot;
+    v0->unk_0C = v1->photoType;
 
     ImageClipGraphics_Init();
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;

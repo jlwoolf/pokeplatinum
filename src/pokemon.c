@@ -5256,9 +5256,9 @@ void Pokemon_Serialize(Pokemon *mon, SerializedPokemon *dest)
 
     int i;
     for (i = 0; i < LEARNED_MOVES_MAX; i++) {
-        dest->unk_1C[i] = monDataBlockB->moves[i];
-        dest->unk_24[i] = monDataBlockB->moveCurrentPPs[i];
-        dest->unk_28[i] = monDataBlockB->movePPUps[i];
+        dest->moves[i] = monDataBlockB->moves[i];
+        dest->moveCurrentPPs[i] = monDataBlockB->moveCurrentPPs[i];
+        dest->movePPUps[i] = monDataBlockB->movePPUps[i];
     }
 
     dest->hpIV = monDataBlockB->hpIV;
@@ -5268,31 +5268,31 @@ void Pokemon_Serialize(Pokemon *mon, SerializedPokemon *dest)
     dest->spAtkIV = monDataBlockB->spAtkIV;
     dest->spDefIV = monDataBlockB->spDefIV;
     dest->isEgg = monDataBlockB->isEgg;
-    dest->unk_2C_31 = monDataBlockB->hasNickname;
+    dest->hasNickname = monDataBlockB->hasNickname;
     dest->fatefulEncounter = monDataBlockB->fatefulEncounter;
     dest->gender = monDataBlockB->gender;
     dest->form = monDataBlockB->form;
 
     for (i = 0; i < MON_NAME_LEN + 1; i++) {
-        dest->unk_32[i] = monDataBlockC->nickname[i];
+        dest->nickname[i] = monDataBlockC->nickname[i];
     }
 
     for (i = 0; i < TRAINER_NAME_LEN + 1; i++) {
-        dest->unk_48[i] = monDataBlockD->otName[i];
+        dest->otName[i] = monDataBlockD->otName[i];
     }
 
     dest->pokeball = monDataBlockD->pokeball;
 
-    dest->unk_5C = mon->party.status;
+    dest->status = mon->party.status;
     dest->level = mon->party.level;
-    dest->unk_61 = mon->party.ballCapsuleID;
-    dest->unk_62 = mon->party.hp;
-    dest->unk_64 = mon->party.maxHP;
-    dest->unk_66 = mon->party.attack;
-    dest->unk_68 = mon->party.defense;
-    dest->unk_6A = mon->party.speed;
-    dest->unk_6C = mon->party.spAtk;
-    dest->unk_6E = mon->party.spDef;
+    dest->ballCapsuleID = mon->party.ballCapsuleID;
+    dest->hp = mon->party.hp;
+    dest->maxHP = mon->party.maxHP;
+    dest->attack = mon->party.attack;
+    dest->defense = mon->party.defense;
+    dest->speed = mon->party.speed;
+    dest->spAtk = mon->party.spAtk;
+    dest->spDef = mon->party.spDef;
 
     if (mon->box.partyDecrypted == FALSE) {
         Pokemon_EncryptData(&mon->party, sizeof(PartyPokemon), mon->box.personality);
@@ -5334,9 +5334,9 @@ void Pokemon_Deserialize(SerializedPokemon *src, Pokemon *mon)
 
     int i;
     for (i = 0; i < LEARNED_MOVES_MAX; i++) {
-        monDataBlockB->moves[i] = src->unk_1C[i];
-        monDataBlockB->moveCurrentPPs[i] = src->unk_24[i];
-        monDataBlockB->movePPUps[i] = src->unk_28[i];
+        monDataBlockB->moves[i] = src->moves[i];
+        monDataBlockB->moveCurrentPPs[i] = src->moveCurrentPPs[i];
+        monDataBlockB->movePPUps[i] = src->movePPUps[i];
     }
 
     monDataBlockB->hpIV = src->hpIV;
@@ -5346,31 +5346,31 @@ void Pokemon_Deserialize(SerializedPokemon *src, Pokemon *mon)
     monDataBlockB->spAtkIV = src->spAtkIV;
     monDataBlockB->spDefIV = src->spDefIV;
     monDataBlockB->isEgg = src->isEgg;
-    monDataBlockB->hasNickname = src->unk_2C_31;
+    monDataBlockB->hasNickname = src->hasNickname;
     monDataBlockB->fatefulEncounter = src->fatefulEncounter;
     monDataBlockB->gender = src->gender;
     monDataBlockB->form = src->form;
 
     for (i = 0; i < MON_NAME_LEN + 1; i++) {
-        monDataBlockC->nickname[i] = src->unk_32[i];
+        monDataBlockC->nickname[i] = src->nickname[i];
     }
 
     for (i = 0; i < TRAINER_NAME_LEN + 1; i++) {
-        monDataBlockD->otName[i] = src->unk_48[i];
+        monDataBlockD->otName[i] = src->otName[i];
     }
 
     monDataBlockD->pokeball = src->pokeball;
 
-    mon->party.status = src->unk_5C;
+    mon->party.status = src->status;
     mon->party.level = src->level;
-    mon->party.ballCapsuleID = src->unk_61;
-    mon->party.hp = src->unk_62;
-    mon->party.maxHP = src->unk_64;
-    mon->party.attack = src->unk_66;
-    mon->party.defense = src->unk_68;
-    mon->party.speed = src->unk_6A;
-    mon->party.spAtk = src->unk_6C;
-    mon->party.spDef = src->unk_6E;
+    mon->party.ballCapsuleID = src->ballCapsuleID;
+    mon->party.hp = src->hp;
+    mon->party.maxHP = src->maxHP;
+    mon->party.attack = src->attack;
+    mon->party.defense = src->defense;
+    mon->party.speed = src->speed;
+    mon->party.spAtk = src->spAtk;
+    mon->party.spDef = src->spDef;
 
     Pokemon_EncryptData(&mon->party, sizeof(PartyPokemon), mon->box.personality);
     mon->box.checksum = Pokemon_GetDataChecksum(&mon->box.dataBlocks, sizeof(PokemonDataBlock) * 4);

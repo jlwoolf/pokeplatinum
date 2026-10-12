@@ -113,7 +113,7 @@ int VsRecorderViewerRecording_SaveStep(SaveData *saveData, int param1, u8 param2
         GF_ASSERT(gBattleRecording);
 
         if (param2 == 1) {
-            gBattleRecording->summary.unk_27 = param2;
+            gBattleRecording->summary.savedFlag = param2;
 
             gBattleRecording->summary.magic = 0xe281;
             gBattleRecording->summary.checksum.checksum = SaveData_CalculateChecksum(saveData, &gBattleRecording->summary, sizeof(BattleRecordingSummary) - (sizeof(BattleRecordingChecksum)) - (sizeof(u64)));
@@ -144,7 +144,7 @@ int VsRecorderViewerRecording_SaveWithIdStep(SaveData *saveData, u64 param1, u16
     case 0:
         GF_ASSERT(gBattleRecording);
 
-        gBattleRecording->summary.unk_58 = param1;
+        gBattleRecording->summary.recordingId = param1;
         (*param2)++;
         break;
     case 1:
@@ -161,7 +161,7 @@ int VsRecorderViewerRecording_FinalizeAndSave(SaveData *saveData, int param1)
 
     GF_ASSERT(gBattleRecording != NULL);
 
-    gBattleRecording->summary.unk_27 = 1;
+    gBattleRecording->summary.savedFlag = 1;
     gBattleRecording->summary.magic = 0xe281;
     gBattleRecording->summary.checksum.checksum = SaveData_CalculateChecksum(saveData, &gBattleRecording->summary, sizeof(BattleRecordingSummary) - (sizeof(BattleRecordingChecksum)) - (sizeof(u64)));
 

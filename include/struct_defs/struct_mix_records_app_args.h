@@ -10,7 +10,7 @@
 
 typedef struct {
     SaveData *saveData;
-    UnionRoomTrainers *unk_04;
+    UnionRoomTrainers *trainers;
     Options *options;
     GameRecords *records;
     JournalEntry *journalEntry;

@@ -124,7 +124,7 @@ void NumberEntry_InitLayout(NumberEntryScreen *param0)
 void NumberEntry_SetPhase(NumberEntryScreen *param0, int param1)
 {
     param0->phase = param1;
-    param0->unk_2C4 = 0;
+    param0->unused_2C4 = 0;
     param0->phaseStep = 0;
     param0->animTimer = 0;
 }

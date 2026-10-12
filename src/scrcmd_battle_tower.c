@@ -180,7 +180,7 @@ BOOL ScrCmd_CallBattleTowerFunction(ScriptContext *ctx)
         BattleTower_GenerateOpponentTrainerIDs(battleTower, ctx->fieldSystem->saveData);
         break;
     case BT_FUNC_GET_SLOT_INDEX:
-        *destVar = battleTower->unk_2A[functionArgument];
+        *destVar = battleTower->partyOrder[functionArgument];
         break;
     case BT_FUNC_UNK_54:
         *destVar = BattleTower_UpdateRank(battleTower, ctx->fieldSystem->saveData, 1);
@@ -200,7 +200,7 @@ BOOL ScrCmd_CallBattleTowerFunction(ScriptContext *ctx)
         break;
     case BT_FUNC_UNK_58:
         // Clear the 35-entry u16 comm buffer.
-        MI_CpuClear8(battleTower->unk_884, 70);
+        MI_CpuClear8(battleTower->scratchBuffer, 70);
         break;
     default:
         GF_ASSERT(FALSE);
@@ -285,7 +285,7 @@ BOOL ScrCmd_1E1(ScriptContext *ctx)
 
     if (BattleFrontierStats_IsDebugBuild(ctx->fieldSystem->saveData) == 1) {
         // Debug build (VERSION_NONE game code): send through the comm tool.
-        if (CommTool_SendTempData(CommSys_CurNetId(), battleTower->unk_83E) == 1) {
+        if (CommTool_SendTempData(CommSys_CurNetId(), battleTower->trainerIdBuffer) == 1) {
             *destVar = 1;
         } else {
             return TRUE;
@@ -295,7 +295,7 @@ BOOL ScrCmd_1E1(ScriptContext *ctx)
 
         packetSize = 70;
 
-        if (CommSys_SendData(cmd, battleTower->unk_83E, packetSize) == 1) {
+        if (CommSys_SendData(cmd, battleTower->trainerIdBuffer, packetSize) == 1) {
             *destVar = 1;
         }
     }
@@ -318,8 +318,8 @@ BOOL ScrCmd_1E2(ScriptContext *ctx)
         // Debug build: the comm tool's reply is handled by a field task.
         BattleSalon_StartCommTask(ctx->fieldSystem->task, commandType, destVarID);
     } else {
-        battleTower->unk_8DA = destVarID;
-        battleTower->unk_8D5 = commandType;
+        battleTower->destVarID = destVarID;
+        battleTower->commandType = commandType;
 
         ScriptContext_Pause(ctx, BattleTower_WaitForResponse);
     }
@@ -331,10 +331,10 @@ static BOOL BattleTower_WaitForResponse(ScriptContext *ctx)
 {
     u8 expectedMsgs;
     BattleTower *battleTower = ctx->fieldSystem->battleTower;
-    u16 *destVar = FieldSystem_GetVarPointer(ctx->fieldSystem, battleTower->unk_8DA);
+    u16 *destVar = FieldSystem_GetVarPointer(ctx->fieldSystem, battleTower->destVarID);
 
     // Command type 1 (trainer ID list) expects a single reply; the others two.
-    if (battleTower->unk_8D5 == 1) {
+    if (battleTower->commandType == 1) {
         expectedMsgs = 1;
     } else {
         expectedMsgs = 2;
@@ -342,7 +342,7 @@ static BOOL BattleTower_WaitForResponse(ScriptContext *ctx)
 
     if (battleTower->msgsReceived == expectedMsgs) {
         battleTower->msgsReceived = 0;
-        *destVar = battleTower->unk_8D8;
+        *destVar = battleTower->speciesOverlap;
 
         return TRUE;
     }

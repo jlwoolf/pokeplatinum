@@ -15,7 +15,7 @@ typedef struct {
     // supplied by the caller; index 4 repeats the last group's count and acts
     // as a sentinel when the screen derives the group slot ranges.
     int digitsPerGroup[5];
-    int unk_18; // Unused; never set or read.
+    int unused_18; // Unused; never set or read.
     // Buffer that receives the entered number as a string.
     String *numberString;
     Options *options;

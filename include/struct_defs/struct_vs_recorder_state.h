@@ -20,38 +20,38 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    int *unk_10;
-    VsRecorderViewerMenuContext unk_14;
-    VsRecorderViewerListNetworkTask unk_52C;
-    VsRecorderViewerMenu unk_534;
-    VsRecorderRing *unk_6F0;
-    VsRecorderRing *unk_6F4;
-    VsRecorderViewerMenuAnimatedSprite unk_6F8[6];
-    const VsRecorderMenuEntry *unk_818;
-    const VsRecorderMenuEntry *unk_81C[5];
+    int mode;
+    int state;
+    int subState;
+    int timer;
+    int *animState;
+    VsRecorderViewerMenuContext menuContext;
+    VsRecorderViewerListNetworkTask networkTask;
+    VsRecorderViewerMenu menu;
+    VsRecorderRing *ring;
+    VsRecorderRing *backgroundRing;
+    VsRecorderViewerMenuAnimatedSprite menuSprites[6];
+    const VsRecorderMenuEntry *currentMenu;
+    const VsRecorderMenuEntry *menuStack[5];
     SaveData *saveData;
-    u16 unk_834;
-    u16 unk_836;
-    VsRecorderPendingSelection unk_838;
-    void *unk_860;
+    u16 saveStep;
+    u16 saveSubStep;
+    VsRecorderPendingSelection pendingSelection;
+    void *viewerData;
     u8 padding_864[4];
-    VsRecorderPlaybackRequest *unk_868;
-    int unk_86C;
-    BOOL unk_870;
-    u32 unk_874;
-    u8 *unk_878;
-    BattleRecordingSummary *unk_87C[4];
-    PlayerProfile *unk_88C[4];
-    BOOL unk_89C;
-    BOOL unk_8A0;
-    Window unk_8A4;
-    VsRecorderViewerListRecordStore unk_8B4;
-    VsRecorderRingAnim unk_41D8;
-    SysTask *unk_41E8;
+    VsRecorderPlaybackRequest *playbackRequest;
+    int selectedDataIndex;
+    BOOL flag;
+    u32 subMode;
+    u8 *recordFlagPtr;
+    BattleRecordingSummary *summaries[4];
+    PlayerProfile *profiles[4];
+    BOOL touchHandled;
+    BOOL unknownFlag;
+    Window window;
+    VsRecorderViewerListRecordStore recordStore;
+    VsRecorderRingAnim ringAnim;
+    SysTask *task;
 } VsRecorderState;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_STATE_H

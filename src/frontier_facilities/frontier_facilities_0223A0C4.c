@@ -906,7 +906,7 @@ FieldBattleDTO *FieldBattleDTO_NewBattleTower(BattleTower *battleTower, FieldFro
     Party_InitWithCapacity(dto->parties[BATTLER_PLAYER_1], battleTower->partySize);
 
     for (i = 0; i < battleTower->partySize; i++) {
-        Pokemon_Copy(Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[i]), mon);
+        Pokemon_Copy(Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[i]), mon);
 
         if (Pokemon_GetValue(mon, MON_DATA_LEVEL, NULL) > level) {
             u32 exp = Pokemon_GetSpeciesBaseExpAt(Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL), level);
@@ -975,15 +975,15 @@ static u32 BattleTower_GetBattleTypeFromChallengeMode(u8 challengeMode)
 
 void FrontierFacilities_SetPartnerReady(BattleTower *battleTower, u16 param1)
 {
-    battleTower->unk_10_3 = param1;
-    battleTower->unk_83E[0] = param1;
+    battleTower->partnerReady = param1;
+    battleTower->trainerIdBuffer[0] = param1;
 }
 
 u16 FrontierFacilities_IsPartnerDataReady(BattleTower *battleTower, const u16 *param1)
 {
     int v0;
 
-    if (battleTower->unk_10_3 || param1[0]) {
+    if (battleTower->partnerReady || param1[0]) {
         return 1;
     }
 

@@ -377,9 +377,9 @@ void PhotoRenderer_SetSpriteDiffuse(PhotoRenderer *param0, GXRgb param1)
         } else {
             ImageClipPokemonSprite *v2 = v0->unk_00;
 
-            PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_R, (param1 >> 10) & 0x1f);
-            PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_G, (param1 >> 5) & 0x1f);
-            PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_B, (param1 >> 0) & 0x1f);
+            PokemonSprite_SetAttribute(v2->sprite, MON_SPRITE_DIFFUSE_R, (param1 >> 10) & 0x1f);
+            PokemonSprite_SetAttribute(v2->sprite, MON_SPRITE_DIFFUSE_G, (param1 >> 5) & 0x1f);
+            PokemonSprite_SetAttribute(v2->sprite, MON_SPRITE_DIFFUSE_B, (param1 >> 0) & 0x1f);
         }
 
         v0 = v0->unk_08;

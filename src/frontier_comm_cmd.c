@@ -119,29 +119,29 @@ static void BattleTower_HandlePartnerDataCmd(int netId, int unused, void *data, 
     }
 
     battleTower->partnerGender = (u8)partnerData[0];
-    battleTower->unk_16[0] = partnerData[1];
-    battleTower->unk_16[1] = partnerData[2];
-    battleTower->unk_14 = partnerData[3];
+    battleTower->partnerSpecies[0] = partnerData[1];
+    battleTower->partnerSpecies[1] = partnerData[2];
+    battleTower->streak = partnerData[3];
     battleTower->partnerID = BT_PARTNERS_COUNT + battleTower->partnerGender;
 
-    if ((battleTower->unk_2E[0] == battleTower->unk_16[0]) || (battleTower->unk_2E[0] == battleTower->unk_16[1])) {
+    if ((battleTower->partySpecies[0] == battleTower->partnerSpecies[0]) || (battleTower->partySpecies[0] == battleTower->partnerSpecies[1])) {
         speciesOverlap += 1;
     }
 
-    if ((battleTower->unk_2E[1] == battleTower->unk_16[0]) || (battleTower->unk_2E[1] == battleTower->unk_16[1])) {
+    if ((battleTower->partySpecies[1] == battleTower->partnerSpecies[0]) || (battleTower->partySpecies[1] == battleTower->partnerSpecies[1])) {
         speciesOverlap += 2;
     }
 
-    battleTower->unk_8D8 = speciesOverlap;
+    battleTower->speciesOverlap = speciesOverlap;
 }
 
 // Command 63: sends the generated opponent trainer IDs to the link partner.
 BOOL BattleTower_SendTrainerIDListCmd(BattleTower *battleTower)
 {
     int dataSize = BT_OPPONENTS_COUNT * 2 * sizeof(u16);
-    MI_CpuCopy8(battleTower->trainerIDs, battleTower->unk_83E, dataSize);
+    MI_CpuCopy8(battleTower->trainerIDs, battleTower->trainerIdBuffer, dataSize);
 
-    return CommSys_SendData(63, battleTower->unk_83E, dataSize) == TRUE;
+    return CommSys_SendData(63, battleTower->trainerIdBuffer, dataSize) == TRUE;
 }
 
 // Command 63: receives the link partner's opponent trainer IDs. The host (net
@@ -173,15 +173,15 @@ static void BattleTower_HandlePartnerReadyCmd(int netId, int unused, void *data,
     BattleTower *battleTower = context;
     const u16 *partnerData = data;
 
-    battleTower->unk_8D8 = 0;
+    battleTower->speciesOverlap = 0;
     battleTower->msgsReceived++;
 
     if (CommSys_CurNetId() == netId) {
         return;
     }
 
-    if (battleTower->unk_10_3 || partnerData[0]) {
-        battleTower->unk_8D8 = 1;
+    if (battleTower->partnerReady || partnerData[0]) {
+        battleTower->speciesOverlap = 1;
     }
 }
 

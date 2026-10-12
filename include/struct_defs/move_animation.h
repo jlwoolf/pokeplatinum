@@ -5,7 +5,7 @@
 
 typedef struct MoveAnimation {
     u8 command;
-    u8 unk_01;
+    u8 contextState;
     u16 move;
     s32 damage;
     u16 power;

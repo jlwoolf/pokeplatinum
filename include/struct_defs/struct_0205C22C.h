@@ -19,8 +19,8 @@ typedef struct UnionRoomTrainers {
     FieldSystem *fieldSystem;
     PalPad *palPad;
     UnionRoomChatLog *chatLog;
-    int unk_47C;
-    int unk_480;
+    int initialised;
+    int unused_480;
 } UnionRoomTrainers;
 
 #endif // POKEPLATINUM_STRUCT_0205C22C_H

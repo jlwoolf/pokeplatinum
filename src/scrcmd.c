@@ -3006,8 +3006,8 @@ static PhotoViewerArgs *PhotoViewerArgs_New(enum HeapID heapID, FieldSystem *fie
     memset(args, 0, sizeof(PhotoViewerArgs));
 
     args->imageClips = imageClips;
-    args->unk_08 = photoType;
-    args->unk_04 = slot;
+    args->photoType = photoType;
+    args->slot = slot;
 
     return args;
 }

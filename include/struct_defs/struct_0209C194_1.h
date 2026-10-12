@@ -14,7 +14,7 @@
 // from the FieldSystem when the spin trade field task starts and read by both
 // spin_trade apps.
 typedef struct {
-    int unk_00; // Unused.
+    int unused_00; // Unused.
     int messageBoxFrame; // Message box frame style (Options_Frame).
     SaveData *saveData;
     UnionRoomTrainers *trainers; // Union Room trainer manager (FieldSystem::unk_80).

@@ -18,8 +18,8 @@ typedef struct {
     DWCUserData *userData;
     int mode;
     int profileId;
-    int unk_20;
-    int unk_24;
+    int fromMenu;
+    int param;
 } WifiBattleTowerAppArgs;
 
 enum WifiBattleTowerMode {
