@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02239DA4_SUB1_H
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
+    u16 value;
+    u16 unused_02;
 } VsRecorderViewerBoxChecksum;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02239DA4_SUB1_H

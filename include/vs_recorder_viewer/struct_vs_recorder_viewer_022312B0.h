@@ -9,10 +9,10 @@
 
 typedef struct {
     u8 padding_00[4];
-    ManagedSprite *unk_08;
-    FontOAM *unk_0C;
-    FontOAMWindow *unk_10;
-    CharTransferAllocation unk_14;
+    ManagedSprite *sprite;
+    FontOAM *fontOAM;
+    FontOAMWindow *fontOAMWindow;
+    CharTransferAllocation charTransfer;
 } VsRecorderViewerTextSprite;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022312B0_H

@@ -5,20 +5,20 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    ManagedSprite *unk_00[2];
-    SysTask *unk_08;
-    fx32 unk_0C;
-    f32 unk_10;
-    s16 unk_14;
-    s16 unk_16;
-    s8 unk_18;
-    u8 unk_19;
+    ManagedSprite *sprites[2];
+    SysTask *task;
+    fx32 baseX;
+    f32 scale;
+    s16 xStep;
+    s16 targetX;
+    s8 direction;
+    u8 phase;
     u8 padding_1A[2];
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    int unk_28;
-    int unk_2C;
+    int tick;
+    int angle;
+    int stepCount;
+    int step;
+    int state;
 } VsRecorderViewerMenuAnimatedSprite;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02230C28_H

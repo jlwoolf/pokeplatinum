@@ -87,7 +87,7 @@ static BOOL VsRecorderViewerSlideShow_Unused(VsRecorderState *param0)
 
     GF_ASSERT(FALSE);
 
-    param0->unk_14.unk_30 = 1;
+    param0->unk_14.returnToMainMenu = 1;
     VsRecorderViewerMain_SetState(param0, 0);
 
     return VsRecorderViewerSlideShow_HandleInput(param0);
@@ -97,7 +97,7 @@ static BOOL VsRecorderViewerSlideShow_FadeOut(VsRecorderState *param0)
 {
     switch (param0->unk_08) {
     case 0:
-        param0->unk_14.unk_40 = 0;
+        param0->unk_14.fadeValue = 0;
         param0->unk_0C = 0;
         VsRecorderRing_SetVisible(param0->unk_6F0, 0);
         VsRecorderRing_SetVisible(param0->unk_6F4, 0);
@@ -107,10 +107,10 @@ static BOOL VsRecorderViewerSlideShow_FadeOut(VsRecorderState *param0)
     case 1:
         if (param0->unk_0C != 16) {
             param0->unk_0C += 2;
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFE, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0x3FFE, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFE, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0x3FFE, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_0C, VsRecorderViewerList_GetThemeColorB(param0));
         } else {
             param0->unk_0C = 16;
             param0->unk_08++;
@@ -143,7 +143,7 @@ static BOOL VsRecorderViewerSlideShow_HandleMenuExit(VsRecorderState *param0)
     BOOL v0 = VsRecorderViewerEntry_AnimateEntries(param0);
 
     if (v0) {
-        if (param0->unk_14.unk_30 == 1) {
+        if (param0->unk_14.returnToMainMenu == 1) {
             VsRecorderRing_SetVisible(param0->unk_6F0, 0);
             VsRecorderViewerMain_SetState(param0, 0);
         } else {
@@ -158,14 +158,14 @@ static BOOL VsRecorderViewerSlideShow_HandleMenuAction(VsRecorderState *param0)
 {
     BOOL v0;
 
-    switch (param0->unk_818[param0->unk_534.unk_1B0].action) {
+    switch (param0->unk_818[param0->unk_534.selectedIndex].action) {
     default:
         v0 = 1;
         break;
     }
 
     if (v0) {
-        if (param0->unk_14.unk_30 == 1) {
+        if (param0->unk_14.returnToMainMenu == 1) {
             VsRecorderRing_SetVisible(param0->unk_6F0, 0);
             VsRecorderViewerMain_SetState(param0, 0);
         } else {
@@ -180,38 +180,38 @@ void VsRecorderViewerSlideShow_SlideAnimTask(SysTask *param0, void *param1)
 {
     VsRecorderViewerSlideShowSlideAnim *v0 = param1;
 
-    switch (v0->unk_1D) {
+    switch (v0->state) {
     case 0:
-        v0->unk_08 = (v0->unk_04 - v0->unk_00) / v0->unk_1C;
-        v0->unk_0A = (v0->unk_06 - v0->unk_02) / v0->unk_1C;
-        v0->unk_1D++;
+        v0->stepX = (v0->targetX - v0->startX) / v0->stepCount;
+        v0->stepY = (v0->targetY - v0->startY) / v0->stepCount;
+        v0->state++;
     case 1: {
         s16 v1, v2;
 
-        VsRecorderViewerMenu_GetSpritePositionWithOffset(v0->unk_20, &v1, &v2);
+        VsRecorderViewerMenu_GetSpritePositionWithOffset(v0->sprite, &v1, &v2);
 
-        v0->unk_1C--;
+        v0->stepCount--;
 
-        if (v0->unk_1C == 0) {
-            v1 = v0->unk_04;
-            v2 = v0->unk_06;
-            v0->unk_1D++;
+        if (v0->stepCount == 0) {
+            v1 = v0->targetX;
+            v2 = v0->targetY;
+            v0->state++;
         } else {
-            v1 += v0->unk_08;
-            v2 += v0->unk_0A;
+            v1 += v0->stepX;
+            v2 += v0->stepY;
         }
 
-        if (v0->unk_28) {
-            VsRecorderRing_SetTargetPosition(v0->unk_28, v1 + (15 + 1), v2);
-            if (v0->unk_1C == 2) {
-                *(v0->unk_30) = 1;
+        if (v0->ring) {
+            VsRecorderRing_SetTargetPosition(v0->ring, v1 + (15 + 1), v2);
+            if (v0->stepCount == 2) {
+                *(v0->ringDone) = 1;
             }
         }
 
-        VsRecorderViewerMenu_SetSpritePositionWithOffset(v0->unk_20, v1, v2);
-        FontOAM_SetXY(v0->unk_24, 36, -8);
+        VsRecorderViewerMenu_SetSpritePositionWithOffset(v0->sprite, v1, v2);
+        FontOAM_SetXY(v0->fontOAM, 36, -8);
 
-        *(v0->unk_2C) = 1;
+        *(v0->done) = 1;
     } break;
     default:
         Heap_Free(v0);
@@ -232,111 +232,111 @@ static BOOL VsRecorderViewerSlideShow_SlideEntriesIn(VsRecorderState *param0)
 
         MI_CpuFill8(v3, 0, sizeof(VsRecorderViewerSlideShowTransition));
         param0->unk_860 = v3;
-        v3->unk_08 = 0;
+        v3->mainDone = 0;
 
-        for (v1 = 0; v1 < param0->unk_534.unk_1AC; v1++) {
+        for (v1 = 0; v1 < param0->unk_534.subEntryCount; v1++) {
             v2 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerSlideShowSlideAnim));
             memset(v2, 0, sizeof(VsRecorderViewerSlideShowSlideAnim));
-            VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.unk_C8[v1].unk_00, &v2->unk_00, &v2->unk_02);
+            VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.subEntries[v1].sprite, &v2->startX, &v2->startY);
 
-            v2->unk_20 = param0->unk_534.unk_C8[v1].unk_00;
-            v2->unk_24 = param0->unk_534.unk_C8[v1].unk_14;
-            v2->unk_2C = &v3->unk_04;
-            v2->unk_30 = &v3->unk_0C;
+            v2->sprite = param0->unk_534.subEntries[v1].sprite;
+            v2->fontOAM = param0->unk_534.subEntries[v1].fontOAM;
+            v2->done = &v3->slideDone;
+            v2->ringDone = &v3->ringDone;
 
-            if (v1 == param0->unk_534.unk_1B0) {
-                v2->unk_28 = param0->unk_6F0;
-                v2->unk_04 = v2->unk_00;
-                v2->unk_06 = -48;
-                v2->unk_1C = 8;
+            if (v1 == param0->unk_534.selectedIndex) {
+                v2->ring = param0->unk_6F0;
+                v2->targetX = v2->startX;
+                v2->targetY = -48;
+                v2->stepCount = 8;
             } else {
-                v2->unk_28 = NULL;
-                v2->unk_04 = v2->unk_00;
-                v2->unk_06 = (25 + (36 * 5) + (16 * (5 - (param0->unk_534.unk_1AC))));
+                v2->ring = NULL;
+                v2->targetX = v2->startX;
+                v2->targetY = (25 + (36 * 5) + (16 * (5 - (param0->unk_534.subEntryCount))));
 
-                if (v2->unk_06 >= (25 + (36 * 5) + (16 * (4 - 3)))) {
-                    v2->unk_06 = (25 + (36 * 5) + (16 * (4 - 3)));
+                if (v2->targetY >= (25 + (36 * 5) + (16 * (4 - 3)))) {
+                    v2->targetY = (25 + (36 * 5) + (16 * (4 - 3)));
                 }
 
-                v2->unk_1C = 8;
+                v2->stepCount = 8;
             }
 
             SysTask_Start(VsRecorderViewerSlideShow_SlideAnimTask, v2, 8192);
         }
 
-        v3->unk_00 = 0;
+        v3->fadeValue = 0;
     }
         param0->unk_08++;
         break;
     case 1:
         v0 = param0->unk_860;
 
-        if (v0->unk_00 != 16) {
-            v0->unk_00 += 2;
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_00, param0->unk_14.unk_44);
+        if (v0->fadeValue != 16) {
+            v0->fadeValue += 2;
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, v0->fadeValue, param0->unk_14.themeColor);
         }
 
         {
             int v4;
             VsRecorderViewerSlideShowSlideAnim *v5;
 
-            if (v0->unk_0C == 1) {
+            if (v0->ringDone == 1) {
                 v4 = 0;
 
-                if (v0->unk_08 == 0) {
-                    v0->unk_08 = 1;
+                if (v0->mainDone == 0) {
+                    v0->mainDone = 1;
 
                     do {
                         v5 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerSlideShowSlideAnim));
                         memset(v5, 0, sizeof(VsRecorderViewerSlideShowSlideAnim));
-                        VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.unk_00[v4].unk_00, &v5->unk_00, &v5->unk_02);
+                        VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.mainEntries[v4].sprite, &v5->startX, &v5->startY);
 
-                        v5->unk_20 = param0->unk_534.unk_00[v4].unk_00;
-                        v5->unk_24 = param0->unk_534.unk_00[v4].unk_14;
-                        v5->unk_2C = &v0->unk_04;
-                        v5->unk_28 = NULL;
-                        v5->unk_04 = v5->unk_00;
+                        v5->sprite = param0->unk_534.mainEntries[v4].sprite;
+                        v5->fontOAM = param0->unk_534.mainEntries[v4].fontOAM;
+                        v5->done = &v0->slideDone;
+                        v5->ring = NULL;
+                        v5->targetX = v5->startX;
 
-                        if (param0->unk_534.unk_1A4 == v4) {
-                            v5->unk_04 = v5->unk_00;
-                            v5->unk_06 = (25 + (36 * (5 - 1)));
+                        if (param0->unk_534.mainEntryCount == v4) {
+                            v5->targetX = v5->startX;
+                            v5->targetY = (25 + (36 * (5 - 1)));
 
-                            ManagedSprite_SetAnim(param0->unk_534.unk_00[v4].unk_00, param0->unk_818[param0->unk_534.unk_1B0].spriteAnimID);
-                            VsRecorderViewerMenu_RenderEntryLabel(param0, &param0->unk_534.unk_00[param0->unk_534.unk_1A4], param0->unk_818[param0->unk_534.unk_1B0].labelMessageID, &param0->unk_818[param0->unk_534.unk_1B0]);
-                            FontOAM_SetDrawFlag(param0->unk_534.unk_00[param0->unk_534.unk_1A4].unk_14, 1);
-                            ManagedSprite_SetDrawFlag(param0->unk_534.unk_00[v4].unk_00, 1);
+                            ManagedSprite_SetAnim(param0->unk_534.mainEntries[v4].sprite, param0->unk_818[param0->unk_534.selectedIndex].spriteAnimID);
+                            VsRecorderViewerMenu_RenderEntryLabel(param0, &param0->unk_534.mainEntries[param0->unk_534.mainEntryCount], param0->unk_818[param0->unk_534.selectedIndex].labelMessageID, &param0->unk_818[param0->unk_534.selectedIndex]);
+                            FontOAM_SetDrawFlag(param0->unk_534.mainEntries[param0->unk_534.mainEntryCount].fontOAM, 1);
+                            ManagedSprite_SetDrawFlag(param0->unk_534.mainEntries[v4].sprite, 1);
                         } else {
-                            v5->unk_04 = v5->unk_00 - 4;
-                            v5->unk_06 = (16 * (param0->unk_534.unk_1A4 - v4)) + (25 + (36 * (5 - (param0->unk_534.unk_1A4 - v4) - 1)));
+                            v5->targetX = v5->startX - 4;
+                            v5->targetY = (16 * (param0->unk_534.mainEntryCount - v4)) + (25 + (36 * (5 - (param0->unk_534.mainEntryCount - v4) - 1)));
                         }
 
-                        v5->unk_1C = 4;
+                        v5->stepCount = 4;
                         SysTask_Start(VsRecorderViewerSlideShow_SlideAnimTask, v5, 8192);
                         v4++;
-                    } while (v4 <= param0->unk_534.unk_1A4);
+                    } while (v4 <= param0->unk_534.mainEntryCount);
                 }
 
-                v0->unk_04 = v0->unk_0C;
-                v0->unk_0C = 0;
+                v0->slideDone = v0->ringDone;
+                v0->ringDone = 0;
             }
 
-            for (v4 = 0; v4 < param0->unk_534.unk_1A4; v4++) {
-                if (v4 == param0->unk_534.unk_1A4) {
-                    ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v4].unk_00, (2 - 1));
+            for (v4 = 0; v4 < param0->unk_534.mainEntryCount; v4++) {
+                if (v4 == param0->unk_534.mainEntryCount) {
+                    ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v4].sprite, (2 - 1));
                 } else {
-                    ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v4].unk_00, (3 - 1));
+                    ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v4].sprite, (3 - 1));
                 }
             }
         }
 
-        if (v0->unk_04 == 0) {
+        if (v0->slideDone == 0) {
             param0->unk_08++;
         }
 
-        v0->unk_04 = 0;
+        v0->slideDone = 0;
         break;
     case 2: {
-        if (param0->unk_818[param0->unk_534.unk_1B0].children == NULL) {
+        if (param0->unk_818[param0->unk_534.selectedIndex].children == NULL) {
             VsRecorderViewerMain_ExecuteMenuAction(param0);
         } else {
             VsRecorderViewerMain_SetState(param0, 5);
@@ -371,28 +371,28 @@ static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(VsRecorderState *param0)
             v2 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerSlideShowSlideAnim));
 
             memset(v2, 0, sizeof(VsRecorderViewerSlideShowSlideAnim));
-            VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.unk_00[v1].unk_00, &v2->unk_00, &v2->unk_02);
+            VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.mainEntries[v1].sprite, &v2->startX, &v2->startY);
 
-            v2->unk_20 = param0->unk_534.unk_00[v1].unk_00;
-            v2->unk_24 = param0->unk_534.unk_00[v1].unk_14;
-            v2->unk_2C = &v0->unk_04;
-            v2->unk_30 = &v0->unk_0C;
-            v2->unk_28 = NULL;
-            v2->unk_04 = v2->unk_00;
+            v2->sprite = param0->unk_534.mainEntries[v1].sprite;
+            v2->fontOAM = param0->unk_534.mainEntries[v1].fontOAM;
+            v2->done = &v0->slideDone;
+            v2->ringDone = &v0->ringDone;
+            v2->ring = NULL;
+            v2->targetX = v2->startX;
 
-            if (param0->unk_534.unk_1A4 - 1 == v1) {
-                v2->unk_28 = param0->unk_6F0;
-                v2->unk_04 = v2->unk_00;
-                v2->unk_06 = (25 + (36 * (5 - 1))) + 48;
+            if (param0->unk_534.mainEntryCount - 1 == v1) {
+                v2->ring = param0->unk_6F0;
+                v2->targetX = v2->startX;
+                v2->targetY = (25 + (36 * (5 - 1))) + 48;
             } else {
-                v2->unk_04 = v2->unk_00 + 4;
-                v2->unk_06 = (25 + (36 * (5 - (param0->unk_534.unk_1A4 - v1)))) + (16 * (param0->unk_534.unk_1A4 - v1)) + 4;
+                v2->targetX = v2->startX + 4;
+                v2->targetY = (25 + (36 * (5 - (param0->unk_534.mainEntryCount - v1)))) + (16 * (param0->unk_534.mainEntryCount - v1)) + 4;
             }
 
-            v2->unk_1C = 4;
+            v2->stepCount = 4;
             SysTask_Start(VsRecorderViewerSlideShow_SlideAnimTask, v2, 8192);
             v1++;
-        } while (v1 <= (param0->unk_534.unk_1A4 - 1));
+        } while (v1 <= (param0->unk_534.mainEntryCount - 1));
     }
         param0->unk_08++;
         break;
@@ -402,37 +402,37 @@ static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(VsRecorderState *param0)
             int v3;
             VsRecorderViewerSlideShowSlideAnim *v4;
 
-            if (v0->unk_0C == 1) {
-                for (v3 = 0; v3 < param0->unk_534.unk_1AC; v3++) {
+            if (v0->ringDone == 1) {
+                for (v3 = 0; v3 < param0->unk_534.subEntryCount; v3++) {
                     v4 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerSlideShowSlideAnim));
                     memset(v4, 0, sizeof(VsRecorderViewerSlideShowSlideAnim));
-                    VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.unk_C8[v3].unk_00, &v4->unk_00, &v4->unk_02);
+                    VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.subEntries[v3].sprite, &v4->startX, &v4->startY);
 
-                    v4->unk_20 = param0->unk_534.unk_C8[v3].unk_00;
-                    v4->unk_24 = param0->unk_534.unk_C8[v3].unk_14;
-                    v4->unk_2C = &v0->unk_04;
-                    v4->unk_30 = &v0->unk_0C;
-                    v4->unk_28 = NULL;
-                    v4->unk_04 = v4->unk_00;
-                    v4->unk_06 = (25 + (36 * 5) + (16 * (5 - (param0->unk_534.unk_1AC))));
+                    v4->sprite = param0->unk_534.subEntries[v3].sprite;
+                    v4->fontOAM = param0->unk_534.subEntries[v3].fontOAM;
+                    v4->done = &v0->slideDone;
+                    v4->ringDone = &v0->ringDone;
+                    v4->ring = NULL;
+                    v4->targetX = v4->startX;
+                    v4->targetY = (25 + (36 * 5) + (16 * (5 - (param0->unk_534.subEntryCount))));
 
-                    if (v4->unk_06 >= (25 + (36 * 5) + (16 * (4 - 3)))) {
-                        v4->unk_06 = (25 + (36 * 5) + (16 * (4 - 3)));
+                    if (v4->targetY >= (25 + (36 * 5) + (16 * (4 - 3)))) {
+                        v4->targetY = (25 + (36 * 5) + (16 * (4 - 3)));
                     }
 
-                    v4->unk_1C = 8;
+                    v4->stepCount = 8;
                     SysTask_Start(VsRecorderViewerSlideShow_SlideAnimTask, v4, 8192);
                 }
 
-                v0->unk_00 = 0;
+                v0->fadeValue = 0;
                 param0->unk_08++;
-                param0->unk_534.unk_1A4--;
+                param0->unk_534.mainEntryCount--;
 
-                for (v3 = 0; v3 < param0->unk_534.unk_1A4; v3++) {
-                    if (v3 == param0->unk_534.unk_1A4 - 1) {
-                        ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v3].unk_00, (2 - 1));
+                for (v3 = 0; v3 < param0->unk_534.mainEntryCount; v3++) {
+                    if (v3 == param0->unk_534.mainEntryCount - 1) {
+                        ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v3].sprite, (2 - 1));
                     } else {
-                        ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v3].unk_00, (3 - 1));
+                        ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v3].sprite, (3 - 1));
                     }
                 }
             }
@@ -442,16 +442,16 @@ static BOOL VsRecorderViewerSlideShow_SlideEntriesOut(VsRecorderState *param0)
     case 2:
         v0 = param0->unk_860;
 
-        if (v0->unk_00 != 16) {
-            v0->unk_00 += 2;
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_00, param0->unk_14.unk_44);
+        if (v0->fadeValue != 16) {
+            v0->fadeValue += 2;
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, v0->fadeValue, param0->unk_14.themeColor);
         }
 
-        if (v0->unk_04 == 0) {
+        if (v0->slideDone == 0) {
             param0->unk_08++;
         }
 
-        v0->unk_04 = 0;
+        v0->slideDone = 0;
         break;
     default: {
         BOOL v5;
@@ -485,35 +485,35 @@ static BOOL VsRecorderViewerSlideShow_SelectPrevious(VsRecorderState *param0)
 {
     switch (param0->unk_08) {
     case 0:
-        param0->unk_14.unk_40 = 0;
+        param0->unk_14.fadeValue = 0;
 
-        if (param0->unk_14.unk_48 > 0) {
-            param0->unk_14.unk_48--;
+        if (param0->unk_14.theme > 0) {
+            param0->unk_14.theme--;
         } else {
-            param0->unk_14.unk_48 = 7 - 1;
+            param0->unk_14.theme = 7 - 1;
         }
 
-        param0->unk_14.unk_44 = VsRecorderViewerList_GetThemeColorA(param0);
+        param0->unk_14.themeColor = VsRecorderViewerList_GetThemeColorA(param0);
         param0->unk_08++;
         break;
     case 1:
-        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.unk_40, 1)) {
+        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.fadeValue, 1)) {
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
         break;
     case 2:
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 0);
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 0);
-        VsRecorderViewerList_LoadThemeGraphics(param0, param0->unk_14.unk_48);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
+        VsRecorderViewerList_LoadThemeGraphics(param0, param0->unk_14.theme);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
         param0->unk_08++;
         break;
     case 3:
@@ -522,14 +522,14 @@ static BOOL VsRecorderViewerSlideShow_SelectPrevious(VsRecorderState *param0)
         param0->unk_08++;
         break;
     case 4:
-        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.unk_40, 0)) {
+        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.fadeValue, 0)) {
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
         break;
     default:
         VsRecorderViewerMain_SetState(param0, 0);
@@ -543,30 +543,30 @@ static BOOL VsRecorderViewerSlideShow_SelectNext(VsRecorderState *param0)
 {
     switch (param0->unk_08) {
     case 0:
-        param0->unk_14.unk_40 = 0;
-        param0->unk_14.unk_48++;
-        param0->unk_14.unk_48 %= 7;
-        param0->unk_14.unk_44 = VsRecorderViewerList_GetThemeColorA(param0);
+        param0->unk_14.fadeValue = 0;
+        param0->unk_14.theme++;
+        param0->unk_14.theme %= 7;
+        param0->unk_14.themeColor = VsRecorderViewerList_GetThemeColorA(param0);
         param0->unk_08++;
         break;
     case 1:
-        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.unk_40, 1)) {
+        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.fadeValue, 1)) {
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
         break;
     case 2:
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 0);
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 0);
-        VsRecorderViewerList_LoadThemeGraphics(param0, param0->unk_14.unk_48);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
+        VsRecorderViewerList_LoadThemeGraphics(param0, param0->unk_14.theme);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
         param0->unk_08++;
         break;
     case 3:
@@ -575,17 +575,17 @@ static BOOL VsRecorderViewerSlideShow_SelectNext(VsRecorderState *param0)
         param0->unk_08++;
         break;
     case 4:
-        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.unk_40, 0)) {
+        if (VsRecorderViewerMenu_StepFadeValue(&param0->unk_14.fadeValue, 0)) {
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.unk_40, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, param0->unk_14.fadeValue, param0->unk_14.themeColor);
         break;
     default:
-        param0->unk_14.unk_40 = 0;
+        param0->unk_14.fadeValue = 0;
         VsRecorderViewerMain_SetState(param0, 0);
         break;
     }

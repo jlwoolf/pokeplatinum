@@ -334,7 +334,7 @@ int GlobalTerminalGds_GetRecordList(VsRecorderViewerTransferContext *param0, Glo
 
         if (v2[v3].recordingID != param1[v3]->data.recordingID) {
             param1[v3]->data.recordingID = v2[v3].recordingID;
-            param1[v3]->data.checksum.unk_00 = SaveData_CalculateChecksum(param0->saveData, &param1[v3]->data, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v2[v3].recordingID));
+            param1[v3]->data.checksum.value = SaveData_CalculateChecksum(param0->saveData, &param1[v3]->data, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v2[v3].recordingID));
         }
     }
 
@@ -376,7 +376,7 @@ int GlobalTerminalGds_GetRecordAlt(VsRecorderViewerTransferContext *param0, Glob
 
     if (v1->recordingID != v1->record.data.recordingID) {
         v1->record.data.recordingID = v1->recordingID;
-        (*param1)->data.checksum.unk_00 = SaveData_CalculateChecksum(param0->saveData, &(*param1)->data, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v1->recordingID));
+        (*param1)->data.checksum.value = SaveData_CalculateChecksum(param0->saveData, &(*param1)->data, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v1->recordingID));
     }
 
     return v1->recordingID;

@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02233750_H
 
 typedef struct {
-    int unk_00;
-    BOOL unk_04;
+    int screen3D;
+    BOOL done;
 } VsRecorderViewerListNetworkTask;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02233750_H

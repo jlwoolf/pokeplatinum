@@ -21,7 +21,7 @@
 void GlobalTerminal_SerializeDressUpPhoto(SaveData *saveData, const DressUpPhoto *photo, GlobalTerminalDressUpPhoto *param2)
 {
     DressUpPhoto_Serialize(photo, param2);
-    param2->checksum.unk_00 = SaveData_CalculateChecksum(saveData, param2, sizeof(GlobalTerminalDressUpPhoto) - (sizeof(VsRecorderViewerBoxChecksum)));
+    param2->checksum.value = SaveData_CalculateChecksum(saveData, param2, sizeof(GlobalTerminalDressUpPhoto) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
 void GlobalTerminal_DeserializeDressUpPhoto(const GlobalTerminalDressUpPhoto *param0, DressUpPhoto *photo)
@@ -38,30 +38,30 @@ void GlobalTerminal_SerializePCBox(SaveData *saveData, const PCBoxes *pcBoxes, i
 
     v0 = String_Init(20 * 3, heapID);
     PCBoxes_BufferBoxName(pcBoxes, boxID, v0);
-    String_ToChars(v0, param3->unk_00, 20);
+    String_ToChars(v0, param3->boxName, 20);
     String_Free(v0);
 
     for (v1 = 0; v1 < 30; v1++) {
-        param3->unk_28[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_SPECIES, NULL);
-        param3->unk_64[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_PERSONALITY, NULL);
-        param3->unk_DC[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_OT_ID, NULL);
+        param3->species[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_SPECIES, NULL);
+        param3->personality[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_PERSONALITY, NULL);
+        param3->otId[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_OT_ID, NULL);
 
         if (PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_SPECIES_OR_EGG, NULL) == SPECIES_EGG) {
-            param3->unk_154 |= 1 << v1;
+            param3->eggFlags |= 1 << v1;
         }
 
-        param3->unk_158[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_FORM, NULL);
+        param3->form[v1] = PCBoxes_GetBoxMonData(pcBoxes, boxID, v1, MON_DATA_FORM, NULL);
     }
 
-    param3->unk_176 = PCBoxes_GetWallpaper(pcBoxes, boxID);
-    param3->unk_177 = 0;
-    param3->unk_198.unk_00 = SaveData_CalculateChecksum(saveData, param3, sizeof(VsRecorderViewerBoxData) - (sizeof(VsRecorderViewerBoxChecksum)));
+    param3->wallpaper = PCBoxes_GetWallpaper(pcBoxes, boxID);
+    param3->version = 0;
+    param3->checksum.value = SaveData_CalculateChecksum(saveData, param3, sizeof(VsRecorderViewerBoxData) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
 void GlobalTerminal_UpdatePCBoxChecksum(SaveData *saveData, VsRecorderViewerBoxData *param1, int param2)
 {
-    param1->unk_177 = param2;
-    param1->unk_198.unk_00 = SaveData_CalculateChecksum(saveData, param1, sizeof(VsRecorderViewerBoxData) - (sizeof(VsRecorderViewerBoxChecksum)));
+    param1->version = param2;
+    param1->checksum.value = SaveData_CalculateChecksum(saveData, param1, sizeof(VsRecorderViewerBoxData) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
 void GlobalTerminal_SerializePlayerProfile(SaveData *saveData, const PlayerProfile *param1, GlobalTerminalPlayerProfile *param2)

@@ -157,16 +157,16 @@ static void VsRecorderViewerRankings_InitRankingList(VsRecorderState *a0)
         r4->unk_748 = NULL;
     } else {
         r4->unk_B0C = sVsRecorderViewerRankingsListConfigAlt;
-        r4->unk_748 = MessageLoader_GetNewString(a0->unk_14.unk_38, r4->unk_714->entries[r4->unk_0C].rankingID + 0x5e);
+        r4->unk_748 = MessageLoader_GetNewString(a0->unk_14.secondaryMessageLoader, r4->unk_714->entries[r4->unk_0C].rankingID + 0x5e);
     }
-    r4->unk_B0C.unk_04 = r4->unk_20;
-    r4->unk_B0C.unk_00 = r4->unk_74C[r4->unk_0C];
+    r4->unk_B0C.entryCount = r4->unk_20;
+    r4->unk_B0C.entries = r4->unk_74C[r4->unk_0C];
     VsRecorderViewerList_SetDrawSuspended(a0, 1);
-    VsRecorderViewerList_ResetWindow(&a0->unk_14.unk_48C);
-    VsRecorderViewerList_InitRankingWindow(&a0->unk_14.unk_48C, a0, r4->unk_744, &r4->unk_B0C, r4->unk_0C, r4->unk_14, r4->unk_748);
-    VsRecorderViewerList_UpdateScrollBarVisibility(&a0->unk_14.unk_46C, &a0->unk_14.unk_48C);
-    VsRecorderViewerList_LoadArrowSprites(&a0->unk_14.unk_48C, a0, 1);
-    VsRecorderViewerList_SetArrowSpritesPosition(&a0->unk_14.unk_48C, 0x70, 0xb8);
+    VsRecorderViewerList_ResetWindow(&a0->unk_14.listWindow);
+    VsRecorderViewerList_InitRankingWindow(&a0->unk_14.listWindow, a0, r4->unk_744, &r4->unk_B0C, r4->unk_0C, r4->unk_14, r4->unk_748);
+    VsRecorderViewerList_UpdateScrollBarVisibility(&a0->unk_14.scrollBar, &a0->unk_14.listWindow);
+    VsRecorderViewerList_LoadArrowSprites(&a0->unk_14.listWindow, a0, 1);
+    VsRecorderViewerList_SetArrowSpritesPosition(&a0->unk_14.listWindow, 0x70, 0xb8);
     VsRecorderViewerList_SetDrawSuspended(a0, 0);
 }
 
@@ -183,16 +183,16 @@ static void VsRecorderViewerRankings_PopulateEntries(VsRecorderState *param0)
     case 0: {
         for (v1 = 0; v1 < 16; v1++) {
             if (v0->unk_1C == 0) {
-                v0->unk_74C[v0->unk_0C][v1].unk_00 = 10000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_718->entries[v0->unk_0C].appearance0[v1], 4);
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v1;
+                v0->unk_74C[v0->unk_0C][v1].messageID = 10000;
+                v0->unk_74C[v0->unk_0C][v1].value = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_718->entries[v0->unk_0C].appearance0[v1], 4);
+                v0->unk_74C[v0->unk_0C][v1].score = v1;
             } else {
-                v0->unk_74C[v0->unk_0C][v1].unk_00 = 20000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_714->entries[v0->unk_0C].appearance0[v1], 4);
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->entries[v0->unk_0C].values0[v1];
+                v0->unk_74C[v0->unk_0C][v1].messageID = 20000;
+                v0->unk_74C[v0->unk_0C][v1].value = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_714->entries[v0->unk_0C].appearance0[v1], 4);
+                v0->unk_74C[v0->unk_0C][v1].score = v0->unk_714->entries[v0->unk_0C].values0[v1];
 
-                if (v0->unk_74C[v0->unk_0C][v1].unk_08 >= 9999999999999999999) {
-                    v0->unk_74C[v0->unk_0C][v1].unk_08 = 9999999999999999999;
+                if (v0->unk_74C[v0->unk_0C][v1].score >= 9999999999999999999) {
+                    v0->unk_74C[v0->unk_0C][v1].score = 9999999999999999999;
                 }
             }
         }
@@ -200,16 +200,16 @@ static void VsRecorderViewerRankings_PopulateEntries(VsRecorderState *param0)
     case 1: {
         for (v1 = 0; v1 < 12; v1++) {
             if (v0->unk_1C == 0) {
-                v0->unk_74C[v0->unk_0C][v1].unk_00 = 30000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_718->entries[v0->unk_0C].appearance1[v1];
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v1;
+                v0->unk_74C[v0->unk_0C][v1].messageID = 30000;
+                v0->unk_74C[v0->unk_0C][v1].value = v0->unk_718->entries[v0->unk_0C].appearance1[v1];
+                v0->unk_74C[v0->unk_0C][v1].score = v1;
             } else {
-                v0->unk_74C[v0->unk_0C][v1].unk_00 = 40000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_714->entries[v0->unk_0C].appearance1[v1];
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->entries[v0->unk_0C].values1[v1];
+                v0->unk_74C[v0->unk_0C][v1].messageID = 40000;
+                v0->unk_74C[v0->unk_0C][v1].value = v0->unk_714->entries[v0->unk_0C].appearance1[v1];
+                v0->unk_74C[v0->unk_0C][v1].score = v0->unk_714->entries[v0->unk_0C].values1[v1];
 
-                if (v0->unk_74C[v0->unk_0C][v1].unk_08 >= 9999999999999999999) {
-                    v0->unk_74C[v0->unk_0C][v1].unk_08 = 9999999999999999999;
+                if (v0->unk_74C[v0->unk_0C][v1].score >= 9999999999999999999) {
+                    v0->unk_74C[v0->unk_0C][v1].score = 9999999999999999999;
                 }
             }
         }
@@ -217,16 +217,16 @@ static void VsRecorderViewerRankings_PopulateEntries(VsRecorderState *param0)
     case 2: {
         for (v1 = 0; v1 < 20; v1++) {
             if (v0->unk_1C == 0) {
-                v0->unk_74C[v0->unk_0C][v1].unk_00 = 50000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_718->entries[v0->unk_0C].appearance2[v1];
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v1;
+                v0->unk_74C[v0->unk_0C][v1].messageID = 50000;
+                v0->unk_74C[v0->unk_0C][v1].value = v0->unk_718->entries[v0->unk_0C].appearance2[v1];
+                v0->unk_74C[v0->unk_0C][v1].score = v1;
             } else {
-                v0->unk_74C[v0->unk_0C][v1].unk_00 = 60000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_714->entries[v0->unk_0C].appearance2[v1];
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->entries[v0->unk_0C].values2[v1];
+                v0->unk_74C[v0->unk_0C][v1].messageID = 60000;
+                v0->unk_74C[v0->unk_0C][v1].value = v0->unk_714->entries[v0->unk_0C].appearance2[v1];
+                v0->unk_74C[v0->unk_0C][v1].score = v0->unk_714->entries[v0->unk_0C].values2[v1];
 
-                if (v0->unk_74C[v0->unk_0C][v1].unk_08 >= 9999999999999999999) {
-                    v0->unk_74C[v0->unk_0C][v1].unk_08 = 9999999999999999999;
+                if (v0->unk_74C[v0->unk_0C][v1].score >= 9999999999999999999) {
+                    v0->unk_74C[v0->unk_0C][v1].score = 9999999999999999999;
                 }
             }
         }
@@ -245,11 +245,11 @@ static void VsRecorderViewerRankings_CreateHeaderWindows(VsRecorderState *param0
 
     for (v3 = 0; v3 < 2; v3++) {
         v1 = &v0->unk_84[v3];
-        Window_Add(param0->unk_14.unk_10, v1, 6, sVsRecorderViewerRankingsHeaderWindowLayout[v3][0], sVsRecorderViewerRankingsHeaderWindowLayout[v3][1], sVsRecorderViewerRankingsHeaderWindowLayout[v3][2], sVsRecorderViewerRankingsHeaderWindowLayout[v3][3], 14, v2);
+        Window_Add(param0->unk_14.bgConfig, v1, 6, sVsRecorderViewerRankingsHeaderWindowLayout[v3][0], sVsRecorderViewerRankingsHeaderWindowLayout[v3][1], sVsRecorderViewerRankingsHeaderWindowLayout[v3][2], sVsRecorderViewerRankingsHeaderWindowLayout[v3][3], 14, v2);
         v2 += (sVsRecorderViewerRankingsHeaderWindowLayout[v3][2] * sVsRecorderViewerRankingsHeaderWindowLayout[v3][3]);
         Window_FillTilemap(v1, 0x0);
 
-        v5 = MessageLoader_GetNewString(param0->unk_14.unk_34, 80 + v3);
+        v5 = MessageLoader_GetNewString(param0->unk_14.messageLoader, 80 + v3);
         v4 = VsRecorderViewerList_CalcCenteredTextX(v1, v5);
 
         Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v5, v4, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
@@ -292,16 +292,16 @@ static void VsRecorderViewerRankings_CreateMessageWindows(VsRecorderState *param
         Window_Init(v1);
 
         if (v0->unk_1C == 0) {
-            Window_Add(param0->unk_14.unk_10, v1, 2, sVsRecorderViewerRankingsMessageWindowLayout[v3][0], sVsRecorderViewerRankingsMessageWindowLayout[v3][1], sVsRecorderViewerRankingsMessageWindowLayout[v3][2], sVsRecorderViewerRankingsMessageWindowLayout[v3][3], 14, v2);
+            Window_Add(param0->unk_14.bgConfig, v1, 2, sVsRecorderViewerRankingsMessageWindowLayout[v3][0], sVsRecorderViewerRankingsMessageWindowLayout[v3][1], sVsRecorderViewerRankingsMessageWindowLayout[v3][2], sVsRecorderViewerRankingsMessageWindowLayout[v3][3], 14, v2);
             v2 += (sVsRecorderViewerRankingsMessageWindowLayout[v3][2] * sVsRecorderViewerRankingsMessageWindowLayout[v3][3]);
         } else {
-            Window_Add(param0->unk_14.unk_10, v1, 2, sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][0], sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][1], sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][2], sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][3], 14, v2);
+            Window_Add(param0->unk_14.bgConfig, v1, 2, sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][0], sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][1], sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][2], sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][3], 14, v2);
             v2 += (sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][2] * sVsRecorderViewerRankingsMessageWindowLayoutAlt[v3][3]);
         }
 
         Window_FillTilemap(v1, 0x0);
 
-        v5 = MessageLoader_GetNewString(param0->unk_14.unk_34, 67);
+        v5 = MessageLoader_GetNewString(param0->unk_14.messageLoader, 67);
         v4 = 0;
 
         Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v5, v4, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
@@ -450,15 +450,15 @@ static void VsRecorderViewerRankings_DrawPlayerProfileHeader(VsRecorderState *a0
     StringTemplate *r6 = VsRecorderViewerList_NewStringTemplate(0x66);
     Window_FillTilemap(&r4->unk_24[0], 0);
     r7 = (r4->unk_1C == 0)
-        ? MessageLoader_GetNewString(r5->unk_14.unk_38, r4->unk_718->entries[r4->unk_0C].rankingID - 1)
-        : MessageLoader_GetNewString(r5->unk_14.unk_38, r4->unk_714->entries[r4->unk_0C].rankingID - 1);
+        ? MessageLoader_GetNewString(r5->unk_14.secondaryMessageLoader, r4->unk_718->entries[r4->unk_0C].rankingID - 1)
+        : MessageLoader_GetNewString(r5->unk_14.secondaryMessageLoader, r4->unk_714->entries[r4->unk_0C].rankingID - 1);
     Text_AddPrinterWithParamsAndColor(&r4->unk_24[0], 0, r7, 0, 0, 0xff, 0x000f0d00, 0);
     Window_ScheduleCopyToVRAM(&r4->unk_24[0]);
     String_Free(r7);
     Window_FillTilemap(&r4->unk_24[1], 0);
     r7 = (r4->unk_1C == 0)
-        ? MessageLoader_GetNewString(r5->unk_14.unk_34, r4->unk_14 + 0x52)
-        : MessageLoader_GetNewString(r5->unk_14.unk_34, 0x5b);
+        ? MessageLoader_GetNewString(r5->unk_14.messageLoader, r4->unk_14 + 0x52)
+        : MessageLoader_GetNewString(r5->unk_14.messageLoader, 0x5b);
     Text_AddPrinterWithParamsAndColor(&r4->unk_24[1], 0, r7, 0, 0, 0xff, 0x000f0d00, 0);
     Window_ScheduleCopyToVRAM(&r4->unk_24[1]);
     String_Free(r7);
@@ -467,20 +467,20 @@ static void VsRecorderViewerRankings_DrawPlayerProfileHeader(VsRecorderState *a0
     switch (r4->unk_14) {
     case 0:
         int sp20 = PlayerProfile_GetAppearance(r5->unk_88C[0]);
-        r7 = MessageLoader_GetNewString(r5->unk_14.unk_34, 0x55);
+        r7 = MessageLoader_GetNewString(r5->unk_14.messageLoader, 0x55);
         sp1c = MessageLoader_GetNewString(r4->unk_744, VsRecorderViewerList_GetAppearanceFileIndex(sp20, 4));
         StringTemplate_SetString(r6, 0, sp1c, 0, 1, GAME_LANGUAGE);
         break;
     case 1:
         int sp24 = PlayerProfile_GetBirthdayMonth(r5->unk_88C[0]);
-        r7 = MessageLoader_GetNewString(r5->unk_14.unk_34, 0x56);
+        r7 = MessageLoader_GetNewString(r5->unk_14.messageLoader, 0x56);
         sp1c = String_Init(0xff, 0x66);
         StringTemplate_SetMonthName(r6, 0, sp24);
         break;
     case 2:
         int sp10 = PlayerProfile_GetSpecies(r5->unk_88C[0]);
         int sp28 = PlayerProfile_GetIsEgg(r5->unk_88C[0]);
-        r7 = MessageLoader_GetNewString(r5->unk_14.unk_34, 0x57);
+        r7 = MessageLoader_GetNewString(r5->unk_14.messageLoader, 0x57);
         if (sp28) {
             sp10 = 0x1ee;
         }
@@ -490,7 +490,7 @@ static void VsRecorderViewerRankings_DrawPlayerProfileHeader(VsRecorderState *a0
             MessageLoader_GetSpeciesName(sp10, 0x66, sp2c);
             String_CopyChars(sp1c, sp2c);
         } else {
-            sp1c = MessageLoader_GetNewString(r5->unk_14.unk_34, 0x15);
+            sp1c = MessageLoader_GetNewString(r5->unk_14.messageLoader, 0x15);
         }
         StringTemplate_SetString(r6, 0, sp1c, 0, 1, GAME_LANGUAGE);
         break;
@@ -512,17 +512,17 @@ static void VsRecorderViewerRankings_LayoutArrowSprites(VsRecorderState *param0,
     VsRecorderViewerRankingsScreen *v0 = param0->unk_860;
 
     if (param1 == 0) {
-        ManagedSprite_SetDrawFlag(v0->unk_A4[0].unk_08, 1);
-        FontOAM_SetDrawFlag(v0->unk_A4[0].unk_0C, 1);
-        ManagedSprite_SetPositionXY(v0->unk_A4[1].unk_08, 128, 232);
+        ManagedSprite_SetDrawFlag(v0->unk_A4[0].sprite, 1);
+        FontOAM_SetDrawFlag(v0->unk_A4[0].fontOAM, 1);
+        ManagedSprite_SetPositionXY(v0->unk_A4[1].sprite, 128, 232);
     } else {
-        ManagedSprite_SetDrawFlag(v0->unk_A4[0].unk_08, 0);
-        FontOAM_SetDrawFlag(v0->unk_A4[0].unk_0C, 0);
-        ManagedSprite_SetPositionXY(v0->unk_A4[1].unk_08, 80, 232);
+        ManagedSprite_SetDrawFlag(v0->unk_A4[0].sprite, 0);
+        FontOAM_SetDrawFlag(v0->unk_A4[0].fontOAM, 0);
+        ManagedSprite_SetPositionXY(v0->unk_A4[1].sprite, 80, 232);
     }
 
-    FontOAM_SetXY(v0->unk_A4[0].unk_0C, 36, -8);
-    FontOAM_SetXY(v0->unk_A4[1].unk_0C, 36, -8);
+    FontOAM_SetXY(v0->unk_A4[0].fontOAM, 36, -8);
+    FontOAM_SetXY(v0->unk_A4[1].fontOAM, 36, -8);
 }
 
 static void VsRecorderViewerRankings_CreateArrowSprites(VsRecorderState *param0)
@@ -531,20 +531,20 @@ static void VsRecorderViewerRankings_CreateArrowSprites(VsRecorderState *param0)
 
     VsRecorderViewerMenu_LoadCursorSpriteResources(param0, NNS_G2D_VRAM_TYPE_2DSUB);
 
-    v0->unk_A4[0].unk_08 = VsRecorderViewerMenu_CreateCursorSprite(param0, NNS_G2D_VRAM_TYPE_2DSUB);
-    v0->unk_A4[1].unk_08 = VsRecorderViewerMenu_CreateCursorSprite(param0, NNS_G2D_VRAM_TYPE_2DSUB);
+    v0->unk_A4[0].sprite = VsRecorderViewerMenu_CreateCursorSprite(param0, NNS_G2D_VRAM_TYPE_2DSUB);
+    v0->unk_A4[1].sprite = VsRecorderViewerMenu_CreateCursorSprite(param0, NNS_G2D_VRAM_TYPE_2DSUB);
 
     VsRecorderViewerMenu_InitLabelOAM(&v0->unk_A4[0], &param0->unk_14, NNS_G2D_VRAM_TYPE_2DSUB);
     VsRecorderViewerMenu_InitLabelOAM(&v0->unk_A4[1], &param0->unk_14, NNS_G2D_VRAM_TYPE_2DSUB);
     VsRecorderViewerMenu_SetLabelOAMText(&v0->unk_A4[0], &param0->unk_14, 53);
     VsRecorderViewerMenu_SetLabelOAMText(&v0->unk_A4[1], &param0->unk_14, 3);
 
-    ManagedSprite_SetPositionXY(v0->unk_A4[0].unk_08, 32, 232);
-    ManagedSprite_SetPositionXY(v0->unk_A4[1].unk_08, 128, 232);
-    FontOAM_SetXY(v0->unk_A4[0].unk_0C, 36, -8);
-    FontOAM_SetXY(v0->unk_A4[1].unk_0C, 36, -8);
-    FontOAM_SetDrawFlag(v0->unk_A4[0].unk_0C, 0);
-    FontOAM_SetDrawFlag(v0->unk_A4[1].unk_0C, 1);
+    ManagedSprite_SetPositionXY(v0->unk_A4[0].sprite, 32, 232);
+    ManagedSprite_SetPositionXY(v0->unk_A4[1].sprite, 128, 232);
+    FontOAM_SetXY(v0->unk_A4[0].fontOAM, 36, -8);
+    FontOAM_SetXY(v0->unk_A4[1].fontOAM, 36, -8);
+    FontOAM_SetDrawFlag(v0->unk_A4[0].fontOAM, 0);
+    FontOAM_SetDrawFlag(v0->unk_A4[1].fontOAM, 1);
 
     VsRecorderViewerRankings_LayoutArrowSprites(param0, 1);
 }
@@ -556,8 +556,8 @@ static void VsRecorderViewerRankings_FreeArrowSprites(VsRecorderState *param0)
     VsRecorderViewerMenu_FreeLabelOAM(&v0->unk_A4[0]);
     VsRecorderViewerMenu_FreeLabelOAM(&v0->unk_A4[1]);
 
-    Sprite_DeleteAndFreeResources(v0->unk_A4[0].unk_08);
-    Sprite_DeleteAndFreeResources(v0->unk_A4[1].unk_08);
+    Sprite_DeleteAndFreeResources(v0->unk_A4[0].sprite);
+    Sprite_DeleteAndFreeResources(v0->unk_A4[1].sprite);
 
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
@@ -620,12 +620,12 @@ static BOOL VsRecorderViewerRankings_Init(VsRecorderState *param0)
 
     v0->unk_18 = 3;
     VsRecorderViewerRankings_SetEntryCount(v0);
-    v0->unk_744 = param0->unk_14.unk_34;
+    v0->unk_744 = param0->unk_14.messageLoader;
 
-    Bg_ClearTilemap(param0->unk_14.unk_10, 2);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 3);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 6);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 7);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 2);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 3);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 6);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 7);
 
     VsRecorderViewerMenu_SetDefaultBlendAlpha(&v0->unk_00, &v0->unk_04, 0);
     v0->unk_DC = TouchScreenActions_RegisterHandler(sVsRecorderViewerRankingsTouchRects, NELEMS(sVsRecorderViewerRankingsTouchRects), VsRecorderViewerRankings_HandleTouchInput, param0, HEAP_ID_102);
@@ -644,9 +644,9 @@ static BOOL VsRecorderViewerRankings_FadeIn(VsRecorderState *param0)
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.themeColor);
         break;
     case 1:
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
@@ -707,28 +707,28 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
         if (GlobalTerminalTransfer_GetState(VsRecorderViewerTransfer_GetTransfer(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
             VsRecorderViewerList_CloseMainMessage(param0);
-            VsRecorderViewerList_OpenMessage(param0, 4, v1->unk_0C, v1->unk_04);
+            VsRecorderViewerList_OpenMessage(param0, 4, v1->index, v1->category);
             VsRecorderRing_SetVisible(param0->unk_6F0, 0);
             param0->unk_08 = 5;
         } else {
             {
                 v0->unk_71C = &v0->unk_710;
-                v0->unk_720.unk_08.unk_00 = PlayTime_GetHours(SaveData_GetPlayTime(param0->saveData));
-                v0->unk_720.unk_08.unk_02 = PlayTime_GetMinutes(SaveData_GetPlayTime(param0->saveData));
-                v0->unk_720.unk_08.unk_03 = PlayTime_GetSeconds(SaveData_GetPlayTime(param0->saveData));
-                v0->unk_720.unk_0C[0].rank = v0->unk_71C->unk_00[0];
-                v0->unk_720.unk_0C[1].rank = v0->unk_71C->unk_00[1];
-                v0->unk_720.unk_0C[2].rank = v0->unk_71C->unk_00[2];
-                v0->unk_720.unk_0C[0].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[0].rank - 1);
-                v0->unk_720.unk_0C[1].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[1].rank - 1);
-                v0->unk_720.unk_0C[2].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.unk_0C[2].rank - 1);
+                v0->unk_720.playTime.hours = PlayTime_GetHours(SaveData_GetPlayTime(param0->saveData));
+                v0->unk_720.playTime.minutes = PlayTime_GetMinutes(SaveData_GetPlayTime(param0->saveData));
+                v0->unk_720.playTime.seconds = PlayTime_GetSeconds(SaveData_GetPlayTime(param0->saveData));
+                v0->unk_720.entries[0].rank = v0->unk_71C->recordIds[0];
+                v0->unk_720.entries[1].rank = v0->unk_71C->recordIds[1];
+                v0->unk_720.entries[2].rank = v0->unk_71C->recordIds[2];
+                v0->unk_720.entries[0].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.entries[0].rank - 1);
+                v0->unk_720.entries[1].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.entries[1].rank - 1);
+                v0->unk_720.entries[2].value = VsRecorderViewerRankings_GetGameRecordValue(param0, v0->unk_720.entries[2].rank - 1);
             }
             Sound_StopEffect(1381, 0);
             param0->unk_08++;
         }
         break;
     case 3:
-        if (GlobalTerminalTransfer_UploadPlayTimeProfile(VsRecorderViewerTransfer_GetTransfer(param0), param0->unk_88C[0], &v0->unk_720.unk_0C[0]) == 1) {
+        if (GlobalTerminalTransfer_UploadPlayTimeProfile(VsRecorderViewerTransfer_GetTransfer(param0), param0->unk_88C[0], &v0->unk_720.entries[0]) == 1) {
             param0->unk_08++;
         }
         break;
@@ -737,7 +737,7 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
 
         if (GlobalTerminalTransfer_GetState(VsRecorderViewerTransfer_GetTransfer(param0), &v1) == 1) {
             Sound_StopEffect(1381, 0);
-            VsRecorderViewerList_OpenMessage(param0, 5, v1->unk_0C, v1->unk_04);
+            VsRecorderViewerList_OpenMessage(param0, 5, v1->index, v1->category);
             VsRecorderRing_SetVisible(param0->unk_6F0, 0);
             param0->unk_08 = 5;
         } else {
@@ -755,7 +755,7 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
 
             if (v2) {
                 VsRecorderViewerList_OpenMessage(param0, 5, 0, 0);
-                param0->unk_14.unk_4F0.unk_0C = 300;
+                param0->unk_14.subContext.messageIndex = 300;
                 VsRecorderRing_SetVisible(param0->unk_6F0, 0);
                 param0->unk_08 = 5;
             } else {
@@ -775,10 +775,10 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
         VsRecorderViewerMenu_InitMenu(param0);
         VsRecorderViewerList_SetDrawSuspended(param0, 0);
 
-        Bg_ClearTilemap(param0->unk_14.unk_10, 2);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 6);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 3);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 7);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 2);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 6);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 3);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 7);
         VsRecorderViewerList_StartNetworkTask(param0, 1);
         param0->unk_08++;
         break;
@@ -790,13 +790,13 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
         if (VsRecorderViewerMenu_StepFadeValue(&v0->unk_08, 0)) {
             VsRecorderViewerList_BlendPalettes(param0);
             VsRecorderViewerMenu_ResetFadeValue(&v0->unk_08);
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.unk_44);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.themeColor);
             VsRecorderViewerMain_AdvanceState(param0, 1, 1, param0->unk_10);
             VsRecorderViewerMain_SetState(param0, 5);
             Heap_Free(v0);
         } else {
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.themeColor);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         }
         break;
     default:
@@ -816,15 +816,15 @@ static BOOL VsRecorderViewerRankings_LoadGraphics(VsRecorderState *param0)
 
     switch (param0->unk_08) {
     case 0:
-        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.unk_00, 62, param0->unk_14.unk_10, 3, 0, 0, 0, HEAP_ID_102);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.unk_00, 62, param0->unk_14.unk_10, 7, 0, 0, 0, HEAP_ID_102);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.unk_00, 33, param0->unk_14.unk_10, 3, 0, 0, 0, HEAP_ID_102);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.unk_00, 34, param0->unk_14.unk_10, 7, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.narc, 62, param0->unk_14.bgConfig, 3, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.narc, 62, param0->unk_14.bgConfig, 7, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.narc, 33, param0->unk_14.bgConfig, 3, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.narc, 34, param0->unk_14.bgConfig, 7, 0, 0, 0, HEAP_ID_102);
 
         VsRecorderViewerRankings_CreateMessageWindows(param0);
         VsRecorderViewerRankings_DrawPlayerProfileHeader(param0);
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
-        VsRecorderViewerList_InitScrollBarWithAnim(&param0->unk_14.unk_46C, param0, 2);
+        VsRecorderViewerList_InitScrollBarWithAnim(&param0->unk_14.scrollBar, param0, 2);
         VsRecorderViewerRankings_InitRankingList(param0);
         VsRecorderViewerList_SetDrawSuspended(param0, 0);
         VsRecorderViewerRankings_CreateHeaderWindows(param0);
@@ -843,8 +843,8 @@ static BOOL VsRecorderViewerRankings_LoadGraphics(VsRecorderState *param0)
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     default:
         VsRecorderViewerMain_SetState(param0, 6);
@@ -858,9 +858,9 @@ static BOOL VsRecorderViewerRankings_HandleInput(VsRecorderState *param0)
 {
     VsRecorderViewerRankingsScreen *v0 = param0->unk_860;
 
-    VsRecorderViewerList_HandleScrollBarInput(&param0->unk_14.unk_46C);
-    VsRecorderViewerList_ScrollList(&param0->unk_14.unk_48C, param0->unk_14.unk_46C.unk_10);
-    VsRecorderViewerList_UpdateRankingWindow(&param0->unk_14.unk_48C, param0, v0->unk_0C, v0->unk_14, v0->unk_748);
+    VsRecorderViewerList_HandleScrollBarInput(&param0->unk_14.scrollBar);
+    VsRecorderViewerList_ScrollList(&param0->unk_14.listWindow, param0->unk_14.scrollBar.direction);
+    VsRecorderViewerList_UpdateRankingWindow(&param0->unk_14.listWindow, param0, v0->unk_0C, v0->unk_14, v0->unk_748);
 
     TouchScreenActions_HandleAction(v0->unk_DC);
 
@@ -874,14 +874,14 @@ static BOOL VsRecorderViewerRankings_Exit(VsRecorderState *param0)
     switch (param0->unk_08) {
     case 0:
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
-        VsRecorderViewerList_FreeScrollBar(&param0->unk_14.unk_46C);
-        VsRecorderViewerList_FreeWindow(&param0->unk_14.unk_48C);
+        VsRecorderViewerList_FreeScrollBar(&param0->unk_14.scrollBar);
+        VsRecorderViewerList_FreeWindow(&param0->unk_14.listWindow);
 
         if (v0->unk_748) {
             String_Free(v0->unk_748);
         }
 
-        VsRecorderViewerList_FreeArrowSprites(&param0->unk_14.unk_48C, param0);
+        VsRecorderViewerList_FreeArrowSprites(&param0->unk_14.listWindow, param0);
         VsRecorderViewerList_SetDrawSuspended(param0, 0);
         VsRecorderRing_SetVisible(param0->unk_6F4, 0);
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 0);
@@ -895,8 +895,8 @@ static BOOL VsRecorderViewerRankings_Exit(VsRecorderState *param0)
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     default:
         VsRecorderViewerMain_SetState(param0, 8);
@@ -925,10 +925,10 @@ static BOOL VsRecorderViewerRankings_Free(VsRecorderState *param0)
         VsRecorderViewerMenu_ResetFadeValue(&v0->unk_08);
         VsRecorderViewerMenu_InitMenu(param0);
         VsRecorderViewerList_SetDrawSuspended(param0, 0);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 2);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 6);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 3);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 7);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 2);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 6);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 3);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 7);
         VsRecorderViewerList_StartNetworkTask(param0, 1);
         param0->unk_08++;
         break;
@@ -940,13 +940,13 @@ static BOOL VsRecorderViewerRankings_Free(VsRecorderState *param0)
         if (VsRecorderViewerMenu_StepFadeValue(&v0->unk_08, 0)) {
             VsRecorderViewerList_BlendPalettes(param0);
             VsRecorderViewerMenu_ResetFadeValue(&v0->unk_08);
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.unk_44);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.themeColor);
             VsRecorderViewerMain_AdvanceState(param0, 1, 1, param0->unk_10);
             VsRecorderViewerMain_SetState(param0, 5);
             Heap_Free(v0);
         } else {
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.themeColor);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         }
 
         break;
@@ -970,13 +970,13 @@ static BOOL VsRecorderViewerRankings_RefreshEntries(VsRecorderState *param0)
         VsRecorderViewerRankings_PopulateEntries(param0);
         VsRecorderViewerRankings_SetEntryCount(v0);
         VsRecorderViewerRankings_RemoveMessageWindows(param0);
-        VsRecorderViewerList_FreeWindow(&param0->unk_14.unk_48C);
+        VsRecorderViewerList_FreeWindow(&param0->unk_14.listWindow);
 
         if (v0->unk_748) {
             String_Free(v0->unk_748);
         }
 
-        VsRecorderViewerList_FreeArrowSprites(&param0->unk_14.unk_48C, param0);
+        VsRecorderViewerList_FreeArrowSprites(&param0->unk_14.listWindow, param0);
         param0->unk_08++;
         break;
     case 1:
@@ -1005,7 +1005,7 @@ void VsRecorderViewerRankings_LoadPlayTime(void *param0, const VsRecorderViewerT
     VsRecorderState *v0 = param0;
     VsRecorderViewerRankingsScreen *v1 = v0->unk_860;
 
-    if (param1->unk_00 == 1) {
+    if (param1->done == 1) {
         v1->unk_71C = &v1->unk_710;
     } else {
         VsRecorderViewerRankingsPlayTime *v2;
@@ -1021,7 +1021,7 @@ void VsRecorderViewerRankings_LoadPlayTimeProfile(void *param0, const VsRecorder
     VsRecorderState *v0 = param0;
     VsRecorderViewerRankingsScreen *v1 = v0->unk_860;
 
-    if (param1->unk_00 == 1) {
+    if (param1->done == 1) {
         v1->unk_714 = &v1->unk_E0;
         v1->unk_718 = &v1->unk_638;
     } else {

@@ -6,10 +6,10 @@
 #include "narc.h"
 
 typedef struct {
-    NARC *unk_00;
-    int unk_04;
-    int unk_08;
-    VsRecorderViewerRankingIconCell unk_0C[5][6];
+    NARC *narc;
+    int lastScroll;
+    int spriteIndex;
+    VsRecorderViewerRankingIconCell cells[5][6];
 } VsRecorderViewerRankingIconGrid;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223E01C_SUB2_H

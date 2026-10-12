@@ -69,17 +69,17 @@ static int VsRecorderApp_Init(ApplicationManager *appMan, int *param1, int param
 
             // Read the player's chosen Vs. Recorder color; clamp out-of-range
             // values to the first entry, then resolve it to a palette color.
-            MiscSaveBlock_VsRecorderColor(v1, &v0->unk_14.unk_48);
+            MiscSaveBlock_VsRecorderColor(v1, &v0->unk_14.theme);
 
-            if (v0->unk_14.unk_48 >= 7) {
-                v0->unk_14.unk_48 = 0;
+            if (v0->unk_14.theme >= 7) {
+                v0->unk_14.theme = 0;
             }
 
-            v0->unk_14.unk_44 = VsRecorderViewerList_GetThemeColorA(v0);
+            v0->unk_14.themeColor = VsRecorderViewerList_GetThemeColorA(v0);
         }
     } else {
         // The Wi-Fi/online viewer uses a fixed UI color.
-        v0->unk_14.unk_44 = 0x7fdd;
+        v0->unk_14.themeColor = 0x7fdd;
     }
 
     VsRecorderViewerMain_Init(v0);

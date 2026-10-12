@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223CAA4_H
 
 typedef struct {
-    BOOL unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
+    BOOL done;
+    int category;
+    int value;
+    int index;
 } VsRecorderViewerTransferStatus;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223CAA4_H

@@ -2,13 +2,13 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223118C_SUB1_H
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    BOOL unk_18;
+    int unused_00;
+    int unused_04;
+    int savedValue;
+    int messageIndex;
+    int state;
+    int timer;
+    BOOL active;
     u8 padding_1C[4];
 } VsRecorderViewerMenuSubContext;
 

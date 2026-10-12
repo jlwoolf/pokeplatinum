@@ -9,14 +9,14 @@
 #include "touch_screen_actions.h"
 
 typedef struct {
-    NARC *unk_00;
-    SpriteSystem *unk_04;
-    SpriteManager *unk_08;
-    BgConfig *unk_0C;
-    PaletteData *unk_10;
-    TouchScreenActions *unk_14;
-    TouchScreenRect unk_18[24];
-    BOOL unk_78;
+    NARC *narc;
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    BgConfig *bgConfig;
+    PaletteData *palette;
+    TouchScreenActions *touchScreenActions;
+    TouchScreenRect touchRects[24];
+    BOOL cursorHidden;
 } VsRecorderViewerIdEntryGraphics;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB2_H

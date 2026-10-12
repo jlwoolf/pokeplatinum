@@ -9,19 +9,19 @@
 #include "sprite_system.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    s16 unk_08;
+    int unused_00;
+    int entryCount;
+    s16 scroll;
     u8 padding_0A[2];
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    Window unk_18;
-    const VsRecorderViewerListConfig *unk_28;
-    ManagedSprite *unk_2C[2];
-    MessageLoader *unk_34;
-    VsRecorderViewerListScrollState unk_38;
-    BOOL unk_48;
+    int lastDrawn;
+    int visibleRows;
+    int pageCount;
+    Window window;
+    const VsRecorderViewerListConfig *config;
+    ManagedSprite *arrowSprites[2];
+    MessageLoader *messageLoader;
+    VsRecorderViewerListScrollState scrollState;
+    BOOL twoColumn;
     u8 padding_4C[4];
 } VsRecorderViewerListWindow;
 
