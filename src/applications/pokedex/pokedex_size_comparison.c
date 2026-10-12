@@ -93,7 +93,7 @@ typedef struct {
     int unk_18;
     int unk_1C;
     BOOL *unk_20;
-} UnkStruct_pokedex_021E81F8;
+} PokedexSizeComparisonRotationTask;
 
 typedef struct {
     Sprite *unk_00;
@@ -104,7 +104,7 @@ typedef struct {
     int unk_14;
     int unk_18;
     BOOL *unk_1C;
-} UnkStruct_pokedex_021E82C8;
+} PokedexSizeComparisonBounceTask;
 
 typedef struct {
     Sprite *unk_00;
@@ -117,8 +117,8 @@ typedef struct {
     int unk_38;
     SysTask *unk_3C;
     PokedexSizeComparisonSprite unk_40;
-    UnkStruct_pokedex_021E81F8 unk_74;
-    UnkStruct_pokedex_021E82C8 unk_98;
+    PokedexSizeComparisonRotationTask unk_74;
+    PokedexSizeComparisonBounceTask unk_98;
     BOOL unk_B8;
     u16 *unk_BC;
     u16 *unk_C0;
@@ -937,7 +937,7 @@ static void Pokedex_021E8188(PokedexSizeComparisonData *param0, PokedexSizeCompa
 
 static void Pokedex_021E81F8(SysTask *param0, void *param1)
 {
-    UnkStruct_pokedex_021E81F8 *v0 = (UnkStruct_pokedex_021E81F8 *)param1;
+    PokedexSizeComparisonRotationTask *v0 = (PokedexSizeComparisonRotationTask *)param1;
     BOOL v1 = 0;
 
     if (v0->unk_18 < 0) {
@@ -990,7 +990,7 @@ static void Pokedex_021E8258(PokedexSizeComparisonData *param0, s16 param1, int 
 
 static void Pokedex_021E82C8(SysTask *param0, void *param1)
 {
-    UnkStruct_pokedex_021E82C8 *v0 = (UnkStruct_pokedex_021E82C8 *)param1;
+    PokedexSizeComparisonBounceTask *v0 = (PokedexSizeComparisonBounceTask *)param1;
     int v1;
     VecFx32 v2;
 

@@ -56,13 +56,13 @@ typedef void (*UnionRoomStateFunc)(UnionRoom *);
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-} UnkStruct_0205B43C_sub1;
+} UnionRoomUnusedEntry1;
 
 // Unused scratch entries; the original code never reads or writes them.
 typedef struct {
     u16 unk_00;
     u16 unk_02;
-} UnkStruct_0205B43C_sub2;
+} UnionRoomUnusedEntry2;
 
 struct UnionRoom {
     FieldSystem *fieldSystem;
@@ -83,8 +83,8 @@ struct UnionRoom {
     u32 unk_3C; // Unused (written but never read)
     u32 peerActivity; // Activity the peer agreed to (7 = declined/busy)
     u32 peerNoActivity; // Set when the peer reports it has no activity
-    UnkStruct_0205B43C_sub1 unk_48[10]; // Unused
-    UnkStruct_0205B43C_sub2 unk_70[40]; // Unused
+    UnionRoomUnusedEntry1 unk_48[10]; // Unused
+    UnionRoomUnusedEntry2 unk_70[40]; // Unused
     WMbssDesc *bssDesc[16]; // Wireless beacon descriptors, indexed by net ID
     MATHRandContext32 rng; // RNG used to pick random busy messages
     int unk_168; // Unused

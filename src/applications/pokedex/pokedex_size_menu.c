@@ -45,12 +45,12 @@ typedef struct {
 typedef struct {
     void *unk_00;
     void *unk_04;
-} UnkStruct_pokedex_021E6E04;
+} PokedexSizeMenuTouchContext;
 
 typedef struct {
     TouchScreenActions *unk_00;
     TouchScreenHitTable *unk_04;
-    UnkStruct_pokedex_021E6E04 unk_08;
+    PokedexSizeMenuTouchContext unk_08;
     int unk_10[2];
 } PokedexSizeMenuTouchHandler;
 
@@ -451,7 +451,7 @@ static void Pokedex_021E6DEC(PokedexSizeMenuTouchHandler *param0)
 
 static void Pokedex_021E6E04(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_pokedex_021E6E04 *v0 = param2;
+    PokedexSizeMenuTouchContext *v0 = param2;
     PokedexSizeMenuState *v1 = v0->unk_00;
     PokedexSizeMenuTouchHandler *v2 = v0->unk_04;
 
