@@ -99,11 +99,11 @@ void CapsuleGraphics_LoadPaletteBuffer(CapsuleAppManager *appMan)
     SpriteSystem_LoadPaletteBuffer(appMan->graphicsMan.paletteData, PLTTBUF_SUB_OBJ, appMan->graphicsMan.spriteSystem, appMan->graphicsMan.spriteManager, NARC_INDEX_GRAPHIC__PL_FONT, 7, FALSE, 1, NNS_G2D_VRAM_TYPE_2DSUB, 30000);
 }
 
-void ov76_0223B940(CapsuleAppManager *appMan)
+void CapsuleGraphics_CreateFontOAMs(CapsuleAppManager *appMan)
 {
     CapsuleGraphics_LoadPaletteBuffer(appMan);
-    ov76_0223B98C(appMan, 0, 104, 165, 0);
-    ov76_0223B98C(appMan, 1, 192, 165, 0);
+    CapsuleGraphics_CreateFontOAM(appMan, 0, 104, 165, 0);
+    CapsuleGraphics_CreateFontOAM(appMan, 1, 192, 165, 0);
 }
 
 void CapsuleGraphics_SetFontOAMDrawFlag(CapsuleAppManager *appMan, BOOL flag)
@@ -112,7 +112,7 @@ void CapsuleGraphics_SetFontOAMDrawFlag(CapsuleAppManager *appMan, BOOL flag)
     FontOAM_SetDrawFlag(appMan->graphicsMan.fontOAM[1], flag);
 }
 
-void ov76_0223B98C(CapsuleAppManager *appMan, int index, int param2, int param3, int param4)
+void CapsuleGraphics_CreateFontOAM(CapsuleAppManager *appMan, int index, int param2, int param3, int param4)
 {
     UnkStruct_020127E8 fontOAMManager;
     String *string;
