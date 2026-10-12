@@ -82,15 +82,15 @@ static void WiFiLobbyMinigameBalloon_CommCmdReceiveScore(int param0, int param1,
 
     v2 = v1[0];
 
-    for (v3 = 0; v3 < v0->unk_00->unk_30; v3++) {
-        if (v0->unk_00->unk_2C[v3] == param0) {
-            v0->unk_0C[v3] = v2;
+    for (v3 = 0; v3 < v0->context->playerCount; v3++) {
+        if (v0->context->netIds[v3] == param0) {
+            v0->scores[v3] = v2;
             break;
         }
     }
 
-    GF_ASSERT(v3 < v0->unk_00->unk_30);
-    v0->unk_08++;
+    GF_ASSERT(v3 < v0->context->playerCount);
+    v0->scorePacketsReceived++;
 }
 
 BOOL WiFiLobbyMinigameBalloon_SendScore(WiFiLobbyMinigameBalloonGame *param0)

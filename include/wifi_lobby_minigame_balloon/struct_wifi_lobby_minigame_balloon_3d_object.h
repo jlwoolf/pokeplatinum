@@ -4,8 +4,8 @@
 #include "easy3d_object.h"
 
 typedef struct {
-    Easy3DModel unk_00;
-    Easy3DObject unk_10;
+    Easy3DModel model;
+    Easy3DObject object;
 } WiFiLobbyMinigameBalloon3DObject;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_3D_OBJECT_H

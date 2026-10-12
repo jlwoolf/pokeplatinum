@@ -84,7 +84,7 @@ int WiFiLobbyMinigameBalloon_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 4:
-        if (v1->unk_38) {
+        if (v1->voiceChatEnabled) {
             NintendoWFC_TerminateVoiceChat();
         }
 
@@ -97,7 +97,7 @@ int WiFiLobbyMinigameBalloon_Main(ApplicationManager *appMan, int *param1)
             ApplicationManager_Free(v0->appMan);
             v0->appMan = NULL;
 
-            if (v0->unk_38 == 1) {
+            if (v0->results == 1) {
                 (*param1) = 0;
             } else {
                 (*param1)++;
@@ -143,7 +143,7 @@ static void WiFiLobbyMinigameBalloon_InitPlayerContext(WiFiLobbyMinigameBalloonC
 
     for (v0 = 0; v0 < 4; v0++) {
         if (CommInfo_TrainerInfo(v0) != NULL) {
-            param0->unk_2C[v1] = v0;
+            param0->netIds[v1] = v0;
 
             if (v0 == v3) {
                 v2 = v1;
@@ -151,20 +151,20 @@ static void WiFiLobbyMinigameBalloon_InitPlayerContext(WiFiLobbyMinigameBalloonC
 
             v1++;
         } else {
-            param0->unk_2C[v0] = 0xffff;
+            param0->netIds[v0] = 0xffff;
         }
     }
 
-    param0->unk_30 = v1;
-    param0->voiceChatEnabled = param1->unk_38;
+    param0->playerCount = v1;
+    param0->voiceChatEnabled = param1->voiceChatEnabled;
 
-    WiFiLobbyMinigame_InitPlayerContext(&param0->unk_00, param1->unk_39, param1->saveData, param1->unk_38, &param1->unk_00);
+    WiFiLobbyMinigame_InitPlayerContext(&param0->playerContext, param1->fromLobby, param1->saveData, param1->voiceChatEnabled, &param1->participants);
 }
 
 static BOOL WiFiLobbyMinigameBalloon_CheckDisconnected(WiFiLobbyMinigameBalloonContext *param0)
 {
     if (param0->disconnected == 0) {
-        if (WiFiLobbyMinigame_CheckDisconnected(&param0->unk_00) == 1) {
+        if (WiFiLobbyMinigame_CheckDisconnected(&param0->playerContext) == 1) {
             param0->disconnected = 1;
         }
     }

@@ -7,15 +7,15 @@
 #include "overlay_manager.h"
 
 typedef struct {
-    WiFiLobbyMinigamePlayerContext unk_00; // Shared WiFi lobby minigame player context.
-    WiFiLobbyMinigameRanking unk_10; // Player ranking.
+    WiFiLobbyMinigamePlayerContext playerContext; // Shared WiFi lobby minigame player context.
+    WiFiLobbyMinigameRanking ranking; // Player ranking.
     ApplicationManager *appMan;
-    u8 unk_2C[4]; // Net ID per connected player slot.
-    u8 unk_30; // Number of connected players.
+    u8 netIds[4]; // Net ID per connected player slot.
+    u8 playerCount; // Number of connected players.
     u8 screenState;
     u8 padding_32[2];
     int balloonLevel;
-    BOOL unk_38; // Results screen outcome.
+    BOOL results; // Results screen outcome.
     u8 voiceChatEnabled;
     u8 disconnected;
     u8 disconnectState;

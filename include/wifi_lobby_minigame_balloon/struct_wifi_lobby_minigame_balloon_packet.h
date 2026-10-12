@@ -7,14 +7,14 @@
 #include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_score_packet.h"
 
 typedef struct {
-    int unk_00;
+    int type;
     union {
-        WiFiLobbyMinigameBalloonPacketPair unk_04_val1;
-        WiFiLobbyMinigameBalloonPacketPair unk_04_val2;
-        WiFiLobbyMinigameBalloonPacketPair unk_04_val3;
-        WiFiLobbyMinigameBalloonScorePacket unk_04_val4;
-        WiFiLobbyMinigameBalloonPacketScore unk_04_val5;
-        WiFiLobbyMinigameBalloonPacketScoreEx unk_04_val6;
+        WiFiLobbyMinigameBalloonPacketPair statePair;
+        WiFiLobbyMinigameBalloonPacketPair statePair2;
+        WiFiLobbyMinigameBalloonPacketPair gameStatePair;
+        WiFiLobbyMinigameBalloonScorePacket scorePacket;
+        WiFiLobbyMinigameBalloonPacketScore packetScore;
+        WiFiLobbyMinigameBalloonPacketScoreEx packetScoreEx;
     };
 } WiFiLobbyMinigameBalloonPacket;
 

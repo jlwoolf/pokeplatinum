@@ -4,7 +4,7 @@
 #include "sprite_system.h"
 
 typedef struct {
-    ManagedSprite *unk_00[4];
+    ManagedSprite *sprites[4];
 } WiFiLobbyMinigameBalloonPlayerBalloonSprites;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PLAYER_BALLOON_SPRITES_H

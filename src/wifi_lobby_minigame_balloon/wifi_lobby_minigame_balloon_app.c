@@ -161,11 +161,11 @@ static const SpriteResourceCapacities sSpriteResourceCapacities = {
 };
 
 static const struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0C;
-    u32 unk_10;
+    u32 baseModel;
+    u32 popModel0;
+    u32 popModel1;
+    u32 popModel2;
+    u32 popModel3;
 } sPlayerModelFiles[] = {
     { 0x20, 0x27, 0x28, 0x29, 0x2A },
     { 0x21, 0x2F, 0x30, 0x31, 0x32 },
@@ -192,7 +192,7 @@ int WiFiLobbyMinigameBalloon_AppInit(ApplicationManager *appMan, int *param1)
     HeapExp_FndInitAllocator(&v0->allocator, HEAP_ID_110, 32);
 
     v0->pipeline = WiFiLobbyMinigameBalloon_InitPipeline(HEAP_ID_110);
-    v0->unk_00 = ApplicationManager_Args(appMan);
+    v0->context = ApplicationManager_Args(appMan);
     WiFiLobbyMinigameBalloon_InitCommCmd(v0);
     v0->paletteData = PaletteData_New(HEAP_ID_110);
 
@@ -202,31 +202,31 @@ int WiFiLobbyMinigameBalloon_AppInit(ApplicationManager *appMan, int *param1)
     PaletteData_AllocBuffer(v0->paletteData, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 14, HEAP_ID_110);
     PaletteData_AllocBuffer(v0->paletteData, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_110);
 
-    v0->unk_2C = BgConfig_New(HEAP_ID_110);
+    v0->bgConfig = BgConfig_New(HEAP_ID_110);
 
     VramTransfer_New(64, HEAP_ID_110);
     SetAutorepeat(4, 8);
-    WiFiLobbyMinigameBalloon_InitGraphics(v0->unk_2C);
+    WiFiLobbyMinigameBalloon_InitGraphics(v0->bgConfig);
     EnableTouchPad();
     InitializeTouchPad(4);
     WiFiLobbyMinigameBalloon_InitCameras(v0);
 
-    v0->unk_24 = SpriteSystem_Alloc(HEAP_ID_110);
+    v0->spriteSystem = SpriteSystem_Alloc(HEAP_ID_110);
 
-    SpriteSystem_Init(v0->unk_24, &sRenderOamTemplate, &sCharTransferTemplate, 16 + 16);
+    SpriteSystem_Init(v0->spriteSystem, &sRenderOamTemplate, &sCharTransferTemplate, 16 + 16);
     ReserveVramForWirelessIconChars(NNS_G2D_VRAM_TYPE_2DMAIN, GX_OBJVRAMMODE_CHAR_1D_64K);
     ReserveSlotsForWirelessIconPalette(NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    v0->unk_28 = SpriteManager_New(v0->unk_24);
+    v0->spriteManager = SpriteManager_New(v0->spriteSystem);
 
-    SpriteSystem_InitSprites(v0->unk_24, v0->unk_28, 96 + 128);
-    SpriteSystem_InitManagerWithCapacities(v0->unk_24, v0->unk_28, &sSpriteResourceCapacities);
-    SetSubScreenViewRect(SpriteSystem_GetRenderer(v0->unk_24), 0, (192 + 160) << FX32_SHIFT);
+    SpriteSystem_InitSprites(v0->spriteSystem, v0->spriteManager, 96 + 128);
+    SpriteSystem_InitManagerWithCapacities(v0->spriteSystem, v0->spriteManager, &sSpriteResourceCapacities);
+    SetSubScreenViewRect(SpriteSystem_GetRenderer(v0->spriteSystem), 0, (192 + 160) << FX32_SHIFT);
     WiFiLobbyMinigameBalloon_InitParticles(v0);
 
     v0->messageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0009, HEAP_ID_110);
     v0->stringTemplate = StringTemplate_Default(HEAP_ID_110);
-    v0->unk_88 = String_Init(2 * 160, HEAP_ID_110);
+    v0->scratchString = String_Init(2 * 160, HEAP_ID_110);
     v0->fontOAMManager = FontOAMManager_New(2 * 6 + 6 + 1, HEAP_ID_110);
 
     WiFiLobbyMinigameBalloon_InitPlayerBalloons(v0, &v0->playerBalloons);
@@ -268,14 +268,14 @@ int WiFiLobbyMinigameBalloon_AppInit(ApplicationManager *appMan, int *param1)
         RenderControlFlags_SetSpeedUpOnTouch(FALSE);
     }
 
-    v0->unk_1C = WiFiLobbyMinigame_CreateIntroAnimation(SpriteManager_GetSpriteList(v0->unk_28), HEAP_ID_110);
+    v0->introAnimation = WiFiLobbyMinigame_CreateIntroAnimation(SpriteManager_GetSpriteList(v0->spriteManager), HEAP_ID_110);
 
-    int v2 = WiFiLobbyMinigame_GetIntroAnimationPaletteOffset(v0->unk_1C);
+    int v2 = WiFiLobbyMinigame_GetIntroAnimationPaletteOffset(v0->introAnimation);
     PaletteData_LoadBufferFromHardware(v0->paletteData, PLTTBUF_MAIN_OBJ, PLTT_DEST(v2), 3 * PALETTE_SIZE_BYTES);
 
     SetVBlankCallback(WiFiLobbyMinigameBalloon_VBlankCallback, v0);
 
-    if (v0->unk_00->voiceChatEnabled) {
+    if (v0->context->voiceChatEnabled) {
         NintendoWFC_StartVoiceChat(HEAP_ID_110);
     }
 
@@ -287,8 +287,8 @@ int WiFiLobbyMinigameBalloon_AppMain(ApplicationManager *appMan, int *param1)
     WiFiLobbyMinigameBalloonGame *v0 = ApplicationManager_Data(appMan);
     int v1;
 
-    if (v0->unk_00->disconnected == 1) {
-        switch (v0->unk_00->disconnectState) {
+    if (v0->context->disconnected == 1) {
+        switch (v0->context->disconnectState) {
         case 0:
             if (IsScreenFadeDone() == TRUE) {
                 FinishScreenFade();
@@ -296,12 +296,12 @@ int WiFiLobbyMinigameBalloon_AppMain(ApplicationManager *appMan, int *param1)
 
             SetColorBrightness(COLOR_BLACK);
             GX_SetVisibleWnd(GX_WNDMASK_NONE);
-            v0->unk_00->disconnectState++;
+            v0->context->disconnectState++;
             break;
 
         default:
         case 1:
-            if (WiFiLobbyMinigame_HandleDisconnect(&v0->unk_00->unk_00) == 1) {
+            if (WiFiLobbyMinigame_HandleDisconnect(&v0->context->playerContext) == 1) {
                 return 1;
             }
             break;
@@ -331,7 +331,7 @@ int WiFiLobbyMinigameBalloon_AppMain(ApplicationManager *appMan, int *param1)
         }
         break;
     case 4:
-        if (v0->unk_08 >= v0->unk_00->unk_30) {
+        if (v0->scorePacketsReceived >= v0->context->playerCount) {
             WiFiLobbyMinigameBalloon_FindWinner(v0);
             (*param1)++;
         }
@@ -345,40 +345,40 @@ int WiFiLobbyMinigameBalloon_AppMain(ApplicationManager *appMan, int *param1)
 
         WiFiLobbyMinigameBalloon_UpdateSequence(v0);
 
-        switch (v0->unk_20) {
+        switch (v0->phase) {
         case 1:
             GX_SetVisibleWnd(GX_WNDMASK_W1);
             G2_SetWnd1Position(4, 192 - 32 + 8, 8 * 9 + 4, 192 - 8);
             G2_SetWnd1InsidePlane(GX_WND_PLANEMASK_OBJ, 0);
             G2_SetWndOutsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
             WiFiLobbyMinigameBalloon_FreeScoreDigits(v0);
-            v0->unk_20 = 2;
+            v0->phase = 2;
         case 2:
             if (WiFiLobbyMinigameBalloon_UpdateIntroBanner(v0, &v0->introBanner) == 1) {
-                v0->introBanner.unk_1C = 1;
-                v0->unk_20 = 0;
+                v0->introBanner.finished = 1;
+                v0->phase = 0;
             }
             break;
         case 3:
-            WiFiLobbyMinigame_StartIntroAnimationRoll(v0->unk_1C);
-            v0->unk_20 = 4;
+            WiFiLobbyMinigame_StartIntroAnimationRoll(v0->introAnimation);
+            v0->phase = 4;
             break;
         case 4:
-            if (WiFiLobbyMinigame_IntroAnimationIsDone(v0->unk_1C) == 1) {
+            if (WiFiLobbyMinigame_IntroAnimationIsDone(v0->introAnimation) == 1) {
                 v0->gameStarted = 1;
-                v0->playerBalloons.unk_F1 = 0;
-                v0->unk_20 = 5;
+                v0->playerBalloons.idle = 0;
+                v0->phase = 5;
                 WiFiLobbyMinigameBalloon_ClearScoreWindow(v0);
                 WiFiLobbyMinigameBalloon_ClearPlayerNameWindows(v0, 1);
             }
             break;
         case 6:
-            WiFiLobbyMinigame_StartIntroAnimationPop(v0->unk_1C);
-            v0->unk_20 = 7;
+            WiFiLobbyMinigame_StartIntroAnimationPop(v0->introAnimation);
+            v0->phase = 7;
             break;
         case 7:
-            if (WiFiLobbyMinigame_IntroAnimationIsDone(v0->unk_1C) == 1) {
-                v0->unk_20 = 8;
+            if (WiFiLobbyMinigame_IntroAnimationIsDone(v0->introAnimation) == 1) {
+                v0->phase = 8;
             }
             break;
         }
@@ -420,9 +420,9 @@ int WiFiLobbyMinigameBalloon_AppExit(ApplicationManager *appMan, int *param1)
     WiFiLobbyMinigameBalloonGame *v0 = ApplicationManager_Data(appMan);
     int v1;
 
-    v0->unk_00->unk_10.unk_14 = v0->popCount;
+    v0->context->ranking.unk_14 = v0->popCount;
 
-    WiFiLobbyMinigame_FreeIntroAnimation(v0->unk_1C);
+    WiFiLobbyMinigame_FreeIntroAnimation(v0->introAnimation);
     WiFiLobbyMinigameBalloon_FreePopEffects(v0);
     WiFiLobbyMinigameBalloon_FreeConfetti(v0);
 
@@ -437,31 +437,31 @@ int WiFiLobbyMinigameBalloon_AppExit(ApplicationManager *appMan, int *param1)
     WiFiLobbyMinigameBalloonBalloon_Free(v0, v0->balloon);
 
     for (v1 = 0; v1 < 5; v1++) {
-        Window_Remove(&v0->unk_30[v1]);
+        Window_Remove(&v0->windows[v1]);
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_MAIN_1);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_MAIN_2);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_MAIN_3);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_SUB_0);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_SUB_1);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_SUB_2);
-    Bg_FreeTilemapBuffer(v0->unk_2C, BG_LAYER_SUB_3);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_MAIN_1);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_MAIN_2);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_MAIN_3);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_SUB_0);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_SUB_1);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_SUB_2);
+    Bg_FreeTilemapBuffer(v0->bgConfig, BG_LAYER_SUB_3);
     FontOAMManager_Free(v0->fontOAMManager);
-    SpriteSystem_FreeResourcesAndManager(v0->unk_24, v0->unk_28);
-    SpriteSystem_Free(v0->unk_24);
+    SpriteSystem_FreeResourcesAndManager(v0->spriteSystem, v0->spriteManager);
+    SpriteSystem_Free(v0->spriteSystem);
     VramTransfer_Free();
     PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_MAIN_BG);
     PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_SUB_BG);
     PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_MAIN_OBJ);
     PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_SUB_OBJ);
     PaletteData_Free(v0->paletteData);
-    String_Free(v0->unk_88);
+    String_Free(v0->scratchString);
     StringTemplate_Free(v0->stringTemplate);
     MessageLoader_Free(v0->messageLoader);
-    Heap_Free(v0->unk_2C);
+    Heap_Free(v0->bgConfig);
     WiFiLobbyMinigameBalloon_FreeCameras(v0);
     SysTask_Done(v0->drawTask);
 
@@ -489,15 +489,15 @@ static void WiFiLobbyMinigameBalloon_VBlankCallback(void *param0)
     SpriteSystem_TransferOam();
     PaletteData_CommitFadedBuffers(v0->paletteData);
 
-    if (v0->scoreGauge.unk_2C == 1) {
+    if (v0->scoreGauge.showRequest == 1) {
         Bg_ToggleLayer(BG_LAYER_SUB_3, 1);
-        v0->scoreGauge.unk_2C = 0;
-    } else if (v0->scoreGauge.unk_2D == 1) {
+        v0->scoreGauge.showRequest = 0;
+    } else if (v0->scoreGauge.hideRequest == 1) {
         Bg_ToggleLayer(BG_LAYER_SUB_3, 0);
-        v0->scoreGauge.unk_2D = 0;
+        v0->scoreGauge.hideRequest = 0;
     }
 
-    Bg_RunScheduledUpdates(v0->unk_2C);
+    Bg_RunScheduledUpdates(v0->bgConfig);
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
@@ -569,7 +569,7 @@ static void WiFiLobbyMinigameBalloon_DrawTask(SysTask *param0, void *param1)
     WiFiLobbyMinigameBalloon_UpdatePlayerBalloons(v0, &v0->playerBalloons);
     WiFiLobbyMinigameBalloon_UpdateOpponentBalloons(v0, &v0->opponentBalloons);
     WiFiLobbyMinigameBalloon_UpdatePopEffects(v0);
-    WiFiLobbyMinigameBalloon_DrawScoreGauge(v0, v0->unk_2C, &v0->scoreGauge);
+    WiFiLobbyMinigameBalloon_DrawScoreGauge(v0, v0->bgConfig, &v0->scoreGauge);
     WiFiLobbyMinigameBalloon_UpdateConfetti(v0);
     WiFiLobbyMinigameBalloon_UpdateBalloonPops(v0);
     WiFiLobbyMinigameBalloon_UpdateRankIcons(v0);
@@ -593,8 +593,8 @@ static void WiFiLobbyMinigameBalloon_DrawTask(SysTask *param0, void *param1)
         NNS_G3dGePushMtx();
 
         {
-            Easy3DObject_Draw(&v0->balloon3DObject.unk_10);
-            Easy3DObject_Draw(&v0->playerModel.unk_10);
+            Easy3DObject_Draw(&v0->balloon3DObject.object);
+            Easy3DObject_Draw(&v0->playerModel.object);
             WiFiLobbyMinigameBalloon_DrawBalloonPops(v0);
         }
 
@@ -614,10 +614,10 @@ static void WiFiLobbyMinigameBalloon_DrawTask(SysTask *param0, void *param1)
         ParticleSystem_UpdateAll();
     }
 
-    SpriteSystem_DrawSprites(v0->unk_28);
+    SpriteSystem_DrawSprites(v0->spriteManager);
     SpriteSystem_UpdateTransfer();
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
-    CommManager_Dummy_02038A1C(110, v0->unk_2C);
+    CommManager_Dummy_02038A1C(110, v0->bgConfig);
 }
 
 static void WiFiLobbyMinigameBalloon_InitGraphics(BgConfig *param0)
@@ -802,34 +802,34 @@ static void WiFiLobbyMinigameBalloon_InitWindows(WiFiLobbyMinigameBalloonGame *p
 {
     int v0;
 
-    Window_Add(param0->unk_2C, &param0->unk_30[0], 1, 11, 0x13, 20, 4, 0xe, (0x8000 - 0x2000) / 32);
-    Window_Add(param0->unk_2C, &param0->unk_30[1], 4, 0x12, 1, 10, 2, 5, ((0x8000 - 0x2000) / 32) + (10 * 2));
-    Window_Add(param0->unk_2C, &param0->unk_30[2], 4, 0x15, 0xe, 10, 2, 5, (((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2));
-    Window_Add(param0->unk_2C, &param0->unk_30[3], 4, 1, 14, 10, 2, 5, ((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2));
-    Window_FillTilemap(&param0->unk_30[1], 0xf);
-    Window_FillTilemap(&param0->unk_30[2], 0xf);
-    Window_FillTilemap(&param0->unk_30[3], 0xf);
-    Window_Add(param0->unk_2C, &param0->unk_30[4], 4, 2, 0x13, 0x1c, 4, 5, ((((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2)) + (10 * 2)) + 9);
-    Window_FillTilemap(&param0->unk_30[4], 0xf);
+    Window_Add(param0->bgConfig, &param0->windows[0], 1, 11, 0x13, 20, 4, 0xe, (0x8000 - 0x2000) / 32);
+    Window_Add(param0->bgConfig, &param0->windows[1], 4, 0x12, 1, 10, 2, 5, ((0x8000 - 0x2000) / 32) + (10 * 2));
+    Window_Add(param0->bgConfig, &param0->windows[2], 4, 0x15, 0xe, 10, 2, 5, (((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2));
+    Window_Add(param0->bgConfig, &param0->windows[3], 4, 1, 14, 10, 2, 5, ((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2));
+    Window_FillTilemap(&param0->windows[1], 0xf);
+    Window_FillTilemap(&param0->windows[2], 0xf);
+    Window_FillTilemap(&param0->windows[3], 0xf);
+    Window_Add(param0->bgConfig, &param0->windows[4], 4, 2, 0x13, 0x1c, 4, 5, ((((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2)) + (10 * 2)) + 9);
+    Window_FillTilemap(&param0->windows[4], 0xf);
 }
 
 static void WiFiLobbyMinigameBalloon_DrawScoreWindow(WiFiLobbyMinigameBalloonGame *param0)
 {
     String *v0;
 
-    Window_DrawStandardFrame(&param0->unk_30[4], 1, (((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2)) + (10 * 2), 6);
+    Window_DrawStandardFrame(&param0->windows[4], 1, (((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2)) + (10 * 2), 6);
 
     v0 = MessageLoader_GetNewString(param0->messageLoader, 3);
-    Text_AddPrinterWithParamsAndColor(&param0->unk_30[4], FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 15), NULL);
+    Text_AddPrinterWithParamsAndColor(&param0->windows[4], FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 15), NULL);
     String_Free(v0);
 
-    Window_ScheduleCopyToVRAM(&param0->unk_30[4]);
+    Window_ScheduleCopyToVRAM(&param0->windows[4]);
 }
 
 static void WiFiLobbyMinigameBalloon_ClearScoreWindow(WiFiLobbyMinigameBalloonGame *param0)
 {
-    Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 2 - 1, 0x13 - 1, 0x1c + 2, 4 + 2, 17);
-    Bg_ScheduleTilemapTransfer(param0->unk_2C, 4);
+    Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 2 - 1, 0x13 - 1, 0x1c + 2, 4 + 2, 17);
+    Bg_ScheduleTilemapTransfer(param0->bgConfig, 4);
 }
 
 static void WiFiLobbyMinigameBalloon_DrawPlayerNames(WiFiLobbyMinigameBalloonGame *param0)
@@ -843,13 +843,13 @@ static void WiFiLobbyMinigameBalloon_DrawPlayerNames(WiFiLobbyMinigameBalloonGam
 
     v4 = CommSys_CurNetId();
 
-    for (v0 = 0; v0 < param0->unk_00->unk_30; v0++) {
-        if (v4 != param0->unk_00->unk_2C[v0]) {
-            v2 = WiFiLobbyMinigame_GetTrainerInfo(&param0->unk_00->unk_00, param0->unk_00->unk_2C[v0]);
+    for (v0 = 0; v0 < param0->context->playerCount; v0++) {
+        if (v4 != param0->context->netIds[v0]) {
+            v2 = WiFiLobbyMinigame_GetTrainerInfo(&param0->context->playerContext, param0->context->netIds[v0]);
             v3 = TrainerInfo_NameNewString(v2, HEAP_ID_110);
-            v1 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->unk_00->unk_2C[v0]);
+            v1 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->context->netIds[v0]);
 
-            if (WiFiLobbyMinigame_IsPlayerReady(&param0->unk_00->unk_00, param0->unk_00->unk_2C[v0]) == 1) {
+            if (WiFiLobbyMinigame_IsPlayerReady(&param0->context->playerContext, param0->context->netIds[v0]) == 1) {
                 v5 = TEXT_COLOR(7, 8, 15);
             } else {
                 v5 = TEXT_COLOR(1, 2, 15);
@@ -862,7 +862,7 @@ static void WiFiLobbyMinigameBalloon_DrawPlayerNames(WiFiLobbyMinigameBalloonGam
                 v7--;
             }
 
-            Text_AddPrinterWithParamsAndColor(&param0->unk_30[sPlayerNameWindowIndex[param0->unk_00->unk_30][v1]], FONT_SYSTEM, v3, v7, 0, TEXT_SPEED_INSTANT, v5, NULL);
+            Text_AddPrinterWithParamsAndColor(&param0->windows[sPlayerNameWindowIndex[param0->context->playerCount][v1]], FONT_SYSTEM, v3, v7, 0, TEXT_SPEED_INSTANT, v5, NULL);
             Heap_Free(v3);
         }
     }
@@ -871,22 +871,22 @@ static void WiFiLobbyMinigameBalloon_DrawPlayerNames(WiFiLobbyMinigameBalloonGam
 static void WiFiLobbyMinigameBalloon_ClearPlayerNameWindows(WiFiLobbyMinigameBalloonGame *param0, int param1)
 {
     if (param1 == 1) {
-        Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 0, 13, 12, 4, 17);
-        Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 0x11, 0, 12, 4, 17);
-        Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 0x14, 13, 12, 4, 17);
+        Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 0, 13, 12, 4, 17);
+        Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 0x11, 0, 12, 4, 17);
+        Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 0x14, 13, 12, 4, 17);
     } else {
-        switch (param0->unk_00->unk_30) {
+        switch (param0->context->playerCount) {
         case 2:
-            Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 0, 13, 12, 4, 17);
-            Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 0x14, 13, 12, 4, 17);
+            Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 0, 13, 12, 4, 17);
+            Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 0x14, 13, 12, 4, 17);
             break;
         case 3:
-            Bg_FillTilemapRect(param0->unk_2C, 4, 1023, 0x11, 0, 12, 4, 17);
+            Bg_FillTilemapRect(param0->bgConfig, 4, 1023, 0x11, 0, 12, 4, 17);
             break;
         }
     }
 
-    Bg_ScheduleTilemapTransfer(param0->unk_2C, 4);
+    Bg_ScheduleTilemapTransfer(param0->bgConfig, 4);
 }
 
 static void WiFiLobbyMinigameBalloon_InitParticles(WiFiLobbyMinigameBalloonGame *param0)
@@ -961,18 +961,18 @@ static void WiFiLobbyMinigameBalloon_LoadMainGraphics(WiFiLobbyMinigameBalloonGa
     String *v1, *v2;
     int v3;
 
-    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, 2, param0->unk_24, param0->unk_28, param1, 27, 0, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
+    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, 2, param0->spriteSystem, param0->spriteManager, param1, 27, 0, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
 
     v1 = MessageLoader_GetNewString(param0->messageLoader, 2);
     v0 = 6 + ((30 - Font_CalcStringWidth(0, v1, 0)) / 2);
-    WiFiLobbyMinigameBalloon_CreateTextOAM(param0->unk_2C, param0->unk_28, param0->fontOAMManager, &param0->scoreDisplay.unk_F4, v1, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v0 + 6 * 6, 168, 0, 1, 12, 2);
+    WiFiLobbyMinigameBalloon_CreateTextOAM(param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->scoreDisplay.labelText, v1, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v0 + 6 * 6, 168, 0, 1, 12, 2);
     String_Free(v1);
 
     v1 = MessageLoader_GetNewString(param0->messageLoader, 0);
     v2 = MessageLoader_GetNewString(param0->messageLoader, 1);
     for (v3 = 0; v3 < 6; v3++) {
-        WiFiLobbyMinigameBalloon_CreateTextOAM(param0->unk_2C, param0->unk_28, param0->fontOAMManager, &param0->scoreDisplay.unk_04[v3][0], v1, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v0 + 6 * v3, 168, 0, 3, 12, 2 * 5);
-        WiFiLobbyMinigameBalloon_CreateTextOAM(param0->unk_2C, param0->unk_28, param0->fontOAMManager, &param0->scoreDisplay.unk_04[v3][1], v2, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v0 + 6 * v3, 168, 0, 3, 12, 2 * 5);
+        WiFiLobbyMinigameBalloon_CreateTextOAM(param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->scoreDisplay.digitReel[v3][0], v1, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v0 + 6 * v3, 168, 0, 3, 12, 2 * 5);
+        WiFiLobbyMinigameBalloon_CreateTextOAM(param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->scoreDisplay.digitReel[v3][1], v2, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v0 + 6 * v3, 168, 0, 3, 12, 2 * 5);
     }
     String_Free(v1);
     String_Free(v2);
@@ -981,17 +981,17 @@ static void WiFiLobbyMinigameBalloon_LoadMainGraphics(WiFiLobbyMinigameBalloonGa
 
     WiFiLobbyMinigameBalloon_CreateScoreDigits(param0);
 
-    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->unk_24, param0->unk_28, param1, 27, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10004);
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_24, param0->unk_28, param1, 24, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_24, param0->unk_28, param1, 26, FALSE, 10002);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_24, param0->unk_28, param1, 25, FALSE, 10002);
-    param0->scoreDisplay.unk_00 = WiFiLobbyMinigameBalloon_CreateScoreSprite(param0);
+    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->spriteSystem, param0->spriteManager, param1, 27, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10004);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 24, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 26, FALSE, 10002);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 25, FALSE, 10002);
+    param0->scoreDisplay.sprite = WiFiLobbyMinigameBalloon_CreateScoreSprite(param0);
 
-    SpriteSystem_LoadPaletteBuffer(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->unk_24, param0->unk_28, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 20, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
-    SpriteSystem_LoadCharResObj(param0->unk_24, param0->unk_28, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 21, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10001);
-    SpriteSystem_LoadCellResObj(param0->unk_24, param0->unk_28, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 22, FALSE, 10001);
-    SpriteSystem_LoadAnimResObj(param0->unk_24, param0->unk_28, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 23, FALSE, 10001);
-    param0->introBanner.unk_00 = WiFiLobbyMinigameBalloon_CreateIntroBannerSprite(param0);
+    SpriteSystem_LoadPaletteBuffer(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->spriteSystem, param0->spriteManager, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 20, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
+    SpriteSystem_LoadCharResObj(param0->spriteSystem, param0->spriteManager, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 21, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10001);
+    SpriteSystem_LoadCellResObj(param0->spriteSystem, param0->spriteManager, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 22, FALSE, 10001);
+    SpriteSystem_LoadAnimResObj(param0->spriteSystem, param0->spriteManager, NARC_INDEX_RESOURCE__ENG__WIFI_LOBBY_MINIGAME__WLMNGM_TOOL, 23, FALSE, 10001);
+    param0->introBanner.sprite = WiFiLobbyMinigameBalloon_CreateIntroBannerSprite(param0);
 }
 
 static void WiFiLobbyMinigameBalloon_FreeMainGraphics(WiFiLobbyMinigameBalloonGame *param0)
@@ -999,22 +999,22 @@ static void WiFiLobbyMinigameBalloon_FreeMainGraphics(WiFiLobbyMinigameBalloonGa
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.unk_04[v0][0]);
-        WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.unk_04[v0][1]);
+        WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.digitReel[v0][0]);
+        WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.digitReel[v0][1]);
     }
 
-    WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.unk_F4);
+    WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.labelText);
     WiFiLobbyMinigameBalloon_FreeScoreDigits(param0);
-    WiFiLobbyMinigameBalloon_FreeScoreSprite(param0, param0->scoreDisplay.unk_00);
-    WiFiLobbyMinigameBalloon_FreeIntroBannerSprite(param0, param0->introBanner.unk_00);
+    WiFiLobbyMinigameBalloon_FreeScoreSprite(param0, param0->scoreDisplay.sprite);
+    WiFiLobbyMinigameBalloon_FreeIntroBannerSprite(param0, param0->introBanner.sprite);
 }
 
 static void WiFiLobbyMinigameBalloon_LoadSubGraphics(WiFiLobbyMinigameBalloonGame *param0, NARC *param1)
 {
-    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_SUB_OBJ, param0->unk_24, param0->unk_28, param1, 23, FALSE, 9, NNS_G2D_VRAM_TYPE_2DSUB, 10006);
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_24, param0->unk_28, param1, 20, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, 10004);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_24, param0->unk_28, param1, 22, FALSE, 10004);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_24, param0->unk_28, param1, 21, FALSE, 10004);
+    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_SUB_OBJ, param0->spriteSystem, param0->spriteManager, param1, 23, FALSE, 9, NNS_G2D_VRAM_TYPE_2DSUB, 10006);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 20, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, 10004);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 22, FALSE, 10004);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 21, FALSE, 10004);
 
     WiFiLobbyMinigameBalloon_CreateRankIcons(param0);
     WiFiLobbyMinigameBalloon_CreatePlayerBalloonSprites(param0, &param0->playerBalloonSprites);
@@ -1035,10 +1035,10 @@ static void WiFiLobbyMinigameBalloon_FreeSubGraphics(WiFiLobbyMinigameBalloonGam
 static void WiFiLobbyMinigameBalloon_LoadMainBg(WiFiLobbyMinigameBalloonGame *param0, NARC *param1)
 {
     PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, 4, HEAP_ID_110, PLTTBUF_MAIN_BG, 0, 0);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 2, param0->unk_2C, 3, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 3, param0->unk_2C, 3, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 0, param0->unk_2C, 2, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 1, param0->unk_2C, 2, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 2, param0->bgConfig, 3, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 3, param0->bgConfig, 3, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 0, param0->bgConfig, 2, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 1, param0->bgConfig, 2, 0, 0, 0, HEAP_ID_110);
     PaletteData_FillBufferRange(param0->paletteData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 1);
 }
 
@@ -1051,29 +1051,29 @@ static void WiFiLobbyMinigameBalloon_LoadSubBg(WiFiLobbyMinigameBalloonGame *par
 {
     PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, 5, HEAP_ID_110, PLTTBUF_SUB_BG, 5 * PALETTE_SIZE_BYTES, 0);
     PaletteData_LoadBufferFromFile(param0->paletteData, NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, 6, HEAP_ID_110, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 10, PLTT_DEST(6), PLTT_DEST(6));
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 13, param0->unk_2C, 6, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 14, param0->unk_2C, 6, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 18, param0->unk_2C, 5, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 13, param0->bgConfig, 6, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 14, param0->bgConfig, 6, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 18, param0->bgConfig, 5, 0, 0, 0, HEAP_ID_110);
 
-    switch (param0->unk_00->unk_30) {
+    switch (param0->context->playerCount) {
     case 2:
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 15, param0->unk_2C, 5, 0, 0, 0, HEAP_ID_110);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 15, param0->bgConfig, 5, 0, 0, 0, HEAP_ID_110);
         break;
     case 3:
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 16, param0->unk_2C, 5, 0, 0, 0, HEAP_ID_110);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 16, param0->bgConfig, 5, 0, 0, 0, HEAP_ID_110);
         break;
     default:
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 17, param0->unk_2C, 5, 0, 0, 0, HEAP_ID_110);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 17, param0->bgConfig, 5, 0, 0, 0, HEAP_ID_110);
         break;
     }
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 18, param0->unk_2C, 4, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 19, param0->unk_2C, 4, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 18, param0->bgConfig, 4, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 19, param0->bgConfig, 4, 0, 0, 0, HEAP_ID_110);
 
     WiFiLobbyMinigameBalloon_ApplyMainPlayerPalettes(param0);
     WiFiLobbyMinigameBalloon_ApplyPlayerPalettes(param0);
 
-    LoadStandardWindowGraphics(param0->unk_2C, BG_LAYER_SUB_0, (((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2)) + (10 * 2), 6, 0, HEAP_ID_110);
+    LoadStandardWindowGraphics(param0->bgConfig, BG_LAYER_SUB_0, (((((0x8000 - 0x2000) / 32) + (10 * 2)) + (10 * 2)) + (10 * 2)) + (10 * 2), 6, 0, HEAP_ID_110);
     PaletteData_LoadBufferFromHardware(param0->paletteData, PLTTBUF_SUB_BG, PLTT_DEST(6), PALETTE_SIZE_BYTES);
     PaletteData_FillBufferRange(param0->paletteData, PLTTBUF_SUB_BG, PLTTSEL_BOTH, 0x0, 0, 1);
 }
@@ -1093,34 +1093,34 @@ static void WiFiLobbyMinigameBalloon_Load3DModels(WiFiLobbyMinigameBalloonGame *
 
     v4 = WiFiLobbyMinigameBalloon_GetPlayerIndex(param0, CommSys_CurNetId());
 
-    Easy3DModel_LoadFrom(&v2->unk_00, param1, sPlayerModelFiles[v4].unk_00, HEAP_ID_110);
-    Easy3DObject_Init(&v2->unk_10, &v2->unk_00);
-    Easy3DObject_SetPosition(&v2->unk_10, FX32_CONST(0), FX32_CONST(-25), FX32_CONST(0));
-    Easy3DObject_SetScale(&v2->unk_10, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
-    Easy3DObject_SetVisible(&v2->unk_10, 1);
-    Easy3DModel_LoadFrom(&v2->unk_88[0], param1, sPlayerModelFiles[v4].unk_04, HEAP_ID_110);
-    Easy3DModel_LoadFrom(&v2->unk_88[1], param1, sPlayerModelFiles[v4].unk_08, HEAP_ID_110);
-    Easy3DModel_LoadFrom(&v2->unk_88[2], param1, sPlayerModelFiles[v4].unk_0C, HEAP_ID_110);
-    Easy3DModel_LoadFrom(&v2->unk_88[3], param1, sPlayerModelFiles[v4].unk_10, HEAP_ID_110);
+    Easy3DModel_LoadFrom(&v2->model, param1, sPlayerModelFiles[v4].baseModel, HEAP_ID_110);
+    Easy3DObject_Init(&v2->object, &v2->model);
+    Easy3DObject_SetPosition(&v2->object, FX32_CONST(0), FX32_CONST(-25), FX32_CONST(0));
+    Easy3DObject_SetScale(&v2->object, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
+    Easy3DObject_SetVisible(&v2->object, 1);
+    Easy3DModel_LoadFrom(&v2->popModels[0], param1, sPlayerModelFiles[v4].popModel0, HEAP_ID_110);
+    Easy3DModel_LoadFrom(&v2->popModels[1], param1, sPlayerModelFiles[v4].popModel1, HEAP_ID_110);
+    Easy3DModel_LoadFrom(&v2->popModels[2], param1, sPlayerModelFiles[v4].popModel2, HEAP_ID_110);
+    Easy3DModel_LoadFrom(&v2->popModels[3], param1, sPlayerModelFiles[v4].popModel3, HEAP_ID_110);
 
     for (v0 = 0; v0 < 8; v0++) {
         for (v1 = 0; v1 < 4; v1++) {
             if (v5 == NULL) {
-                Easy3DAnim_LoadFrom(&v2->unk_C8[v0][v1].unk_7C, &v2->unk_88[v1], param1, 35 + v1, 110, &param0->allocator);
-                v5 = v2->unk_C8[v0][v1].unk_7C.data;
+                Easy3DAnim_LoadFrom(&v2->popAnims[v0][v1].anim, &v2->popModels[v1], param1, 35 + v1, 110, &param0->allocator);
+                v5 = v2->popAnims[v0][v1].anim.data;
             } else {
-                Easy3DAnim_LoadFromData(&v2->unk_C8[v0][v1].unk_7C, &v2->unk_88[v1], v5, &param0->allocator);
+                Easy3DAnim_LoadFromData(&v2->popAnims[v0][v1].anim, &v2->popModels[v1], v5, &param0->allocator);
             }
 
-            Easy3DAnim_SetFrame(&v2->unk_C8[v0][v1].unk_7C, 0);
+            Easy3DAnim_SetFrame(&v2->popAnims[v0][v1].anim, 0);
         }
     }
 
-    Easy3DModel_LoadFrom(&v3->unk_00, param1, 30, HEAP_ID_110);
-    Easy3DObject_Init(&v3->unk_10, &v3->unk_00);
-    Easy3DObject_SetPosition(&v3->unk_10, FX32_CONST(0), FX32_CONST(-25), FX32_CONST(0));
-    Easy3DObject_SetScale(&v3->unk_10, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
-    Easy3DObject_SetVisible(&v3->unk_10, 1);
+    Easy3DModel_LoadFrom(&v3->model, param1, 30, HEAP_ID_110);
+    Easy3DObject_Init(&v3->object, &v3->model);
+    Easy3DObject_SetPosition(&v3->object, FX32_CONST(0), FX32_CONST(-25), FX32_CONST(0));
+    Easy3DObject_SetScale(&v3->object, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
+    Easy3DObject_SetVisible(&v3->object, 1);
 }
 
 static void WiFiLobbyMinigameBalloon_Free3DModels(WiFiLobbyMinigameBalloonGame *param0)
@@ -1128,19 +1128,19 @@ static void WiFiLobbyMinigameBalloon_Free3DModels(WiFiLobbyMinigameBalloonGame *
     int v0, v1;
     WiFiLobbyMinigameBalloonPlayerModel *v2 = &param0->playerModel;
 
-    Easy3DModel_Release(&v2->unk_00);
+    Easy3DModel_Release(&v2->model);
 
     for (v0 = 0; v0 < 4; v0++) {
-        Easy3DModel_Release(&v2->unk_88[v0]);
+        Easy3DModel_Release(&v2->popModels[v0]);
     }
 
     for (v0 = 0; v0 < 8; v0++) {
         for (v1 = 0; v1 < 4; v1++) {
-            Easy3DAnim_Release(&v2->unk_C8[v0][v1].unk_7C, &param0->allocator);
+            Easy3DAnim_Release(&v2->popAnims[v0][v1].anim, &param0->allocator);
         }
     }
 
-    Easy3DModel_Release(&param0->balloon3DObject.unk_00);
+    Easy3DModel_Release(&param0->balloon3DObject.model);
 }
 
 BOOL WiFiLobbyMinigameBalloon_SpawnBalloonPop(WiFiLobbyMinigameBalloonGame *param0, int param1)
@@ -1159,18 +1159,18 @@ BOOL WiFiLobbyMinigameBalloon_SpawnBalloonPop(WiFiLobbyMinigameBalloonGame *para
         v3 = 0;
     }
 
-    v1 = &v0->unk_88[v3];
+    v1 = &v0->popModels[v3];
 
     for (v2 = 0; v2 < 8; v2++) {
-        if (v0->unk_C8[v2][v3].unk_00 == 0) {
-            Easy3DObject_Init(&v0->unk_C8[v2][v3].unk_04, v1);
-            Easy3DObject_SetPosition(&v0->unk_C8[v2][v3].unk_04, FX32_CONST(0), FX32_CONST(-25), FX32_CONST(0));
-            Easy3DObject_SetScale(&v0->unk_C8[v2][v3].unk_04, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
-            Easy3DObject_SetVisible(&v0->unk_C8[v2][v3].unk_04, 1);
-            Easy3DAnim_SetFrame(&v0->unk_C8[v2][v3].unk_7C, 0);
-            Easy3DObject_AddAnim(&v0->unk_C8[v2][v3].unk_04, &v0->unk_C8[v2][v3].unk_7C);
+        if (v0->popAnims[v2][v3].active == 0) {
+            Easy3DObject_Init(&v0->popAnims[v2][v3].object, v1);
+            Easy3DObject_SetPosition(&v0->popAnims[v2][v3].object, FX32_CONST(0), FX32_CONST(-25), FX32_CONST(0));
+            Easy3DObject_SetScale(&v0->popAnims[v2][v3].object, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
+            Easy3DObject_SetVisible(&v0->popAnims[v2][v3].object, 1);
+            Easy3DAnim_SetFrame(&v0->popAnims[v2][v3].anim, 0);
+            Easy3DObject_AddAnim(&v0->popAnims[v2][v3].object, &v0->popAnims[v2][v3].anim);
 
-            v0->unk_C8[v2][v3].unk_00 = 1;
+            v0->popAnims[v2][v3].active = 1;
 
             Sound_PlayEffect(SEQ_SE_PL_BALLOON03_2_sseq);
             return 1;
@@ -1184,8 +1184,8 @@ void WiFiLobbyMinigameBalloon_RemoveBalloonPop(WiFiLobbyMinigameBalloonGame *par
 {
     WiFiLobbyMinigameBalloonPlayerModel *v0 = &param0->playerModel;
 
-    Easy3DObject_RemoveAnim(&v0->unk_C8[param1][param2].unk_04, &v0->unk_C8[param1][param2].unk_7C);
-    v0->unk_C8[param1][param2].unk_00 = 0;
+    Easy3DObject_RemoveAnim(&v0->popAnims[param1][param2].object, &v0->popAnims[param1][param2].anim);
+    v0->popAnims[param1][param2].active = 0;
 }
 
 void WiFiLobbyMinigameBalloon_UpdateBalloonPops(WiFiLobbyMinigameBalloonGame *param0)
@@ -1195,8 +1195,8 @@ void WiFiLobbyMinigameBalloon_UpdateBalloonPops(WiFiLobbyMinigameBalloonGame *pa
 
     for (v1 = 0; v1 < 8; v1++) {
         for (v2 = 0; v2 < 4; v2++) {
-            if (v0->unk_C8[v1][v2].unk_00 == 1) {
-                if (Easy3DAnim_Update(&v0->unk_C8[v1][v2].unk_7C, FX32_ONE) == 1) {
+            if (v0->popAnims[v1][v2].active == 1) {
+                if (Easy3DAnim_Update(&v0->popAnims[v1][v2].anim, FX32_ONE) == 1) {
                     WiFiLobbyMinigameBalloon_RemoveBalloonPop(param0, v1, v2);
                 }
             }
@@ -1211,8 +1211,8 @@ void WiFiLobbyMinigameBalloon_DrawBalloonPops(WiFiLobbyMinigameBalloonGame *para
 
     for (v1 = 0; v1 < 8; v1++) {
         for (v2 = 0; v2 < 4; v2++) {
-            if (v0->unk_C8[v1][v2].unk_00 == 1) {
-                Easy3DObject_Draw(&v0->unk_C8[v1][v2].unk_04);
+            if (v0->popAnims[v1][v2].active == 1) {
+                Easy3DObject_Draw(&v0->popAnims[v1][v2].object);
             }
         }
     }
@@ -1220,7 +1220,7 @@ void WiFiLobbyMinigameBalloon_DrawBalloonPops(WiFiLobbyMinigameBalloonGame *para
 
 BOOL WiFiLobbyMinigameBalloon_IsLocalPlayer(WiFiLobbyMinigameBalloonGame *param0)
 {
-    if (param0->unk_04 == CommSys_CurNetId()) {
+    if (param0->winnerNetId == CommSys_CurNetId()) {
         return 1;
     }
 
@@ -1232,18 +1232,18 @@ int WiFiLobbyMinigameBalloon_FindWinner(WiFiLobbyMinigameBalloonGame *param0)
     int v0, v1;
     u32 v2;
 
-    v0 = param0->unk_00->unk_2C[0];
-    v2 = param0->unk_0C[0];
+    v0 = param0->context->netIds[0];
+    v2 = param0->scores[0];
 
-    for (v1 = 1; v1 < param0->unk_00->unk_30; v1++) {
-        if (v2 < param0->unk_0C[v1]) {
-            v2 = param0->unk_0C[v1];
-            v0 = param0->unk_00->unk_2C[v1];
+    for (v1 = 1; v1 < param0->context->playerCount; v1++) {
+        if (v2 < param0->scores[v1]) {
+            v2 = param0->scores[v1];
+            v0 = param0->context->netIds[v1];
         }
     }
 
-    param0->unk_04 = v0;
-    return param0->unk_04;
+    param0->winnerNetId = v0;
+    return param0->winnerNetId;
 }
 
 void WiFiLobbyMinigameBalloon_QueueReceivedPacket(WiFiLobbyMinigameBalloonGame *param0, int param1, const WiFiLobbyMinigameBalloonPacket *param2)
@@ -1256,11 +1256,11 @@ void WiFiLobbyMinigameBalloon_QueueReceivedPacket(WiFiLobbyMinigameBalloonGame *
     }
 
     v1 = param0->receiveQueueWriteIndex[param1] % 60;
-    v0 = &param0->receiveQueues[param1].unk_00[v1];
+    v0 = &param0->receiveQueues[param1].packets[v1];
 
     param0->receiveQueueWriteIndex[param1]++;
 
-    GF_ASSERT(v0->unk_00 == 0);
+    GF_ASSERT(v0->type == 0);
 
     *v0 = *param2;
 }
@@ -1269,9 +1269,9 @@ WiFiLobbyMinigameBalloonPacket *WiFiLobbyMinigameBalloon_DequeueReceivedPacket(W
 {
     WiFiLobbyMinigameBalloonPacket *v0;
     int v1 = param0->receiveQueueReadIndex[param1] % 60;
-    v0 = &param0->receiveQueues[param1].unk_00[v1];
+    v0 = &param0->receiveQueues[param1].packets[v1];
 
-    if (v0->unk_00 != 0) {
+    if (v0->type != 0) {
         param0->receiveQueueReadIndex[param1]++;
         return v0;
     }
@@ -1281,14 +1281,14 @@ WiFiLobbyMinigameBalloonPacket *WiFiLobbyMinigameBalloon_DequeueReceivedPacket(W
 
 static BOOL WiFiLobbyMinigameBalloon_HandleImmediatePacket(WiFiLobbyMinigameBalloonGame *param0, int param1, const WiFiLobbyMinigameBalloonPacket *param2)
 {
-    switch (param2->unk_00) {
+    switch (param2->type) {
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
     case 7:
-        GF_ASSERT(param0->pendingReceivePacket.unk_00 == 0);
+        GF_ASSERT(param0->pendingReceivePacket.type == 0);
         param0->pendingReceivePacket = *param2;
         return 1;
     }
@@ -1306,28 +1306,28 @@ void WiFiLobbyMinigameBalloon_QueueSendPacket(WiFiLobbyMinigameBalloonGame *para
     }
 
     v1 = param0->sendQueueWriteIndex % 60;
-    v0 = &param0->sendQueue.unk_00[v1];
+    v0 = &param0->sendQueue.packets[v1];
 
     param0->sendQueueWriteIndex++;
 
-    GF_ASSERT(v0->unk_00 == 0);
+    GF_ASSERT(v0->type == 0);
 
     *v0 = *param1;
 }
 
 static BOOL WiFiLobbyMinigameBalloon_HandleImmediateSendPacket(WiFiLobbyMinigameBalloonGame *param0, const WiFiLobbyMinigameBalloonPacket *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->type) {
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
     case 7:
-        if (param0->pendingSendPacket.unk_00 == 0) {
+        if (param0->pendingSendPacket.type == 0) {
             param0->pendingSendPacket = *param1;
             return 1;
-        } else if (param1->unk_00 == param0->pendingSendPacket.unk_00) {
+        } else if (param1->type == param0->pendingSendPacket.type) {
             return 1;
         } else {
             GF_ASSERT(FALSE);
@@ -1343,8 +1343,8 @@ WiFiLobbyMinigameBalloonPacket *WiFiLobbyMinigameBalloon_DequeueSendPacket(WiFiL
 {
     WiFiLobbyMinigameBalloonPacket *v0;
     int v1 = param0->sendQueueReadIndex % 60;
-    v0 = &param0->sendQueue.unk_00[v1];
-    if (v0->unk_00 != 0) {
+    v0 = &param0->sendQueue.packets[v1];
+    if (v0->type != 0) {
         return v0;
     }
 
@@ -1360,9 +1360,9 @@ static int WiFiLobbyMinigameBalloon_SendQueuedPacket(WiFiLobbyMinigameBalloonGam
         return 0;
     }
 
-    if (param0->pendingSendPacket.unk_00 != 0) {
+    if (param0->pendingSendPacket.type != 0) {
         if (WiFiLobbyMinigameBalloon_SendPacket(param0, &param0->pendingSendPacket) == 1) {
-            param0->pendingSendPacket.unk_00 = 0;
+            param0->pendingSendPacket.type = 0;
             return 1;
         } else {
             return 0;
@@ -1376,7 +1376,7 @@ static int WiFiLobbyMinigameBalloon_SendQueuedPacket(WiFiLobbyMinigameBalloonGam
     }
 
     if (WiFiLobbyMinigameBalloon_SendPacket(param0, v0) == 1) {
-        v0->unk_00 = 0;
+        v0->type = 0;
         param0->sendQueueReadIndex++;
         return 1;
     }
@@ -1390,7 +1390,7 @@ static void WiFiLobbyMinigameBalloon_ProcessReceivedPackets(WiFiLobbyMinigameBal
     WiFiLobbyMinigameBalloonPacket *v2;
     int v3, v4;
 
-    v4 = param0->pendingReceivePacket.unk_00;
+    v4 = param0->pendingReceivePacket.type;
 
     if (WiFiLobbyMinigameBalloon_HandlePacket(param0, &param0->pendingReceivePacket) == 1) {
         return;
@@ -1398,15 +1398,15 @@ static void WiFiLobbyMinigameBalloon_ProcessReceivedPackets(WiFiLobbyMinigameBal
 
     v2 = &param0->pendingReceivePacket;
 
-    for (v1 = 0; v1 < param0->unk_00->unk_30; v1++) {
+    for (v1 = 0; v1 < param0->context->playerCount; v1++) {
         while (TRUE) {
-            v2 = WiFiLobbyMinigameBalloon_DequeueReceivedPacket(param0, param0->unk_00->unk_2C[v1]);
+            v2 = WiFiLobbyMinigameBalloon_DequeueReceivedPacket(param0, param0->context->netIds[v1]);
 
             if (v2 == NULL) {
                 break;
             }
 
-            v4 = v2->unk_00;
+            v4 = v2->type;
             v3 = WiFiLobbyMinigameBalloon_HandlePacket(param0, v2);
 
             if (v3 == 1) {
@@ -1433,24 +1433,24 @@ int WiFiLobbyMinigameBalloon_GetPlayerSlot(WiFiLobbyMinigameBalloonGame *param0,
     v3 = 0xff;
     v4 = 0xff;
 
-    for (v5 = 0; v5 < param0->unk_00->unk_30; v5++) {
-        if (param0->unk_00->unk_2C[v5] == v6) {
+    for (v5 = 0; v5 < param0->context->playerCount; v5++) {
+        if (param0->context->netIds[v5] == v6) {
             v4 = v5;
         }
 
-        if (param0->unk_00->unk_2C[v5] == param1) {
+        if (param0->context->netIds[v5] == param1) {
             v3 = v5;
         }
     }
 
     GF_ASSERT(v3 != 0xff && v4 != 0xff);
 
-    for (v5 = 0; v5 < param0->unk_00->unk_30; v5++) {
-        if (sPlayerSlotOrder[param0->unk_00->unk_30][v5] == v4) {
+    for (v5 = 0; v5 < param0->context->playerCount; v5++) {
+        if (sPlayerSlotOrder[param0->context->playerCount][v5] == v4) {
             v1 = v5;
         }
 
-        if (sPlayerSlotOrder[param0->unk_00->unk_30][v5] == v3) {
+        if (sPlayerSlotOrder[param0->context->playerCount][v5] == v3) {
             v0 = v5;
         }
     }
@@ -1458,7 +1458,7 @@ int WiFiLobbyMinigameBalloon_GetPlayerSlot(WiFiLobbyMinigameBalloonGame *param0,
     v2 = v0 - v1;
 
     if (v2 < 0) {
-        v2 += param0->unk_00->unk_30;
+        v2 += param0->context->playerCount;
     }
 
     return v2;
@@ -1468,8 +1468,8 @@ int WiFiLobbyMinigameBalloon_GetPlayerIndex(WiFiLobbyMinigameBalloonGame *param0
 {
     int v0;
 
-    for (v0 = 0; v0 < param0->unk_00->unk_30; v0++) {
-        if (param0->unk_00->unk_2C[v0] == param1) {
+    for (v0 = 0; v0 < param0->context->playerCount; v0++) {
+        if (param0->context->netIds[v0] == param1) {
             return v0;
         }
     }
@@ -1506,12 +1506,12 @@ static BOOL WiFiLobbyMinigameBalloon_UpdateSync(WiFiLobbyMinigameBalloonGame *pa
         }
         break;
     case 5:
-        if (param0->confetti.unk_00 == 0) {
+        if (param0->confetti.active == 0) {
             v0 = 1;
         }
         break;
     case 6:
-        if (param0->introBanner.unk_1C == 1) {
+        if (param0->introBanner.finished == 1) {
             v0 = 1;
         }
         break;
@@ -1554,34 +1554,34 @@ static int WiFiLobbyMinigameBalloon_CheckSync(WiFiLobbyMinigameBalloonGame *para
 
 static int WiFiLobbyMinigameBalloon_IntroSequence(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonSequenceState *param1)
 {
-    switch (param1->unk_0C) {
+    switch (param1->step) {
     case 0:
-        WiFiLobbyMinigameBalloon_SendSync(param0, 1, param1->unk_18);
-        param1->unk_0C++;
+        WiFiLobbyMinigameBalloon_SendSync(param0, 1, param1->syncId);
+        param1->step++;
         break;
     case 1:
-        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->unk_18) == 1) {
-            param1->unk_18++;
-            param1->unk_0C++;
+        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->syncId) == 1) {
+            param1->syncId++;
+            param1->step++;
         }
         break;
     case 2:
-        WiFiLobbyMinigameBalloon_SendSync2(param0, param1->unk_18);
-        param1->unk_0C++;
+        WiFiLobbyMinigameBalloon_SendSync2(param0, param1->syncId);
+        param1->step++;
         break;
     case 3:
-        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->unk_18) == 1) {
-            param1->unk_18++;
-            param1->unk_0C++;
+        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->syncId) == 1) {
+            param1->syncId++;
+            param1->step++;
         }
         break;
     case 4:
-        WiFiLobbyMinigameBalloon_SendPlayerState(param0, param1->unk_18);
-        param1->unk_0C++;
+        WiFiLobbyMinigameBalloon_SendPlayerState(param0, param1->syncId);
+        param1->step++;
         break;
     case 5:
-        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->unk_18) == 1) {
-            param1->unk_18++;
+        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->syncId) == 1) {
+            param1->syncId++;
             return 1;
         }
         break;
@@ -1592,35 +1592,35 @@ static int WiFiLobbyMinigameBalloon_IntroSequence(WiFiLobbyMinigameBalloonGame *
 static int WiFiLobbyMinigameBalloon_GameSequence(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonSequenceState *param1)
 {
     if (param0->gameTimer > (43 * 30 + 12)) {
-        if ((param0->syncState == 0) && (param0->pendingSendPacket.unk_00 == 0) && (param0->pendingReceivePacket.unk_00 == 0)) {
+        if ((param0->syncState == 0) && (param0->pendingSendPacket.type == 0) && (param0->pendingReceivePacket.type == 0)) {
             return 1;
         } else {
             (void)0;
         }
     }
 
-    switch (param1->unk_0C) {
+    switch (param1->step) {
     case 0:
-        WiFiLobbyMinigameBalloon_SendBalloonPop(param0, param0->balloonLevel, WiFiLobbyMinigameBalloon_GetGaugeLevel(param0->balloonLevel), param1->unk_18);
-        param1->unk_0C++;
+        WiFiLobbyMinigameBalloon_SendBalloonPop(param0, param0->balloonLevel, WiFiLobbyMinigameBalloon_GetGaugeLevel(param0->balloonLevel), param1->syncId);
+        param1->step++;
         break;
     case 1:
-        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->unk_18) == 1) {
-            param1->unk_18++;
-            param1->unk_0C++;
+        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->syncId) == 1) {
+            param1->syncId++;
+            param1->step++;
         }
         break;
     case 2:
-        if ((param0->scoreGauge.unk_0C != 0) && (param0->scoreGauge.unk_08 >= param0->scoreGauge.unk_0C)) {
+        if ((param0->scoreGauge.targetScore != 0) && (param0->scoreGauge.currentScore >= param0->scoreGauge.targetScore)) {
             param0->balloonLevel++;
-            WiFiLobbyMinigameBalloon_SendBalloonLevel(param0, WiFiLobbyMinigameBalloon_GetBalloonLevel(param0), param1->unk_18);
-            param1->unk_0C++;
+            WiFiLobbyMinigameBalloon_SendBalloonLevel(param0, WiFiLobbyMinigameBalloon_GetBalloonLevel(param0), param1->syncId);
+            param1->step++;
         }
         break;
     case 3:
-        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->unk_18) == 1) {
-            param1->unk_18++;
-            param1->unk_0C = 0;
+        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->syncId) == 1) {
+            param1->syncId++;
+            param1->step = 0;
         }
         break;
     }
@@ -1630,26 +1630,26 @@ static int WiFiLobbyMinigameBalloon_GameSequence(WiFiLobbyMinigameBalloonGame *p
 
 static int WiFiLobbyMinigameBalloon_ResultsSequence(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonSequenceState *param1)
 {
-    switch (param1->unk_0C) {
+    switch (param1->step) {
     case 0:
-        WiFiLobbyMinigameBalloon_SendGameState(param0, param1->unk_18);
-        param1->unk_0C++;
+        WiFiLobbyMinigameBalloon_SendGameState(param0, param1->syncId);
+        param1->step++;
         break;
     case 1:
-        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->unk_18) == 1) {
-            param1->unk_18++;
-            param1->unk_0C++;
+        if (WiFiLobbyMinigameBalloon_CheckSync(param0, param1->syncId) == 1) {
+            param1->syncId++;
+            param1->step++;
         }
         break;
     case 2:
-        if (param0->unk_20 == 8) {
-            param1->unk_0C++;
+        if (param0->phase == 8) {
+            param1->step++;
         }
         break;
     case 3:
-        param1->unk_14++;
+        param1->delay++;
 
-        if (param1->unk_14 < 90) {
+        if (param1->delay < 90) {
             break;
         }
 
@@ -1673,16 +1673,16 @@ static BOOL WiFiLobbyMinigameBalloon_UpdateSequence(WiFiLobbyMinigameBalloonGame
 
     v1 = &param0->sequenceState;
 
-    if (v1->unk_00 >= NELEMS(sSequenceTable)) {
+    if (v1->sequenceIndex >= NELEMS(sSequenceTable)) {
         return 1;
     }
 
-    v0 = sSequenceTable[v1->unk_00](param0, v1);
+    v0 = sSequenceTable[v1->sequenceIndex](param0, v1);
 
     if (v0 == 1) {
-        v1->unk_00++;
-        v1->unk_0C = 0;
-        v1->unk_14 = 0;
+        v1->sequenceIndex++;
+        v1->step = 0;
+        v1->delay = 0;
         v1->unk_10 = 0;
     }
 

@@ -18,60 +18,60 @@
 #include "system.h"
 
 typedef struct {
-    fx32 unk_00;
-    fx32 unk_04;
+    fx32 x;
+    fx32 y;
 } WiFiLobbyMinigameBalloonMeshVertex;
 
 typedef struct {
-    WiFiLobbyMinigameBalloonMeshVertex unk_00;
-    WiFiLobbyMinigameBalloonMeshVertex unk_08;
-    WiFiLobbyMinigameBalloonMeshVertex unk_10;
-    WiFiLobbyMinigameBalloonMeshVertex unk_18;
+    WiFiLobbyMinigameBalloonMeshVertex topLeft;
+    WiFiLobbyMinigameBalloonMeshVertex bottomLeft;
+    WiFiLobbyMinigameBalloonMeshVertex topRight;
+    WiFiLobbyMinigameBalloonMeshVertex bottomRight;
 } WiFiLobbyMinigameBalloonMeshQuad;
 
 typedef struct {
-    WiFiLobbyMinigameBalloonMeshVertex unk_00;
-    WiFiLobbyMinigameBalloonMeshVertex unk_08;
-    WiFiLobbyMinigameBalloonMeshVertex unk_10;
-    WiFiLobbyMinigameBalloonMeshVertex unk_18;
+    WiFiLobbyMinigameBalloonMeshVertex topLeft;
+    WiFiLobbyMinigameBalloonMeshVertex bottomLeft;
+    WiFiLobbyMinigameBalloonMeshVertex topRight;
+    WiFiLobbyMinigameBalloonMeshVertex bottomRight;
 } WiFiLobbyMinigameBalloonMeshTexCoord;
 
 typedef struct WiFiLobbyMinigameBalloonBalloon_t {
-    NNSG3dResFileHeader *unk_00;
-    NNSG3dResTex *unk_04;
-    u16 unk_08;
-    WiFiLobbyMinigameBalloonMeshQuad unk_0C[8];
-    WiFiLobbyMinigameBalloonMeshTexCoord unk_10C[8];
-    int unk_20C;
-    int unk_210;
-    int unk_214;
-    int unk_218;
-    int unk_21C;
+    NNSG3dResFileHeader *textureFile;
+    NNSG3dResTex *texture;
+    u16 angle;
+    WiFiLobbyMinigameBalloonMeshQuad meshQuads[8];
+    WiFiLobbyMinigameBalloonMeshTexCoord texCoords[8];
+    int touchX;
+    int touchY;
+    int touchHeld;
+    int touchPressed;
+    int centerX;
     int unk_220;
-    int unk_224;
-    int unk_228;
-    int unk_22C;
-    fx32 unk_230;
-    ManagedSprite *unk_234;
-    int unk_238;
-    int unk_23C;
-    int unk_240;
-    int unk_244;
-    fx32 unk_248;
-    u16 *unk_24C;
-    u16 *unk_250;
-    u32 unk_254;
-    u32 unk_258;
-    s32 unk_25C;
-    fx32 unk_260;
-    fx32 unk_264;
-    s16 unk_268;
-    s16 unk_26A;
-    s16 unk_26C;
-    int unk_270;
-    u8 unk_274;
-    u8 unk_275;
-    u8 unk_276;
+    int touchStartX;
+    int touchStartY;
+    int touchOffsetY;
+    fx32 baselineY;
+    ManagedSprite *sprite;
+    int held;
+    int lastTouchY;
+    int grabStretch;
+    int stretch;
+    fx32 springback;
+    u16 *basePalette;
+    u16 *paletteBuffer;
+    u32 paletteSize;
+    u32 paletteVramAddr;
+    s32 stretchLevel;
+    fx32 scaleX;
+    fx32 scaleY;
+    s16 flashTimer;
+    s16 bumpY;
+    s16 bumpX;
+    int balloonLevel;
+    u8 released;
+    u8 flashPhase;
+    u8 paletteDirty;
 } WiFiLobbyMinigameBalloonBalloon;
 
 static void WiFiLobbyMinigameBalloonBalloon_LoadTexture(WiFiLobbyMinigameBalloonBalloon *param0);
@@ -139,10 +139,10 @@ static const SpriteTemplate sBalloonSpriteTemplate = {
 };
 
 static const struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
+    u8 minX;
+    u8 maxX;
+    u8 yOffset;
+    u8 maxY;
 } sTouchZones[] = {
     { 0x40, 0xC0, 0x10, 0xA8 },
     { 0x28, 0xD8, 0x0, 0xA8 },
@@ -160,115 +160,115 @@ WiFiLobbyMinigameBalloonBalloon *WiFiLobbyMinigameBalloonBalloon_New(WiFiLobbyMi
 {
     WiFiLobbyMinigameBalloonBalloon *v0 = Heap_Alloc(HEAP_ID_110, sizeof(WiFiLobbyMinigameBalloonBalloon));
     MI_CpuClear8(v0, sizeof(WiFiLobbyMinigameBalloonBalloon));
-    v0->unk_270 = param0->unk_00->balloonLevel;
+    v0->balloonLevel = param0->context->balloonLevel;
 
     WiFiLobbyMinigameBalloonBalloon_LoadTexture(v0);
     WiFiLobbyMinigameBalloonBalloon_InitMesh(v0);
     WiFiLobbyMinigameBalloonBalloon_InitTexCoords(v0);
 
-    switch (param0->unk_00->balloonLevel) {
+    switch (param0->context->balloonLevel) {
     case 2:
-        v0->unk_260 = ((6 * 16 * FX32_ONE) - 2 * 16 * FX32_ONE);
-        v0->unk_264 = ((6 * 16 * FX32_ONE) + 1 * 16 * FX32_ONE / 2);
+        v0->scaleX = ((6 * 16 * FX32_ONE) - 2 * 16 * FX32_ONE);
+        v0->scaleY = ((6 * 16 * FX32_ONE) + 1 * 16 * FX32_ONE / 2);
         break;
     case 1:
-        v0->unk_260 = ((6 * 16 * FX32_ONE) + 3 * 16 * FX32_ONE);
-        v0->unk_264 = ((6 * 16 * FX32_ONE) + 1 * 16 * FX32_ONE);
+        v0->scaleX = ((6 * 16 * FX32_ONE) + 3 * 16 * FX32_ONE);
+        v0->scaleY = ((6 * 16 * FX32_ONE) + 1 * 16 * FX32_ONE);
         break;
     default:
-        v0->unk_260 = (6 * 16 * FX32_ONE);
-        v0->unk_264 = (6 * 16 * FX32_ONE);
+        v0->scaleX = (6 * 16 * FX32_ONE);
+        v0->scaleY = (6 * 16 * FX32_ONE);
         break;
     }
 
-    v0->unk_21C = 128;
+    v0->centerX = 128;
     v0->unk_220 = 40;
 
     WiFiLobbyMinigameBalloonBalloon_LoadSpriteGraphics(param0);
-    v0->unk_234 = WiFiLobbyMinigameBalloonBalloon_CreateSprite(param0);
-    WiFiLobbyMinigameBalloonBalloon_UpdateSprite(v0, v0->unk_234);
+    v0->sprite = WiFiLobbyMinigameBalloonBalloon_CreateSprite(param0);
+    WiFiLobbyMinigameBalloonBalloon_UpdateSprite(v0, v0->sprite);
 
-    v0->unk_248 = 0x2000;
+    v0->springback = 0x2000;
 
     return v0;
 }
 
 void WiFiLobbyMinigameBalloonBalloon_Free(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1)
 {
-    WiFiLobbyMinigameBalloonBalloon_FreeSprite(param1->unk_234);
+    WiFiLobbyMinigameBalloonBalloon_FreeSprite(param1->sprite);
     WiFiLobbyMinigameBalloonBalloon_FreeSpriteGraphics(param0);
 
-    Heap_Free(param1->unk_00);
-    Heap_Free(param1->unk_24C);
-    Heap_Free(param1->unk_250);
+    Heap_Free(param1->textureFile);
+    Heap_Free(param1->basePalette);
+    Heap_Free(param1->paletteBuffer);
     Heap_Free(param1);
 }
 
 void WiFiLobbyMinigameBalloonBalloon_Update(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1)
 {
-    param1->unk_244 = 0;
+    param1->stretch = 0;
 
-    if (param0->unk_20 == 2) {
-        param1->unk_20C = param0->introBanner.unk_0C;
-        param1->unk_210 = param0->introBanner.unk_10;
-        param1->unk_214 = param0->introBanner.unk_14;
-        param1->unk_218 = param0->introBanner.unk_18;
+    if (param0->phase == 2) {
+        param1->touchX = param0->introBanner.x;
+        param1->touchY = param0->introBanner.y;
+        param1->touchHeld = param0->introBanner.touchHeld;
+        param1->touchPressed = param0->introBanner.touchPressed;
     } else if ((param0->gameStarted == 0) || (param0->gameEnded == 1)) {
-        param1->unk_20C = 0;
-        param1->unk_210 = 0;
-        param1->unk_214 = 0;
-        param1->unk_218 = 0;
+        param1->touchX = 0;
+        param1->touchY = 0;
+        param1->touchHeld = 0;
+        param1->touchPressed = 0;
     } else {
-        param1->unk_20C = gSystem.touchX;
-        param1->unk_210 = gSystem.touchY;
-        param1->unk_214 = gSystem.touchHeld;
-        param1->unk_218 = gSystem.touchPressed;
+        param1->touchX = gSystem.touchX;
+        param1->touchY = gSystem.touchY;
+        param1->touchHeld = gSystem.touchHeld;
+        param1->touchPressed = gSystem.touchPressed;
     }
 
     WiFiLobbyMinigameBalloonBalloon_CheckTouch(param1);
 
-    if (param1->unk_214 == 0) {
+    if (param1->touchHeld == 0) {
         WiFiLobbyMinigameBalloonBalloon_Release(param1);
-        if ((param1->unk_0C[0].unk_10.unk_04 == 0) && (param1->unk_0C[0].unk_10.unk_04 == 0)) {
-            param1->unk_274 = 0;
+        if ((param1->meshQuads[0].topRight.y == 0) && (param1->meshQuads[0].topRight.y == 0)) {
+            param1->released = 0;
         }
     }
 
     WiFiLobbyMinigameBalloonBalloon_UpdatePhysics(param1);
     WiFiLobbyMinigameBalloonBalloon_Draw(param1);
-    WiFiLobbyMinigameBalloonBalloon_UpdateSprite(param1, param1->unk_234);
+    WiFiLobbyMinigameBalloonBalloon_UpdateSprite(param1, param1->sprite);
 
-    if (param1->unk_268 > 0) {
-        param1->unk_268 += 8;
+    if (param1->flashTimer > 0) {
+        param1->flashTimer += 8;
 
-        if (param1->unk_268 > 30) {
-            param1->unk_268 = 30;
+        if (param1->flashTimer > 30) {
+            param1->flashTimer = 30;
         }
 
         WiFiLobbyMinigameBalloonBalloon_UpdatePopFlash(param1);
     }
 
     if ((param0->gameEnded == 0) && (param0->gameStarted == 1)) {
-        if (param1->unk_244 > 0) {
+        if (param1->stretch > 0) {
             WiFiLobbyMinigameBalloonScorePacket v0;
             int v1 = 0, v2 = 0;
             s32 v3;
 
-            if (param1->unk_25C < 800) {
-                v1 = WiFiLobbyMinigameBalloonBalloon_AddStretch(param1, param1->unk_244);
+            if (param1->stretchLevel < 800) {
+                v1 = WiFiLobbyMinigameBalloonBalloon_AddStretch(param1, param1->stretch);
 
                 if (v1 == 1) {
-                    param1->unk_268 = 8;
-                    param1->unk_275 = 0;
+                    param1->flashTimer = 8;
+                    param1->flashPhase = 0;
                     Sound_PlayEffect(SEQ_SE_PL_BALLOON01_sseq);
                 }
             } else {
                 WiFiLobbyMinigameBalloonBalloon_ResetStretch(param1);
-                param1->unk_268 = 0;
+                param1->flashTimer = 0;
                 v2 = 1;
             }
 
-            v3 = WiFiLobbyMinigameBalloonBalloon_CalcScore(param1, param1->unk_244);
+            v3 = WiFiLobbyMinigameBalloonBalloon_CalcScore(param1, param1->stretch);
 
             if (v2 == 1) {
                 v3 += v3 * 25 / 100;
@@ -277,17 +277,17 @@ void WiFiLobbyMinigameBalloonBalloon_Update(WiFiLobbyMinigameBalloonGame *param0
             WiFiLobbyMinigameBalloon_InitScorePacket(param0, param0->balloonLevel, v3, &v0);
             WiFiLobbyMinigameBalloon_QueueScorePacket(param0, &v0);
             WiFiLobbyMinigameBalloon_SpawnPopEffect(param0, &v0);
-            WiFiLobbyMinigameBalloonBalloon_UpdateStretch(param1, param1->unk_244);
-            WiFiLobbyMinigameBalloonBalloon_PlayPopEffects(param0, param1, param1->unk_244, v2);
-            param1->unk_244 = 0;
+            WiFiLobbyMinigameBalloonBalloon_UpdateStretch(param1, param1->stretch);
+            WiFiLobbyMinigameBalloonBalloon_PlayPopEffects(param0, param1, param1->stretch, v2);
+            param1->stretch = 0;
         }
     }
 }
 
 void WiFiLobbyMinigameBalloonBalloon_CommitPalette(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1)
 {
-    if (param1->unk_276 == 1) {
-        param1->unk_276 = 0;
+    if (param1->paletteDirty == 1) {
+        param1->paletteDirty = 0;
         WiFiLobbyMinigameBalloonBalloon_UploadPalette(param1);
     }
 }
@@ -302,37 +302,37 @@ static int WiFiLobbyMinigameBalloonBalloon_CalcScore(WiFiLobbyMinigameBalloonBal
         v0 = param1 * 10;
     }
 
-    v0 = v0 * sScoreMultipliers[param0->unk_270] / 100;
+    v0 = v0 * sScoreMultipliers[param0->balloonLevel] / 100;
     return v0;
 }
 
 static void WiFiLobbyMinigameBalloonBalloon_UpdateStretch(WiFiLobbyMinigameBalloonBalloon *param0, int param1)
 {
-    if (param0->unk_244 >= 98) {
-        param0->unk_248 += 0x1000;
-    } else if (param0->unk_244 >= 98) {
-        param0->unk_248 += 0x1000;
+    if (param0->stretch >= 98) {
+        param0->springback += 0x1000;
+    } else if (param0->stretch >= 98) {
+        param0->springback += 0x1000;
     } else {
-        param0->unk_248 = 0x2000;
+        param0->springback = 0x2000;
     }
 
-    if (param0->unk_248 > 0x11000) {
-        param0->unk_248 = 0x11000;
+    if (param0->springback > 0x11000) {
+        param0->springback = 0x11000;
     }
 }
 
 static void WiFiLobbyMinigameBalloonBalloon_PlayPopEffects(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonBalloon *param1, int param2, int param3)
 {
-    if ((param3 == 1) && (param1->unk_244 >= 98)) {
+    if ((param3 == 1) && (param1->stretch >= 98)) {
         WiFiLobbyMinigameBalloon_CreateParticleEmitter(param0, 0);
         Sound_PlayEffect(SEQ_SE_PL_BALLOON04_sseq);
-    } else if (param1->unk_244 >= 98) {
+    } else if (param1->stretch >= 98) {
         (void)0;
     } else {
-        if (param1->unk_0C[0].unk_00.unk_04 < param1->unk_0C[0].unk_10.unk_04) {
+        if (param1->meshQuads[0].topLeft.y < param1->meshQuads[0].topRight.y) {
             WiFiLobbyMinigameBalloon_CreateParticleEmitter(param0, 2);
             Sound_PlayEffect(SEQ_SE_PL_BALLOON03_sseq);
-        } else if (param1->unk_0C[0].unk_00.unk_04 > param1->unk_0C[0].unk_10.unk_04) {
+        } else if (param1->meshQuads[0].topLeft.y > param1->meshQuads[0].topRight.y) {
             WiFiLobbyMinigameBalloon_CreateParticleEmitter(param0, 1);
             Sound_PlayEffect(SEQ_SE_PL_BALLOON03_sseq);
         }
@@ -341,21 +341,21 @@ static void WiFiLobbyMinigameBalloonBalloon_PlayPopEffects(WiFiLobbyMinigameBall
 
 static void WiFiLobbyMinigameBalloonBalloon_Release(WiFiLobbyMinigameBalloonBalloon *param0)
 {
-    if (param0->unk_238 == 0) {
+    if (param0->held == 0) {
         return;
     }
 
-    param0->unk_238 = 0;
-    param0->unk_23C = -1;
+    param0->held = 0;
+    param0->lastTouchY = -1;
 
     {
         int v0;
 
         v0 = WiFiLobbyMinigameBalloonBalloon_CalcStretchPercent(param0);
-        param0->unk_244 = param0->unk_240 - v0;
+        param0->stretch = param0->grabStretch - v0;
 
-        if (param0->unk_244 < 25) {
-            param0->unk_244 = 0;
+        if (param0->stretch < 25) {
+            param0->stretch = 0;
         }
     }
 }
@@ -369,11 +369,11 @@ static void WiFiLobbyMinigameBalloonBalloon_Draw(WiFiLobbyMinigameBalloonBalloon
     NNS_G3dGePushMtx();
 
     {
-        fx16 v2 = FX_SinIdx(param0->unk_08);
-        fx16 v3 = FX_CosIdx(param0->unk_08);
+        fx16 v2 = FX_SinIdx(param0->angle);
+        fx16 v3 = FX_CosIdx(param0->angle);
 
         NNS_G3dGeTranslate(0, (9 + 10) * FX32_ONE, -5 * FX32_ONE);
-        NNS_G3dGeScale(param0->unk_260 + param0->unk_260 * (param0->unk_268 + param0->unk_26C) / 100, param0->unk_264 + param0->unk_264 * param0->unk_26A / 100, (FX32_ONE));
+        NNS_G3dGeScale(param0->scaleX + param0->scaleX * (param0->flashTimer + param0->bumpX) / 100, param0->scaleY + param0->scaleY * param0->bumpY / 100, (FX32_ONE));
     }
 
     {
@@ -385,8 +385,8 @@ static void WiFiLobbyMinigameBalloonBalloon_Draw(WiFiLobbyMinigameBalloonBalloon
     WiFiLobbyMinigameBalloonBalloon_SetMaterialColors(1, 1);
     WiFiLobbyMinigameBalloonBalloon_SetShininess();
 
-    v0 = NNS_GfdGetTexKeyAddr(param0->unk_04->texInfo.vramKey);
-    v1 = NNS_GfdGetPlttKeyAddr(param0->unk_04->plttInfo.vramKey);
+    v0 = NNS_GfdGetTexKeyAddr(param0->texture->texInfo.vramKey);
+    v1 = NNS_GfdGetPlttKeyAddr(param0->texture->plttInfo.vramKey);
 
     NNS_G3dGeTexImageParam(GX_TEXFMT_PLTT256, GX_TEXGEN_TEXCOORD, GX_TEXSIZE_S128, GX_TEXSIZE_T128, GX_TEXREPEAT_NONE, GX_TEXFLIP_NONE, GX_TEXPLTTCOLOR0_TRNS, v0);
     NNS_G3dGeTexPlttBase(v1, GX_TEXFMT_PLTT256);
@@ -400,51 +400,51 @@ static void WiFiLobbyMinigameBalloonBalloon_Draw(WiFiLobbyMinigameBalloonBalloon
 
 static void WiFiLobbyMinigameBalloonBalloon_LoadTexture(WiFiLobbyMinigameBalloonBalloon *param0)
 {
-    param0->unk_00 = NARC_AllocAndReadWholeMemberByIndexPair(NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, 29, 110);
-    param0->unk_04 = NNS_G3dGetTex(param0->unk_00);
+    param0->textureFile = NARC_AllocAndReadWholeMemberByIndexPair(NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, 29, 110);
+    param0->texture = NNS_G3dGetTex(param0->textureFile);
 
-    Easy3D_UploadTextureToVRAM(param0->unk_04);
+    Easy3D_UploadTextureToVRAM(param0->texture);
 
     {
         u32 v0;
         void *v1;
         u32 v2;
 
-        v0 = (u32)param0->unk_04->plttInfo.sizePltt << 3;
-        v1 = (u8 *)param0->unk_04 + param0->unk_04->plttInfo.ofsPlttData;
-        v2 = (param0->unk_04->plttInfo.vramKey & 0xffff) << 3;
+        v0 = (u32)param0->texture->plttInfo.sizePltt << 3;
+        v1 = (u8 *)param0->texture + param0->texture->plttInfo.ofsPlttData;
+        v2 = (param0->texture->plttInfo.vramKey & 0xffff) << 3;
 
-        GF_ASSERT(param0->unk_24C == NULL);
+        GF_ASSERT(param0->basePalette == NULL);
 
-        param0->unk_24C = Heap_Alloc(HEAP_ID_110, v0);
-        param0->unk_250 = Heap_Alloc(HEAP_ID_110, v0);
+        param0->basePalette = Heap_Alloc(HEAP_ID_110, v0);
+        param0->paletteBuffer = Heap_Alloc(HEAP_ID_110, v0);
 
-        MI_CpuCopy8(v1, param0->unk_24C, v0);
-        MI_CpuCopy8(v1, param0->unk_250, v0);
+        MI_CpuCopy8(v1, param0->basePalette, v0);
+        MI_CpuCopy8(v1, param0->paletteBuffer, v0);
 
-        DC_FlushRange(param0->unk_250, v0);
+        DC_FlushRange(param0->paletteBuffer, v0);
 
-        param0->unk_258 = v2;
-        param0->unk_254 = v0;
+        param0->paletteVramAddr = v2;
+        param0->paletteSize = v0;
     }
 
     {
         u8 *v3;
         u32 v4;
 
-        GF_ASSERT(param0->unk_04->texInfo.ofsTex != 0);
+        GF_ASSERT(param0->texture->texInfo.ofsTex != 0);
 
-        v3 = (u8 *)param0->unk_04 + param0->unk_04->texInfo.ofsTex;
-        v4 = (u32)(v3 - (u8 *)param0->unk_00);
+        v3 = (u8 *)param0->texture + param0->texture->texInfo.ofsTex;
+        v4 = (u32)(v3 - (u8 *)param0->textureFile);
 
-        Heap_Realloc(param0->unk_00, v4);
+        Heap_Realloc(param0->textureFile, v4);
     }
 }
 
 static void WiFiLobbyMinigameBalloonBalloon_UploadPalette(WiFiLobbyMinigameBalloonBalloon *param0)
 {
     GX_BeginLoadTexPltt();
-    GX_LoadTexPltt(param0->unk_250, param0->unk_258, param0->unk_254);
+    GX_LoadTexPltt(param0->paletteBuffer, param0->paletteVramAddr, param0->paletteSize);
     GX_EndLoadTexPltt();
 }
 
@@ -457,47 +457,47 @@ static void WiFiLobbyMinigameBalloonBalloon_BlendPalette(WiFiLobbyMinigameBalloo
         v0 = 16;
     }
 
-    BlendPalette(param0->unk_24C, param0->unk_250, param0->unk_254 / 2, v0, 0x1f);
-    DC_FlushRange(param0->unk_250, param0->unk_254);
+    BlendPalette(param0->basePalette, param0->paletteBuffer, param0->paletteSize / 2, v0, 0x1f);
+    DC_FlushRange(param0->paletteBuffer, param0->paletteSize);
 
-    param0->unk_276 = 1;
+    param0->paletteDirty = 1;
 }
 
 static BOOL WiFiLobbyMinigameBalloonBalloon_AddStretch(WiFiLobbyMinigameBalloonBalloon *param0, int param1)
 {
     BOOL v0 = 0;
 
-    param0->unk_25C += param1;
+    param0->stretchLevel += param1;
 
-    if (param0->unk_25C >= 800) {
-        param0->unk_25C = 800;
+    if (param0->stretchLevel >= 800) {
+        param0->stretchLevel = 800;
         v0 = 1;
     }
 
-    WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->unk_25C);
+    WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->stretchLevel);
 
     return v0;
 }
 
 static void WiFiLobbyMinigameBalloonBalloon_ResetStretch(WiFiLobbyMinigameBalloonBalloon *param0)
 {
-    param0->unk_25C = 0;
-    WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->unk_25C);
+    param0->stretchLevel = 0;
+    WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->stretchLevel);
 }
 
 static void WiFiLobbyMinigameBalloonBalloon_UpdatePopFlash(WiFiLobbyMinigameBalloonBalloon *param0)
 {
-    if (param0->unk_268 == 0) {
+    if (param0->flashTimer == 0) {
         return;
     }
 
-    param0->unk_275++;
+    param0->flashPhase++;
 
-    if (param0->unk_275 == 4) {
-        WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->unk_25C / 2);
-    } else if (param0->unk_275 == 4 * 2) {
-        WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->unk_25C);
-        param0->unk_275 = 0;
+    if (param0->flashPhase == 4) {
+        WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->stretchLevel / 2);
+    } else if (param0->flashPhase == 4 * 2) {
+        WiFiLobbyMinigameBalloonBalloon_BlendPalette(param0, param0->stretchLevel);
+        param0->flashPhase = 0;
     }
 }
 
@@ -542,14 +542,14 @@ static void WiFiLobbyMinigameBalloonBalloon_InitMesh(WiFiLobbyMinigameBalloonBal
     for (v0 = 0; v0 < 8; v0++) {
         v1 = 0 + v0 * v2;
 
-        param0->unk_0C[v0].unk_00.unk_00 = 0;
-        param0->unk_0C[v0].unk_00.unk_04 = v1;
-        param0->unk_0C[v0].unk_08.unk_00 = 0;
-        param0->unk_0C[v0].unk_08.unk_04 = v1 + v2;
-        param0->unk_0C[v0].unk_10.unk_00 = (128 * FX32_ONE);
-        param0->unk_0C[v0].unk_10.unk_04 = v1;
-        param0->unk_0C[v0].unk_18.unk_00 = (128 * FX32_ONE);
-        param0->unk_0C[v0].unk_18.unk_04 = v1 + v2;
+        param0->meshQuads[v0].topLeft.x = 0;
+        param0->meshQuads[v0].topLeft.y = v1;
+        param0->meshQuads[v0].bottomLeft.x = 0;
+        param0->meshQuads[v0].bottomLeft.y = v1 + v2;
+        param0->meshQuads[v0].topRight.x = (128 * FX32_ONE);
+        param0->meshQuads[v0].topRight.y = v1;
+        param0->meshQuads[v0].bottomRight.x = (128 * FX32_ONE);
+        param0->meshQuads[v0].bottomRight.y = v1 + v2;
     }
 }
 
@@ -564,14 +564,14 @@ static void WiFiLobbyMinigameBalloonBalloon_InitTexCoords(WiFiLobbyMinigameBallo
     for (v0 = 0; v0 < 8; v0++) {
         v1 = v0 * v2;
 
-        param0->unk_10C[v0].unk_00.unk_00 = 0;
-        param0->unk_10C[v0].unk_00.unk_04 = v1;
-        param0->unk_10C[v0].unk_08.unk_00 = 0;
-        param0->unk_10C[v0].unk_08.unk_04 = v1 + v2;
-        param0->unk_10C[v0].unk_10.unk_00 = 128 * FX32_ONE;
-        param0->unk_10C[v0].unk_10.unk_04 = v1;
-        param0->unk_10C[v0].unk_18.unk_00 = 128 * FX32_ONE;
-        param0->unk_10C[v0].unk_18.unk_04 = v1 + v2;
+        param0->texCoords[v0].topLeft.x = 0;
+        param0->texCoords[v0].topLeft.y = v1;
+        param0->texCoords[v0].bottomLeft.x = 0;
+        param0->texCoords[v0].bottomLeft.y = v1 + v2;
+        param0->texCoords[v0].topRight.x = 128 * FX32_ONE;
+        param0->texCoords[v0].topRight.y = v1;
+        param0->texCoords[v0].bottomRight.x = 128 * FX32_ONE;
+        param0->texCoords[v0].bottomRight.y = v1 + v2;
     }
 }
 
@@ -584,23 +584,23 @@ static void WiFiLobbyMinigameBalloonBalloon_DrawMesh(WiFiLobbyMinigameBalloonBal
     for (v0 = 0; v0 < 8; v0++) {
         NNS_G3dGeBegin(GX_BEGIN_QUADS);
 
-        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->unk_0C[v0].unk_00.unk_00, param0->unk_0C[v0].unk_00.unk_04, &v3, &v4);
-        NNS_G3dGeTexCoord(param0->unk_10C[v0].unk_00.unk_00, param0->unk_10C[v0].unk_00.unk_04);
+        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->meshQuads[v0].topLeft.x, param0->meshQuads[v0].topLeft.y, &v3, &v4);
+        NNS_G3dGeTexCoord(param0->texCoords[v0].topLeft.x, param0->texCoords[v0].topLeft.y);
         inline_WiFiLobbyMinigameBalloonBalloon_SetNormal(0);
         NNS_G3dGeVtx(v3, v4, 0);
 
-        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->unk_0C[v0].unk_08.unk_00, param0->unk_0C[v0].unk_08.unk_04, &v3, &v4);
-        NNS_G3dGeTexCoord(param0->unk_10C[v0].unk_08.unk_00, param0->unk_10C[v0].unk_08.unk_04);
+        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->meshQuads[v0].bottomLeft.x, param0->meshQuads[v0].bottomLeft.y, &v3, &v4);
+        NNS_G3dGeTexCoord(param0->texCoords[v0].bottomLeft.x, param0->texCoords[v0].bottomLeft.y);
         inline_WiFiLobbyMinigameBalloonBalloon_SetNormal(0);
         NNS_G3dGeVtx(v3, v4, 0);
 
-        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->unk_0C[v0].unk_18.unk_00, param0->unk_0C[v0].unk_18.unk_04, &v3, &v4);
-        NNS_G3dGeTexCoord(param0->unk_10C[v0].unk_18.unk_00, param0->unk_10C[v0].unk_18.unk_04);
+        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->meshQuads[v0].bottomRight.x, param0->meshQuads[v0].bottomRight.y, &v3, &v4);
+        NNS_G3dGeTexCoord(param0->texCoords[v0].bottomRight.x, param0->texCoords[v0].bottomRight.y);
         inline_WiFiLobbyMinigameBalloonBalloon_SetNormal(0);
         NNS_G3dGeVtx(v3, v4, 0);
 
-        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->unk_0C[v0].unk_10.unk_00, param0->unk_0C[v0].unk_10.unk_04, &v3, &v4);
-        NNS_G3dGeTexCoord(param0->unk_10C[v0].unk_10.unk_00, param0->unk_10C[v0].unk_10.unk_04);
+        WiFiLobbyMinigameBalloonBalloon_MeshToTexCoord(param0->meshQuads[v0].topRight.x, param0->meshQuads[v0].topRight.y, &v3, &v4);
+        NNS_G3dGeTexCoord(param0->texCoords[v0].topRight.x, param0->texCoords[v0].topRight.y);
         inline_WiFiLobbyMinigameBalloonBalloon_SetNormal(0);
         NNS_G3dGeVtx(v3, v4, 0);
 
@@ -636,22 +636,22 @@ static BOOL WiFiLobbyMinigameBalloonBalloon_CheckTouch(WiFiLobbyMinigameBalloonB
 {
     int v0;
 
-    if ((param0->unk_238 == 1) || (param0->unk_218 == 0)) {
+    if ((param0->held == 1) || (param0->touchPressed == 0)) {
         return 0;
     }
 
-    v0 = (param0->unk_230 >> FX32_SHIFT) + sTouchZones[param0->unk_270].unk_02;
+    v0 = (param0->baselineY >> FX32_SHIFT) + sTouchZones[param0->balloonLevel].yOffset;
 
-    if ((param0->unk_20C < sTouchZones[param0->unk_270].unk_00) || (param0->unk_20C > sTouchZones[param0->unk_270].unk_01) || (param0->unk_210 < v0) || (param0->unk_210 > sTouchZones[param0->unk_270].unk_03)) {
+    if ((param0->touchX < sTouchZones[param0->balloonLevel].minX) || (param0->touchX > sTouchZones[param0->balloonLevel].maxX) || (param0->touchY < v0) || (param0->touchY > sTouchZones[param0->balloonLevel].maxY)) {
         return 0;
     }
 
-    param0->unk_238 = 1;
-    param0->unk_224 = param0->unk_20C;
-    param0->unk_228 = param0->unk_210;
-    param0->unk_22C = param0->unk_210 - v0;
-    param0->unk_230 = -(param0->unk_0C[0].unk_10.unk_04 + (param0->unk_0C[0].unk_00.unk_04 - param0->unk_0C[0].unk_10.unk_04) / 2);
-    param0->unk_240 = WiFiLobbyMinigameBalloonBalloon_CalcStretchPercent(param0);
+    param0->held = 1;
+    param0->touchStartX = param0->touchX;
+    param0->touchStartY = param0->touchY;
+    param0->touchOffsetY = param0->touchY - v0;
+    param0->baselineY = -(param0->meshQuads[0].topRight.y + (param0->meshQuads[0].topLeft.y - param0->meshQuads[0].topRight.y) / 2);
+    param0->grabStretch = WiFiLobbyMinigameBalloonBalloon_CalcStretchPercent(param0);
 
     return 1;
 }
@@ -663,26 +663,26 @@ static int WiFiLobbyMinigameBalloonBalloon_UpdatePhysics(WiFiLobbyMinigameBalloo
     int v2;
     int v3;
 
-    if (param0->unk_238 == 1) {
-        if (param0->unk_210 < param0->unk_23C) {
-            param0->unk_274 = 0;
+    if (param0->held == 1) {
+        if (param0->touchY < param0->lastTouchY) {
+            param0->released = 0;
             return 0;
-        } else if (param0->unk_210 == param0->unk_23C) {
-            param0->unk_274 = 0;
+        } else if (param0->touchY == param0->lastTouchY) {
+            param0->released = 0;
             return 1;
         }
 
-        if ((param0->unk_23C != -1) && (param0->unk_210 > param0->unk_23C) && (Sound_IsEffectPlaying(1399) == 0)) {
+        if ((param0->lastTouchY != -1) && (param0->touchY > param0->lastTouchY) && (Sound_IsEffectPlaying(1399) == 0)) {
             Sound_PlayEffect(SEQ_SE_PL_BALLOON02_sseq);
-            param0->unk_274 = 1;
+            param0->released = 1;
         }
 
-        v3 = param0->unk_210 - param0->unk_22C;
-        v1 = (v3 << FX32_SHIFT) - (param0->unk_230 + (sTouchZones[param0->unk_270].unk_02 << FX32_SHIFT));
-        param0->unk_23C = param0->unk_210;
+        v3 = param0->touchY - param0->touchOffsetY;
+        v1 = (v3 << FX32_SHIFT) - (param0->baselineY + (sTouchZones[param0->balloonLevel].yOffset << FX32_SHIFT));
+        param0->lastTouchY = param0->touchY;
     } else {
         v0 = 1;
-        v1 = -param0->unk_248;
+        v1 = -param0->springback;
     }
 
     v2 = WiFiLobbyMinigameBalloonBalloon_DeformMesh(param0, v0, v1);
@@ -697,7 +697,7 @@ static int WiFiLobbyMinigameBalloonBalloon_UpdatePhysics(WiFiLobbyMinigameBalloo
         break;
     }
 
-    param0->unk_230 = -(param0->unk_0C[0].unk_10.unk_04 + (param0->unk_0C[0].unk_00.unk_04 - param0->unk_0C[0].unk_10.unk_04) / 2);
+    param0->baselineY = -(param0->meshQuads[0].topRight.y + (param0->meshQuads[0].topLeft.y - param0->meshQuads[0].topRight.y) / 2);
     return 1;
 }
 
@@ -713,9 +713,9 @@ static int WiFiLobbyMinigameBalloonBalloon_DeformMesh(WiFiLobbyMinigameBalloonBa
         (void)0;
     }
 
-    v0 = param0->unk_210 << FX32_SHIFT;
-    v3 = -param0->unk_0C[0].unk_00.unk_04;
-    v4 = -param0->unk_0C[0].unk_10.unk_04;
+    v0 = param0->touchY << FX32_SHIFT;
+    v3 = -param0->meshQuads[0].topLeft.y;
+    v4 = -param0->meshQuads[0].topRight.y;
     v7 = v4 + (v3 - v4) / 2;
 
     switch (WiFiLobbyMinigameBalloonBalloon_GetTouchZone(param0, param1)) {
@@ -804,10 +804,10 @@ static int WiFiLobbyMinigameBalloonBalloon_DeformMesh(WiFiLobbyMinigameBalloonBa
     {
         fx32 v17 = ((128 * FX32_ONE) / 2) / FX32_ONE;
 
-        param0->unk_0C[0].unk_00.unk_00 = v17 * FX_CosIdx(v12) + ((128 * FX32_ONE) / 2);
-        param0->unk_0C[0].unk_00.unk_04 = -(v17 * FX_SinIdx(v12) + v8);
-        param0->unk_0C[0].unk_10.unk_00 = v17 * FX_CosIdx(v11) + ((128 * FX32_ONE) / 2);
-        param0->unk_0C[0].unk_10.unk_04 = -(v17 * FX_SinIdx(v11) + v8);
+        param0->meshQuads[0].topLeft.x = v17 * FX_CosIdx(v12) + ((128 * FX32_ONE) / 2);
+        param0->meshQuads[0].topLeft.y = -(v17 * FX_SinIdx(v12) + v8);
+        param0->meshQuads[0].topRight.x = v17 * FX_CosIdx(v11) + ((128 * FX32_ONE) / 2);
+        param0->meshQuads[0].topRight.y = -(v17 * FX_SinIdx(v11) + v8);
 
         {
             int v18;
@@ -823,14 +823,14 @@ static int WiFiLobbyMinigameBalloonBalloon_DeformMesh(WiFiLobbyMinigameBalloonBa
             }
 
             for (v18 = 1; v18 < (8 - 1); v18++) {
-                param0->unk_0C[v18].unk_00.unk_00 = v17 * FX_CosIdx(v12 - v20 * v18) + ((128 * FX32_ONE) / 2);
-                param0->unk_0C[v18].unk_00.unk_04 = -(v17 * FX_SinIdx(v12 - v20 * v18) + v8 + v19 * v18);
-                param0->unk_0C[v18].unk_10.unk_00 = v17 * FX_CosIdx(v11 - v20 * v18) + ((128 * FX32_ONE) / 2);
-                param0->unk_0C[v18].unk_10.unk_04 = -(v17 * FX_SinIdx(v11 - v20 * v18) + v8 + v19 * v18);
-                param0->unk_0C[v18 - 1].unk_08.unk_00 = param0->unk_0C[v18].unk_00.unk_00;
-                param0->unk_0C[v18 - 1].unk_08.unk_04 = param0->unk_0C[v18].unk_00.unk_04;
-                param0->unk_0C[v18 - 1].unk_18.unk_00 = param0->unk_0C[v18].unk_10.unk_00;
-                param0->unk_0C[v18 - 1].unk_18.unk_04 = param0->unk_0C[v18].unk_10.unk_04;
+                param0->meshQuads[v18].topLeft.x = v17 * FX_CosIdx(v12 - v20 * v18) + ((128 * FX32_ONE) / 2);
+                param0->meshQuads[v18].topLeft.y = -(v17 * FX_SinIdx(v12 - v20 * v18) + v8 + v19 * v18);
+                param0->meshQuads[v18].topRight.x = v17 * FX_CosIdx(v11 - v20 * v18) + ((128 * FX32_ONE) / 2);
+                param0->meshQuads[v18].topRight.y = -(v17 * FX_SinIdx(v11 - v20 * v18) + v8 + v19 * v18);
+                param0->meshQuads[v18 - 1].bottomLeft.x = param0->meshQuads[v18].topLeft.x;
+                param0->meshQuads[v18 - 1].bottomLeft.y = param0->meshQuads[v18].topLeft.y;
+                param0->meshQuads[v18 - 1].bottomRight.x = param0->meshQuads[v18].topRight.x;
+                param0->meshQuads[v18 - 1].bottomRight.y = param0->meshQuads[v18].topRight.y;
             }
         }
     }
@@ -846,10 +846,10 @@ static int WiFiLobbyMinigameBalloonBalloon_GetTouchZone(WiFiLobbyMinigameBalloon
     if (param1 == 1) {
         return 0;
     }
-    if (param0->unk_224 < param0->unk_21C - 16) {
+    if (param0->touchStartX < param0->centerX - 16) {
         return 1;
     }
-    if (param0->unk_224 > param0->unk_21C + 16) {
+    if (param0->touchStartX > param0->centerX + 16) {
         return 2;
     }
 
@@ -886,10 +886,10 @@ static fx32 WiFiLobbyMinigameBalloonBalloon_CalcArea(WiFiLobbyMinigameBalloonBal
     fx32 v6;
     int v7 = (8 - 1) - 1;
 
-    v3 = param0->unk_0C[0].unk_10.unk_04 + (param0->unk_0C[0].unk_00.unk_04 - param0->unk_0C[0].unk_10.unk_04) / 2;
-    v2 = -(param0->unk_0C[v7].unk_08.unk_04 - v3);
-    v4 = param0->unk_0C[0].unk_10.unk_00 - param0->unk_0C[0].unk_00.unk_00;
-    v5 = param0->unk_0C[v7].unk_18.unk_00 - param0->unk_0C[v7].unk_08.unk_00;
+    v3 = param0->meshQuads[0].topRight.y + (param0->meshQuads[0].topLeft.y - param0->meshQuads[0].topRight.y) / 2;
+    v2 = -(param0->meshQuads[v7].bottomLeft.y - v3);
+    v4 = param0->meshQuads[0].topRight.x - param0->meshQuads[0].topLeft.x;
+    v5 = param0->meshQuads[v7].bottomRight.x - param0->meshQuads[v7].bottomLeft.x;
     v6 = FX_Mul(v4 + v5, v2) / 2;
 
     return v6;
@@ -910,19 +910,19 @@ static void WiFiLobbyMinigameBalloonBalloon_LoadSpriteGraphics(WiFiLobbyMinigame
 {
     NARC *v0 = NARC_ctor(NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, HEAP_ID_110);
 
-    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->unk_24, param0->unk_28, v0, 58, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10005);
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_24, param0->unk_28, v0, 55, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_24, param0->unk_28, v0, 57, FALSE, 10003);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_24, param0->unk_28, v0, 56, FALSE, 10003);
+    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->spriteSystem, param0->spriteManager, v0, 58, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10005);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, v0, 55, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, v0, 57, FALSE, 10003);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, v0, 56, FALSE, 10003);
     NARC_dtor(v0);
 }
 
 static void WiFiLobbyMinigameBalloonBalloon_FreeSpriteGraphics(WiFiLobbyMinigameBalloonGame *param0)
 {
-    SpriteManager_UnloadCharObjById(param0->unk_28, 10003);
-    SpriteManager_UnloadCellObjById(param0->unk_28, 10003);
-    SpriteManager_UnloadAnimObjById(param0->unk_28, 10003);
-    SpriteManager_UnloadPlttObjById(param0->unk_28, 10005);
+    SpriteManager_UnloadCharObjById(param0->spriteManager, 10003);
+    SpriteManager_UnloadCellObjById(param0->spriteManager, 10003);
+    SpriteManager_UnloadAnimObjById(param0->spriteManager, 10003);
+    SpriteManager_UnloadPlttObjById(param0->spriteManager, 10005);
 }
 
 static ManagedSprite *WiFiLobbyMinigameBalloonBalloon_CreateSprite(WiFiLobbyMinigameBalloonGame *param0)
@@ -931,7 +931,7 @@ static ManagedSprite *WiFiLobbyMinigameBalloonBalloon_CreateSprite(WiFiLobbyMini
     SpriteTemplate v1;
 
     v1 = sBalloonSpriteTemplate;
-    v0 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v1);
+    v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
     ManagedSprite_SetDrawFlag(v0, 0);
     Sprite_TickFrame(v0->sprite);
@@ -943,13 +943,13 @@ static void WiFiLobbyMinigameBalloonBalloon_UpdateSprite(WiFiLobbyMinigameBalloo
 {
     int v0;
 
-    if (param0->unk_238 == 0) {
+    if (param0->held == 0) {
         v0 = 0;
     } else {
         v0 = WiFiLobbyMinigameBalloonBalloon_GetTouchZone(param0, 0) + 1;
     }
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param1, param0->unk_21C, (param0->unk_230 >> FX32_SHIFT) + sTouchZones[param0->unk_270].unk_02, ((192 + 160) << FX32_SHIFT));
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param1, param0->centerX, (param0->baselineY >> FX32_SHIFT) + sTouchZones[param0->balloonLevel].yOffset, ((192 + 160) << FX32_SHIFT));
     ManagedSprite_SetAnim(param1, v0);
     Sprite_TickFrame(param1->sprite);
 }

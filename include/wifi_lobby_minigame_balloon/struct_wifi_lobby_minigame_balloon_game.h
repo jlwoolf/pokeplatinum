@@ -36,19 +36,19 @@
 #include "sys_task_manager.h"
 
 typedef struct WiFiLobbyMinigameBalloonGame_t {
-    WiFiLobbyMinigameBalloonContext *unk_00; // Shared context for the minigame.
-    int unk_04; // Net ID of the winning player.
-    u32 unk_08; // Number of score packets received.
-    u32 unk_0C[4]; // Score per player slot.
-    WiFiLobbyMinigameIntroAnimation *unk_1C; // Intro animation.
-    int unk_20; // Intro sequence state.
-    SpriteSystem *unk_24; // Sprite system.
-    SpriteManager *unk_28; // Sprite manager.
-    BgConfig *unk_2C; // Background configuration.
-    Window unk_30[5]; // Text windows.
+    WiFiLobbyMinigameBalloonContext *context; // Shared context for the minigame.
+    int winnerNetId; // Net ID of the winning player.
+    u32 scorePacketsReceived; // Number of score packets received.
+    u32 scores[4]; // Score per player slot.
+    WiFiLobbyMinigameIntroAnimation *introAnimation; // Intro animation.
+    int phase; // Intro sequence state.
+    SpriteSystem *spriteSystem; // Sprite system.
+    SpriteManager *spriteManager; // Sprite manager.
+    BgConfig *bgConfig; // Background configuration.
+    Window windows[5]; // Text windows.
     MessageLoader *messageLoader;
     StringTemplate *stringTemplate;
-    String *unk_88; // Scratch string for text rendering.
+    String *scratchString; // Scratch string for text rendering.
     PaletteData *paletteData;
     FontOAMManager *fontOAMManager;
     SysTask *drawTask;

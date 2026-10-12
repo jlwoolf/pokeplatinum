@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PACKET_PAIR_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
+    u8 syncState;
+    u8 syncId;
     u8 padding_02[2];
 } WiFiLobbyMinigameBalloonPacketPair;
 

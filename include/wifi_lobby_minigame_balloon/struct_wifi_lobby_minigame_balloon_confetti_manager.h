@@ -4,10 +4,10 @@
 #include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_confetti.h"
 
 typedef struct {
-    BOOL unk_00;
-    WiFiLobbyMinigameBalloonConfetti unk_04[36];
-    WiFiLobbyMinigameBalloonConfetti unk_868[8];
-    WiFiLobbyMinigameBalloonConfetti unk_928[3];
+    BOOL active;
+    WiFiLobbyMinigameBalloonConfetti confetti[36];
+    WiFiLobbyMinigameBalloonConfetti bursts[8];
+    WiFiLobbyMinigameBalloonConfetti gaugeBursts[3];
     u8 padding_970[4];
 } WiFiLobbyMinigameBalloonConfettiManager;
 

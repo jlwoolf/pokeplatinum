@@ -2,11 +2,11 @@
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_SPAWN_H
 
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    u16 unk_04;
-    u8 unk_06;
-    u8 unk_07;
+    s16 x;
+    s16 y;
+    u16 anim;
+    u8 palette;
+    u8 direction;
     u8 padding_08[2];
 } WiFiLobbyMinigameBalloonSpawn;
 

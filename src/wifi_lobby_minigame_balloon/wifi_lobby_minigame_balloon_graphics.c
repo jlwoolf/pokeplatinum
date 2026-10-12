@@ -45,19 +45,19 @@
 #include "font_oam.h"
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    fx32 unk_04;
+    u16 tilesIndex;
+    u16 tilemapIndex;
+    fx32 scale;
 } WiFiLobbyMinigameBalloonGaugeGraphics;
 
 typedef struct {
-    s32 unk_00[3];
+    s32 targets[3];
 } WiFiLobbyMinigameBalloonGaugeTargets;
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 framesPerStep;
+    u8 pauseFrames;
+    u8 popFrames;
     u8 unk_03;
 } WiFiLobbyMinigameBalloonRotationStep;
 
@@ -315,8 +315,8 @@ static const u16 sSubPalette2SrcByPlayer[4] = {
 };
 
 static const struct {
-    s16 unk_00;
-    s16 unk_02;
+    s16 x;
+    s16 y;
 } sPlayerPositions[] = {
     { 0x80, 0xA4 },
     { 0x80, 0x1C },
@@ -386,16 +386,16 @@ void WiFiLobbyMinigameBalloon_StartScoreGauge(BgConfig *param0, int param1, int 
 {
     NARC *v0 = NARC_ctor(NARC_INDEX_APPLICATION__BALLOON__GRAPHIC__BALLOON_GRA, HEAP_ID_110);
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v0, sGaugeGraphics[param2].unk_00, param0, 7, 0, 0, 0, HEAP_ID_110);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, sGaugeGraphics[param2].unk_02, param0, 7, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v0, sGaugeGraphics[param2].tilesIndex, param0, 7, 0, 0, 0, HEAP_ID_110);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, sGaugeGraphics[param2].tilemapIndex, param0, 7, 0, 0, 0, HEAP_ID_110);
     NARC_dtor(v0);
 
     MI_CpuClear8(param3, sizeof(WiFiLobbyMinigameBalloonScoreGauge));
 
-    param3->unk_0C = sGaugeTargets[param1].unk_00[param2];
-    param3->unk_04 = param2;
-    param3->unk_00 = 1;
-    param3->unk_2C = 1;
+    param3->targetScore = sGaugeTargets[param1].targets[param2];
+    param3->gaugeLevel = param2;
+    param3->active = 1;
+    param3->showRequest = 1;
 
     WiFiLobbyMinigameBalloon_UpdateScoreGauge(param0, param3, param1);
     Sound_PlayEffect(SEQ_SE_DP_BOX02_sseq);
@@ -404,8 +404,8 @@ void WiFiLobbyMinigameBalloon_StartScoreGauge(BgConfig *param0, int param1, int 
 static void WiFiLobbyMinigameBalloon_StopScoreGauge(BgConfig *param0, WiFiLobbyMinigameBalloonScoreGauge *param1)
 {
     Bg_ClearTilemap(param0, BG_LAYER_SUB_3);
-    param1->unk_00 = 0;
-    param1->unk_2D = 1;
+    param1->active = 0;
+    param1->hideRequest = 1;
 }
 
 static void WiFiLobbyMinigameBalloon_UpdateScoreGauge(BgConfig *param0, WiFiLobbyMinigameBalloonScoreGauge *param1, int param2)
@@ -413,11 +413,11 @@ static void WiFiLobbyMinigameBalloon_UpdateScoreGauge(BgConfig *param0, WiFiLobb
     fx32 v0, v1;
     int v2, v3;
 
-    if (param1->unk_00 == 0) {
+    if (param1->active == 0) {
         return;
     }
 
-    WiFiLobbyMinigameBalloon_CalcGaugeScale(param2, param1->unk_04, param1->unk_08, &v0, &v1);
+    WiFiLobbyMinigameBalloon_CalcGaugeScale(param2, param1->gaugeLevel, param1->currentScore, &v0, &v1);
 
     v2 = 0;
     v3 = 0;
@@ -443,16 +443,16 @@ static void WiFiLobbyMinigameBalloon_UpdateScoreGauge(BgConfig *param0, WiFiLobb
         fx32 v5, v6;
         int v7;
 
-        if (param1->unk_10 == 0) {
+        if (param1->pendingScore == 0) {
             v7 = 0;
         } else {
             v7 = (LCRNG_Next() & 7) + 1;
 
-            if (param1->unk_28 & 1) {
+            if (param1->scrollFlip & 1) {
                 v7 = -v7;
             }
 
-            param1->unk_28 ^= 1;
+            param1->scrollFlip ^= 1;
         }
 
         v5 = FX_Inv(v0);
@@ -469,7 +469,7 @@ static void WiFiLobbyMinigameBalloon_CalcGaugeScale(int param0, int param1, int 
 {
     fx32 v0;
 
-    v0 = sGaugeGraphics[param1].unk_04 * param2 / sGaugeTargets[param0].unk_00[param1];
+    v0 = sGaugeGraphics[param1].scale * param2 / sGaugeTargets[param0].targets[param1];
     v0 += 0x300;
 
     *param3 = v0;
@@ -493,34 +493,34 @@ int WiFiLobbyMinigameBalloon_GetGaugeLevel(int param0)
 
 static int WiFiLobbyMinigameBalloon_AddScore(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonScoreGauge *param1, int param2, int param3, int param4)
 {
-    param1->unk_10 += param2;
-    param1->unk_14 = param1->unk_10 / 6;
-    param1->unk_18[WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param3)] += param2;
+    param1->pendingScore += param2;
+    param1->step = param1->pendingScore / 6;
+    param1->playerScores[WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param3)] += param2;
 
     if (param3 == CommSys_CurNetId()) {
         param0->localScore += param2;
         WiFiLobbyMinigameBalloon_SetScoreDigits(&param0->scoreDisplay, param0->localScore);
     }
 
-    return param1->unk_10;
+    return param1->pendingScore;
 }
 
 static int WiFiLobbyMinigameBalloon_AdvanceGauge(WiFiLobbyMinigameBalloonScoreGauge *param0)
 {
     int v0;
 
-    if (param0->unk_10 == 0) {
+    if (param0->pendingScore == 0) {
         return 0;
     }
 
-    if (param0->unk_10 >= param0->unk_14) {
-        v0 = param0->unk_14;
+    if (param0->pendingScore >= param0->step) {
+        v0 = param0->step;
     } else {
-        v0 = param0->unk_10;
+        v0 = param0->pendingScore;
     }
 
-    param0->unk_10 -= v0;
-    param0->unk_08 += v0;
+    param0->pendingScore -= v0;
+    param0->currentScore += v0;
 
     return 1;
 }
@@ -532,27 +532,27 @@ void WiFiLobbyMinigameBalloon_DrawScoreGauge(WiFiLobbyMinigameBalloonGame *param
     }
 
     WiFiLobbyMinigameBalloon_AdvanceGauge(param2);
-    WiFiLobbyMinigameBalloon_UpdateScoreGauge(param1, param2, param0->unk_00->unk_30);
+    WiFiLobbyMinigameBalloon_UpdateScoreGauge(param1, param2, param0->context->playerCount);
 }
 
 int WiFiLobbyMinigameBalloon_GetGaugePercent(WiFiLobbyMinigameBalloonGame *param0)
 {
     WiFiLobbyMinigameBalloonScoreGauge *v0 = &param0->scoreGauge;
-    return 100 * v0->unk_08 / v0->unk_0C;
+    return 100 * v0->currentScore / v0->targetScore;
 }
 
 BOOL WiFiLobbyMinigameBalloon_SpawnPopEffect(WiFiLobbyMinigameBalloonGame *param0, const WiFiLobbyMinigameBalloonScorePacket *param1)
 {
     int v0, v1;
 
-    if (param0->balloonLevel != param1->unk_02) {
+    if (param0->balloonLevel != param1->balloonLevel) {
         (void)0;
     }
 
     for (v0 = 0; v0 < 40; v0++) {
-        if (param0->popEffects[v0].unk_00 == 0) {
+        if (param0->popEffects[v0].active == 0) {
             v1 = WiFiLobbyMinigameBalloon_InitPopEffect(param0, param1, &param0->popEffects[v0]);
-            WiFiLobbyMinigameBalloon_SpawnOpponentBalloon(param0, &param0->opponentBalloons, param1->unk_01, param1->unk_00, v1);
+            WiFiLobbyMinigameBalloon_SpawnOpponentBalloon(param0, &param0->opponentBalloons, param1->multiplier, param1->netId, v1);
 
             return 1;
         }
@@ -568,46 +568,46 @@ static int WiFiLobbyMinigameBalloon_InitPopEffect(WiFiLobbyMinigameBalloonGame *
     const WiFiLobbyMinigameBalloonSpawn *v1;
     int v2;
 
-    GF_ASSERT(param2->unk_00 == 0);
+    GF_ASSERT(param2->active == 0);
 
     MI_CpuClear8(param2, sizeof(WiFiLobbyMinigameBalloonPopEffect));
 
-    v0 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param1->unk_00);
-    v1 = &sBalloonSpawns[param0->unk_00->unk_30][v0];
+    v0 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param1->netId);
+    v1 = &sBalloonSpawns[param0->context->playerCount][v0];
 
-    param2->unk_04 = param1->unk_00;
-    param2->unk_06 = param1->unk_02;
-    param2->unk_08 = param1->unk_08;
-    param2->unk_14 = v1;
-    param2->unk_0E = param1->unk_01;
-    param2->unk_10 = WiFiLobbyMinigameBalloon_CreatePopSprite(param0, v1);
+    param2->netId = param1->netId;
+    param2->balloonLevel = param1->balloonLevel;
+    param2->score = param1->score;
+    param2->spawn = v1;
+    param2->popType = param1->multiplier;
+    param2->sprite = WiFiLobbyMinigameBalloon_CreatePopSprite(param0, v1);
 
-    if (param1->unk_00 == CommSys_CurNetId()) {
-        WiFiLobbyMinigameBalloon_SpawnBalloonPop(param0, param1->unk_04);
-        param2->unk_0C = 25;
-        ManagedSprite_SetDrawFlag(param2->unk_10, 0);
+    if (param1->netId == CommSys_CurNetId()) {
+        WiFiLobbyMinigameBalloon_SpawnBalloonPop(param0, param1->baseScore);
+        param2->delay = 25;
+        ManagedSprite_SetDrawFlag(param2->sprite, 0);
     }
 
-    param2->unk_00 = 1;
+    param2->active = 1;
 
     {
         s16 v3, v4;
         s32 v5 = 0;
 
-        Sprite_GetPositionXYWithSubscreenOffset2(param2->unk_10, &v3, &v4, ((192 + 160) << FX32_SHIFT));
+        Sprite_GetPositionXYWithSubscreenOffset2(param2->sprite, &v3, &v4, ((192 + 160) << FX32_SHIFT));
 
-        switch (v1->unk_07) {
+        switch (v1->direction) {
         case 0:
-            v5 = sPlayerPositions[1].unk_02 - v4;
+            v5 = sPlayerPositions[1].y - v4;
             break;
         case 1:
-            v5 = v3 - sPlayerPositions[3].unk_00;
+            v5 = v3 - sPlayerPositions[3].x;
             break;
         case 2:
-            v5 = v4 - sPlayerPositions[0].unk_02;
+            v5 = v4 - sPlayerPositions[0].y;
             break;
         case 3:
-            v5 = sPlayerPositions[2].unk_00 - v3;
+            v5 = sPlayerPositions[2].x - v3;
             break;
         }
 
@@ -622,20 +622,20 @@ void WiFiLobbyMinigameBalloon_UpdatePopEffects(WiFiLobbyMinigameBalloonGame *par
     WiFiLobbyMinigameBalloonPopEffect *v1 = param0->popEffects;
 
     for (v0 = 0; v0 < 40; v0++) {
-        if (v1->unk_00 == 1) {
-            if (v1->unk_0C > 0) {
-                v1->unk_0C--;
+        if (v1->active == 1) {
+            if (v1->delay > 0) {
+                v1->delay--;
 
-                if (v1->unk_0C == 0) {
-                    ManagedSprite_SetDrawFlag(v1->unk_10, 1);
+                if (v1->delay == 0) {
+                    ManagedSprite_SetDrawFlag(v1->sprite, 1);
                 }
             } else if (WiFiLobbyMinigameBalloon_UpdatePopEffect(param0, v1) == 1) {
                 if ((param0->gaugeActive == 1) && (param0->gameEnded == 0)) {
-                    WiFiLobbyMinigameBalloon_AddScore(param0, &param0->scoreGauge, v1->unk_08, v1->unk_04, v1->unk_0E);
+                    WiFiLobbyMinigameBalloon_AddScore(param0, &param0->scoreGauge, v1->score, v1->netId, v1->popType);
                 }
 
-                Sprite_DeleteAndFreeResources(v1->unk_10);
-                v1->unk_00 = 0;
+                Sprite_DeleteAndFreeResources(v1->sprite);
+                v1->active = 0;
             }
         }
 
@@ -651,52 +651,52 @@ static BOOL WiFiLobbyMinigameBalloon_UpdatePopEffect(WiFiLobbyMinigameBalloonGam
     f32 v7;
     fx32 v8;
 
-    Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_10, &v2, &v3, ((192 + 160) << FX32_SHIFT));
+    Sprite_GetPositionXYWithSubscreenOffset2(param1->sprite, &v2, &v3, ((192 + 160) << FX32_SHIFT));
 
-    switch (param1->unk_14->unk_07) {
+    switch (param1->spawn->direction) {
     case 0:
-        v6 = sPlayerPositions[1].unk_02 - v3;
+        v6 = sPlayerPositions[1].y - v3;
 
-        ManagedSprite_OffsetPositionFxXY(param1->unk_10, 0, (FX32_CONST(5.0)));
-        Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_10, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_OffsetPositionFxXY(param1->sprite, 0, (FX32_CONST(5.0)));
+        Sprite_GetPositionXYWithSubscreenOffset2(param1->sprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
 
-        v5 = sPlayerPositions[1].unk_02 - v1;
+        v5 = sPlayerPositions[1].y - v1;
 
         if (v1 > (98 - 24)) {
             v4 = 1;
         }
         break;
     case 1:
-        v6 = v2 - sPlayerPositions[3].unk_00;
+        v6 = v2 - sPlayerPositions[3].x;
 
-        ManagedSprite_OffsetPositionFxXY(param1->unk_10, -(FX32_CONST(5.0)), 0);
-        Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_10, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_OffsetPositionFxXY(param1->sprite, -(FX32_CONST(5.0)), 0);
+        Sprite_GetPositionXYWithSubscreenOffset2(param1->sprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
 
-        v5 = v0 - sPlayerPositions[3].unk_00;
+        v5 = v0 - sPlayerPositions[3].x;
 
         if (v0 < (128 + 24)) {
             v4 = 1;
         }
         break;
     case 2:
-        v6 = v3 - sPlayerPositions[0].unk_02;
+        v6 = v3 - sPlayerPositions[0].y;
 
-        ManagedSprite_OffsetPositionFxXY(param1->unk_10, 0, -(FX32_CONST(5.0)));
-        Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_10, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_OffsetPositionFxXY(param1->sprite, 0, -(FX32_CONST(5.0)));
+        Sprite_GetPositionXYWithSubscreenOffset2(param1->sprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
 
-        v5 = v1 - sPlayerPositions[0].unk_02;
+        v5 = v1 - sPlayerPositions[0].y;
 
         if (v1 < (98 + 16)) {
             v4 = 1;
         }
         break;
     case 3:
-        v6 = sPlayerPositions[2].unk_00 - v2;
+        v6 = sPlayerPositions[2].x - v2;
 
-        ManagedSprite_OffsetPositionFxXY(param1->unk_10, (FX32_CONST(5.0)), 0);
-        Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_10, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_OffsetPositionFxXY(param1->sprite, (FX32_CONST(5.0)), 0);
+        Sprite_GetPositionXYWithSubscreenOffset2(param1->sprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
 
-        v5 = sPlayerPositions[2].unk_00 - v0;
+        v5 = sPlayerPositions[2].x - v0;
 
         if (v0 > (128 - 24)) {
             v4 = 1;
@@ -712,40 +712,40 @@ static BOOL WiFiLobbyMinigameBalloon_UpdatePopEffect(WiFiLobbyMinigameBalloonGam
             }
 
             v7 = FX_FX32_TO_F32(v8);
-            ManagedSprite_SetAffineScale(param1->unk_10, v7, v7);
+            ManagedSprite_SetAffineScale(param1->sprite, v7, v7);
         }
     } else {
         if (v5 > -(24 / 2 + 2)) {
-            v8 = sPopScaleByType[param1->unk_0E] * (-v5) / (24 / 2 + 2);
+            v8 = sPopScaleByType[param1->popType] * (-v5) / (24 / 2 + 2);
 
             if (v8 < 0x400) {
                 v8 = 0x400;
             }
 
             v7 = FX_FX32_TO_F32(v8);
-            ManagedSprite_SetAffineScale(param1->unk_10, v7, v7);
+            ManagedSprite_SetAffineScale(param1->sprite, v7, v7);
         }
     }
-    if ((param1->unk_04 == CommSys_CurNetId()) && (v6 >= 0) && (v5 <= 0)) {
+    if ((param1->netId == CommSys_CurNetId()) && (v6 >= 0) && (v5 <= 0)) {
         WiFiLobbyMinigameBalloonPlayerBalloon *v9;
 
-        param1->unk_0E = WiFiLobbyMinigameBalloon_GetActivePlayerBalloon(param0, &v9);
+        param1->popType = WiFiLobbyMinigameBalloon_GetActivePlayerBalloon(param0, &v9);
 
-        switch (param1->unk_0E) {
+        switch (param1->popType) {
         case 1:
-            param1->unk_08 *= 2;
+            param1->score *= 2;
             break;
         case 2:
-            param1->unk_08 /= 2;
+            param1->score /= 2;
             break;
         case 3:
-            param1->unk_08 *= 3;
+            param1->score *= 3;
             break;
         }
 
-        WiFiLobbyMinigameBalloon_ApplyScoreMultiplier(param0, param1->unk_0E);
+        WiFiLobbyMinigameBalloon_ApplyScoreMultiplier(param0, param1->popType);
 
-        if (param1->unk_0E != 0) {
+        if (param1->popType != 0) {
             WiFiLobbyMinigameBalloon_SetPlayerBalloonState(v9, 3);
         }
 
@@ -775,13 +775,13 @@ static ManagedSprite *WiFiLobbyMinigameBalloon_CreatePopSprite(WiFiLobbyMinigame
     SpriteTemplate v1;
 
     v1 = sPopSpriteTemplate;
-    v1.x = param1->unk_00;
-    v1.y = param1->unk_02;
-    v1.plttIdx = param1->unk_06;
-    v0 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v1);
+    v1.x = param1->x;
+    v1.y = param1->y;
+    v1.plttIdx = param1->palette;
+    v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(v0, param1->unk_00, param1->unk_02, ((192 + 160) << FX32_SHIFT));
-    ManagedSprite_SetAnim(v0, param1->unk_04);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(v0, param1->x, param1->y, ((192 + 160) << FX32_SHIFT));
+    ManagedSprite_SetAnim(v0, param1->anim);
     ManagedSprite_SetAffineOverwriteMode(v0, AFFINE_OVERWRITE_MODE_DOUBLE);
     Sprite_TickFrame(v0->sprite);
 
@@ -793,9 +793,9 @@ void WiFiLobbyMinigameBalloon_FreePopEffects(WiFiLobbyMinigameBalloonGame *param
     int v0;
 
     for (v0 = 0; v0 < 40; v0++) {
-        if (param0->popEffects[v0].unk_00 == 1) {
-            Sprite_DeleteAndFreeResources(param0->popEffects[v0].unk_10);
-            param0->popEffects[v0].unk_00 = 0;
+        if (param0->popEffects[v0].active == 1) {
+            Sprite_DeleteAndFreeResources(param0->popEffects[v0].sprite);
+            param0->popEffects[v0].active = 0;
         }
     }
 }
@@ -811,17 +811,17 @@ static void WiFiLobbyMinigameBalloon_CreateConfetti(WiFiLobbyMinigameBalloonGame
     int v8, v9;
 
     v0 = sConfettiSpriteTemplate;
-    v4 = param2->unk_08 + param2->unk_10;
+    v4 = param2->currentScore + param2->pendingScore;
 
-    for (v8 = 0; v8 < param0->unk_00->unk_30; v8++) {
-        v2 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->unk_00->unk_2C[v8]);
-        v3[v8] = param2->unk_18[v2] * 36 / v4;
-        v6 = sConfettiAnimByPlayerCount[param0->unk_00->unk_30][v2];
+    for (v8 = 0; v8 < param0->context->playerCount; v8++) {
+        v2 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->context->netIds[v8]);
+        v3[v8] = param2->playerScores[v2] * 36 / v4;
+        v6 = sConfettiAnimByPlayerCount[param0->context->playerCount][v2];
 
         for (v9 = 0; v9 < v3[v8]; v9++) {
-            WiFiLobbyMinigameBalloonConfetti *v10 = &param1->unk_04[v7];
+            WiFiLobbyMinigameBalloonConfetti *v10 = &param1->confetti[v7];
 
-            v1 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v0);
+            v1 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v0);
 
             if (v1 == NULL) {
                 break;
@@ -831,13 +831,13 @@ static void WiFiLobbyMinigameBalloon_CreateConfetti(WiFiLobbyMinigameBalloonGame
             ManagedSprite_SetAnim(v1, v6);
             Sprite_TickFrame(v1->sprite);
 
-            v10->unk_04 = LCRNG_Next() % 0x2000 + 0x2000;
-            v10->unk_08 = LCRNG_Next() % 0x4000 + 0x2000;
-            v10->unk_0C = (LCRNG_Next() % 360) << FX32_SHIFT;
-            v10->unk_10 = LCRNG_Next() % 0x14000 + 0xa000;
-            v10->unk_14 = LCRNG_Next() % 15 + 20;
+            v10->radius = LCRNG_Next() % 0x2000 + 0x2000;
+            v10->radiusVelocity = LCRNG_Next() % 0x4000 + 0x2000;
+            v10->angle = (LCRNG_Next() % 360) << FX32_SHIFT;
+            v10->angleVelocity = LCRNG_Next() % 0x14000 + 0xa000;
+            v10->lifetime = LCRNG_Next() % 15 + 20;
 
-            param1->unk_04[v7].unk_00 = v1;
+            param1->confetti[v7].sprite = v1;
 
             v7++;
         }
@@ -847,9 +847,9 @@ static void WiFiLobbyMinigameBalloon_CreateConfetti(WiFiLobbyMinigameBalloonGame
     v0.plttIdx = 0;
 
     for (v8 = 0; v8 < 8; v8++) {
-        WiFiLobbyMinigameBalloonConfetti *v11 = &param1->unk_868[v8];
+        WiFiLobbyMinigameBalloonConfetti *v11 = &param1->bursts[v8];
 
-        v1 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v0);
+        v1 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v0);
 
         if (v1 == NULL) {
             break;
@@ -859,22 +859,22 @@ static void WiFiLobbyMinigameBalloon_CreateConfetti(WiFiLobbyMinigameBalloonGame
         ManagedSprite_SetAnim(v1, 28 + LCRNG_Next() % 3);
         Sprite_TickFrame(v1->sprite);
 
-        v11->unk_04 = LCRNG_Next() % 0x2000 + 0x2000;
-        v11->unk_08 = LCRNG_Next() % 0x4000 + 0x2000;
-        v11->unk_0C = (LCRNG_Next() % 360) << FX32_SHIFT;
-        v11->unk_10 = LCRNG_Next() % 0x14000 + 0x10000;
-        v11->unk_14 = LCRNG_Next() % 15 + 20;
+        v11->radius = LCRNG_Next() % 0x2000 + 0x2000;
+        v11->radiusVelocity = LCRNG_Next() % 0x4000 + 0x2000;
+        v11->angle = (LCRNG_Next() % 360) << FX32_SHIFT;
+        v11->angleVelocity = LCRNG_Next() % 0x14000 + 0x10000;
+        v11->lifetime = LCRNG_Next() % 15 + 20;
 
-        param1->unk_868[v8].unk_00 = v1;
+        param1->bursts[v8].sprite = v1;
     }
 
     v0.priority = 13;
-    v0.plttIdx = sGaugePaletteByLevel[param2->unk_04];
+    v0.plttIdx = sGaugePaletteByLevel[param2->gaugeLevel];
 
     for (v8 = 0; v8 < 3; v8++) {
-        WiFiLobbyMinigameBalloonConfetti *v12 = &param1->unk_928[v8];
+        WiFiLobbyMinigameBalloonConfetti *v12 = &param1->gaugeBursts[v8];
 
-        v1 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v0);
+        v1 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v0);
 
         if (v1 == NULL) {
             break;
@@ -884,13 +884,13 @@ static void WiFiLobbyMinigameBalloon_CreateConfetti(WiFiLobbyMinigameBalloonGame
         ManagedSprite_SetAnim(v1, 11);
         Sprite_TickFrame(v1->sprite);
 
-        v12->unk_04 = LCRNG_Next() % 0x2000 + 0x2000;
-        v12->unk_08 = LCRNG_Next() % 0x4000 + 0x2000;
-        v12->unk_0C = (LCRNG_Next() % 360) << FX32_SHIFT;
-        v12->unk_10 = LCRNG_Next() % 0x14000 + 0x10000;
-        v12->unk_14 = LCRNG_Next() % 15 + 20;
+        v12->radius = LCRNG_Next() % 0x2000 + 0x2000;
+        v12->radiusVelocity = LCRNG_Next() % 0x4000 + 0x2000;
+        v12->angle = (LCRNG_Next() % 360) << FX32_SHIFT;
+        v12->angleVelocity = LCRNG_Next() % 0x14000 + 0x10000;
+        v12->lifetime = LCRNG_Next() % 15 + 20;
 
-        param1->unk_928[v8].unk_00 = v1;
+        param1->gaugeBursts[v8].sprite = v1;
     }
 }
 
@@ -900,26 +900,26 @@ void WiFiLobbyMinigameBalloon_FreeConfetti(WiFiLobbyMinigameBalloonGame *param0)
     WiFiLobbyMinigameBalloonConfetti *v1, *v2, *v3;
 
     for (v0 = 0; v0 < 36; v0++) {
-        v1 = &param0->confetti.unk_04[v0];
+        v1 = &param0->confetti.confetti[v0];
 
-        if (v1->unk_00 != NULL) {
-            Sprite_DeleteAndFreeResources(v1->unk_00);
+        if (v1->sprite != NULL) {
+            Sprite_DeleteAndFreeResources(v1->sprite);
         }
     }
 
     for (v0 = 0; v0 < 8; v0++) {
-        v2 = &param0->confetti.unk_868[v0];
+        v2 = &param0->confetti.bursts[v0];
 
-        if (v2->unk_00 != NULL) {
-            Sprite_DeleteAndFreeResources(v2->unk_00);
+        if (v2->sprite != NULL) {
+            Sprite_DeleteAndFreeResources(v2->sprite);
         }
     }
 
     for (v0 = 0; v0 < 3; v0++) {
-        v3 = &param0->confetti.unk_928[v0];
+        v3 = &param0->confetti.gaugeBursts[v0];
 
-        if (v3->unk_00 != NULL) {
-            Sprite_DeleteAndFreeResources(v3->unk_00);
+        if (v3->sprite != NULL) {
+            Sprite_DeleteAndFreeResources(v3->sprite);
         }
     }
 }
@@ -932,93 +932,93 @@ BOOL WiFiLobbyMinigameBalloon_UpdateConfetti(WiFiLobbyMinigameBalloonGame *param
     int v6 = 0;
     int v7;
 
-    if (v0->unk_00 == 0) {
+    if (v0->active == 0) {
         return 0;
     }
 
     for (v7 = 0; v7 < 36; v7++) {
-        v1 = &v0->unk_04[v7];
+        v1 = &v0->confetti[v7];
 
-        if (v1->unk_00 != NULL) {
-            if (v1->unk_14 == 0) {
-                Sprite_DeleteAndFreeResources(v1->unk_00);
-                v1->unk_00 = NULL;
+        if (v1->sprite != NULL) {
+            if (v1->lifetime == 0) {
+                Sprite_DeleteAndFreeResources(v1->sprite);
+                v1->sprite = NULL;
                 continue;
             }
 
-            v1->unk_0C += v1->unk_10;
-            v1->unk_04 += v1->unk_08;
+            v1->angle += v1->angleVelocity;
+            v1->radius += v1->radiusVelocity;
 
-            if (v1->unk_04 >= (128 + 32) << FX32_SHIFT) {
-                v1->unk_04 = (128 + 32) << FX32_SHIFT;
+            if (v1->radius >= (128 + 32) << FX32_SHIFT) {
+                v1->radius = (128 + 32) << FX32_SHIFT;
             }
 
-            v4 = 128 + (FX_Mul(CalcSineDegrees_FX32(v1->unk_0C), v1->unk_04)) / FX32_ONE;
-            v5 = 96 + (-FX_Mul(CalcCosineDegrees_FX32(v1->unk_0C), v1->unk_04)) / FX32_ONE;
+            v4 = 128 + (FX_Mul(CalcSineDegrees_FX32(v1->angle), v1->radius)) / FX32_ONE;
+            v5 = 96 + (-FX_Mul(CalcCosineDegrees_FX32(v1->angle), v1->radius)) / FX32_ONE;
 
-            ManagedSprite_SetPositionXYWithSubscreenOffset(v1->unk_00, v4, v5, ((192 + 160) << FX32_SHIFT));
+            ManagedSprite_SetPositionXYWithSubscreenOffset(v1->sprite, v4, v5, ((192 + 160) << FX32_SHIFT));
 
-            v1->unk_14--;
+            v1->lifetime--;
             v6++;
         }
     }
 
     for (v7 = 0; v7 < 8; v7++) {
-        v2 = &v0->unk_868[v7];
+        v2 = &v0->bursts[v7];
 
-        if (v2->unk_00 != NULL) {
-            if (v2->unk_14 == 0) {
-                Sprite_DeleteAndFreeResources(v2->unk_00);
-                v2->unk_00 = NULL;
+        if (v2->sprite != NULL) {
+            if (v2->lifetime == 0) {
+                Sprite_DeleteAndFreeResources(v2->sprite);
+                v2->sprite = NULL;
                 continue;
             }
 
-            v2->unk_0C += v2->unk_10;
-            v2->unk_04 += v2->unk_08;
+            v2->angle += v2->angleVelocity;
+            v2->radius += v2->radiusVelocity;
 
-            if (v2->unk_04 >= (128 + 32) << FX32_SHIFT) {
-                v2->unk_04 = (128 + 32) << FX32_SHIFT;
+            if (v2->radius >= (128 + 32) << FX32_SHIFT) {
+                v2->radius = (128 + 32) << FX32_SHIFT;
             }
 
-            v4 = 128 + (FX_Mul(CalcSineDegrees_FX32(v2->unk_0C), v2->unk_04)) / FX32_ONE;
-            v5 = 96 + (-FX_Mul(CalcCosineDegrees_FX32(v2->unk_0C), v2->unk_04)) / FX32_ONE;
+            v4 = 128 + (FX_Mul(CalcSineDegrees_FX32(v2->angle), v2->radius)) / FX32_ONE;
+            v5 = 96 + (-FX_Mul(CalcCosineDegrees_FX32(v2->angle), v2->radius)) / FX32_ONE;
 
-            ManagedSprite_SetPositionXYWithSubscreenOffset(v2->unk_00, v4, v5, ((192 + 160) << FX32_SHIFT));
+            ManagedSprite_SetPositionXYWithSubscreenOffset(v2->sprite, v4, v5, ((192 + 160) << FX32_SHIFT));
 
-            v2->unk_14--;
+            v2->lifetime--;
             v6++;
         }
     }
 
     for (v7 = 0; v7 < 3; v7++) {
-        v3 = &v0->unk_928[v7];
+        v3 = &v0->gaugeBursts[v7];
 
-        if (v3->unk_00 != NULL) {
-            if (v3->unk_14 == 0) {
-                Sprite_DeleteAndFreeResources(v3->unk_00);
-                v3->unk_00 = NULL;
+        if (v3->sprite != NULL) {
+            if (v3->lifetime == 0) {
+                Sprite_DeleteAndFreeResources(v3->sprite);
+                v3->sprite = NULL;
                 continue;
             }
 
-            v3->unk_0C += v3->unk_10;
-            v3->unk_04 += v3->unk_08;
+            v3->angle += v3->angleVelocity;
+            v3->radius += v3->radiusVelocity;
 
-            if (v3->unk_04 >= (128 + 32) << FX32_SHIFT) {
-                v3->unk_04 = (128 + 32) << FX32_SHIFT;
+            if (v3->radius >= (128 + 32) << FX32_SHIFT) {
+                v3->radius = (128 + 32) << FX32_SHIFT;
             }
 
-            v4 = 128 + (FX_Mul(CalcSineDegrees_FX32(v3->unk_0C), v3->unk_04)) / FX32_ONE;
-            v5 = 96 + (-FX_Mul(CalcCosineDegrees_FX32(v3->unk_0C), v3->unk_04)) / FX32_ONE;
+            v4 = 128 + (FX_Mul(CalcSineDegrees_FX32(v3->angle), v3->radius)) / FX32_ONE;
+            v5 = 96 + (-FX_Mul(CalcCosineDegrees_FX32(v3->angle), v3->radius)) / FX32_ONE;
 
-            ManagedSprite_SetPositionXYWithSubscreenOffset(v3->unk_00, v4, v5, ((192 + 160) << FX32_SHIFT));
+            ManagedSprite_SetPositionXYWithSubscreenOffset(v3->sprite, v4, v5, ((192 + 160) << FX32_SHIFT));
 
-            v3->unk_14--;
+            v3->lifetime--;
             v6++;
         }
     }
 
     if (v6 == 0) {
-        v0->unk_00 = 0;
+        v0->active = 0;
     }
 
     return 1;
@@ -1029,26 +1029,26 @@ BOOL WiFiLobbyMinigameBalloon_StartConfetti(WiFiLobbyMinigameBalloonGame *param0
     WiFiLobbyMinigameBalloonConfettiManager *v0 = &param0->confetti;
     int v1;
 
-    if (v0->unk_00 == 1) {
+    if (v0->active == 1) {
         return 0;
     }
 
     MI_CpuClear8(v0, sizeof(WiFiLobbyMinigameBalloonConfettiManager));
 
     WiFiLobbyMinigameBalloon_CreateConfetti(param0, &param0->confetti, &param0->scoreGauge);
-    WiFiLobbyMinigameBalloon_StopScoreGauge(param0->unk_2C, &param0->scoreGauge);
+    WiFiLobbyMinigameBalloon_StopScoreGauge(param0->bgConfig, &param0->scoreGauge);
     WiFiLobbyMinigameBalloon_AdvanceRankIcons(param0);
 
     param0->gaugeActive = 0;
-    param0->scoreGauge.unk_08 = 0;
-    param0->scoreGauge.unk_10 = 0;
+    param0->scoreGauge.currentScore = 0;
+    param0->scoreGauge.pendingScore = 0;
 
     for (v1 = 0; v1 < 4; v1++) {
-        param0->scoreGauge.unk_18[v1] = 0;
+        param0->scoreGauge.playerScores[v1] = 0;
     }
 
     Sound_PlayEffect(SEQ_SE_PL_BALLOON07_sseq);
-    v0->unk_00 = 1;
+    v0->active = 1;
     return 1;
 }
 
@@ -1058,7 +1058,7 @@ static ManagedSprite *WiFiLobbyMinigameBalloon_CreateRankIcon(WiFiLobbyMinigameB
     SpriteTemplate v1;
 
     v1 = sRankIconSpriteTemplate;
-    v0 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v1);
+    v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
     ManagedSprite_SetPositionXYWithSubscreenOffset(v0, (9 * 8) - param2 * 16, (4 * 8), ((192 + 160) << FX32_SHIFT));
     ManagedSprite_SetAnim(v0, 0 + param1);
@@ -1076,7 +1076,7 @@ void WiFiLobbyMinigameBalloon_CreateRankIcons(WiFiLobbyMinigameBalloonGame *para
     for (v0 = 0; v0 < 5; v0++) {
         v1 = &param0->rankIcons[v0];
         WiFiLobbyMinigameBalloon_InitRankIcon(param0, v1, v0, v0);
-        ManagedSprite_TickNFrames(v1->unk_00, FX32_ONE * 4 * v0);
+        ManagedSprite_TickNFrames(v1->sprite, FX32_ONE * 4 * v0);
     }
 }
 
@@ -1087,7 +1087,7 @@ void WiFiLobbyMinigameBalloon_FreeRankIcons(WiFiLobbyMinigameBalloonGame *param0
 
     for (v0 = 0; v0 < 5; v0++) {
         v1 = &param0->rankIcons[v0];
-        Sprite_DeleteAndFreeResources(v1->unk_00);
+        Sprite_DeleteAndFreeResources(v1->sprite);
     }
 }
 
@@ -1109,11 +1109,11 @@ static BOOL WiFiLobbyMinigameBalloon_InitRankIcon(WiFiLobbyMinigameBalloonGame *
 {
     MI_CpuClear8(param1, sizeof(WiFiLobbyMinigameBalloonRankIcon));
 
-    param1->unk_04 = WiFiLobbyMinigameBalloon_GetRankIconAnim(param3);
-    param1->unk_05 = 1;
-    param1->unk_00 = WiFiLobbyMinigameBalloon_CreateRankIcon(param0, param1->unk_04, param2);
-    param1->unk_06 = param2;
-    param1->unk_08 = param3;
+    param1->anim = WiFiLobbyMinigameBalloon_GetRankIconAnim(param3);
+    param1->state = 1;
+    param1->sprite = WiFiLobbyMinigameBalloon_CreateRankIcon(param0, param1->anim, param2);
+    param1->slot = param2;
+    param1->progress = param3;
 
     return 1;
 }
@@ -1122,9 +1122,9 @@ static void WiFiLobbyMinigameBalloon_SlideRankIcon(WiFiLobbyMinigameBalloonRankI
 {
     s16 v0, v1, v2;
 
-    v0 = (9 * 8) - param0->unk_06 * 16;
+    v0 = (9 * 8) - param0->slot * 16;
 
-    Sprite_GetPositionXYWithSubscreenOffset2(param0->unk_00, &v1, &v2, ((192 + 160) << FX32_SHIFT));
+    Sprite_GetPositionXYWithSubscreenOffset2(param0->sprite, &v1, &v2, ((192 + 160) << FX32_SHIFT));
 
     if (v0 > v1) {
         v1 += 2;
@@ -1132,7 +1132,7 @@ static void WiFiLobbyMinigameBalloon_SlideRankIcon(WiFiLobbyMinigameBalloonRankI
             v1 = v0;
         }
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_00, v1, v2, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->sprite, v1, v2, ((192 + 160) << FX32_SHIFT));
     }
 }
 
@@ -1141,27 +1141,27 @@ static void WiFiLobbyMinigameBalloon_UpdateRankIcon(WiFiLobbyMinigameBalloonGame
     int v0, v1;
     WiFiLobbyMinigameBalloonRankIcon *v2;
 
-    if (param1->unk_06 != 0) {
+    if (param1->slot != 0) {
         return;
     }
 
-    switch (param1->unk_05) {
+    switch (param1->state) {
     case 3:
-        if (ManagedSprite_IsAnimated(param1->unk_00) == 0) {
-            param1->unk_08 += 5;
-            param1->unk_04 = WiFiLobbyMinigameBalloon_GetRankIconAnim(param1->unk_08);
-            param1->unk_05 = 1;
+        if (ManagedSprite_IsAnimated(param1->sprite) == 0) {
+            param1->progress += 5;
+            param1->anim = WiFiLobbyMinigameBalloon_GetRankIconAnim(param1->progress);
+            param1->state = 1;
 
-            ManagedSprite_SetAnim(param1->unk_00, 0 + param1->unk_04);
-            ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00, (9 * 8) - 5 * 16, (4 * 8), ((192 + 160) << FX32_SHIFT));
+            ManagedSprite_SetAnim(param1->sprite, 0 + param1->anim);
+            ManagedSprite_SetPositionXYWithSubscreenOffset(param1->sprite, (9 * 8) - 5 * 16, (4 * 8), ((192 + 160) << FX32_SHIFT));
 
             for (v1 = 0; v1 < 5; v1++) {
                 v2 = &param0->rankIcons[v1];
 
-                if (v2->unk_06 == 0) {
-                    v2->unk_06 = 5 - 1;
+                if (v2->slot == 0) {
+                    v2->slot = 5 - 1;
                 } else {
-                    v2->unk_06--;
+                    v2->slot--;
                 }
             }
         }
@@ -1170,9 +1170,9 @@ static void WiFiLobbyMinigameBalloon_UpdateRankIcon(WiFiLobbyMinigameBalloonGame
     case 1:
         v0 = WiFiLobbyMinigameBalloon_GetGaugePercent(param0);
 
-        if ((param1->unk_05 == 1) && (v0 > 75)) {
-            param1->unk_05 = 2;
-            ManagedSprite_SetAnim(param1->unk_00, 3 + param1->unk_04);
+        if ((param1->state == 1) && (v0 > 75)) {
+            param1->state = 2;
+            ManagedSprite_SetAnim(param1->sprite, 3 + param1->anim);
             Sound_PlayEffect(SEQ_SE_PL_ALERT4_sseq);
         }
 
@@ -1201,9 +1201,9 @@ static void WiFiLobbyMinigameBalloon_AdvanceRankIcons(WiFiLobbyMinigameBalloonGa
     for (v0 = 0; v0 < 5; v0++) {
         v1 = &param0->rankIcons[v0];
 
-        if (v1->unk_06 == 0) {
-            v1->unk_05 = 3;
-            ManagedSprite_SetAnim(v1->unk_00, 6);
+        if (v1->slot == 0) {
+            v1->state = 3;
+            ManagedSprite_SetAnim(v1->sprite, 6);
             return;
         }
     }
@@ -1213,10 +1213,10 @@ void WiFiLobbyMinigameBalloon_ApplyPlayerPalettes(WiFiLobbyMinigameBalloonGame *
 {
     int v0;
 
-    switch (param0->unk_00->unk_30) {
+    switch (param0->context->playerCount) {
     case 3:
-        Bg_ChangeTilemapRectPalette(param0->unk_2C, 4, 0, 13, 12, 4, 3);
-        Bg_ChangeTilemapRectPalette(param0->unk_2C, 4, 0x14, 13, 12, 4, 0);
+        Bg_ChangeTilemapRectPalette(param0->bgConfig, 4, 0, 13, 12, 4, 3);
+        Bg_ChangeTilemapRectPalette(param0->bgConfig, 4, 0x14, 13, 12, 4, 0);
         break;
     }
 }
@@ -1229,7 +1229,7 @@ void WiFiLobbyMinigameBalloon_ApplyMainPlayerPalettes(WiFiLobbyMinigameBalloonGa
     int v4, v5, v6, v7;
     u16 *v8, *v9;
 
-    for (v2 = 0; v2 < param0->unk_00->unk_30; v2++) {
+    for (v2 = 0; v2 < param0->context->playerCount; v2++) {
         v4 = sMainPaletteSrcByPlayer[v2];
 
         for (v1 = 0; v1 < 3; v1++) {
@@ -1239,8 +1239,8 @@ void WiFiLobbyMinigameBalloon_ApplyMainPlayerPalettes(WiFiLobbyMinigameBalloonGa
 
     v7 = CommSys_CurNetId();
 
-    for (v3 = 0; v3 < param0->unk_00->unk_30; v3++) {
-        if (param0->unk_00->unk_2C[v3] == v7) {
+    for (v3 = 0; v3 < param0->context->playerCount; v3++) {
+        if (param0->context->netIds[v3] == v7) {
             break;
         }
     }
@@ -1248,9 +1248,9 @@ void WiFiLobbyMinigameBalloon_ApplyMainPlayerPalettes(WiFiLobbyMinigameBalloonGa
     v8 = PaletteData_GetUnfadedBuffer(param0->paletteData, 1);
     v9 = PaletteData_GetFadedBuffer(param0->paletteData, 1);
 
-    for (v1 = 0; v1 < param0->unk_00->unk_30; v1++) {
+    for (v1 = 0; v1 < param0->context->playerCount; v1++) {
         v4 = v1;
-        v5 = sMainPaletteDestByPlayerCount[param0->unk_00->unk_30][WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->unk_00->unk_2C[v1])];
+        v5 = sMainPaletteDestByPlayerCount[param0->context->playerCount][WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->context->netIds[v1])];
 
         for (v6 = 0; v6 < 3; v6++) {
             v8[v5 + v6] = v0[v4][v6];
@@ -1266,9 +1266,9 @@ void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes(WiFiLobbyMinigameBalloonGam
     int v3 = 0;
     int v4, v5, v6, v7;
     u16 *v8, *v9;
-    int v10 = SpriteManager_FindPlttResourceOffset(param0->unk_28, 10006, NNS_G2D_VRAM_TYPE_2DSUB);
+    int v10 = SpriteManager_FindPlttResourceOffset(param0->spriteManager, 10006, NNS_G2D_VRAM_TYPE_2DSUB);
 
-    for (v2 = 0; v2 < param0->unk_00->unk_30; v2++) {
+    for (v2 = 0; v2 < param0->context->playerCount; v2++) {
         v4 = sSubPaletteSrcByPlayer[v2];
 
         for (v1 = 0; v1 < 16; v1++) {
@@ -1278,8 +1278,8 @@ void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes(WiFiLobbyMinigameBalloonGam
 
     v7 = CommSys_CurNetId();
 
-    for (v3 = 0; v3 < param0->unk_00->unk_30; v3++) {
-        if (param0->unk_00->unk_2C[v3] == v7) {
+    for (v3 = 0; v3 < param0->context->playerCount; v3++) {
+        if (param0->context->netIds[v3] == v7) {
             break;
         }
     }
@@ -1287,9 +1287,9 @@ void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes(WiFiLobbyMinigameBalloonGam
     v8 = PaletteData_GetUnfadedBuffer(param0->paletteData, 3);
     v9 = PaletteData_GetFadedBuffer(param0->paletteData, 3);
 
-    for (v1 = 0; v1 < param0->unk_00->unk_30; v1++) {
+    for (v1 = 0; v1 < param0->context->playerCount; v1++) {
         v4 = v1;
-        v5 = sSubPaletteDestByPlayerCount[param0->unk_00->unk_30][WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->unk_00->unk_2C[v1])] + v10 * 16;
+        v5 = sSubPaletteDestByPlayerCount[param0->context->playerCount][WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->context->netIds[v1])] + v10 * 16;
 
         for (v6 = 0; v6 < 16; v6++) {
             v8[v5 + v6] = v0[v4][v6];
@@ -1305,9 +1305,9 @@ void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes2(WiFiLobbyMinigameBalloonGa
     int v3 = 0;
     int v4, v5, v6, v7;
     u16 *v8, *v9;
-    int v10 = SpriteManager_FindPlttResourceOffset(param0->unk_28, 10006, NNS_G2D_VRAM_TYPE_2DSUB);
+    int v10 = SpriteManager_FindPlttResourceOffset(param0->spriteManager, 10006, NNS_G2D_VRAM_TYPE_2DSUB);
 
-    for (v2 = 0; v2 < param0->unk_00->unk_30; v2++) {
+    for (v2 = 0; v2 < param0->context->playerCount; v2++) {
         v4 = sSubPalette2SrcByPlayer[v2];
 
         for (v1 = 0; v1 < 1; v1++) {
@@ -1317,8 +1317,8 @@ void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes2(WiFiLobbyMinigameBalloonGa
 
     v7 = CommSys_CurNetId();
 
-    for (v3 = 0; v3 < param0->unk_00->unk_30; v3++) {
-        if (param0->unk_00->unk_2C[v3] == v7) {
+    for (v3 = 0; v3 < param0->context->playerCount; v3++) {
+        if (param0->context->netIds[v3] == v7) {
             break;
         }
     }
@@ -1326,9 +1326,9 @@ void WiFiLobbyMinigameBalloon_ApplySubPlayerPalettes2(WiFiLobbyMinigameBalloonGa
     v8 = PaletteData_GetUnfadedBuffer(param0->paletteData, 3);
     v9 = PaletteData_GetFadedBuffer(param0->paletteData, 3);
 
-    for (v1 = 0; v1 < param0->unk_00->unk_30; v1++) {
+    for (v1 = 0; v1 < param0->context->playerCount; v1++) {
         v4 = v1;
-        v5 = sSubPalette2DestByPlayerCount[param0->unk_00->unk_30][WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->unk_00->unk_2C[v1])] + v10 * 16;
+        v5 = sSubPalette2DestByPlayerCount[param0->context->playerCount][WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param0->context->netIds[v1])] + v10 * 16;
 
         for (v6 = 0; v6 < 1; v6++) {
             v8[v5 + v6] = v0[v4][v6];
@@ -1341,12 +1341,12 @@ void WiFiLobbyMinigameBalloon_InitScorePacket(WiFiLobbyMinigameBalloonGame *para
 {
     MI_CpuClear8(param3, sizeof(WiFiLobbyMinigameBalloonScorePacket));
 
-    param3->unk_00 = CommSys_CurNetId();
-    param3->unk_02 = param1;
-    param3->unk_04 = param2;
-    param3->unk_08 = param2;
-    param3->unk_01 = 0;
-    param3->unk_0C = 0;
+    param3->netId = CommSys_CurNetId();
+    param3->balloonLevel = param1;
+    param3->baseScore = param2;
+    param3->score = param2;
+    param3->multiplier = 0;
+    param3->applied = 0;
 }
 
 BOOL WiFiLobbyMinigameBalloon_QueueScorePacket(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonScorePacket *param1)
@@ -1387,14 +1387,14 @@ BOOL WiFiLobbyMinigameBalloon_ApplyScoreMultiplier(WiFiLobbyMinigameBalloonGame 
 
     if (v2 < v3) {
         for (v1 = v2; v1 < v3; v1++) {
-            if (param0->scorePackets[v1].unk_0C == 0) {
+            if (param0->scorePackets[v1].applied == 0) {
                 v0 = &param0->scorePackets[v1];
                 break;
             }
         }
     } else {
         for (v1 = v2; v1 < 8; v1++) {
-            if (param0->scorePackets[v1].unk_0C == 0) {
+            if (param0->scorePackets[v1].applied == 0) {
                 v0 = &param0->scorePackets[v1];
                 break;
             }
@@ -1402,7 +1402,7 @@ BOOL WiFiLobbyMinigameBalloon_ApplyScoreMultiplier(WiFiLobbyMinigameBalloonGame 
 
         if (v0 == NULL) {
             for (v1 = 0; v1 < v3; v1++) {
-                if (param0->scorePackets[v1].unk_0C == 0) {
+                if (param0->scorePackets[v1].applied == 0) {
                     v0 = &param0->scorePackets[v1];
                     break;
                 }
@@ -1415,20 +1415,20 @@ BOOL WiFiLobbyMinigameBalloon_ApplyScoreMultiplier(WiFiLobbyMinigameBalloonGame 
         return 0;
     }
 
-    GF_ASSERT(v0->unk_01 == 0);
+    GF_ASSERT(v0->multiplier == 0);
 
-    v0->unk_01 = param1;
-    v0->unk_0C = 1;
+    v0->multiplier = param1;
+    v0->applied = 1;
 
     switch (param1) {
     case 1:
-        v0->unk_08 = v0->unk_04 * 2;
+        v0->score = v0->baseScore * 2;
         break;
     case 2:
-        v0->unk_08 = v0->unk_04 / 2;
+        v0->score = v0->baseScore / 2;
         break;
     case 3:
-        v0->unk_08 = v0->unk_04 * 3;
+        v0->score = v0->baseScore * 3;
         break;
     }
 
@@ -1444,19 +1444,19 @@ void WiFiLobbyMinigameBalloon_CreatePlayerBalloonSprites(WiFiLobbyMinigameBalloo
     v1 = sPlayerBalloonSpriteTemplate;
 
     for (v2 = 0; v2 < 4; v2++) {
-        param1->unk_00[v2] = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v1);
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00[v2], sPlayerPositions[v2].unk_00, sPlayerPositions[v2].unk_02, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param1->unk_00[v2], 31 + v2 / 2);
-        Sprite_TickFrame(param1->unk_00[v2]->sprite);
+        param1->sprites[v2] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->sprites[v2], sPlayerPositions[v2].x, sPlayerPositions[v2].y, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param1->sprites[v2], 31 + v2 / 2);
+        Sprite_TickFrame(param1->sprites[v2]->sprite);
     }
 
-    switch (param0->unk_00->unk_30) {
+    switch (param0->context->playerCount) {
     case 2:
-        ManagedSprite_SetDrawFlag(param1->unk_00[2], 0);
-        ManagedSprite_SetDrawFlag(param1->unk_00[3], 0);
+        ManagedSprite_SetDrawFlag(param1->sprites[2], 0);
+        ManagedSprite_SetDrawFlag(param1->sprites[3], 0);
         break;
     case 3:
-        ManagedSprite_SetDrawFlag(param1->unk_00[1], 0);
+        ManagedSprite_SetDrawFlag(param1->sprites[1], 0);
         break;
     }
 }
@@ -1466,7 +1466,7 @@ void WiFiLobbyMinigameBalloon_FreePlayerBalloonSprites(WiFiLobbyMinigameBalloonG
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0]);
+        Sprite_DeleteAndFreeResources(param1->sprites[v0]);
     }
 }
 
@@ -1479,35 +1479,35 @@ void WiFiLobbyMinigameBalloon_CreatePlayerBalloons(WiFiLobbyMinigameBalloonGame 
     v0 = sPlayerBalloonSpriteTemplate2;
 
     for (v1 = 0; v1 < 3; v1++) {
-        v3 = 256 / 2 + FX_Mul(CalcSineDegrees_FX32(param1->unk_E4 + param1->unk_00[v1].unk_0C), 76);
-        v4 = 196 / 2 + (-FX_Mul(CalcCosineDegrees_FX32(param1->unk_E4 + param1->unk_00[v1].unk_0C), (64 + 4)));
+        v3 = 256 / 2 + FX_Mul(CalcSineDegrees_FX32(param1->angle + param1->balloons[v1].angleOffset), 76);
+        v4 = 196 / 2 + (-FX_Mul(CalcCosineDegrees_FX32(param1->angle + param1->balloons[v1].angleOffset), (64 + 4)));
 
-        param1->unk_00[v1].unk_00 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v0);
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00[v1].unk_00, v3, v4 + -24, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param1->unk_00[v1].unk_00, sBalloonAnimByLevel[v1 + 1]);
-        Sprite_TickFrame(param1->unk_00[v1].unk_00->sprite);
-        ManagedSprite_SetDrawFlag(param1->unk_00[v1].unk_00, 0);
+        param1->balloons[v1].balloonSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v0);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->balloons[v1].balloonSprite, v3, v4 + -24, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param1->balloons[v1].balloonSprite, sBalloonAnimByLevel[v1 + 1]);
+        Sprite_TickFrame(param1->balloons[v1].balloonSprite->sprite);
+        ManagedSprite_SetDrawFlag(param1->balloons[v1].balloonSprite, 0);
 
-        param1->unk_00[v1].unk_04 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &sBalloonShadowSpriteTemplate);
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00[v1].unk_04, 0, 0, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param1->unk_00[v1].unk_04, 33);
-        Sprite_TickFrame(param1->unk_00[v1].unk_04->sprite);
-        ManagedSprite_SetDrawFlag(param1->unk_00[v1].unk_04, 0);
+        param1->balloons[v1].shadowSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sBalloonShadowSpriteTemplate);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->balloons[v1].shadowSprite, 0, 0, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param1->balloons[v1].shadowSprite, 33);
+        Sprite_TickFrame(param1->balloons[v1].shadowSprite->sprite);
+        ManagedSprite_SetDrawFlag(param1->balloons[v1].shadowSprite, 0);
 
-        param1->unk_00[v1].unk_08 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &sBalloonHighlightSpriteTemplate);
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00[v1].unk_08, v3, v4 + -24 + 24, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetExplicitOamMode(param1->unk_00[v1].unk_08, GX_OAM_MODE_XLU);
-        ManagedSprite_SetAffineOverwriteMode(param1->unk_00[v1].unk_08, AFFINE_OVERWRITE_MODE_NORMAL);
-        ManagedSprite_SetAffineScale(param1->unk_00[v1].unk_08, 1.0f, 1.0f);
-        ManagedSprite_SetAnim(param1->unk_00[v1].unk_08, 34 + v1);
-        Sprite_TickFrame(param1->unk_00[v1].unk_08->sprite);
-        ManagedSprite_SetDrawFlag(param1->unk_00[v1].unk_08, 0);
+        param1->balloons[v1].highlightSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sBalloonHighlightSpriteTemplate);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->balloons[v1].highlightSprite, v3, v4 + -24 + 24, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetExplicitOamMode(param1->balloons[v1].highlightSprite, GX_OAM_MODE_XLU);
+        ManagedSprite_SetAffineOverwriteMode(param1->balloons[v1].highlightSprite, AFFINE_OVERWRITE_MODE_NORMAL);
+        ManagedSprite_SetAffineScale(param1->balloons[v1].highlightSprite, 1.0f, 1.0f);
+        ManagedSprite_SetAnim(param1->balloons[v1].highlightSprite, 34 + v1);
+        Sprite_TickFrame(param1->balloons[v1].highlightSprite->sprite);
+        ManagedSprite_SetDrawFlag(param1->balloons[v1].highlightSprite, 0);
 
-        WiFiLobbyMinigameBalloon_CreateSparkles(param0, &param1->unk_00[v1].unk_30);
+        WiFiLobbyMinigameBalloon_CreateSparkles(param0, &param1->balloons[v1].sparkle);
     }
 
-    ManagedSprite_SetDrawFlag(param1->unk_00[0].unk_00, 1);
-    ManagedSprite_SetDrawFlag(param1->unk_00[0].unk_08, 1);
+    ManagedSprite_SetDrawFlag(param1->balloons[0].balloonSprite, 1);
+    ManagedSprite_SetDrawFlag(param1->balloons[0].highlightSprite, 1);
 }
 
 void WiFiLobbyMinigameBalloon_FreePlayerBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1)
@@ -1515,10 +1515,10 @@ void WiFiLobbyMinigameBalloon_FreePlayerBalloons(WiFiLobbyMinigameBalloonGame *p
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0].unk_00);
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0].unk_04);
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0].unk_08);
-        WiFiLobbyMinigameBalloon_FreeSparkles(param0, &param1->unk_00[v0].unk_30);
+        Sprite_DeleteAndFreeResources(param1->balloons[v0].balloonSprite);
+        Sprite_DeleteAndFreeResources(param1->balloons[v0].shadowSprite);
+        Sprite_DeleteAndFreeResources(param1->balloons[v0].highlightSprite);
+        WiFiLobbyMinigameBalloon_FreeSparkles(param0, &param1->balloons[v0].sparkle);
     }
 }
 
@@ -1526,75 +1526,75 @@ void WiFiLobbyMinigameBalloon_InitPlayerBalloons(WiFiLobbyMinigameBalloonGame *p
 {
     int v0;
 
-    param1->unk_E8 = (360 << FX32_SHIFT) / 12 / sRotationSteps[param1->unk_F4].unk_00;
+    param1->angleStep = (360 << FX32_SHIFT) / 12 / sRotationSteps[param1->speedStage].framesPerStep;
 
     for (v0 = 0; v0 < 3; v0++) {
-        param1->unk_00[v0].unk_0C = (v0 * 90) << FX32_SHIFT;
-        param1->unk_00[v0].unk_14 = 1 + v0;
+        param1->balloons[v0].angleOffset = (v0 * 90) << FX32_SHIFT;
+        param1->balloons[v0].balloonLevel = 1 + v0;
     }
 
-    param1->unk_00[0].unk_10 = 2;
-    param1->unk_F1 = 1;
+    param1->balloons[0].state = 2;
+    param1->idle = 1;
 }
 
 void WiFiLobbyMinigameBalloon_UpdatePlayerBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1)
 {
     int v0, v1, v2 = 0;
 
-    if (param1->unk_F1 == 1) {
+    if (param1->idle == 1) {
         return;
     }
 
-    param1->unk_EC++;
+    param1->frameCounter++;
 
-    if (param1->unk_F2 == 0) {
-        param1->unk_E4 += param1->unk_E8;
-        param1->unk_F3++;
+    if (param1->pauseTimer == 0) {
+        param1->angle += param1->angleStep;
+        param1->rotationStep++;
 
-        if (param1->unk_F3 >= sRotationSteps[param1->unk_F4].unk_00) {
-            param1->unk_F3 = 0;
-            param1->unk_F0++;
-            param1->unk_E4 = (360 << FX32_SHIFT) / 12 * param1->unk_F0;
-            param1->unk_F2 = sRotationSteps[param1->unk_F4].unk_01;
+        if (param1->rotationStep >= sRotationSteps[param1->speedStage].framesPerStep) {
+            param1->rotationStep = 0;
+            param1->slot++;
+            param1->angle = (360 << FX32_SHIFT) / 12 * param1->slot;
+            param1->pauseTimer = sRotationSteps[param1->speedStage].pauseFrames;
         }
     } else {
-        param1->unk_F2--;
+        param1->pauseTimer--;
 
-        if (param1->unk_F2 == 0) {
-            if (param1->unk_F0 >= 12) {
-                param1->unk_F0 = 0;
-                param1->unk_F4++;
+        if (param1->pauseTimer == 0) {
+            if (param1->slot >= 12) {
+                param1->slot = 0;
+                param1->speedStage++;
 
-                if (param1->unk_F4 >= NELEMS(sRotationSteps)) {
-                    param1->unk_F4 = NELEMS(sRotationSteps) - 1;
+                if (param1->speedStage >= NELEMS(sRotationSteps)) {
+                    param1->speedStage = NELEMS(sRotationSteps) - 1;
                 }
 
-                param1->unk_E8 = (360 << FX32_SHIFT) / 12 / sRotationSteps[param1->unk_F4].unk_00;
+                param1->angleStep = (360 << FX32_SHIFT) / 12 / sRotationSteps[param1->speedStage].framesPerStep;
             }
         }
     }
 
-    if (param1->unk_F4 == 2 - 1) {
+    if (param1->speedStage == 2 - 1) {
         for (v0 = 0; v0 < 2; v0++) {
-            v2 += sRotationSteps[v0].unk_00 * 12 + sRotationSteps[v0].unk_01 * 12;
+            v2 += sRotationSteps[v0].framesPerStep * 12 + sRotationSteps[v0].pauseFrames * 12;
         }
 
-        if (v2 - 15 == param1->unk_EC) {
-            WiFiLobbyMinigameBalloon_SetPlayerBalloonState(&param1->unk_00[1], 1);
+        if (v2 - 15 == param1->frameCounter) {
+            WiFiLobbyMinigameBalloon_SetPlayerBalloonState(&param1->balloons[1], 1);
         }
-    } else if (param1->unk_F4 == 3 - 1) {
+    } else if (param1->speedStage == 3 - 1) {
         for (v0 = 0; v0 < 3; v0++) {
-            v2 += sRotationSteps[v0].unk_00 * 12 + sRotationSteps[v0].unk_01 * 12;
+            v2 += sRotationSteps[v0].framesPerStep * 12 + sRotationSteps[v0].pauseFrames * 12;
         }
 
-        if (v2 - 15 == param1->unk_EC) {
-            WiFiLobbyMinigameBalloon_SetPlayerBalloonState(&param1->unk_00[2], 1);
+        if (v2 - 15 == param1->frameCounter) {
+            WiFiLobbyMinigameBalloon_SetPlayerBalloonState(&param1->balloons[2], 1);
         }
     }
 
     for (v0 = 0; v0 < 3; v0++) {
-        WiFiLobbyMinigameBalloon_UpdatePlayerBalloon(param0, param1, &param1->unk_00[v0]);
-        WiFiLobbyMinigameBalloon_UpdateSparkles(param0, &param1->unk_00[v0], &param1->unk_00[v0].unk_30);
+        WiFiLobbyMinigameBalloon_UpdatePlayerBalloon(param0, param1, &param1->balloons[v0]);
+        WiFiLobbyMinigameBalloon_UpdateSparkles(param0, &param1->balloons[v0], &param1->balloons[v0].sparkle);
     }
 }
 
@@ -1604,9 +1604,9 @@ static int WiFiLobbyMinigameBalloon_GetActivePlayerBalloon(WiFiLobbyMinigameBall
     int v1;
 
     for (v1 = 0; v1 < 3; v1++) {
-        if (v0->unk_00[v1].unk_15 == 1) {
-            *param1 = &v0->unk_00[v1];
-            return v0->unk_00[v1].unk_14;
+        if (v0->balloons[v1].active == 1) {
+            *param1 = &v0->balloons[v1];
+            return v0->balloons[v1].balloonLevel;
         }
     }
 
@@ -1616,21 +1616,21 @@ static int WiFiLobbyMinigameBalloon_GetActivePlayerBalloon(WiFiLobbyMinigameBall
 
 static void WiFiLobbyMinigameBalloon_SetPlayerBalloonState(WiFiLobbyMinigameBalloonPlayerBalloon *param0, int param1)
 {
-    param0->unk_10 = param1;
-    param0->unk_11 = 0;
-    param0->unk_12 = 0;
-    param0->unk_18 = 0;
-    param0->unk_15 = 0;
+    param0->state = param1;
+    param0->phase = 0;
+    param0->timer = 0;
+    param0->popDuration = 0;
+    param0->active = 0;
 }
 
 static void WiFiLobbyMinigameBalloon_UpdatePlayerBalloon(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1, WiFiLobbyMinigameBalloonPlayerBalloon *param2)
 {
-    sPlayerBalloonStateTable[param2->unk_10](param0, param1, param2);
+    sPlayerBalloonStateTable[param2->state](param0, param1, param2);
 }
 
 static int WiFiLobbyMinigameBalloon_PlayerBalloonStateIdle(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloons *param1, WiFiLobbyMinigameBalloonPlayerBalloon *param2)
 {
-    param2->unk_15 = 0;
+    param2->active = 0;
     return 1;
 }
 
@@ -1644,67 +1644,67 @@ static int WiFiLobbyMinigameBalloon_PlayerBalloonStateEnter(WiFiLobbyMinigameBal
 
     v2 = 0;
     v3 = 0;
-    v0 = param2->unk_1C;
-    v1 = param2->unk_1E;
+    v0 = param2->startX;
+    v1 = param2->startY;
 
-    switch (param2->unk_11) {
+    switch (param2->phase) {
     case 0:
-        ManagedSprite_SetDrawFlag(param2->unk_00, 1);
-        ManagedSprite_SetDrawFlag(param2->unk_08, 1);
-        Sprite_GetPositionXYWithSubscreenOffset2(param2->unk_00, &v0, &v1, ((192 + 160) << FX32_SHIFT));
-        param2->unk_1C = v0;
-        param2->unk_1E = v1;
-        param2->unk_11++;
+        ManagedSprite_SetDrawFlag(param2->balloonSprite, 1);
+        ManagedSprite_SetDrawFlag(param2->highlightSprite, 1);
+        Sprite_GetPositionXYWithSubscreenOffset2(param2->balloonSprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        param2->startX = v0;
+        param2->startY = v1;
+        param2->phase++;
 
     case 1:
-        switch (param2->unk_0C) {
+        switch (param2->angleOffset) {
         case 0:
-            v4 = param2->unk_1E - -32;
-            v3 = param2->unk_12 * v4 / 15;
+            v4 = param2->startY - -32;
+            v3 = param2->timer * v4 / 15;
             v1 = -32 + v3;
             break;
         case 90 << FX32_SHIFT:
-            v5 = param2->unk_1C - (256 + 32);
-            v2 = param2->unk_12 * v5 / 15;
+            v5 = param2->startX - (256 + 32);
+            v2 = param2->timer * v5 / 15;
             v0 = (256 + 32) + v2;
             break;
         case 180 << FX32_SHIFT:
-            v4 = param2->unk_1E - (196 + 32);
-            v3 = param2->unk_12 * v4 / 15;
+            v4 = param2->startY - (196 + 32);
+            v3 = param2->timer * v4 / 15;
             v1 = (196 + 32) + v3;
             break;
         case 270 << FX32_SHIFT:
-            v5 = param2->unk_1C - -32;
-            v2 = param2->unk_12 * v5 / 15;
+            v5 = param2->startX - -32;
+            v2 = param2->timer * v5 / 15;
             v0 = -32 + v2;
             break;
         default:
             GF_ASSERT(FALSE);
             break;
         }
-        if (param2->unk_12 >= 15) {
-            ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_00, param2->unk_1C, param2->unk_1E, ((192 + 160) << FX32_SHIFT));
-            ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_08, param2->unk_1C, param2->unk_1E + 24, ((192 + 160) << FX32_SHIFT));
+        if (param2->timer >= 15) {
+            ManagedSprite_SetPositionXYWithSubscreenOffset(param2->balloonSprite, param2->startX, param2->startY, ((192 + 160) << FX32_SHIFT));
+            ManagedSprite_SetPositionXYWithSubscreenOffset(param2->highlightSprite, param2->startX, param2->startY + 24, ((192 + 160) << FX32_SHIFT));
             WiFiLobbyMinigameBalloon_SetPlayerBalloonState(param2, 2);
-            WiFiLobbyMinigameBalloon_StartSparkles(param0, param2, &param2->unk_30);
+            WiFiLobbyMinigameBalloon_StartSparkles(param0, param2, &param2->sparkle);
 
             return 1;
         }
 
-        v6 = ((180 * param2->unk_12) << FX32_SHIFT) / 15;
+        v6 = ((180 * param2->timer) << FX32_SHIFT) / 15;
         v7 = -(FX_Mul(CalcSineDegrees_FX32(v6), (24 << FX32_SHIFT))) / FX32_ONE;
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_00, v0, v1 + v7, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_08, v0, v1 + 24, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->balloonSprite, v0, v1 + v7, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->highlightSprite, v0, v1 + 24, ((192 + 160) << FX32_SHIFT));
 
         v8 = FX32_ONE - (FX32_ONE * (-v7 / 3) / ((24 << FX32_SHIFT) >> FX32_SHIFT));
         v9 = FX_FX32_TO_F32(v8);
 
-        ManagedSprite_SetAffineScale(param2->unk_08, v9, v9);
+        ManagedSprite_SetAffineScale(param2->highlightSprite, v9, v9);
         break;
     }
 
-    param2->unk_12++;
+    param2->timer++;
     return 1;
 }
 
@@ -1716,33 +1716,33 @@ static int WiFiLobbyMinigameBalloon_PlayerBalloonStateOrbit(WiFiLobbyMinigameBal
     fx32 v4;
     f32 v5;
 
-    if (param1->unk_F3 > 0) {
-        ManagedSprite_TickNFrames(param2->unk_00, ((8 + 8 + 12 + 8 + 8) << FX32_SHIFT) / sRotationSteps[param1->unk_F4].unk_00);
+    if (param1->rotationStep > 0) {
+        ManagedSprite_TickNFrames(param2->balloonSprite, ((8 + 8 + 12 + 8 + 8) << FX32_SHIFT) / sRotationSteps[param1->speedStage].framesPerStep);
     } else {
-        ManagedSprite_SetAnimationFrame(param2->unk_00, 0);
+        ManagedSprite_SetAnimationFrame(param2->balloonSprite, 0);
     }
 
-    v2 = ((180 * param1->unk_F3) << FX32_SHIFT) / sRotationSteps[param1->unk_F4].unk_00;
+    v2 = ((180 * param1->rotationStep) << FX32_SHIFT) / sRotationSteps[param1->speedStage].framesPerStep;
     v3 = -(FX_Mul(CalcSineDegrees_FX32(v2), (12 << FX32_SHIFT))) / FX32_ONE;
-    v0 = 256 / 2 + FX_Mul(CalcSineDegrees_FX32(param1->unk_E4 + param2->unk_0C), 76);
-    v1 = 196 / 2 + (-FX_Mul(CalcCosineDegrees_FX32(param1->unk_E4 + param2->unk_0C), (64 + 4)));
+    v0 = 256 / 2 + FX_Mul(CalcSineDegrees_FX32(param1->angle + param2->angleOffset), 76);
+    v1 = 196 / 2 + (-FX_Mul(CalcCosineDegrees_FX32(param1->angle + param2->angleOffset), (64 + 4)));
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_00, v0, v1 + -24 + v3, ((192 + 160) << FX32_SHIFT));
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_08, v0, v1 + -24 + 24, ((192 + 160) << FX32_SHIFT));
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param2->balloonSprite, v0, v1 + -24 + v3, ((192 + 160) << FX32_SHIFT));
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param2->highlightSprite, v0, v1 + -24 + 24, ((192 + 160) << FX32_SHIFT));
 
     v4 = FX32_ONE - (FX32_ONE * (-v3 / 3) / ((12 << FX32_SHIFT) >> FX32_SHIFT));
     v5 = FX_FX32_TO_F32(v4);
 
-    ManagedSprite_SetAffineScale(param2->unk_08, v5, v5);
+    ManagedSprite_SetAffineScale(param2->highlightSprite, v5, v5);
 
-    if (param1->unk_F3 == sRotationSteps[param1->unk_F4].unk_00 - 1) {
-        WiFiLobbyMinigameBalloon_StartSparkles(param0, param2, &param2->unk_30);
+    if (param1->rotationStep == sRotationSteps[param1->speedStage].framesPerStep - 1) {
+        WiFiLobbyMinigameBalloon_StartSparkles(param0, param2, &param2->sparkle);
     }
 
-    if (((param1->unk_E4 + param2->unk_0C) >> FX32_SHIFT) % 360 == 180) {
-        param2->unk_15 = 1;
+    if (((param1->angle + param2->angleOffset) >> FX32_SHIFT) % 360 == 180) {
+        param2->active = 1;
     } else {
-        param2->unk_15 = 0;
+        param2->active = 0;
     }
 
     return 1;
@@ -1756,51 +1756,51 @@ static int WiFiLobbyMinigameBalloon_PlayerBalloonStatePop(WiFiLobbyMinigameBallo
     fx32 v8;
     int v9 = 0;
 
-    switch (param2->unk_11) {
+    switch (param2->phase) {
     case 0:
         Sound_PlayEffect(SEQ_SE_PL_BALLOON05_sseq);
-        Sprite_GetPositionXYWithSubscreenOffset2(param2->unk_00, &v0, &v1, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_04, v0, v1 + -32, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param2->unk_04, 33);
-        ManagedSprite_SetDrawFlag(param2->unk_04, 1);
-        ManagedSprite_SetAnim(param2->unk_00, sBalloonAnimByLevel[param2->unk_14] + 2);
+        Sprite_GetPositionXYWithSubscreenOffset2(param2->balloonSprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->shadowSprite, v0, v1 + -32, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param2->shadowSprite, 33);
+        ManagedSprite_SetDrawFlag(param2->shadowSprite, 1);
+        ManagedSprite_SetAnim(param2->balloonSprite, sBalloonAnimByLevel[param2->balloonLevel] + 2);
 
-        param2->unk_12 = sRotationSteps[param1->unk_F4].unk_02;
-        param2->unk_13 = sRotationSteps[param1->unk_F4].unk_02 / 2;
-        param2->unk_11++;
+        param2->timer = sRotationSteps[param1->speedStage].popFrames;
+        param2->timerThreshold = sRotationSteps[param1->speedStage].popFrames / 2;
+        param2->phase++;
         break;
     case 1:
-        if (param2->unk_12 == param2->unk_13) {
-            ManagedSprite_SetAnim(param2->unk_00, sBalloonAnimByLevel[param2->unk_14] + 1);
-            ManagedSprite_SetDrawFlag(param2->unk_04, 0);
-            ManagedSprite_TickNFrames(param2->unk_04, (4 * FX32_ONE));
+        if (param2->timer == param2->timerThreshold) {
+            ManagedSprite_SetAnim(param2->balloonSprite, sBalloonAnimByLevel[param2->balloonLevel] + 1);
+            ManagedSprite_SetDrawFlag(param2->shadowSprite, 0);
+            ManagedSprite_TickNFrames(param2->shadowSprite, (4 * FX32_ONE));
         }
 
-        if (param2->unk_12 == 0) {
-            ManagedSprite_SetDrawFlag(param2->unk_04, 0);
-            ManagedSprite_SetAnim(param2->unk_00, sBalloonAnimByLevel[param2->unk_14] + 0);
-            param2->unk_11++;
+        if (param2->timer == 0) {
+            ManagedSprite_SetDrawFlag(param2->shadowSprite, 0);
+            ManagedSprite_SetAnim(param2->balloonSprite, sBalloonAnimByLevel[param2->balloonLevel] + 0);
+            param2->phase++;
             break;
         }
-        param2->unk_12--;
+        param2->timer--;
         break;
     case 2:
         v2 = 0;
 
-        if (param1->unk_F2 == 0) {
-            v2 += sRotationSteps[param1->unk_F4].unk_00 - param1->unk_F3;
-            v2 += sRotationSteps[param1->unk_F4].unk_01;
-            v2 += sRotationSteps[param1->unk_F4].unk_00;
-            v3 = param1->unk_F0 + 2;
+        if (param1->pauseTimer == 0) {
+            v2 += sRotationSteps[param1->speedStage].framesPerStep - param1->rotationStep;
+            v2 += sRotationSteps[param1->speedStage].pauseFrames;
+            v2 += sRotationSteps[param1->speedStage].framesPerStep;
+            v3 = param1->slot + 2;
         } else {
-            v2 += param1->unk_F2;
+            v2 += param1->pauseTimer;
 
-            if (param1->unk_F0 >= 12) {
-                v2 += sRotationSteps[param1->unk_F4 + 1].unk_00;
+            if (param1->slot >= 12) {
+                v2 += sRotationSteps[param1->speedStage + 1].framesPerStep;
                 v3 = 1;
             } else {
-                v2 += sRotationSteps[param1->unk_F4].unk_00;
-                v3 = param1->unk_F0 + 1;
+                v2 += sRotationSteps[param1->speedStage].framesPerStep;
+                v3 = param1->slot + 1;
 
                 if (v3 >= 12) {
                     (void)0;
@@ -1808,39 +1808,39 @@ static int WiFiLobbyMinigameBalloon_PlayerBalloonStatePop(WiFiLobbyMinigameBallo
             }
         }
 
-        v3 += param2->unk_0C / ((360 / 12) << FX32_SHIFT);
+        v3 += param2->angleOffset / ((360 / 12) << FX32_SHIFT);
         v3 %= 12;
         v4 = 256 / 2 + FX_Mul(CalcSineDegrees_FX32((360 << FX32_SHIFT) / 12 * v3), 76);
         v5 = 196 / 2 + (-FX_Mul(CalcCosineDegrees_FX32((360 << FX32_SHIFT) / 12 * v3), (64 + 4)));
 
-        Sprite_GetPositionXYWithSubscreenOffset2(param2->unk_00, &v6, &v7, ((192 + 160) << FX32_SHIFT));
+        Sprite_GetPositionXYWithSubscreenOffset2(param2->balloonSprite, &v6, &v7, ((192 + 160) << FX32_SHIFT));
 
         v7 -= -24;
 
-        param2->unk_20 = (v4 - v6) * FX32_ONE / v2;
-        param2->unk_24 = (v5 - v7) * FX32_ONE / v2;
-        param2->unk_28 = v6 * FX32_ONE;
-        param2->unk_2C = v7 * FX32_ONE;
-        param2->unk_12 = v2;
-        param2->unk_18 = v2;
-        param2->unk_11++;
+        param2->velocityX = (v4 - v6) * FX32_ONE / v2;
+        param2->velocityY = (v5 - v7) * FX32_ONE / v2;
+        param2->x = v6 * FX32_ONE;
+        param2->y = v7 * FX32_ONE;
+        param2->timer = v2;
+        param2->popDuration = v2;
+        param2->phase++;
 
     case 3:
-        param2->unk_28 += param2->unk_20;
-        param2->unk_2C += param2->unk_24;
+        param2->x += param2->velocityX;
+        param2->y += param2->velocityY;
 
-        v8 = ((180 * param2->unk_12) << FX32_SHIFT) / param2->unk_18;
+        v8 = ((180 * param2->timer) << FX32_SHIFT) / param2->popDuration;
         v9 = -(FX_Mul(CalcSineDegrees_FX32(v8), (12 << FX32_SHIFT))) / FX32_ONE;
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_00, param2->unk_28 / FX32_ONE, param2->unk_2C / FX32_ONE + -24 + v9, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_TickNFrames(param2->unk_00, ((8 + 8 + 12 + 8 + 8) << FX32_SHIFT) / param2->unk_18);
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_08, param2->unk_28 / FX32_ONE, param2->unk_2C / FX32_ONE + -24 + 24, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->balloonSprite, param2->x / FX32_ONE, param2->y / FX32_ONE + -24 + v9, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_TickNFrames(param2->balloonSprite, ((8 + 8 + 12 + 8 + 8) << FX32_SHIFT) / param2->popDuration);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->highlightSprite, param2->x / FX32_ONE, param2->y / FX32_ONE + -24 + 24, ((192 + 160) << FX32_SHIFT));
 
-        param2->unk_12--;
+        param2->timer--;
 
-        if (param2->unk_12 <= 0) {
-            ManagedSprite_SetAnim(param2->unk_00, sBalloonAnimByLevel[param2->unk_14] + 0);
-            ManagedSprite_SetAnimationFrame(param2->unk_00, 0);
+        if (param2->timer <= 0) {
+            ManagedSprite_SetAnim(param2->balloonSprite, sBalloonAnimByLevel[param2->balloonLevel] + 0);
+            ManagedSprite_SetAnimationFrame(param2->balloonSprite, 0);
             WiFiLobbyMinigameBalloon_SetPlayerBalloonState(param2, 2);
             return 1;
         }
@@ -1859,17 +1859,17 @@ void WiFiLobbyMinigameBalloon_CreateOpponentBalloons(WiFiLobbyMinigameBalloonGam
     v0 = sPlayerBalloonSpriteTemplate2;
 
     for (v1 = 0; v1 < 3; v1++) {
-        param1->unk_00[v1].unk_00 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &v0);
+        param1->balloons[v1].balloonSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v0);
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00[v1].unk_00, 0, 0, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetDrawFlag(param1->unk_00[v1].unk_00, 0);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->balloons[v1].balloonSprite, 0, 0, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetDrawFlag(param1->balloons[v1].balloonSprite, 0);
 
-        param1->unk_00[v1].unk_04 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &sBalloonShadowSpriteTemplate);
+        param1->balloons[v1].shadowSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sBalloonShadowSpriteTemplate);
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00[v1].unk_04, 0, 0, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param1->unk_00[v1].unk_04, 33);
-        Sprite_TickFrame(param1->unk_00[v1].unk_04->sprite);
-        ManagedSprite_SetDrawFlag(param1->unk_00[v1].unk_04, 0);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->balloons[v1].shadowSprite, 0, 0, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param1->balloons[v1].shadowSprite, 33);
+        Sprite_TickFrame(param1->balloons[v1].shadowSprite->sprite);
+        ManagedSprite_SetDrawFlag(param1->balloons[v1].shadowSprite, 0);
     }
 }
 
@@ -1878,8 +1878,8 @@ void WiFiLobbyMinigameBalloon_FreeOpponentBalloons(WiFiLobbyMinigameBalloonGame 
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0].unk_00);
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0].unk_04);
+        Sprite_DeleteAndFreeResources(param1->balloons[v0].balloonSprite);
+        Sprite_DeleteAndFreeResources(param1->balloons[v0].shadowSprite);
     }
 }
 
@@ -1893,8 +1893,8 @@ void WiFiLobbyMinigameBalloon_SpawnOpponentBalloon(WiFiLobbyMinigameBalloonGame 
     }
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param1->unk_00[v0].unk_15 == 0) {
-            v4 = &param1->unk_00[v0];
+        if (param1->balloons[v0].active == 0) {
+            v4 = &param1->balloons[v0];
             break;
         }
     }
@@ -1904,21 +1904,21 @@ void WiFiLobbyMinigameBalloon_SpawnOpponentBalloon(WiFiLobbyMinigameBalloonGame 
     }
 
     v2 = WiFiLobbyMinigameBalloon_GetPlayerSlot(param0, param3);
-    v1 = sOpponentPaletteByPlayerCount[param0->unk_00->unk_30][v2];
+    v1 = sOpponentPaletteByPlayerCount[param0->context->playerCount][v2];
 
-    ManagedSprite_SetExplicitPalette(v4->unk_00, v1);
-    ManagedSprite_SetAnim(v4->unk_00, sBalloonAnimByLevel[param2] + 0);
+    ManagedSprite_SetExplicitPalette(v4->balloonSprite, v1);
+    ManagedSprite_SetAnim(v4->balloonSprite, sBalloonAnimByLevel[param2] + 0);
 
-    v3 = sOpponentPositionByPlayerCount[param0->unk_00->unk_30][v2];
-    v4->unk_10 = sPlayerPositions[v3].unk_02 + -24;
+    v3 = sOpponentPositionByPlayerCount[param0->context->playerCount][v2];
+    v4->targetY = sPlayerPositions[v3].y + -24;
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(v4->unk_00, sPlayerPositions[v3].unk_00, v4->unk_10 + -96, ((192 + 160) << FX32_SHIFT));
-    Sprite_TickFrame(v4->unk_00->sprite);
+    ManagedSprite_SetPositionXYWithSubscreenOffset(v4->balloonSprite, sPlayerPositions[v3].x, v4->targetY + -96, ((192 + 160) << FX32_SHIFT));
+    Sprite_TickFrame(v4->balloonSprite->sprite);
 
-    v4->unk_12 = param2;
-    v4->unk_16 = param4 - (MATH_ABS(-96) * FX32_ONE) / 0x8000;
-    v4->unk_13 = 0;
-    v4->unk_15 = 1;
+    v4->balloonLevel = param2;
+    v4->delay = param4 - (MATH_ABS(-96) * FX32_ONE) / 0x8000;
+    v4->state = 0;
+    v4->active = 1;
 }
 
 void WiFiLobbyMinigameBalloon_UpdateOpponentBalloons(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonOpponentBalloons *param1)
@@ -1927,8 +1927,8 @@ void WiFiLobbyMinigameBalloon_UpdateOpponentBalloons(WiFiLobbyMinigameBalloonGam
     WiFiLobbyMinigameBalloonOpponentBalloon *v1;
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param1->unk_00[v0].unk_15 == 1) {
-            v1 = &param1->unk_00[v0];
+        if (param1->balloons[v0].active == 1) {
+            v1 = &param1->balloons[v0];
             WiFiLobbyMinigameBalloon_UpdateOpponentBalloon(param1, v1);
         }
     }
@@ -1938,63 +1938,63 @@ static BOOL WiFiLobbyMinigameBalloon_UpdateOpponentBalloon(WiFiLobbyMinigameBall
 {
     s16 v0, v1;
 
-    switch (param1->unk_13) {
+    switch (param1->state) {
     case 0:
-        Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_00, &v0, &v1, ((192 + 160) << FX32_SHIFT));
-        param1->unk_08 = v0 * FX32_ONE;
-        param1->unk_0C = v1 * FX32_ONE;
-        param1->unk_13++;
+        Sprite_GetPositionXYWithSubscreenOffset2(param1->balloonSprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        param1->x = v0 * FX32_ONE;
+        param1->y = v1 * FX32_ONE;
+        param1->state++;
     case 1:
-        if (param1->unk_16 > 0) {
-            param1->unk_16--;
+        if (param1->delay > 0) {
+            param1->delay--;
             break;
         }
 
-        ManagedSprite_SetDrawFlag(param1->unk_00, 1);
-        param1->unk_0C += 0x8000;
+        ManagedSprite_SetDrawFlag(param1->balloonSprite, 1);
+        param1->y += 0x8000;
 
-        if ((param1->unk_0C / FX32_ONE) >= param1->unk_10) {
-            param1->unk_0C = param1->unk_10 * FX32_ONE;
-            param1->unk_13++;
+        if ((param1->y / FX32_ONE) >= param1->targetY) {
+            param1->y = param1->targetY * FX32_ONE;
+            param1->state++;
         }
         break;
     case 2:
-        Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_00, &v0, &v1, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_04, v0, v1 + -32, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param1->unk_04, 33);
-        ManagedSprite_SetDrawFlag(param1->unk_04, 1);
+        Sprite_GetPositionXYWithSubscreenOffset2(param1->balloonSprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->shadowSprite, v0, v1 + -32, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param1->shadowSprite, 33);
+        ManagedSprite_SetDrawFlag(param1->shadowSprite, 1);
         Sound_PlayEffect(SEQ_SE_PL_BALLOON05_sseq);
-        ManagedSprite_SetAnim(param1->unk_00, sBalloonAnimByLevel[param1->unk_12] + 2);
+        ManagedSprite_SetAnim(param1->balloonSprite, sBalloonAnimByLevel[param1->balloonLevel] + 2);
 
-        param1->unk_14 = 8;
-        param1->unk_13++;
+        param1->timer = 8;
+        param1->state++;
         break;
     case 3:
-        param1->unk_14--;
+        param1->timer--;
 
-        if (param1->unk_14 == 3) {
-            ManagedSprite_TickNFrames(param1->unk_04, (4 * FX32_ONE));
+        if (param1->timer == 3) {
+            ManagedSprite_TickNFrames(param1->shadowSprite, (4 * FX32_ONE));
         }
 
-        if (param1->unk_14 == 0) {
-            ManagedSprite_SetDrawFlag(param1->unk_04, 0);
-            ManagedSprite_SetAnim(param1->unk_00, sBalloonAnimByLevel[param1->unk_12] + 0);
-            param1->unk_13++;
+        if (param1->timer == 0) {
+            ManagedSprite_SetDrawFlag(param1->shadowSprite, 0);
+            ManagedSprite_SetAnim(param1->balloonSprite, sBalloonAnimByLevel[param1->balloonLevel] + 0);
+            param1->state++;
         }
         break;
     case 4:
-        param1->unk_0C -= 0x8000;
+        param1->y -= 0x8000;
 
-        if ((param1->unk_0C / FX32_ONE) <= param1->unk_10 + -96) {
-            ManagedSprite_SetDrawFlag(param1->unk_00, 0);
-            param1->unk_13 = 0;
-            param1->unk_15 = 0;
+        if ((param1->y / FX32_ONE) <= param1->targetY + -96) {
+            ManagedSprite_SetDrawFlag(param1->balloonSprite, 0);
+            param1->state = 0;
+            param1->active = 0;
             return 0;
         }
         break;
     }
 
-    ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00, param1->unk_08 / FX32_ONE, param1->unk_0C / FX32_ONE, ((192 + 160) << FX32_SHIFT));
+    ManagedSprite_SetPositionXYWithSubscreenOffset(param1->balloonSprite, param1->x / FX32_ONE, param1->y / FX32_ONE, ((192 + 160) << FX32_SHIFT));
     return 1;
 }
 
@@ -2054,16 +2054,16 @@ void WiFiLobbyMinigameBalloon_CreateTextOAM(BgConfig *param0, SpriteManager *par
     FontOAM_SetXY(v4, param9, param10);
     Window_Remove(&v1);
 
-    param3->unk_00 = v4;
-    param3->unk_04 = v2;
-    param3->unk_10 = v5;
+    param3->fontOAM = v4;
+    param3->charTransfer = v2;
+    param3->width = v5;
 }
 
 void WiFiLobbyMinigameBalloon_FreeTextOAM(WiFiLobbyMinigameBalloonTextOAM *param0)
 {
-    FontOAM_Free(param0->unk_00);
-    CharTransfer_ClearRange(&param0->unk_04);
-    param0->unk_00 = NULL;
+    FontOAM_Free(param0->fontOAM);
+    CharTransfer_ClearRange(&param0->charTransfer);
+    param0->fontOAM = NULL;
 }
 
 void WiFiLobbyMinigameBalloon_LayoutScoreDigits(WiFiLobbyMinigameBalloonScoreDisplay *param0)
@@ -2073,7 +2073,7 @@ void WiFiLobbyMinigameBalloon_LayoutScoreDigits(WiFiLobbyMinigameBalloonScoreDis
     int v3, v4, v5, v6;
 
     for (v0 = 0; v0 < 6; v0++) {
-        v1 = param0->unk_180[v0];
+        v1 = param0->currentDigit[v0];
 
         if (v1 < v2 - 16) {
             v5 = v2 - 16 - v1;
@@ -2086,9 +2086,9 @@ void WiFiLobbyMinigameBalloon_LayoutScoreDigits(WiFiLobbyMinigameBalloonScoreDis
             v6 = v5 - v2;
         }
 
-        FontOAM_GetXY(param0->unk_04[v0][0].unk_00, &v3, &v4);
-        FontOAM_SetXY(param0->unk_04[v0][0].unk_00, v3, 168 - v5);
-        FontOAM_SetXY(param0->unk_04[v0][1].unk_00, v3, 168 - v6);
+        FontOAM_GetXY(param0->digitReel[v0][0].fontOAM, &v3, &v4);
+        FontOAM_SetXY(param0->digitReel[v0][0].fontOAM, v3, 168 - v5);
+        FontOAM_SetXY(param0->digitReel[v0][1].fontOAM, v3, 168 - v6);
     }
 }
 
@@ -2097,18 +2097,18 @@ void WiFiLobbyMinigameBalloon_UpdateScoreDisplay(WiFiLobbyMinigameBalloonGame *p
     int v0;
     BOOL v1;
 
-    if (param1->unk_19E > 0) {
-        param1->unk_19E--;
+    if (param1->rollPause > 0) {
+        param1->rollPause--;
         return;
     }
 
-    switch (param1->unk_1A0) {
+    switch (param1->rollState) {
     case 0:
         if (WiFiLobbyMinigameBalloon_ScoreRollDone(param1) == 1) {
             WiFiLobbyMinigameBalloon_StartScoreRoll(param1);
             break;
         } else {
-            param1->unk_1A0++;
+            param1->rollState++;
         }
 
     case 1:
@@ -2116,8 +2116,8 @@ void WiFiLobbyMinigameBalloon_UpdateScoreDisplay(WiFiLobbyMinigameBalloonGame *p
         WiFiLobbyMinigameBalloon_LayoutScoreDigits(param1);
 
         if (v1 == 1) {
-            param1->unk_19E = 15;
-            param1->unk_1A0--;
+            param1->rollPause = 15;
+            param1->rollState--;
         }
         break;
     }
@@ -2132,7 +2132,7 @@ void WiFiLobbyMinigameBalloon_SetScoreDigits(WiFiLobbyMinigameBalloonScoreDispla
 
     for (v0 = 0; v0 < 6; v0++) {
         v2 = param1 / v1;
-        param0->unk_18C[v0] = v2 * 16;
+        param0->newDigits[v0] = v2 * 16;
         param1 -= v2 * v1;
         v1 /= 10;
     }
@@ -2143,12 +2143,12 @@ static void WiFiLobbyMinigameBalloon_StartScoreRoll(WiFiLobbyMinigameBalloonScor
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        param0->unk_186[v0] = param0->unk_18C[v0];
-        param0->unk_198[v0] = 2 * (6 - v0 - 1);
-        param0->unk_192[v0] = 0;
+        param0->targetDigit[v0] = param0->newDigits[v0];
+        param0->digitDelay[v0] = 2 * (6 - v0 - 1);
+        param0->digitState[v0] = 0;
     }
 
-    param0->unk_19F = 0;
+    param0->settledCount = 0;
 }
 
 static BOOL WiFiLobbyMinigameBalloon_ScoreRollDone(WiFiLobbyMinigameBalloonScoreDisplay *param0)
@@ -2156,7 +2156,7 @@ static BOOL WiFiLobbyMinigameBalloon_ScoreRollDone(WiFiLobbyMinigameBalloonScore
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        if (param0->unk_180[v0] != param0->unk_186[v0]) {
+        if (param0->currentDigit[v0] != param0->targetDigit[v0]) {
             return 0;
         }
     }
@@ -2170,7 +2170,7 @@ static BOOL WiFiLobbyMinigameBalloon_AdvanceScoreRoll(WiFiLobbyMinigameBalloonSc
     int v1 = 6 - 1;
     int v2, v3, v4, v5;
 
-    if (param0->unk_19F > 6) {
+    if (param0->settledCount > 6) {
         return 1;
     }
 
@@ -2180,37 +2180,37 @@ static BOOL WiFiLobbyMinigameBalloon_AdvanceScoreRoll(WiFiLobbyMinigameBalloonSc
     for (v0 = 0; v0 < 6; v0++, v1--) {
         v3 = v4;
 
-        if (param0->unk_198[v1] > 0) {
-            param0->unk_198[v1]--;
+        if (param0->digitDelay[v1] > 0) {
+            param0->digitDelay[v1]--;
             v4 = 0;
             continue;
         }
 
-        if ((param0->unk_192[v1] > 1) && (param0->unk_180[v1] == param0->unk_186[v1])) {
+        if ((param0->digitState[v1] > 1) && (param0->currentDigit[v1] == param0->targetDigit[v1])) {
             v4 = 1;
             continue;
         }
 
         v4 = 0;
-        v2 = param0->unk_180[v1];
-        param0->unk_180[v1] += 23;
-        v5 = param0->unk_186[v1] + 16 * 10;
+        v2 = param0->currentDigit[v1];
+        param0->currentDigit[v1] += 23;
+        v5 = param0->targetDigit[v1] + 16 * 10;
 
-        if (((v2 <= param0->unk_186[v1]) && (param0->unk_180[v1] >= param0->unk_186[v1])) || ((v2 <= v5) && (param0->unk_180[v1] >= v5))) {
-            if (param0->unk_192[v1] < 1) {
-                param0->unk_192[v1]++;
+        if (((v2 <= param0->targetDigit[v1]) && (param0->currentDigit[v1] >= param0->targetDigit[v1])) || ((v2 <= v5) && (param0->currentDigit[v1] >= v5))) {
+            if (param0->digitState[v1] < 1) {
+                param0->digitState[v1]++;
             } else if ((v1 == 6 - 1) || (v3 == 1)) {
-                param0->unk_192[v1]++;
-                param0->unk_180[v1] = param0->unk_186[v1];
-                param0->unk_19F++;
+                param0->digitState[v1]++;
+                param0->currentDigit[v1] = param0->targetDigit[v1];
+                param0->settledCount++;
 
-                if (param0->unk_19F >= 6) {
+                if (param0->settledCount >= 6) {
                     return 1;
                 }
             }
         }
 
-        param0->unk_180[v1] %= 10 * 16;
+        param0->currentDigit[v1] %= 10 * 16;
     }
 
     return 0;
@@ -2218,7 +2218,7 @@ static BOOL WiFiLobbyMinigameBalloon_AdvanceScoreRoll(WiFiLobbyMinigameBalloonSc
 
 ManagedSprite *WiFiLobbyMinigameBalloon_CreateScoreSprite(WiFiLobbyMinigameBalloonGame *param0)
 {
-    ManagedSprite *v0 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &sScoreSpriteTemplate);
+    ManagedSprite *v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sScoreSpriteTemplate);
     Sprite_TickFrame(v0->sprite);
     return v0;
 }
@@ -2229,11 +2229,11 @@ void WiFiLobbyMinigameBalloon_CreateScoreDigits(WiFiLobbyMinigameBalloonGame *pa
     int v1, v2, v3;
     u32 v4 = param0->localScore;
     for (v1 = 6 - 1; v1 >= 0; v1--) {
-        GF_ASSERT(param0->scoreDisplay.unk_108[v1].unk_00 == NULL);
+        GF_ASSERT(param0->scoreDisplay.scoreDigits[v1].fontOAM == NULL);
         v0 = MessageLoader_GetNewString(param0->messageLoader, 4 + (v4 % 10));
         v4 /= 10;
-        FontOAM_GetXY(param0->scoreDisplay.unk_04[v1][0].unk_00, &v2, &v3);
-        WiFiLobbyMinigameBalloon_CreateTextOAM(param0->unk_2C, param0->unk_28, param0->fontOAMManager, &param0->scoreDisplay.unk_108[v1], v0, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v2, 168, 0, 1, 12, 2 * 1);
+        FontOAM_GetXY(param0->scoreDisplay.digitReel[v1][0].fontOAM, &v2, &v3);
+        WiFiLobbyMinigameBalloon_CreateTextOAM(param0->bgConfig, param0->spriteManager, param0->fontOAMManager, &param0->scoreDisplay.scoreDigits[v1], v0, FONT_SYSTEM, TEXT_COLOR(14, 15, 0), 0, 10003, v2, 168, 0, 1, 12, 2 * 1);
         String_Free(v0);
     }
 }
@@ -2243,8 +2243,8 @@ void WiFiLobbyMinigameBalloon_FreeScoreDigits(WiFiLobbyMinigameBalloonGame *para
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        if (param0->scoreDisplay.unk_108[v0].unk_00 != NULL) {
-            WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.unk_108[v0]);
+        if (param0->scoreDisplay.scoreDigits[v0].fontOAM != NULL) {
+            WiFiLobbyMinigameBalloon_FreeTextOAM(&param0->scoreDisplay.scoreDigits[v0]);
         }
     }
 }
@@ -2256,7 +2256,7 @@ void WiFiLobbyMinigameBalloon_FreeScoreSprite(WiFiLobbyMinigameBalloonGame *para
 
 ManagedSprite *WiFiLobbyMinigameBalloon_CreateIntroBannerSprite(WiFiLobbyMinigameBalloonGame *param0)
 {
-    ManagedSprite *v0 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &sIntroBannerSpriteTemplate);
+    ManagedSprite *v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sIntroBannerSpriteTemplate);
 
     ManagedSprite_SetDrawFlag(v0, 0);
     Sprite_TickFrame(v0->sprite);
@@ -2271,52 +2271,52 @@ void WiFiLobbyMinigameBalloon_FreeIntroBannerSprite(WiFiLobbyMinigameBalloonGame
 
 BOOL WiFiLobbyMinigameBalloon_UpdateIntroBanner(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonIntroBanner *param1)
 {
-    switch (param1->unk_04) {
+    switch (param1->state) {
     case 0:
     case 5:
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->unk_00, 128, 16, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetDrawFlag(param1->unk_00, 1);
-        param1->unk_04++;
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param1->sprite, 128, 16, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetDrawFlag(param1->sprite, 1);
+        param1->state++;
         break;
     case 1:
     case 6:
-        param1->unk_06++;
+        param1->timer++;
 
-        if (param1->unk_06 > 15) {
-            param1->unk_06 = 0;
-            param1->unk_14 = 1;
-            param1->unk_18 = 1;
-            param1->unk_0C = 128;
-            param1->unk_10 = 32;
-            param1->unk_04++;
+        if (param1->timer > 15) {
+            param1->timer = 0;
+            param1->touchHeld = 1;
+            param1->touchPressed = 1;
+            param1->x = 128;
+            param1->y = 32;
+            param1->state++;
         }
 
         break;
     case 2:
     case 7:
-        param1->unk_18 = 0;
-        param1->unk_10 += 6;
+        param1->touchPressed = 0;
+        param1->y += 6;
 
-        ManagedSprite_OffsetPositionXY(param1->unk_00, 0, 6);
+        ManagedSprite_OffsetPositionXY(param1->sprite, 0, 6);
 
-        if (param1->unk_10 > 192 - 96) {
-            param1->unk_04++;
+        if (param1->y > 192 - 96) {
+            param1->state++;
         }
 
         break;
     case 3:
     case 8:
-        param1->unk_14 = 0;
-        ManagedSprite_SetDrawFlag(param1->unk_00, 0);
-        param1->unk_04++;
+        param1->touchHeld = 0;
+        ManagedSprite_SetDrawFlag(param1->sprite, 0);
+        param1->state++;
 
     case 4:
     case 9:
-        param1->unk_06++;
+        param1->timer++;
 
-        if (param1->unk_06 > 30) {
-            param1->unk_06 = 0;
-            param1->unk_04++;
+        if (param1->timer > 30) {
+            param1->timer = 0;
+            param1->state++;
         }
 
         break;
@@ -2333,14 +2333,14 @@ static void WiFiLobbyMinigameBalloon_CreateSparkles(WiFiLobbyMinigameBalloonGame
     int v1;
 
     for (v1 = 0; v1 < 2; v1++) {
-        v0 = SpriteSystem_NewSprite(param0->unk_24, param0->unk_28, &sSparkleSpriteTemplate);
+        v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sSparkleSpriteTemplate);
 
         ManagedSprite_SetAnim(v0, 27);
         ManagedSprite_SetExplicitOamMode(v0, GX_OAM_MODE_XLU);
         ManagedSprite_SetDrawFlag(v0, 0);
         Sprite_TickFrame(v0->sprite);
 
-        param1->unk_00[v1] = v0;
+        param1->sprites[v1] = v0;
     }
 }
 
@@ -2349,7 +2349,7 @@ static void WiFiLobbyMinigameBalloon_FreeSparkles(WiFiLobbyMinigameBalloonGame *
     int v0;
 
     for (v0 = 0; v0 < 2; v0++) {
-        Sprite_DeleteAndFreeResources(param1->unk_00[v0]);
+        Sprite_DeleteAndFreeResources(param1->sprites[v0]);
     }
 }
 
@@ -2358,47 +2358,47 @@ static void WiFiLobbyMinigameBalloon_StartSparkles(WiFiLobbyMinigameBalloonGame 
     s16 v0, v1;
     int v2;
 
-    Sprite_GetPositionXYWithSubscreenOffset2(param1->unk_00, &v0, &v1, ((192 + 160) << FX32_SHIFT));
+    Sprite_GetPositionXYWithSubscreenOffset2(param1->balloonSprite, &v0, &v1, ((192 + 160) << FX32_SHIFT));
 
     for (v2 = 0; v2 < 2; v2++) {
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->unk_00[v2], v0, v1 + 28, ((192 + 160) << FX32_SHIFT));
-        ManagedSprite_SetAnim(param2->unk_00[v2], 27);
-        ManagedSprite_SetExplicitOamMode(param2->unk_00[v2], GX_OAM_MODE_XLU);
-        ManagedSprite_SetDrawFlag(param2->unk_00[v2], 1);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param2->sprites[v2], v0, v1 + 28, ((192 + 160) << FX32_SHIFT));
+        ManagedSprite_SetAnim(param2->sprites[v2], 27);
+        ManagedSprite_SetExplicitOamMode(param2->sprites[v2], GX_OAM_MODE_XLU);
+        ManagedSprite_SetDrawFlag(param2->sprites[v2], 1);
 
-        param2->unk_08[v2] = LCRNG_Next() % 0x1000 + 0x1000;
-        param2->unk_10[v2] = LCRNG_Next() % 0x400 + 0x400;
+        param2->offsetX[v2] = LCRNG_Next() % 0x1000 + 0x1000;
+        param2->offsetY[v2] = LCRNG_Next() % 0x400 + 0x400;
 
         if (v2 & 1) {
-            param2->unk_08[v2] *= -1;
+            param2->offsetX[v2] *= -1;
         }
     }
 
-    param2->unk_19 = 0;
-    param2->unk_18 = 1;
+    param2->timer = 0;
+    param2->state = 1;
 }
 
 static void WiFiLobbyMinigameBalloon_UpdateSparkles(WiFiLobbyMinigameBalloonGame *param0, WiFiLobbyMinigameBalloonPlayerBalloon *param1, WiFiLobbyMinigameBalloonSparkle *param2)
 {
     int v0;
 
-    switch (param2->unk_18) {
+    switch (param2->state) {
     case 0:
         break;
     case 1:
         for (v0 = 0; v0 < 2; v0++) {
-            ManagedSprite_OffsetPositionFxXY(param2->unk_00[v0], param2->unk_08[v0], -param2->unk_10[v0]);
-            Sprite_TickFrame(param2->unk_00[v0]->sprite);
+            ManagedSprite_OffsetPositionFxXY(param2->sprites[v0], param2->offsetX[v0], -param2->offsetY[v0]);
+            Sprite_TickFrame(param2->sprites[v0]->sprite);
         }
 
-        param2->unk_19++;
+        param2->timer++;
 
-        if (param2->unk_19 > 8) {
+        if (param2->timer > 8) {
             for (v0 = 0; v0 < 2; v0++) {
-                ManagedSprite_SetDrawFlag(param2->unk_00[v0], 0);
+                ManagedSprite_SetDrawFlag(param2->sprites[v0], 0);
             }
 
-            param2->unk_18 = 0;
+            param2->state = 0;
         }
 
         break;
