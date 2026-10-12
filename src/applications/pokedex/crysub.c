@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "applications/pokedex/ov21_021E29DC.h"
+#include "applications/pokedex/pokedex_info_menu.h"
 #include "applications/pokedex/pokedex_app.h"
 #include "applications/pokedex/pokedex_data_manager.h"
 #include "applications/pokedex/pokedex_graphics.h"
@@ -12,8 +12,8 @@
 #include "applications/pokedex/pokedex_sort.h"
 #include "applications/pokedex/pokedex_sort_data.h"
 #include "applications/pokedex/pokedex_text_manager.h"
-#include "applications/pokedex/struct_ov21_021D4660.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_state.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"
@@ -188,10 +188,10 @@ typedef struct PokedexCrySubGraphics {
 
 static PokedexCrySubData *LoadAppData(enum HeapID heapID, PokedexApp *pokedexApp);
 static PokedexGraphicData **LoadAppGraphics(enum HeapID heapID, PokedexApp *pokedexApp);
-static UnkStruct_ov21_021D4660 *ScreenStates(enum HeapID heapID, PokedexApp *pokedexApp);
+static PokedexScreenState *ScreenStates(enum HeapID heapID, PokedexApp *pokedexApp);
 static void FreePokedexCrySubData(PokedexCrySubData *pokedexCrySubData);
 static void FreeGraphicData(PokedexGraphicData **graphicData);
-static void FreeScreenStates(UnkStruct_ov21_021D4660 *screenStates);
+static void FreeScreenStates(PokedexScreenState *screenStates);
 static int NumStates(void);
 static BOOL CrySubDataEnter(PokedexDataManager *dataMan, void *data);
 static BOOL CrySubDataUpdate(PokedexDataManager *dataMan, void *data);
@@ -259,7 +259,7 @@ void CrySub_Init(PokedexScreenManager *screenMan, PokedexApp *pokedexApp, enum H
 {
     PokedexCrySubData *pokedexCrySubData = LoadAppData(heapID, pokedexApp);
     PokedexGraphicData **pokedexGraphicData = LoadAppGraphics(heapID, pokedexApp);
-    UnkStruct_ov21_021D4660 *screenStates = ScreenStates(heapID, pokedexApp);
+    PokedexScreenState *screenStates = ScreenStates(heapID, pokedexApp);
 
     screenMan->pageData = pokedexCrySubData;
     screenMan->pageGraphics = pokedexGraphicData;
@@ -295,9 +295,9 @@ static PokedexCrySubData *LoadAppData(enum HeapID heapID, PokedexApp *pokedexApp
     GF_ASSERT(pokedexCrySubData);
     memset(pokedexCrySubData, 0, sizeof(PokedexCrySubData));
 
-    pokedexCrySubData->unk_00 = ov21_021D13A0(pokedexApp);
+    pokedexCrySubData->unk_00 = PokedexMain_GetTransitionRequest2(pokedexApp);
     pokedexCrySubData->sortData = PokedexMain_GetSortData(pokedexApp);
-    pokedexCrySubData->screenMan = ov21_021D1430(pokedexApp, 3);
+    pokedexCrySubData->screenMan = PokedexMain_GetSubScreenManager(pokedexApp, 3);
 
     return pokedexCrySubData;
 }
@@ -314,7 +314,7 @@ static PokedexGraphicData **LoadAppGraphics(enum HeapID heapID, PokedexApp *poke
     return graphicData;
 }
 
-static UnkStruct_ov21_021D4660 *ScreenStates(enum HeapID heapID, PokedexApp *pokedexApp)
+static PokedexScreenState *ScreenStates(enum HeapID heapID, PokedexApp *pokedexApp)
 {
     return NULL;
 }
@@ -331,7 +331,7 @@ static void FreeGraphicData(PokedexGraphicData **graphicData)
     Heap_Free(graphicData);
 }
 
-static void FreeScreenStates(UnkStruct_ov21_021D4660 *screenStates)
+static void FreeScreenStates(PokedexScreenState *screenStates)
 {
     return;
 }
@@ -377,7 +377,7 @@ static BOOL CrySubDataUpdate(PokedexDataManager *dataMan, void *data)
 
     pokedexCrySubData->pitch = pokedexCrySubPageData->pitch;
 
-    if (ov21_021E33AC(pokedexCrySubData->screenMan)) {
+    if (PokedexInfoMenu_IsSubActive2(pokedexCrySubData->screenMan)) {
         if (Sound_IsPokemonCryPlaying() == FALSE) {
             if (pokedexCrySubPageData->loop == FALSE) {
                 StopSpeciesCry(pokedexCrySubPageData);
@@ -386,7 +386,7 @@ static BOOL CrySubDataUpdate(PokedexDataManager *dataMan, void *data)
 
         ResetButtons(pokedexCrySubPageData, pokedexCrySubData);
 
-        if (ov21_021E33BC(pokedexCrySubData->screenMan) && (ov21_021D3998(pokedexCrySubData->sortData) == 2)) {
+        if (PokedexInfoMenu_IsSubActive3(pokedexCrySubData->screenMan) && (PokedexSort_GetInputState(pokedexCrySubData->sortData) == 2)) {
             AdvancePlayButton(pokedexCrySubPageData, pokedexCrySubData);
         }
 
@@ -449,7 +449,7 @@ static BOOL CrySubGraphicsUpdate(void *graphics, PokedexGraphicsManager *graphic
     PokedexGraphicData **graphicdata = graphics;
     PokedexCrySubGraphics *pokedexCrySubGraphics = graphicsMan->pageGraphics;
 
-    if (ov21_021E33AC(pokedexCrySubData->screenMan)) {
+    if (PokedexInfoMenu_IsSubActive2(pokedexCrySubData->screenMan)) {
         UpdateSwitchGraphic(pokedexCrySubGraphics, pokedexCrySubPageData);
         UpdatePlayButtonGraphics(pokedexCrySubGraphics, pokedexCrySubPageData);
         UpdateLoopButtonGraphics(pokedexCrySubGraphics, pokedexCrySubPageData);
@@ -525,7 +525,7 @@ static void InitBlendTransition(PokedexCrySubGraphics *pokedexCrySubGraphics, Po
 {
     SetSpriteOAMModesXLU(pokedexCrySubGraphics);
 
-    if (ov21_021E33A4(pokedexCrySubData->screenMan)) {
+    if (PokedexInfoMenu_IsSubActive1(pokedexCrySubData->screenMan)) {
         if (isEntering) {
             PokedexGraphics_InitBlendTransition(&(*graphicData)->blendSub, 3, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), TRUE);
         } else {
@@ -538,7 +538,7 @@ static BOOL AdvanceBlendTransition(PokedexCrySubGraphics *pokedexCrySubGraphics,
 {
     BOOL transitionComplete;
 
-    if (ov21_021E33A4(pokedexCrySubData->screenMan)) {
+    if (PokedexInfoMenu_IsSubActive1(pokedexCrySubData->screenMan)) {
         transitionComplete = PokedexGraphics_TakeBlendTransitionStep(&(*graphicData)->blendSub);
     } else {
         transitionComplete = BrightnessController_IsTransitionComplete(BRIGHTNESS_SUB_SCREEN);
@@ -638,7 +638,7 @@ static void ButtonTouchActions(u32 button, enum TouchScreenButtonState touchScre
 
     switch (touchScreenButtonState) {
     case TOUCH_BUTTON_PRESSED:
-        ov21_021E33B4(pokedexCrySubData->screenMan, TRUE);
+        PokedexInfoMenu_SetSubActive(pokedexCrySubData->screenMan, TRUE);
         pokedexCrySubPageData->buttonHeld = FALSE;
         break;
     case TOUCH_BUTTON_HELD:
@@ -1436,7 +1436,7 @@ static void UpdateCursor(PokedexGraphicData **graphics, const PokedexCrySubData 
 {
     PokedexGraphicData *graphicData = *graphics;
 
-    if (ov21_021E33BC(pokedexCrySubData->screenMan) == 1) {
+    if (PokedexInfoMenu_IsSubActive3(pokedexCrySubData->screenMan) == 1) {
         PokedexGraphics_TransformCursor(graphicData, PLAY_X, PLAY_Y, (PLAY_WIDTH / 2), (PLAY_HEIGHT / 2));
     }
 }

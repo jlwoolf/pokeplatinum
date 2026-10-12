@@ -24,8 +24,8 @@
 #include "struct_defs/trainer.h"
 
 #include "applications/naming_screen.h"
-#include "applications/pokedex/ov21_021E8D48.h"
-#include "applications/pokedex/struct_ov21_021E8E0C.h"
+#include "applications/pokedex/pokedex_pokemon_sprite.h"
+#include "applications/pokedex/struct_pokedex_entry_screen_params.h"
 #include "battle/battle_context.h"
 #include "battle/battle_controller.h"
 #include "battle/battle_controller_player.h"
@@ -10565,12 +10565,12 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
             dexEntryScreenParams.mon = BattleSystem_GetPartyPokemon(data->battleSys, battler, data->battleCtx->selectedPartySlot[battler]);
             dexEntryScreenParams.hasNationalDex = IsNationalDexObtained(BattleSystem_GetPokedex(data->battleSys));
             data->tmpPtr[1] = CharTransfer_PopTaskManager();
-            data->tmpPtr[0] = ov21_021E8D48(&dexEntryScreenParams);
+            data->tmpPtr[0] = PokedexPokemonSprite_New(&dexEntryScreenParams);
             data->seqNum = SEQ_CATCH_MON_START_FADE_TO_BLACK_FOR_ASK_NICKNAME;
         }
         break;
     case SEQ_CATCH_MON_START_FADE_TO_BLACK_FOR_ASK_NICKNAME:
-        if (ov21_021E8DEC(data->tmpPtr[0])) {
+        if (PokedexPokemonSprite_IsReady(data->tmpPtr[0])) {
             if (gSystem.pressedKeys & PAD_BUTTON_A) {
                 data->seqNum = SEQ_CATCH_MON_MOVE_FOR_ASK_NICKNAME;
             } else if (TouchScreen_Tapped()) {
@@ -10580,12 +10580,12 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
 
             if (data->seqNum == SEQ_CATCH_MON_MOVE_FOR_ASK_NICKNAME) {
                 PaletteData_StartFade(paletteData, PLTTBUF_MAIN_BG_F | PLTTBUF_MAIN_OBJ_F, 0xFFFF, 1, 0, 16, 0);
-                ov21_021E8E04(data->tmpPtr[0], 0);
+                PokedexPokemonSprite_SetActive(data->tmpPtr[0], 0);
             }
         }
         break;
     case SEQ_CATCH_MON_MOVE_FOR_ASK_NICKNAME:
-        PokemonSprite *monSprite = ov21_021E8E00(data->tmpPtr[0]);
+        PokemonSprite *monSprite = PokedexPokemonSprite_GetSprite(data->tmpPtr[0]);
         PokemonSprite_AddAttribute(monSprite, MON_SPRITE_X_CENTER, 4);
 
         if (PokemonSprite_GetAttribute(monSprite, MON_SPRITE_X_CENTER) >= 128) {
@@ -10594,7 +10594,7 @@ static void BattleScript_CatchMonTask(SysTask *task, void *inData)
         }
         break;
     case SEQ_CATCH_MON_CLOSE_POKEDEX:
-        ov21_021E8DD0(data->tmpPtr[0]);
+        PokedexPokemonSprite_Free(data->tmpPtr[0]);
         CharTransfer_PushTaskManager(data->tmpPtr[1]);
         BattleSystem_SetupBattleScreen(data->battleSys);
         PaletteData_StartFade(paletteData, PLTTBUF_MAIN_BG_F | PLTTBUF_MAIN_OBJ_F, 0xFFFF, 1, 16, 0, 0);

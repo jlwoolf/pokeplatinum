@@ -382,7 +382,7 @@ BOOL PokedexSort_SortUnfiltered(PokedexSortData *param0, enum SortOrder sortOrde
     return PokedexSort_Sort(param0, sortOrder, filterName, filterType1, filterType2, filterForm, isNationalDex, heapID, FALSE);
 }
 
-BOOL ov21_021D36A4(const PokedexSortData *param0, int param1)
+BOOL PokedexSort_CanSetNationalDex(const PokedexSortData *param0, int param1)
 {
     if (param1 == 0) {
         return TRUE;
@@ -395,9 +395,9 @@ BOOL ov21_021D36A4(const PokedexSortData *param0, int param1)
     return FALSE;
 }
 
-BOOL ov21_021D36C0(PokedexSortData *param0, int param1)
+BOOL PokedexSort_TrySetNationalDex(PokedexSortData *param0, int param1)
 {
-    BOOL v0 = ov21_021D36A4(param0, param1);
+    BOOL v0 = PokedexSort_CanSetNationalDex(param0, param1);
 
     if (v0) {
         param0->isNationalDex = param1;
@@ -591,7 +591,7 @@ u32 PokedexSort_TrainerGender(const PokedexSortData *param0)
     return param0->trainerGender;
 }
 
-BOOL ov21_021D392C(const PokedexSortData *param0, int param1)
+BOOL PokedexSort_IsLanguageObtained(const PokedexSortData *param0, int param1)
 {
     int species = PokedexSort_CurrentSpecies(param0);
 
@@ -607,7 +607,7 @@ BOOL PokedexSort_CanDetectForms(const PokedexSortData *param0)
     return Pokedex_CanDetectForms(param0->pokedex);
 }
 
-void ov21_021D3960(PokedexSortData *param0)
+void PokedexSort_UpdateInputState(PokedexSortData *param0)
 {
     if (gSystem.touchHeld) {
         param0->unk_1758 = 0;
@@ -623,7 +623,7 @@ void ov21_021D3960(PokedexSortData *param0)
     }
 }
 
-u32 ov21_021D3998(const PokedexSortData *param0)
+u32 PokedexSort_GetInputState(const PokedexSortData *param0)
 {
     return param0->unk_1758;
 }

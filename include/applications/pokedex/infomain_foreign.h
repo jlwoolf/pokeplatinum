@@ -3,7 +3,7 @@
 
 #include "applications/pokedex/infomain.h"
 #include "applications/pokedex/pokedex_app.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "heap.h"
 

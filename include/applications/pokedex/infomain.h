@@ -14,7 +14,7 @@ enum AnimationMode {
 #include "applications/pokedex/pokedex_app.h"
 #include "applications/pokedex/pokedex_sort_data.h"
 #include "applications/pokedex/pokedex_text_manager.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "bg_window.h"
 #include "heap.h"
@@ -23,7 +23,7 @@ enum AnimationMode {
  * State information for the Pokedex info main screen.
  */
 typedef struct InfoMainState {
-    int *displayWorkData; // Work data pointer set from ov21_021D138C
+    int *displayWorkData; // Work data pointer set from PokedexMain_GetTransitionRequest1
     PokedexSortData *sortData; // Pokemon sort/listing data
     int displayPositionX; // X coordinate for display position animation
     int displayPositionY; // Y coordinate for display position animation

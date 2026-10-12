@@ -108,8 +108,8 @@ void PokedexSort_SetBootMode(PokedexSortData *param0, u32 param1);
 u32 PokedexSort_GetBootMode(const PokedexSortData *param0);
 BOOL PokedexSort_Sort(PokedexSortData *param0, enum SortOrder sortOrder, enum FilterName filterName, enum FilterType typeFilter1, enum FilterType typeFilter2, enum FilterForm filterForm, int isNationalDex, enum HeapID heapID, BOOL isFiltered);
 BOOL PokedexSort_SortUnfiltered(PokedexSortData *param0, enum SortOrder sortOrder, enum FilterName filterName, enum FilterType filterType1, enum FilterType filterType2, enum FilterForm filterForm, int isNationalDex, enum HeapID heapID);
-BOOL ov21_021D36A4(const PokedexSortData *param0, int param1);
-BOOL ov21_021D36C0(PokedexSortData *param0, int param1);
+BOOL PokedexSort_CanSetNationalDex(const PokedexSortData *param0, int param1);
+BOOL PokedexSort_TrySetNationalDex(PokedexSortData *param0, int param1);
 int PokedexSort_IsNationalDex(const PokedexSortData *param0);
 BOOL PokedexSort_IsValidStatusIndex(const PokedexSortData *param0, int dexIndex);
 BOOL PokedexSort_SetCurrentStatusIndex(PokedexSortData *param0, int param1);
@@ -133,9 +133,9 @@ int PokedexSort_NumEncountered(const PokedexSortData *param0);
 int PokedexSort_NumCaught(const PokedexSortData *param0);
 String *PokedexSort_TrainerName(const PokedexSortData *param0);
 u32 PokedexSort_TrainerGender(const PokedexSortData *param0);
-BOOL ov21_021D392C(const PokedexSortData *param0, int param1);
+BOOL PokedexSort_IsLanguageObtained(const PokedexSortData *param0, int param1);
 BOOL PokedexSort_CanDetectForms(const PokedexSortData *param0);
-void ov21_021D3960(PokedexSortData *param0);
-u32 ov21_021D3998(const PokedexSortData *param0);
+void PokedexSort_UpdateInputState(PokedexSortData *param0);
+u32 PokedexSort_GetInputState(const PokedexSortData *param0);
 
 #endif // POKEPLATINUM_POKEDEXSORT_H

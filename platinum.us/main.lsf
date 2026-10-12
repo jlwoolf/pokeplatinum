@@ -780,31 +780,31 @@ Overlay pokedex
 	Object main.nef.p/src_applications_pokedex_pokedex_graphics.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_sort.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_updater.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021D423C.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021D4340.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_screen_state_set.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_screen_transition.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_text_manager.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_panel.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_field_map.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_text.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_enc_data.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021D5AEC.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021D76B0.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_list.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_list_controls.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_search.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021D94BC.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021DC9BC.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021DDD2C.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_search_screen.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_area_map.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_area_list.c.o
 	Object main.nef.p/src_applications_pokedex_infomain.c.o
 	Object main.nef.p/src_applications_pokedex_formmain.c.o
 	Object main.nef.p/src_applications_pokedex_infomain_foreign.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021E1924.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021E29DC.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021E3FFC.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_info_controls.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_info_menu.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_cry_screen.c.o
 	Object main.nef.p/src_applications_pokedex_crysub.c.o
 	Object main.nef.p/src_applications_pokedex_pokedex_height_check.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021E68F4.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021E737C.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_size_menu.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_size_comparison.c.o
 	Object main.nef.p/src_applications_pokedex_formsub.c.o
-	Object main.nef.p/src_applications_pokedex_ov21_021E8D48.c.o
+	Object main.nef.p/src_applications_pokedex_pokedex_pokemon_sprite.c.o
 }
 
 Overlay image_clip_app

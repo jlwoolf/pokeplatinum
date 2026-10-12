@@ -5,7 +5,7 @@
 
 #include "generated/gender_ratios.h"
 
-#include "applications/pokedex/ov21_021E29DC.h"
+#include "applications/pokedex/pokedex_info_menu.h"
 #include "applications/pokedex/pokedex_app.h"
 #include "applications/pokedex/pokedex_data_manager.h"
 #include "applications/pokedex/pokedex_graphics.h"
@@ -14,7 +14,7 @@
 #include "applications/pokedex/pokedex_sort.h"
 #include "applications/pokedex/pokedex_sort_data.h"
 #include "applications/pokedex/pokedex_text_manager.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "bg_window.h"
 #include "heap.h"
@@ -210,9 +210,9 @@ static FormMainData *LoadAppData(enum HeapID heapID, PokedexApp *pokedexApp)
     GF_ASSERT(formMainData);
     memset(formMainData, 0, sizeof(FormMainData));
 
-    formMainData->unk_00 = ov21_021D138C(pokedexApp);
+    formMainData->unk_00 = PokedexMain_GetTransitionRequest1(pokedexApp);
     formMainData->sortData = PokedexMain_GetSortData(pokedexApp);
-    formMainData->mainScreen = ov21_021D1410(pokedexApp, 5);
+    formMainData->mainScreen = PokedexMain_GetScreenManager(pokedexApp, 5);
 
     return formMainData;
 }
@@ -597,7 +597,7 @@ static void InitBlendTransition(FormDisplayBox *formDisplayBox, FormMainGraphics
 {
     SetSpriteOAMModesXLU(formDisplayBox);
 
-    if (ov21_021E2A54(formMainData->mainScreen)) {
+    if (PokedexInfoMenu_IsActive(formMainData->mainScreen)) {
         if (isEntering) {
             PokedexGraphics_InitBlendTransition(&formMainGraphics->graphicData->blendMain, 1, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), GX_BLEND_PLANEMASK_BG3, 0);
         } else {
@@ -612,7 +612,7 @@ static BOOL AdvanceBlendTransition(FormDisplayBox *formDisplayBox, FormMainGraph
 {
     BOOL transitionComplete;
 
-    if (ov21_021E2A54(formMainData->mainScreen)) {
+    if (PokedexInfoMenu_IsActive(formMainData->mainScreen)) {
         transitionComplete = PokedexGraphics_TakeBlendTransitionStep(&formMainGraphics->graphicData->blendMain);
     } else {
         transitionComplete = PokedexGraphics_BlendTransitionComplete(&formMainGraphics->graphicData->blendMain);

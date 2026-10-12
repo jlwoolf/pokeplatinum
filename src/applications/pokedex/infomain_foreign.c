@@ -5,7 +5,7 @@
 
 #include "constants/versions.h"
 
-#include "applications/pokedex/ov21_021E29DC.h"
+#include "applications/pokedex/pokedex_info_menu.h"
 #include "applications/pokedex/pokedex_app.h"
 #include "applications/pokedex/pokedex_data_manager.h"
 #include "applications/pokedex/pokedex_graphics.h"
@@ -16,7 +16,7 @@
 #include "applications/pokedex/pokedex_text.h"
 #include "applications/pokedex/pokedex_text_manager.h"
 #include "applications/pokedex/species_caught_status.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "bg_window.h"
 #include "font.h"
@@ -39,7 +39,7 @@
 #define POKEDEX_TYPE_ICON_RESOURCE_OFFSET     4000
 
 typedef struct PokedexEntryDisplayState {
-    int *displayWorkData; // Work data pointer set from ov21_021D138C
+    int *displayWorkData; // Work data pointer set from PokedexMain_GetTransitionRequest1
     PokedexSortData *sortData; // Pokemon sort/listing data
     int displayPositionX; // X coordinate for display position animation
     int displayPositionY; // Y coordinate for display position animation
@@ -178,10 +178,10 @@ static PokedexEntryDisplayState *AllocateState(enum HeapID heapID, PokedexApp *p
     GF_ASSERT(displayState);
     memset(displayState, 0, sizeof(PokedexEntryDisplayState));
 
-    displayState->displayWorkData = ov21_021D138C(pokedexApp);
+    displayState->displayWorkData = PokedexMain_GetTransitionRequest1(pokedexApp);
     displayState->sortData = PokedexMain_GetSortData(pokedexApp);
 
-    displayState->screenManager = ov21_021D1410(pokedexApp, 5);
+    displayState->screenManager = PokedexMain_GetScreenManager(pokedexApp, 5);
 
     return displayState;
 }
@@ -579,7 +579,7 @@ static void InitBlendMode(PokedexEntryDisplayGraphics *graphicsStruct, PokedexGr
     PokedexGraphics_SetSpeciesLabelGXOamMode(*graphicsData, GX_OAM_MODE_XLU);
     SetXluMode(graphicsStruct);
 
-    if (ov21_021E2A54(displayState->screenManager)) {
+    if (PokedexInfoMenu_IsActive(displayState->screenManager)) {
         if (isInitializing) {
             PokedexGraphics_InitBlendTransition(&(*graphicsData)->blendMain, 1, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), GX_BLEND_PLANEMASK_BG3, 0);
         } else {
@@ -594,7 +594,7 @@ static BOOL UpdateBlendMode(PokedexEntryDisplayGraphics *graphicsStruct, Pokedex
 {
     BOOL transitionComplete;
 
-    if (ov21_021E2A54(displayState->screenManager)) {
+    if (PokedexInfoMenu_IsActive(displayState->screenManager)) {
         transitionComplete = PokedexGraphics_TakeBlendTransitionStep(&(*graphicsData)->blendMain);
     } else {
         transitionComplete = PokedexGraphics_BlendTransitionComplete(&(*graphicsData)->blendMain);
@@ -624,7 +624,7 @@ static void InitPositionBlendMode(PokedexEntryDisplayGraphics *graphicsStruct, P
         InitLabelTransform(graphicsStruct);
     }
 
-    if (ov21_021E2A54(displayState->screenManager)) {
+    if (PokedexInfoMenu_IsActive(displayState->screenManager)) {
         if (isInitializing) {
             PokedexGraphics_InitBlendTransition(&(*graphicsData)->blendMain, 1, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), 0);
         } else {
@@ -647,7 +647,7 @@ static BOOL UpdatePositionBlendMode(PokedexEntryDisplayGraphics *graphicsStruct,
         transitionsComplete[1] = TRUE;
     }
 
-    if (ov21_021E2A54(displayState->screenManager)) {
+    if (PokedexInfoMenu_IsActive(displayState->screenManager)) {
         transitionsComplete[2] = PokedexGraphics_TakeBlendTransitionStep(&(*graphicsData)->blendMain);
     } else {
         transitionsComplete[2] = PokedexGraphics_BlendTransitionComplete(&(*graphicsData)->blendMain);
@@ -679,7 +679,7 @@ static void InitPositionMode(PokedexEntryDisplayGraphics *graphicsStruct, Pokede
         InitPokemonTransform(graphicsStruct, displayState->displayPositionX, displayState->displayPositionY, 1);
     }
 
-    if (ov21_021E2A54(displayState->screenManager)) {
+    if (PokedexInfoMenu_IsActive(displayState->screenManager)) {
         if (isInitializing) {
             PokedexGraphics_InitBlendTransition(&(*graphicsData)->blendMain, 1, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), 0);
         } else {
@@ -699,7 +699,7 @@ static BOOL UpdatePositionMode(PokedexEntryDisplayGraphics *graphicsStruct, Poke
         transformComplete[0] = TRUE;
     }
 
-    if (ov21_021E2A54(displayState->screenManager)) {
+    if (PokedexInfoMenu_IsActive(displayState->screenManager)) {
         transformComplete[1] = PokedexGraphics_TakeBlendTransitionStep(&(*graphicsData)->blendMain);
     } else {
         transformComplete[1] = PokedexGraphics_BlendTransitionComplete(&(*graphicsData)->blendMain);
@@ -763,7 +763,7 @@ static void InitLabelTransform(PokedexEntryDisplayGraphics *graphicsStruct)
 static BOOL UpdateLabelTransform(PokedexEntryDisplayGraphics *graphicsStruct, PokedexGraphicData **graphicsData)
 {
     BOOL transformComplete = PokedexGraphics_TakeTransformStep(&graphicsStruct->transformLabel);
-    ov21_021D1848(*graphicsData, graphicsStruct->transformLabel.currentX, graphicsStruct->transformLabel.currentY);
+    PokedexMain_SetSpeciesLabelPos(*graphicsData, graphicsStruct->transformLabel.currentX, graphicsStruct->transformLabel.currentY);
 
     return transformComplete;
 }
