@@ -7,11 +7,11 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    int unk_00;
-    int *unk_04;
-    WiFiLobbyMinigameManeneIntroStep unk_08[5];
-    SysTask *unk_80;
-    WiFiLobbyMinigameManeneResources *unk_84;
+    int currentStep;
+    int *levelPtr;
+    WiFiLobbyMinigameManeneIntroStep steps[5];
+    SysTask *task;
+    WiFiLobbyMinigameManeneResources *resources;
 } WiFiLobbyMinigameManeneIntroSequence;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_0226534C_H

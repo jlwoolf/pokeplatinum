@@ -5,10 +5,10 @@
 
 typedef struct {
     u8 padding_00[4];
-    int unk_04; // player count
-    s16 unk_08; // remaining frames
+    int playerCount; // player count
+    s16 remainingFrames; // remaining frames
     u8 padding_0A;
-    WiFiLobbyMinigameManeneResources *unk_0C;
+    WiFiLobbyMinigameManeneResources *resources;
 } WiFiLobbyMinigameManeneCountdown;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02262A44_H

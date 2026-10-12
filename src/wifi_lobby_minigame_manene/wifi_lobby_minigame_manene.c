@@ -55,7 +55,7 @@ static u32 WiFiLobbyMinigameManene_CheckDisconnect(WiFiLobbyMinigameManeneApp *p
 
 static void WiFiLobbyMinigameManene_InitGame(WiFiLobbyMinigameManeneApp *param0)
 {
-    param0->unk_78 = LCRNG_GetSeed();
+    param0->gameSeed = LCRNG_GetSeed();
 
     WiFiLobbyMinigameManene_InitResources(param0);
     SetVBlankCallback(WiFiLobbyMinigameManene_VBlankCallback, param0);
@@ -69,21 +69,21 @@ static void WiFiLobbyMinigameManene_InitGame(WiFiLobbyMinigameManeneApp *param0)
     void *v1 = NetworkIcon_GetPalette(HEAP_ID_106);
 
     NNS_G2dGetUnpackedPaletteData(v1, &v0);
-    PaletteData_LoadBuffer(param0->unk_48.unk_14, v0->pRawData, PLTTBUF_MAIN_OBJ, PLTT_DEST(14), PALETTE_SIZE_BYTES);
+    PaletteData_LoadBuffer(param0->resources.paletteData, v0->pRawData, PLTTBUF_MAIN_OBJ, PLTT_DEST(14), PALETTE_SIZE_BYTES);
     Heap_Free(v1);
 
     int v2 = CommInfo_CountReceived();
 
-    param0->unk_44 = CommSys_CurNetId();
+    param0->netId = CommSys_CurNetId();
     WiFiLobbyMinigameManene_InitCommCmd(param0);
 
     if (WiFiLobbyMinigameManene_IsHost(param0) == 1) {
-        param0->unk_00 = WiFiLobbyMinigameManene_CreateCountdown(v2, &param0->unk_48);
+        param0->countdown = WiFiLobbyMinigameManene_CreateCountdown(v2, &param0->resources);
     }
 
-    param0->unk_04 = WiFiLobbyMinigameManene_CreateGame(v2, param0->unk_44, &param0->unk_48);
-    param0->unk_04->unk_2870 = param0->unk_14.unk_00;
-    param0->unk_04->unk_286C = param0->unk_78;
+    param0->game = WiFiLobbyMinigameManene_CreateGame(v2, param0->netId, &param0->resources);
+    param0->game->introScreenResult = param0->seedData.introResult;
+    param0->game->gameSeed = param0->gameSeed;
 
     u32 v3;
 
@@ -92,12 +92,12 @@ static void WiFiLobbyMinigameManene_InitGame(WiFiLobbyMinigameManeneApp *param0)
 
     WiFiLobbyMinigameManene_LoadBackgroundGraphics(param0);
     WiFiLobbyMinigameManene_LoadSpriteResources(param0);
-    WiFiLobbyMinigameManene_CreatePlayerRowSprites(param0, param0->unk_04);
-    WiFiLobbyMinigameManene_CreatePlayerSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_CreateBackgroundSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_CreateResultSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_CreateBallSprite(param0->unk_04);
-    WiFiLobbyMinigameManene_LoadPlayerPalettes(param0, WiFiLobbyMinigameManene_GetPlayerIndex(param0, param0->unk_44));
+    WiFiLobbyMinigameManene_CreatePlayerRowSprites(param0, param0->game);
+    WiFiLobbyMinigameManene_CreatePlayerSprites(param0->game);
+    WiFiLobbyMinigameManene_CreateBackgroundSprites(param0->game);
+    WiFiLobbyMinigameManene_CreateResultSprites(param0->game);
+    WiFiLobbyMinigameManene_CreateBallSprite(param0->game);
+    WiFiLobbyMinigameManene_LoadPlayerPalettes(param0, WiFiLobbyMinigameManene_GetPlayerIndex(param0, param0->netId));
 
     {
         {
@@ -122,39 +122,39 @@ static void WiFiLobbyMinigameManene_InitGame(WiFiLobbyMinigameManeneApp *param0)
             };
 
             for (v4 = 0; v4 < 8; v4++) {
-                WiFiLobbyMinigameManene_Load3DModel(&param0->unk_04->unk_B38[v4], param0->unk_48.unk_00, v5[v4][0]);
-                WiFiLobbyMinigameManene_Init3DObject(&param0->unk_04->unk_B38[v4], param0->unk_14.unk_00);
+                WiFiLobbyMinigameManene_Load3DModel(&param0->game->decorationObjects[v4], param0->resources.maneneNarc, v5[v4][0]);
+                WiFiLobbyMinigameManene_Init3DObject(&param0->game->decorationObjects[v4], param0->seedData.introResult);
 
-                Easy3DAnim_LoadFrom(&param0->unk_04->unk_B38[v4].unk_88[0], &param0->unk_04->unk_B38[v4].unk_78, param0->unk_48.unk_00, v5[v4][1], 106, &param0->unk_48.unk_24);
-                Easy3DObject_AddAnim(&param0->unk_04->unk_B38[v4].unk_00, &param0->unk_04->unk_B38[v4].unk_88[0]);
-                Easy3DAnim_SetFrame(&param0->unk_04->unk_B38[v4].unk_88[0], 0);
-                Easy3DObject_SetVisible(&param0->unk_04->unk_B38[v4].unk_00, 0);
+                Easy3DAnim_LoadFrom(&param0->game->decorationObjects[v4].anims[0], &param0->game->decorationObjects[v4].model, param0->resources.maneneNarc, v5[v4][1], 106, &param0->resources.g3dAllocator);
+                Easy3DObject_AddAnim(&param0->game->decorationObjects[v4].object, &param0->game->decorationObjects[v4].anims[0]);
+                Easy3DAnim_SetFrame(&param0->game->decorationObjects[v4].anims[0], 0);
+                Easy3DObject_SetVisible(&param0->game->decorationObjects[v4].object, 0);
 
                 {
                     int v6 = 5;
 
-                    if (param0->unk_14.unk_00) {
+                    if (param0->seedData.introResult) {
                         v6 = 5;
                     }
 
                     if (v4 % 2) {
-                        param0->unk_04->unk_B38[v4].unk_1E0.x += FX32_CONST(v4 * 5);
+                        param0->game->decorationObjects[v4].position.x += FX32_CONST(v4 * 5);
                     } else {
-                        param0->unk_04->unk_B38[v4].unk_1E0.x -= FX32_CONST(v4 * 5);
+                        param0->game->decorationObjects[v4].position.x -= FX32_CONST(v4 * 5);
                     }
 
                     if (v4 < 8) {
-                        param0->unk_04->unk_B38[v4].unk_1E0.z += FX32_CONST((v4 + 1) * v6);
+                        param0->game->decorationObjects[v4].position.z += FX32_CONST((v4 + 1) * v6);
                     } else {
-                        param0->unk_04->unk_B38[v4].unk_1E0.z -= FX32_CONST(v4 * 5);
+                        param0->game->decorationObjects[v4].position.z -= FX32_CONST(v4 * 5);
                     }
                 }
             }
         }
 
-        WiFiLobbyMinigameManene_Load3DModel(&param0->unk_04->unk_92C, param0->unk_48.unk_00, 71);
-        WiFiLobbyMinigameManene_Init3DObject(&param0->unk_04->unk_92C, param0->unk_14.unk_00);
-        Easy3DObject_SetVisible(&param0->unk_04->unk_92C.unk_00, 0);
+        WiFiLobbyMinigameManene_Load3DModel(&param0->game->introBallObject, param0->resources.maneneNarc, 71);
+        WiFiLobbyMinigameManene_Init3DObject(&param0->game->introBallObject, param0->seedData.introResult);
+        Easy3DObject_SetVisible(&param0->game->introBallObject.object, 0);
 
         {
             int v7[] = {
@@ -164,62 +164,62 @@ static void WiFiLobbyMinigameManene_InitGame(WiFiLobbyMinigameManeneApp *param0)
                 0x2,
             };
 
-            int v8 = v7[WiFiLobbyMinigameManene_GetPlayerIndex(param0, param0->unk_44)];
+            int v8 = v7[WiFiLobbyMinigameManene_GetPlayerIndex(param0, param0->netId)];
 
-            WiFiLobbyMinigameManene_Load3DModel(&param0->unk_04->unk_FC, param0->unk_48.unk_00, v8);
-            WiFiLobbyMinigameManene_Init3DObject(&param0->unk_04->unk_FC, param0->unk_14.unk_00);
-            WiFiLobbyMinigameManene_Load3DModel(&param0->unk_04->unk_308[0], param0->unk_48.unk_00, 51);
-            WiFiLobbyMinigameManene_Load3DModel(&param0->unk_04->unk_308[1], param0->unk_48.unk_00, 57);
-            WiFiLobbyMinigameManene_Load3DModel(&param0->unk_04->unk_308[2], param0->unk_48.unk_00, 55);
-            WiFiLobbyMinigameManene_Init3DObject(&param0->unk_04->unk_308[0], param0->unk_14.unk_00);
-            WiFiLobbyMinigameManene_Init3DObject(&param0->unk_04->unk_308[1], param0->unk_14.unk_00);
-            WiFiLobbyMinigameManene_Init3DObject(&param0->unk_04->unk_308[2], param0->unk_14.unk_00);
+            WiFiLobbyMinigameManene_Load3DModel(&param0->game->ballObject, param0->resources.maneneNarc, v8);
+            WiFiLobbyMinigameManene_Init3DObject(&param0->game->ballObject, param0->seedData.introResult);
+            WiFiLobbyMinigameManene_Load3DModel(&param0->game->ballObjects[0], param0->resources.maneneNarc, 51);
+            WiFiLobbyMinigameManene_Load3DModel(&param0->game->ballObjects[1], param0->resources.maneneNarc, 57);
+            WiFiLobbyMinigameManene_Load3DModel(&param0->game->ballObjects[2], param0->resources.maneneNarc, 55);
+            WiFiLobbyMinigameManene_Init3DObject(&param0->game->ballObjects[0], param0->seedData.introResult);
+            WiFiLobbyMinigameManene_Init3DObject(&param0->game->ballObjects[1], param0->seedData.introResult);
+            WiFiLobbyMinigameManene_Init3DObject(&param0->game->ballObjects[2], param0->seedData.introResult);
 
             {
                 WiFiLobbyMinigameManene3DObject *v9;
                 int v10;
 
-                v9 = &param0->unk_04->unk_308[0];
+                v9 = &param0->game->ballObjects[0];
 
                 v10 = 53;
-                Easy3DAnim_LoadFrom(&v9->unk_88[0], &v9->unk_78, param0->unk_48.unk_00, v10, 106, &param0->unk_48.unk_24);
-                Easy3DObject_AddAnim(&v9->unk_00, &v9->unk_88[0]);
-                Easy3DAnim_SetFrame(&v9->unk_88[0], 0);
+                Easy3DAnim_LoadFrom(&v9->anims[0], &v9->model, param0->resources.maneneNarc, v10, 106, &param0->resources.g3dAllocator);
+                Easy3DObject_AddAnim(&v9->object, &v9->anims[0]);
+                Easy3DAnim_SetFrame(&v9->anims[0], 0);
 
                 v10 = 52;
-                Easy3DAnim_LoadFrom(&v9->unk_88[1], &v9->unk_78, param0->unk_48.unk_00, v10, 106, &param0->unk_48.unk_24);
-                Easy3DAnim_SetFrame(&v9->unk_88[1], 0);
+                Easy3DAnim_LoadFrom(&v9->anims[1], &v9->model, param0->resources.maneneNarc, v10, 106, &param0->resources.g3dAllocator);
+                Easy3DAnim_SetFrame(&v9->anims[1], 0);
 
                 v10 = 58;
-                Easy3DAnim_LoadFrom(&v9->unk_88[2], &v9->unk_78, param0->unk_48.unk_00, v10, 106, &param0->unk_48.unk_24);
-                Easy3DAnim_SetFrame(&v9->unk_88[2], 0);
+                Easy3DAnim_LoadFrom(&v9->anims[2], &v9->model, param0->resources.maneneNarc, v10, 106, &param0->resources.g3dAllocator);
+                Easy3DAnim_SetFrame(&v9->anims[2], 0);
 
-                v9 = &param0->unk_04->unk_308[1];
+                v9 = &param0->game->ballObjects[1];
                 v10 = 56;
-                Easy3DAnim_LoadFrom(&v9->unk_88[0], &v9->unk_78, param0->unk_48.unk_00, v10, 106, &param0->unk_48.unk_24);
-                Easy3DObject_AddAnim(&v9->unk_00, &v9->unk_88[0]);
-                Easy3DAnim_SetFrame(&v9->unk_88[0], 0);
+                Easy3DAnim_LoadFrom(&v9->anims[0], &v9->model, param0->resources.maneneNarc, v10, 106, &param0->resources.g3dAllocator);
+                Easy3DObject_AddAnim(&v9->object, &v9->anims[0]);
+                Easy3DAnim_SetFrame(&v9->anims[0], 0);
 
-                v9 = &param0->unk_04->unk_308[2];
+                v9 = &param0->game->ballObjects[2];
                 v10 = 54;
-                Easy3DAnim_LoadFrom(&v9->unk_88[0], &v9->unk_78, param0->unk_48.unk_00, v10, 106, &param0->unk_48.unk_24);
-                Easy3DObject_AddAnim(&v9->unk_00, &v9->unk_88[0]);
-                Easy3DAnim_SetFrame(&v9->unk_88[0], 0);
+                Easy3DAnim_LoadFrom(&v9->anims[0], &v9->model, param0->resources.maneneNarc, v10, 106, &param0->resources.g3dAllocator);
+                Easy3DObject_AddAnim(&v9->object, &v9->anims[0]);
+                Easy3DAnim_SetFrame(&v9->anims[0], 0);
             }
         }
 
-        if (param0->unk_14.unk_00) {
-            param0->unk_04->unk_FC.unk_1E0.y = (-8 * FX32_ONE);
-            param0->unk_04->unk_308[0].unk_1E0.y = (-8 * FX32_ONE);
-            param0->unk_04->unk_308[1].unk_1E0.y = (-8 * FX32_ONE);
-            param0->unk_04->unk_308[2].unk_1E0.y = (-8 * FX32_ONE);
+        if (param0->seedData.introResult) {
+            param0->game->ballObject.position.y = (-8 * FX32_ONE);
+            param0->game->ballObjects[0].position.y = (-8 * FX32_ONE);
+            param0->game->ballObjects[1].position.y = (-8 * FX32_ONE);
+            param0->game->ballObjects[2].position.y = (-8 * FX32_ONE);
         }
     }
 
-    param0->unk_7C = WiFiLobbyMinigame_CreateIntroAnimation(SpriteManager_GetSpriteList(param0->unk_48.unk_0C), HEAP_ID_106);
-    PaletteData_LoadBufferFromHardware(param0->unk_48.unk_14, PLTTBUF_MAIN_OBJ, PLTT_DEST(0), 16 * PALETTE_SIZE_BYTES);
+    param0->introAnimation = WiFiLobbyMinigame_CreateIntroAnimation(SpriteManager_GetSpriteList(param0->resources.spriteManager), HEAP_ID_106);
+    PaletteData_LoadBufferFromHardware(param0->resources.paletteData, PLTTBUF_MAIN_OBJ, PLTT_DEST(0), 16 * PALETTE_SIZE_BYTES);
 
-    if (param0->unk_80->unk_3C) {
+    if (param0->args->unk_3C) {
         NintendoWFC_StartVoiceChat(HEAP_ID_106);
     }
 }
@@ -232,23 +232,23 @@ int WiFiLobbyMinigameManene_Init(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyMinigameManeneApp), HEAP_ID_106);
     memset(v0, 0, sizeof(WiFiLobbyMinigameManeneApp));
 
-    v0->unk_80 = ApplicationManager_Args(appMan);
+    v0->args = ApplicationManager_Args(appMan);
 
     {
         int v1;
         int v2 = 0;
 
         for (v1 = 0; v1 < 4; v1++) {
-            v0->unk_B4[v1] = 0xFF;
+            v0->playerNetIds[v1] = 0xFF;
 
             if (CommInfo_TrainerInfo(v1) != NULL) {
-                v0->unk_B4[v2] = v1;
+                v0->playerNetIds[v2] = v1;
                 v2++;
             }
         }
     }
 
-    WiFiLobbyMinigame_InitPlayerContext(&v0->unk_84, v0->unk_80->unk_38, v0->unk_80->saveData, v0->unk_80->unk_3C, &v0->unk_80->unk_00);
+    WiFiLobbyMinigame_InitPlayerContext(&v0->playerContext, v0->args->unk_38, v0->args->saveData, v0->args->unk_3C, &v0->args->unk_00);
     return 1;
 }
 
@@ -258,50 +258,50 @@ static void WiFiLobbyMinigameManene_UpdateBallTilt(WiFiLobbyMinigameManeneGame *
     BOOL v2;
 
     if ((param1 == 0) && (param2 == 0)) {
-        param0->unk_1FBC.unk_00 = 0;
-        param0->unk_1FBC.unk_04 = 0;
+        param0->touchInput.touchX = 0;
+        param0->touchInput.touchY = 0;
 
-        if (param0->unk_FC.unk_1F8 != 0) {
-            v2 = WiFiLobbyMinigameManene_DecayBallTilt(&param0->unk_FC, 1.0f);
+        if (param0->ballObject.tiltFramesRemaining != 0) {
+            v2 = WiFiLobbyMinigameManene_DecayBallTilt(&param0->ballObject, 1.0f);
 
             if (v2 = 1) {
                 VecFx32 v3 = { 0, FX32_CONST(100), 0 };
                 VecFx32 v4;
-                MTX_MultVec43(&v3, &param0->unk_308[0].unk_1B0, &param0->unk_1FB0);
+                MTX_MultVec43(&v3, &param0->ballObjects[0].matrix, &param0->ballPosition);
             }
         } else {
-            param0->unk_FC.unk_1FC = 0.0f;
-            param0->unk_FC.unk_200 = 0.0f;
+            param0->ballObject.tiltX = 0.0f;
+            param0->ballObject.tiltY = 0.0f;
 
-            WiFiLobbyMinigameManene_TiltBall(&param0->unk_FC, param0->unk_1FBC.unk_00, param0->unk_1FBC.unk_04, param0->unk_1FBC.unk_00, param0->unk_1FBC.unk_04, 2.35 * 0.80, 0);
-            WiFiLobbyMinigameManene_TiltBall(&param0->unk_308[0], param0->unk_1FBC.unk_00, param0->unk_1FBC.unk_04, param0->unk_1FBC.unk_00, param0->unk_1FBC.unk_04, 0.22, 0);
+            WiFiLobbyMinigameManene_TiltBall(&param0->ballObject, param0->touchInput.touchX, param0->touchInput.touchY, param0->touchInput.touchX, param0->touchInput.touchY, 2.35 * 0.80, 0);
+            WiFiLobbyMinigameManene_TiltBall(&param0->ballObjects[0], param0->touchInput.touchX, param0->touchInput.touchY, param0->touchInput.touchX, param0->touchInput.touchY, 0.22, 0);
         }
     } else {
-        f32 v5 = ((100 - (param0->unk_1FB0.y >> FX32_SHIFT)) / 40);
+        f32 v5 = ((100 - (param0->ballPosition.y >> FX32_SHIFT)) / 40);
 
-        if ((param0->unk_1FB0.y >> FX32_SHIFT) >= 95) {
+        if ((param0->ballPosition.y >> FX32_SHIFT) >= 95) {
             v5 = 0.1f;
         }
 
-        if (param0->unk_1FBC.unk_00 == 0) {
-            param0->unk_1FBC.unk_00 = param1;
-            param0->unk_1FBC.unk_04 = param2;
+        if (param0->touchInput.touchX == 0) {
+            param0->touchInput.touchX = param1;
+            param0->touchInput.touchY = param2;
         }
 
-        v2 = WiFiLobbyMinigameManene_TiltBall(&param0->unk_FC, param1, param2, param0->unk_1FBC.unk_00, param0->unk_1FBC.unk_04, 2.50 * 0.80, 1);
+        v2 = WiFiLobbyMinigameManene_TiltBall(&param0->ballObject, param1, param2, param0->touchInput.touchX, param0->touchInput.touchY, 2.50 * 0.80, 1);
 
         if (v2 = 1) {
             VecFx32 v6 = { 0, FX32_CONST(100), 0 };
             VecFx32 v7;
-            MTX_MultVec43(&v6, &param0->unk_308[0].unk_1B0, &param0->unk_1FB0);
+            MTX_MultVec43(&v6, &param0->ballObjects[0].matrix, &param0->ballPosition);
         }
 
         if (Sound_IsEffectPlaying(1394) == 0) {
             Sound_PlayEffect(SEQ_SE_PL_KIRAKIRA_sseq);
         }
 
-        param0->unk_1FBC.unk_00 = param1;
-        param0->unk_1FBC.unk_04 = param2;
+        param0->touchInput.touchX = param1;
+        param0->touchInput.touchY = param2;
     }
 }
 
@@ -361,8 +361,8 @@ static BOOL WiFiLobbyMinigameManene_UpdateBallRoll(WiFiLobbyMinigameManeneGame *
         { 0, 0 },
     };
 
-    v0 = ManagedSprite_GetAnimationFrame(param0->unk_D8);
-    v1 = (param0->unk_0C * 12) + v0;
+    v0 = ManagedSprite_GetAnimationFrame(param0->ballSprite);
+    v1 = (param0->ballAnimCycle * 12) + v0;
     v2 = v4[v1][0];
     v3 = v4[v1][1];
 
@@ -379,40 +379,40 @@ static BOOL WiFiLobbyMinigameManene_UpdateBallRoll(WiFiLobbyMinigameManeneGame *
     }
 
     if (v0 == 0) {
-        if (param0->unk_08 != v0) {
-            param0->unk_0C++;
+        if (param0->previousBallFrame != v0) {
+            param0->ballAnimCycle++;
         }
     }
 
-    param0->unk_08 = v0;
+    param0->previousBallFrame = v0;
 
-    if (param0->unk_0C == 2) {
-        if (ManagedSprite_GetActiveAnim(param0->unk_D8) != 2) {
-            ManagedSprite_SetPositionXY(param0->unk_D8, 128, 100);
-            ManagedSprite_SetAnimNoRestart(param0->unk_D8, 2);
+    if (param0->ballAnimCycle == 2) {
+        if (ManagedSprite_GetActiveAnim(param0->ballSprite) != 2) {
+            ManagedSprite_SetPositionXY(param0->ballSprite, 128, 100);
+            ManagedSprite_SetAnimNoRestart(param0->ballSprite, 2);
 
-            WiFiLobbyMinigameManene_QuaternionIdentity(&param0->unk_FC.unk_190);
-            WiFiLobbyMinigameManene_QuaternionIdentity(&param0->unk_FC.unk_1A0);
-            WiFiLobbyMinigameManene_TiltBall(&param0->unk_FC, 0, 0, +5, +5, 0.80, 0);
-            WiFiLobbyMinigameManene_TiltBall(&param0->unk_FC, 0, 0, -5, -5, 0.80, 0);
+            WiFiLobbyMinigameManene_QuaternionIdentity(&param0->ballObject.rotation);
+            WiFiLobbyMinigameManene_QuaternionIdentity(&param0->ballObject.previousRotation);
+            WiFiLobbyMinigameManene_TiltBall(&param0->ballObject, 0, 0, +5, +5, 0.80, 0);
+            WiFiLobbyMinigameManene_TiltBall(&param0->ballObject, 0, 0, -5, -5, 0.80, 0);
         }
     }
 
-    if ((param0->unk_0C == 3) && (v0 == 11)) {
-        param0->unk_08 = 0;
-        param0->unk_0C = 0;
+    if ((param0->ballAnimCycle == 3) && (v0 == 11)) {
+        param0->previousBallFrame = 0;
+        param0->ballAnimCycle = 0;
 
-        ManagedSprite_SetDrawFlag(param0->unk_D8, 0);
+        ManagedSprite_SetDrawFlag(param0->ballSprite, 0);
 
-        WiFiLobbyMinigameManene_QuaternionIdentity(&param0->unk_FC.unk_190);
-        WiFiLobbyMinigameManene_QuaternionIdentity(&param0->unk_FC.unk_1A0);
-        WiFiLobbyMinigameManene_TiltBall(&param0->unk_FC, 0, 0, +5, +5, 0.80, 0);
-        WiFiLobbyMinigameManene_TiltBall(&param0->unk_FC, 0, 0, -5, -5, 0.80, 0);
+        WiFiLobbyMinigameManene_QuaternionIdentity(&param0->ballObject.rotation);
+        WiFiLobbyMinigameManene_QuaternionIdentity(&param0->ballObject.previousRotation);
+        WiFiLobbyMinigameManene_TiltBall(&param0->ballObject, 0, 0, +5, +5, 0.80, 0);
+        WiFiLobbyMinigameManene_TiltBall(&param0->ballObject, 0, 0, -5, -5, 0.80, 0);
 
         return 1;
     }
 
-    ManagedSprite_TickTwoFrames(param0->unk_D8);
+    ManagedSprite_TickTwoFrames(param0->ballSprite);
 
     return 0;
 }
@@ -436,24 +436,24 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         v1 = 1;
-        v0->unk_94 = WiFiLobbyMinigame_CreateIntroScreen1(&v0->unk_84, HEAP_ID_106);
+        v0->introScreen = WiFiLobbyMinigame_CreateIntroScreen1(&v0->playerContext, HEAP_ID_106);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 1, param1);
         break;
     case 1:
-        v1 = WiFiLobbyMinigame_IntroScreenIsDone(v0->unk_94);
+        v1 = WiFiLobbyMinigame_IntroScreenIsDone(v0->introScreen);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 2, param1);
         break;
     case 2:
         v1 = 1;
-        v0->unk_14.unk_00 = WiFiLobbyMinigame_IntroScreenGetResult(v0->unk_94);
-        WiFiLobbyMinigame_FreeIntroScreen(v0->unk_94);
-        v0->unk_94 = NULL;
+        v0->seedData.introResult = WiFiLobbyMinigame_IntroScreenGetResult(v0->introScreen);
+        WiFiLobbyMinigame_FreeIntroScreen(v0->introScreen);
+        v0->introScreen = NULL;
         WiFiLobbyMinigameManene_InitGame(v0);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 3, param1);
         break;
     case 3:
         v1 = WiFiLobbyMinigameManene_StartFade(27);
-        WiFiLobbyMinigameManene_CreatePlayerNameWindows(v0, v0->unk_04);
+        WiFiLobbyMinigameManene_CreatePlayerNameWindows(v0, v0->game);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 4, param1);
         break;
     case 4:
@@ -467,60 +467,60 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
             break;
         }
 
-        WiFiLobbyMinigameManene_CreateMessageWindow(v0->unk_04);
-        WiFiLobbyMinigameManene_SetupIntroSequence(v0->unk_04);
-        WiFiLobbyMinigameManene_SetupResultsAnimation(v0->unk_04);
+        WiFiLobbyMinigameManene_CreateMessageWindow(v0->game);
+        WiFiLobbyMinigameManene_SetupIntroSequence(v0->game);
+        WiFiLobbyMinigameManene_SetupResultsAnimation(v0->game);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 6, param1);
         break;
     case 6:
-        v1 = WiFiLobbyMinigameManene_UpdateBallRoll(v0->unk_04);
+        v1 = WiFiLobbyMinigameManene_UpdateBallRoll(v0->game);
 
         if (v1) {
             if (WiFiLobbyMinigameManene_IsHost(v0) == 1) {
-                v0->unk_14.seed = v0->unk_78;
-                CommSys_SendData(22, &v0->unk_14, sizeof(WiFiLobbyMinigameManeneSeed));
+                v0->seedData.seed = v0->gameSeed;
+                CommSys_SendData(22, &v0->seedData, sizeof(WiFiLobbyMinigameManeneSeed));
             }
         }
 
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 7, param1);
         break;
     case 7:
-        v1 = v0->unk_08;
+        v1 = v0->started;
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 8, param1);
         break;
     case 8:
         v1 = 1;
-        WiFiLobbyMinigame_StartIntroAnimationRoll(v0->unk_7C);
+        WiFiLobbyMinigame_StartIntroAnimationRoll(v0->introAnimation);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 9, param1);
         break;
     case 9:
         v1 = 1;
-        v1 = WiFiLobbyMinigame_IntroAnimationIsDone(v0->unk_7C);
+        v1 = WiFiLobbyMinigame_IntroAnimationIsDone(v0->introAnimation);
 
         if (v1) {
-            WiFiLobbyMinigameManene_FreePlayerNameWindows(v0->unk_04);
-            WiFiLobbyMinigameManene_FreeMessageWindow(v0->unk_04);
+            WiFiLobbyMinigameManene_FreePlayerNameWindows(v0->game);
+            WiFiLobbyMinigameManene_FreeMessageWindow(v0->game);
         }
 
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 10, param1);
         break;
     case 10:
-        v1 = v0->unk_0C;
+        v1 = v0->roundStarted;
 
-        if (v0->unk_0C) {
-            if (v0->unk_04->unk_279C.unk_04 < ((30 * 40) - 0)) {
+        if (v0->roundStarted) {
+            if (v0->game->roundState.elapsedFrames < ((30 * 40) - 0)) {
                 v1 = 0;
             }
         }
 
         if (v1 == 0) {
             if (WiFiLobbyMinigameManene_IsHost(v0) == 1) {
-                if (WiFiLobbyMinigameManene_TickCountdown(v0->unk_00) == 0) {
+                if (WiFiLobbyMinigameManene_TickCountdown(v0->countdown) == 0) {
                     Sound_StopEffect(1393, 0);
                     CommSys_SendData(23, NULL, 0);
                 }
             }
-            WiFiLobbyMinigameManene_UpdateGame(v0->unk_04);
+            WiFiLobbyMinigameManene_UpdateGame(v0->game);
         }
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 11, param1);
         break;
@@ -528,26 +528,26 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
         v1 = 1;
         Sound_StopEffect(1395, 0);
         Sound_StopEffect(1393, 0);
-        WiFiLobbyMinigame_StartIntroAnimationPop(v0->unk_7C);
+        WiFiLobbyMinigame_StartIntroAnimationPop(v0->introAnimation);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 12, param1);
         break;
     case 12:
-        v1 = WiFiLobbyMinigame_IntroAnimationIsDone(v0->unk_7C);
+        v1 = WiFiLobbyMinigame_IntroAnimationIsDone(v0->introAnimation);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 13, param1);
         break;
     case 13:
         v1 = 1;
-        v0->unk_1C.score = (v0->unk_04->unk_279C.unk_10 / 10) * 100;
+        v0->score.score = (v0->game->roundState.score / 10) * 100;
 
-        if (v0->unk_1C.score >= 100000) {
-            v0->unk_1C.score = 100000;
+        if (v0->score.score >= 100000) {
+            v0->score.score = 100000;
         }
 
-        if (v0->unk_04->unk_279C.unk_B4 == 0) {
-            v0->unk_1C.score = 1;
+        if (v0->game->roundState.ballTouched == 0) {
+            v0->score.score = 1;
         }
 
-        CommSys_SendData(25, &v0->unk_1C, sizeof(WiFiLobbyMinigameManeneScore));
+        CommSys_SendData(25, &v0->score, sizeof(WiFiLobbyMinigameManeneScore));
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 14, param1);
         break;
     case 14:
@@ -557,12 +557,12 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
             int v4 = 0;
 
             for (v3 = 0; v3 < 4; v3++) {
-                if (v0->unk_24.scores[v3].score != 0) {
+                if (v0->scores.scores[v3].score != 0) {
                     v4++;
                 }
             }
 
-            if (v4 == v0->unk_04->unk_04) {
+            if (v4 == v0->game->playerCount) {
                 v1 = 1;
             }
         }
@@ -594,33 +594,33 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
                     continue;
                 }
 
-                v0->unk_98.unk_00[v6] = v0->unk_24.scores[v5].score;
+                v0->ranking.unk_00[v6] = v0->scores.scores[v5].score;
 
-                if (v0->unk_98.unk_00[v6] <= 1) {
-                    v0->unk_98.unk_00[v6] = 0;
+                if (v0->ranking.unk_00[v6] <= 1) {
+                    v0->ranking.unk_00[v6] = 0;
                 }
             }
 
-            WiFiLobbyMinigame_InitRanking(&v0->unk_98, v0->unk_84.unk_08);
+            WiFiLobbyMinigame_InitRanking(&v0->ranking, v0->playerContext.unk_08);
         }
-        v0->unk_B0 = WiFiLobbyMinigame_CreateResultsScreen1(&v0->unk_84, &v0->unk_98, HEAP_ID_106);
+        v0->resultsScreen = WiFiLobbyMinigame_CreateResultsScreen1(&v0->playerContext, &v0->ranking, HEAP_ID_106);
         WiFiLobbyMinigameManene_AdvanceState(v0, v1, 18, param1);
         break;
     case 18:
-        v1 = WiFiLobbyMinigame_ResultsScreenIsDone(v0->unk_B0);
+        v1 = WiFiLobbyMinigame_ResultsScreenIsDone(v0->resultsScreen);
 
         if (v1) {
-            BOOL v7 = WiFiLobbyMinigame_ResultsScreenGetResult(v0->unk_B0);
+            BOOL v7 = WiFiLobbyMinigame_ResultsScreenGetResult(v0->resultsScreen);
 
-            WiFiLobbyMinigame_FreeResultsScreen(v0->unk_B0);
-            v0->unk_B0 = NULL;
+            WiFiLobbyMinigame_FreeResultsScreen(v0->resultsScreen);
+            v0->resultsScreen = NULL;
 
             if (v7) {
-                v0->unk_C4 = 1;
+                v0->replayRequested = 1;
                 WiFiLobbyMinigameManene_ResetRound(v0);
                 WiFiLobbyMinigameManene_AdvanceState(v0, v1, 0, param1);
 
-                if (v0->unk_80->unk_3C) {
+                if (v0->args->unk_3C) {
                     NintendoWFC_TerminateVoiceChat();
                 }
                 break;
@@ -632,7 +632,7 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
         v1 = 1;
         CommTiming_StartSync(27);
 
-        if (v0->unk_80->unk_3C) {
+        if (v0->args->unk_3C) {
             NintendoWFC_TerminateVoiceChat();
         }
 
@@ -646,7 +646,7 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
     }
 
     if ((*param1 >= 3) && (*param1 < 16)) {
-        WiFiLobbyMinigameManene_TickPlayerRowSprites(v0->unk_04);
+        WiFiLobbyMinigameManene_TickPlayerRowSprites(v0->game);
         WiFiLobbyMinigameManene_Draw3DScene(v0);
     }
 
@@ -664,56 +664,56 @@ static void WiFiLobbyMinigameManene_FreeResources(WiFiLobbyMinigameManeneApp *pa
         v0 = DisableTouchPad();
     }
 
-    LCRNG_SetSeed(param0->unk_78);
+    LCRNG_SetSeed(param0->gameSeed);
 
-    WiFiLobbyMinigameManene_FreePlayerRowSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_FreePlayerSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_FreeBackgroundSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_FreeResultSprites(param0->unk_04);
-    WiFiLobbyMinigameManene_FreeBallSprite(param0->unk_04);
-    WiFiLobbyMinigameManene_Release3DModel(&param0->unk_04->unk_FC);
-    WiFiLobbyMinigameManene_Release3DModel(&param0->unk_04->unk_308[0]);
-    WiFiLobbyMinigameManene_Release3DModel(&param0->unk_04->unk_308[1]);
-    WiFiLobbyMinigameManene_Release3DModel(&param0->unk_04->unk_308[2]);
-    WiFiLobbyMinigameManene_Release3DModel(&param0->unk_04->unk_92C);
+    WiFiLobbyMinigameManene_FreePlayerRowSprites(param0->game);
+    WiFiLobbyMinigameManene_FreePlayerSprites(param0->game);
+    WiFiLobbyMinigameManene_FreeBackgroundSprites(param0->game);
+    WiFiLobbyMinigameManene_FreeResultSprites(param0->game);
+    WiFiLobbyMinigameManene_FreeBallSprite(param0->game);
+    WiFiLobbyMinigameManene_Release3DModel(&param0->game->ballObject);
+    WiFiLobbyMinigameManene_Release3DModel(&param0->game->ballObjects[0]);
+    WiFiLobbyMinigameManene_Release3DModel(&param0->game->ballObjects[1]);
+    WiFiLobbyMinigameManene_Release3DModel(&param0->game->ballObjects[2]);
+    WiFiLobbyMinigameManene_Release3DModel(&param0->game->introBallObject);
 
-    Easy3DAnim_Release(&param0->unk_04->unk_308[0].unk_88[0], &param0->unk_48.unk_24);
-    Easy3DAnim_Release(&param0->unk_04->unk_308[0].unk_88[1], &param0->unk_48.unk_24);
-    Easy3DAnim_Release(&param0->unk_04->unk_308[0].unk_88[2], &param0->unk_48.unk_24);
-    Easy3DAnim_Release(&param0->unk_04->unk_308[1].unk_88[0], &param0->unk_48.unk_24);
-    Easy3DAnim_Release(&param0->unk_04->unk_308[2].unk_88[0], &param0->unk_48.unk_24);
+    Easy3DAnim_Release(&param0->game->ballObjects[0].anims[0], &param0->resources.g3dAllocator);
+    Easy3DAnim_Release(&param0->game->ballObjects[0].anims[1], &param0->resources.g3dAllocator);
+    Easy3DAnim_Release(&param0->game->ballObjects[0].anims[2], &param0->resources.g3dAllocator);
+    Easy3DAnim_Release(&param0->game->ballObjects[1].anims[0], &param0->resources.g3dAllocator);
+    Easy3DAnim_Release(&param0->game->ballObjects[2].anims[0], &param0->resources.g3dAllocator);
 
     {
         int v1;
 
         for (v1 = 0; v1 < 8; v1++) {
-            WiFiLobbyMinigameManene_Release3DModel(&param0->unk_04->unk_B38[v1]);
-            Easy3DAnim_Release(&param0->unk_04->unk_B38[v1].unk_88[0], &param0->unk_48.unk_24);
-            Easy3DAnim_Release(&param0->unk_04->unk_B38[v1].unk_88[1], &param0->unk_48.unk_24);
+            WiFiLobbyMinigameManene_Release3DModel(&param0->game->decorationObjects[v1]);
+            Easy3DAnim_Release(&param0->game->decorationObjects[v1].anims[0], &param0->resources.g3dAllocator);
+            Easy3DAnim_Release(&param0->game->decorationObjects[v1].anims[1], &param0->resources.g3dAllocator);
         }
     }
 
-    WiFiLobbyMinigame_FreeIntroAnimation(param0->unk_7C);
+    WiFiLobbyMinigame_FreeIntroAnimation(param0->introAnimation);
     WiFiLobbyMinigameManene_FreeGraphics(param0);
 
     if (WiFiLobbyMinigameManene_IsHost(param0) == 1) {
-        WiFiLobbyMinigameManene_FreeCountdown(param0->unk_00);
+        WiFiLobbyMinigameManene_FreeCountdown(param0->countdown);
     }
 
-    WiFiLobbyMinigameManene_FreeGame(param0->unk_04);
+    WiFiLobbyMinigameManene_FreeGame(param0->game);
 
-    param0->unk_00 = NULL;
-    param0->unk_04 = NULL;
+    param0->countdown = NULL;
+    param0->game = NULL;
 }
 
 static void WiFiLobbyMinigameManene_ResetRound(WiFiLobbyMinigameManeneApp *param0)
 {
-    param0->unk_0C = 0;
-    param0->unk_08 = 0;
-    param0->unk_10 = 0;
+    param0->roundStarted = 0;
+    param0->started = 0;
+    param0->roundEnded = 0;
 
-    memset(&param0->unk_1C, 0, sizeof(WiFiLobbyMinigameManeneScore));
-    memset(&param0->unk_24, 0, sizeof(WiFiLobbyMinigameManeneScores));
+    memset(&param0->score, 0, sizeof(WiFiLobbyMinigameManeneScore));
+    memset(&param0->scores, 0, sizeof(WiFiLobbyMinigameManeneScores));
 }
 
 int WiFiLobbyMinigameManene_Exit(ApplicationManager *appMan, int *param1)
@@ -748,22 +748,22 @@ int WiFiLobbyMinigameManene_Exit(ApplicationManager *appMan, int *param1)
 
 static void WiFiLobbyMinigameManene_InitResources(WiFiLobbyMinigameManeneApp *param0)
 {
-    param0->unk_48.unk_00 = NARC_ctor(NARC_INDEX_ARC__MANENE, HEAP_ID_106);
-    param0->unk_48.unk_04 = NARC_ctor(NARC_INDEX_GRAPHIC__BUCKET, HEAP_ID_106);
-    param0->unk_48.unk_10 = BgConfig_New(HEAP_ID_106);
-    param0->unk_48.unk_14 = PaletteData_New(HEAP_ID_106);
-    param0->unk_48.unk_18 = G3DPipeline_Init(HEAP_ID_106, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, NULL);
-    param0->unk_48.camera = Camera_Alloc(HEAP_ID_106);
+    param0->resources.maneneNarc = NARC_ctor(NARC_INDEX_ARC__MANENE, HEAP_ID_106);
+    param0->resources.bucketNarc = NARC_ctor(NARC_INDEX_GRAPHIC__BUCKET, HEAP_ID_106);
+    param0->resources.bgConfig = BgConfig_New(HEAP_ID_106);
+    param0->resources.paletteData = PaletteData_New(HEAP_ID_106);
+    param0->resources.g3dPipeline = G3DPipeline_Init(HEAP_ID_106, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, NULL);
+    param0->resources.camera = Camera_Alloc(HEAP_ID_106);
 
     WiFiLobbyMinigameManene_InitCamera(param0);
 
-    PaletteData_SetAutoTransparent(param0->unk_48.unk_14, TRUE);
-    PaletteData_AllocBuffer(param0->unk_48.unk_14, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
-    PaletteData_AllocBuffer(param0->unk_48.unk_14, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
-    PaletteData_AllocBuffer(param0->unk_48.unk_14, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
-    PaletteData_AllocBuffer(param0->unk_48.unk_14, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
+    PaletteData_SetAutoTransparent(param0->resources.paletteData, TRUE);
+    PaletteData_AllocBuffer(param0->resources.paletteData, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
+    PaletteData_AllocBuffer(param0->resources.paletteData, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
+    PaletteData_AllocBuffer(param0->resources.paletteData, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
+    PaletteData_AllocBuffer(param0->resources.paletteData, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_106);
 
-    WiFiLobbyMinigameManene_InitBackgrounds(param0->unk_48.unk_10);
+    WiFiLobbyMinigameManene_InitBackgrounds(param0->resources.bgConfig);
     WiFiLobbyMinigameManene_InitSpriteSystem(param0);
 
     G3X_AlphaBlend(1);
@@ -784,7 +784,7 @@ static void WiFiLobbyMinigameManene_InitResources(WiFiLobbyMinigameManeneApp *pa
         G3X_SetEdgeColorTable(v0);
     }
 
-    HeapExp_FndInitAllocator(&param0->unk_48.unk_24, HEAP_ID_106, 32);
+    HeapExp_FndInitAllocator(&param0->resources.g3dAllocator, HEAP_ID_106, 32);
 }
 
 void WiFiLobbyMinigameManene_FreeGraphics(WiFiLobbyMinigameManeneApp *param0)
@@ -797,26 +797,26 @@ void WiFiLobbyMinigameManene_FreeGraphics(WiFiLobbyMinigameManeneApp *param0)
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG1, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 0);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 0);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 1);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 2);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 3);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 4);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 5);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 6);
-    Bg_FreeTilemapBuffer(param0->unk_48.unk_10, 7);
-    Heap_Free(param0->unk_48.unk_10);
-    PaletteData_FreeBuffer(param0->unk_48.unk_14, PLTTBUF_MAIN_BG);
-    PaletteData_FreeBuffer(param0->unk_48.unk_14, PLTTBUF_SUB_BG);
-    PaletteData_FreeBuffer(param0->unk_48.unk_14, PLTTBUF_MAIN_OBJ);
-    PaletteData_FreeBuffer(param0->unk_48.unk_14, PLTTBUF_SUB_OBJ);
-    PaletteData_Free(param0->unk_48.unk_14);
-    NARC_dtor(param0->unk_48.unk_00);
-    NARC_dtor(param0->unk_48.unk_04);
-    G3DPipelineBuffers_Free(param0->unk_48.unk_18);
-    Camera_Delete(param0->unk_48.camera);
-    SpriteSystem_FreeResourcesAndManager(param0->unk_48.unk_08, param0->unk_48.unk_0C);
-    SpriteSystem_Free(param0->unk_48.unk_08);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 0);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 1);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 2);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 3);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 4);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 5);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 6);
+    Bg_FreeTilemapBuffer(param0->resources.bgConfig, 7);
+    Heap_Free(param0->resources.bgConfig);
+    PaletteData_FreeBuffer(param0->resources.paletteData, PLTTBUF_MAIN_BG);
+    PaletteData_FreeBuffer(param0->resources.paletteData, PLTTBUF_SUB_BG);
+    PaletteData_FreeBuffer(param0->resources.paletteData, PLTTBUF_MAIN_OBJ);
+    PaletteData_FreeBuffer(param0->resources.paletteData, PLTTBUF_SUB_OBJ);
+    PaletteData_Free(param0->resources.paletteData);
+    NARC_dtor(param0->resources.maneneNarc);
+    NARC_dtor(param0->resources.bucketNarc);
+    G3DPipelineBuffers_Free(param0->resources.g3dPipeline);
+    Camera_Delete(param0->resources.camera);
+    SpriteSystem_FreeResourcesAndManager(param0->resources.spriteSystem, param0->resources.spriteManager);
+    SpriteSystem_Free(param0->resources.spriteSystem);
 
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
 
@@ -1025,7 +1025,7 @@ static void WiFiLobbyMinigameManene_InitBackgrounds(BgConfig *param0)
 
 static void WiFiLobbyMinigameManene_InitSpriteSystem(WiFiLobbyMinigameManeneApp *param0)
 {
-    param0->unk_48.unk_08 = SpriteSystem_Alloc(HEAP_ID_106);
+    param0->resources.spriteSystem = SpriteSystem_Alloc(HEAP_ID_106);
     {
         const RenderOamTemplate v0 = {
             0,
@@ -1046,7 +1046,7 @@ static void WiFiLobbyMinigameManene_InitSpriteSystem(WiFiLobbyMinigameManeneApp 
             GX_OBJVRAMMODE_CHAR_1D_32K
         };
 
-        SpriteSystem_Init(param0->unk_48.unk_08, &v0, &v1, 16 + 16);
+        SpriteSystem_Init(param0->resources.spriteSystem, &v0, &v1, 16 + 16);
     }
     {
         BOOL v2;
@@ -1059,15 +1059,15 @@ static void WiFiLobbyMinigameManene_InitSpriteSystem(WiFiLobbyMinigameManeneApp 
             16,
         };
 
-        param0->unk_48.unk_0C = SpriteManager_New(param0->unk_48.unk_08);
+        param0->resources.spriteManager = SpriteManager_New(param0->resources.spriteSystem);
 
-        v2 = SpriteSystem_InitSprites(param0->unk_48.unk_08, param0->unk_48.unk_0C, 255);
+        v2 = SpriteSystem_InitSprites(param0->resources.spriteSystem, param0->resources.spriteManager, 255);
         GF_ASSERT(v2);
 
-        v2 = SpriteSystem_InitManagerWithCapacities(param0->unk_48.unk_08, param0->unk_48.unk_0C, &v3);
+        v2 = SpriteSystem_InitManagerWithCapacities(param0->resources.spriteSystem, param0->resources.spriteManager, &v3);
         GF_ASSERT(v2);
     }
-    SetSubScreenViewRect(SpriteSystem_GetRenderer(param0->unk_48.unk_08), 0, (192 + 64) << FX32_SHIFT);
+    SetSubScreenViewRect(SpriteSystem_GetRenderer(param0->resources.spriteSystem), 0, (192 + 64) << FX32_SHIFT);
 }
 
 static BOOL WiFiLobbyMinigameManene_StartFade(int param0)
@@ -1089,58 +1089,58 @@ static void WiFiLobbyMinigameManene_VBlankCallback(void *param0)
 
     VramTransfer_Process();
     SpriteSystem_TransferOam();
-    PaletteData_CommitFadedBuffers(v0->unk_48.unk_14);
-    Bg_RunScheduledUpdates(v0->unk_48.unk_10);
+    PaletteData_CommitFadedBuffers(v0->resources.paletteData);
+    Bg_RunScheduledUpdates(v0->resources.bgConfig);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
 BOOL WiFiLobbyMinigameManene_IsHost(WiFiLobbyMinigameManeneApp *param0)
 {
-    return (param0->unk_44 == 0) ? 1 : 0;
+    return (param0->netId == 0) ? 1 : 0;
 }
 
 void WiFiLobbyMinigameManene_SetStarted(WiFiLobbyMinigameManeneApp *param0)
 {
-    param0->unk_08 = 1;
+    param0->started = 1;
 }
 
 void WiFiLobbyMinigameManene_SetRoundStarted(WiFiLobbyMinigameManeneApp *param0)
 {
-    param0->unk_0C = 1;
+    param0->roundStarted = 1;
 }
 
 static u32 WiFiLobbyMinigameManene_CheckDisconnect(WiFiLobbyMinigameManeneApp *param0)
 {
-    if (WiFiLobbyMinigame_CheckDisconnected(&param0->unk_84) == 1) {
-        if (param0->unk_48.unk_2C.unk_00 == 0) {
+    if (WiFiLobbyMinigame_CheckDisconnected(&param0->playerContext) == 1) {
+        if (param0->resources.disconnectState.disconnected == 0) {
             if (IsScreenFadeDone() == TRUE) {
                 FinishScreenFade();
             }
 
             SetColorBrightness(COLOR_BLACK);
-            param0->unk_48.unk_2C.unk_00 = 1;
+            param0->resources.disconnectState.disconnected = 1;
 
             return 1;
         } else {
-            if (WiFiLobbyMinigame_HandleDisconnect(&param0->unk_84) == 0) {
+            if (WiFiLobbyMinigame_HandleDisconnect(&param0->playerContext) == 0) {
                 return 1;
             }
 
-            if (param0->unk_04 != NULL) {
-                WiFiLobbyMinigameManene_FreePlayerNameWindows(param0->unk_04);
-                WiFiLobbyMinigameManene_FreeMessageWindow(param0->unk_04);
+            if (param0->game != NULL) {
+                WiFiLobbyMinigameManene_FreePlayerNameWindows(param0->game);
+                WiFiLobbyMinigameManene_FreeMessageWindow(param0->game);
                 WiFiLobbyMinigameManene_FreeResources(param0);
             }
 
-            if (param0->unk_B0 != NULL) {
-                WiFiLobbyMinigame_FreeResultsScreen(param0->unk_B0);
-                param0->unk_B0 = NULL;
+            if (param0->resultsScreen != NULL) {
+                WiFiLobbyMinigame_FreeResultsScreen(param0->resultsScreen);
+                param0->resultsScreen = NULL;
             }
 
-            if (param0->unk_94 != NULL) {
-                WiFiLobbyMinigame_FreeIntroScreen(param0->unk_94);
-                param0->unk_94 = NULL;
+            if (param0->introScreen != NULL) {
+                WiFiLobbyMinigame_FreeIntroScreen(param0->introScreen);
+                param0->introScreen = NULL;
             }
 
             return 2;

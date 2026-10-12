@@ -6,17 +6,17 @@
 #include "sprite_system.h"
 
 typedef struct {
-    ManagedSprite *unk_00;
-    int unk_04;
-    s16 unk_08;
+    ManagedSprite *sprite;
+    int state;
+    s16 angle;
     u8 padding_0A[6];
-    int unk_10;
-    s16 unk_14;
-    s16 unk_16;
-    int unk_18;
-    int unk_1C;
-    WiFiLobbyMinigameManeneMotion unk_20;
-    WiFiLobbyMinigameManeneMotion unk_38;
+    int orbitCount;
+    s16 baseX;
+    s16 baseY;
+    int radiusX;
+    int radiusY;
+    WiFiLobbyMinigameManeneMotion motionX;
+    WiFiLobbyMinigameManeneMotion motionY;
 } WiFiLobbyMinigameManeneResultsSprite;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_MANENE_02265D84_H
