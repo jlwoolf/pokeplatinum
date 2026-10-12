@@ -112,7 +112,7 @@ BOOL GlobalTerminalGds_UploadRecordAlt(VsRecorderViewerTransferValue *param0, vo
 {
     GlobalTerminalGdsRecordAltRequest v0 = { 0 };
     v0.unk_00 = 1;
-    v0.unk_0C = param0->unk_00;
+    v0.unk_0C = param0->value;
 
     return GlobalTerminalGds_SubmitRequest(23001, &v0, param1, -1);
 }
@@ -121,7 +121,7 @@ BOOL GlobalTerminalGds_UploadRecordAlt2(VsRecorderViewerTransferValue *param0, v
 {
     GlobalTerminalGdsRecordAltRequest v0 = { 0 };
     v0.unk_00 = 2;
-    v0.unk_0C = param0->unk_00;
+    v0.unk_0C = param0->value;
 
     return GlobalTerminalGds_SubmitRequest(23001, &v0, param1, -1);
 }
