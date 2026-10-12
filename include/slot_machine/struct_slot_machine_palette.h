@@ -4,15 +4,15 @@
 #include "slot_machine/struct_slot_machine_context_decl.h"
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    u16 unk_04[16];
-    u16 unk_24[16];
-    u16 unk_44[16];
-    u16 unk_64[16];
-    u16 unk_84[16];
-    u16 unk_A4[5][16];
-    u16 unk_144[5][16];
-    u16 unk_1E4[5][16];
+    SlotMachineContext *context;
+    u16 paletteA[16];
+    u16 paletteB[16];
+    u16 flashPaletteA[16];
+    u16 flashPaletteB[16];
+    u16 blendTarget[16];
+    u16 baseReelPalettes[5][16];
+    u16 litReelPalettes[5][16];
+    u16 blendedReelPalettes[5][16];
 } SlotMachinePalette;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_PALETTE_H

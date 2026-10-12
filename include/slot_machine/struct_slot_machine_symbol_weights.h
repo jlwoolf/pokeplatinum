@@ -4,10 +4,10 @@
 #include "slot_machine/struct_slot_machine_symbol_weight.h"
 
 typedef struct {
-    SlotMachineSymbolWeight unk_00;
-    SlotMachineSymbolWeight unk_04;
-    SlotMachineSymbolWeight unk_08;
-    SlotMachineSymbolWeight unk_0C;
+    SlotMachineSymbolWeight symbol3Weights;
+    SlotMachineSymbolWeight symbol5Weights;
+    SlotMachineSymbolWeight symbol4Weights;
+    SlotMachineSymbolWeight symbol2Weights;
 } SlotMachineSymbolWeights;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_SYMBOL_WEIGHTS_H

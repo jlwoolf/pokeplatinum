@@ -7,15 +7,15 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    u32 unk_00;
-    int unk_04;
-    fx32 unk_08;
-    int unk_0C;
-    SlotMachineReelIndex unk_10;
-    int unk_14;
-    int unk_18;
-    SysTask *unk_1C;
-    SlotMachineContext *unk_20;
+    u32 state;
+    int done;
+    fx32 bounceSpeed;
+    int bounceCount;
+    SlotMachineReelIndex reelIndex;
+    int targetPosition;
+    int spinOffset;
+    SysTask *task;
+    SlotMachineContext *context;
 } SlotMachineReelTask;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_REEL_TASK_H

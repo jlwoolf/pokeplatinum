@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_SLOT_MACHINE_SYMBOL_WEIGHT_H
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
+    u16 weight;
+    u16 weight2;
 } SlotMachineSymbolWeight;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_SYMBOL_WEIGHT_H

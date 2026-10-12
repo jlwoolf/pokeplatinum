@@ -6,10 +6,10 @@
 #include "string_template.h"
 
 typedef struct {
-    MessageLoader *unk_00;
-    StringTemplate *unk_04;
-    Window unk_08[1];
-    void *unk_18;
+    MessageLoader *messageLoader;
+    StringTemplate *stringTemplate;
+    Window window[1];
+    void *string;
 } SlotMachineMessageBox;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_MESSAGE_BOX_H
