@@ -1,0 +1,79 @@
+#ifndef POKEPLATINUM_STRUCT_POFFIN_COOKING_APP_H
+#define POKEPLATINUM_STRUCT_POFFIN_COOKING_APP_H
+
+#include "poffin_cooking/struct_poffin_cooking_comm_decl.h"
+#include "poffin_cooking/struct_poffin_cooking_sprite_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_sprite_set.h"
+#include "poffin_cooking/struct_poffin_cooking_poffin_anim.h"
+#include "poffin_cooking/struct_poffin_cooking_messages.h"
+#include "poffin_cooking/struct_poffin_cooking_player_list_display.h"
+#include "poffin_cooking/struct_poffin_cooking_reaction_sprite.h"
+#include "poffin_cooking/struct_poffin_cooking_burst_effect.h"
+#include "poffin_cooking/struct_poffin_cooking_player_cursor.h"
+#include "poffin_cooking/struct_poffin_cooking_message_box.h"
+#include "poffin_cooking/struct_poffin_cooking_particle_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_arrow_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_sparkle_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_poffin_sprite.h"
+#include "poffin_cooking/struct_poffin_cooking_yes_no_menu.h"
+#include "poffin_cooking/struct_poffin_cooking_touch_tracker.h"
+#include "poffin_cooking/struct_poffin_cooking_simulation.h"
+#include "poffin_cooking/struct_poffin_cooking_session.h"
+
+#include "bg_window.h"
+#include "software_sprite.h"
+
+typedef struct {
+    enum HeapID heapID;
+    BOOL unk_04;
+    int unk_08;
+    int unk_0C;
+    int unk_10;
+    BOOL unk_14;
+    u8 unk_18;
+    u8 unk_19;
+    u8 unk_1A;
+    u8 unk_1B;
+    int unk_1C;
+    BgConfig *unk_20;
+    int unk_24;
+    int unk_28;
+    PoffinCookingSpriteManager unk_2C;
+    PoffinCookingSpriteSet unk_1CC[6];
+    BOOL unk_31C;
+    SoftwareSpriteManager *unk_320;
+    u32 unk_324;
+    u32 unk_328;
+    BOOL unk_32C;
+    BOOL unk_330;
+    PoffinCookingTouchTracker unk_334;
+    PoffinCookingSimulation unk_34C;
+    u32 unk_3B4;
+    s32 unk_3B8;
+    u32 unk_3BC;
+    PoffinCookingPoffinAnim unk_3C0;
+    PoffinCookingPlayerListDisplay unk_5B0;
+    PoffinCookingReactionSprite unk_5E4;
+    PoffinCookingReactionSprite unk_5F0;
+    PoffinCookingReactionSprite unk_5FC;
+    PoffinCookingBurstEffect unk_608;
+    PoffinCookingPlayerCursor unk_680;
+    PoffinCookingMessageBox unk_6A0;
+    PoffinCookingParticleManager unk_6D8;
+    PoffinCookingArrowManager unk_AEC;
+    PoffinCookingSparkleManager unk_B6C;
+    PoffinCookingPoffinSprite unk_1478;
+    PoffinCookingYesNoMenu unk_1480;
+    int unk_1488;
+    PoffinCookingComm *unk_148C;
+    int unk_1490;
+    PoffinCookingSession unk_1494;
+    BOOL unk_15DC;
+    PoffinCookingMessages unk_15E0;
+    u16 unk_1654;
+    u32 unk_1658;
+    u16 unk_165C[5];
+    u16 unk_1666;
+} PoffinCookingApp;
+
+#endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_APP_H

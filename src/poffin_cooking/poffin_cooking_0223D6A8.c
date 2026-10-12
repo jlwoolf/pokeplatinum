@@ -4,29 +4,29 @@
 #include <string.h>
 
 #include "poffin_cooking/poffin_cooking_0223D4CC.h"
-#include "poffin_cooking/struct_poffin_cooking_0223D4CC_decl.h"
-#include "poffin_cooking/struct_poffin_cooking_0223D784.h"
-#include "poffin_cooking/struct_poffin_cooking_0223D95C.h"
-#include "poffin_cooking/struct_poffin_cooking_0223D9EC.h"
-#include "poffin_cooking/struct_poffin_cooking_0223DA94.h"
-#include "poffin_cooking/struct_poffin_cooking_0223DB30.h"
-#include "poffin_cooking/struct_poffin_cooking_0223DB4C.h"
-#include "poffin_cooking/struct_poffin_cooking_0223DEA0.h"
-#include "poffin_cooking/struct_poffin_cooking_0223E138.h"
-#include "poffin_cooking/struct_poffin_cooking_0223E244.h"
-#include "poffin_cooking/struct_poffin_cooking_0223E340.h"
-#include "poffin_cooking/struct_poffin_cooking_0223E5C0.h"
-#include "poffin_cooking/struct_poffin_cooking_0223E824.h"
-#include "poffin_cooking/struct_poffin_cooking_0223ED3C.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F054.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F29C.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F410.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F4AC.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F670.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F770.h"
-#include "poffin_cooking/struct_poffin_cooking_0223F7A4.h"
-#include "poffin_cooking/struct_poffin_cooking_0223FCE8.h"
-#include "poffin_cooking/struct_poffin_cooking_0223FE50.h"
+#include "poffin_cooking/struct_poffin_cooking_comm_decl.h"
+#include "poffin_cooking/struct_poffin_cooking_sprite_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_sprite_set.h"
+#include "poffin_cooking/struct_poffin_cooking_scale_anim.h"
+#include "poffin_cooking/struct_poffin_cooking_motion_anim.h"
+#include "poffin_cooking/struct_poffin_cooking_poffin_anim.h"
+#include "poffin_cooking/struct_poffin_cooking_berry_packet.h"
+#include "poffin_cooking/struct_poffin_cooking_messages.h"
+#include "poffin_cooking/struct_poffin_cooking_player_list_display.h"
+#include "poffin_cooking/struct_poffin_cooking_reaction_sprite.h"
+#include "poffin_cooking/struct_poffin_cooking_burst_effect.h"
+#include "poffin_cooking/struct_poffin_cooking_player_cursor.h"
+#include "poffin_cooking/struct_poffin_cooking_message_box.h"
+#include "poffin_cooking/struct_poffin_cooking_particle_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_particle.h"
+#include "poffin_cooking/struct_poffin_cooking_arrow_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_arrow.h"
+#include "poffin_cooking/struct_poffin_cooking_sparkle_manager.h"
+#include "poffin_cooking/struct_poffin_cooking_sparkle.h"
+#include "poffin_cooking/struct_poffin_cooking_poffin_sprite.h"
+#include "poffin_cooking/struct_poffin_cooking_yes_no_menu.h"
+#include "poffin_cooking/struct_poffin_cooking_blend_state.h"
+#include "poffin_cooking/struct_poffin_cooking_session.h"
 
 #include "bg_window.h"
 #include "font.h"
@@ -60,7 +60,7 @@ typedef struct {
     s16 unk_0E;
     u8 unk_10;
     u8 unk_11;
-} UnkStruct_poffin_cooking_02240460;
+} PoffinCookingPoffinAnimTemplate;
 
 typedef struct {
     fx32 unk_00;
@@ -78,31 +78,31 @@ typedef struct {
     u8 unk_18;
     u8 unk_19;
     u8 unk_1A;
-} UnkStruct_poffin_cooking_022404B0;
+} PoffinCookingParticleTemplate;
 
-static void poffin_cooking_0223E09C(UnkStruct_poffin_cooking_0223E138 *param0, u32 heapID);
-static void poffin_cooking_0223E138(UnkStruct_poffin_cooking_0223E138 *param0);
-static void poffin_cooking_0223E15C(UnkStruct_poffin_cooking_0223E138 *param0, u32 param1, NARC *param2);
-static void poffin_cooking_0223E208(UnkStruct_poffin_cooking_0223E138 *param0);
+static void poffin_cooking_0223E09C(PoffinCookingPlayerListDisplay *param0, u32 heapID);
+static void poffin_cooking_0223E138(PoffinCookingPlayerListDisplay *param0);
+static void poffin_cooking_0223E15C(PoffinCookingPlayerListDisplay *param0, u32 param1, NARC *param2);
+static void poffin_cooking_0223E208(PoffinCookingPlayerListDisplay *param0);
 static void poffin_cooking_0223E21C(Window *param0, String *param1, int param2, int param3);
-static void poffin_cooking_0223E77C(UnkStruct_poffin_cooking_0223E824 *param0, u32 heapID);
-static void poffin_cooking_0223E824(UnkStruct_poffin_cooking_0223E824 *param0);
-static void poffin_cooking_0223E844(UnkStruct_poffin_cooking_0223E824 *param0, u32 heapID, NARC *param2);
-static UnkStruct_poffin_cooking_0223F054 *poffin_cooking_0223EFF4(UnkStruct_poffin_cooking_0223ED3C *param0);
-static UnkStruct_poffin_cooking_0223F054 *poffin_cooking_0223F018(UnkStruct_poffin_cooking_0223ED3C *param0);
-static void poffin_cooking_0223F054(UnkStruct_poffin_cooking_0223F054 *param0);
-static void poffin_cooking_0223F074(UnkStruct_poffin_cooking_0223F054 *param0);
-static void poffin_cooking_0223F0F4(UnkStruct_poffin_cooking_0223F054 *param0, UnkStruct_poffin_cooking_0223FE50 *param1);
-static void poffin_cooking_0223F1C0(UnkStruct_poffin_cooking_0223F054 *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7, fx32 param8, fx32 param9, fx32 param10, BOOL param11, int param12, UnkStruct_poffin_cooking_0223D95C *param13, int param14, UnkStruct_poffin_cooking_0223D784 *param15, u32 param16, BOOL param17, u8 param18);
-static void poffin_cooking_0223F268(UnkStruct_poffin_cooking_0223F054 *param0);
-static void poffin_cooking_0223F410(UnkStruct_poffin_cooking_0223F410 *param0);
-static void poffin_cooking_0223F420(UnkStruct_poffin_cooking_0223F410 *param0);
-static void poffin_cooking_0223F44C(UnkStruct_poffin_cooking_0223F410 *param0);
-static void poffin_cooking_0223F458(UnkStruct_poffin_cooking_0223F410 *param0);
-static UnkStruct_poffin_cooking_0223F670 *poffin_cooking_0223F650(UnkStruct_poffin_cooking_0223F4AC *param0);
-static void poffin_cooking_0223F670(UnkStruct_poffin_cooking_0223F670 *param0);
-static void poffin_cooking_0223F6B4(UnkStruct_poffin_cooking_0223F670 *param0);
-static void poffin_cooking_0223F6CC(UnkStruct_poffin_cooking_0223F670 *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7);
+static void poffin_cooking_0223E77C(PoffinCookingMessageBox *param0, u32 heapID);
+static void poffin_cooking_0223E824(PoffinCookingMessageBox *param0);
+static void poffin_cooking_0223E844(PoffinCookingMessageBox *param0, u32 heapID, NARC *param2);
+static PoffinCookingParticle *poffin_cooking_0223EFF4(PoffinCookingParticleManager *param0);
+static PoffinCookingParticle *poffin_cooking_0223F018(PoffinCookingParticleManager *param0);
+static void poffin_cooking_0223F054(PoffinCookingParticle *param0);
+static void poffin_cooking_0223F074(PoffinCookingParticle *param0);
+static void poffin_cooking_0223F0F4(PoffinCookingParticle *param0, PoffinCookingSession *param1);
+static void poffin_cooking_0223F1C0(PoffinCookingParticle *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7, fx32 param8, fx32 param9, fx32 param10, BOOL param11, int param12, PoffinCookingSpriteSet *param13, int param14, PoffinCookingSpriteManager *param15, u32 param16, BOOL param17, u8 param18);
+static void poffin_cooking_0223F268(PoffinCookingParticle *param0);
+static void poffin_cooking_0223F410(PoffinCookingArrow *param0);
+static void poffin_cooking_0223F420(PoffinCookingArrow *param0);
+static void poffin_cooking_0223F44C(PoffinCookingArrow *param0);
+static void poffin_cooking_0223F458(PoffinCookingArrow *param0);
+static PoffinCookingSparkle *poffin_cooking_0223F650(PoffinCookingSparkleManager *param0);
+static void poffin_cooking_0223F670(PoffinCookingSparkle *param0);
+static void poffin_cooking_0223F6B4(PoffinCookingSparkle *param0);
+static void poffin_cooking_0223F6CC(PoffinCookingSparkle *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7);
 
 static int poffin_cooking_0223D6A8(int param0, const String *param1, int param2)
 {
@@ -169,7 +169,7 @@ static SoftwareSprite *poffin_cooking_0223D720(SoftwareSpriteManager *param0, So
     return v1;
 }
 
-void poffin_cooking_0223D754(UnkStruct_poffin_cooking_0223D784 *param0, int param1, int param2, enum HeapID heapID)
+void poffin_cooking_0223D754(PoffinCookingSpriteManager *param0, int param1, int param2, enum HeapID heapID)
 {
     int i;
 
@@ -180,7 +180,7 @@ void poffin_cooking_0223D754(UnkStruct_poffin_cooking_0223D784 *param0, int para
     }
 }
 
-void poffin_cooking_0223D784(UnkStruct_poffin_cooking_0223D784 *param0)
+void poffin_cooking_0223D784(PoffinCookingSpriteManager *param0)
 {
     int v0;
 
@@ -192,7 +192,7 @@ void poffin_cooking_0223D784(UnkStruct_poffin_cooking_0223D784 *param0)
     }
 }
 
-void poffin_cooking_0223D7A8(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruct_poffin_cooking_0223D95C *param1, NARC *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9)
+void poffin_cooking_0223D7A8(PoffinCookingSpriteManager *param0, PoffinCookingSpriteSet *param1, NARC *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9)
 {
     BOOL v0;
 
@@ -213,7 +213,7 @@ void poffin_cooking_0223D7A8(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruc
     SpriteResourcesHeader_Init(&param1->unk_14, param8, param8, param8, param8, 0xffffffff, 0xffffffff, 0, 0, param0->unk_190[0], param0->unk_190[1], param0->unk_190[2], param0->unk_190[3], NULL, NULL);
 }
 
-void poffin_cooking_0223D894(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruct_poffin_cooking_0223D95C *param1, NARC *param2, SpriteResource *param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
+void poffin_cooking_0223D894(PoffinCookingSpriteManager *param0, PoffinCookingSpriteSet *param1, NARC *param2, SpriteResource *param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
 {
     BOOL v0;
     u32 v1;
@@ -234,7 +234,7 @@ void poffin_cooking_0223D894(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruc
     SpriteResourcesHeader_Init(&param1->unk_14, param7, v1, param7, param7, 0xffffffff, 0xffffffff, 0, 0, param0->unk_190[0], param0->unk_190[1], param0->unk_190[2], param0->unk_190[3], NULL, NULL);
 }
 
-void poffin_cooking_0223D95C(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruct_poffin_cooking_0223D95C *param1)
+void poffin_cooking_0223D95C(PoffinCookingSpriteManager *param0, PoffinCookingSpriteSet *param1)
 {
     int v0;
 
@@ -255,7 +255,7 @@ void poffin_cooking_0223D95C(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruc
     }
 }
 
-Sprite *poffin_cooking_0223D9A8(UnkStruct_poffin_cooking_0223D784 *param0, UnkStruct_poffin_cooking_0223D95C *param1, fx32 param2, fx32 param3, fx32 param4, int param5, int param6)
+Sprite *poffin_cooking_0223D9A8(PoffinCookingSpriteManager *param0, PoffinCookingSpriteSet *param1, fx32 param2, fx32 param3, fx32 param4, int param5, int param6)
 {
     SpriteListTemplate v0;
     Sprite *v1;
@@ -275,7 +275,7 @@ Sprite *poffin_cooking_0223D9A8(UnkStruct_poffin_cooking_0223D784 *param0, UnkSt
     return v1;
 }
 
-void poffin_cooking_0223D9DC(UnkStruct_poffin_cooking_0223D9EC *param0, fx32 param1, fx32 param2, int param3)
+void poffin_cooking_0223D9DC(PoffinCookingScaleAnim *param0, fx32 param1, fx32 param2, int param3)
 {
     param0->unk_00 = param1;
     param0->unk_04 = param1;
@@ -284,7 +284,7 @@ void poffin_cooking_0223D9DC(UnkStruct_poffin_cooking_0223D9EC *param0, fx32 par
     param0->unk_0C = 0;
 }
 
-BOOL poffin_cooking_0223D9EC(UnkStruct_poffin_cooking_0223D9EC *param0)
+BOOL poffin_cooking_0223D9EC(PoffinCookingScaleAnim *param0)
 {
     fx32 v0;
 
@@ -303,7 +303,7 @@ BOOL poffin_cooking_0223D9EC(UnkStruct_poffin_cooking_0223D9EC *param0)
     return 1;
 }
 
-void poffin_cooking_0223DA34(UnkStruct_poffin_cooking_0223DA94 *param0, fx32 param1, fx32 param2, fx32 param3, int param4)
+void poffin_cooking_0223DA34(PoffinCookingMotionAnim *param0, fx32 param1, fx32 param2, fx32 param3, int param4)
 {
     fx32 v0;
     fx32 v1;
@@ -326,7 +326,7 @@ void poffin_cooking_0223DA34(UnkStruct_poffin_cooking_0223DA94 *param0, fx32 par
     param0->unk_14 = param4;
 }
 
-BOOL poffin_cooking_0223DA94(UnkStruct_poffin_cooking_0223DA94 *param0)
+BOOL poffin_cooking_0223DA94(PoffinCookingMotionAnim *param0)
 {
     fx32 v0;
     fx32 v1;
@@ -360,26 +360,26 @@ VecFx32 poffin_cooking_0223DAFC(fx32 param0, fx32 param1, fx32 param2)
     return v0;
 }
 
-static const UnkStruct_poffin_cooking_02240460 Unk_poffin_cooking_02240460[4] = {
+static const PoffinCookingPoffinAnimTemplate Unk_poffin_cooking_02240460[4] = {
     { FX32_CONST(0), FX32_CONST(0), 0x40, 0x60, 0xFFFFFFFFFFFFFFE0, 0x58, 0x20, 0xA },
     { FX32_CONST(0), FX32_CONST(0), 0x118, 0x9C, 0xC0, 0x80, 0x20, 0x20 },
     { FX32_CONST(0), FX32_CONST(0), 0xFFFFFFFFFFFFFFE0, 0x80, 0x20, 0x60, 0x20, 0x20 },
     { FX32_CONST(0), FX32_CONST(0), 0x80, 0x74, 0xFFFFFFFFFFFFFFE0, 0x60, 0x20, 0x20 }
 };
 
-void poffin_cooking_0223DB18(UnkStruct_poffin_cooking_0223DB30 *param0, int param1)
+void poffin_cooking_0223DB18(PoffinCookingPoffinAnim *param0, int param1)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223DB30));
+    memset(param0, 0, sizeof(PoffinCookingPoffinAnim));
     param0->unk_108 = param1;
 }
 
-void poffin_cooking_0223DB30(UnkStruct_poffin_cooking_0223DB30 *param0)
+void poffin_cooking_0223DB30(PoffinCookingPoffinAnim *param0)
 {
     GF_ASSERT(param0->unk_00 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223DB30));
+    memset(param0, 0, sizeof(PoffinCookingPoffinAnim));
 }
 
-void poffin_cooking_0223DB4C(UnkStruct_poffin_cooking_0223DB30 *param0, UnkStruct_poffin_cooking_0223DB4C *param1, UnkStruct_poffin_cooking_0223D784 *param2, UnkStruct_poffin_cooking_0223D95C *param3, u32 heapID)
+void poffin_cooking_0223DB4C(PoffinCookingPoffinAnim *param0, PoffinCookingBerryPacket *param1, PoffinCookingSpriteManager *param2, PoffinCookingSpriteSet *param3, u32 heapID)
 {
     int v0;
     int v1;
@@ -409,7 +409,7 @@ void poffin_cooking_0223DB4C(UnkStruct_poffin_cooking_0223DB30 *param0, UnkStruc
     param0->unk_00 = 1;
 }
 
-void poffin_cooking_0223DC1C(UnkStruct_poffin_cooking_0223DB30 *param0, UnkStruct_poffin_cooking_0223D784 *param1)
+void poffin_cooking_0223DC1C(PoffinCookingPoffinAnim *param0, PoffinCookingSpriteManager *param1)
 {
     int v0;
 
@@ -424,7 +424,7 @@ void poffin_cooking_0223DC1C(UnkStruct_poffin_cooking_0223DB30 *param0, UnkStruc
     param0->unk_00 = 0;
 }
 
-void poffin_cooking_0223DC68(UnkStruct_poffin_cooking_0223DB30 *param0)
+void poffin_cooking_0223DC68(PoffinCookingPoffinAnim *param0)
 {
     int v0;
     VecFx32 v1;
@@ -446,7 +446,7 @@ void poffin_cooking_0223DC68(UnkStruct_poffin_cooking_0223DB30 *param0)
     param0->unk_04 = 1;
 }
 
-u32 poffin_cooking_0223DD30(UnkStruct_poffin_cooking_0223DB30 *param0)
+u32 poffin_cooking_0223DD30(PoffinCookingPoffinAnim *param0)
 {
     int v0;
     BOOL v1;
@@ -511,9 +511,9 @@ u32 poffin_cooking_0223DD30(UnkStruct_poffin_cooking_0223DB30 *param0)
     return v3;
 }
 
-void poffin_cooking_0223DEA0(UnkStruct_poffin_cooking_0223E138 *param0, int param1, UnkStruct_poffin_cooking_0223DEA0 *param2, UnkStruct_poffin_cooking_0223FE50 *param3, int param4, u32 param5)
+void poffin_cooking_0223DEA0(PoffinCookingPlayerListDisplay *param0, int param1, PoffinCookingMessages *param2, PoffinCookingSession *param3, int param4, u32 param5)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E138));
+    memset(param0, 0, sizeof(PoffinCookingPlayerListDisplay));
     param0->unk_18 = param2;
     param0->unk_14 = param1;
     param0->unk_00 = param5;
@@ -521,13 +521,13 @@ void poffin_cooking_0223DEA0(UnkStruct_poffin_cooking_0223E138 *param0, int para
     param0->unk_10 = param4;
 }
 
-void poffin_cooking_0223DEC4(UnkStruct_poffin_cooking_0223E138 *param0)
+void poffin_cooking_0223DEC4(PoffinCookingPlayerListDisplay *param0)
 {
     GF_ASSERT(param0->unk_30 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E138));
+    memset(param0, 0, sizeof(PoffinCookingPlayerListDisplay));
 }
 
-void poffin_cooking_0223DEE0(UnkStruct_poffin_cooking_0223E138 *param0, BgConfig *param1, u32 heapID, NARC *param3)
+void poffin_cooking_0223DEE0(PoffinCookingPlayerListDisplay *param0, BgConfig *param1, u32 heapID, NARC *param3)
 {
     GF_ASSERT(param0->unk_30 == 0);
 
@@ -539,7 +539,7 @@ void poffin_cooking_0223DEE0(UnkStruct_poffin_cooking_0223E138 *param0, BgConfig
     param0->unk_30 = 1;
 }
 
-void poffin_cooking_0223DF10(UnkStruct_poffin_cooking_0223E138 *param0)
+void poffin_cooking_0223DF10(PoffinCookingPlayerListDisplay *param0)
 {
     GF_ASSERT(param0->unk_30 == 1);
 
@@ -549,7 +549,7 @@ void poffin_cooking_0223DF10(UnkStruct_poffin_cooking_0223E138 *param0)
     param0->unk_30 = 0;
 }
 
-void poffin_cooking_0223DF30(UnkStruct_poffin_cooking_0223E138 *param0, int param1)
+void poffin_cooking_0223DF30(PoffinCookingPlayerListDisplay *param0, int param1)
 {
     StringTemplate_SetItemName(param0->unk_18->unk_04, 0, param1);
     StringTemplate_Format(param0->unk_18->unk_04, param0->unk_18->unk_08, param0->unk_18->unk_10);
@@ -558,20 +558,20 @@ void poffin_cooking_0223DF30(UnkStruct_poffin_cooking_0223E138 *param0, int para
     Window_DrawMessageBoxWithScrollCursor(param0->unk_08, 0, 1, 0);
 }
 
-void poffin_cooking_0223DF70(UnkStruct_poffin_cooking_0223E138 *param0)
+void poffin_cooking_0223DF70(PoffinCookingPlayerListDisplay *param0)
 {
     Window_ClearAndCopyToVRAM(param0->unk_08);
     Bg_ClearTilemap(param0->unk_04, BG_LAYER_SUB_0);
 }
 
-void poffin_cooking_0223DF84(UnkStruct_poffin_cooking_0223E138 *param0)
+void poffin_cooking_0223DF84(PoffinCookingPlayerListDisplay *param0)
 {
     Window_FillTilemap(param0->unk_08, 15);
     poffin_cooking_0223E21C(param0->unk_08, param0->unk_18->unk_0C, 0, 0);
     Window_DrawMessageBoxWithScrollCursor(param0->unk_08, 0, 1, 0);
 }
 
-void poffin_cooking_0223DFAC(UnkStruct_poffin_cooking_0223E138 *param0)
+void poffin_cooking_0223DFAC(PoffinCookingPlayerListDisplay *param0)
 {
     int v0;
     int v1;
@@ -609,7 +609,7 @@ void poffin_cooking_0223DFAC(UnkStruct_poffin_cooking_0223E138 *param0)
     Bg_ScheduleTilemapTransfer(param0->unk_04, 5);
 }
 
-static void poffin_cooking_0223E09C(UnkStruct_poffin_cooking_0223E138 *param0, u32 heapID)
+static void poffin_cooking_0223E09C(PoffinCookingPlayerListDisplay *param0, u32 heapID)
 {
     param0->unk_08 = Window_New(heapID, 1);
     param0->unk_0C = Window_New(heapID, 1);
@@ -623,7 +623,7 @@ static void poffin_cooking_0223E09C(UnkStruct_poffin_cooking_0223E138 *param0, u
     Window_DrawMessageBoxWithScrollCursor(param0->unk_08, 1, 1, 0);
 }
 
-static void poffin_cooking_0223E138(UnkStruct_poffin_cooking_0223E138 *param0)
+static void poffin_cooking_0223E138(PoffinCookingPlayerListDisplay *param0)
 {
     Window_Remove(param0->unk_08);
     Windows_Delete(param0->unk_08, 1);
@@ -631,7 +631,7 @@ static void poffin_cooking_0223E138(UnkStruct_poffin_cooking_0223E138 *param0)
     Windows_Delete(param0->unk_0C, 1);
 }
 
-static void poffin_cooking_0223E15C(UnkStruct_poffin_cooking_0223E138 *param0, u32 heapID, NARC *param2)
+static void poffin_cooking_0223E15C(PoffinCookingPlayerListDisplay *param0, u32 heapID, NARC *param2)
 {
     int v0;
 
@@ -654,7 +654,7 @@ static void poffin_cooking_0223E15C(UnkStruct_poffin_cooking_0223E138 *param0, u
     Bg_ScheduleTilemapTransfer(param0->unk_04, 5);
 }
 
-static void poffin_cooking_0223E208(UnkStruct_poffin_cooking_0223E138 *param0)
+static void poffin_cooking_0223E208(PoffinCookingPlayerListDisplay *param0)
 {
     Heap_Free(param0->unk_20);
     Heap_Free(param0->unk_28);
@@ -665,18 +665,18 @@ static void poffin_cooking_0223E21C(Window *param0, String *param1, int param2, 
     Text_AddPrinterWithParamsAndColor(param0, FONT_MESSAGE, param1, param2, param3, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 15), NULL);
 }
 
-void poffin_cooking_0223E244(UnkStruct_poffin_cooking_0223E244 *param0)
+void poffin_cooking_0223E244(PoffinCookingReactionSprite *param0)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E244));
+    memset(param0, 0, sizeof(PoffinCookingReactionSprite));
 }
 
-void poffin_cooking_0223E260(UnkStruct_poffin_cooking_0223E244 *param0)
+void poffin_cooking_0223E260(PoffinCookingReactionSprite *param0)
 {
     GF_ASSERT(param0->unk_00 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E244));
+    memset(param0, 0, sizeof(PoffinCookingReactionSprite));
 }
 
-void poffin_cooking_0223E28C(UnkStruct_poffin_cooking_0223E244 *param0, UnkStruct_poffin_cooking_0223D784 *param1, UnkStruct_poffin_cooking_0223D95C *param2, u32 param3, u32 param4, u32 param5)
+void poffin_cooking_0223E28C(PoffinCookingReactionSprite *param0, PoffinCookingSpriteManager *param1, PoffinCookingSpriteSet *param2, u32 param3, u32 param4, u32 param5)
 {
     param0->unk_08 = poffin_cooking_0223D9A8(param1, &param2[param4], 128 * FX32_ONE , 96 * FX32_ONE , 0, 0, param3);
     Sprite_SetDrawFlag(param0->unk_08, FALSE);
@@ -684,20 +684,20 @@ void poffin_cooking_0223E28C(UnkStruct_poffin_cooking_0223E244 *param0, UnkStruc
     param0->unk_00 = 1;
 }
 
-void poffin_cooking_0223E2C8(UnkStruct_poffin_cooking_0223E244 *param0)
+void poffin_cooking_0223E2C8(PoffinCookingReactionSprite *param0)
 {
     GF_ASSERT(param0->unk_00 == 1);
     Sprite_Delete(param0->unk_08);
     param0->unk_00 = 0;
 }
 
-void poffin_cooking_0223E2E4(UnkStruct_poffin_cooking_0223E244 *param0)
+void poffin_cooking_0223E2E4(PoffinCookingReactionSprite *param0)
 {
     Sprite_SetDrawFlag(param0->unk_08, TRUE);
     Sprite_SetAnimateFlag(param0->unk_08, 1);
 }
 
-void poffin_cooking_0223E2FC(UnkStruct_poffin_cooking_0223E244 *param0)
+void poffin_cooking_0223E2FC(PoffinCookingReactionSprite *param0)
 {
     VecFx32 v0;
 
@@ -710,7 +710,7 @@ void poffin_cooking_0223E2FC(UnkStruct_poffin_cooking_0223E244 *param0)
     Sprite_SetPosition(param0->unk_08, &v0);
 }
 
-BOOL poffin_cooking_0223E32C(UnkStruct_poffin_cooking_0223E244 *param0)
+BOOL poffin_cooking_0223E32C(PoffinCookingReactionSprite *param0)
 {
     if (Sprite_IsAnimated(param0->unk_08) == 0) {
         return 1;
@@ -737,18 +737,18 @@ static const fx32 Unk_poffin_cooking_02240454[3] = {
     FX32_CONST(1.0f)
 };
 
-void poffin_cooking_0223E340(UnkStruct_poffin_cooking_0223E340 *param0)
+void poffin_cooking_0223E340(PoffinCookingBurstEffect *param0)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E340));
+    memset(param0, 0, sizeof(PoffinCookingBurstEffect));
 }
 
-void poffin_cooking_0223E34C(UnkStruct_poffin_cooking_0223E340 *param0)
+void poffin_cooking_0223E34C(PoffinCookingBurstEffect *param0)
 {
     GF_ASSERT(param0->unk_74 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E340));
+    memset(param0, 0, sizeof(PoffinCookingBurstEffect));
 }
 
-void poffin_cooking_0223E368(UnkStruct_poffin_cooking_0223E340 *param0, SoftwareSpriteManager *param1, u32 param2, NARC *param3)
+void poffin_cooking_0223E368(PoffinCookingBurstEffect *param0, SoftwareSpriteManager *param1, u32 param2, NARC *param3)
 {
     int v0;
     static const u8 v1[] = {
@@ -828,7 +828,7 @@ void poffin_cooking_0223E368(UnkStruct_poffin_cooking_0223E340 *param0, Software
     param0->unk_74 = 1;
 }
 
-void poffin_cooking_0223E438(UnkStruct_poffin_cooking_0223E340 *param0)
+void poffin_cooking_0223E438(PoffinCookingBurstEffect *param0)
 {
     int v0;
 
@@ -849,13 +849,13 @@ void poffin_cooking_0223E438(UnkStruct_poffin_cooking_0223E340 *param0)
     param0->unk_74 = 0;
 }
 
-void poffin_cooking_0223E484(UnkStruct_poffin_cooking_0223E340 *param0, u32 param1, BOOL param2)
+void poffin_cooking_0223E484(PoffinCookingBurstEffect *param0, u32 param1, BOOL param2)
 {
     GF_ASSERT(param1 < 8);
     SoftwareSprite_SetVisible(param0->unk_38[param1], param2);
 }
 
-void poffin_cooking_0223E4A4(UnkStruct_poffin_cooking_0223E340 *param0, u16 param1)
+void poffin_cooking_0223E4A4(PoffinCookingBurstEffect *param0, u16 param1)
 {
     int v0;
 
@@ -864,7 +864,7 @@ void poffin_cooking_0223E4A4(UnkStruct_poffin_cooking_0223E340 *param0, u16 para
     }
 }
 
-void poffin_cooking_0223E4C0(UnkStruct_poffin_cooking_0223E340 *param0, fx32 param1)
+void poffin_cooking_0223E4C0(PoffinCookingBurstEffect *param0, fx32 param1)
 {
     int v0;
 
@@ -873,13 +873,13 @@ void poffin_cooking_0223E4C0(UnkStruct_poffin_cooking_0223E340 *param0, fx32 par
     }
 }
 
-void poffin_cooking_0223E4E0(UnkStruct_poffin_cooking_0223E340 *param0, u32 param1, u32 param2)
+void poffin_cooking_0223E4E0(PoffinCookingBurstEffect *param0, u32 param1, u32 param2)
 {
     GF_ASSERT(param1 < 8);
     SoftwareSprite_SetAlpha(param0->unk_38[param1], param2);
 }
 
-void poffin_cooking_0223E500(UnkStruct_poffin_cooking_0223E340 *param0)
+void poffin_cooking_0223E500(PoffinCookingBurstEffect *param0)
 {
     param0->unk_6C = 1;
     param0->unk_70 = 0;
@@ -887,7 +887,7 @@ void poffin_cooking_0223E500(UnkStruct_poffin_cooking_0223E340 *param0)
     poffin_cooking_0223D9DC(&param0->unk_58, FX32_ONE, Unk_poffin_cooking_02240448[0], Unk_poffin_cooking_02240414[0]);
 }
 
-void poffin_cooking_0223E51C(UnkStruct_poffin_cooking_0223E340 *param0, int param1)
+void poffin_cooking_0223E51C(PoffinCookingBurstEffect *param0, int param1)
 {
     BOOL v0;
     int v1;
@@ -919,21 +919,21 @@ void poffin_cooking_0223E51C(UnkStruct_poffin_cooking_0223E340 *param0, int para
     }
 }
 
-void poffin_cooking_0223E5A4(UnkStruct_poffin_cooking_0223E5C0 *param0, const UnkStruct_poffin_cooking_0223FE50 *param1, u32 param2, UnkStruct_poffin_cooking_0223D4CC *param3)
+void poffin_cooking_0223E5A4(PoffinCookingPlayerCursor *param0, const PoffinCookingSession *param1, u32 param2, PoffinCookingComm *param3)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E5C0));
+    memset(param0, 0, sizeof(PoffinCookingPlayerCursor));
     param0->unk_14 = param1;
     param0->unk_18 = param2;
     param0->unk_1C = param3;
 }
 
-void poffin_cooking_0223E5C0(UnkStruct_poffin_cooking_0223E5C0 *param0)
+void poffin_cooking_0223E5C0(PoffinCookingPlayerCursor *param0)
 {
     GF_ASSERT(param0->unk_00 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E5C0));
+    memset(param0, 0, sizeof(PoffinCookingPlayerCursor));
 }
 
-void poffin_cooking_0223E5DC(UnkStruct_poffin_cooking_0223E5C0 *param0, UnkStruct_poffin_cooking_0223D784 *param1, UnkStruct_poffin_cooking_0223D95C *param2, u32 param3)
+void poffin_cooking_0223E5DC(PoffinCookingPlayerCursor *param0, PoffinCookingSpriteManager *param1, PoffinCookingSpriteSet *param2, u32 param3)
 {
     int v0;
     VecFx32 v1;
@@ -951,7 +951,7 @@ void poffin_cooking_0223E5DC(UnkStruct_poffin_cooking_0223E5C0 *param0, UnkStruc
     param0->unk_00 = 1;
 }
 
-void poffin_cooking_0223E63C(UnkStruct_poffin_cooking_0223E5C0 *param0)
+void poffin_cooking_0223E63C(PoffinCookingPlayerCursor *param0)
 {
     int v0;
 
@@ -962,12 +962,12 @@ void poffin_cooking_0223E63C(UnkStruct_poffin_cooking_0223E5C0 *param0)
     param0->unk_00 = 0;
 }
 
-void poffin_cooking_0223E658(UnkStruct_poffin_cooking_0223E5C0 *param0)
+void poffin_cooking_0223E658(PoffinCookingPlayerCursor *param0)
 {
     int v0;
     int v1;
     VecFx32 v2;
-    const UnkStruct_poffin_cooking_0223FCE8 *v3 = &param0->unk_14->unk_90[0].unk_08;
+    const PoffinCookingBlendState *v3 = &param0->unk_14->unk_90[0].unk_08;
 
     for (v0 = 0; v0 < param0->unk_18; v0++) {
         v1 = param0->unk_14->unk_130[v0];
@@ -977,7 +977,7 @@ void poffin_cooking_0223E658(UnkStruct_poffin_cooking_0223E5C0 *param0)
     }
 }
 
-void poffin_cooking_0223E69C(UnkStruct_poffin_cooking_0223E5C0 *param0, BOOL param1)
+void poffin_cooking_0223E69C(PoffinCookingPlayerCursor *param0, BOOL param1)
 {
     int v0;
     int v1;
@@ -991,9 +991,9 @@ void poffin_cooking_0223E69C(UnkStruct_poffin_cooking_0223E5C0 *param0, BOOL par
     }
 }
 
-void poffin_cooking_0223E6D4(UnkStruct_poffin_cooking_0223E824 *param0, int param1, UnkStruct_poffin_cooking_0223DEA0 *param2, UnkStruct_poffin_cooking_0223FE50 *param3, int param4, u32 param5)
+void poffin_cooking_0223E6D4(PoffinCookingMessageBox *param0, int param1, PoffinCookingMessages *param2, PoffinCookingSession *param3, int param4, u32 param5)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E824));
+    memset(param0, 0, sizeof(PoffinCookingMessageBox));
     param0->unk_1C = param2;
     param0->unk_20 = param1;
     param0->unk_00 = param5;
@@ -1001,17 +1001,17 @@ void poffin_cooking_0223E6D4(UnkStruct_poffin_cooking_0223E824 *param0, int para
     param0->unk_18 = param4;
 }
 
-void poffin_cooking_0223E6F8(UnkStruct_poffin_cooking_0223E824 *param0)
+void poffin_cooking_0223E6F8(PoffinCookingMessageBox *param0)
 {
     GF_ASSERT(param0->unk_28 == 0);
 
     poffin_cooking_0223E994(param0);
     poffin_cooking_0223E9D0(param0);
 
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223E824));
+    memset(param0, 0, sizeof(PoffinCookingMessageBox));
 }
 
-void poffin_cooking_0223E720(UnkStruct_poffin_cooking_0223E824 *param0, BgConfig *param1, u32 heapID, NARC *param3)
+void poffin_cooking_0223E720(PoffinCookingMessageBox *param0, BgConfig *param1, u32 heapID, NARC *param3)
 {
     GF_ASSERT(param0->unk_28 == 0);
 
@@ -1026,7 +1026,7 @@ void poffin_cooking_0223E720(UnkStruct_poffin_cooking_0223E824 *param0, BgConfig
     param0->unk_28 = 1;
 }
 
-void poffin_cooking_0223E760(UnkStruct_poffin_cooking_0223E824 *param0)
+void poffin_cooking_0223E760(PoffinCookingMessageBox *param0)
 {
     GF_ASSERT(param0->unk_28 == 1);
 
@@ -1035,7 +1035,7 @@ void poffin_cooking_0223E760(UnkStruct_poffin_cooking_0223E824 *param0)
     param0->unk_28 = 0;
 }
 
-static void poffin_cooking_0223E77C(UnkStruct_poffin_cooking_0223E824 *param0, u32 heapID)
+static void poffin_cooking_0223E77C(PoffinCookingMessageBox *param0, u32 heapID)
 {
     int v0;
     static u16 v1[4][6] = {
@@ -1057,7 +1057,7 @@ static void poffin_cooking_0223E77C(UnkStruct_poffin_cooking_0223E824 *param0, u
     }
 }
 
-static void poffin_cooking_0223E824(UnkStruct_poffin_cooking_0223E824 *param0)
+static void poffin_cooking_0223E824(PoffinCookingMessageBox *param0)
 {
     int v0;
 
@@ -1067,7 +1067,7 @@ static void poffin_cooking_0223E824(UnkStruct_poffin_cooking_0223E824 *param0)
     }
 }
 
-static void poffin_cooking_0223E844(UnkStruct_poffin_cooking_0223E824 *param0, u32 heapID, NARC *param2)
+static void poffin_cooking_0223E844(PoffinCookingMessageBox *param0, u32 heapID, NARC *param2)
 {
     void *v0;
     NNSG2dScreenData *v1;
@@ -1085,7 +1085,7 @@ static void poffin_cooking_0223E844(UnkStruct_poffin_cooking_0223E824 *param0, u
 
 static void poffin_cooking_0223E8DC(SysTask *param0, void *param1)
 {
-    UnkStruct_poffin_cooking_0223E824 *v0 = param1;
+    PoffinCookingMessageBox *v0 = param1;
 
     v0->unk_30++;
 
@@ -1097,7 +1097,7 @@ static void poffin_cooking_0223E8DC(SysTask *param0, void *param1)
     }
 }
 
-void poffin_cooking_0223E908(UnkStruct_poffin_cooking_0223E824 *param0, u32 param1)
+void poffin_cooking_0223E908(PoffinCookingMessageBox *param0, u32 param1)
 {
     GF_ASSERT(param0->unk_2C == NULL);
 
@@ -1116,7 +1116,7 @@ void poffin_cooking_0223E908(UnkStruct_poffin_cooking_0223E824 *param0, u32 para
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
 }
 
-BOOL poffin_cooking_0223E984(const UnkStruct_poffin_cooking_0223E824 *param0)
+BOOL poffin_cooking_0223E984(const PoffinCookingMessageBox *param0)
 {
     if (param0->unk_2C == NULL) {
         return 1;
@@ -1125,7 +1125,7 @@ BOOL poffin_cooking_0223E984(const UnkStruct_poffin_cooking_0223E824 *param0)
     return 0;
 }
 
-void poffin_cooking_0223E994(UnkStruct_poffin_cooking_0223E824 *param0)
+void poffin_cooking_0223E994(PoffinCookingMessageBox *param0)
 {
     if (param0->unk_2C == NULL) {
         return;
@@ -1138,13 +1138,13 @@ void poffin_cooking_0223E994(UnkStruct_poffin_cooking_0223E824 *param0)
     param0->unk_2C = NULL;
 }
 
-void poffin_cooking_0223E9BC(UnkStruct_poffin_cooking_0223E824 *param0)
+void poffin_cooking_0223E9BC(PoffinCookingMessageBox *param0)
 {
     poffin_cooking_0223E9D0(param0);
     param0->unk_34 = Window_AddWaitDial(param0->unk_08[3], 1);
 }
 
-void poffin_cooking_0223E9D0(UnkStruct_poffin_cooking_0223E824 *param0)
+void poffin_cooking_0223E9D0(PoffinCookingMessageBox *param0)
 {
     if (param0->unk_34 != NULL) {
         DestroyWaitDial(param0->unk_34);
@@ -1152,7 +1152,7 @@ void poffin_cooking_0223E9D0(UnkStruct_poffin_cooking_0223E824 *param0)
     }
 }
 
-static void poffin_cooking_0223E9E4(UnkStruct_poffin_cooking_0223E824 *param0)
+static void poffin_cooking_0223E9E4(PoffinCookingMessageBox *param0)
 {
     Bg_ClearTilemap(param0->unk_04, BG_LAYER_MAIN_2);
     Window_FillTilemap(param0->unk_08[1], 15);
@@ -1170,7 +1170,7 @@ static void poffin_cooking_0223E9E4(UnkStruct_poffin_cooking_0223E824 *param0)
     Window_ScheduleCopyToVRAM(param0->unk_08[2]);
 }
 
-static void poffin_cooking_0223EA6C(UnkStruct_poffin_cooking_0223E824 *param0)
+static void poffin_cooking_0223EA6C(PoffinCookingMessageBox *param0)
 {
     Text_AddPrinterWithParamsAndColor(param0->unk_08[1], FONT_SYSTEM, param0->unk_1C->unk_4C[0], 0, 24, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 15), NULL);
     StringTemplate_SetNumber(param0->unk_1C->unk_04, 0, param0->unk_24->unk_58.unk_0E, 2, 2, 1);
@@ -1199,7 +1199,7 @@ static void poffin_cooking_0223EA6C(UnkStruct_poffin_cooking_0223E824 *param0)
     Window_ScheduleCopyToVRAM(param0->unk_08[1]);
 }
 
-static void poffin_cooking_0223EBD8(UnkStruct_poffin_cooking_0223E824 *param0)
+static void poffin_cooking_0223EBD8(PoffinCookingMessageBox *param0)
 {
     StringTemplate_SetPoffinName(param0->unk_1C->unk_04, 3, param0->unk_24->unk_58.unk_0C);
     StringTemplate_SetNumber(param0->unk_1C->unk_04, 1, param0->unk_24->unk_58.unk_0D, 2, 2, 1);
@@ -1209,7 +1209,7 @@ static void poffin_cooking_0223EBD8(UnkStruct_poffin_cooking_0223E824 *param0)
     Window_ScheduleCopyToVRAM(param0->unk_08[2]);
 }
 
-void poffin_cooking_0223EC4C(UnkStruct_poffin_cooking_0223E824 *param0, u32 param1)
+void poffin_cooking_0223EC4C(PoffinCookingMessageBox *param0, u32 param1)
 {
     switch (param1) {
     case 0:
@@ -1224,14 +1224,14 @@ void poffin_cooking_0223EC4C(UnkStruct_poffin_cooking_0223E824 *param0, u32 para
     }
 }
 
-void poffin_cooking_0223EC70(UnkStruct_poffin_cooking_0223E824 *param0)
+void poffin_cooking_0223EC70(PoffinCookingMessageBox *param0)
 {
     Bg_ClearTilemap(param0->unk_04, BG_LAYER_MAIN_2);
     Window_ClearAndCopyToVRAM(param0->unk_08[1]);
     Window_ClearAndCopyToVRAM(param0->unk_08[2]);
 }
 
-void poffin_cooking_0223EC8C(UnkStruct_poffin_cooking_0223E824 *param0, u32 param1)
+void poffin_cooking_0223EC8C(PoffinCookingMessageBox *param0, u32 param1)
 {
     String *v0;
     int v1;
@@ -1270,7 +1270,7 @@ void poffin_cooking_0223EC8C(UnkStruct_poffin_cooking_0223E824 *param0, u32 para
     Window_ScheduleCopyToVRAM(param0->unk_08[3]);
 }
 
-static const UnkStruct_poffin_cooking_022404B0 Unk_poffin_cooking_022404B0[8] = {
+static const PoffinCookingParticleTemplate Unk_poffin_cooking_022404B0[8] = {
     { FX32_CONST(0.50f), FX32_CONST(1.50f), FX32_CONST(0.0f), FX32_CONST(0.0f), 0x20, 0x40, 0x0, 0x0, 0x20, 0x2, 0x1, 0x0, 0x0, 0x0, 0x5 },
     { FX32_CONST(0.50f), FX32_CONST(1.0f), FX32_CONST(0.0f), FX32_CONST(0.0f), 0x0, 0x8, 0x0, 0x18, 0x10, 0x2, 0x2, 0x1, 0x1, 0x1, 0xA },
     { FX32_CONST(0.50f), FX32_CONST(1.50f), FX32_CONST(0.0f), FX32_CONST(2.0f), 0x20, 0x40, 0x20, 0x40, 0x10, 0x2, 0x0, 0x0, 0x0, 0x0, 0x5 },
@@ -1281,18 +1281,18 @@ static const UnkStruct_poffin_cooking_022404B0 Unk_poffin_cooking_022404B0[8] = 
     { FX32_CONST(0.50f), FX32_CONST(1.50f), FX32_CONST(0.0f), FX32_CONST(0.0f), 0x20, 0x40, 0x0, 0x0, 0x20, 0x4, 0x1, 0x0, 0x0, 0x0, 0x5 }
 };
 
-void poffin_cooking_0223ED3C(UnkStruct_poffin_cooking_0223ED3C *param0)
+void poffin_cooking_0223ED3C(PoffinCookingParticleManager *param0)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223ED3C));
+    memset(param0, 0, sizeof(PoffinCookingParticleManager));
 }
 
-void poffin_cooking_0223ED4C(UnkStruct_poffin_cooking_0223ED3C *param0)
+void poffin_cooking_0223ED4C(PoffinCookingParticleManager *param0)
 {
     GF_ASSERT(param0->unk_00 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223ED3C));
+    memset(param0, 0, sizeof(PoffinCookingParticleManager));
 }
 
-void poffin_cooking_0223ED6C(UnkStruct_poffin_cooking_0223ED3C *param0, UnkStruct_poffin_cooking_0223D784 *param1, UnkStruct_poffin_cooking_0223D95C *param2, u32 param3)
+void poffin_cooking_0223ED6C(PoffinCookingParticleManager *param0, PoffinCookingSpriteManager *param1, PoffinCookingSpriteSet *param2, u32 param3)
 {
     param0->unk_04 = param1;
     param0->unk_08 = param2;
@@ -1300,7 +1300,7 @@ void poffin_cooking_0223ED6C(UnkStruct_poffin_cooking_0223ED3C *param0, UnkStruc
     param0->unk_00 = 1;
 }
 
-void poffin_cooking_0223ED78(UnkStruct_poffin_cooking_0223ED3C *param0)
+void poffin_cooking_0223ED78(PoffinCookingParticleManager *param0)
 {
     int v0;
 
@@ -1313,7 +1313,7 @@ void poffin_cooking_0223ED78(UnkStruct_poffin_cooking_0223ED3C *param0)
     param0->unk_00 = 0;
 }
 
-void poffin_cooking_0223EDA4(UnkStruct_poffin_cooking_0223ED3C *param0, UnkStruct_poffin_cooking_0223FE50 *param1)
+void poffin_cooking_0223EDA4(PoffinCookingParticleManager *param0, PoffinCookingSession *param1)
 {
     int v0;
 
@@ -1328,12 +1328,12 @@ void poffin_cooking_0223EDA4(UnkStruct_poffin_cooking_0223ED3C *param0, UnkStruc
     }
 }
 
-void poffin_cooking_0223EDDC(UnkStruct_poffin_cooking_0223ED3C *param0, int param1, int param2)
+void poffin_cooking_0223EDDC(PoffinCookingParticleManager *param0, int param1, int param2)
 {
-    UnkStruct_poffin_cooking_0223F054 *v0;
+    PoffinCookingParticle *v0;
     u16 v1;
     fx32 v2, v3, v4, v5, v6, v7, v8;
-    UnkStruct_poffin_cooking_022404B0 v9 = Unk_poffin_cooking_022404B0[param1 * 3 + param2];
+    PoffinCookingParticleTemplate v9 = Unk_poffin_cooking_022404B0[param1 * 3 + param2];
     int v10, v11;
 
     if ((param1 * 3 + param2) >= ((3 * 3) - 1)) {
@@ -1373,7 +1373,7 @@ void poffin_cooking_0223EDDC(UnkStruct_poffin_cooking_0223ED3C *param0, int para
     param0->unk_410++;
 }
 
-void poffin_cooking_0223EFCC(UnkStruct_poffin_cooking_0223ED3C *param0)
+void poffin_cooking_0223EFCC(PoffinCookingParticleManager *param0)
 {
     int v0;
 
@@ -1384,7 +1384,7 @@ void poffin_cooking_0223EFCC(UnkStruct_poffin_cooking_0223ED3C *param0)
     }
 }
 
-static UnkStruct_poffin_cooking_0223F054 *poffin_cooking_0223EFF4(UnkStruct_poffin_cooking_0223ED3C *param0)
+static PoffinCookingParticle *poffin_cooking_0223EFF4(PoffinCookingParticleManager *param0)
 {
     int v0;
 
@@ -1397,10 +1397,10 @@ static UnkStruct_poffin_cooking_0223F054 *poffin_cooking_0223EFF4(UnkStruct_poff
     return NULL;
 }
 
-static UnkStruct_poffin_cooking_0223F054 *poffin_cooking_0223F018(UnkStruct_poffin_cooking_0223ED3C *param0)
+static PoffinCookingParticle *poffin_cooking_0223F018(PoffinCookingParticleManager *param0)
 {
     int v0;
-    UnkStruct_poffin_cooking_0223F054 *v1 = NULL;
+    PoffinCookingParticle *v1 = NULL;
 
     for (v0 = 0; v0 < 8; v0++) {
         if (param0->unk_10[v0].unk_78 != NULL) {
@@ -1417,15 +1417,15 @@ static UnkStruct_poffin_cooking_0223F054 *poffin_cooking_0223F018(UnkStruct_poff
     return v1;
 }
 
-static void poffin_cooking_0223F054(UnkStruct_poffin_cooking_0223F054 *param0)
+static void poffin_cooking_0223F054(PoffinCookingParticle *param0)
 {
     GF_ASSERT(param0->unk_78);
 
     Sprite_Delete(param0->unk_78);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223F054));
+    memset(param0, 0, sizeof(PoffinCookingParticle));
 }
 
-static void poffin_cooking_0223F074(UnkStruct_poffin_cooking_0223F054 *param0)
+static void poffin_cooking_0223F074(PoffinCookingParticle *param0)
 {
     BOOL v0;
 
@@ -1461,7 +1461,7 @@ static void poffin_cooking_0223F074(UnkStruct_poffin_cooking_0223F054 *param0)
     }
 }
 
-static void poffin_cooking_0223F0F4(UnkStruct_poffin_cooking_0223F054 *param0, UnkStruct_poffin_cooking_0223FE50 *param1)
+static void poffin_cooking_0223F0F4(PoffinCookingParticle *param0, PoffinCookingSession *param1)
 {
     VecFx32 v0;
     u32 v1;
@@ -1491,7 +1491,7 @@ static void poffin_cooking_0223F0F4(UnkStruct_poffin_cooking_0223F054 *param0, U
     }
 }
 
-static void poffin_cooking_0223F1C0(UnkStruct_poffin_cooking_0223F054 *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7, fx32 param8, fx32 param9, fx32 param10, BOOL param11, int param12, UnkStruct_poffin_cooking_0223D95C *param13, int param14, UnkStruct_poffin_cooking_0223D784 *param15, u32 param16, BOOL param17, u8 param18)
+static void poffin_cooking_0223F1C0(PoffinCookingParticle *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7, fx32 param8, fx32 param9, fx32 param10, BOOL param11, int param12, PoffinCookingSpriteSet *param13, int param14, PoffinCookingSpriteManager *param15, u32 param16, BOOL param17, u8 param18)
 {
     param0->unk_00 = param1;
 
@@ -1519,7 +1519,7 @@ static void poffin_cooking_0223F1C0(UnkStruct_poffin_cooking_0223F054 *param0, i
     Sprite_SetExplicitPriority(param0->unk_78, 2);
 }
 
-static void poffin_cooking_0223F268(UnkStruct_poffin_cooking_0223F054 *param0)
+static void poffin_cooking_0223F268(PoffinCookingParticle *param0)
 {
     if (param0->unk_00 != 1) {
         return;
@@ -1533,18 +1533,18 @@ static void poffin_cooking_0223F268(UnkStruct_poffin_cooking_0223F054 *param0)
     Sprite_SetAffineOverwriteMode(param0->unk_78, 2);
 }
 
-void poffin_cooking_0223F29C(UnkStruct_poffin_cooking_0223F29C *param0)
+void poffin_cooking_0223F29C(PoffinCookingArrowManager *param0)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223F29C));
+    memset(param0, 0, sizeof(PoffinCookingArrowManager));
 }
 
-void poffin_cooking_0223F2A8(UnkStruct_poffin_cooking_0223F29C *param0)
+void poffin_cooking_0223F2A8(PoffinCookingArrowManager *param0)
 {
     GF_ASSERT(param0->unk_7C == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223F29C));
+    memset(param0, 0, sizeof(PoffinCookingArrowManager));
 }
 
-void poffin_cooking_0223F2C4(UnkStruct_poffin_cooking_0223F29C *param0, UnkStruct_poffin_cooking_0223D784 *param1, u32 param2, NARC *param3)
+void poffin_cooking_0223F2C4(PoffinCookingArrowManager *param0, PoffinCookingSpriteManager *param1, u32 param2, NARC *param3)
 {
     int v0;
 
@@ -1567,7 +1567,7 @@ void poffin_cooking_0223F2C4(UnkStruct_poffin_cooking_0223F29C *param0, UnkStruc
     param0->unk_7C = 1;
 }
 
-void poffin_cooking_0223F348(UnkStruct_poffin_cooking_0223F29C *param0)
+void poffin_cooking_0223F348(PoffinCookingArrowManager *param0)
 {
     int v0;
 
@@ -1582,7 +1582,7 @@ void poffin_cooking_0223F348(UnkStruct_poffin_cooking_0223F29C *param0)
     param0->unk_7C = 0;
 }
 
-void poffin_cooking_0223F378(UnkStruct_poffin_cooking_0223F29C *param0)
+void poffin_cooking_0223F378(PoffinCookingArrowManager *param0)
 {
     int v0;
 
@@ -1595,7 +1595,7 @@ void poffin_cooking_0223F378(UnkStruct_poffin_cooking_0223F29C *param0)
     }
 }
 
-void poffin_cooking_0223F3A0(UnkStruct_poffin_cooking_0223F29C *param0, int param1)
+void poffin_cooking_0223F3A0(PoffinCookingArrowManager *param0, int param1)
 {
     GF_ASSERT(param1 < 4);
 
@@ -1606,7 +1606,7 @@ void poffin_cooking_0223F3A0(UnkStruct_poffin_cooking_0223F29C *param0, int para
     }
 }
 
-void poffin_cooking_0223F3D0(UnkStruct_poffin_cooking_0223F29C *param0, int param1)
+void poffin_cooking_0223F3D0(PoffinCookingArrowManager *param0, int param1)
 {
     GF_ASSERT(param1 < 4);
 
@@ -1615,7 +1615,7 @@ void poffin_cooking_0223F3D0(UnkStruct_poffin_cooking_0223F29C *param0, int para
     Sprite_SetDrawFlag(param0->unk_3C[param1].unk_00, FALSE);
 }
 
-BOOL poffin_cooking_0223F3F0(const UnkStruct_poffin_cooking_0223F29C *param0, int param1)
+BOOL poffin_cooking_0223F3F0(const PoffinCookingArrowManager *param0, int param1)
 {
     GF_ASSERT(param1 < 4);
 
@@ -1626,14 +1626,14 @@ BOOL poffin_cooking_0223F3F0(const UnkStruct_poffin_cooking_0223F29C *param0, in
     return 0;
 }
 
-static void poffin_cooking_0223F410(UnkStruct_poffin_cooking_0223F410 *param0)
+static void poffin_cooking_0223F410(PoffinCookingArrow *param0)
 {
     param0->unk_04 = 0;
     param0->unk_08 = 3;
     param0->unk_0C = 1;
 }
 
-static void poffin_cooking_0223F420(UnkStruct_poffin_cooking_0223F410 *param0)
+static void poffin_cooking_0223F420(PoffinCookingArrow *param0)
 {
     if (param0->unk_0C == 0) {
         return;
@@ -1652,13 +1652,13 @@ static void poffin_cooking_0223F420(UnkStruct_poffin_cooking_0223F410 *param0)
     }
 }
 
-static void poffin_cooking_0223F44C(UnkStruct_poffin_cooking_0223F410 *param0)
+static void poffin_cooking_0223F44C(PoffinCookingArrow *param0)
 {
     param0->unk_04 = 0;
     param0->unk_0C = 1;
 }
 
-static void poffin_cooking_0223F458(UnkStruct_poffin_cooking_0223F410 *param0)
+static void poffin_cooking_0223F458(PoffinCookingArrow *param0)
 {
     if (param0->unk_0C == 0) {
         return;
@@ -1676,19 +1676,19 @@ static void poffin_cooking_0223F458(UnkStruct_poffin_cooking_0223F410 *param0)
     param0->unk_04++;
 }
 
-void poffin_cooking_0223F494(UnkStruct_poffin_cooking_0223F4AC *param0, int param1)
+void poffin_cooking_0223F494(PoffinCookingSparkleManager *param0, int param1)
 {
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223F4AC));
+    memset(param0, 0, sizeof(PoffinCookingSparkleManager));
     param0->unk_04 = param1;
 }
 
-void poffin_cooking_0223F4AC(UnkStruct_poffin_cooking_0223F4AC *param0)
+void poffin_cooking_0223F4AC(PoffinCookingSparkleManager *param0)
 {
     GF_ASSERT(param0->unk_00 == 0);
-    memset(param0, 0, sizeof(UnkStruct_poffin_cooking_0223F4AC));
+    memset(param0, 0, sizeof(PoffinCookingSparkleManager));
 }
 
-void poffin_cooking_0223F4CC(UnkStruct_poffin_cooking_0223F4AC *param0, UnkStruct_poffin_cooking_0223D784 *param1, UnkStruct_poffin_cooking_0223D95C *param2, u32 param3)
+void poffin_cooking_0223F4CC(PoffinCookingSparkleManager *param0, PoffinCookingSpriteManager *param1, PoffinCookingSpriteSet *param2, u32 param3)
 {
     int v0;
 
@@ -1700,7 +1700,7 @@ void poffin_cooking_0223F4CC(UnkStruct_poffin_cooking_0223F4AC *param0, UnkStruc
     param0->unk_00 = 1;
 }
 
-void poffin_cooking_0223F510(UnkStruct_poffin_cooking_0223F4AC *param0)
+void poffin_cooking_0223F510(PoffinCookingSparkleManager *param0)
 {
     int v0;
 
@@ -1711,7 +1711,7 @@ void poffin_cooking_0223F510(UnkStruct_poffin_cooking_0223F4AC *param0)
     param0->unk_00 = 0;
 }
 
-void poffin_cooking_0223F52C(UnkStruct_poffin_cooking_0223F4AC *param0)
+void poffin_cooking_0223F52C(PoffinCookingSparkleManager *param0)
 {
     int v0;
 
@@ -1720,9 +1720,9 @@ void poffin_cooking_0223F52C(UnkStruct_poffin_cooking_0223F4AC *param0)
     }
 }
 
-void poffin_cooking_0223F544(UnkStruct_poffin_cooking_0223F4AC *param0, int param1, int param2)
+void poffin_cooking_0223F544(PoffinCookingSparkleManager *param0, int param1, int param2)
 {
-    UnkStruct_poffin_cooking_0223F670 *v0;
+    PoffinCookingSparkle *v0;
     u32 v1;
     fx32 v2, v3;
     fx32 v4, v5;
@@ -1748,7 +1748,7 @@ void poffin_cooking_0223F544(UnkStruct_poffin_cooking_0223F4AC *param0, int para
     param0->unk_08 = (param0->unk_08 + 1) % param0->unk_04;
 }
 
-static UnkStruct_poffin_cooking_0223F670 *poffin_cooking_0223F650(UnkStruct_poffin_cooking_0223F4AC *param0)
+static PoffinCookingSparkle *poffin_cooking_0223F650(PoffinCookingSparkleManager *param0)
 {
     int v0;
 
@@ -1761,7 +1761,7 @@ static UnkStruct_poffin_cooking_0223F670 *poffin_cooking_0223F650(UnkStruct_poff
     return NULL;
 }
 
-static void poffin_cooking_0223F670(UnkStruct_poffin_cooking_0223F670 *param0)
+static void poffin_cooking_0223F670(PoffinCookingSparkle *param0)
 {
     BOOL v0;
 
@@ -1782,7 +1782,7 @@ static void poffin_cooking_0223F670(UnkStruct_poffin_cooking_0223F670 *param0)
     }
 }
 
-static void poffin_cooking_0223F6B4(UnkStruct_poffin_cooking_0223F670 *param0)
+static void poffin_cooking_0223F6B4(PoffinCookingSparkle *param0)
 {
     if (param0->unk_00 == 0) {
         return;
@@ -1792,7 +1792,7 @@ static void poffin_cooking_0223F6B4(UnkStruct_poffin_cooking_0223F670 *param0)
     param0->unk_00 = 0;
 }
 
-static void poffin_cooking_0223F6CC(UnkStruct_poffin_cooking_0223F670 *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7)
+static void poffin_cooking_0223F6CC(PoffinCookingSparkle *param0, int param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, fx32 param7)
 {
     poffin_cooking_0223DA34(&param0->unk_14, param2, param4, param6, 16);
     poffin_cooking_0223DA34(&param0->unk_2C, param3, param5, param7, 16);
@@ -1810,35 +1810,35 @@ static void poffin_cooking_0223F6CC(UnkStruct_poffin_cooking_0223F670 *param0, i
     param0->unk_04 = 0;
 }
 
-void poffin_cooking_0223F730(UnkStruct_poffin_cooking_0223F770 *param0, int param1, int param2, int param3, int param4)
+void poffin_cooking_0223F730(PoffinCookingPoffinSprite *param0, int param1, int param2, int param3, int param4)
 {
     param0->unk_00 = PoffinSpriteManager_New(param4, 1, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 2);
     param0->unk_04 = PoffinSprite_New(param0->unk_00, param3, param1, param2, 0, 0, 0, 0);
 }
 
-void poffin_cooking_0223F770(UnkStruct_poffin_cooking_0223F770 *param0)
+void poffin_cooking_0223F770(PoffinCookingPoffinSprite *param0)
 {
     PoffinSprite_Free(param0->unk_00, param0->unk_04);
     PoffinSpriteManager_Free(param0->unk_00);
 }
 
-void poffin_cooking_0223F784(UnkStruct_poffin_cooking_0223F770 *param0)
+void poffin_cooking_0223F784(PoffinCookingPoffinSprite *param0)
 {
     PoffinSpriteManager_DrawSprites(param0->unk_00);
 }
 
-void poffin_cooking_0223F790(UnkStruct_poffin_cooking_0223F7A4 *param0, enum HeapID heapID, BgConfig *param2)
+void poffin_cooking_0223F790(PoffinCookingYesNoMenu *param0, enum HeapID heapID, BgConfig *param2)
 {
     param0->unk_00 = YesNoTouchMenu_New(heapID);
     param0->unk_04 = param2;
 }
 
-void poffin_cooking_0223F7A4(UnkStruct_poffin_cooking_0223F7A4 *param0)
+void poffin_cooking_0223F7A4(PoffinCookingYesNoMenu *param0)
 {
     YesNoTouchMenu_Free(param0->unk_00);
 }
 
-void poffin_cooking_0223F7B0(UnkStruct_poffin_cooking_0223F7A4 *param0)
+void poffin_cooking_0223F7B0(PoffinCookingYesNoMenu *param0)
 {
     YesNoTouchMenuParams v0;
 
@@ -1852,7 +1852,7 @@ void poffin_cooking_0223F7B0(UnkStruct_poffin_cooking_0223F7A4 *param0)
     YesNoTouchMenu_InitWithParams(param0->unk_00, &v0);
 }
 
-u32 poffin_cooking_0223F7DC(UnkStruct_poffin_cooking_0223F7A4 *param0)
+u32 poffin_cooking_0223F7DC(PoffinCookingYesNoMenu *param0)
 {
     u32 v0 = YesNoTouchMenu_ProcessInput(param0->unk_00);
 

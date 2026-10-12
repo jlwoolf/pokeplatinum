@@ -1,0 +1,11 @@
+#ifndef POKEPLATINUM_STRUCT_POFFIN_COOKING_SYNCHRO_STATE_H
+#define POKEPLATINUM_STRUCT_POFFIN_COOKING_SYNCHRO_STATE_H
+
+typedef struct {
+    int unk_00;
+    int unk_04;
+    BOOL unk_08;
+    BOOL unk_0C;
+} PoffinCookingSynchroState;
+
+#endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_SYNCHRO_STATE_H

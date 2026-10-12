@@ -1,12 +1,12 @@
 #ifndef POKEPLATINUM_POFFIN_COOKING_0223D150_H
 #define POKEPLATINUM_POFFIN_COOKING_0223D150_H
 
-#include "poffin_cooking/struct_poffin_cooking_0223B784.h"
+#include "poffin_cooking/struct_poffin_cooking_app.h"
 
 #include "trainer_info.h"
 
-void poffin_cooking_0223D150(UnkStruct_poffin_cooking_0223B784 *param0, TrainerInfo *param1);
-void poffin_cooking_0223D1EC(UnkStruct_poffin_cooking_0223B784 *param0);
+void poffin_cooking_0223D150(PoffinCookingApp *param0, TrainerInfo *param1);
+void poffin_cooking_0223D1EC(PoffinCookingApp *param0);
 void poffin_cooking_0223D204(int param0, int param1, void *param2, void *param3);
 void poffin_cooking_0223D210(int param0, int param1, void *param2, void *param3);
 void poffin_cooking_0223D21C(int param0, int param1, void *param2, void *param3);
