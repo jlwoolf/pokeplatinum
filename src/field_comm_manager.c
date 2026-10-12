@@ -10,7 +10,7 @@
 
 #include "field/field_system.h"
 #include "functypes/funcptr_020598EC.h"
-#include "overlay007/communication_club.h"
+#include "field_shops/communication_club.h"
 #include "underground/manager.h"
 
 #include "appearance.h"
@@ -297,7 +297,7 @@ static void FieldCommTask_StartBattleServer(void)
         return;
     }
 
-    ov7_0224B4B8();
+    CommClub_StartServerRoom();
 
     CommInfo_SendPlayerInfo();
     FieldCommManager_SetTask(FieldCommTask_WaitBattleServer, 0);

@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_OV7_02249960_H
-#define POKEPLATINUM_OV7_02249960_H
+#ifndef POKEPLATINUM_COMMUNICATION_CLUB_H
+#define POKEPLATINUM_COMMUNICATION_CLUB_H
 
 #include "field/field_system_decl.h"
 
@@ -7,8 +7,8 @@ void CommClub_StartBattleClient(FieldSystem *fieldSystem, int param1, int param2
 void CommClub_PrintChooseJoinMsg(void);
 u32 CommClub_CheckWindowOpenClient(void);
 void CommClub_StartBattleServer(FieldSystem *fieldSystem, int param1, int param2, int param3);
-void ov7_0224B4B8(void);
+void CommClub_StartServerRoom(void);
 u32 CommClub_CheckWindowOpenServer(void);
-BOOL ov7_0224B4E4(void);
+BOOL CommClub_HasCommError(void);
 
-#endif // POKEPLATINUM_OV7_02249960_H
+#endif // POKEPLATINUM_COMMUNICATION_CLUB_H

@@ -1,4 +1,4 @@
-#include "overlay007/battle_regulation_menu.h"
+#include "field_shops/battle_regulation_menu.h"
 
 #include <nitro.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-#include "overlay007/accessory_shop.h"
+#include "field_shops/accessory_shop.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -6,7 +6,7 @@
 #include "constants/accessories.h"
 #include "constants/field/window.h"
 
-#include "overlay007/shop_menu.h"
+#include "field_shops/shop_menu.h"
 
 #include "bg_window.h"
 #include "field_message.h"
@@ -82,7 +82,7 @@ static void AccessoryShop_SetDataPointers(AccessoryShopDataPtrs *dataPtr, Access
 static void AccessoryShop_Update(void *ptr, u32 cursorPos);
 static BOOL AccessoryShop_HasAllAccessories(const FashionCase *fashionCase, const AccessoryShopItem *items, u32 maxItems);
 static BOOL AccessoryShop_HasEnoughBerries(Bag *bag, const AccessoryShopItem *items, u32 idx, enum HeapID heapID);
-static BOOL ov7_0224CCE4(const FashionCase *fashionCase, const AccessoryShopItem *items, u32 idx);
+static BOOL AccessoryShop_CanFitAccessory(const FashionCase *fashionCase, const AccessoryShopItem *items, u32 idx);
 static void AccessoryShop_DoPurchase(FashionCase *fashionCase, Bag *bag, const AccessoryShopItem *items, u32 idx, enum HeapID heapID);
 
 AccessoryShop *AccessoryShop_New(enum HeapID heapID, SaveData *saveData, BgConfig *bgConfig)
@@ -194,7 +194,7 @@ BOOL AccessoryShop_Main(AccessoryShop *shop)
                 break;
             }
 
-            if (ov7_0224CCE4(shop->fashionCase, sAccessoryShop_ItemLists, shop->itemList.cursorPos) == FALSE) {
+            if (AccessoryShop_CanFitAccessory(shop->fashionCase, sAccessoryShop_ItemLists, shop->itemList.cursorPos) == FALSE) {
                 string = MessageLoader_GetNewString(shop->msgLoader, FlowerShop_Text_CantCarryMoreAccessories);
                 AccessoryShop_PrintStringToMsgBox(&shop->msgbox, string, shop->heapID);
                 String_Free(string);
@@ -739,7 +739,7 @@ static BOOL AccessoryShop_HasEnoughBerries(Bag *bag, const AccessoryShopItem *it
     return FALSE;
 }
 
-static BOOL ov7_0224CCE4(const FashionCase *fashionCase, const AccessoryShopItem *items, u32 idx)
+static BOOL AccessoryShop_CanFitAccessory(const FashionCase *fashionCase, const AccessoryShopItem *items, u32 idx)
 {
     return FashionCase_CanFitAccessoryCount(fashionCase, items[idx].accessoryID, 1);
 }

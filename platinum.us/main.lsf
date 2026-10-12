@@ -590,13 +590,13 @@ Overlay overlay6
 	Object main.nef.p/src_overlay006_ov6_022489E4.c.o
 }
 
-Overlay overlay7
+Overlay field_shops
 {
 	After overlay6
-	Object main.nef.p/src_overlay007_communication_club.c.o
-	Object main.nef.p/src_overlay007_battle_regulation_menu.c.o
-	Object main.nef.p/src_overlay007_accessory_shop.c.o
-	Object main.nef.p/src_overlay007_shop_menu.c.o
+	Object main.nef.p/src_field_shops_communication_club.c.o
+	Object main.nef.p/src_field_shops_battle_regulation_menu.c.o
+	Object main.nef.p/src_field_shops_accessory_shop.c.o
+	Object main.nef.p/src_field_shops_shop_menu.c.o
 }
 
 Overlay gym_features
