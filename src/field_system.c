@@ -11,12 +11,12 @@
 #include "applications/poketch/poketch_system.h"
 #include "applications/title_screen.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/field_control.h"
-#include "overlay005/fieldmap.h"
-#include "overlay005/map_name_popup.h"
-#include "overlay005/ov5_021DFB54.h"
-#include "overlay005/ov5_021EA714.h"
-#include "overlay005/signpost.h"
+#include "fieldmap/field_control.h"
+#include "fieldmap/fieldmap.h"
+#include "fieldmap/map_name_popup.h"
+#include "fieldmap/fieldmap_021DFB54.h"
+#include "fieldmap/fieldmap_021EA714.h"
+#include "fieldmap/signpost.h"
 
 #include "bag.h"
 #include "bg_window.h"
@@ -39,7 +39,7 @@
 #include "system.h"
 #include "battle_subscreen_cursor.h"
 
-FS_EXTERN_OVERLAY(overlay5);
+FS_EXTERN_OVERLAY(fieldmap);
 FS_EXTERN_OVERLAY(game_opening);
 
 static BOOL InitFieldSystemContinue(ApplicationManager *appMan, int *state);
@@ -110,7 +110,7 @@ void FieldSystem_StartFieldMapInner(FieldSystem *fieldSystem)
 {
     GF_ASSERT(fieldSystem->processManager->child == NULL);
     GF_ASSERT(fieldSystem->processManager->parent == NULL);
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay5), OVERLAY_LOAD_ASYNC);
+    Overlay_LoadByID(FS_OVERLAY_ID(fieldmap), OVERLAY_LOAD_ASYNC);
 
     fieldSystem->runningFieldMap = FALSE;
     fieldSystem->processManager->pause = FALSE;
@@ -213,7 +213,7 @@ static BOOL HandleInputsEventsAndProcesses(FieldSystem *fieldSystem)
         ExecuteAndCleanupIfDone(&fieldSystem->processManager->parent);
 
         if (fieldSystem->processManager->parent == NULL) {
-            Overlay_UnloadByID(FS_OVERLAY_ID(overlay5));
+            Overlay_UnloadByID(FS_OVERLAY_ID(fieldmap));
         }
     } else if (fieldSystem->processManager->child) {
         ExecuteAndCleanupIfDone(&fieldSystem->processManager->child);
@@ -284,7 +284,7 @@ static void HandleFieldInput(FieldSystem *fieldSystem)
             if (FieldInput_Process_BattleTower(&fieldInput, fieldSystem) == TRUE) {
                 MapNamePopUp_Hide(fieldSystem->unk_04->mapPopup);
                 Signpost_DoCommand(fieldSystem, SIGNPOST_CMD_REMOVE);
-                ov5_021E0EEC(fieldSystem->playerAvatar);
+                FieldMap_021E0EEC(fieldSystem->playerAvatar);
                 FieldSystem_SendPoketchEvent(fieldSystem, POKETCH_EVENT_SLEEP, 1);
             } else {
                 if (gSystem.pressedKeys & PAD_BUTTON_A) {
@@ -308,7 +308,7 @@ static void HandleFieldInput(FieldSystem *fieldSystem)
                 MapNamePopUp_Hide(fieldSystem->unk_04->mapPopup);
                 Signpost_DoCommand(fieldSystem, SIGNPOST_CMD_REMOVE);
                 PlayerAvatar_ClearMoveState(fieldSystem->playerAvatar);
-                ov5_021E0EEC(fieldSystem->playerAvatar);
+                FieldMap_021E0EEC(fieldSystem->playerAvatar);
                 FieldSystem_SendPoketchEvent(fieldSystem, POKETCH_EVENT_SLEEP, 1);
             } else {
                 if (gSystem.pressedKeys & PAD_BUTTON_A) {

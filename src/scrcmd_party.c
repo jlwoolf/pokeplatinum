@@ -7,7 +7,7 @@
 #include "generated/species.h"
 
 #include "field/field_system.h"
-#include "overlay005/daycare.h"
+#include "fieldmap/daycare.h"
 #include "savedata/save_table.h"
 
 #include "field_script_context.h"

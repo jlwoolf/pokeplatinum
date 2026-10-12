@@ -13,8 +13,8 @@
 #include "struct_defs/player_data.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021F61BC.h"
-#include "overlay005/surf_mount_renderer.h"
+#include "fieldmap/fieldmap_021F61BC.h"
+#include "fieldmap/surf_mount_renderer.h"
 
 #include "heap.h"
 #include "map_object.h"
@@ -93,7 +93,7 @@ void PlayerAvatar_InitMapFeatures(PlayerAvatar *playerAvatar, int dynamicMapFeat
     GF_ASSERT(mapObj != NULL);
     MapObject_MapObjectManager(mapObj);
 
-    ov5_021F6218(playerAvatar);
+    FieldMap_021F6218(playerAvatar);
 
     if (PlayerAvatar_GetPlayerState(playerAvatar) == PLAYER_AVATAR_SURFING) {
         if (dynamicMapFeaturesID != DYNAMIC_MAP_FEATURES_DISTORTION_WORLD) {

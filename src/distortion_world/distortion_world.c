@@ -24,18 +24,18 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/area_data.h"
-#include "overlay005/dist_world_surf_mount_renderer.h"
-#include "overlay005/field_effect_manager.h"
-#include "overlay005/fieldmap.h"
-#include "overlay005/fog_manager.h"
-#include "overlay005/land_data.h"
-#include "overlay005/land_data_manager_decl.h"
-#include "overlay005/map_object_anim_cmd.h"
-#include "overlay005/ov5_021EB1A0.h"
-#include "overlay005/ov5_021ECE40.h"
-#include "overlay005/ov5_021F348C.h"
-#include "overlay005/struct_ov5_021ED0A4.h"
+#include "fieldmap/area_data.h"
+#include "fieldmap/dist_world_surf_mount_renderer.h"
+#include "fieldmap/field_effect_manager.h"
+#include "fieldmap/fieldmap.h"
+#include "fieldmap/fog_manager.h"
+#include "fieldmap/land_data.h"
+#include "fieldmap/land_data_manager_decl.h"
+#include "fieldmap/map_object_anim_cmd.h"
+#include "fieldmap/fieldmap_021EB1A0.h"
+#include "fieldmap/fieldmap_021ECE40.h"
+#include "fieldmap/fieldmap_021F348C.h"
+#include "fieldmap/struct_fieldmap_021ED0A4.h"
 #include "distortion_world/camera_configuration.h"
 
 #include "bg_window.h"
@@ -1687,7 +1687,7 @@ void DistWorld_DynamicMapFeaturesInit(FieldSystem *fieldSystem)
     InitMovingPlatformPropsForCurrentAndNextMaps(dwSystem);
     InitSkyCloudAnimators(dwSystem, dwSystem->fieldSystem->fieldEffMan, &dwSystem->skyClouds);
     Dummy0224E984(dwSystem);
-    ov5_021F34B8(dwSystem->fieldSystem->fieldEffMan);
+    FieldMap_021F34B8(dwSystem->fieldSystem->fieldEffMan);
     StartSkyPalettesUpdateTask(dwSystem);
 
     data->valid = TRUE;
@@ -2236,7 +2236,7 @@ static void DistWorldMapObjectRotatorManager_TryPrepareRotator(DistWorldMapObjec
 {
     if (mapObjRotator->mapObj != NULL) {
         if (mapObjRotator->animObj == NULL) {
-            Billboard *billboard = ov5_021EB1A0(mapObjRotator->mapObj);
+            Billboard *billboard = FieldMap_021EB1A0(mapObjRotator->mapObj);
 
             if (billboard == NULL) {
                 return;
@@ -2889,7 +2889,7 @@ static BOOL JumpOnFloatingPlatform(FieldTask *task)
 
         // TODO: The following function plays the dust particle effects when
         // the player lands on the ground.
-        ov5_021F3678(playerMapObj, particlesDir);
+        FieldMap_021F3678(playerMapObj, particlesDir);
         Sound_PlayEffect(SEQ_SE_PL_SUTYA2_sseq_3);
 
         ctx->state++;
@@ -7264,10 +7264,10 @@ static BOOL AddMapObjectFromEvent(DistWorldSystem *system, MapObject **mapObj, c
 
     if (existingMapObj == NULL) {
         MapObject_SetPosDirFromCoords(*mapObj, objEvent->objEvent.x, (objEvent->objEvent.y >> 3) / FX32_ONE, objEvent->objEvent.z, objEvent->objEvent.dir);
-        Billboard *billboard = ov5_021EB1A0(*mapObj);
+        Billboard *billboard = FieldMap_021EB1A0(*mapObj);
 
         if (billboard != NULL) {
-            ov5_021EDEB4(*mapObj, billboard);
+            FieldMap_021EDEB4(*mapObj, billboard);
         }
     }
 
@@ -8885,8 +8885,8 @@ void DistWorld_ApplyGiratinaSpritePalette(FieldSystem *fieldSystem)
 
     if (dwSystem->playingGiratinaArrival == TRUE) {
         CmdRunDataPlayGiratinaArrival *runData = GetLoadedEventDataBuffer(dwSystem);
-        UnkStruct_ov5_021ED0A4 *v2 = MapObjectMan_GetDrawManager(dwSystem->fieldSystem->mapObjMan);
-        TextureResourceManager *texMgr = ov5_021EDCB0(v2);
+        UnkStruct_fieldmap_021ED0A4 *v2 = MapObjectMan_GetDrawManager(dwSystem->fieldSystem->mapObjMan);
+        TextureResourceManager *texMgr = FieldMap_021EDCB0(v2);
         TextureResource *texResource = TextureResourceManager_FindTextureResource(texMgr, 0xe6);
         NNSGfdPlttKey paletteKey = TextureResource_GetPaletteKey(texResource);
         u32 paletteKeyAddr = NNS_GfdGetPlttKeyAddr(paletteKey);
@@ -8910,7 +8910,7 @@ static int EventCmdPlayGiratinaArrival_InitMapObject(DistWorldSystem *system, Fi
 static int EventCmdPlayGiratinaArrival_InitSpriteAndSky(DistWorldSystem *system, FieldTask *task, u16 *cmdState, const void *params)
 {
     CmdRunDataPlayGiratinaArrival *runData = GetLoadedEventDataBuffer(system);
-    Billboard *billboard = ov5_021EB1A0(runData->giratinaMapObj);
+    Billboard *billboard = FieldMap_021EB1A0(runData->giratinaMapObj);
 
     if (billboard != NULL) {
         runData->spriteDarkness = GIRATINA_ROOM_PLAY_ARRIVAL_INITIAL_SPRITE_DARKNESS;
@@ -8959,7 +8959,7 @@ static int EventCmdPlayGiratinaArrival_Descend(DistWorldSystem *system, FieldTas
 static int EventCmdPlayGiratinaArrival_BrightenSprite(DistWorldSystem *system, FieldTask *task, u16 *cmdState, const void *params)
 {
     CmdRunDataPlayGiratinaArrival *runData = GetLoadedEventDataBuffer(system);
-    Billboard *billboard = ov5_021EB1A0(runData->giratinaMapObj);
+    Billboard *billboard = FieldMap_021EB1A0(runData->giratinaMapObj);
     NNSG3dResMdl *model = Billboard_GetModel2(billboard);
 
     runData->spriteDarkness -= GIRATINA_ROOM_PLAY_ARRIVAL_SPRITE_DARKNESS_DECREMENT;
@@ -9756,10 +9756,10 @@ static void PlaySoundIfNotActive(u16 seqID)
 static void SetMapObjectPos(MapObject *mapObj, const VecFx32 *pos)
 {
     MapObject_SetPos(mapObj, pos);
-    Billboard *billboard = ov5_021EB1A0(mapObj);
+    Billboard *billboard = FieldMap_021EB1A0(mapObj);
 
     if (billboard != NULL) {
-        ov5_021EDEB4(mapObj, billboard);
+        FieldMap_021EDEB4(mapObj, billboard);
     }
 }
 

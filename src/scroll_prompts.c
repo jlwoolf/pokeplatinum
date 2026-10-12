@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/sprite_resource_manager.h"
 
 #include "heap.h"
 #include "narc.h"

@@ -3,7 +3,7 @@
 #include "generated/fade_types.h"
 
 #include "field/field_system.h"
-#include "overlay005/fieldmap.h"
+#include "fieldmap/fieldmap.h"
 #include "overlay007/shop_menu.h"
 
 #include "bag_context.h"

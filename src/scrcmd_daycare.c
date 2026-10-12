@@ -6,7 +6,7 @@
 #include "struct_defs/daycare.h"
 
 #include "field/field_system.h"
-#include "overlay005/daycare.h"
+#include "fieldmap/daycare.h"
 
 #include "daycare_save.h"
 #include "field_script_context.h"
@@ -24,7 +24,7 @@ BOOL ScrCmd_BufferDaycareMonNicknames(ScriptContext *ctx)
     SaveData *saveData = fieldSystem->saveData;
     StringTemplate **strTemplate = FieldSystem_GetScriptMemberPtr(fieldSystem, SCRIPT_MANAGER_STR_TEMPLATE);
 
-    ov5_021E72BC(SaveData_GetDaycare(saveData), *strTemplate);
+    FieldMap_021E72BC(SaveData_GetDaycare(saveData), *strTemplate);
 
     return FALSE;
 }

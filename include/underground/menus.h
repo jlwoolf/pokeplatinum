@@ -6,7 +6,7 @@
 #include "generated/traps.h"
 
 #include "field/field_system_decl.h"
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/sprite_resource_manager.h"
 #include "underground/item_list_menu.h"
 #include "underground/records.h"
 

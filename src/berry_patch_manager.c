@@ -8,9 +8,9 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/field_effect_manager.h"
-#include "overlay005/map_object_anim_cmd.h"
-#include "overlay005/ov5_021DFB54.h"
+#include "fieldmap/field_effect_manager.h"
+#include "fieldmap/map_object_anim_cmd.h"
+#include "fieldmap/fieldmap_021DFB54.h"
 
 #include "bag.h"
 #include "berry_patch_graphics.h"

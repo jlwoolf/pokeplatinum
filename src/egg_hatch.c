@@ -10,7 +10,7 @@
 #include "cutscenes/egg_hatch/graphics.h"
 #include "cutscenes/egg_hatch/main.h"
 #include "field/field_system.h"
-#include "overlay005/daycare.h"
+#include "fieldmap/daycare.h"
 
 #include "bg_window.h"
 #include "field_system.h"

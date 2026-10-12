@@ -8,7 +8,7 @@
 #include "generated/traps.h"
 
 #include "field/field_system.h"
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/sprite_resource_manager.h"
 #include "underground/item_list_menu.h"
 #include "underground/manager.h"
 #include "underground/mining.h"

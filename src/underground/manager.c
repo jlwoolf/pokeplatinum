@@ -11,8 +11,8 @@
 #include "struct_decls/map_object.h"
 
 #include "field/field_system.h"
-#include "overlay005/land_data.h"
-#include "overlay005/ov5_021EAFA4.h"
+#include "fieldmap/land_data.h"
+#include "fieldmap/fieldmap_021EAFA4.h"
 #include "underground/menus.h"
 #include "underground/mining.h"
 #include "underground/pc.h"
@@ -356,7 +356,7 @@ BOOL UndergroundMan_CheckForTouchInput(void)
                 }
 
                 VecFx32 pos;
-                pos = ov5_GetPositionFromTouchCoordinates(gSystem.touchX, gSystem.touchY, sUndergroundMan->fieldSystem->unk_8C);
+                pos = FieldMap_GetPositionFromTouchCoordinates(gSystem.touchX, gSystem.touchY, sUndergroundMan->fieldSystem->unk_8C);
                 int x, z;
                 LandData_ObjectPosToTilePos(pos.x, pos.z, &x, &z);
                 CoordinatesU16 touchedTileCoords = {

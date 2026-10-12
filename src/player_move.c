@@ -14,8 +14,8 @@
 
 #include "field/field_system.h"
 #include "global/utility.h"
-#include "overlay005/land_data_manager_decl.h"
-#include "overlay005/ov5_021DFB54.h"
+#include "fieldmap/land_data_manager_decl.h"
+#include "fieldmap/fieldmap_021DFB54.h"
 #include "distortion_world/distortion_world.h"
 
 #include "dynamic_map_features.h"
@@ -161,7 +161,7 @@ void PlayerAvatar_MoveMain(PlayerAvatar *playerAvatar, const LandDataManager *la
     PlayerAvatar_RequestChangeState(playerAvatar);
 
     if (PlayerAvatar_TryMoveFromCurTileBehavior(playerAvatar, dir) == TRUE) {
-        ov5_021E0EEC(playerAvatar);
+        FieldMap_021E0EEC(playerAvatar);
         return;
     }
 
@@ -169,9 +169,9 @@ void PlayerAvatar_MoveMain(PlayerAvatar *playerAvatar, const LandDataManager *la
         int moveState = PlayerAvatar_UpdateMoveState2(playerAvatar, dir);
 
         if (moveState != PLAYER_MOVE_STATE_NONE) {
-            ov5_021E0EEC(playerAvatar);
+            FieldMap_021E0EEC(playerAvatar);
         } else if (tappedPoketch == TRUE) {
-            ov5_021E0E94(playerAvatar);
+            FieldMap_021E0E94(playerAvatar);
         }
     }
 

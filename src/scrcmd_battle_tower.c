@@ -14,7 +14,7 @@
 #include "struct_defs/wifi_battle_tower_data.h"
 
 #include "field/field_system.h"
-#include "overlay005/field_menu.h"
+#include "fieldmap/field_menu.h"
 
 #include "battle_frontier_stats.h"
 #include "bg_window.h"

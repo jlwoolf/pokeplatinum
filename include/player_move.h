@@ -6,7 +6,7 @@
 
 #include "struct_decls/map_object.h"
 
-#include "overlay005/land_data_manager_decl.h"
+#include "fieldmap/land_data_manager_decl.h"
 
 #include "location.h"
 #include "player_avatar.h"

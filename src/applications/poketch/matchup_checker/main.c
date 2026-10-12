@@ -6,7 +6,7 @@
 #include "applications/poketch/matchup_checker/graphics.h"
 #include "applications/poketch/poketch_button.h"
 #include "applications/poketch/poketch_system.h"
-#include "overlay005/daycare.h"
+#include "fieldmap/daycare.h"
 
 #include "bg_window.h"
 #include "heap.h"

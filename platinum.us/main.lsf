@@ -456,107 +456,107 @@ Overlay nintendo_wfc
 	Library libstubsmd5.a
 }
 
-Overlay overlay5
+Overlay fieldmap
 {
 	After main
-	Object main.nef.p/src_overlay005_fieldmap.c.o
-	Object main.nef.p/src_overlay005_ov5_021D1A94.c.o
-	Object main.nef.p/src_overlay005_field_control.c.o
-	Object main.nef.p/src_overlay005_sprite_resource_manager.c.o
-	Object main.nef.p/src_overlay005_map_prop_animation.c.o
-	Object main.nef.p/src_overlay005_ov5_021D431C.c.o
-	Object main.nef.p/src_overlay005_area_light.c.o
-	Object main.nef.p/src_overlay005_map_prop_material_shape.c.o
-	Object main.nef.p/src_overlay005_fog_manager.c.o
-	Object main.nef.p/src_overlay005_model_attributes.c.o
-	Object main.nef.p/src_overlay005_field_camera.c.o
-	Object main.nef.p/src_overlay005_ov5_021D5BC0.c.o
-	Object main.nef.p/src_overlay005_texture_resource_manager.c.o
-	Object main.nef.p/src_overlay005_ov5_021D5EB8.c.o
-	Object main.nef.p/src_overlay005_vs_seeker.c.o
-	Object main.nef.p/src_overlay005_field_menu.c.o
-	Object main.nef.p/src_overlay005_script_message.c.o
-	Object main.nef.p/src_overlay005_map_name_popup.c.o
-	Object main.nef.p/src_overlay005_enable_poketch_task.c.o
-	Object main.nef.p/src_overlay005_encounter_effect.c.o
-	Object main.nef.p/src_overlay005_field_effect_manager.c.o
-	Object main.nef.p/src_overlay005_ov5_021DFB54.c.o
-	Object main.nef.p/src_overlay005_ov5_021E1154.c.o
-	Object main.nef.p/src_overlay005_ov5_021E135C.c.o
-	Object main.nef.p/src_overlay005_map_prop.c.o
-	Object main.nef.p/src_overlay005_signpost.c.o
-	Object main.nef.p/src_overlay005_save_info_window.c.o
-	Object main.nef.p/src_overlay005_motion_blur.c.o
-	Object main.nef.p/src_overlay005_field_motion_blur.c.o
-	Object main.nef.p/src_overlay005_encounter_effect_core.c.o
-	Object main.nef.p/src_overlay005_daycare.c.o
-	Object main.nef.p/src_overlay005_land_data.c.o
-	Object main.nef.p/src_overlay005_ov5_021EA714.c.o
-	Object main.nef.p/src_overlay005_ov5_021EA874.c.o
-	Object main.nef.p/src_overlay005_ov5_021EAFA4.c.o
-	Object main.nef.p/src_overlay005_object_event_gfx_data.c.o
-	Object main.nef.p/src_overlay005_ov5_021EB1A0.c.o
-	Object main.nef.p/src_overlay005_ov5_021ECA70.c.o
-	Object main.nef.p/src_overlay005_ov5_021ECC20.c.o
-	Object main.nef.p/src_overlay005_ov5_021ECE40.c.o
-	Object main.nef.p/src_overlay005_ov5_021EE75C.c.o
-	Object main.nef.p/src_overlay005_size_contest.c.o
-	Object main.nef.p/src_overlay005_loaded_map_buffers.c.o
-	Object main.nef.p/src_overlay005_bdhc.c.o
-	Object main.nef.p/src_overlay005_dynamic_terrain_height.c.o
-	Object main.nef.p/src_overlay005_hblank_system.c.o
-	Object main.nef.p/src_overlay005_ov5_021EF4BC.c.o
-	Object main.nef.p/src_overlay005_area_data.c.o
-	Object main.nef.p/src_overlay005_honey_tree.c.o
-	Object main.nef.p/src_overlay005_ov5_021F007C.c.o
-	Object main.nef.p/src_overlay005_field_effect_renderer.c.o
-	Object main.nef.p/src_overlay005_resource_heap.c.o
-	Object main.nef.p/src_overlay005_secret_base_props.c.o
-	Object main.nef.p/src_overlay005_fishing.c.o
-	Object main.nef.p/src_overlay005_footprint_type.c.o
-	Object main.nef.p/src_overlay005_ov5_021F0EB0.c.o
-	Object main.nef.p/src_overlay005_ov5_021F101C.c.o
-	Object main.nef.p/src_overlay005_ov5_021F10E8.c.o
-	Object main.nef.p/src_overlay005_ov5_021F134C.c.o
-	Object main.nef.p/src_overlay005_ov5_021F17B8.c.o
-	Object main.nef.p/src_overlay005_ov5_021F1CC8.c.o
-	Object main.nef.p/src_overlay005_berry_patch_effects.c.o
-	Object main.nef.p/src_overlay005_ov5_021F23D0.c.o
-	Object main.nef.p/src_overlay005_surf_mount_renderer.c.o
-	Object main.nef.p/src_overlay005_ov5_021F2850.c.o
-	Object main.nef.p/src_overlay005_ov5_021F2A7C.c.o
-	Object main.nef.p/src_overlay005_ov5_021F2BD0.c.o
-	Object main.nef.p/src_overlay005_ov5_021F2D20.c.o
-	Object main.nef.p/src_overlay005_ov5_021F3284.c.o
-	Object main.nef.p/src_overlay005_ov5_021F348C.c.o
-	Object main.nef.p/src_overlay005_ov5_021F37A8.c.o
-	Object main.nef.p/src_overlay005_ov5_021F3A50.c.o
-	Object main.nef.p/src_overlay005_ov5_021F3D00.c.o
-	Object main.nef.p/src_overlay005_ov5_021F3E74.c.o
-	Object main.nef.p/src_overlay005_ov5_021F4018.c.o
-	Object main.nef.p/src_overlay005_veilstone_gym_object_renderer.c.o
-	Object main.nef.p/src_overlay005_ov5_021F47B0.c.o
-	Object main.nef.p/src_overlay005_ov5_021F4DAC.c.o
-	Object main.nef.p/src_overlay005_ov5_021F4E08.c.o
-	Object main.nef.p/src_overlay005_ov5_021F5060.c.o
-	Object main.nef.p/src_overlay005_ov5_021F50BC.c.o
-	Object main.nef.p/src_overlay005_ov5_021F5284.c.o
-	Object main.nef.p/src_overlay005_ov5_021F5428.c.o
-	Object main.nef.p/src_overlay005_ov5_021F55CC.c.o
-	Object main.nef.p/src_overlay005_ov5_021F575C.c.o
-	Object main.nef.p/src_overlay005_ov5_021F5894.c.o
-	Object main.nef.p/src_overlay005_ov5_021F5A10.c.o
-	Object main.nef.p/src_overlay005_ov5_021F600C.c.o
-	Object main.nef.p/src_overlay005_ov5_021F61BC.c.o
-	Object main.nef.p/src_overlay005_ov5_021F6454.c.o
-	Object main.nef.p/src_overlay005_scrcmd_move_tutor.c.o
-	Object main.nef.p/src_overlay005_villa_furniture.c.o
-	Object main.nef.p/src_overlay005_dist_world_surf_mount_renderer.c.o
+	Object main.nef.p/src_fieldmap_fieldmap.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021D1A94.c.o
+	Object main.nef.p/src_fieldmap_field_control.c.o
+	Object main.nef.p/src_fieldmap_sprite_resource_manager.c.o
+	Object main.nef.p/src_fieldmap_map_prop_animation.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021D431C.c.o
+	Object main.nef.p/src_fieldmap_area_light.c.o
+	Object main.nef.p/src_fieldmap_map_prop_material_shape.c.o
+	Object main.nef.p/src_fieldmap_fog_manager.c.o
+	Object main.nef.p/src_fieldmap_model_attributes.c.o
+	Object main.nef.p/src_fieldmap_field_camera.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021D5BC0.c.o
+	Object main.nef.p/src_fieldmap_texture_resource_manager.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021D5EB8.c.o
+	Object main.nef.p/src_fieldmap_vs_seeker.c.o
+	Object main.nef.p/src_fieldmap_field_menu.c.o
+	Object main.nef.p/src_fieldmap_script_message.c.o
+	Object main.nef.p/src_fieldmap_map_name_popup.c.o
+	Object main.nef.p/src_fieldmap_enable_poketch_task.c.o
+	Object main.nef.p/src_fieldmap_encounter_effect.c.o
+	Object main.nef.p/src_fieldmap_field_effect_manager.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021DFB54.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021E1154.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021E135C.c.o
+	Object main.nef.p/src_fieldmap_map_prop.c.o
+	Object main.nef.p/src_fieldmap_signpost.c.o
+	Object main.nef.p/src_fieldmap_save_info_window.c.o
+	Object main.nef.p/src_fieldmap_motion_blur.c.o
+	Object main.nef.p/src_fieldmap_field_motion_blur.c.o
+	Object main.nef.p/src_fieldmap_encounter_effect_core.c.o
+	Object main.nef.p/src_fieldmap_daycare.c.o
+	Object main.nef.p/src_fieldmap_land_data.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021EA714.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021EA874.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021EAFA4.c.o
+	Object main.nef.p/src_fieldmap_object_event_gfx_data.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021EB1A0.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021ECA70.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021ECC20.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021ECE40.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021EE75C.c.o
+	Object main.nef.p/src_fieldmap_size_contest.c.o
+	Object main.nef.p/src_fieldmap_loaded_map_buffers.c.o
+	Object main.nef.p/src_fieldmap_bdhc.c.o
+	Object main.nef.p/src_fieldmap_dynamic_terrain_height.c.o
+	Object main.nef.p/src_fieldmap_hblank_system.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021EF4BC.c.o
+	Object main.nef.p/src_fieldmap_area_data.c.o
+	Object main.nef.p/src_fieldmap_honey_tree.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F007C.c.o
+	Object main.nef.p/src_fieldmap_field_effect_renderer.c.o
+	Object main.nef.p/src_fieldmap_resource_heap.c.o
+	Object main.nef.p/src_fieldmap_secret_base_props.c.o
+	Object main.nef.p/src_fieldmap_fishing.c.o
+	Object main.nef.p/src_fieldmap_footprint_type.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F0EB0.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F101C.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F10E8.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F134C.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F17B8.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F1CC8.c.o
+	Object main.nef.p/src_fieldmap_berry_patch_effects.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F23D0.c.o
+	Object main.nef.p/src_fieldmap_surf_mount_renderer.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F2850.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F2A7C.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F2BD0.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F2D20.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F3284.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F348C.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F37A8.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F3A50.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F3D00.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F3E74.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F4018.c.o
+	Object main.nef.p/src_fieldmap_veilstone_gym_object_renderer.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F47B0.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F4DAC.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F4E08.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F5060.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F50BC.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F5284.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F5428.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F55CC.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F575C.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F5894.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F5A10.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F600C.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F61BC.c.o
+	Object main.nef.p/src_fieldmap_fieldmap_021F6454.c.o
+	Object main.nef.p/src_fieldmap_scrcmd_move_tutor.c.o
+	Object main.nef.p/src_fieldmap_villa_furniture.c.o
+	Object main.nef.p/src_fieldmap_dist_world_surf_mount_renderer.c.o
 }
 
 Overlay overlay6
 {
-	After overlay5
+	After fieldmap
 	Object main.nef.p/src_overlay006_ov6_0223E140.c.o
 	Object main.nef.p/src_overlay006_wild_encounters.c.o
 	Object main.nef.p/src_overlay006_great_marsh_lookout_sprite.c.o
@@ -831,7 +831,7 @@ Overlay image_clip_app
 
 Overlay underground
 {
-	After overlay5
+	After fieldmap
 	Object main.nef.p/src_underground_mining.c.o
 	Object main.nef.p/src_underground_spheres.c.o
 	Object main.nef.p/src_underground_manager.c.o

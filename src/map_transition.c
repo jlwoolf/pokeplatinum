@@ -11,12 +11,12 @@
 #include "field/field_system_sub2_t.h"
 #include "functypes/funcptr_020EC560.h"
 #include "functypes/funcptr_020EC57C.h"
-#include "overlay005/fieldmap.h"
-#include "overlay005/hblank_system.h"
-#include "overlay005/map_name_popup.h"
-#include "overlay005/ov5_021D431C.h"
-#include "overlay005/struct_ov5_021D432C_decl.h"
-#include "overlay005/struct_ov5_021D4E00_decl.h"
+#include "fieldmap/fieldmap.h"
+#include "fieldmap/hblank_system.h"
+#include "fieldmap/map_name_popup.h"
+#include "fieldmap/fieldmap_021D431C.h"
+#include "fieldmap/struct_fieldmap_021D432C_decl.h"
+#include "fieldmap/struct_fieldmap_021D4E00_decl.h"
 
 #include "camera.h"
 #include "field_bgm.h"
@@ -42,7 +42,7 @@
 // out, swaps the map, fades back in, and then adjusts the player and camera.
 // It also exposes MapTransition_StartScreenFade, a small task wrapper around
 // StartScreenFade used by the binoculars and by the door/warp animations in
-// overlay005.
+// fieldmap.
 
 // Environment for the map-transition field task started by MapTransition_Start
 // and MapTransition_StartAuto. The task fades the screen out, swaps the map,
@@ -51,7 +51,7 @@ typedef struct MapTransition {
     int state; // main task state
     int subState; // state of the current fade-out/fade-in sub-task
     Location location; // destination map and warp
-    void *animation; // UnkStruct_ov5_021D432C door/warp animation context
+    void *animation; // UnkStruct_fieldmap_021D432C door/warp animation context
     int transitionType; // index into the sFadeOutFuncs/sFadeInFuncs tables
 } MapTransition;
 
@@ -317,20 +317,20 @@ static BOOL MapTransition_FadeOutDoor(FieldTask *taskMan)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v1 = FieldTask_GetEnv(taskMan);
-    UnkStruct_ov5_021D432C *v2;
+    UnkStruct_fieldmap_021D432C *v2;
 
     switch (v1->subState) {
     case 0:
-        v1->animation = ov5_021D431C();
-        v2 = (UnkStruct_ov5_021D432C *)v1->animation;
-        ov5_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
+        v1->animation = FieldMap_021D431C();
+        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
         (v1->subState)++;
         break;
     case 1:
-        v2 = (UnkStruct_ov5_021D432C *)v1->animation;
+        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
 
-        if (ov5_021D433C(fieldSystem, v2)) {
-            ov5_021D432C(v1->animation);
+        if (FieldMap_021D433C(fieldSystem, v2)) {
+            FieldMap_021D432C(v1->animation);
             (v1->subState)++;
         }
         break;
@@ -350,20 +350,20 @@ static BOOL MapTransition_FadeOutWarp(FieldTask *taskMan)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v1 = FieldTask_GetEnv(taskMan);
-    UnkStruct_ov5_021D432C *v2;
+    UnkStruct_fieldmap_021D432C *v2;
 
     switch (v1->subState) {
     case 0:
-        v1->animation = ov5_021D431C();
-        v2 = (UnkStruct_ov5_021D432C *)v1->animation;
-        ov5_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
+        v1->animation = FieldMap_021D431C();
+        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
         (v1->subState)++;
         break;
     case 1:
-        v2 = (UnkStruct_ov5_021D432C *)v1->animation;
+        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
 
-        if (ov5_021D4A24(fieldSystem, v2, PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar))) {
-            ov5_021D432C(v1->animation);
+        if (FieldMap_021D4A24(fieldSystem, v2, PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar))) {
+            FieldMap_021D432C(v1->animation);
             (v1->subState)++;
         }
         break;
@@ -429,10 +429,10 @@ static BOOL MapTransition_FadeOutEnterCave(FieldTask *taskMan)
 
     switch (v1->subState) {
     case 0: {
-        UnkStruct_ov5_021D4E00 *v3;
+        UnkStruct_fieldmap_021D4E00 *v3;
 
-        v3 = ov5_021D4E00();
-        FieldTask_InitCall(taskMan, ov5_021D4FA0, v3);
+        v3 = FieldMap_021D4E00();
+        FieldTask_InitCall(taskMan, FieldMap_021D4FA0, v3);
         v1->subState++;
     } break;
     case 1:
@@ -451,10 +451,10 @@ static BOOL MapTransition_FadeOutExitCave(FieldTask *taskMan)
 
     switch (v1->subState) {
     case 0: {
-        UnkStruct_ov5_021D4E00 *v3;
+        UnkStruct_fieldmap_021D4E00 *v3;
 
-        v3 = ov5_021D4E00();
-        FieldTask_InitCall(taskMan, ov5_021D4F14, v3);
+        v3 = FieldMap_021D4E00();
+        FieldTask_InitCall(taskMan, FieldMap_021D4F14, v3);
         v1->subState++;
     } break;
     case 1:
@@ -471,7 +471,7 @@ static BOOL MapTransition_FadeInDoor(FieldTask *taskMan)
     MapObject *mapObj;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v2 = FieldTask_GetEnv(taskMan);
-    UnkStruct_ov5_021D432C *v3;
+    UnkStruct_fieldmap_021D432C *v3;
 
     switch (v2->subState) {
     case 0: {
@@ -484,24 +484,24 @@ static BOOL MapTransition_FadeInDoor(FieldTask *taskMan)
             MapObject_SetHidden(v5, 1);
             (v2->subState) = 1;
         } else {
-            UnkStruct_ov5_021D4E00 *v6;
+            UnkStruct_fieldmap_021D4E00 *v6;
 
-            v6 = ov5_021D4E00();
-            FieldTask_InitCall(taskMan, ov5_021D5020, v6);
+            v6 = FieldMap_021D4E00();
+            FieldTask_InitCall(taskMan, FieldMap_021D5020, v6);
             (v2->subState) = 3;
         }
     } break;
     case 1:
-        v2->animation = (UnkStruct_ov5_021D432C *)ov5_021D431C();
-        v3 = (UnkStruct_ov5_021D432C *)v2->animation;
-        ov5_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v3);
+        v2->animation = (UnkStruct_fieldmap_021D432C *)FieldMap_021D431C();
+        v3 = (UnkStruct_fieldmap_021D432C *)v2->animation;
+        FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v3);
         (v2->subState)++;
         break;
     case 2:
-        v3 = (UnkStruct_ov5_021D432C *)v2->animation;
+        v3 = (UnkStruct_fieldmap_021D432C *)v2->animation;
 
-        if (ov5_021D453C(fieldSystem, v3)) {
-            ov5_021D432C(v3);
+        if (FieldMap_021D453C(fieldSystem, v3)) {
+            FieldMap_021D432C(v3);
             {
                 MapObject *v7 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
 
@@ -524,7 +524,7 @@ static BOOL MapTransition_FadeIn(FieldTask *taskMan)
     MapObject *mapObj;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v2 = FieldTask_GetEnv(taskMan);
-    UnkStruct_ov5_021D432C *v3;
+    UnkStruct_fieldmap_021D432C *v3;
 
     switch (v2->subState) {
     case 0: {
@@ -539,10 +539,10 @@ static BOOL MapTransition_FadeIn(FieldTask *taskMan)
             v2->subState = 1;
             FieldTask_InitJump(taskMan, MapTransition_FadeInDoor, v2);
         } else {
-            UnkStruct_ov5_021D4E00 *v6;
+            UnkStruct_fieldmap_021D4E00 *v6;
 
-            v6 = ov5_021D4E00();
-            FieldTask_InitCall(taskMan, ov5_021D5150, v6);
+            v6 = FieldMap_021D4E00();
+            FieldTask_InitCall(taskMan, FieldMap_021D5150, v6);
             (v2->subState)++;
         }
     } break;
@@ -558,20 +558,20 @@ static BOOL MapTransition_FadeInWarp(FieldTask *taskMan)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(taskMan);
     MapTransition *v1 = FieldTask_GetEnv(taskMan);
-    UnkStruct_ov5_021D432C *v2;
+    UnkStruct_fieldmap_021D432C *v2;
 
     switch (v1->subState) {
     case 0:
-        v1->animation = ov5_021D431C();
-        v2 = (UnkStruct_ov5_021D432C *)v1->animation;
-        ov5_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
+        v1->animation = FieldMap_021D431C();
+        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
+        FieldMap_021D4334(PlayerAvatar_GetXPos(fieldSystem->playerAvatar), PlayerAvatar_GetZPos(fieldSystem->playerAvatar), v2);
         (v1->subState)++;
         break;
     case 1:
-        v2 = (UnkStruct_ov5_021D432C *)v1->animation;
+        v2 = (UnkStruct_fieldmap_021D432C *)v1->animation;
 
-        if (ov5_021D4858(fieldSystem, v2, PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar))) {
-            ov5_021D432C(v1->animation);
+        if (FieldMap_021D4858(fieldSystem, v2, PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar))) {
+            FieldMap_021D432C(v1->animation);
             (v1->subState)++;
         }
         break;
@@ -642,10 +642,10 @@ static BOOL MapTransition_FadeInExitCave(FieldTask *taskMan)
 
     switch (v1->subState) {
     case 0: {
-        UnkStruct_ov5_021D4E00 *v3;
+        UnkStruct_fieldmap_021D4E00 *v3;
 
-        v3 = ov5_021D4E00();
-        FieldTask_InitCall(taskMan, ov5_021D4E10, v3);
+        v3 = FieldMap_021D4E00();
+        FieldTask_InitCall(taskMan, FieldMap_021D4E10, v3);
         v1->subState++;
     } break;
     case 1:

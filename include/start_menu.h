@@ -2,7 +2,7 @@
 #define POKEPLATINUM_START_MENU_H
 
 #include "field/field_system_decl.h"
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/sprite_resource_manager.h"
 
 #include "bg_window.h"
 #include "field_move_tasks.h"

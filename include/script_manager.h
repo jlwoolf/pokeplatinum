@@ -7,8 +7,8 @@
 #include "struct_decls/map_object.h"
 
 #include "field/field_system_decl.h"
-#include "overlay005/field_menu.h"
-#include "overlay005/save_info_window.h"
+#include "fieldmap/field_menu.h"
+#include "fieldmap/save_info_window.h"
 
 #include "bg_window.h"
 #include "field_script_context.h"

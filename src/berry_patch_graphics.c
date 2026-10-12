@@ -5,12 +5,12 @@
 
 #include "struct_decls/map_object.h"
 
-#include "overlay005/berry_graphics_data.h"
-#include "overlay005/berry_graphics_table.h"
-#include "overlay005/berry_patch_effects.h"
-#include "overlay005/ov5_021ECC20.h"
-#include "overlay005/ov5_021ECE40.h"
-#include "overlay005/struct_ov5_021ED01C.h"
+#include "fieldmap/berry_graphics_data.h"
+#include "fieldmap/berry_graphics_table.h"
+#include "fieldmap/berry_patch_effects.h"
+#include "fieldmap/fieldmap_021ECC20.h"
+#include "fieldmap/fieldmap_021ECE40.h"
+#include "fieldmap/struct_fieldmap_021ED01C.h"
 
 #include "berry_patch_manager.h"
 #include "berry_patches.h"
@@ -27,7 +27,7 @@ typedef struct BerryPatchGraphics {
     int graphicsResourceID;
     enum BerryGrowthStage lastGrowthStage;
     Billboard *graphicsObject;
-    UnkStruct_ov5_021ED01C graphicsState;
+    UnkStruct_fieldmap_021ED01C graphicsState;
 } BerryPatchGraphics;
 
 static int BerryPatchGraphics_GetGraphicsResourceID(int berryID, enum BerryGrowthStage growthStage);
@@ -99,12 +99,12 @@ void BerryPatchGraphics_UpdateGraphics(MapObject *mapObject)
     BerryPatchGraphics *graphicsData = MapObject_GetUnk108(mapObject);
     u32 currentGrowthStage = BerryPatches_GetGrowthStage(MapObject_FieldSystem(mapObject), mapObject);
 
-    if (ov5_021EDD94(mapObject) == 1) {
+    if (FieldMap_021EDD94(mapObject) == 1) {
         return;
     }
 
     if (currentGrowthStage != graphicsData->lastGrowthStage) {
-        ov5_021ECFD8(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
+        FieldMap_021ECFD8(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
 
         graphicsData->graphicsResourceID = BerryPatchGraphics_GetGraphicsResourceID(
             BerryPatches_GetBerryID(MapObject_FieldSystem(mapObject), mapObject), currentGrowthStage);
@@ -114,7 +114,7 @@ void BerryPatchGraphics_UpdateGraphics(MapObject *mapObject)
                 BerryPatchGraphics_NewSparkleEffect(mapObject);
             }
 
-            ov5_021ECEB4(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
+            FieldMap_021ECEB4(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
         } else {
             if (graphicsData->lastGrowthStage != BERRY_GROWTH_STAGE_NONE && !patchData->needsUpdate) {
                 BerryPatchGraphics_NewSparkleEffect(mapObject);
@@ -126,25 +126,25 @@ void BerryPatchGraphics_UpdateGraphics(MapObject *mapObject)
 
     graphicsData->lastGrowthStage = currentGrowthStage;
 
-    if (ov5_021EDD94(mapObject) == 1) {
+    if (FieldMap_021EDD94(mapObject) == 1) {
         return;
     }
 
     if (graphicsData->graphicsObject != NULL) {
-        ov5_021EDEB4(mapObject, graphicsData->graphicsObject);
+        FieldMap_021EDEB4(mapObject, graphicsData->graphicsObject);
 
-        if (ov5_021ECD38(mapObject) == 0) {
+        if (FieldMap_021ECD38(mapObject) == 0) {
             Billboard_AdvanceAnim(graphicsData->graphicsObject, FX32_ONE );
         }
 
-        ov5_021EDED8(mapObject, graphicsData->graphicsObject);
+        FieldMap_021EDED8(mapObject, graphicsData->graphicsObject);
     }
 }
 
 void BerryPatchGraphics_FreeGraphics(MapObject *mapObject)
 {
     BerryPatchGraphics *graphicsData = MapObject_GetUnk108(mapObject);
-    ov5_021ECFD8(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
+    FieldMap_021ECFD8(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
 }
 
 void BerryPatchGraphics_PauseGraphics(MapObject *mapObject)
@@ -152,10 +152,10 @@ void BerryPatchGraphics_PauseGraphics(MapObject *mapObject)
     BerryPatchGraphics *graphicsData = MapObject_GetUnk108(mapObject);
 
     if (graphicsData->graphicsObject != NULL) {
-        ov5_021ED01C(graphicsData->graphicsObject, &graphicsData->graphicsState);
+        FieldMap_021ED01C(graphicsData->graphicsObject, &graphicsData->graphicsState);
     }
 
-    ov5_021ECFD8(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
+    FieldMap_021ECFD8(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
     MapObject_SetStatusFlagOn(mapObject, MAP_OBJ_STATUS_21);
 }
 
@@ -163,13 +163,13 @@ void BerryPatchGraphics_ResumeGraphics(MapObject *mapObject)
 {
     BerryPatchGraphics *graphicsData = MapObject_GetUnk108(mapObject);
 
-    if (ov5_021EDD94(mapObject) == 1) {
+    if (FieldMap_021EDD94(mapObject) == 1) {
         return;
     }
 
     if (graphicsData->graphicsObject == NULL) {
         if (graphicsData->graphicsResourceID != 0xffff) {
-            ov5_021ECEB4(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
+            FieldMap_021ECEB4(mapObject, &graphicsData->graphicsObject, graphicsData->graphicsResourceID);
         } else {
             MapObject_SetStatusFlagOff(mapObject, MAP_OBJ_STATUS_21);
         }
@@ -178,8 +178,8 @@ void BerryPatchGraphics_ResumeGraphics(MapObject *mapObject)
     }
 
     if (graphicsData->graphicsObject != NULL) {
-        ov5_021ED03C(graphicsData->graphicsObject, &graphicsData->graphicsState);
-        ov5_021EDEB4(mapObject, graphicsData->graphicsObject);
+        FieldMap_021ED03C(graphicsData->graphicsObject, &graphicsData->graphicsState);
+        FieldMap_021EDEB4(mapObject, graphicsData->graphicsObject);
         MapObject_SetStatusFlagOff(mapObject, MAP_OBJ_STATUS_21);
     }
 }

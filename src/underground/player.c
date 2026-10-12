@@ -9,10 +9,10 @@
 #include "struct_defs/comm_player_location.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021F50BC.h"
-#include "overlay005/ov5_021F5284.h"
-#include "overlay005/ov5_021F5428.h"
-#include "overlay005/ov5_021F55CC.h"
+#include "fieldmap/fieldmap_021F50BC.h"
+#include "fieldmap/fieldmap_021F5284.h"
+#include "fieldmap/fieldmap_021F5428.h"
+#include "fieldmap/fieldmap_021F55CC.h"
 #include "underground/manager.h"
 #include "underground/menus.h"
 #include "underground/player_status.h"
@@ -738,7 +738,7 @@ void UndergroundPlayer_MoveToFromSecretBaseClient(int netID, int x, int z, int d
     CommPlayerLocation *playerLocation = &commPlayerMan->playerLocation[netID];
 
     if (!commPlayerMan->isDisabled) {
-        ov5_021F5634(commPlayerMan->fieldSystem, playerLocation->x, 0, playerLocation->z);
+        FieldMap_021F5634(commPlayerMan->fieldSystem, playerLocation->x, 0, playerLocation->z);
     }
 
     playerLocation->x = x;
@@ -750,7 +750,7 @@ void UndergroundPlayer_MoveToFromSecretBaseClient(int netID, int x, int z, int d
     }
 
     if (!commPlayerMan->isDisabled) {
-        ov5_021F5634(commPlayerMan->fieldSystem, playerLocation->x, 0, playerLocation->z);
+        FieldMap_021F5634(commPlayerMan->fieldSystem, playerLocation->x, 0, playerLocation->z);
     }
 
     if (!commPlayerMan->isDisabled) {
@@ -834,19 +834,19 @@ void UndergroundPlayer_HandleEmoteDisplay(int netID)
             switch (commPlayerMan->emote[netID]) {
             case EMOTE_OK:
                 if (commPlayerMan->animManager[netID] == NULL) {
-                    commPlayerMan->animManager[netID] = ov5_021F5488(PlayerAvatar_GetMapObject(commPlayerMan->playerAvatar[netID]));
+                    commPlayerMan->animManager[netID] = FieldMap_021F5488(PlayerAvatar_GetMapObject(commPlayerMan->playerAvatar[netID]));
                 }
 
                 commPlayerMan->emote[netID] = EMOTE_NONE;
                 break;
             case EMOTE_EXCLAMATION:
                 if (commPlayerMan->animManager[netID] == NULL) {
-                    commPlayerMan->animManager[netID] = ov5_021F52E4(PlayerAvatar_GetMapObject(commPlayerMan->playerAvatar[netID]));
+                    commPlayerMan->animManager[netID] = FieldMap_021F52E4(PlayerAvatar_GetMapObject(commPlayerMan->playerAvatar[netID]));
                 }
                 break;
             case EMOTE_FLAG:
                 if (commPlayerMan->animManager[netID] == NULL) {
-                    commPlayerMan->animManager[netID] = ov5_021F511C(PlayerAvatar_GetMapObject(commPlayerMan->playerAvatar[netID]));
+                    commPlayerMan->animManager[netID] = FieldMap_021F511C(PlayerAvatar_GetMapObject(commPlayerMan->playerAvatar[netID]));
                 }
                 break;
             case EMOTE_NONE:

@@ -9,7 +9,7 @@
 #include "struct_decls/struct_02012744_decl.h"
 #include "struct_defs/struct_020127E8.h"
 
-#include "overlay005/linear_interpolation_task_fx32.h"
+#include "fieldmap/linear_interpolation_task_fx32.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"

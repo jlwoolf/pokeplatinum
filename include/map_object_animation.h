@@ -5,7 +5,7 @@
 
 #include "struct_decls/map_object.h"
 
-#include "overlay005/map_object_anim_cmd.h"
+#include "fieldmap/map_object_anim_cmd.h"
 
 #include "sys_task_manager.h"
 

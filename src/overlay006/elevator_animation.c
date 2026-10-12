@@ -6,9 +6,9 @@
 #include "constants/elevator_dirs.h"
 
 #include "field/field_system.h"
-#include "overlay005/area_data.h"
-#include "overlay005/map_prop.h"
-#include "overlay005/map_prop_animation.h"
+#include "fieldmap/area_data.h"
+#include "fieldmap/map_prop.h"
+#include "fieldmap/map_prop_animation.h"
 
 #include "field_task.h"
 #include "heap.h"

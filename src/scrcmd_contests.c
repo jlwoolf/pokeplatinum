@@ -6,7 +6,7 @@
 #include "struct_defs/contest_player_mon_dto.h"
 
 #include "field/field_system_sub2_t.h"
-#include "overlay005/hblank_system.h"
+#include "fieldmap/hblank_system.h"
 #include "overlay006/link_contest_record_display.h"
 
 #include "contest.h"

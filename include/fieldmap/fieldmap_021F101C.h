@@ -1,0 +1,8 @@
+#ifndef POKEPLATINUM_FIELDMAP_021F101C_H
+#define POKEPLATINUM_FIELDMAP_021F101C_H
+
+#include "field_task.h"
+
+BOOL FieldMap_021F101C(FieldTask *param0);
+
+#endif // POKEPLATINUM_FIELDMAP_021F101C_H

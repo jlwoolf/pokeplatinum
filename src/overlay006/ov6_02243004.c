@@ -4,12 +4,12 @@
 #include <string.h>
 
 #include "field/field_system.h"
-#include "overlay005/struct_ov5_021D1BEC_decl.h"
+#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
 #include "overlay006/ov6_0223E140.h"
 
 #include "camera.h"
 
-static UnkStruct_ov5_021D1BEC *Unk_ov6_02249940;
+static UnkStruct_fieldmap_021D1BEC *Unk_ov6_02249940;
 
 BOOL ov6_02243004(FieldSystem *fieldSystem, int param1)
 {
