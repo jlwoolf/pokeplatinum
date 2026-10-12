@@ -5,8 +5,8 @@
 
 typedef struct {
     ImageClips *imageClips;
-    u32 unk_04;
-    u32 unk_08;
+    u32 slot;
+    u32 photoType;
 } PhotoViewerArgs;
 
 #endif // POKEPLATINUM_STRUCT_PHOTO_VIEWER_ARGS_H

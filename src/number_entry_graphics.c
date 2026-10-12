@@ -649,17 +649,17 @@ void NumberEntryGraphics_CreateButtonLabel(NumberEntryScreen *param0, int param1
     v1 = (param0->graphics.touchRects[param1 + 26].rect.top + param0->graphics.touchRects[param1 + 26].rect.bottom) / 2;
     v1 -= 7;
 
-    v2.unk_00 = param0->graphics.fontManager;
-    v2.unk_04 = &v7;
-    v2.unk_08 = SpriteManager_GetSpriteList(param0->graphics.spriteManager);
-    v2.unk_0C = SpriteManager_FindPlttResourceProxy(param0->graphics.spriteManager, v4);
-    v2.unk_10 = NULL;
-    v2.unk_14 = param0->graphics.buttonLabelAllocs[param1].offset;
-    v2.unk_18 = v0;
-    v2.unk_1C = v1;
-    v2.unk_20 = 0;
-    v2.unk_24 = 0;
-    v2.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v2.fontOAMManager = param0->graphics.fontManager;
+    v2.window = &v7;
+    v2.spriteList = SpriteManager_GetSpriteList(param0->graphics.spriteManager);
+    v2.paletteProxy = SpriteManager_FindPlttResourceProxy(param0->graphics.spriteManager, v4);
+    v2.parentSprite = NULL;
+    v2.charOffset = param0->graphics.buttonLabelAllocs[param1].offset;
+    v2.x = v0;
+    v2.y = v1;
+    v2.resourcePriority = 0;
+    v2.spritePriority = 0;
+    v2.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v2.heapID = HEAP_ID_101;
 
     param0->graphics.buttonLabelOAMs[param1] = FontOAM_New(&v2);

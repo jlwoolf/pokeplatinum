@@ -281,7 +281,7 @@ static void UnionRoom_StateWaitClient(UnionRoom *param0)
     Unk_021C0850++;
     v0 = CommServerClient_GetBattleRegulation();
 
-    if (CommSys_IsClientConnecting() && (UnionRoom_HasConnectedTrainer() == 1) && (v0->unk_1C != 4)) {
+    if (CommSys_IsClientConnecting() && (UnionRoom_HasConnectedTrainer() == 1) && (v0->activityType != 4)) {
         CommInfo_SendPlayerInfo();
         CommManager_SetErrorHandling(1, 1);
         UnionRoom_BroadcastActivity(11);
@@ -496,11 +496,11 @@ int UnionRoom_GetTrainerStatus(UnionRoom *param0, int param1)
     }
 
     v1 = (WirelessGameInfo *)param0->bssDesc[param1]->gameInfo.userGameInfo;
-    v2 = (UnionRoomActivity *)v1->unk_30;
+    v2 = (UnionRoomActivity *)v1->battleRegulation;
 
     Unk_021C0854 = v2;
 
-    switch (v2->unk_1C) {
+    switch (v2->activityType) {
     case 0:
         return 1;
         break;
@@ -544,11 +544,11 @@ int UnionRoom_RequestActivity(UnionRoom *param0, int param1, u16 param2)
     }
 
     v1 = (WirelessGameInfo *)param0->bssDesc[param1]->gameInfo.userGameInfo;
-    v2 = (UnionRoomActivity *)v1->unk_30;
+    v2 = (UnionRoomActivity *)v1->battleRegulation;
 
     Unk_021C0854 = v2;
 
-    switch (v2->unk_1C) {
+    switch (v2->activityType) {
     case 2:
         if (param2 != 3) {
             return 5;
@@ -1001,20 +1001,20 @@ static int UnionRoom_GetTrainerBusyMessage(UnionRoom *param0, int param1)
 
     TrainerInfo *trainerInfo = CommServerClient_GetServerTrainerInfo(v1);
     WirelessGameInfo *v3 = (WirelessGameInfo *)param0->bssDesc[v1]->gameInfo.userGameInfo;
-    UnionRoomActivity *v4 = (UnionRoomActivity *)v3->unk_30;
+    UnionRoomActivity *v4 = (UnionRoomActivity *)v3->battleRegulation;
 
     if (trainerInfo == NULL) {
         return UnionRoom_Text_TrainersAppearsBusy;
     }
 
     if (param1 > 9) {
-        gender = v4->unk_18[(param1 - 10) % 4];
+        gender = v4->appearance[(param1 - 10) % 4];
         gender = gender >> 7;
     } else {
         gender = TrainerInfo_Gender(trainerInfo);
     }
 
-    switch (v4->unk_1C) {
+    switch (v4->activityType) {
     case 4:
     case 11:
         return sMessagesTrainerAppearsBusy[gender];
@@ -1203,12 +1203,12 @@ static void UnionRoom_FillTrainerInfo(UnionRoomActivity *param0, int param1)
 
         if (v0 != NULL) {
             if (CommSys_CurNetId() == 0) {
-                param0->unk_00[v3] = TrainerInfo_ID(v0);
-                param0->unk_18[v3] = TrainerInfo_Appearance(v0) | (TrainerInfo_Gender(v0) << 7);
+                param0->trainerIds[v3] = TrainerInfo_ID(v0);
+                param0->appearance[v3] = TrainerInfo_Appearance(v0) | (TrainerInfo_Gender(v0) << 7);
             }
         } else {
-            param0->unk_00[v3] = 0;
-            param0->unk_18[v3] = 0;
+            param0->trainerIds[v3] = 0;
+            param0->appearance[v3] = 0;
         }
     }
 }
@@ -1258,7 +1258,7 @@ void UnionRoom_BroadcastActivity(int param0)
         break;
     }
 
-    v0.unk_1C = param0;
+    v0.activityType = param0;
 
     CommServerClient_SetBattleRegulation(&v0);
     CommServerClient_SendGameInfo();
@@ -1336,13 +1336,13 @@ static void UnionRoom_ResetGameInfo(UnionRoomActivity *param0)
 {
     int v0;
 
-    param0->unk_1C = 0;
+    param0->activityType = 0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        param0->unk_00[v0] = 0;
-        param0->unk_18[v0] = 0;
-        param0->unk_10[v0] = 0;
-        param0->unk_14[v0] = 0;
+        param0->trainerIds[v0] = 0;
+        param0->appearance[v0] = 0;
+        param0->unused_10[v0] = 0;
+        param0->unused_14[v0] = 0;
     }
 }
 
@@ -1446,7 +1446,7 @@ void UnionRoom_InitGameInfo(EasyChatSentence *param0)
     UnionRoomActivity v0;
 
     UnionRoom_ResetGameInfo(&v0);
-    v0.unk_1C = 0;
+    v0.activityType = 0;
 
     CommServerClient_SetEasyChatSentence(param0);
     CommServerClient_SetBattleRegulation(&v0);

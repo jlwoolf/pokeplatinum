@@ -19,15 +19,15 @@ typedef struct BattleRecordingSummary {
     u8 battleType;
     // Unclear flag; set to 1 when a recording is saved and read back by
     // BattleRecording_GetSummaryValue.
-    u8 unk_27;
+    u8 savedFlag;
     BattleRegulation battleRegulation;
     // Integrity magic; must equal 0xE281 for the summary to be valid.
     u16 magic;
     // Unused padding.
-    u8 unk_4A[14];
+    u8 unused_4A[14];
     // Unclear 64-bit value; compared for equality between recordings and shown
     // as a 12-digit number in the Vs. Recorder UI.
-    u64 unk_58;
+    u64 recordingId;
     // Checksum over the preceding fields.
     BattleRecordingChecksum checksum;
 } BattleRecordingSummary;

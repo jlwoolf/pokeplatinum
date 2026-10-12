@@ -308,7 +308,7 @@ int MixRecords_Exit(ApplicationManager *appMan, int *unused)
 
     CommManager_SetMaxNumConnections(2);
     CommManager_UnionRestartSearch();
-    UnionRoomTrainers_Reset(v0->appArgs->unk_04);
+    UnionRoomTrainers_Reset(v0->appArgs->trainers);
     MessageLoader_Free(v0->msgLoader);
     StringTemplate_Free(v0->strTemplate);
 
@@ -650,8 +650,8 @@ static void MixRecords_CreateSprites(MixRecordsComm *param0)
 
 static void MixRecords_CreateWindows(MixRecordsComm *param0, ApplicationManager *appMan)
 {
-    Window_Add(param0->bgConfig, &param0->unk_35C, 5, 26, 20, 6, 2, 13, 1 + 30 * 15);
-    Window_FillTilemap(&param0->unk_35C, 0x0);
+    Window_Add(param0->bgConfig, &param0->unused_35C, 5, 26, 20, 6, 2, 13, 1 + 30 * 15);
+    Window_FillTilemap(&param0->unused_35C, 0x0);
     Window_Add(param0->bgConfig, &param0->messageWindow, 0, 2, 19, 27, 4, 13, 1 + (18 + 12) + 9);
     Window_FillTilemap(&param0->messageWindow, 0xf0f);
     Window_Add(param0->bgConfig, &param0->headerWindow, 0, 3, 1, 26, 2, 15, (1 + (18 + 12) + 9) + 27 * 4);
@@ -679,7 +679,7 @@ static void MixRecords_RemoveWindows(MixRecordsComm *param0)
 {
     Window_Remove(&param0->playerWindows[0]);
     Window_Remove(&param0->headerWindow);
-    Window_Remove(&param0->unk_35C);
+    Window_Remove(&param0->unused_35C);
     Window_Remove(&param0->messageWindow);
 }
 

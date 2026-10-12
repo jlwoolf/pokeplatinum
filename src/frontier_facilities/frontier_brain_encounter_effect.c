@@ -501,17 +501,17 @@ static void CreateFrontierBrainNameObject(FrontierBrainEncounterEffect *encEffec
 
     y -= 8;
 
-    v0.unk_00 = encEffect->unk_30;
-    v0.unk_04 = &window;
-    v0.unk_08 = SpriteManager_GetSpriteList(spriteMan);
-    v0.unk_0C = SpriteManager_FindPlttResourceProxy(spriteMan, plttResourceID);
-    v0.unk_10 = NULL;
-    v0.unk_14 = charTransferAllocation.offset;
-    v0.unk_18 = x;
-    v0.unk_1C = y;
-    v0.unk_20 = 0;
-    v0.unk_24 = 11;
-    v0.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v0.fontOAMManager = encEffect->unk_30;
+    v0.window = &window;
+    v0.spriteList = SpriteManager_GetSpriteList(spriteMan);
+    v0.paletteProxy = SpriteManager_FindPlttResourceProxy(spriteMan, plttResourceID);
+    v0.parentSprite = NULL;
+    v0.charOffset = charTransferAllocation.offset;
+    v0.x = x;
+    v0.y = y;
+    v0.resourcePriority = 0;
+    v0.spritePriority = 11;
+    v0.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v0.heapID = HEAP_ID_94;
 
     FontOAM *fontOAM = FontOAM_New(&v0);

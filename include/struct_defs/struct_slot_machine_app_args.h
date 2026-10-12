@@ -4,10 +4,10 @@
 #include "game_records.h"
 
 typedef struct {
-    int *unk_00;
-    int unk_04;
+    int *coins;
+    int machineMode;
     GameRecords *records;
-    int unk_0C;
+    int consecutiveBonusRoundWins;
     int msgBoxFrame;
 } SlotMachineAppArgs;
 

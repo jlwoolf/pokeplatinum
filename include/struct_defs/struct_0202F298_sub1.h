@@ -5,7 +5,7 @@
 // ever written; the second half is unused padding.
 typedef struct {
     u16 checksum;
-    u16 unk_02;
+    u16 unused_02;
 } BattleRecordingChecksum;
 
 #endif // POKEPLATINUM_STRUCT_0202F298_SUB1_H

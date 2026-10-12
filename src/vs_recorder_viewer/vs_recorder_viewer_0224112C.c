@@ -20,12 +20,12 @@ static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0);
 
 static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0)
 {
-    return param0->unk_14.transferContext.active;
+    return param0->menuContext.transferContext.active;
 }
 
 VsRecorderViewerTransferContext *VsRecorderViewerTransfer_GetTransfer(VsRecorderState *param0)
 {
-    return &param0->unk_14.transferContext;
+    return &param0->menuContext.transferContext;
 }
 
 void VsRecorderViewerTransfer_Init(VsRecorderState *param0)
@@ -49,7 +49,7 @@ void VsRecorderViewerTransfer_Init(VsRecorderState *param0)
     v0.userData = param0;
     v0.stringFunc = NULL;
 
-    GlobalTerminalTransfer_Init(&param0->unk_14.transferContext, &v0);
+    GlobalTerminalTransfer_Init(&param0->menuContext.transferContext, &v0);
 }
 
 BOOL VsRecorderViewerTransfer_IsIdle(VsRecorderState *param0)

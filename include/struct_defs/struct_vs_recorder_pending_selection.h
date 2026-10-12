@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_PENDING_SELECTION_H
 
 typedef struct {
-    BOOL unk_00;
-    int unk_04;
-    int unk_08[8];
+    BOOL hasSelection;
+    int selection;
+    int selectionData[8];
 } VsRecorderPendingSelection;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_PENDING_SELECTION_H

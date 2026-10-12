@@ -2,11 +2,11 @@
 #define POKEPLATINUM_STRUCT_MYSTERY_GIFT_GAME_INFO_H
 
 typedef struct {
-    u32 unk_00;
-    u8 unk_04;
-    u8 unk_05;
+    u32 trainerId;
+    u8 commType;
+    u8 contestRegulation;
     u8 padding_06[2];
-    u8 unk_08[84];
+    u8 eventData[84];
 } MysteryGiftGameInfo;
 
 #endif // POKEPLATINUM_STRUCT_MYSTERY_GIFT_GAME_INFO_H

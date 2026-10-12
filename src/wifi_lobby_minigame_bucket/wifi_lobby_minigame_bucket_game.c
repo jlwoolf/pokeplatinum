@@ -4412,17 +4412,17 @@ static void WiFiLobbyMinigameBucket_InitScoreDisplay(WiFiLobbyMinigameBucketScor
 
         SpriteResource_ReleaseData(param0->unk_60);
 
-        v4.unk_00 = param1->unk_1F0;
-        v4.unk_04 = &param0->unk_38;
-        v4.unk_08 = param1->unk_1C;
-        v4.unk_0C = SpriteTransfer_GetPaletteProxy(param0->unk_60, NULL);
-        v4.unk_10 = param0->unk_34;
-        v4.unk_14 = param0->unk_50.offset;
-        v4.unk_18 = -7;
-        v4.unk_1C = -5;
-        v4.unk_20 = 0;
-        v4.unk_24 = 0;
-        v4.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+        v4.fontOAMManager = param1->unk_1F0;
+        v4.window = &param0->unk_38;
+        v4.spriteList = param1->unk_1C;
+        v4.paletteProxy = SpriteTransfer_GetPaletteProxy(param0->unk_60, NULL);
+        v4.parentSprite = param0->unk_34;
+        v4.charOffset = param0->unk_50.offset;
+        v4.x = -7;
+        v4.y = -5;
+        v4.resourcePriority = 0;
+        v4.spritePriority = 0;
+        v4.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
         v4.heapID = heapID;
 
         param0->unk_48 = FontOAM_NewFromWindow(&v4, param0->unk_4C);

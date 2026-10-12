@@ -660,7 +660,7 @@ static void contest_competition_022444BC(SysTask *param0, void *param1)
         v15 = Pokemon_GetValue(v0->competition->scene.contestData->contestMons[v16], MON_DATA_PERSONALITY, NULL);
 
         moveAnim.command = 0;
-        moveAnim.unk_01 = 0;
+        moveAnim.contextState = 0;
         moveAnim.move = v0->animArgs.actingAnimationMoveID;
         moveAnim.damage = 1;
         moveAnim.power = 10;

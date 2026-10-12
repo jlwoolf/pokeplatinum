@@ -30,7 +30,7 @@ typedef struct BattleFrontierSave {
         WifiBattleTowerRecord wifiBattleTowerRecord;
         FrontierEasyChatMessages easyChatMessages;
         WifiBattleTowerDownloadData wifiBattleTowerDownloadData;
-    } unk_950;
+    } wifiBattleTower;
     struct {
         BattleFactoryStreakFlags streakFlags;
     } factory;

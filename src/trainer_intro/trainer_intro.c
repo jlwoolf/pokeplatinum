@@ -1549,17 +1549,17 @@ static void TrainerIntro_CreateTrainerNameOAM(TrainerIntro *param0, u32 param1, 
     Window_AddToTopLeftCorner(param0->bgConfig, v0, 8, 2, 0, 0);
     Text_AddPrinterWithParamsAndColor(v0, FONT_SYSTEM, param2, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(3, 4, 0), NULL);
 
-    v1.unk_00 = param0->fontOamManager;
-    v1.unk_04 = v0;
-    v1.unk_08 = SpriteManager_GetSpriteList(param0->spriteManager);
-    v1.unk_0C = SpriteManager_FindPlttResourceProxy(param0->spriteManager, 47111);
-    v1.unk_10 = NULL;
-    v1.unk_14 = ((1024 - (8 * 2) - (4 * 4)) - (8 * 2) * param1) * 0x20;
-    v1.unk_18 = 0;
-    v1.unk_1C = 0;
-    v1.unk_20 = 2;
-    v1.unk_24 = 0;
-    v1.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v1.fontOAMManager = param0->fontOamManager;
+    v1.window = v0;
+    v1.spriteList = SpriteManager_GetSpriteList(param0->spriteManager);
+    v1.paletteProxy = SpriteManager_FindPlttResourceProxy(param0->spriteManager, 47111);
+    v1.parentSprite = NULL;
+    v1.charOffset = ((1024 - (8 * 2) - (4 * 4)) - (8 * 2) * param1) * 0x20;
+    v1.x = 0;
+    v1.y = 0;
+    v1.resourcePriority = 2;
+    v1.spritePriority = 0;
+    v1.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v1.heapID = param0->trainerIntroData->heapID;
 
     param0->fontOams[param1] = FontOAM_New(&v1);

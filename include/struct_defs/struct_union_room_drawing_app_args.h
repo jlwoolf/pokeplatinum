@@ -7,8 +7,8 @@
 #include "journal.h"
 
 typedef struct {
-    UnionRoomTrainers *unk_00;
-    JournalEntry *unk_04;
+    UnionRoomTrainers *trainers;
+    JournalEntry *journalEntry;
     Options *options;
 } UnionRoomDrawingAppArgs;
 

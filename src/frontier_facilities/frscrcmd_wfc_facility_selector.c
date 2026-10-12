@@ -301,13 +301,13 @@ BOOL FrontierScrCmd_InitBattleTower(FrontierScriptContext *ctx)
     }
 
     for (int i = 0; i < battleTower->partySize; i++) {
-        battleTower->unk_2A[i] = selector.selectedMonSlots[i];
-        battleTower->unk_2E[i] = selector.selectedSpecies[i];
-        battleTower->unk_36[i] = selector.selectedItems[i];
+        battleTower->partyOrder[i] = selector.selectedMonSlots[i];
+        battleTower->partySpecies[i] = selector.selectedSpecies[i];
+        battleTower->partyHeldItems[i] = selector.selectedItems[i];
     }
 
-    battleTower->unk_16[0] = selector.partnersSelectedSpecies[0];
-    battleTower->unk_16[1] = selector.partnersSelectedSpecies[1];
+    battleTower->partnerSpecies[0] = selector.partnersSelectedSpecies[0];
+    battleTower->partnerSpecies[1] = selector.partnersSelectedSpecies[1];
     battleTower->partnerGender = selector.partnerGender;
     battleTower->partnerID = BT_PARTNERS_COUNT + battleTower->partnerGender;
 

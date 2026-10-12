@@ -355,8 +355,8 @@ BattleTower *BattleTower_Init(SaveData *saveData, u16 isResume, u16 challengeMod
 
     battleTower->heapID = HEAP_ID_FIELD2;
     battleTower->wifiBattleTowerSave = SaveData_GetWifiBattleTowerSave(saveData);
-    battleTower->unk_74 = SaveData_GetWifiBattleTowerRecord(saveData);
-    battleTower->unk_00 = 0x12345678;
+    battleTower->wifiBattleTowerRecord = SaveData_GetWifiBattleTowerRecord(saveData);
+    battleTower->magic = 0x12345678;
 
     WifiBattleTowerSave_SetIsInProgress(battleTower->wifiBattleTowerSave, 0);
 
@@ -364,10 +364,10 @@ BattleTower *BattleTower_Init(SaveData *saveData, u16 isResume, u16 challengeMod
         battleTower->challengeMode = challengeMode;
         battleTower->partySize = (u8)BattleTower_GetPartySizeForChallengeMode(battleTower->challengeMode);
         battleTower->nextOpponentNum = 1;
-        battleTower->unk_0D = 0;
+        battleTower->opponentIndex = 0;
 
         for (i = 0; i < 4; i++) {
-            battleTower->unk_2A[i] = 0xFF;
+            battleTower->partyOrder[i] = 0xFF;
         }
 
         for (i = 0; i < BT_OPPONENTS_COUNT * 2; i++) {
@@ -380,19 +380,19 @@ BattleTower *BattleTower_Init(SaveData *saveData, u16 isResume, u16 challengeMod
     } else {
         battleTower->challengeMode = (u8)WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 0, NULL);
         battleTower->nextOpponentNum = (u8)WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 1, NULL);
-        battleTower->unk_0D = battleTower->nextOpponentNum - 1;
+        battleTower->opponentIndex = battleTower->nextOpponentNum - 1;
         battleTower->partySize = (u8)BattleTower_GetPartySizeForChallengeMode(battleTower->challengeMode);
 
-        WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 5, battleTower->unk_2A);
+        WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 5, battleTower->partyOrder);
         WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 8, battleTower->trainerIDs);
 
-        battleTower->unk_08 = WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 10, NULL);
+        battleTower->rngState = WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 10, NULL);
 
         if (battleTower->challengeMode == BATTLE_TOWER_MODE_MULTI) {
             battleTower->partnerID = (u8)WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 9, NULL);
 
-            WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 6, &(battleTower->unk_7E8[battleTower->partnerID]));
-            BattleTower_LoadPartnerOpponent(battleTower, &battleTower->partnersDataDTO[battleTower->partnerID], FRONTIER_TRAINER_TRAINER_CHERYL_CHERYL + battleTower->partnerID, WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 7, NULL), &(battleTower->unk_7E8[battleTower->partnerID]), battleTower->heapID);
+            WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 6, &(battleTower->partnerData[battleTower->partnerID]));
+            BattleTower_LoadPartnerOpponent(battleTower, &battleTower->partnersDataDTO[battleTower->partnerID], FRONTIER_TRAINER_TRAINER_CHERYL_CHERYL + battleTower->partnerID, WifiBattleTowerSave_GetField(battleTower->wifiBattleTowerSave, 7, NULL), &(battleTower->partnerData[battleTower->partnerID]), battleTower->heapID);
         }
     }
 
@@ -405,25 +405,25 @@ BattleTower *BattleTower_Init(SaveData *saveData, u16 isResume, u16 challengeMod
         if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
             streakActive = SystemVars_GetWiFiFrontierCleared(SaveData_GetVarsFlags(saveData));
         } else {
-            streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 8 + battleTower->challengeMode, 0);
+            streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 8 + battleTower->challengeMode, 0);
         }
 
         if (streakActive) {
             if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
-                battleTower->unk_1A = BattleFrontierSave_GetStatAutoHostIdx(frontier, 113);
+                battleTower->statIndex = BattleFrontierSave_GetStatAutoHostIdx(frontier, 113);
             } else {
-                battleTower->unk_1A = BattleFrontierSave_GetStat(
+                battleTower->statIndex = BattleFrontierSave_GetStat(
                     frontier, 1 + battleTower->challengeMode * 2, 0xff);
             }
 
-            battleTower->roomNum = WifiBattleTowerRecord_UpdateRoomNum(battleTower->unk_74, battleTower->challengeMode, 0);
+            battleTower->roomNum = WifiBattleTowerRecord_UpdateRoomNum(battleTower->wifiBattleTowerRecord, battleTower->challengeMode, 0);
         }
 
-        battleTower->unk_20 = GameRecords_GetRecordValue(gameRecords, RECORD_BATTLE_TOWER_VICTORIES);
+        battleTower->victories = GameRecords_GetRecordValue(gameRecords, RECORD_BATTLE_TOWER_VICTORIES);
     }
 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
-        battleTower->roomNum = WifiBattleTowerRecord_SetRoomNum(battleTower->unk_74, BATTLE_TOWER_MODE_6, battleTower->unk_1A / 7);
+        battleTower->roomNum = WifiBattleTowerRecord_SetRoomNum(battleTower->wifiBattleTowerRecord, BATTLE_TOWER_MODE_6, battleTower->statIndex / 7);
     }
 
     return battleTower;
@@ -435,7 +435,7 @@ void BattleTower_Free(BattleTower *battleTower)
         return;
     }
 
-    GF_ASSERT(battleTower->unk_00 == 0x12345678);
+    GF_ASSERT(battleTower->magic == 0x12345678);
 
     MI_CpuClear8(battleTower, sizeof(BattleTower));
     Heap_Free(battleTower);
@@ -467,10 +467,10 @@ BOOL BattleTower_ReadPartyMenuSelection(BattleTower *battleTower, void **partyMe
     party = SaveData_GetParty(saveData);
 
     for (i = 0; i < battleTower->partySize; i++) {
-        battleTower->unk_2A[i] = partyMenu->selectionOrder[i] - 1;
-        mon = Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[i]);
-        battleTower->unk_2E[i] = Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL);
-        battleTower->unk_36[i] = Pokemon_GetValue(mon, MON_DATA_HELD_ITEM, NULL);
+        battleTower->partyOrder[i] = partyMenu->selectionOrder[i] - 1;
+        mon = Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[i]);
+        battleTower->partySpecies[i] = Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL);
+        battleTower->partyHeldItems[i] = Pokemon_GetValue(mon, MON_DATA_HELD_ITEM, NULL);
     }
 
     Heap_Free(*partyMenuPtr);
@@ -487,7 +487,7 @@ int BattleTower_CheckDuplicateSpeciesAndHeldItems(BattleTower *battleTower, Save
     Party *party = SaveData_GetParty(saveData);
 
     for (i = 0; i < battleTower->partySize; i++) {
-        Pokemon *mon = Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[i]);
+        Pokemon *mon = Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[i]);
         species[i] = Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL);
         heldItems[i] = Pokemon_GetValue(mon, MON_DATA_HELD_ITEM, NULL);
 
@@ -531,8 +531,8 @@ void BattleTower_GenerateOpponentTrainerIDs(BattleTower *battleTower, SaveData *
     u16 trainerID, roomNum;
 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_MULTI || battleTower->challengeMode == BATTLE_TOWER_MODE_6 || battleTower->challengeMode == BATTLE_TOWER_MODE_LINK_MULTI) {
-        if ((battleTower->challengeMode == BATTLE_TOWER_MODE_LINK_MULTI && battleTower->unk_14 > battleTower->roomNum) || (battleTower->challengeMode == BATTLE_TOWER_MODE_6 && battleTower->unk_14 > battleTower->roomNum)) {
-            roomNum = battleTower->unk_14;
+        if ((battleTower->challengeMode == BATTLE_TOWER_MODE_LINK_MULTI && battleTower->streak > battleTower->roomNum) || (battleTower->challengeMode == BATTLE_TOWER_MODE_6 && battleTower->streak > battleTower->roomNum)) {
+            roomNum = battleTower->streak;
         } else {
             roomNum = battleTower->roomNum;
         }
@@ -587,9 +587,9 @@ static void BattleTower_RecordStreakToTV(BattleTower *battleTower, SaveData *sav
     party = SaveData_GetParty(saveData);
 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_SINGLE) {
-        TVSegment_SaveBattleTowerStreakRecord(saveData, streak, Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[0]), 1);
+        TVSegment_SaveBattleTowerStreakRecord(saveData, streak, Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[0]), 1);
     } else {
-        TVSegment_SaveBattleTowerStreakRecord(saveData, streak, Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[0]), 0);
+        TVSegment_SaveBattleTowerStreakRecord(saveData, streak, Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[0]), 0);
     }
 }
 
@@ -610,14 +610,14 @@ static void BattleTower_UpdatePostBattleData(BattleTower *battleTower, SaveData 
         break;
     case BATTLE_TOWER_MODE_WIFI:
         BattleTower_SaveTeamToWifiRecord(battleTower, saveData, 1);
-        WifiBattleTowerSave_AddCounters(battleTower->wifiBattleTowerSave, battleTower->unk_28, battleTower->unk_24, battleTower->unk_26);
+        WifiBattleTowerSave_AddCounters(battleTower->wifiBattleTowerSave, battleTower->counter1, battleTower->counter2, battleTower->counter3);
 
         mode = battleTower->challengeMode;
         WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 0, &mode);
 
         mode = battleTower->nextOpponentNum;
         WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 1, &mode);
-        WifiBattleTowerRecord_CalcRatingScore(battleTower->unk_74, battleTower->wifiBattleTowerSave);
+        WifiBattleTowerRecord_CalcRatingScore(battleTower->wifiBattleTowerRecord, battleTower->wifiBattleTowerSave);
         break;
     default:
         break;
@@ -645,7 +645,7 @@ void BattleTower_UpdateGameRecords(BattleTower *battleTower, SaveData *saveData)
     }
 
     prevRecord = BattleFrontierSave_GetStatAutoHostIdx(frontier, statIndex);
-    newRecord = BattleFrontierSave_SetIfBetterAutoHostIdx(frontier, statIndex, battleTower->unk_1A + battleTower->unk_0D);
+    newRecord = BattleFrontierSave_SetIfBetterAutoHostIdx(frontier, statIndex, battleTower->statIndex + battleTower->opponentIndex);
 
     if (newRecord > 1) {
         if (prevRecord < newRecord || (prevRecord == newRecord && newRecord % 7 == 0)) {
@@ -656,19 +656,19 @@ void BattleTower_UpdateGameRecords(BattleTower *battleTower, SaveData *saveData)
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
         streakActive = BattleFrontierSave_GetStatAutoHostIdx(SaveData_GetBattleFrontier(saveData), STAT_TOWER_WFC_STREAK_ACTIVE);
     } else {
-        streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 8 + battleTower->challengeMode, 0);
+        streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 8 + battleTower->challengeMode, 0);
     }
 
-    streakValue = BattleFrontierSave_SetStatAutoHostIdx(frontier, statIndex + 1, battleTower->unk_1A + battleTower->unk_0D);
+    streakValue = BattleFrontierSave_SetStatAutoHostIdx(frontier, statIndex + 1, battleTower->statIndex + battleTower->opponentIndex);
 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
         BattleFrontierSave_SetStatAutoHostIdx(SaveData_GetBattleFrontier(saveData), STAT_TOWER_WFC_STREAK_ACTIVE, 0);
     } else {
-        WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 8 + battleTower->challengeMode, 2);
+        WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 8 + battleTower->challengeMode, 2);
     }
 
-    GameRecords_AddToRecordValue(gameRecords, RECORD_BATTLE_TOWER_VICTORIES, battleTower->unk_0D);
-    WifiBattleTowerRecord_UpdateRoomNum(battleTower->unk_74, battleTower->challengeMode, 2);
+    GameRecords_AddToRecordValue(gameRecords, RECORD_BATTLE_TOWER_VICTORIES, battleTower->opponentIndex);
+    WifiBattleTowerRecord_UpdateRoomNum(battleTower->wifiBattleTowerRecord, battleTower->challengeMode, 2);
 
     if (battleTower->challengeMode != BATTLE_TOWER_MODE_6) {
         GameRecords_AddToRecordValue(SaveData_GetGameRecords(saveData), RECORD_BATTLE_TOWER_CHALLENGES, 1);
@@ -713,22 +713,22 @@ void BattleTower_UpdateGameRecordsAndJournal(BattleTower *battleTower, SaveData 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
         streakActive = BattleFrontierSave_GetStatAutoHostIdx(SaveData_GetBattleFrontier(saveData), STAT_TOWER_WFC_STREAK_ACTIVE);
     } else {
-        streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 8 + battleTower->challengeMode, 0);
+        streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 8 + battleTower->challengeMode, 0);
     }
 
-    streakValue = BattleFrontierSave_SetStatAutoHostIdx(frontier, statIndex + 1, battleTower->unk_1A + battleTower->unk_0D);
+    streakValue = BattleFrontierSave_SetStatAutoHostIdx(frontier, statIndex + 1, battleTower->statIndex + battleTower->opponentIndex);
 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
         BattleFrontierSave_SetStatAutoHostIdx(SaveData_GetBattleFrontier(saveData), STAT_TOWER_WFC_STREAK_ACTIVE, 1);
     } else {
-        WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 8 + battleTower->challengeMode, 1);
+        WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 8 + battleTower->challengeMode, 1);
     }
 
     prevRecord = BattleFrontierSave_GetStatAutoHostIdx(frontier, statIndex);
     newRecord = BattleFrontierSave_SetIfBetterAutoHostIdx(frontier, statIndex, streakValue);
 
     GameRecords_AddToRecordValue(gameRecords, RECORD_BATTLE_TOWER_VICTORIES, 7);
-    WifiBattleTowerRecord_UpdateRoomNum(battleTower->unk_74, battleTower->challengeMode, 3);
+    WifiBattleTowerRecord_UpdateRoomNum(battleTower->wifiBattleTowerRecord, battleTower->challengeMode, 3);
 
     if (battleTower->challengeMode != BATTLE_TOWER_MODE_6) {
         GameRecords_AddToRecordValue(gameRecords, RECORD_BATTLE_TOWER_CHALLENGES, 1);
@@ -755,10 +755,10 @@ void BattleTower_SaveWifiState(BattleTower *battleTower)
     modeBuf[0] = battleTower->nextOpponentNum;
     WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 1, modeBuf);
 
-    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 5, battleTower->unk_2A);
-    WifiBattleTowerSave_AddCounters(battleTower->wifiBattleTowerSave, battleTower->unk_28, battleTower->unk_24, battleTower->unk_26);
+    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 5, battleTower->partyOrder);
+    WifiBattleTowerSave_AddCounters(battleTower->wifiBattleTowerSave, battleTower->counter1, battleTower->counter2, battleTower->counter3);
     WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 8, battleTower->trainerIDs);
-    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 10, &(battleTower->unk_08));
+    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 10, &(battleTower->rngState));
     WifiBattleTowerSave_SetIsInProgress(battleTower->wifiBattleTowerSave, 1);
 
     if (battleTower->challengeMode != BATTLE_TOWER_MODE_MULTI) {
@@ -768,8 +768,8 @@ void BattleTower_SaveWifiState(BattleTower *battleTower)
     modeBuf[0] = battleTower->partnerID;
     WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 9, modeBuf);
 
-    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 6, &(battleTower->unk_7E8[battleTower->partnerID]));
-    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 7, &(battleTower->unk_838[battleTower->partnerID]));
+    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 6, &(battleTower->partnerData[battleTower->partnerID]));
+    WifiBattleTowerSave_SetField(battleTower->wifiBattleTowerSave, 7, &(battleTower->partnerBuilt[battleTower->partnerID]));
 }
 
 // Builds the partner data (team and graphics) for every possible multi-battle
@@ -777,7 +777,7 @@ void BattleTower_SaveWifiState(BattleTower *battleTower)
 void BattleTower_BuildPartnerData(BattleTower *battleTower)
 {
     for (int partnerID = 0; partnerID < BT_PARTNERS_COUNT; partnerID++) {
-        battleTower->unk_838[partnerID] = (u8)BattleTower_BuildPartnerOpponent(battleTower, &(battleTower->partnersDataDTO[partnerID]), FRONTIER_TRAINER_TRAINER_CHERYL_CHERYL + partnerID, battleTower->partySize, battleTower->unk_2E, battleTower->unk_36, &(battleTower->unk_7E8[partnerID]), battleTower->heapID);
+        battleTower->partnerBuilt[partnerID] = (u8)BattleTower_BuildPartnerOpponent(battleTower, &(battleTower->partnersDataDTO[partnerID]), FRONTIER_TRAINER_TRAINER_CHERYL_CHERYL + partnerID, battleTower->partySize, battleTower->partySpecies, battleTower->partyHeldItems, &(battleTower->partnerData[partnerID]), battleTower->heapID);
     }
 }
 
@@ -811,10 +811,10 @@ u16 BattleTower_GiveBattlePointsReward(BattleTower *battleTower)
     }
 
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_WIFI) {
-        battlePoints = wifiBattlePoints[WifiBattleTowerRecord_UpdateRank(battleTower->unk_74, 0)];
+        battlePoints = wifiBattlePoints[WifiBattleTowerRecord_UpdateRank(battleTower->wifiBattleTowerRecord, 0)];
     } else {
         if (battleTower->challengeMode == BATTLE_TOWER_MODE_LINK_MULTI || battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
-            roomNum = WifiBattleTowerRecord_UpdateRoomNum(battleTower->unk_74, battleTower->challengeMode, 0);
+            roomNum = WifiBattleTowerRecord_UpdateRoomNum(battleTower->wifiBattleTowerRecord, battleTower->challengeMode, 0);
 
             if (roomNum >= 7) {
                 battlePoints = 18;
@@ -822,7 +822,7 @@ u16 BattleTower_GiveBattlePointsReward(BattleTower *battleTower)
                 battlePoints = linkMultiBattlePoints[roomNum];
             }
         } else {
-            roomNum = WifiBattleTowerRecord_UpdateRoomNum(battleTower->unk_74, battleTower->challengeMode, 0);
+            roomNum = WifiBattleTowerRecord_UpdateRoomNum(battleTower->wifiBattleTowerRecord, battleTower->challengeMode, 0);
 
             if (battleTower->beatPalmer) {
                 battlePoints = 20;
@@ -834,7 +834,7 @@ u16 BattleTower_GiveBattlePointsReward(BattleTower *battleTower)
         }
     }
 
-    WifiBattleTowerRecord_UpdateBattlePoints(battleTower->unk_74, battlePoints, BATTLE_POINTS_FUNC_ADD);
+    WifiBattleTowerRecord_UpdateBattlePoints(battleTower->wifiBattleTowerRecord, battlePoints, BATTLE_POINTS_FUNC_ADD);
     return battlePoints;
 }
 
@@ -851,11 +851,11 @@ u16 BattleTower_IsPalmerBattleAvailable(BattleTower *battleTower, SaveData *save
     }
 
     if (streak >= 100) {
-        if (WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 1, 0)) {
+        if (WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 1, 0)) {
             return 0;
         }
     } else {
-        if (WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 0, 0)) {
+        if (WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 0, 0)) {
             return 0;
         }
     }
@@ -891,14 +891,14 @@ u16 BattleTower_UpdateRank(BattleTower *battleTower, SaveData *saveData, u8 oper
         rank = WifiBattleTowerRecord_UpdateRank(record, 0);
 
         if (rank == 10) {
-            battleTower->unk_10_4 = 1;
+            battleTower->challengeCompleted = 1;
             return 0;
         }
 
         WifiBattleTowerRecord_UpdateRank(record, 3);
 
         if (rank + 1 >= 5) {
-            battleTower->unk_10_4 = 1;
+            battleTower->challengeCompleted = 1;
         }
 
         return 1;
@@ -956,7 +956,7 @@ u16 BattleTower_GiveModeAbilityRibbon(BattleTower *battleTower, SaveData *saveDa
         return 0;
     }
 
-    if (!battleTower->unk_10_4) {
+    if (!battleTower->challengeCompleted) {
         return 0;
     }
 
@@ -987,16 +987,16 @@ u16 BattleTower_UpdateRandomSeed(BattleTower *battleTower, SaveData *saveData)
     if (battleTower->challengeMode == BATTLE_TOWER_MODE_6) {
         streakActive = BattleFrontierSave_GetStatAutoHostIdx(SaveData_GetBattleFrontier(saveData), STAT_TOWER_WFC_STREAK_ACTIVE);
     } else {
-        streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->unk_74, 8 + battleTower->challengeMode, 0);
+        streakActive = WifiBattleTowerRecord_UpdateBitFlag(battleTower->wifiBattleTowerRecord, 8 + battleTower->challengeMode, 0);
     }
 
     if (!streakActive) {
-        battleTower->unk_08 = BattleSalon_GetFreshRng(saveData);
+        battleTower->rngState = BattleSalon_GetFreshRng(saveData);
     } else {
-        battleTower->unk_08 = BattleSalon_GetStreakRng(saveData);
+        battleTower->rngState = BattleSalon_GetStreakRng(saveData);
     }
 
-    return battleTower->unk_08 / 65535;
+    return battleTower->rngState / 65535;
 }
 
 // Sets the given ribbon on every party Pokémon that does not already have it.
@@ -1013,7 +1013,7 @@ static u16 BattleTower_GiveRibbonToParty(SaveData *saveData, enum PokemonDataPar
     updatedCount = 0;
 
     for (i = 0; i < battleTower->partySize; i++) {
-        mon = Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[i]);
+        mon = Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[i]);
 
         if (Pokemon_GetValue(mon, param, NULL)) {
             continue;
@@ -1041,13 +1041,13 @@ static u16 BattleTower_UpdateAbilityRibbonFlag(BattleTower *battleTower)
         return 0;
     }
 
-    streak = battleTower->unk_1A + battleTower->unk_0D;
+    streak = battleTower->statIndex + battleTower->opponentIndex;
 
     if (streak < 50) {
         return 0;
     }
 
-    battleTower->unk_10_4 = 1;
+    battleTower->challengeCompleted = 1;
     return 1;
 }
 
@@ -1089,10 +1089,10 @@ static void BattleTower_SaveTeamToWifiRecord(BattleTower *battleTower, SaveData 
     Party *party = SaveData_GetParty(saveData);
 
     for (int i = 0; i < 3; i++) {
-        BattleTower_CopyPokemonToFrontierPokemon(&(mons[i]), Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[i]));
+        BattleTower_CopyPokemonToFrontierPokemon(&(mons[i]), Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[i]));
     }
 
-    WifiBattleTowerRecord_SetTeam(battleTower->unk_74, teamIdx, mons);
+    WifiBattleTowerRecord_SetTeam(battleTower->wifiBattleTowerRecord, teamIdx, mons);
     MI_CpuClear8(mons, sizeof(FrontierPokemon) * 3);
     Heap_Free(mons);
 }
@@ -1132,6 +1132,6 @@ u16 BattleTower_GetRandom(BattleTower *battleTower)
         return LCRNG_Next();
     }
 
-    battleTower->unk_08 = BattleSalon_AdvanceRng(battleTower->unk_08);
-    return battleTower->unk_08 / 65535;
+    battleTower->rngState = BattleSalon_AdvanceRng(battleTower->rngState);
+    return battleTower->rngState / 65535;
 }

@@ -559,7 +559,7 @@ void TVBroadcast_SetContestHallShowInfo(TVBroadcast *broadcast, Pokemon *mon, en
 {
     TVSegment_ContestHall_ShowcasedPokemon *showcasedPokemon = TVBroadcast_GetShowcasedPokemon(broadcast);
 
-    showcasedPokemon->unk_00 = 1;
+    showcasedPokemon->isShowcased = 1;
     TVSegment_CopyPokemonValues(mon, &showcasedPokemon->species, &showcasedPokemon->gender, &showcasedPokemon->language, &showcasedPokemon->metGame);
     showcasedPokemon->contestType = contestType;
     showcasedPokemon->contestRank = contestRank;
@@ -1769,7 +1769,7 @@ void FieldSystem_SaveTVSegment_ContestHall(FieldSystem *fieldSystem, u16 customM
     TVSegment_ContestHall_ShowcasedPokemon *showcasedPokemon = TVBroadcast_GetShowcasedPokemon(SaveData_GetTVBroadcast(fieldSystem->saveData));
 
     contestHall->showcasedPokemon = *showcasedPokemon;
-    showcasedPokemon->unk_00 = 0;
+    showcasedPokemon->isShowcased = 0;
     contestHall->customMessageWord = customMessageWord;
 
     SaveData_SetChecksum(SAVE_TABLE_ENTRY_TV_BROADCAST);

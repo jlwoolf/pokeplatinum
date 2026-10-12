@@ -250,7 +250,7 @@ int VisualCompetitionApp_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 3:
-        if (v2->unk_1C == 1) {
+        if (v2->speedUpOnTouch == 1) {
             RenderControlFlags_SetSpeedUpOnTouch(TRUE);
 
             v0->printerID = ContestScoreDisplay_DrawMessageWithString(&v0->scoreDisplay, 26, 385, 47);
@@ -364,11 +364,11 @@ int VisualCompetitionApp_Exit(ApplicationManager *appMan, int *param1)
         VisualCompetition_SaveDressUpPhoto(v2->photo, &v0->photoRenderer, v2->trainerInfo);
     }
 
-    if (v2->unk_18 != NULL) {
+    if (v2->appResult != NULL) {
         if (v0->savePhoto == 1) {
-            *v2->unk_18 = 1;
+            *v2->appResult = 1;
         } else {
-            *v2->unk_18 = 0;
+            *v2->appResult = 0;
         }
     }
 
@@ -1127,7 +1127,7 @@ static void VisualCompetition_SaveDressUpPhoto(DressUpPhoto *photo, PhotoRendere
     int gender;
 
     DressUpPhoto_Init(photo);
-    DressUpPhoto_SetPhotoMonFromSprite(photo, param1->context.pokemonSprite.unk_0C, &param1->context.pokemonSprite);
+    DressUpPhoto_SetPhotoMonFromSprite(photo, param1->context.pokemonSprite.pokemon, &param1->context.pokemonSprite);
 
     if (info != NULL) {
         name = TrainerInfo_NameNewString(info, HEAP_ID_13);
@@ -1175,7 +1175,7 @@ static void VisualCompetition_SaveContestPhoto(ContestPhoto *param0, PhotoRender
     v2 = Heap_Alloc(HEAP_ID_13, sizeof(VisualCompetitionAccessoryList));
     VisualCompetition_InitAccessoryList(v2);
 
-    ContestPhoto_SetPhotoMonFromSprite(param0, param1->context.pokemonSprite.unk_0C, &param1->context.pokemonSprite);
+    ContestPhoto_SetPhotoMonFromSprite(param0, param1->context.pokemonSprite.pokemon, &param1->context.pokemonSprite);
 
     if (trainerInfo) {
         name = TrainerInfo_NameNewString(trainerInfo, 13);

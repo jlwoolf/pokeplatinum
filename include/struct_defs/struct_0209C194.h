@@ -13,7 +13,7 @@
 // app, followed by the spin trade app. UnionRoomComm also holds a pointer to
 // it and dispatches incoming commands to whichever app is active.
 typedef struct UnionRoomSpinTradeSession {
-    int unk_00; // Written by the field task (1 = egg menu, 3 = spin app) but never read.
+    int appState; // Written by the field task (1 = egg menu, 3 = spin app) but never read.
     int selectedMonSlot; // Party slot of the egg chosen for the trade.
     int connectedCount; // Number of connected trainers, written when the group app exits.
     u32 connectedBitmap; // Net ID bitmap of the connected trainers.

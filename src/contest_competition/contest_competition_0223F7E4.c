@@ -1022,17 +1022,17 @@ static void contest_competition_02240138(ActingMoveMenu *param0, ActingMoveMenuL
 
     y += (((192 + 80) << FX32_SHIFT) >> FX32_SHIFT) - 8;
 
-    v0.unk_00 = param0->unk_3C;
-    v0.unk_04 = &window;
-    v0.unk_08 = SpriteManager_GetSpriteList(v6);
-    v0.unk_0C = SpriteManager_FindPlttResourceProxy(v6, param6);
-    v0.unk_10 = NULL;
-    v0.unk_14 = v2.offset;
-    v0.unk_18 = x;
-    v0.unk_1C = y;
-    v0.unk_20 = 0;
-    v0.unk_24 = 100;
-    v0.unk_28 = NNS_G2D_VRAM_TYPE_2DSUB;
+    v0.fontOAMManager = param0->unk_3C;
+    v0.window = &window;
+    v0.spriteList = SpriteManager_GetSpriteList(v6);
+    v0.paletteProxy = SpriteManager_FindPlttResourceProxy(v6, param6);
+    v0.parentSprite = NULL;
+    v0.charOffset = v2.offset;
+    v0.x = x;
+    v0.y = y;
+    v0.resourcePriority = 0;
+    v0.spritePriority = 100;
+    v0.vramType = NNS_G2D_VRAM_TYPE_2DSUB;
     v0.heapID = HEAP_ID_21;
 
     v4 = FontOAM_New(&v0);

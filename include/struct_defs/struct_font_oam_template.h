@@ -9,17 +9,17 @@
 #include "sprite.h"
 
 typedef struct {
-    const FontOAMManager *unk_00;
-    const Window *unk_04;
-    SpriteList *unk_08;
-    const NNSG2dImagePaletteProxy *unk_0C;
-    const Sprite *unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    int unk_28;
+    const FontOAMManager *fontOAMManager;
+    const Window *window;
+    SpriteList *spriteList;
+    const NNSG2dImagePaletteProxy *paletteProxy;
+    const Sprite *parentSprite;
+    int charOffset;
+    int x;
+    int y;
+    int resourcePriority;
+    int spritePriority;
+    int vramType;
     enum HeapID heapID;
 } FontOAMTemplate;
 

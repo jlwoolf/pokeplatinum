@@ -2032,17 +2032,17 @@ void WiFiLobbyMinigameBalloon_CreateTextOAM(BgConfig *param0, SpriteManager *par
 
     param10 += 0;
 
-    v0.unk_00 = param2;
-    v0.unk_04 = &v1;
-    v0.unk_08 = SpriteManager_GetSpriteList(param1);
-    v0.unk_0C = SpriteManager_FindPlttResourceProxy(param1, param8);
-    v0.unk_10 = NULL;
-    v0.unk_14 = v2.offset;
-    v0.unk_18 = param9;
-    v0.unk_1C = param10;
-    v0.unk_20 = param12;
-    v0.unk_24 = param13;
-    v0.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v0.fontOAMManager = param2;
+    v0.window = &v1;
+    v0.spriteList = SpriteManager_GetSpriteList(param1);
+    v0.paletteProxy = SpriteManager_FindPlttResourceProxy(param1, param8);
+    v0.parentSprite = NULL;
+    v0.charOffset = v2.offset;
+    v0.x = param9;
+    v0.y = param10;
+    v0.resourcePriority = param12;
+    v0.spritePriority = param13;
+    v0.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v0.heapID = HEAP_ID_110;
 
     v4 = FontOAM_New(&v0);

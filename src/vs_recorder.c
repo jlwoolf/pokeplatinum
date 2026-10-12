@@ -83,7 +83,7 @@ VsRecorderState *VsRecorder_GetState(ApplicationManager *appMan)
 void VsRecorder_SetPlaybackRequest(VsRecorderPlaybackRequest *request, BOOL requested, int param2)
 {
     request->requested = requested;
-    request->unk_04 = param2;
+    request->playbackMode = param2;
 }
 
 // Records that the player used one of the Global Terminal's online features,

@@ -6,7 +6,7 @@
 // recording, and the app reads it once the viewer exits.
 typedef struct {
     BOOL requested;
-    int unk_04;
+    int playbackMode;
     u8 padding_08[8];
 } VsRecorderPlaybackRequest;
 

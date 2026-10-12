@@ -132,17 +132,17 @@ void CapsuleGraphics_CreateFontOAM(CapsuleAppManager *appMan, int index, int par
     v3 = FontOAM_GetWindowSize(&window, NNS_G2D_VRAM_TYPE_2DSUB, HEAP_ID_53);
     CharTransfer_AllocRange(v3, 1, NNS_G2D_VRAM_TYPE_2DSUB, &appMan->graphicsMan.charTransfer[index]);
 
-    fontOAMManager.unk_00 = appMan->graphicsMan.fontOAMManager;
-    fontOAMManager.unk_04 = &window;
-    fontOAMManager.unk_08 = SpriteManager_GetSpriteList(appMan->graphicsMan.spriteManager);
-    fontOAMManager.unk_0C = SpriteManager_FindPlttResourceProxy(appMan->graphicsMan.spriteManager, resID);
-    fontOAMManager.unk_10 = NULL;
-    fontOAMManager.unk_14 = appMan->graphicsMan.charTransfer[index].offset;
-    fontOAMManager.unk_18 = param2 - Font_CalcStringWidth(FONT_SUBSCREEN, string, 0) / 2;
-    fontOAMManager.unk_1C = param3 + 192;
-    fontOAMManager.unk_20 = 1;
-    fontOAMManager.unk_24 = 40;
-    fontOAMManager.unk_28 = NNS_G2D_VRAM_TYPE_2DSUB;
+    fontOAMManager.fontOAMManager = appMan->graphicsMan.fontOAMManager;
+    fontOAMManager.window = &window;
+    fontOAMManager.spriteList = SpriteManager_GetSpriteList(appMan->graphicsMan.spriteManager);
+    fontOAMManager.paletteProxy = SpriteManager_FindPlttResourceProxy(appMan->graphicsMan.spriteManager, resID);
+    fontOAMManager.parentSprite = NULL;
+    fontOAMManager.charOffset = appMan->graphicsMan.charTransfer[index].offset;
+    fontOAMManager.x = param2 - Font_CalcStringWidth(FONT_SUBSCREEN, string, 0) / 2;
+    fontOAMManager.y = param3 + 192;
+    fontOAMManager.resourcePriority = 1;
+    fontOAMManager.spritePriority = 40;
+    fontOAMManager.vramType = NNS_G2D_VRAM_TYPE_2DSUB;
     fontOAMManager.heapID = HEAP_ID_53;
     appMan->graphicsMan.fontOAM[index] = FontOAM_New(&fontOAMManager);
 

@@ -857,8 +857,8 @@ static DressUpAppData *DressUp_CreateAppData(enum HeapID heapID, SaveData *saveD
     appData->options = SaveData_GetOptions(saveData);
     appData->records = SaveData_GetGameRecords(saveData);
     appData->trainerInfo = SaveData_GetTrainerInfo(saveData);
-    appData->unk_18 = appResult;
-    appData->unk_1C = param4;
+    appData->appResult = appResult;
+    appData->speedUpOnTouch = param4;
 
     return appData;
 }
@@ -1118,8 +1118,8 @@ void FieldSystem_OpenUnionRoomDrawingApp(FieldSystem *fieldSystem)
 {
     UnionRoomDrawingAppArgs *appData = Heap_Alloc(HEAP_ID_FIELD3, sizeof(UnionRoomDrawingAppArgs));
 
-    appData->unk_00 = fieldSystem->unk_80; // Union Room state
-    appData->unk_04 = fieldSystem->journalEntry;
+    appData->trainers = fieldSystem->unk_80; // Union Room state
+    appData->journalEntry = fieldSystem->journalEntry;
     appData->options = SaveData_GetOptions(fieldSystem->saveData);
 
     FieldSystem_StartChildProcess(fieldSystem, &gUnionRoomDrawingAppTemplate, appData);
@@ -1130,7 +1130,7 @@ void *FieldSystem_OpenMixRecordsApp(FieldSystem *fieldSystem)
     MixRecordsAppArgs *appData = Heap_Alloc(HEAP_ID_FIELD2, sizeof(MixRecordsAppArgs));
 
     appData->saveData = fieldSystem->saveData;
-    appData->unk_04 = fieldSystem->unk_80; // Union Room state
+    appData->trainers = fieldSystem->unk_80; // Union Room state
     appData->options = SaveData_GetOptions(fieldSystem->saveData);
     appData->records = SaveData_GetGameRecords(fieldSystem->saveData);
     appData->journalEntry = fieldSystem->journalEntry;
@@ -1395,8 +1395,8 @@ void *FieldSystem_OpenWifiBattleTowerApp(FieldSystem *fieldSystem, int mode, int
     appData->saveData = fieldSystem->saveData;
     appData->profileId = WiFiList_GetUserGsProfileId(SaveData_GetWiFiList(fieldSystem->saveData));
     appData->mode = mode;
-    appData->unk_24 = param2;
-    appData->unk_20 = 1;
+    appData->param = param2;
+    appData->fromMenu = 1;
 
     FieldSystem_StartChildProcess(fieldSystem, &appTemplate, appData);
 
@@ -1563,8 +1563,8 @@ static BOOL FieldTask_SlotMachine(FieldTask *taskMan)
 
             int bonusRoundsWins = SystemVars_GetConsecutiveBonusRoundWins(varsFlags);
 
-            if (taskEnv->appArgs.unk_0C > bonusRoundsWins) {
-                SystemVars_SetConsecutiveBonusRoundWins(varsFlags, taskEnv->appArgs.unk_0C);
+            if (taskEnv->appArgs.consecutiveBonusRoundWins > bonusRoundsWins) {
+                SystemVars_SetConsecutiveBonusRoundWins(varsFlags, taskEnv->appArgs.consecutiveBonusRoundWins);
             }
 
             Heap_Free(taskEnv);
@@ -1584,13 +1584,13 @@ void FieldTask_StartSlotMachine(FieldTask *task, int slotMachineID)
 
     // The minigame writes the player's final coin count back through this
     // pointer.
-    taskEnv->appArgs.unk_00 = &taskEnv->coins;
+    taskEnv->appArgs.coins = &taskEnv->coins;
     taskEnv->coins = Coins_GetValue(SaveData_GetCoins(fieldSystem->saveData));
     taskEnv->startTime = GetTimestamp();
     taskEnv->appArgs.records = SaveData_GetGameRecords(fieldSystem->saveData);
-    taskEnv->appArgs.unk_0C = 0;
+    taskEnv->appArgs.consecutiveBonusRoundWins = 0;
     taskEnv->appArgs.msgBoxFrame = Options_Frame(options);
-    taskEnv->appArgs.unk_04 = SlotMachine_GetMachineMode(fieldSystem->saveData, slotMachineID);
+    taskEnv->appArgs.machineMode = SlotMachine_GetMachineMode(fieldSystem->saveData, slotMachineID);
 
     GameRecords_IncrementTrainerScore(SaveData_GetGameRecords(fieldSystem->saveData), TRAINER_SCORE_EVENT_UNK_05);
     FieldTask_InitCall(task, FieldTask_SlotMachine, taskEnv);
@@ -1806,8 +1806,8 @@ void FieldSystem_OpenGlobalTerminal(FieldSystem *fieldSystem, int param1, int pa
 
     appData->fieldSystem = fieldSystem;
     appData->saveData = fieldSystem->saveData;
-    appData->unk_08 = param1;
-    appData->unk_0C = param2;
+    appData->mode = param1;
+    appData->param = param2;
 
     FieldSystem_StartChildProcess(fieldSystem, &appTemplate, appData);
 }

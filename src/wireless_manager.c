@@ -538,7 +538,7 @@ static void WirelessManager_FinishStartScan(void *wm_startscancallback)
         if ((sWirelessManager->ggidScanCallback != NULL) && (callback->gameInfoLength >= 8)) {
             WirelessGameInfo *v1 = (WirelessGameInfo *)callback->gameInfo.userGameInfo;
 
-            sWirelessManager->ggidScanCallback(callback->gameInfo.ggid, v1->unk_04);
+            sWirelessManager->ggidScanCallback(callback->gameInfo.ggid, v1->commType);
         }
 
         if ((callback->gameInfoLength < 8) || (callback->gameInfo.ggid != sWirelessManager->parentParam.ggid)) {

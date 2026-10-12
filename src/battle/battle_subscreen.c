@@ -2232,17 +2232,17 @@ static void BattleSubscreen_NewFontOAM(BattleSubscreen *btlSubscreen, FontOAMEnt
 
     y += (((192 + 80) << FX32_SHIFT) >> FX32_SHIFT) - 8;
 
-    fontOAMParams.unk_00 = btlSubscreen->fontOAMManager;
-    fontOAMParams.unk_04 = &window;
-    fontOAMParams.unk_08 = SpriteManager_GetSpriteList(spriteMan);
-    fontOAMParams.unk_0C = SpriteManager_FindPlttResourceProxy(spriteMan, plttResID);
-    fontOAMParams.unk_10 = NULL;
-    fontOAMParams.unk_14 = allocation.offset;
-    fontOAMParams.unk_18 = x;
-    fontOAMParams.unk_1C = y;
-    fontOAMParams.unk_20 = 0;
-    fontOAMParams.unk_24 = 100;
-    fontOAMParams.unk_28 = NNS_G2D_VRAM_TYPE_2DSUB;
+    fontOAMParams.fontOAMManager = btlSubscreen->fontOAMManager;
+    fontOAMParams.window = &window;
+    fontOAMParams.spriteList = SpriteManager_GetSpriteList(spriteMan);
+    fontOAMParams.paletteProxy = SpriteManager_FindPlttResourceProxy(spriteMan, plttResID);
+    fontOAMParams.parentSprite = NULL;
+    fontOAMParams.charOffset = allocation.offset;
+    fontOAMParams.x = x;
+    fontOAMParams.y = y;
+    fontOAMParams.resourcePriority = 0;
+    fontOAMParams.spritePriority = 100;
+    fontOAMParams.vramType = NNS_G2D_VRAM_TYPE_2DSUB;
     fontOAMParams.heapID = HEAP_ID_BATTLE;
 
     FontOAM *fontOAM = FontOAM_New(&fontOAMParams);

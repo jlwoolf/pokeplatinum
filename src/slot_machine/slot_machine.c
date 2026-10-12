@@ -177,8 +177,8 @@ static void SlotMachine_SaveResult(SlotMachineAppData *param0, SlotMachineContex
         v0 = 50000;
     }
 
-    (*param0->unk_00->unk_00) = v0;
-    param0->unk_00->unk_0C = param1->unk_20;
+    (*param0->unk_00->coins) = v0;
+    param0->unk_00->consecutiveBonusRoundWins = param1->unk_20;
 
     if (param0->unk_00->records != NULL) {
         GameRecords_AddToRecordValue(param0->unk_00->records, RECORD_UNK_014, param1->unk_0C);
@@ -189,8 +189,8 @@ static SlotMachineContext *SlotMachine_NewContext(SlotMachineAppArgs *param0)
 {
     SlotMachineContext *v0 = SlotMachine_Alloc(sizeof(SlotMachineContext));
 
-    v0->unk_60 = *(param0->unk_00);
-    v0->unk_88 = param0->unk_04;
+    v0->unk_60 = *(param0->coins);
+    v0->unk_88 = param0->machineMode;
     v0->msgBoxFrame = param0->msgBoxFrame;
 
     return v0;

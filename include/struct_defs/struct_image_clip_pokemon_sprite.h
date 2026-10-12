@@ -8,10 +8,10 @@
 #include "touch_screen.h"
 
 typedef struct {
-    PokemonSprite *unk_00;
-    TouchScreenHitTable unk_04;
-    ImageClipPixelBounds unk_08;
-    Pokemon *unk_0C;
+    PokemonSprite *sprite;
+    TouchScreenHitTable hitTable;
+    ImageClipPixelBounds pixelBounds;
+    Pokemon *pokemon;
 } ImageClipPokemonSprite;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_POKEMON_SPRITE_H

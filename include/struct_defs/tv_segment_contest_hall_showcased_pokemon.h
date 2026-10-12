@@ -2,7 +2,7 @@
 #define POKEPLATINUM_TV_EPISODE_SEGMENT_CONTEST_HALL_SHOWCASED_POKEMON_H
 
 typedef struct TVSegment_ContestHall_ShowcasedPokemon {
-    u8 unk_00;
+    u8 isShowcased;
     u16 species;
     u8 gender;
     u8 language;

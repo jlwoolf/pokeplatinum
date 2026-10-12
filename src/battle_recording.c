@@ -53,7 +53,7 @@ void BattleRecording_Init(BattleRecording *battleRecording)
 {
     MI_CpuClear32(battleRecording, sizeof(BattleRecording));
     // Mark the recording as empty; the field is never read back.
-    battleRecording->unk_00 = 0xFFFFFFFF;
+    battleRecording->initMarker = 0xFFFFFFFF;
 }
 
 void BattleRecording_New(SaveData *saveData, enum HeapID heapID, int *resultCode)
@@ -433,7 +433,7 @@ static BOOL BattleRecording_IsValid(SaveData *saveData, const BattleRecording *b
                 }
 
                 for (v5 = 0; v5 < 4; v5++) {
-                    if (v6->unk_1C[v5] > 467) {
+                    if (v6->moves[v5] > 467) {
                         return 0;
                     }
                 }
@@ -738,9 +738,9 @@ u64 BattleRecording_GetSummaryValue(BattleRecordingSummary *summary, int field, 
 
         return summary->battleType;
     case 4:
-        return summary->unk_58;
+        return summary->recordingId;
     case 5:
-        return summary->unk_27;
+        return summary->savedFlag;
     }
 
     GF_ASSERT(FALSE);

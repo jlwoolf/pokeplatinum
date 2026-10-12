@@ -30,7 +30,7 @@ typedef struct PlayerProfile {
     // Nonzero when the intro message is stored as a raw charcode string in
     // `introMessage` rather than as an EasyChat sentence in `introSentence`.
     u8 introMessageIsString;
-    u8 unk_1F;
+    u8 reserved;
     // The intro message. Both members overlay the same 80-byte buffer: the
     // EasyChat sentence occupies only its first bytes, while the raw string
     // form uses the whole buffer.
@@ -38,7 +38,7 @@ typedef struct PlayerProfile {
         EasyChatSentence introSentence;
         u16 introMessage[40];
     };
-    u8 unk_70[12];
+    u8 unused_70[12];
     // Checksum over everything before it, used to validate a received profile.
     BattleRecordingChecksum checksum;
 } PlayerProfile;

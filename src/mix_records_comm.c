@@ -282,7 +282,7 @@ void MixRecordsComm_HandlePlayerReady(int param0, int param1, void *param2, void
     MixRecords_HandlePlayerReady(v0, 1, v1);
 
     if (CommSys_CurNetId() == 0) {
-        v0->unk_414 = 0;
+        v0->unused_414 = 0;
     }
 }
 

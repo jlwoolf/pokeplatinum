@@ -197,7 +197,7 @@ int WifiBattleTower_ScreenInit(WifiBattleTowerAppState *appState, int unused)
     appState->waitDial = NULL;
 
     if (!DWC_CheckInet()) {
-        if (appState->args->unk_24) {
+        if (appState->args->param) {
             WifiBattleTower_DisplayMessage(appState, appState->msgLoader2, 1, TEXT_SPEED_FAST, 0xf0f);
             WifiBattleTower_SetState(appState, BT_STATE_WAIT_TEXT, BT_STATE_INIT_INET);
             WifiBattleTower_ShowWaitDial(appState);
@@ -450,7 +450,7 @@ static int WifiBattleTower_State_ConnectedYesNoMenu(WifiBattleTowerAppState *app
                 appState->state = BT_STATE_GOODBYE_PROMPT;
             }
 
-            appState->args->unk_20 = 1;
+            appState->args->fromMenu = 1;
         }
     }
 
@@ -1004,7 +1004,7 @@ static int WifiBattleTower_State_DownloadCompletePrompt(WifiBattleTowerAppState 
     WifiBattleTower_SetState(appState, BT_STATE_WAIT_TEXT, BT_STATE_DISCONNECT_ENTRY);
     WifiBattleTower_HideWaitDial(appState);
 
-    appState->args->unk_20 = 0;
+    appState->args->fromMenu = 0;
 
     return BT_LOOP_STATE_MAIN;
 }
@@ -1095,7 +1095,7 @@ static int WifiBattleTower_State_UploadCompletePrompt(WifiBattleTowerAppState *a
     WifiBattleTower_SetState(appState, BT_STATE_WAIT_TEXT, BT_STATE_DISCONNECT_ENTRY);
     WifiBattleTower_HideWaitDial(appState);
 
-    appState->args->unk_20 = 0;
+    appState->args->fromMenu = 0;
 
     return BT_LOOP_STATE_MAIN;
 }
@@ -1297,7 +1297,7 @@ static int WifiBattleTower_State_MatchListCompletePrompt(WifiBattleTowerAppState
     WifiBattleTower_SetState(appState, BT_STATE_WAIT_TEXT, BT_STATE_DISCONNECT_ENTRY);
     WifiBattleTower_HideWaitDial(appState);
 
-    appState->args->unk_20 = 0;
+    appState->args->fromMenu = 0;
 
     return BT_LOOP_STATE_MAIN;
 }
@@ -1343,7 +1343,7 @@ static int WifiBattleTower_State_ExitYesNo(WifiBattleTowerAppState *appState)
             appState->state = BT_STATE_SELECT_OPPONENT_PROMPT;
         } else {
             appState->state = BT_STATE_GOODBYE_PROMPT;
-            appState->args->unk_20 = 1;
+            appState->args->fromMenu = 1;
         }
     }
 
@@ -1367,7 +1367,7 @@ static int WifiBattleTower_State_ExitMatchListYesNo(WifiBattleTowerAppState *app
             appState->state = BT_STATE_SELECT_RANK_PROMPT;
         } else {
             appState->state = BT_STATE_GOODBYE_PROMPT;
-            appState->args->unk_20 = 1;
+            appState->args->fromMenu = 1;
         }
     }
 

@@ -242,7 +242,7 @@ static void UnionRoomComm_HandlePlayerReady(int netId, int unused, void *data, v
     SpinTradeGroup_HandleConfirm(comm->app->groupAppData, 1, readyNetId);
 
     if (CommSys_CurNetId() == 0) {
-        comm->unk_34 = 0;
+        comm->unused_34 = 0;
     }
 }
 

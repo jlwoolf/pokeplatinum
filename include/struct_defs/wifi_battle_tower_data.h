@@ -54,8 +54,8 @@ typedef struct WifiBattleTowerRecord {
             u16 reward2FullPC : 1;
             u16 reward3FullPC : 1;
             u16 lossStreakInitialized : 1;
-            u16 unk_08_val1_unk_00_5 : 1;
-            u16 unk_08_val1_unk_00_6 : 1;
+            u16 unusedFlag5 : 1;
+            u16 unusedFlag6 : 1;
             u16 hasRegisteredTeam : 1;
             u16 challengeActiveFlag_1 : 1;
             u16 challengeActiveFlag_2 : 1;
@@ -80,19 +80,19 @@ typedef struct BattleTowerPartnerData {
 } BattleTowerPartnerData;
 
 typedef struct WifiBattleTowerSave {
-    u8 unk_00_0 : 1;
+    u8 flag : 1;
     u8 isInProgress : 1;
     u8 challengeMode : 3;
     u8 partnerID : 3;
     u8 unused_01;
     u8 nextOpponentNum;
-    u8 unk_03;
-    u16 unk_04;
-    u16 unk_06;
+    u8 counter1;
+    u16 counter2;
+    u16 counter3;
     u8 partySlots[4];
     u16 trainerIDs[BT_OPPONENTS_COUNT * 2];
     u32 rngSeed;
-    BattleTowerPartnerData unk_2C;
+    BattleTowerPartnerData partnerData;
 } WifiBattleTowerSave;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_BATTLE_TOWER_DATA_H

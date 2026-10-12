@@ -137,17 +137,17 @@ void contest_competition_0223F1E8(enum HeapID heapID, BgConfig *param1, SpriteMa
 
     param11 += 0 - 8;
 
-    v0.unk_00 = param3;
-    v0.unk_04 = &v1;
-    v0.unk_08 = SpriteManager_GetSpriteList(param2);
-    v0.unk_0C = SpriteManager_FindPlttResourceProxy(param2, param9);
-    v0.unk_10 = NULL;
-    v0.unk_14 = v2.offset;
-    v0.unk_18 = param10;
-    v0.unk_1C = param11;
-    v0.unk_20 = param13;
-    v0.unk_24 = param14;
-    v0.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v0.fontOAMManager = param3;
+    v0.window = &v1;
+    v0.spriteList = SpriteManager_GetSpriteList(param2);
+    v0.paletteProxy = SpriteManager_FindPlttResourceProxy(param2, param9);
+    v0.parentSprite = NULL;
+    v0.charOffset = v2.offset;
+    v0.x = param10;
+    v0.y = param11;
+    v0.resourcePriority = param13;
+    v0.spritePriority = param14;
+    v0.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v0.heapID = heapID;
 
     v4 = FontOAM_New(&v0);

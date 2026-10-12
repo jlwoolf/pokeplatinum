@@ -76,7 +76,7 @@ UnionRoomTrainers *UnionRoomTrainers_New(UnionRoom *unionRoom)
     MI_CpuClearFast(trainers, sizeof(UnionRoomTrainers));
 
     trainers->unionRoom = unionRoom;
-    trainers->unk_47C = 1;
+    trainers->initialised = 1;
     trainers->task = SysTask_Start(UnionRoomTrainers_Update, trainers, 11);
     trainers->fieldSystem = UnionRoom_GetFieldSystem(unionRoom);
     trainers->palPad = SaveData_SaveTable(trainers->fieldSystem->saveData, SAVE_TABLE_ENTRY_PAL_PAD);
@@ -157,9 +157,9 @@ static int UnionRoomTrainers_UpdateGroup(UnionRoomTrainers *trainers, int group,
     }
 
     gameInfo = (WirelessGameInfo *)bssDesc->gameInfo.userGameInfo;
-    activity = (UnionRoomActivity *)gameInfo->unk_30;
+    activity = (UnionRoomActivity *)gameInfo->battleRegulation;
 
-    if (trainers->slots[group].trainerId != gameInfo->unk_00) {
+    if (trainers->slots[group].trainerId != gameInfo->trainerId) {
         // The group leader changed; drop the whole group and let it respawn.
         for (i = 0; i < 4; i++) {
             slot = gUnionRoomTrainerGroupBaseSlots[group] + i;
@@ -174,16 +174,16 @@ static int UnionRoomTrainers_UpdateGroup(UnionRoomTrainers *trainers, int group,
 
         switch (trainers->slots[slot].phase) {
         case 0:
-            if (activity->unk_18[i] != 0) {
+            if (activity->appearance[i] != 0) {
                 // A player occupies this slot; show them.
                 trainers->slots[slot].desiredState = 2;
-                trainers->slots[slot].appearance = (activity->unk_18[i] & 0x7f);
-                trainers->slots[slot].friendRank = PalPad_TrainerIsFriend(palPad, activity->unk_00[i]);
+                trainers->slots[slot].appearance = (activity->appearance[i] & 0x7f);
+                trainers->slots[slot].friendRank = PalPad_TrainerIsFriend(palPad, activity->trainerIds[i]);
                 anyPresent = 1;
             }
             break;
         case 2:
-            if (activity->unk_18[i] == 0) {
+            if (activity->appearance[i] == 0) {
                 // The player left; request the slot to warp out.
                 UnionRoomTrainers_SetDesiredState(trainers->slots, slot, 3);
                 {
@@ -225,7 +225,7 @@ static void UnionRoomTrainers_UpdateFromBssDescs(UnionRoomTrainers *trainers, Un
 
         if (bssDesc != NULL) {
             gameInfo = (WirelessGameInfo *)bssDesc->gameInfo.userGameInfo;
-            trainerInfo = (TrainerInfo *)gameInfo->unk_10;
+            trainerInfo = (TrainerInfo *)gameInfo->trainerInfo;
         } else {
             gameInfo = NULL;
             trainerInfo = NULL;
@@ -236,7 +236,7 @@ static void UnionRoomTrainers_UpdateFromBssDescs(UnionRoomTrainers *trainers, Un
             if (bssDesc != NULL) {
                 trainers->slots[group].appearance = TrainerInfo_Appearance(trainerInfo);
                 trainers->slots[group].friendRank = PalPad_TrainerIsFriend(palPad, TrainerInfo_ID(trainerInfo));
-                trainers->slots[group].trainerId = gameInfo->unk_00;
+                trainers->slots[group].trainerId = gameInfo->trainerId;
 
                 if (UnionRoomTrainers_UpdateGroup(trainers, group, bssDesc, palPad)) {
                     trainers->slots[group].desiredState = 2;
@@ -249,7 +249,7 @@ static void UnionRoomTrainers_UpdateFromBssDescs(UnionRoomTrainers *trainers, Un
             if (bssDesc == NULL) {
                 UnionRoomTrainers_SetDesiredState(trainers->slots, group, 3);
             } else {
-                if (trainers->slots[group].trainerId != gameInfo->unk_00) {
+                if (trainers->slots[group].trainerId != gameInfo->trainerId) {
                     UnionRoomTrainers_SetDesiredState(trainers->slots, group, 3);
                 }
             }

@@ -356,7 +356,7 @@ static BOOL TVInterview_IsPoketchWatchEligible(FieldSystem *fieldSystem)
 static BOOL TVInterview_IsContestHallEligible(FieldSystem *fieldSystem)
 {
     TVSegment_ContestHall_ShowcasedPokemon *data = TVBroadcast_GetShowcasedPokemon(SaveData_GetTVBroadcast(fieldSystem->saveData));
-    return data->unk_00;
+    return data->isShowcased;
 }
 
 static BOOL TVInterview_IsRightOnPhotoCornerEligible(FieldSystem *fieldSystem)

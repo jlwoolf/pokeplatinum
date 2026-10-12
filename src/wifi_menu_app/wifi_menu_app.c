@@ -1801,7 +1801,7 @@ static void WiFiMenuApp_SetupOwnStatus(WiFiMenuApp *param0, int param1)
 
     WiFiMenuApp_UpdateCommState(param0, param1);
 
-    param0->unk_04->ownStatus.unk_1C = 0;
+    param0->unk_04->ownStatus.reserved = 0;
     param0->unk_04->ownStatus.appearance = TrainerInfo_Appearance(v0);
     param0->unk_04->ownStatus.gender = TrainerInfo_Gender(v0);
     param0->unk_04->ownStatus.country = WiFiHistory_GetCountry(wiFiHistory);
@@ -5930,17 +5930,17 @@ static void WiFiMenuApp_InitTouchScreenSprites(WiFiMenuApp *param0, NARC *param1
 
     GF_ASSERT(v0);
 
-    v7.unk_00 = param0->unk_32C;
-    v7.unk_04 = &v3;
-    v7.unk_08 = param0->unk_18C;
-    v7.unk_0C = SpriteTransfer_GetPaletteProxy(param0->unk_BE0.unk_20C[1], NULL);
-    v7.unk_10 = param0->unk_BE0.unk_21C[1];
-    v7.unk_14 = param0->unk_BE0.unk_228.offset;
-    v7.unk_18 = v8;
-    v7.unk_1C = -8;
-    v7.unk_20 = 0;
-    v7.unk_24 = 0;
-    v7.unk_28 = NNS_G2D_VRAM_TYPE_2DSUB;
+    v7.fontOAMManager = param0->unk_32C;
+    v7.window = &v3;
+    v7.spriteList = param0->unk_18C;
+    v7.paletteProxy = SpriteTransfer_GetPaletteProxy(param0->unk_BE0.unk_20C[1], NULL);
+    v7.parentSprite = param0->unk_BE0.unk_21C[1];
+    v7.charOffset = param0->unk_BE0.unk_228.offset;
+    v7.x = v8;
+    v7.y = -8;
+    v7.resourcePriority = 0;
+    v7.spritePriority = 0;
+    v7.vramType = NNS_G2D_VRAM_TYPE_2DSUB;
     v7.heapID = heapID;
 
     param0->unk_BE0.unk_234 = FontOAM_NewFromWindow(&v7, v5);

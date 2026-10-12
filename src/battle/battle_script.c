@@ -12016,17 +12016,17 @@ static void BattleScript_LoadPartyLevelUpIcon(BattleSystem *battleSys, BattleScr
     size = FontOAM_GetWindowSize(&window, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_BATTLE);
     CharTransfer_AllocRange(size, 1, NNS_G2D_VRAM_TYPE_2DMAIN, &charTransferAllocation);
 
-    v12.unk_00 = data->tmpPtr[0];
-    v12.unk_04 = &window;
-    v12.unk_08 = SpriteManager_GetSpriteList(spriteMan);
-    v12.unk_0C = SpriteManager_FindPlttResourceProxy(spriteMan, 20016);
-    v12.unk_10 = NULL;
-    v12.unk_14 = charTransferAllocation.offset;
-    v12.unk_18 = 176;
-    v12.unk_1C = 8;
-    v12.unk_20 = 0;
-    v12.unk_24 = 100;
-    v12.unk_28 = NNS_G2D_VRAM_TYPE_2DMAIN;
+    v12.fontOAMManager = data->tmpPtr[0];
+    v12.window = &window;
+    v12.spriteList = SpriteManager_GetSpriteList(spriteMan);
+    v12.paletteProxy = SpriteManager_FindPlttResourceProxy(spriteMan, 20016);
+    v12.parentSprite = NULL;
+    v12.charOffset = charTransferAllocation.offset;
+    v12.x = 176;
+    v12.y = 8;
+    v12.resourcePriority = 0;
+    v12.spritePriority = 100;
+    v12.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v12.heapID = HEAP_ID_BATTLE;
 
     data->fontOAM = FontOAM_New(&v12);

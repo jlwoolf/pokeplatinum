@@ -27,14 +27,14 @@
 // exchange state used while mixing records in the Union Room.
 struct MixRecordsComm {
     BgConfig *bgConfig; // Background configuration shared with the app.
-    BOOL unk_04; // Unused.
+    BOOL unused_04; // Unused.
     MixRecordsAppArgs *appArgs; // Application arguments (save data, options, ...).
     MixRecordsAnimation animation; // Rotating record-icon animation state.
     SysTask *vBlankTask; // Per-VBlank task driving the animation.
     StringTemplate *strTemplate; // Template used to format messages.
     MessageLoader *msgLoader; // Loader for the app's message bank.
     String *trainerNameStrings[5]; // Per-player trainer name strings.
-    String *unk_40; // Unused.
+    String *unused_40; // Unused.
     String *formattedMessage; // Scratch string for the current message.
     String *headerString; // Header text shown at the top of the screen.
     int textPrinterID; // Handle of the active text printer (0xff when none).
@@ -42,16 +42,16 @@ struct MixRecordsComm {
     G2dRenderer g2dRenderer; // 2D renderer for the sprite list.
     SpriteResourceCollection *spriteResourceCollections[4]; // Sprite resource collections.
     SpriteResource *spriteResources[3][4]; // Loaded sprite resources.
-    SpriteResourcesHeader unk_220; // Unused.
-    SpriteResourcesHeader unk_244; // Unused.
+    SpriteResourcesHeader unused_220; // Unused.
+    SpriteResourcesHeader unused_244; // Unused.
     SpriteResourcesHeader spriteHeader; // Header for the record-icon sprites.
     Sprite *sprites[14]; // Record-icon sprites.
-    Sprite *unk_2C4[14]; // Unused.
+    Sprite *unused_2C4[14]; // Unused.
     Window playerWindows[5]; // Per-player list windows.
     Window messageWindow; // Message box window.
-    Window unk_35C; // Unused empty window.
+    Window unused_35C; // Unused empty window.
     Window headerWindow; // Header text window.
-    Window *unk_37C[2]; // Unused.
+    Window *unused_37C[2]; // Unused.
     Menu *yesNoMenu; // Yes/No choice menu.
     void *charDataBuffers[2]; // Character data buffers (freed on exit).
     NNSG2dCharacterData *charData[2]; // Character data for the trainer sprites.
@@ -59,17 +59,17 @@ struct MixRecordsComm {
     NNSG2dPaletteData *plttData[2]; // Palette data for the trainer sprites.
     int state; // Current state-machine state.
     int nextState; // State to switch to once the current one finishes.
-    int unk_3B0; // Unused.
+    int unused_3B0; // Unused.
     int timer; // Frame counter used by several states.
-    u8 unk_3B8[8][2]; // Unused.
+    u8 unused_3B8[8][2]; // Unused.
     TrainerInfo *trainerInfo[5][2]; // Per-player trainer info (current/previous).
     int spriteStates[5]; // Per-player sprite transition state.
     int syncSaveState; // Save-sync state machine (see CommSyncSave_Update).
     u16 paletteCycleAngle; // Angle used to pulse the record-icon palette.
     u16 *paletteBuffer; // Palette buffer for the trainer sprites.
-    u8 unk_410; // Unused.
-    u8 unk_411; // Unused.
-    int unk_414; // Written but never read.
+    u8 unused_410; // Unused.
+    u8 unused_411; // Unused.
+    int unused_414; // Written but never read.
     MixRecordsRecord localRecord; // Local player's record, sent on command 116.
     MixRecordsRecord receivedRecords[5]; // Records received from each player.
     int receivedRecordCount; // Number of records received so far.

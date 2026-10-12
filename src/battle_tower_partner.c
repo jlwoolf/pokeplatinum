@@ -166,16 +166,16 @@ u16 BattleTower_ReceivePartnerData(FieldSystem *fieldSystem, const u16 *partnerD
     BattleTower *battleTower = fieldSystem->battleTower;
 
     battleTower->partnerGender = (u8)partnerData[0];
-    battleTower->unk_16[0] = partnerData[1];
-    battleTower->unk_16[1] = partnerData[2];
-    battleTower->unk_14 = partnerData[3];
+    battleTower->partnerSpecies[0] = partnerData[1];
+    battleTower->partnerSpecies[1] = partnerData[2];
+    battleTower->streak = partnerData[3];
     battleTower->partnerID = BT_PARTNERS_COUNT + battleTower->partnerGender;
 
-    if ((battleTower->unk_2E[0] == battleTower->unk_16[0]) || (battleTower->unk_2E[0] == battleTower->unk_16[1])) {
+    if ((battleTower->partySpecies[0] == battleTower->partnerSpecies[0]) || (battleTower->partySpecies[0] == battleTower->partnerSpecies[1])) {
         speciesOverlap += 1;
     }
 
-    if ((battleTower->unk_2E[1] == battleTower->unk_16[0]) || (battleTower->unk_2E[1] == battleTower->unk_16[1])) {
+    if ((battleTower->partySpecies[1] == battleTower->partnerSpecies[0]) || (battleTower->partySpecies[1] == battleTower->partnerSpecies[1])) {
         speciesOverlap += 2;
     }
 
@@ -202,7 +202,7 @@ u16 BattleTower_IsPartnerDataReady(FieldSystem *fieldSystem, const u16 *partnerD
 {
     BattleTower *battleTower = fieldSystem->battleTower;
 
-    if (battleTower->unk_10_3 || partnerData[0]) {
+    if (battleTower->partnerReady || partnerData[0]) {
         return 1;
     }
 
@@ -218,27 +218,27 @@ void BattleTower_BuildPartnerDataPacket(BattleTower *battleTower, SaveData *save
     Pokemon *unusedPokemon;
     TrainerInfo *trainerInfo = SaveData_GetTrainerInfo(saveData);
 
-    battleTower->unk_83E[0] = TrainerInfo_Gender(trainerInfo);
+    battleTower->trainerIdBuffer[0] = TrainerInfo_Gender(trainerInfo);
     party = SaveData_GetParty(saveData);
 
     for (i = 0; i < 2; i++) {
-        battleTower->unk_83E[1 + i] = Pokemon_GetValue(Party_GetPokemonBySlotIndex(party, battleTower->unk_2A[i]), MON_DATA_SPECIES, NULL);
+        battleTower->trainerIdBuffer[1 + i] = Pokemon_GetValue(Party_GetPokemonBySlotIndex(party, battleTower->partyOrder[i]), MON_DATA_SPECIES, NULL);
     }
 
-    battleTower->unk_83E[3] = WifiBattleTowerRecord_UpdateRoomNum(battleTower->unk_74, 3, 0);
+    battleTower->trainerIdBuffer[3] = WifiBattleTowerRecord_UpdateRoomNum(battleTower->wifiBattleTowerRecord, 3, 0);
 }
 
 // Copies the generated opponent trainer IDs into the outgoing packet.
 void BattleTower_BuildTrainerIDPacket(BattleTower *battleTower)
 {
-    MI_CpuCopy8(battleTower->trainerIDs, battleTower->unk_83E, BT_OPPONENTS_COUNT * 2 * sizeof(u16));
+    MI_CpuCopy8(battleTower->trainerIDs, battleTower->trainerIdBuffer, BT_OPPONENTS_COUNT * 2 * sizeof(u16));
 }
 
 // Marks the local partner data as ready and stores the flag in the packet.
 void BattleTower_SetPartnerReady(BattleTower *battleTower, u16 ready)
 {
-    battleTower->unk_10_3 = ready;
-    battleTower->unk_83E[0] = ready;
+    battleTower->partnerReady = ready;
+    battleTower->trainerIdBuffer[0] = ready;
 }
 
 // Inclusive trainer-ID ranges used for regular opponents in each Battle Tower
