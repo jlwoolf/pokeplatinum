@@ -42,13 +42,13 @@ static int JournalController_TurnPageLeft(JournalManager *journalManager);
 static int JournalController_TurnPageRight(JournalManager *journalManager);
 static int JournalController_IsClosingTransitionDone(JournalManager *journalManager);
 static u8 JournalController_NewDirectionPageExists(JournalManager *journalManager, s8 pageChance);
-static void ov81_021D1360(JournalManager *journalManager);
+static void JournalController_AssignBgLayers(JournalManager *journalManager);
 static void JournalController_LoadNewPagePalette(JournalManager *journalManager, u8 bgLayer, u8 palette);
-static void ov81_021D1434(JournalManager *journalManager);
-static u8 ov81_021D14E0(JournalManager *journalManager);
-static u8 ov81_021D156C(JournalManager *journalManager);
+static void JournalController_SaveBg0Tilemap(JournalManager *journalManager);
+static u8 JournalController_UpdatePageTurnLeft(JournalManager *journalManager);
+static u8 JournalController_UpdatePageTurnRight(JournalManager *journalManager);
 
-static const u8 Unk_ov81_021D33E8[9][32] = {
+static const u8 sPageTurnColumnRemap[9][32] = {
     { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F },
     { 0x0, 0x1, 0x2, 0x3, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF },
     { 0x0, 0x1, 0x2, 0x3, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0x10, 0x11, 0x12, 0x13, 0x14, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF },
@@ -96,7 +96,7 @@ int JournalController_Init(ApplicationManager *appMan, int *state)
     JournalController_InitStringUtil(journalManager);
     JournalPrinter_AddWindows(journalManager);
     JournalPrinter_PrintEntry(journalManager, 0);
-    ov81_021D1434(journalManager);
+    JournalController_SaveBg0Tilemap(journalManager);
 
     SetVBlankCallback(JournalController_MainCallback, journalManager);
     GXLayers_TurnBothDispOn();
@@ -360,7 +360,7 @@ static int JournalController_TurnPageLeft(JournalManager *journalManager)
 {
     switch (journalManager->state) {
     case 0:
-        ov81_021D1360(journalManager);
+        JournalController_AssignBgLayers(journalManager);
         JournalController_LoadNewPagePalette(journalManager, journalManager->bgLayer3, journalManager->page - 1);
         journalManager->page--;
         JournalPrinter_PrintEntry(journalManager, journalManager->unk_1060 ^ 1);
@@ -368,7 +368,7 @@ static int JournalController_TurnPageLeft(JournalManager *journalManager)
         Sound_PlayEffect(SEQ_SE_DP_MEKURU3_sseq);
         break;
     case 1:
-        if (ov81_021D14E0(journalManager) == TRUE) {
+        if (JournalController_UpdatePageTurnLeft(journalManager) == TRUE) {
             journalManager->unk_105F = 0;
             journalManager->state = 0;
             journalManager->unk_1060 ^= 1;
@@ -389,14 +389,14 @@ static int JournalController_TurnPageRight(JournalManager *journalManager)
 {
     switch (journalManager->state) {
     case 0:
-        ov81_021D1360(journalManager);
+        JournalController_AssignBgLayers(journalManager);
         journalManager->page++;
         JournalPrinter_PrintEntry(journalManager, journalManager->unk_1060 ^ 1);
         journalManager->state = 1;
         Sound_PlayEffect(SEQ_SE_DP_MEKURU3_sseq);
         break;
     case 1:
-        if (ov81_021D156C(journalManager) == TRUE) {
+        if (JournalController_UpdatePageTurnRight(journalManager) == TRUE) {
             journalManager->unk_105F = 0;
             journalManager->state = 0;
             journalManager->unk_1060 ^= 1;
@@ -413,7 +413,7 @@ static int JournalController_IsClosingTransitionDone(JournalManager *journalMana
     return IsScreenFadeDone();
 }
 
-static void ov81_021D1360(JournalManager *journalManager)
+static void JournalController_AssignBgLayers(JournalManager *journalManager)
 {
     if (journalManager->unk_1060 == 0) {
         journalManager->bgLayer2 = 0;
@@ -460,35 +460,35 @@ static void JournalController_LoadNewPagePalette(JournalManager *journalManager,
     Bg_ScheduleTilemapTransfer(journalManager->bgConfig, bgLayer);
 }
 
-static void ov81_021D1434(JournalManager *journalManager)
+static void JournalController_SaveBg0Tilemap(JournalManager *journalManager)
 {
     u16 *tilemapBuffer = Bg_GetTilemapBuffer(journalManager->bgConfig, 0);
     MI_CpuCopy16(tilemapBuffer, journalManager->tilemapBuffer_85C, 0x800);
 }
 
-static void ov81_021D1450(JournalManager *journalManager, u16 *tilemapBufferSrc, u16 bgLayer, u16 param3)
+static void JournalController_CopyPageColumns(JournalManager *journalManager, u16 *tilemapBufferSrc, u16 bgLayer, u16 param3)
 {
     u16 *tilemapBuffer = Bg_GetTilemapBuffer(journalManager->bgConfig, bgLayer);
     u16 j, i;
 
     for (i = 0; i < 32; i++) {
-        if (Unk_ov81_021D33E8[param3][i] == 0xff) {
+        if (sPageTurnColumnRemap[param3][i] == 0xff) {
             Bg_FillTilemapRect(journalManager->bgConfig, bgLayer, 0, i, 0, 1, 32, 0);
             continue;
         }
 
         for (j = 0; j < 32; j++) {
-            tilemapBuffer[j * 32 + i] = tilemapBufferSrc[j * 32 + Unk_ov81_021D33E8[param3][i]];
+            tilemapBuffer[j * 32 + i] = tilemapBufferSrc[j * 32 + sPageTurnColumnRemap[param3][i]];
         }
     }
 
     Bg_ScheduleTilemapTransfer(journalManager->bgConfig, bgLayer);
 }
 
-static u8 ov81_021D14E0(JournalManager *journalManager)
+static u8 JournalController_UpdatePageTurnLeft(JournalManager *journalManager)
 {
-    ov81_021D1450(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer2, journalManager->unk_105F);
-    ov81_021D1450(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer1, journalManager->unk_105F);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer2, journalManager->unk_105F);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer1, journalManager->unk_105F);
     JournalController_LoadNewPagePalette(journalManager, journalManager->bgLayer1, journalManager->page + 1);
 
     journalManager->unk_105F++;
@@ -504,10 +504,10 @@ static u8 ov81_021D14E0(JournalManager *journalManager)
     return FALSE;
 }
 
-static u8 ov81_021D156C(JournalManager *journalManager)
+static u8 JournalController_UpdatePageTurnRight(JournalManager *journalManager)
 {
-    ov81_021D1450(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer4, 8 - journalManager->unk_105F);
-    ov81_021D1450(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer3, 8 - journalManager->unk_105F);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer4, 8 - journalManager->unk_105F);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer3, 8 - journalManager->unk_105F);
     JournalController_LoadNewPagePalette(journalManager, journalManager->bgLayer3, journalManager->page);
 
     if (journalManager->unk_105F == 1) {

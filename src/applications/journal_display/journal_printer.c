@@ -97,7 +97,7 @@ static void JournalPrinter_PrintPlazaMinigame(JournalManager *journalManager, Wi
 static void JournalPrinter_PrintMiscEvent2(JournalManager *journalManager, Window *window, JournalEntryOnlineEvent *journalEntryOnlineEvent, u8 row, int eventType);
 static void JournalPrinter_PrintWiFiClub(JournalManager *journalManager, Window *window, JournalEntryOnlineEvent *journalEntryOnlineEvent, u8 row);
 
-static const WindowTemplate Unk_ov81_021D3508[] = {
+static const WindowTemplate sJournalWindowTemplates[] = {
     { 0x0, 0x2, 0x2, 0x18, 0x2, 0xF, 0x1 },
     { 0x0, 0x4, 0x4, 0x1B, 0x12, 0xF, 0x31 },
     { 0x1, 0x2, 0x2, 0x18, 0x2, 0xF, 0x1 },
@@ -109,7 +109,7 @@ void JournalPrinter_AddWindows(JournalManager *journalManager)
     u32 i;
 
     for (i = 0; i < 4; i++) {
-        Window_AddFromTemplate(journalManager->bgConfig, &journalManager->window[i], &Unk_ov81_021D3508[i]);
+        Window_AddFromTemplate(journalManager->bgConfig, &journalManager->window[i], &sJournalWindowTemplates[i]);
     }
 }
 
