@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_020298D8.h"
+#include "struct_defs/struct_image_clip_pokemon_sprite.h"
 
 #include "image_clip_app/image_clip_app_02255094.h"
 #include "image_clip_app/struct_image_clip_app_022596B0.h"
@@ -28,12 +28,12 @@ void ImageClipPokemonSprite_LoadDecryptedSprite(ImageClipGraphics *param0, Pokem
     PokemonSprite_Decrypt((u8 *)v1->pRawData, param1->narcID);
 }
 
-void ImageClipPokemonSprite_Init(UnkStruct_020298D8 *param0, PokemonSpriteManager *param1, Pokemon *param2, PokemonSpriteTemplate *param3, int param4)
+void ImageClipPokemonSprite_Init(ImageClipPokemonSprite *param0, PokemonSpriteManager *param1, Pokemon *param2, PokemonSpriteTemplate *param3, int param4)
 {
     ImageClipPokemonSprite_InitEx(param0, param1, param2, param3, param4, 0);
 }
 
-void ImageClipPokemonSprite_InitEx(UnkStruct_020298D8 *param0, PokemonSpriteManager *param1, Pokemon *param2, PokemonSpriteTemplate *param3, int param4, BOOL param5)
+void ImageClipPokemonSprite_InitEx(ImageClipPokemonSprite *param0, PokemonSpriteManager *param1, Pokemon *param2, PokemonSpriteTemplate *param3, int param4, BOOL param5)
 {
     int v0 = Pokemon_GetValue(param2, MON_DATA_SPECIES, NULL);
 
@@ -81,23 +81,23 @@ void ImageClipPokemonSprite_InitEx(UnkStruct_020298D8 *param0, PokemonSpriteMana
     param0->unk_0C = param2;
 }
 
-void ImageClipPokemonSprite_Free(UnkStruct_020298D8 *param0)
+void ImageClipPokemonSprite_Free(ImageClipPokemonSprite *param0)
 {
     PokemonSprite_Delete(param0->unk_00);
-    memset(param0, 0, sizeof(UnkStruct_020298D8));
+    memset(param0, 0, sizeof(ImageClipPokemonSprite));
 }
 
-void ImageClipPokemonSprite_SetZ(UnkStruct_020298D8 *param0, int param1)
+void ImageClipPokemonSprite_SetZ(ImageClipPokemonSprite *param0, int param1)
 {
     PokemonSprite_SetAttribute(param0->unk_00, MON_SPRITE_Z_CENTER, param1);
 }
 
-int ImageClipPokemonSprite_GetZ(UnkStruct_020298D8 *param0)
+int ImageClipPokemonSprite_GetZ(ImageClipPokemonSprite *param0)
 {
     return PokemonSprite_GetAttribute(param0->unk_00, MON_SPRITE_Z_CENTER);
 }
 
-void ImageClipPokemonSprite_SetPosition(UnkStruct_020298D8 *param0, int param1, int param2)
+void ImageClipPokemonSprite_SetPosition(ImageClipPokemonSprite *param0, int param1, int param2)
 {
     int v0, v1;
 
@@ -111,29 +111,29 @@ void ImageClipPokemonSprite_SetPosition(UnkStruct_020298D8 *param0, int param1, 
     ImageClipPokemonSprite_ClampHitRect(&param0->unk_04, param1, param2, v0, v1);
 }
 
-BOOL ImageClipPokemonSprite_IsScreenTouched(UnkStruct_020298D8 *param0)
+BOOL ImageClipPokemonSprite_IsScreenTouched(ImageClipPokemonSprite *param0)
 {
     return TouchScreen_LocationHeld(&param0->unk_04);
 }
 
-BOOL ImageClipPokemonSprite_IsTouchInHitTable(UnkStruct_020298D8 *param0, int param1, int param2)
+BOOL ImageClipPokemonSprite_IsTouchInHitTable(ImageClipPokemonSprite *param0, int param1, int param2)
 {
     return TouchScreen_IsTouchInHitTable(&param0->unk_04, param1, param2);
 }
 
-void ImageClipPokemonSprite_GetCenter(UnkStruct_020298D8 *param0, int *xCenter, int *yCenter)
+void ImageClipPokemonSprite_GetCenter(ImageClipPokemonSprite *param0, int *xCenter, int *yCenter)
 {
     *xCenter = PokemonSprite_GetAttribute(param0->unk_00, MON_SPRITE_X_CENTER);
     *yCenter = PokemonSprite_GetAttribute(param0->unk_00, MON_SPRITE_Y_CENTER);
 }
 
-void ImageClipPokemonSprite_GetSize(UnkStruct_020298D8 *param0, int *param1, int *param2)
+void ImageClipPokemonSprite_GetSize(ImageClipPokemonSprite *param0, int *param1, int *param2)
 {
     *param1 = 80;
     *param2 = 80;
 }
 
-BOOL ImageClipPokemonSprite_IsTouchedByTouch(UnkStruct_020298D8 *param0, int *param1, int *param2, NNSG2dCharacterData *param3)
+BOOL ImageClipPokemonSprite_IsTouchedByTouch(ImageClipPokemonSprite *param0, int *param1, int *param2, NNSG2dCharacterData *param3)
 {
     int v0;
     int v1, v2;
@@ -163,7 +163,7 @@ BOOL ImageClipPokemonSprite_IsTouchedByTouch(UnkStruct_020298D8 *param0, int *pa
     return 0;
 }
 
-BOOL ImageClipPokemonSprite_IsPixelHit(UnkStruct_020298D8 *param0, int param1, int param2, NNSG2dCharacterData *param3)
+BOOL ImageClipPokemonSprite_IsPixelHit(ImageClipPokemonSprite *param0, int param1, int param2, NNSG2dCharacterData *param3)
 {
     int v0;
     int v1, v2;
@@ -193,7 +193,7 @@ BOOL ImageClipPokemonSprite_IsPixelHit(UnkStruct_020298D8 *param0, int param1, i
     return 0;
 }
 
-void ImageClipPokemonSprite_GetPixelBounds(UnkStruct_020298D8 *param0, ImageClipPixelBounds *param1)
+void ImageClipPokemonSprite_GetPixelBounds(ImageClipPokemonSprite *param0, ImageClipPixelBounds *param1)
 {
     *param1 = param0->unk_08;
 }

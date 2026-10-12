@@ -16,12 +16,12 @@
 #include "struct_defs/gts_player_data.h"
 #include "struct_defs/hall_of_fame_display_data.h"
 #include "struct_defs/image_clips.h"
-#include "struct_defs/struct_0203DA00.h"
-#include "struct_defs/struct_0203DDFC.h"
-#include "struct_defs/struct_0203DE34.h"
-#include "struct_defs/struct_0203E348.h"
-#include "struct_defs/struct_0203E6C0.h"
-#include "struct_defs/struct_0206BC70.h"
+#include "struct_defs/struct_dress_up_app_data.h"
+#include "struct_defs/struct_union_room_drawing_app_args.h"
+#include "struct_defs/struct_mix_records_app_args.h"
+#include "struct_defs/struct_slot_machine_app_args.h"
+#include "struct_defs/struct_global_terminal_app_args.h"
+#include "struct_defs/struct_wifi_battle_tower_app_args.h"
 
 #include "applications/bag/application.h"
 #include "applications/berry_tag.h"
@@ -200,7 +200,7 @@ typedef struct {
     u32 state;
     u16 *result;
     BOOL appResult;
-    UnkStruct_0203DA00 *appData;
+    DressUpAppData *appData;
 } DressUpTaskEnv;
 
 // Environment for the Union Room trade task. state drives the step machine;
@@ -230,7 +230,7 @@ typedef struct {
 typedef struct {
     int coins;
     s64 startTime;
-    UnkStruct_0203E348 appArgs;
+    SlotMachineAppArgs appArgs;
 } SlotMachineTaskEnv;
 
 static void NamingScreen_ApplyResult(FieldTask *taskMan);
@@ -840,10 +840,10 @@ void FieldSystem_OpenBattleTowerRecordsApp(FieldSystem *fieldSystem, BattleTower
     FieldSystem_StartChildProcess(fieldSystem, &template, args);
 }
 
-static UnkStruct_0203DA00 *DressUp_CreateAppData(enum HeapID heapID, SaveData *saveData, int slot, BOOL *appResult, BOOL param4)
+static DressUpAppData *DressUp_CreateAppData(enum HeapID heapID, SaveData *saveData, int slot, BOOL *appResult, BOOL param4)
 {
-    UnkStruct_0203DA00 *appData = Heap_Alloc(heapID, sizeof(UnkStruct_0203DA00));
-    memset(appData, 0, sizeof(UnkStruct_0203DA00));
+    DressUpAppData *appData = Heap_Alloc(heapID, sizeof(DressUpAppData));
+    memset(appData, 0, sizeof(DressUpAppData));
     Pokemon *pokemon = Party_GetPokemonBySlotIndex(SaveData_GetParty(saveData), slot);
 
     appData->pokemon = pokemon;
@@ -1116,7 +1116,7 @@ const ApplicationManagerTemplate gMixRecordsAppTemplate = {
 
 void FieldSystem_OpenUnionRoomDrawingApp(FieldSystem *fieldSystem)
 {
-    UnkStruct_0203DDFC *appData = Heap_Alloc(HEAP_ID_FIELD3, sizeof(UnkStruct_0203DDFC));
+    UnionRoomDrawingAppArgs *appData = Heap_Alloc(HEAP_ID_FIELD3, sizeof(UnionRoomDrawingAppArgs));
 
     appData->unk_00 = fieldSystem->unk_80; // Union Room state
     appData->unk_04 = fieldSystem->journalEntry;
@@ -1127,7 +1127,7 @@ void FieldSystem_OpenUnionRoomDrawingApp(FieldSystem *fieldSystem)
 
 void *FieldSystem_OpenMixRecordsApp(FieldSystem *fieldSystem)
 {
-    UnkStruct_0203DE34 *appData = Heap_Alloc(HEAP_ID_FIELD2, sizeof(UnkStruct_0203DE34));
+    MixRecordsAppArgs *appData = Heap_Alloc(HEAP_ID_FIELD2, sizeof(MixRecordsAppArgs));
 
     appData->saveData = fieldSystem->saveData;
     appData->unk_04 = fieldSystem->unk_80; // Union Room state
@@ -1385,7 +1385,7 @@ void *FieldSystem_OpenWifiBattleTowerApp(FieldSystem *fieldSystem, int mode, int
         FS_OVERLAY_ID(wifi_battle_tower)
     };
 
-    UnkStruct_0206BC70 *appData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(UnkStruct_0206BC70));
+    WifiBattleTowerAppArgs *appData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(WifiBattleTowerAppArgs));
 
     appData->record = SaveData_GetWifiBattleTowerRecord(fieldSystem->saveData);
     appData->downloadData = SaveData_GetWifiBattleTowerDownloadData(fieldSystem->saveData);
@@ -1524,7 +1524,7 @@ void FieldSystem_HatchEgg(FieldSystem *fieldSystem)
     EggHatch_HatchEgg(fieldSystem->task, &args);
 }
 
-BOOL FieldSystem_OpenSlotMachine(FieldSystem *fieldSystem, UnkStruct_0203E348 *appArgs)
+BOOL FieldSystem_OpenSlotMachine(FieldSystem *fieldSystem, SlotMachineAppArgs *appArgs)
 {
     FS_EXTERN_OVERLAY(slot_machine);
 
@@ -1801,8 +1801,8 @@ void FieldSystem_OpenGlobalTerminal(FieldSystem *fieldSystem, int param1, int pa
         FS_OVERLAY_ID(global_terminal)
     };
 
-    UnkStruct_0203E6C0 *appData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(UnkStruct_0203E6C0));
-    MI_CpuClear8(appData, sizeof(UnkStruct_0203E6C0));
+    GlobalTerminalAppArgs *appData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(GlobalTerminalAppArgs));
+    MI_CpuClear8(appData, sizeof(GlobalTerminalAppArgs));
 
     appData->fieldSystem = fieldSystem;
     appData->saveData = fieldSystem->saveData;

@@ -7,7 +7,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "fieldmap/linear_interpolation_task_fx32.h"
 
@@ -467,7 +467,7 @@ static BOOL FrontierBrainEncounterEffect_MainLoop(FrontierBrainEncounterEffect *
 
 static void CreateFrontierBrainNameObject(FrontierBrainEncounterEffect *encEffect, FrontierBrainNameObject *brainName, const String *nameString, enum Font font, TextColor textColor, int plttOffset, int plttResourceID, int x, int y, int center, FrontierBrainEncounterEffectTextWindow *textWindow)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
 
     GF_ASSERT(brainName->fontOAM == NULL);
 

@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 #include "struct_defs/struct_020F3DCC.h"
 
 #include "vs_recorder.h"
@@ -255,7 +255,7 @@ const VsRecorderMenuEntry *VsRecorderGraphics_GetSubmenu(int menuIndex)
 
 // Returns the menu entries for the given Vs. Recorder mode. Modes 0 and 3 use
 // a reduced menu until the player has first arrived at the Battle Park.
-const VsRecorderMenuEntry *VsRecorderGraphics_GetMenuForMode(UnkStruct_0208C06C *state, int mode)
+const VsRecorderMenuEntry *VsRecorderGraphics_GetMenuForMode(VsRecorderState *state, int mode)
 {
     if (mode == 0) {
         if (VsRecorder_CheckFirstArrivalBattlePark(state) == 0) {
@@ -274,7 +274,7 @@ const VsRecorderMenuEntry *VsRecorderGraphics_GetMenuForMode(UnkStruct_0208C06C 
 
 // Counts the enabled entries in the currently displayed menu and stores the
 // result in the Vs. Recorder state, where it is used to lay out the menu ring.
-void VsRecorderGraphics_CountEnabledEntries(UnkStruct_0208C06C *state)
+void VsRecorderGraphics_CountEnabledEntries(VsRecorderState *state)
 {
     int i;
     const VsRecorderMenuEntry *entries = state->unk_818;

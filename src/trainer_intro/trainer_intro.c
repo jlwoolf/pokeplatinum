@@ -5,7 +5,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "applications/party_menu/main.h"
 #include "applications/pokemon_summary_screen/main.h"
@@ -1542,7 +1542,7 @@ static void TrainerIntro_InitPartyStatusIcons(TrainerIntro *param0)
 static void TrainerIntro_CreateTrainerNameOAM(TrainerIntro *param0, u32 param1, String *param2)
 {
     Window *v0;
-    UnkStruct_020127E8 v1;
+    FontOAMTemplate v1;
 
     v0 = &param0->windows[0];
 

@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_0203DA00_H
-#define POKEPLATINUM_STRUCT_0203DA00_H
+#ifndef POKEPLATINUM_STRUCT_DRESS_UP_APP_DATA_H
+#define POKEPLATINUM_STRUCT_DRESS_UP_APP_DATA_H
 
 #include "struct_defs/dress_up_photo.h"
 #include "struct_defs/fashion_case.h"
@@ -18,6 +18,6 @@ typedef struct {
     const TrainerInfo *trainerInfo;
     BOOL *unk_18;
     BOOL unk_1C;
-} UnkStruct_0203DA00;
+} DressUpAppData;
 
-#endif // POKEPLATINUM_STRUCT_0203DA00_H
+#endif // POKEPLATINUM_STRUCT_DRESS_UP_APP_DATA_H

@@ -54,7 +54,7 @@ enum MovementState {
 };
 
 // Unused duplicate of CommQueueEntry (the queue-entry type defined in
-// struct_defs/struct_020322D8.h). Left in place to avoid touching the build.
+// struct_defs/struct_020322D8.h).
 typedef struct {
     u8 *unk_00;
     CommQueueEntry *unk_04;
@@ -64,7 +64,7 @@ typedef struct {
     u8 unk_0F_0 : 1;
     u8 unk_0F_1 : 1;
     u8 : 6;
-} UnkStruct_020322D8_t;
+} CommQueueEntryUnused;
 
 // In-progress reassembly state for a single incoming command. A command whose
 // payload spans several packets (or several frames) is accumulated here until

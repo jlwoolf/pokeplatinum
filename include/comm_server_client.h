@@ -3,7 +3,7 @@
 
 #include <nitro/wm.h>
 
-#include "struct_defs/struct_0203330C.h"
+#include "struct_defs/struct_wireless_game_info.h"
 
 #include "easy_chat_sentence.h"
 #include "trainer_info.h"
@@ -43,7 +43,7 @@ BOOL CommServerClient_CheckError(void);
 void CommServerClient_SetErrorDisconnect(BOOL errorDisconnect);
 void CommServerClient_SetErrorTimeout(BOOL enabled);
 WMBssDesc *CommServerClient_GetServerBssDesc(int index);
-UnkStruct_0203330C *CommServerClient_GetServerGameInfo(int index);
+WirelessGameInfo *CommServerClient_GetServerGameInfo(int index);
 TrainerInfo *CommServerClient_GetPersonalTrainerInfo(void);
 TrainerInfo *CommServerClient_GetServerTrainerInfo(int index);
 void CommServerClient_SetPlayerMacAddress(u8 *macAddress, int netId);

@@ -6,7 +6,7 @@
 #include "constants/narc.h"
 
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "image_clip_app/funcptr_image_clip_app_02259D78.h"
 #include "image_clip_app/image_clip_app_02255094.h"
@@ -69,7 +69,7 @@ void ImageClipUi_Init(ImageClipUi *param0, ImageClipUiTemplate *param1)
 
 void ImageClipUi_InitTextButton(ImageClipUiTextButton *param0, ImageClipUiTextButtonTemplate *param1)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
 
     ImageClipUi_Init(&param0->unk_00, &param1->unk_00);
 

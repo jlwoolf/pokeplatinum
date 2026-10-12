@@ -1,7 +1,7 @@
 #ifndef POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02257964_SUB2_H
 #define POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02257964_SUB2_H
 
-#include "struct_defs/struct_020298D8.h"
+#include "struct_defs/struct_image_clip_pokemon_sprite.h"
 
 #include "image_clip_app/struct_image_clip_app_02254DE0.h"
 #include "image_clip_app/struct_image_clip_app_022597BC.h"
@@ -19,7 +19,7 @@ typedef struct {
     ImageClipSpriteManager *unk_18;
     ImageClipBg unk_1C;
     int unk_48;
-    UnkStruct_020298D8 unk_4C;
+    ImageClipPokemonSprite unk_4C;
 } PhotoRendererContext;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02257964_SUB2_H

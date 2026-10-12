@@ -9,7 +9,7 @@
 #include "generated/pokemon_contest_types.h"
 
 #include "struct_defs/image_clips.h"
-#include "struct_defs/struct_020298D8.h"
+#include "struct_defs/struct_image_clip_pokemon_sprite.h"
 
 #include "image_clip_app/image_clip_app_02259098.h"
 #include "image_clip_app/struct_image_clip_app_02255040.h"
@@ -62,7 +62,7 @@ static inline void ContestPhoto_InitInternal(ContestPhoto *photo)
 }
 
 // Reads the on-screen position and draw priority of a photo sprite.
-static void PhotoSprite_GetPositionAndPriority(UnkStruct_020298D8 *sprite, u8 *xPos, u8 *yPos, s8 *priority)
+static void PhotoSprite_GetPositionAndPriority(ImageClipPokemonSprite *sprite, u8 *xPos, u8 *yPos, s8 *priority)
 {
     int spriteX, spriteY;
     int spritePriority;
@@ -93,7 +93,7 @@ static void PhotoPokemon_SetDataFromMon(PhotoPokemon *photoMon, Pokemon *mon, u8
     photoMon->priority = priority;
 }
 
-static void PhotoPokemon_SetDataFromMonAndSprite(PhotoPokemon *photoMon, Pokemon *mon, UnkStruct_020298D8 *sprite)
+static void PhotoPokemon_SetDataFromMonAndSprite(PhotoPokemon *photoMon, Pokemon *mon, ImageClipPokemonSprite *sprite)
 {
     u8 xPos, yPos;
     s8 priority;
@@ -525,7 +525,7 @@ void DressUpPhoto_Init(DressUpPhoto *photo)
     DressUpPhoto_InitInternal(photo);
 }
 
-void DressUpPhoto_SetPhotoMonFromSprite(DressUpPhoto *photo, Pokemon *mon, UnkStruct_020298D8 *sprite)
+void DressUpPhoto_SetPhotoMonFromSprite(DressUpPhoto *photo, Pokemon *mon, ImageClipPokemonSprite *sprite)
 {
     GF_ASSERT(DressUpPhoto_IsValid(photo));
     PhotoPokemon_SetDataFromMonAndSprite(&photo->photoMon, mon, sprite);
@@ -655,7 +655,7 @@ void ContestPhoto_Init(ContestPhoto *photo)
     ContestPhoto_InitInternal(photo);
 }
 
-void ContestPhoto_SetPhotoMonFromSprite(ContestPhoto *photo, Pokemon *mon, UnkStruct_020298D8 *sprite)
+void ContestPhoto_SetPhotoMonFromSprite(ContestPhoto *photo, Pokemon *mon, ImageClipPokemonSprite *sprite)
 {
     GF_ASSERT(ContestPhoto_IsValid(photo));
     PhotoPokemon_SetDataFromMonAndSprite(&photo->photoMon, mon, sprite);

@@ -10,7 +10,7 @@
 #include "struct_decls/battle_system.h"
 #include "struct_decls/font_oam.h"
 #include "struct_defs/battler_data.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "battle/battle_display.h"
 #include "battle/battle_system.h"
@@ -2197,7 +2197,7 @@ static void BattleSubscreen_NewFontOAM(BattleSubscreen *btlSubscreen, FontOAMEnt
 {
     GF_ASSERT(fontOAMEntry->fontOAM == NULL);
 
-    UnkStruct_020127E8 fontOAMParams;
+    FontOAMTemplate fontOAMParams;
     BgConfig *bgConfig;
 
     SpriteManager *spriteMan = BattleSystem_GetSpriteManager(btlSubscreen->battleSys);

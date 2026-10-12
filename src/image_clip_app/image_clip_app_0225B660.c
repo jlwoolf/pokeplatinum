@@ -7,7 +7,7 @@
 
 #include "struct_defs/dress_up_photo.h"
 #include "struct_defs/struct_02029C88.h"
-#include "struct_defs/struct_02041DC8.h"
+#include "struct_defs/struct_photo_viewer_args.h"
 
 #include "image_clip_app/image_clip_app_02255094.h"
 #include "image_clip_app/image_clip_app_0225AF8C.h"
@@ -58,7 +58,7 @@ static void DressUpPhotoViewer_DrawContestText(DressUpPhotoViewer *param0);
 int DressUpPhotoViewer_Init(ApplicationManager *appMan, int *param1)
 {
     DressUpPhotoViewer *v0;
-    UnkStruct_02041DC8 *v1;
+    PhotoViewerArgs *v1;
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_13, 0x20000);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_14, 0x40000);

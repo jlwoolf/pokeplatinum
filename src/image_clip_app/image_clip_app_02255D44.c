@@ -7,7 +7,7 @@
 
 #include "struct_defs/dress_up_photo.h"
 #include "struct_defs/struct_02029C88.h"
-#include "struct_defs/struct_0203DA00.h"
+#include "struct_defs/struct_dress_up_app_data.h"
 #include "struct_defs/struct_02095C60.h"
 #include "struct_defs/visual_competition_app_args.h"
 
@@ -190,7 +190,7 @@ int VisualCompetitionApp_Init(ApplicationManager *appMan, int *param1)
 {
     VisualCompetitionApp *v0;
     u32 v1;
-    UnkStruct_0203DA00 *v2;
+    DressUpAppData *v2;
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_13, 0x20000);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_14, 0x40000);
@@ -236,7 +236,7 @@ int VisualCompetitionApp_Main(ApplicationManager *appMan, int *param1)
 {
     VisualCompetitionApp *v0 = ApplicationManager_Data(appMan);
     int v1 = 0;
-    UnkStruct_0203DA00 *v2 = ApplicationManager_Args(appMan);
+    DressUpAppData *v2 = ApplicationManager_Args(appMan);
 
     switch (*param1) {
     case 0:
@@ -357,7 +357,7 @@ int VisualCompetitionApp_Exit(ApplicationManager *appMan, int *param1)
 {
     VisualCompetitionApp *v0 = ApplicationManager_Data(appMan);
     u32 v1;
-    UnkStruct_0203DA00 *v2 = ApplicationManager_Args(appMan);
+    DressUpAppData *v2 = ApplicationManager_Args(appMan);
 
     if (v0->unk_71C == 1) {
         GameRecords_IncrementTrainerScore(v2->records, TRAINER_SCORE_EVENT_UNK_07);

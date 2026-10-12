@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "struct_decls/font_oam.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 #include "struct_defs/struct_02089688.h"
 #include "struct_defs/struct_0208AF44.h"
 
@@ -623,7 +623,7 @@ void NumberEntryGraphics_CreateButtonLabels(NumberEntryScreen *param0)
 void NumberEntryGraphics_CreateButtonLabel(NumberEntryScreen *param0, int param1, int param2, int param3, int param4)
 {
     s16 v0, v1;
-    UnkStruct_020127E8 v2;
+    FontOAMTemplate v2;
     String *v3;
     int v4;
     int v5;

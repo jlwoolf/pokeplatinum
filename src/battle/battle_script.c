@@ -20,7 +20,7 @@
 #include "struct_defs/battle_system.h"
 #include "struct_defs/battler_data.h"
 #include "struct_defs/fraction.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 #include "struct_defs/trainer.h"
 
 #include "applications/naming_screen.h"
@@ -11962,7 +11962,7 @@ static void BattleScript_LoadPartyLevelUpIcon(BattleSystem *battleSys, BattleScr
     Window window;
     int size;
     CharTransferAllocation charTransferAllocation;
-    UnkStruct_020127E8 v12;
+    FontOAMTemplate v12;
     int gender;
 
     strTemplate = BattleSystem_GetStringTemplate(battleSys);

@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "font.h"
 #include "message.h"
@@ -55,7 +55,7 @@ PokedexTextData *PokedexTextManager_NextTextData(const PokedexDisplayBox *displa
 
 PokedexTextData *PokedexTextManager_NextTextDataNew(const PokedexDisplayBox *displayBox, int size)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
     PokedexTextData *textData = NextEmptyText(displayBox->textMan);
 
     GF_ASSERT(textData);

@@ -5,7 +5,7 @@
 
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "wifi_lobby_minigame_balloon/wifi_lobby_minigame_balloon_app.h"
 #include "wifi_lobby_minigame_balloon/wifi_lobby_minigame_balloon_comm_cmd_handlers.h"
@@ -2000,7 +2000,7 @@ static BOOL WiFiLobbyMinigameBalloon_UpdateOpponentBalloon(WiFiLobbyMinigameBall
 
 void WiFiLobbyMinigameBalloon_CreateTextOAM(BgConfig *param0, SpriteManager *param1, FontOAMManager *param2, WiFiLobbyMinigameBalloonTextOAM *param3, const String *param4, enum Font param5, TextColor param6, int param7, int param8, int param9, int param10, int param11, int param12, int param13, int param14)
 {
-    UnkStruct_020127E8 v0;
+    FontOAMTemplate v0;
     Window v1;
     CharTransferAllocation v2;
     int v3;

@@ -6,7 +6,7 @@
 #include "constants/narc.h"
 
 #include "struct_defs/seal_case.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "applications/capsule_menu/defs.h"
 #include "applications/capsule_menu/main.h"
@@ -114,7 +114,7 @@ void CapsuleGraphics_SetFontOAMDrawFlag(CapsuleAppManager *appMan, BOOL flag)
 
 void CapsuleGraphics_CreateFontOAM(CapsuleAppManager *appMan, int index, int param2, int param3, int param4)
 {
-    UnkStruct_020127E8 fontOAMManager;
+    FontOAMTemplate fontOAMManager;
     String *string;
     int resID;
     int v3;

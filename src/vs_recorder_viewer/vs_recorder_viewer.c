@@ -5,7 +5,7 @@
 
 #include "struct_defs/dress_up_photo.h"
 #include "struct_defs/struct_0208B284.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "vs_recorder_viewer/vs_recorder_viewer_022300D8.h"
 #include "vs_recorder_viewer/vs_recorder_viewer_02231690.h"
@@ -39,9 +39,9 @@
 #include "vram_transfer.h"
 
 static void VsRecorderViewerMain_InitGraphics(BgConfig *param0);
-static void VsRecorderViewerMain_InitSpriteSystem(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerMain_InitSpriteSystem(VsRecorderState *param0);
 
-void VsRecorderViewerMain_Init(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_Init(VsRecorderState *param0)
 {
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -134,7 +134,7 @@ void VsRecorderViewerMain_Init(UnkStruct_0208C06C *param0)
     VsRecorderViewerList_StartDrawTask(param0);
 }
 
-void VsRecorderViewerMain_Free(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_Free(VsRecorderState *param0)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
@@ -407,12 +407,12 @@ void VsRecorderViewerMain_SetWhichScreenIs3D(int param0)
     GXLayers_SwapDisplay();
 }
 
-void VsRecorderViewerMain_InitBg2(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_InitBg2(VsRecorderState *param0)
 {
     Bg_InitFromTemplate(param0->unk_14.unk_10, 2, &sVsRecorderViewerMainBgTemplates[2], 0);
 }
 
-static void VsRecorderViewerMain_InitSpriteSystem(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerMain_InitSpriteSystem(VsRecorderState *param0)
 {
     param0->unk_14.unk_04 = SpriteSystem_Alloc(HEAP_ID_102);
     {
@@ -459,7 +459,7 @@ static void VsRecorderViewerMain_InitSpriteSystem(UnkStruct_0208C06C *param0)
 
 void VsRecorderViewerMain_VBlankCallback(void *param0)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderState *v0 = param0;
 
     VramTransfer_Process();
     PaletteData_CommitFadedBuffers(v0->unk_14.unk_14);
@@ -468,7 +468,7 @@ void VsRecorderViewerMain_VBlankCallback(void *param0)
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
-BOOL VsRecorderViewerMain_Update(UnkStruct_0208C06C *param0, int *param1)
+BOOL VsRecorderViewerMain_Update(VsRecorderState *param0, int *param1)
 {
     BOOL v0 = 0;
 
@@ -562,7 +562,7 @@ BOOL VsRecorderViewerMain_Update(UnkStruct_0208C06C *param0, int *param1)
     return 0;
 }
 
-void VsRecorderViewerMain_AdvanceState(UnkStruct_0208C06C *param0, int param1, BOOL param2, int *param3)
+void VsRecorderViewerMain_AdvanceState(VsRecorderState *param0, int param1, BOOL param2, int *param3)
 {
     if (param2) {
         (*param3) = param1;
@@ -571,20 +571,20 @@ void VsRecorderViewerMain_AdvanceState(UnkStruct_0208C06C *param0, int param1, B
     }
 }
 
-void VsRecorderViewerMain_SetState(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMain_SetState(VsRecorderState *param0, int param1)
 {
     param0->unk_04 = param1;
     param0->unk_08 = 0;
     param0->unk_0C = 0;
 }
 
-void VsRecorderViewerMain_SetSubState(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMain_SetSubState(VsRecorderState *param0, int param1)
 {
     param0->unk_08 = param1;
     param0->unk_0C = 0;
 }
 
-void VsRecorderViewerMain_RefreshMenu(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_RefreshMenu(VsRecorderState *param0)
 {
     VsRecorderGraphics_CountEnabledEntries(param0);
     VsRecorderViewerMenu_UpdateSubEntryLabels(param0);
@@ -592,7 +592,7 @@ void VsRecorderViewerMain_RefreshMenu(UnkStruct_0208C06C *param0)
     param0->unk_534.unk_1B0 = 0;
 }
 
-BOOL VsRecorderViewerMain_PushMenu(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerMain_PushMenu(VsRecorderState *param0)
 {
     param0->unk_81C[param0->unk_534.unk_1A4] = param0->unk_818;
     param0->unk_534.unk_190[param0->unk_534.unk_1A4] = &param0->unk_818[param0->unk_534.unk_1B0];
@@ -609,7 +609,7 @@ BOOL VsRecorderViewerMain_PushMenu(UnkStruct_0208C06C *param0)
     return 1;
 }
 
-BOOL VsRecorderViewerMain_PopMenu(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerMain_PopMenu(VsRecorderState *param0)
 {
     param0->unk_818 = param0->unk_81C[param0->unk_534.unk_1A4];
 
@@ -618,7 +618,7 @@ BOOL VsRecorderViewerMain_PopMenu(UnkStruct_0208C06C *param0)
     return 1;
 }
 
-void VsRecorderViewerMain_ExecuteMenuAction(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_ExecuteMenuAction(VsRecorderState *param0)
 {
     int v0 = param0->unk_818[param0->unk_534.unk_1B0].action;
 
@@ -680,7 +680,7 @@ void VsRecorderViewerMain_ExecuteMenuAction(UnkStruct_0208C06C *param0)
     }
 }
 
-BOOL VsRecorderViewerMain_CanExecuteAction(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerMain_CanExecuteAction(VsRecorderState *param0)
 {
     int v0 = param0->unk_818[param0->unk_534.unk_1B0].dataIndex;
     BOOL v1 = 1;
@@ -736,7 +736,7 @@ BOOL VsRecorderViewerMain_CanExecuteAction(UnkStruct_0208C06C *param0)
 
 static void VsRecorderViewerMain_TouchHandler(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
         return;
@@ -782,7 +782,7 @@ static void VsRecorderViewerMain_TouchHandler(u32 param0, enum TouchScreenButton
     }
 }
 
-void VsRecorderViewerMain_InitTouchScreenActions(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_InitTouchScreenActions(VsRecorderState *param0)
 {
     int v0;
 
@@ -793,7 +793,7 @@ void VsRecorderViewerMain_InitTouchScreenActions(UnkStruct_0208C06C *param0)
     param0->unk_14.unk_18 = TouchScreenActions_RegisterHandler(param0->unk_14.unk_1C, 5, VsRecorderViewerMain_TouchHandler, param0, HEAP_ID_102);
 }
 
-void VsRecorderViewerMain_UpdateTouchRects(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_UpdateTouchRects(VsRecorderState *param0)
 {
     int v0;
     s16 v1, v2;
@@ -820,7 +820,7 @@ void VsRecorderViewerMain_UpdateTouchRects(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMain_ClearTouchRects(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_ClearTouchRects(VsRecorderState *param0)
 {
     int v0;
     s16 v1, v2;
@@ -834,12 +834,12 @@ void VsRecorderViewerMain_ClearTouchRects(UnkStruct_0208C06C *param0)
     }
 }
 
-void VsRecorderViewerMain_HandleTouchAction(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_HandleTouchAction(VsRecorderState *param0)
 {
     TouchScreenActions_HandleAction(param0->unk_14.unk_18);
 }
 
-void VsRecorderViewerMain_ReturnToParentMenu(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_ReturnToParentMenu(VsRecorderState *param0)
 {
     if (param0->unk_534.unk_1A4 > 0) {
         param0->unk_534.unk_1A4--;
@@ -853,7 +853,7 @@ void VsRecorderViewerMain_ReturnToParentMenu(UnkStruct_0208C06C *param0)
     param0->unk_818 = param0->unk_81C[param0->unk_534.unk_1A4];
 }
 
-void VsRecorderViewerMain_ResetSelection(UnkStruct_0208C06C *param0)
+void VsRecorderViewerMain_ResetSelection(VsRecorderState *param0)
 {
     param0->unk_838.unk_00 = 0;
     param0->unk_838.unk_04 = 0xFF;
@@ -867,12 +867,12 @@ void VsRecorderViewerMain_ResetSelection(UnkStruct_0208C06C *param0)
     }
 }
 
-BOOL VsRecorderViewerMain_HasPendingSelection(UnkStruct_0208C06C *param0)
+BOOL VsRecorderViewerMain_HasPendingSelection(VsRecorderState *param0)
 {
     return param0->unk_838.unk_00;
 }
 
-void VsRecorderViewerMain_SetPendingSelection(UnkStruct_0208C06C *param0, int param1)
+void VsRecorderViewerMain_SetPendingSelection(VsRecorderState *param0, int param1)
 {
     param0->unk_838.unk_00 = 1;
     param0->unk_838.unk_04 = param1;

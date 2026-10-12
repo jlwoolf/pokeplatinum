@@ -6,7 +6,7 @@
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
 #include "struct_decls/struct_02012B20_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "bg_window.h"
 #include "sprite.h"
@@ -16,8 +16,8 @@ FontOAMManager *FontOAMManager_New(int param0, enum HeapID heapID);
 void FontOAMManager_Free(FontOAMManager *param0);
 
 // FontOAM lifecycle.
-FontOAM *FontOAM_New(const UnkStruct_020127E8 *param0);
-FontOAM *FontOAM_NewFromWindow(const UnkStruct_020127E8 *param0, const FontOAMWindow *param1);
+FontOAM *FontOAM_New(const FontOAMTemplate *param0);
+FontOAM *FontOAM_NewFromWindow(const FontOAMTemplate *param0, const FontOAMWindow *param1);
 void FontOAM_Free(FontOAM *param0);
 void FontOAM_Delete(FontOAM *param0);
 

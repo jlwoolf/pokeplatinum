@@ -1,14 +1,14 @@
 #ifndef POKEPLATINUM_STRUCT_0202FD30_H
 #define POKEPLATINUM_STRUCT_0202FD30_H
 
-#include "struct_defs/struct_02078B40.h"
+#include "struct_defs/struct_serialized_pokemon.h"
 
 // A party serialized into a recording. `mons` holds the box-format Pokémon
 // data produced by Pokemon_Serialize and consumed by Pokemon_Deserialize.
 typedef struct {
     u16 capacity;
     u16 count;
-    UnkStruct_02078B40 mons[6];
+    SerializedPokemon mons[6];
 } BattleRecordingParty;
 
 #endif // POKEPLATINUM_STRUCT_0202FD30_H

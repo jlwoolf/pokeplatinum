@@ -7,7 +7,7 @@
 #include "struct_decls/font_oam.h"
 #include "struct_decls/struct_02012744_decl.h"
 #include "struct_decls/struct_02012B20_decl.h"
-#include "struct_defs/struct_020127E8.h"
+#include "struct_defs/struct_font_oam_template.h"
 
 #include "geonet/struct_geonet_angle.h"
 #include "wifi_lobby_minigame/wifi_lobby_minigame.h"
@@ -4396,7 +4396,7 @@ static void WiFiLobbyMinigameBucket_InitScoreDisplay(WiFiLobbyMinigameBucketScor
     {
         int v2;
         BOOL v3;
-        UnkStruct_020127E8 v4;
+        FontOAMTemplate v4;
 
         param0->unk_5C = String_Init(16, heapID);
         Window_AddToTopLeftCorner(param1->unk_00, &param0->unk_38, 3, 2, 0, 0);

@@ -5,8 +5,8 @@
 #include "constants/heap.h"
 #include "constants/net.h"
 
-#include "struct_defs/struct_0203330C.h"
-#include "struct_defs/struct_02034168.h"
+#include "struct_defs/struct_wireless_game_info.h"
+#include "struct_defs/struct_mystery_gift_game_info.h"
 
 #include "battle_regulation.h"
 #include "comm_manager.h"
@@ -131,11 +131,11 @@ static BOOL CommServerClient_CompareBytes(const u8 *a, const u8 *b, int length)
 // with the local comm type and contest regulation.
 static void CommServerClient_ScanCallback(WMBssDesc *bssDesc)
 {
-    UnkStruct_0203330C *gameInfo;
+    WirelessGameInfo *gameInfo;
     int commType = CommManager_GetCommType();
     int contestRegulation = CommManager_GetContestRegulation();
 
-    gameInfo = (UnkStruct_0203330C *)bssDesc->gameInfo.userGameInfo;
+    gameInfo = (WirelessGameInfo *)bssDesc->gameInfo.userGameInfo;
 
     if (commType == 14) {
         (void)0;
@@ -473,7 +473,7 @@ void CommServerClient_ClearServerListUpdated(void)
 int CommServerClient_GetServerPlayerCount(int index)
 {
     if (sCommServerClient->serverTimeouts[index] != 0) {
-        UnkStruct_0203330C *gameInfo = (UnkStruct_0203330C *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
+        WirelessGameInfo *gameInfo = (WirelessGameInfo *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
 
         if (gameInfo->unk_06 == 0) {
             return 1;
@@ -629,11 +629,11 @@ static void CommServerClient_BuildGameInfo(void)
     TrainerInfo *trainerInfo = CommServerClient_GetPersonalTrainerInfo();
 
     if (commType != 15) {
-        UnkStruct_0203330C *gameInfo = (UnkStruct_0203330C *)sCommServerClient->gameInfo;
+        WirelessGameInfo *gameInfo = (WirelessGameInfo *)sCommServerClient->gameInfo;
 
         GF_ASSERT(32 >= BattleRegulation_Size());
         GF_ASSERT(32 == TrainerInfo_Size());
-        GF_ASSERT(WM_SIZE_USER_GAMEINFO >= MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)));
+        GF_ASSERT(WM_SIZE_USER_GAMEINFO >= MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)));
 
         MI_CpuCopy8(trainerInfo, gameInfo->unk_10, TrainerInfo_Size());
         MI_CpuCopy8(sCommServerClient->battleRegulation, gameInfo->unk_30, BattleRegulation_Size());
@@ -646,7 +646,7 @@ static void CommServerClient_BuildGameInfo(void)
 
         gameInfo->unk_54 = WirelessManager_GetPauseConnection();
     } else {
-        UnkStruct_02034168 *mysteryGiftInfo = (UnkStruct_02034168 *)sCommServerClient->gameInfo;
+        MysteryGiftGameInfo *mysteryGiftInfo = (MysteryGiftGameInfo *)sCommServerClient->gameInfo;
 
         mysteryGiftInfo->unk_00 = TrainerInfo_ID(trainerInfo);
         mysteryGiftInfo->unk_04 = CommManager_GetCommType();
@@ -655,21 +655,21 @@ static void CommServerClient_BuildGameInfo(void)
         MI_CpuCopy8(sCommServerClient->mysteryGiftEventData, mysteryGiftInfo->unk_08, 84);
     }
 
-    DC_FlushRange(sCommServerClient->gameInfo, MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)));
-    WirelessManager_SetParentParamGameInfoAndLength(sCommServerClient->gameInfo, MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)));
+    DC_FlushRange(sCommServerClient->gameInfo, MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)));
+    WirelessManager_SetParentParamGameInfoAndLength(sCommServerClient->gameInfo, MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)));
 }
 
 // Publishes the current connected-client count in the game info so other
 // consoles can see how full this server is.
 static void CommServerClient_UpdatePlayerCount(void)
 {
-    UnkStruct_0203330C *gameInfo = (UnkStruct_0203330C *)sCommServerClient->gameInfo;
+    WirelessGameInfo *gameInfo = (WirelessGameInfo *)sCommServerClient->gameInfo;
 
     if (CommServerClient_CountConnectedClients() != gameInfo->unk_06) {
         gameInfo->unk_06 = CommServerClient_CountConnectedClients();
-        DC_FlushRange(sCommServerClient->gameInfo, MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)));
-        WirelessManager_SetParentParamGameInfoAndLength(sCommServerClient->gameInfo, MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)));
-        WirelessManager_SetGameInfo(sCommServerClient->gameInfo, MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)), sCommServerClient->ggid, sServerTGID);
+        DC_FlushRange(sCommServerClient->gameInfo, MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)));
+        WirelessManager_SetParentParamGameInfoAndLength(sCommServerClient->gameInfo, MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)));
+        WirelessManager_SetGameInfo(sCommServerClient->gameInfo, MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)), sCommServerClient->ggid, sServerTGID);
     }
 }
 
@@ -912,10 +912,10 @@ WMBssDesc *CommServerClient_GetServerBssDesc(int index)
     return NULL;
 }
 
-UnkStruct_0203330C *CommServerClient_GetServerGameInfo(int index)
+WirelessGameInfo *CommServerClient_GetServerGameInfo(int index)
 {
     if (sCommServerClient && sCommServerClient->serverTimeouts[index] != 0) {
-        return (UnkStruct_0203330C *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
+        return (WirelessGameInfo *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
     }
 
     return NULL;
@@ -932,7 +932,7 @@ TrainerInfo *CommServerClient_GetServerTrainerInfo(int index)
         return NULL;
     }
 
-    UnkStruct_0203330C *gameInfo = (UnkStruct_0203330C *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
+    WirelessGameInfo *gameInfo = (WirelessGameInfo *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
     TrainerInfo *trainerInfo = (TrainerInfo *)&gameInfo->unk_10[0];
 
     return trainerInfo;
@@ -994,7 +994,7 @@ void *CommServerClient_GetBattleRegulation(void)
 void CommServerClient_SendGameInfo(void)
 {
     CommServerClient_BuildGameInfo();
-    WirelessManager_SetGameInfo(sCommServerClient->gameInfo, MATH_MAX(sizeof(UnkStruct_02034168), sizeof(UnkStruct_0203330C)), sCommServerClient->ggid, sServerTGID);
+    WirelessManager_SetGameInfo(sCommServerClient->gameInfo, MATH_MAX(sizeof(MysteryGiftGameInfo), sizeof(WirelessGameInfo)), sCommServerClient->ggid, sServerTGID);
 }
 
 // Sums the player counts of all discovered servers whose comm type matches.
@@ -1003,7 +1003,7 @@ int CommServerClient_CountPlayersByCommType(int commType)
     int i, count = 0;
 
     for (i = 0; i < 16; i++) {
-        UnkStruct_0203330C *gameInfo = CommServerClient_GetServerGameInfo(i);
+        WirelessGameInfo *gameInfo = CommServerClient_GetServerGameInfo(i);
 
         if (gameInfo) {
             if (gameInfo->unk_04 == commType) {
@@ -1030,7 +1030,7 @@ void CommServerClient_SetMysteryGiftEventData(void *eventData)
 const void *CommServerClient_GetMysteryGiftEventData(int index)
 {
     if (sCommServerClient && sCommServerClient->serverTimeouts[index] != 0) {
-        UnkStruct_02034168 *mysteryGiftInfo = (UnkStruct_02034168 *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
+        MysteryGiftGameInfo *mysteryGiftInfo = (MysteryGiftGameInfo *)sCommServerClient->serverBssDesc[index].gameInfo.userGameInfo;
         return mysteryGiftInfo->unk_08;
     }
 

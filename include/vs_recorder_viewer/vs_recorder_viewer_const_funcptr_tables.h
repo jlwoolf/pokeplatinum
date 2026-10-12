@@ -1,21 +1,21 @@
 #ifndef POKEPLATINUM_VS_RECORDER_VIEWER_CONST_FUNCPTR_TABLES_H
 #define POKEPLATINUM_VS_RECORDER_VIEWER_CONST_FUNCPTR_TABLES_H
 
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
-extern BOOL (*const sVsRecorderViewerRankingsStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerRankingStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerRecord_MainStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerRecord_ProfileStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerRecord_RingStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerEntryHandlers[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerSlideShowStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerSubMenuStateFuncs[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerBattleVideoStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerFrontierPrintStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerProfilePhotoModeTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerProfileBrowserModeTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerBoxStateTable[])(UnkStruct_0208C06C *);
-extern BOOL (*const sVsRecorderViewerBoxListStateTable[])(UnkStruct_0208C06C *);
+extern BOOL (*const sVsRecorderViewerRankingsStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerRankingStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerRecord_MainStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerRecord_ProfileStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerRecord_RingStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerEntryHandlers[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerSlideShowStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerSubMenuStateFuncs[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerBattleVideoStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerFrontierPrintStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerProfilePhotoModeTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerProfileBrowserModeTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerBoxStateTable[])(VsRecorderState *);
+extern BOOL (*const sVsRecorderViewerBoxListStateTable[])(VsRecorderState *);
 
 #endif POKEPLATINUM_VS_RECORDER_VIEWER_CONST_FUNCPTR_TABLES_H

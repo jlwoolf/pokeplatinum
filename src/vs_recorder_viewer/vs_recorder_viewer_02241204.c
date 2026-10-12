@@ -5,7 +5,7 @@
 
 #include "struct_decls/struct_0202F41C_decl.h"
 #include "struct_defs/struct_02030A80.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "global_terminal/global_terminal_0222AE60.h"
 #include "global_terminal/global_terminal_0222B008.h"
@@ -89,91 +89,91 @@ typedef struct {
     u8 unk_79C;
 } VsRecorderViewerRecordContext;
 
-static void VsRecorderViewerRecord_LayoutBoxSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_CreateBoxSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_SetBoxSpritesVisible(UnkStruct_0208C06C *param0, BOOL param1);
-static void VsRecorderViewerRecord_FreeBoxSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_ScrollBoxList(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_HasAnySelection(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_CreateMenuWindows(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_DrawRankLabel(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_DrawSpeciesName(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_DrawLocationName(UnkStruct_0208C06C *param0, int param1, int param2);
-static void VsRecorderViewerRecord_CreateCategoryWindows(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_RemoveMenuWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_RemoveCategoryWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_CreateHeaderWindows(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BoxViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BoxViewHandleTouch(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BoxViewExit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BoxViewOptions(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RankMenu(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SpeciesMenu(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_CreatePokedexLetterWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_RemovePokedexLetterWindows(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_PokedexGridMenu(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SpeciesSelect(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_IsPokedexSectionSeen(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_BuildPokedexSection(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_FreePokedexSection(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_LocationSelect(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SpeciesMenuOpen(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadRecord(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadRecordExit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_PlaybackInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_PlaybackInput(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BoxView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RankListInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RankListHandleTouch(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RankListToggleView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RankListExit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RankListCleanup(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch1(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingToggle1(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingToggle2(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingDetail(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch2(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingToggle3(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_BattleRecordingPlayback(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadId(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_PlaybackViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_Init(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_Setup(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ConfigInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ConfigUpdate(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ConfigExit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ConfigExitCleanup(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadId2(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_LoadRecordProfile(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_LoadBoxRecordProfile(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_FreeRecordProfile(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ProfileViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ProfileViewHandleTouch(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ProfileViewToggle(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ProfileViewExit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ProfileViewCleanup(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_DrawPlayerName(VsRecorderViewerTextSprite *param0, UnkStruct_0208C06C *param1, int param2);
-static void VsRecorderViewerRecord_DrawHeaderText(UnkStruct_0208C06C *param0, int param1, BOOL param2);
-static void VsRecorderViewerRecord_DrawHeaderTextForProfile(UnkStruct_0208C06C *param0, int param1, int param2);
-static void VsRecorderViewerRecord_CreateSummarySprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_FreeSummarySprites(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryToggle1(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryDetail(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryToggle3(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryPlayback(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RingViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadBattleRecording(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_RemoveInfoWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_DrawInfoMessage(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_CreateInfoWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_CreateDetailWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_RemoveDetailWindows(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerRecord_LayoutBoxSprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_CreateBoxSprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_SetBoxSpritesVisible(VsRecorderState *param0, BOOL param1);
+static void VsRecorderViewerRecord_FreeBoxSprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_ScrollBoxList(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_HasAnySelection(VsRecorderState *param0);
+static void VsRecorderViewerRecord_CreateMenuWindows(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_DrawRankLabel(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_DrawSpeciesName(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_DrawLocationName(VsRecorderState *param0, int param1, int param2);
+static void VsRecorderViewerRecord_CreateCategoryWindows(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_RemoveMenuWindows(VsRecorderState *param0);
+static void VsRecorderViewerRecord_RemoveCategoryWindows(VsRecorderState *param0);
+static void VsRecorderViewerRecord_CreateHeaderWindows(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BoxViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BoxViewHandleTouch(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BoxViewExit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BoxViewOptions(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RankMenu(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SpeciesMenu(VsRecorderState *param0);
+static void VsRecorderViewerRecord_CreatePokedexLetterWindows(VsRecorderState *param0);
+static void VsRecorderViewerRecord_RemovePokedexLetterWindows(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_PokedexGridMenu(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SpeciesSelect(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_IsPokedexSectionSeen(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_BuildPokedexSection(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_FreePokedexSection(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_LocationSelect(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SpeciesMenuOpen(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadRecord(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadRecordExit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_PlaybackInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_PlaybackInput(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BoxView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RankListInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RankListHandleTouch(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RankListToggleView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RankListExit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RankListCleanup(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch1(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingToggle1(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingToggle2(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingDetail(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch2(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingToggle3(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_BattleRecordingPlayback(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadId(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_PlaybackViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_Init(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_Setup(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ConfigInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ConfigUpdate(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ConfigExit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ConfigExitCleanup(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadId2(VsRecorderState *param0);
+static void VsRecorderViewerRecord_LoadRecordProfile(VsRecorderState *param0);
+static void VsRecorderViewerRecord_LoadBoxRecordProfile(VsRecorderState *param0);
+static void VsRecorderViewerRecord_FreeRecordProfile(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ProfileViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ProfileViewHandleTouch(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ProfileViewToggle(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ProfileViewExit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ProfileViewCleanup(VsRecorderState *param0);
+static void VsRecorderViewerRecord_DrawPlayerName(VsRecorderViewerTextSprite *param0, VsRecorderState *param1, int param2);
+static void VsRecorderViewerRecord_DrawHeaderText(VsRecorderState *param0, int param1, BOOL param2);
+static void VsRecorderViewerRecord_DrawHeaderTextForProfile(VsRecorderState *param0, int param1, int param2);
+static void VsRecorderViewerRecord_CreateSummarySprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_FreeSummarySprites(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryToggle1(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryDetail(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryToggle3(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryPlayback(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RingViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadBattleRecording(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(VsRecorderState *param0);
+static void VsRecorderViewerRecord_RemoveInfoWindow(VsRecorderState *param0);
+static void VsRecorderViewerRecord_DrawInfoMessage(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_CreateInfoWindow(VsRecorderState *param0);
+static void VsRecorderViewerRecord_CreateDetailWindows(VsRecorderState *param0);
+static void VsRecorderViewerRecord_RemoveDetailWindows(VsRecorderState *param0);
 static void VsRecorderViewerRecord_TouchHandlerRecordActions(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerRecord_TouchHandlerProfileSelect(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerRecord_TouchHandlerBack(u32 param0, enum TouchScreenButtonState param1, void *param2);
@@ -182,36 +182,36 @@ static void VsRecorderViewerRecord_TouchHandlerPokedexGrid(u32 param0, enum Touc
 static void VsRecorderViewerRecord_TouchHandlerRankActions(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerRecord_TouchHandlerRankProfileSelect(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerRecord_TouchHandlerRankBack(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void VsRecorderViewerRecord_SetMenuSpriteVisibility(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_CreateMainScreenSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_FreeMainScreenSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_SetViewToggleSprite(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRecord_CreateSubScreenSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_FreeSubScreenSprites(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ToggleViewState(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_CloseView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SpeciesDetailState(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_CloseSpeciesDetailState(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_PlaybackUploadState(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_ReopenBoxViewState(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RestoreBoxViewState(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_Exit(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerRecord_SetMenuSpriteVisibility(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_CreateMainScreenSprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_FreeMainScreenSprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_SetViewToggleSprite(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRecord_CreateSubScreenSprites(VsRecorderState *param0);
+static void VsRecorderViewerRecord_FreeSubScreenSprites(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ToggleViewState(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_CloseView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SpeciesDetailState(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_CloseSpeciesDetailState(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_PlaybackUploadState(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_ReopenBoxViewState(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RestoreBoxViewState(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_Exit(VsRecorderState *param0);
 void VsRecorderViewerRecord_SetBattleRecordingId(void *param0, const VsRecorderViewerTransferStatus *param1);
 void VsRecorderViewerRecord_LoadRecordAlt(void *param0, const VsRecorderViewerTransferStatus *param1);
 void VsRecorderViewerRecord_Noop(void *param0, const VsRecorderViewerTransferStatus *param1);
-static BOOL VsRecorderViewerRecord_SummaryView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryToggle1(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryToggle2(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryDetail(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryToggle3(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryPlayback(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_SummaryViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_RingViewInit(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadBattleRecording(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRecord_DrawRecordId(VsRecorderViewerRecordContext *param0, UnkStruct_0208C06C *param1);
+static BOOL VsRecorderViewerRecord_SummaryView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryToggle1(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryToggle2(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryDetail(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryToggle3(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryPlayback(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_SummaryViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_RingViewInit(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadBattleRecording(VsRecorderState *param0);
+static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(VsRecorderState *param0);
+static void VsRecorderViewerRecord_DrawRecordId(VsRecorderViewerRecordContext *param0, VsRecorderState *param1);
 
 static u16 sVsRecorderViewerRecord_PokedexSectionOffsets[] = {
     0x0,
@@ -273,7 +273,7 @@ const TouchScreenRect sVsRecorderViewerRecord_TouchRectsPokedexGrid[9] = {
     { 0x58, 0x70, 0xB8, 0xD8 }
 };
 
-static void VsRecorderViewerRecord_LayoutBoxSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_LayoutBoxSprites(VsRecorderState *param0)
 {
     const s16 v0[][2] = {
         { 0x68, 0x48 },
@@ -319,7 +319,7 @@ static void VsRecorderViewerRecord_LayoutBoxSprites(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerRecord_CreateBoxSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateBoxSprites(VsRecorderState *param0)
 {
     int v0, v1;
     int v2 = 0;
@@ -402,7 +402,7 @@ static void VsRecorderViewerRecord_CreateBoxSprites(UnkStruct_0208C06C *param0)
     VsRecorderViewerRecord_LayoutBoxSprites(param0);
 }
 
-static void VsRecorderViewerRecord_SetBoxSpritesVisible(UnkStruct_0208C06C *param0, BOOL param1)
+static void VsRecorderViewerRecord_SetBoxSpritesVisible(VsRecorderState *param0, BOOL param1)
 {
     int v0, v1;
     VsRecorderViewerRecordContext *v2 = param0->unk_860;
@@ -416,7 +416,7 @@ static void VsRecorderViewerRecord_SetBoxSpritesVisible(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerRecord_FreeBoxSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_FreeBoxSprites(VsRecorderState *param0)
 {
     int v0, v1;
     VsRecorderViewerRecordContext *v2 = param0->unk_860;
@@ -435,7 +435,7 @@ static void VsRecorderViewerRecord_FreeBoxSprites(UnkStruct_0208C06C *param0)
     VsRecorderViewerList_SetDrawSuspended(param0, 0);
 }
 
-static void VsRecorderViewerRecord_ScrollBoxList(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_ScrollBoxList(VsRecorderState *param0)
 {
     int v0, v1;
     int v2 = 0;
@@ -565,7 +565,7 @@ static void VsRecorderViewerRecord_ScrollBoxList(UnkStruct_0208C06C *param0)
     VsRecorderViewerList_SetDrawSuspended(param0, 0);
 }
 
-static BOOL VsRecorderViewerRecord_HasAnySelection(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_HasAnySelection(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -584,7 +584,7 @@ static BOOL VsRecorderViewerRecord_HasAnySelection(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static void VsRecorderViewerRecord_CreateMenuWindows(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_CreateMenuWindows(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     int v1;
@@ -642,7 +642,7 @@ static void VsRecorderViewerRecord_CreateMenuWindows(UnkStruct_0208C06C *param0,
     }
 }
 
-static void VsRecorderViewerRecord_DrawRankLabel(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_DrawRankLabel(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     Window *v1;
@@ -669,7 +669,7 @@ static void VsRecorderViewerRecord_DrawRankLabel(UnkStruct_0208C06C *param0, int
     String_Free(v2);
 }
 
-static void VsRecorderViewerRecord_DrawSpeciesName(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_DrawSpeciesName(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     Window *v1;
@@ -692,7 +692,7 @@ static void VsRecorderViewerRecord_DrawSpeciesName(UnkStruct_0208C06C *param0, i
     String_Free(v2);
 }
 
-static void VsRecorderViewerRecord_DrawLocationName(UnkStruct_0208C06C *param0, int param1, int param2)
+static void VsRecorderViewerRecord_DrawLocationName(VsRecorderState *param0, int param1, int param2)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     Window *v1;
@@ -729,7 +729,7 @@ static void VsRecorderViewerRecord_DrawLocationName(UnkStruct_0208C06C *param0, 
     String_Free(v2);
 }
 
-static void VsRecorderViewerRecord_CreateCategoryWindows(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_CreateCategoryWindows(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     int v1;
@@ -784,7 +784,7 @@ static void VsRecorderViewerRecord_CreateCategoryWindows(UnkStruct_0208C06C *par
     }
 }
 
-static void VsRecorderViewerRecord_RemoveMenuWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_RemoveMenuWindows(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerRecordContext *v1 = param0->unk_860;
@@ -797,7 +797,7 @@ static void VsRecorderViewerRecord_RemoveMenuWindows(UnkStruct_0208C06C *param0)
     v1->unk_794 = 0;
 }
 
-static void VsRecorderViewerRecord_RemoveCategoryWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_RemoveCategoryWindows(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerRecordContext *v1 = param0->unk_860;
@@ -810,7 +810,7 @@ static void VsRecorderViewerRecord_RemoveCategoryWindows(UnkStruct_0208C06C *par
     v1->unk_798 = 0;
 }
 
-static void VsRecorderViewerRecord_CreateHeaderWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateHeaderWindows(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     int v1 = 0;
@@ -847,7 +847,7 @@ static void VsRecorderViewerRecord_CreateHeaderWindows(UnkStruct_0208C06C *param
     v0->unk_794 = 1;
 }
 
-static BOOL VsRecorderViewerRecord_BoxViewInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BoxViewInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -904,7 +904,7 @@ static BOOL VsRecorderViewerRecord_BoxViewInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BoxViewHandleTouch(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BoxViewHandleTouch(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -912,7 +912,7 @@ static BOOL VsRecorderViewerRecord_BoxViewHandleTouch(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BoxViewExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BoxViewExit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -973,7 +973,7 @@ static BOOL VsRecorderViewerRecord_BoxViewExit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BoxViewOptions(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BoxViewOptions(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1077,7 +1077,7 @@ static const VsRecorderViewerListConfig sVsRecorderViewerRecord_RankMenuConfigFu
     sVsRecorderViewerRecord_TouchRectsRank
 };
 
-static BOOL VsRecorderViewerRecord_RankMenu(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RankMenu(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1178,7 +1178,7 @@ static const VsRecorderViewerListConfig sVsRecorderViewerRecord_PokedexGridConfi
     sVsRecorderViewerRecord_TouchRectsPokedexLetters
 };
 
-static BOOL VsRecorderViewerRecord_SpeciesMenu(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SpeciesMenu(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1197,10 +1197,10 @@ static BOOL VsRecorderViewerRecord_SpeciesMenu(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static void VsRecorderViewerRecord_CreatePokedexLetterWindows(UnkStruct_0208C06C *a0)
+static void VsRecorderViewerRecord_CreatePokedexLetterWindows(VsRecorderState *a0)
 {
     String *sp2c;
-    UnkStruct_0208C06C *sp14 = a0;
+    VsRecorderState *sp14 = a0;
     int sp28 = 1;
     VsRecorderViewerRecordContext *r1 = sp14->unk_860;
 
@@ -1227,7 +1227,7 @@ static void VsRecorderViewerRecord_CreatePokedexLetterWindows(UnkStruct_0208C06C
     }
 }
 
-static void VsRecorderViewerRecord_RemovePokedexLetterWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_RemovePokedexLetterWindows(VsRecorderState *param0)
 {
     u32 v0;
     Window *v1;
@@ -1240,7 +1240,7 @@ static void VsRecorderViewerRecord_RemovePokedexLetterWindows(UnkStruct_0208C06C
     }
 }
 
-static BOOL VsRecorderViewerRecord_PokedexGridMenu(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_PokedexGridMenu(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1302,7 +1302,7 @@ static BOOL VsRecorderViewerRecord_PokedexGridMenu(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SpeciesSelect(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SpeciesSelect(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1393,7 +1393,7 @@ static BOOL VsRecorderViewerRecord_SpeciesSelect(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_IsPokedexSectionSeen(UnkStruct_0208C06C *param0, int param1)
+static BOOL VsRecorderViewerRecord_IsPokedexSectionSeen(VsRecorderState *param0, int param1)
 {
     BOOL v0 = 0;
     u16 *v1;
@@ -1437,7 +1437,7 @@ static BOOL VsRecorderViewerRecord_IsPokedexSectionSeen(UnkStruct_0208C06C *para
     return v0;
 }
 
-static void VsRecorderViewerRecord_BuildPokedexSection(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_BuildPokedexSection(VsRecorderState *param0, int param1)
 {
     u16 *v0;
     int v1;
@@ -1500,7 +1500,7 @@ static void VsRecorderViewerRecord_BuildPokedexSection(UnkStruct_0208C06C *param
     v4->unk_4C8.unk_10 = 1;
 }
 
-static void VsRecorderViewerRecord_FreePokedexSection(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_FreePokedexSection(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1533,7 +1533,7 @@ static const VsRecorderViewerListConfig sVsRecorderViewerRecord_CountryMenuConfi
     sVsRecorderViewerRecord_TouchRectsCountry
 };
 
-static BOOL VsRecorderViewerRecord_LocationSelect(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_LocationSelect(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1604,7 +1604,7 @@ static BOOL VsRecorderViewerRecord_LocationSelect(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SpeciesMenuOpen(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SpeciesMenuOpen(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1633,7 +1633,7 @@ static BOOL VsRecorderViewerRecord_SpeciesMenuOpen(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_UploadRecord(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_UploadRecord(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -1714,7 +1714,7 @@ static const VsRecorderViewerListConfig sVsRecorderViewerRecord_PlaybackConfig =
     NULL
 };
 
-static BOOL VsRecorderViewerRecord_UploadRecordExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_UploadRecordExit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1745,7 +1745,7 @@ static BOOL VsRecorderViewerRecord_UploadRecordExit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_PlaybackInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_PlaybackInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1814,7 +1814,7 @@ static BOOL VsRecorderViewerRecord_PlaybackInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_PlaybackInput(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_PlaybackInput(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1886,7 +1886,7 @@ static BOOL VsRecorderViewerRecord_PlaybackInput(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BoxView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BoxView(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1928,7 +1928,7 @@ static BOOL VsRecorderViewerRecord_BoxView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RankListInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RankListInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1978,7 +1978,7 @@ static BOOL VsRecorderViewerRecord_RankListInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RankListHandleTouch(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RankListHandleTouch(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1986,7 +1986,7 @@ static BOOL VsRecorderViewerRecord_RankListHandleTouch(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RankListToggleView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RankListToggleView(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -1997,7 +1997,7 @@ static BOOL VsRecorderViewerRecord_RankListToggleView(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RankListExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RankListExit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2009,7 +2009,7 @@ static BOOL VsRecorderViewerRecord_RankListExit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RankListCleanup(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RankListCleanup(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2056,7 +2056,7 @@ static BOOL VsRecorderViewerRecord_RankListCleanup(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingView(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2177,7 +2177,7 @@ static BOOL VsRecorderViewerRecord_BattleRecordingView(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch1(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch1(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2185,7 +2185,7 @@ static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch1(UnkStruct_0208C06
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingToggle1(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingToggle1(VsRecorderState *param0)
 {
     if (VsRecorderViewerRecord_ReopenBoxViewState(param0)) {
         {
@@ -2201,7 +2201,7 @@ static BOOL VsRecorderViewerRecord_BattleRecordingToggle1(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingToggle2(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingToggle2(VsRecorderState *param0)
 {
     if (VsRecorderViewerRecord_RestoreBoxViewState(param0)) {
         {
@@ -2217,7 +2217,7 @@ static BOOL VsRecorderViewerRecord_BattleRecordingToggle2(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingDetail(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingDetail(VsRecorderState *param0)
 {
     if (VsRecorderViewerRecord_SpeciesDetailState(param0)) {
         VsRecorderViewerMain_SetState(param0, 26);
@@ -2226,7 +2226,7 @@ static BOOL VsRecorderViewerRecord_BattleRecordingDetail(UnkStruct_0208C06C *par
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch2(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch2(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2234,7 +2234,7 @@ static BOOL VsRecorderViewerRecord_BattleRecordingHandleTouch2(UnkStruct_0208C06
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingToggle3(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingToggle3(VsRecorderState *param0)
 {
     if (VsRecorderViewerRecord_CloseSpeciesDetailState(param0)) {
         VsRecorderViewerMain_SetState(param0, 23);
@@ -2243,13 +2243,13 @@ static BOOL VsRecorderViewerRecord_BattleRecordingToggle3(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_BattleRecordingPlayback(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_BattleRecordingPlayback(VsRecorderState *param0)
 {
     VsRecorderViewerRecord_PlaybackUploadState(param0);
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_UploadId(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_UploadId(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -2331,7 +2331,7 @@ static BOOL VsRecorderViewerRecord_UploadId(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_PlaybackViewInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_PlaybackViewInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2424,7 +2424,7 @@ static BOOL VsRecorderViewerRecord_PlaybackViewInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-BOOL (*const sVsRecorderViewerRecord_MainStateTable[])(UnkStruct_0208C06C *) = {
+BOOL (*const sVsRecorderViewerRecord_MainStateTable[])(VsRecorderState *) = {
     VsRecorderViewerRecord_Init,
     VsRecorderViewerRecord_Setup,
     VsRecorderViewerRecord_BoxViewInit,
@@ -2459,7 +2459,7 @@ BOOL (*const sVsRecorderViewerRecord_MainStateTable[])(UnkStruct_0208C06C *) = {
     VsRecorderViewerRecord_BattleRecordingToggle2,
 };
 
-BOOL (*const sVsRecorderViewerRecord_ProfileStateTable[])(UnkStruct_0208C06C *) = {
+BOOL (*const sVsRecorderViewerRecord_ProfileStateTable[])(VsRecorderState *) = {
     VsRecorderViewerRecord_Init,
     VsRecorderViewerRecord_Setup,
     VsRecorderViewerRecord_ConfigInit,
@@ -2483,7 +2483,7 @@ BOOL (*const sVsRecorderViewerRecord_ProfileStateTable[])(UnkStruct_0208C06C *) 
     VsRecorderViewerRecord_SummaryToggle2,
 };
 
-BOOL (*const sVsRecorderViewerRecord_RingStateTable[])(UnkStruct_0208C06C *) = {
+BOOL (*const sVsRecorderViewerRecord_RingStateTable[])(VsRecorderState *) = {
     VsRecorderViewerRecord_Init,
     VsRecorderViewerRecord_Setup,
     VsRecorderViewerRecord_RingViewInit,
@@ -2491,7 +2491,7 @@ BOOL (*const sVsRecorderViewerRecord_RingStateTable[])(UnkStruct_0208C06C *) = {
     VsRecorderViewerRecord_UploadBattleRecordingExit,
 };
 
-static BOOL VsRecorderViewerRecord_Init(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_Init(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerRecordContext));
 
@@ -2509,7 +2509,7 @@ static BOOL VsRecorderViewerRecord_Init(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_Setup(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_Setup(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2584,7 +2584,7 @@ static BOOL VsRecorderViewerRecord_Setup(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ConfigInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ConfigInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerIdEntryState *v1 = &v0->unk_1D4;
@@ -2629,7 +2629,7 @@ static BOOL VsRecorderViewerRecord_ConfigInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ConfigUpdate(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ConfigUpdate(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerIdEntryState *v1 = &v0->unk_1D4;
@@ -2642,7 +2642,7 @@ static BOOL VsRecorderViewerRecord_ConfigUpdate(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ConfigExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ConfigExit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerIdEntryState *v1 = &v0->unk_1D4;
@@ -2677,7 +2677,7 @@ static BOOL VsRecorderViewerRecord_ConfigExit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ConfigExitCleanup(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ConfigExitCleanup(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2715,7 +2715,7 @@ static BOOL VsRecorderViewerRecord_ConfigExitCleanup(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_UploadId2(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_UploadId2(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerIdEntryState *v1 = &v0->unk_1D4;
@@ -2790,7 +2790,7 @@ static BOOL VsRecorderViewerRecord_UploadId2(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static void VsRecorderViewerRecord_LoadRecordProfile(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_LoadRecordProfile(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2801,7 +2801,7 @@ static void VsRecorderViewerRecord_LoadRecordProfile(UnkStruct_0208C06C *param0)
     MI_CpuCopy8(&v0->unk_4BC->unk_80, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
-static void VsRecorderViewerRecord_LoadBoxRecordProfile(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_LoadBoxRecordProfile(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2812,7 +2812,7 @@ static void VsRecorderViewerRecord_LoadBoxRecordProfile(UnkStruct_0208C06C *para
     MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
-static void VsRecorderViewerRecord_FreeRecordProfile(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_FreeRecordProfile(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2820,7 +2820,7 @@ static void VsRecorderViewerRecord_FreeRecordProfile(UnkStruct_0208C06C *param0)
     PlayerProfile_Free(v0->unk_80.unk_00);
 }
 
-static BOOL VsRecorderViewerRecord_ProfileViewInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ProfileViewInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2894,7 +2894,7 @@ static BOOL VsRecorderViewerRecord_ProfileViewInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ProfileViewHandleTouch(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ProfileViewHandleTouch(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2902,7 +2902,7 @@ static BOOL VsRecorderViewerRecord_ProfileViewHandleTouch(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ProfileViewToggle(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ProfileViewToggle(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2913,7 +2913,7 @@ static BOOL VsRecorderViewerRecord_ProfileViewToggle(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ProfileViewExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ProfileViewExit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -2925,7 +2925,7 @@ static BOOL VsRecorderViewerRecord_ProfileViewExit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ProfileViewCleanup(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ProfileViewCleanup(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3002,7 +3002,7 @@ static BOOL VsRecorderViewerRecord_ProfileViewCleanup(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static void VsRecorderViewerRecord_DrawPlayerName(VsRecorderViewerTextSprite *param0, UnkStruct_0208C06C *param1, int param2)
+static void VsRecorderViewerRecord_DrawPlayerName(VsRecorderViewerTextSprite *param0, VsRecorderState *param1, int param2)
 {
     String *v0;
     MessageLoader *v1;
@@ -3036,7 +3036,7 @@ static void VsRecorderViewerRecord_DrawPlayerName(VsRecorderViewerTextSprite *pa
     Window_Remove(&v2);
 }
 
-static void VsRecorderViewerRecord_DrawHeaderText(UnkStruct_0208C06C *param0, int param1, BOOL param2)
+static void VsRecorderViewerRecord_DrawHeaderText(VsRecorderState *param0, int param1, BOOL param2)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -3073,7 +3073,7 @@ static void VsRecorderViewerRecord_DrawHeaderText(UnkStruct_0208C06C *param0, in
     String_Free(v0);
 }
 
-static void VsRecorderViewerRecord_DrawHeaderTextForProfile(UnkStruct_0208C06C *param0, int param1, int param2)
+static void VsRecorderViewerRecord_DrawHeaderTextForProfile(VsRecorderState *param0, int param1, int param2)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -3121,7 +3121,7 @@ static void VsRecorderViewerRecord_DrawHeaderTextForProfile(UnkStruct_0208C06C *
     String_Free(v0);
 }
 
-static void VsRecorderViewerRecord_CreateSummarySprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateSummarySprites(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     int v1;
@@ -3152,7 +3152,7 @@ static void VsRecorderViewerRecord_CreateSummarySprites(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerRecord_FreeSummarySprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_FreeSummarySprites(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     int v1;
@@ -3165,7 +3165,7 @@ static void VsRecorderViewerRecord_FreeSummarySprites(UnkStruct_0208C06C *param0
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static BOOL VsRecorderViewerRecord_SummaryView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryView(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3276,7 +3276,7 @@ static BOOL VsRecorderViewerRecord_SummaryView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3284,7 +3284,7 @@ static BOOL VsRecorderViewerRecord_SummaryHandleTouch1(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryToggle1(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryToggle1(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3295,7 +3295,7 @@ static BOOL VsRecorderViewerRecord_SummaryToggle1(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryToggle2(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryToggle2(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3306,7 +3306,7 @@ static BOOL VsRecorderViewerRecord_SummaryToggle2(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryDetail(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryDetail(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3317,7 +3317,7 @@ static BOOL VsRecorderViewerRecord_SummaryDetail(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3325,7 +3325,7 @@ static BOOL VsRecorderViewerRecord_SummaryHandleTouch2(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryToggle3(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryToggle3(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3336,7 +3336,7 @@ static BOOL VsRecorderViewerRecord_SummaryToggle3(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryPlayback(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryPlayback(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -3346,7 +3346,7 @@ static BOOL VsRecorderViewerRecord_SummaryPlayback(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SummaryViewInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SummaryViewInit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3456,7 +3456,7 @@ static BOOL VsRecorderViewerRecord_SummaryViewInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RingViewInit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RingViewInit(VsRecorderState *param0)
 {
     VsRecorderViewerList_SetupRing(param0, param0->unk_6F0, 128, 96);
     VsRecorderRing_SetVisible(param0->unk_6F0, 1);
@@ -3466,7 +3466,7 @@ static BOOL VsRecorderViewerRecord_RingViewInit(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_UploadBattleRecording(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_UploadBattleRecording(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -3538,7 +3538,7 @@ static BOOL VsRecorderViewerRecord_UploadBattleRecording(UnkStruct_0208C06C *par
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3582,7 +3582,7 @@ static BOOL VsRecorderViewerRecord_UploadBattleRecordingExit(UnkStruct_0208C06C 
     return 0;
 }
 
-static void VsRecorderViewerRecord_RemoveInfoWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_RemoveInfoWindow(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3590,7 +3590,7 @@ static void VsRecorderViewerRecord_RemoveInfoWindow(UnkStruct_0208C06C *param0)
     Window_Remove(&v0->unk_6D4[0]);
 }
 
-static void VsRecorderViewerRecord_DrawInfoMessage(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_DrawInfoMessage(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     Window *v1;
@@ -3606,7 +3606,7 @@ static void VsRecorderViewerRecord_DrawInfoMessage(UnkStruct_0208C06C *param0, i
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerRecord_CreateInfoWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateInfoWindow(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     Window *v1;
@@ -3619,7 +3619,7 @@ static void VsRecorderViewerRecord_CreateInfoWindow(UnkStruct_0208C06C *param0)
     VsRecorderViewerRecord_DrawInfoMessage(param0, 121 + v0->unk_1CC);
 }
 
-static void VsRecorderViewerRecord_CreateDetailWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateDetailWindows(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     Window *v1;
@@ -3656,7 +3656,7 @@ static void VsRecorderViewerRecord_CreateDetailWindows(UnkStruct_0208C06C *param
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerRecord_RemoveDetailWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_RemoveDetailWindows(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3668,7 +3668,7 @@ static void VsRecorderViewerRecord_RemoveDetailWindows(UnkStruct_0208C06C *param
 
 static void VsRecorderViewerRecord_TouchHandlerRecordActions(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3697,7 +3697,7 @@ static void VsRecorderViewerRecord_TouchHandlerRecordActions(u32 param0, enum To
 
 static void VsRecorderViewerRecord_TouchHandlerProfileSelect(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3728,7 +3728,7 @@ static void VsRecorderViewerRecord_TouchHandlerProfileSelect(u32 param0, enum To
 
 static void VsRecorderViewerRecord_TouchHandlerBack(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3751,7 +3751,7 @@ static void VsRecorderViewerRecord_TouchHandlerBack(u32 param0, enum TouchScreen
 
 static void VsRecorderViewerRecord_TouchHandlerBoxMenu(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3802,7 +3802,7 @@ static void VsRecorderViewerRecord_TouchHandlerBoxMenu(u32 param0, enum TouchScr
 
 static void VsRecorderViewerRecord_TouchHandlerPokedexGrid(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3819,7 +3819,7 @@ static void VsRecorderViewerRecord_TouchHandlerPokedexGrid(u32 param0, enum Touc
 
 static void VsRecorderViewerRecord_TouchHandlerRankActions(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3860,7 +3860,7 @@ static void VsRecorderViewerRecord_TouchHandlerRankActions(u32 param0, enum Touc
 
 static void VsRecorderViewerRecord_TouchHandlerRankProfileSelect(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3890,7 +3890,7 @@ static void VsRecorderViewerRecord_TouchHandlerRankProfileSelect(u32 param0, enu
 
 static void VsRecorderViewerRecord_TouchHandlerRankBack(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -3910,7 +3910,7 @@ static void VsRecorderViewerRecord_TouchHandlerRankBack(u32 param0, enum TouchSc
     }
 }
 
-static void VsRecorderViewerRecord_SetMenuSpriteVisibility(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_SetMenuSpriteVisibility(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3928,7 +3928,7 @@ static void VsRecorderViewerRecord_SetMenuSpriteVisibility(UnkStruct_0208C06C *p
     FontOAM_SetXY(v0->unk_10[1].unk_0C, 36, -8);
 }
 
-static void VsRecorderViewerRecord_CreateMainScreenSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateMainScreenSprites(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3954,7 +3954,7 @@ static void VsRecorderViewerRecord_CreateMainScreenSprites(UnkStruct_0208C06C *p
     VsRecorderViewerRecord_SetMenuSpriteVisibility(param0, 0);
 }
 
-static void VsRecorderViewerRecord_FreeMainScreenSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_FreeMainScreenSprites(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3967,7 +3967,7 @@ static void VsRecorderViewerRecord_FreeMainScreenSprites(UnkStruct_0208C06C *par
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static void VsRecorderViewerRecord_SetViewToggleSprite(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRecord_SetViewToggleSprite(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -3985,7 +3985,7 @@ static void VsRecorderViewerRecord_SetViewToggleSprite(UnkStruct_0208C06C *param
     FontOAM_SetXY(v0->unk_10[1].unk_0C, 36, -8);
 }
 
-static void VsRecorderViewerRecord_CreateSubScreenSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_CreateSubScreenSprites(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4019,7 +4019,7 @@ static void VsRecorderViewerRecord_CreateSubScreenSprites(UnkStruct_0208C06C *pa
     VsRecorderViewerRecord_SetViewToggleSprite(param0, 0);
 }
 
-static void VsRecorderViewerRecord_FreeSubScreenSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRecord_FreeSubScreenSprites(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4032,7 +4032,7 @@ static void VsRecorderViewerRecord_FreeSubScreenSprites(UnkStruct_0208C06C *para
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static BOOL VsRecorderViewerRecord_ToggleViewState(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ToggleViewState(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4093,7 +4093,7 @@ static BOOL VsRecorderViewerRecord_ToggleViewState(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_CloseView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_CloseView(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4145,7 +4145,7 @@ static BOOL VsRecorderViewerRecord_CloseView(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_SpeciesDetailState(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_SpeciesDetailState(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4175,7 +4175,7 @@ static BOOL VsRecorderViewerRecord_SpeciesDetailState(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_CloseSpeciesDetailState(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_CloseSpeciesDetailState(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4210,7 +4210,7 @@ static BOOL VsRecorderViewerRecord_CloseSpeciesDetailState(UnkStruct_0208C06C *p
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_PlaybackUploadState(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_PlaybackUploadState(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -4339,7 +4339,7 @@ static BOOL VsRecorderViewerRecord_PlaybackUploadState(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_RestoreBoxViewState(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_RestoreBoxViewState(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4416,7 +4416,7 @@ static BOOL VsRecorderViewerRecord_RestoreBoxViewState(UnkStruct_0208C06C *param
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_ReopenBoxViewState(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_ReopenBoxViewState(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4492,7 +4492,7 @@ static BOOL VsRecorderViewerRecord_ReopenBoxViewState(UnkStruct_0208C06C *param0
     return 0;
 }
 
-static BOOL VsRecorderViewerRecord_Exit(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRecord_Exit(VsRecorderState *param0)
 {
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
@@ -4540,7 +4540,7 @@ static BOOL VsRecorderViewerRecord_Exit(UnkStruct_0208C06C *param0)
 
 void VsRecorderViewerRecord_SetBattleRecordingId(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderState *v0 = param0;
     VsRecorderViewerRecordContext *v1 = v0->unk_860;
 
     if (param1->unk_00 == 1) {
@@ -4555,7 +4555,7 @@ void VsRecorderViewerRecord_SetBattleRecordingId(void *param0, const VsRecorderV
 
 void VsRecorderViewerRecord_LoadRecordAlt(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderState *v0 = param0;
 
     if (param1->unk_00 == 1) {
         (void)0;
@@ -4568,7 +4568,7 @@ void VsRecorderViewerRecord_LoadRecordAlt(void *param0, const VsRecorderViewerTr
 
 void VsRecorderViewerRecord_Noop(void *param0, const VsRecorderViewerTransferStatus *param1)
 {
-    UnkStruct_0208C06C *v0 = param0;
+    VsRecorderState *v0 = param0;
 
     if (param1->unk_00 == 1) {
         (void)0;
@@ -4577,7 +4577,7 @@ void VsRecorderViewerRecord_Noop(void *param0, const VsRecorderViewerTransferSta
     }
 }
 
-static void VsRecorderViewerRecord_DrawRecordId(VsRecorderViewerRecordContext *param0, UnkStruct_0208C06C *param1)
+static void VsRecorderViewerRecord_DrawRecordId(VsRecorderViewerRecordContext *param0, VsRecorderState *param1)
 {
     String *v0;
     String *v1;

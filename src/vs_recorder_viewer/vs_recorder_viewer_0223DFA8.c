@@ -3,7 +3,7 @@
 
 #include "struct_decls/struct_0202F41C_decl.h"
 #include "struct_defs/struct_02030A80.h"
-#include "struct_defs/struct_0208C06C.h"
+#include "struct_defs/struct_vs_recorder_state.h"
 
 #include "global_terminal/global_terminal_0222AE60.h"
 #include "global_terminal/global_terminal_0222B008.h"
@@ -111,56 +111,56 @@ static const TouchScreenRect sVsRecorderViewerRankingIconButtonRects[] = {
     { 0x20, 0x60, 0x50, 0xB0 }
 };
 
-static void VsRecorderViewerRanking_LayoutIconGrid(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_CreateBottomPromptSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_DrawMessageText(UnkStruct_0208C06C *param0, int param1, int param2);
-static BOOL VsRecorderViewerRanking_State_TransferSelectedRecord(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_FreeSummaryAndProfile(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_UpdateSummaryList(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitOwnRecord(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_UploadSummary(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitProfileRecord(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_UpdateProfileList(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitGlobalRecord(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_ShowRecordPanel(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitPlayerSelect(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_DrawProfileName(VsRecorderViewerTextSprite *param0, UnkStruct_0208C06C *param1, int param2);
-static void VsRecorderViewerRanking_CreateProfileLabels(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_FreeProfileLabels(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_FreeBottomPromptSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_SetBottomPromptLayout(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRanking_RemoveHeaderWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_RemoveMessageWindows(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_Init(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitScreen(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_TransferRecord(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_CreateHeaderWindows(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitRankingView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_UpdateRankingView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_ExitRankingView(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_InitTouchHandlers(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_UpdateMainMenu(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_ToggleRecordPanel(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_ExitAndRequestPlayback(UnkStruct_0208C06C *param0);
-static BOOL VsRecorderViewerRanking_State_ReenterRanking(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_DrawMessageWithPlayerName(UnkStruct_0208C06C *param0, int param1, BOOL param2);
-static BOOL VsRecorderViewerRanking_State_ViewSelectedRecord(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_RemoveMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_SetMessageWindowText(UnkStruct_0208C06C *param0, int param1);
-static void VsRecorderViewerRanking_CreateMessageWindow(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_CreateStatWindows(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_RemoveStatWindows(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerRanking_LayoutIconGrid(VsRecorderState *param0);
+static void VsRecorderViewerRanking_CreateBottomPromptSprites(VsRecorderState *param0);
+static void VsRecorderViewerRanking_DrawMessageText(VsRecorderState *param0, int param1, int param2);
+static BOOL VsRecorderViewerRanking_State_TransferSelectedRecord(VsRecorderState *param0);
+static void VsRecorderViewerRanking_FreeSummaryAndProfile(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_UpdateSummaryList(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitOwnRecord(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_UploadSummary(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitProfileRecord(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_UpdateProfileList(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitGlobalRecord(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_ShowRecordPanel(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitPlayerSelect(VsRecorderState *param0);
+static void VsRecorderViewerRanking_DrawProfileName(VsRecorderViewerTextSprite *param0, VsRecorderState *param1, int param2);
+static void VsRecorderViewerRanking_CreateProfileLabels(VsRecorderState *param0);
+static void VsRecorderViewerRanking_FreeProfileLabels(VsRecorderState *param0);
+static void VsRecorderViewerRanking_FreeBottomPromptSprites(VsRecorderState *param0);
+static void VsRecorderViewerRanking_SetBottomPromptLayout(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRanking_RemoveHeaderWindows(VsRecorderState *param0);
+static void VsRecorderViewerRanking_RemoveMessageWindows(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_Init(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitScreen(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_TransferRecord(VsRecorderState *param0);
+static void VsRecorderViewerRanking_CreateHeaderWindows(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitRankingView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_UpdateRankingView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_ExitRankingView(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_InitTouchHandlers(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_UpdateMainMenu(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_ToggleRecordPanel(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_ExitAndRequestPlayback(VsRecorderState *param0);
+static BOOL VsRecorderViewerRanking_State_ReenterRanking(VsRecorderState *param0);
+static void VsRecorderViewerRanking_DrawMessageWithPlayerName(VsRecorderState *param0, int param1, BOOL param2);
+static BOOL VsRecorderViewerRanking_State_ViewSelectedRecord(VsRecorderState *param0);
+static void VsRecorderViewerRanking_RemoveMessageWindow(VsRecorderState *param0);
+static void VsRecorderViewerRanking_SetMessageWindowText(VsRecorderState *param0, int param1);
+static void VsRecorderViewerRanking_CreateMessageWindow(VsRecorderState *param0);
+static void VsRecorderViewerRanking_CreateStatWindows(VsRecorderState *param0);
+static void VsRecorderViewerRanking_RemoveStatWindows(VsRecorderState *param0);
 static void VsRecorderViewerRanking_HandleMainButtonTouch(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerRanking_HandleProfileTouch(u32 param0, enum TouchScreenButtonState param1, void *param2);
 static void VsRecorderViewerRanking_HandleSummaryListTouch(u32 param0, enum TouchScreenButtonState param1, void *param2);
-static void VsRecorderViewerRanking_LoadProfileAndSummary(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_BuildRankingIconGrid(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_SetIconGridVisible(UnkStruct_0208C06C *param0, BOOL param1);
-static void VsRecorderViewerRanking_FreeIconGridSprites(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_ScrollIconGrid(UnkStruct_0208C06C *param0);
-static void VsRecorderViewerRanking_FreeBottomPromptSpritesAndCleanup(UnkStruct_0208C06C *param0);
+static void VsRecorderViewerRanking_LoadProfileAndSummary(VsRecorderState *param0);
+static void VsRecorderViewerRanking_BuildRankingIconGrid(VsRecorderState *param0);
+static void VsRecorderViewerRanking_SetIconGridVisible(VsRecorderState *param0, BOOL param1);
+static void VsRecorderViewerRanking_FreeIconGridSprites(VsRecorderState *param0);
+static void VsRecorderViewerRanking_ScrollIconGrid(VsRecorderState *param0);
+static void VsRecorderViewerRanking_FreeBottomPromptSpritesAndCleanup(VsRecorderState *param0);
 
-static void VsRecorderViewerRanking_LayoutIconGrid(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_LayoutIconGrid(VsRecorderState *param0)
 {
     const s16 v0[][2] = {
         { 13 * 8, 9 * 8 },
@@ -206,7 +206,7 @@ static void VsRecorderViewerRanking_LayoutIconGrid(UnkStruct_0208C06C *param0)
     }
 }
 
-static void VsRecorderViewerRanking_CreateBottomPromptSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_CreateBottomPromptSprites(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -232,7 +232,7 @@ static void VsRecorderViewerRanking_CreateBottomPromptSprites(UnkStruct_0208C06C
     VsRecorderViewerRanking_SetBottomPromptLayout(param0, 0);
 }
 
-static void VsRecorderViewerRanking_DrawMessageText(UnkStruct_0208C06C *param0, int param1, int param2)
+static void VsRecorderViewerRanking_DrawMessageText(VsRecorderState *param0, int param1, int param2)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -281,7 +281,7 @@ static void VsRecorderViewerRanking_DrawMessageText(UnkStruct_0208C06C *param0, 
     String_Free(v0);
 }
 
-static BOOL VsRecorderViewerRanking_State_TransferSelectedRecord(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_TransferSelectedRecord(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -358,7 +358,7 @@ static BOOL VsRecorderViewerRanking_State_TransferSelectedRecord(UnkStruct_0208C
     return 0;
 }
 
-static void VsRecorderViewerRanking_FreeSummaryAndProfile(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_FreeSummaryAndProfile(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -366,7 +366,7 @@ static void VsRecorderViewerRanking_FreeSummaryAndProfile(UnkStruct_0208C06C *pa
     PlayerProfile_Free(v0->unk_194.unk_00);
 }
 
-static BOOL VsRecorderViewerRanking_State_UpdateSummaryList(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_UpdateSummaryList(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -374,7 +374,7 @@ static BOOL VsRecorderViewerRanking_State_UpdateSummaryList(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitOwnRecord(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitOwnRecord(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -411,7 +411,7 @@ static BOOL VsRecorderViewerRanking_State_InitOwnRecord(UnkStruct_0208C06C *para
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_UploadSummary(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_UploadSummary(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -536,7 +536,7 @@ static BOOL VsRecorderViewerRanking_State_UploadSummary(UnkStruct_0208C06C *para
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitProfileRecord(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitProfileRecord(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -567,7 +567,7 @@ static BOOL VsRecorderViewerRanking_State_InitProfileRecord(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_ShowRecordPanel(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_ShowRecordPanel(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -649,7 +649,7 @@ static BOOL VsRecorderViewerRanking_State_ShowRecordPanel(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_UpdateProfileList(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_UpdateProfileList(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -657,7 +657,7 @@ static BOOL VsRecorderViewerRanking_State_UpdateProfileList(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitGlobalRecord(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitGlobalRecord(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -742,7 +742,7 @@ static BOOL VsRecorderViewerRanking_State_InitGlobalRecord(UnkStruct_0208C06C *p
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitPlayerSelect(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitPlayerSelect(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -786,7 +786,7 @@ static BOOL VsRecorderViewerRanking_State_InitPlayerSelect(UnkStruct_0208C06C *p
     return 0;
 }
 
-BOOL (*const sVsRecorderViewerRankingStateTable[])(UnkStruct_0208C06C *) = {
+BOOL (*const sVsRecorderViewerRankingStateTable[])(VsRecorderState *) = {
     VsRecorderViewerRanking_State_Init,
     VsRecorderViewerRanking_State_InitScreen,
     VsRecorderViewerRanking_State_TransferRecord,
@@ -810,7 +810,7 @@ BOOL (*const sVsRecorderViewerRankingStateTable[])(UnkStruct_0208C06C *) = {
     VsRecorderViewerRanking_State_ShowRecordPanel,
 };
 
-static void VsRecorderViewerRanking_DrawProfileName(VsRecorderViewerTextSprite *param0, UnkStruct_0208C06C *param1, int param2)
+static void VsRecorderViewerRanking_DrawProfileName(VsRecorderViewerTextSprite *param0, VsRecorderState *param1, int param2)
 {
     String *v0;
     MessageLoader *v1;
@@ -845,7 +845,7 @@ static void VsRecorderViewerRanking_DrawProfileName(VsRecorderViewerTextSprite *
     Window_Remove(&v2);
 }
 
-static void VsRecorderViewerRanking_CreateProfileLabels(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_CreateProfileLabels(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     int v1;
@@ -875,7 +875,7 @@ static void VsRecorderViewerRanking_CreateProfileLabels(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerRanking_FreeProfileLabels(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_FreeProfileLabels(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     int v1;
@@ -888,7 +888,7 @@ static void VsRecorderViewerRanking_FreeProfileLabels(UnkStruct_0208C06C *param0
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static void VsRecorderViewerRanking_FreeBottomPromptSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_FreeBottomPromptSprites(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -899,7 +899,7 @@ static void VsRecorderViewerRanking_FreeBottomPromptSprites(UnkStruct_0208C06C *
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }
 
-static void VsRecorderViewerRanking_SetBottomPromptLayout(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRanking_SetBottomPromptLayout(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -917,7 +917,7 @@ static void VsRecorderViewerRanking_SetBottomPromptLayout(UnkStruct_0208C06C *pa
     FontOAM_SetXY(v0->unk_114[1].unk_0C, 36, -8);
 }
 
-static void VsRecorderViewerRanking_RemoveHeaderWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_RemoveHeaderWindows(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerRankingContext *v1 = param0->unk_860;
@@ -930,7 +930,7 @@ static void VsRecorderViewerRanking_RemoveHeaderWindows(UnkStruct_0208C06C *para
     v1->unk_1FB8 = 0;
 }
 
-static void VsRecorderViewerRanking_RemoveMessageWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_RemoveMessageWindows(VsRecorderState *param0)
 {
     int v0;
     VsRecorderViewerRankingContext *v1 = param0->unk_860;
@@ -943,7 +943,7 @@ static void VsRecorderViewerRanking_RemoveMessageWindows(UnkStruct_0208C06C *par
     v1->unk_1FB4 = 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_Init(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_Init(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = Heap_Alloc(HEAP_ID_102, sizeof(VsRecorderViewerRankingContext));
 
@@ -969,7 +969,7 @@ static BOOL VsRecorderViewerRanking_State_Init(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitScreen(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitScreen(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1022,7 +1022,7 @@ static BOOL VsRecorderViewerRanking_State_InitScreen(UnkStruct_0208C06C *param0)
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_TransferRecord(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_TransferRecord(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     VsRecorderViewerTransferStatus *v1;
@@ -1156,7 +1156,7 @@ static BOOL VsRecorderViewerRanking_State_TransferRecord(UnkStruct_0208C06C *par
     return 0;
 }
 
-static void VsRecorderViewerRanking_CreateHeaderWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_CreateHeaderWindows(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     int v1 = 0;
@@ -1198,7 +1198,7 @@ static void VsRecorderViewerRanking_CreateHeaderWindows(UnkStruct_0208C06C *para
     v0->unk_1FB8 = 1;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitRankingView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitRankingView(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1271,7 +1271,7 @@ static BOOL VsRecorderViewerRanking_State_InitRankingView(UnkStruct_0208C06C *pa
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_UpdateRankingView(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_UpdateRankingView(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1346,9 +1346,9 @@ static BOOL VsRecorderViewerRanking_State_UpdateRankingView(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_ExitRankingView(UnkStruct_0208C06C *a0)
+static BOOL VsRecorderViewerRanking_State_ExitRankingView(VsRecorderState *a0)
 {
-    UnkStruct_0208C06C *r5 = a0;
+    VsRecorderState *r5 = a0;
     VsRecorderViewerRankingContext *r4 = r5->unk_860;
     switch (r5->unk_08) {
     case 0:
@@ -1398,7 +1398,7 @@ static BOOL VsRecorderViewerRanking_State_ExitRankingView(UnkStruct_0208C06C *a0
     return FALSE;
 }
 
-static BOOL VsRecorderViewerRanking_State_InitTouchHandlers(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_InitTouchHandlers(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1446,7 +1446,7 @@ static BOOL VsRecorderViewerRanking_State_InitTouchHandlers(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_UpdateMainMenu(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_UpdateMainMenu(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1454,7 +1454,7 @@ static BOOL VsRecorderViewerRanking_State_UpdateMainMenu(UnkStruct_0208C06C *par
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_ToggleRecordPanel(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_ToggleRecordPanel(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1517,7 +1517,7 @@ static BOOL VsRecorderViewerRanking_State_ToggleRecordPanel(UnkStruct_0208C06C *
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_ExitAndRequestPlayback(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_ExitAndRequestPlayback(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1566,7 +1566,7 @@ static BOOL VsRecorderViewerRanking_State_ExitAndRequestPlayback(UnkStruct_0208C
     return 0;
 }
 
-static BOOL VsRecorderViewerRanking_State_ReenterRanking(UnkStruct_0208C06C *param0)
+static BOOL VsRecorderViewerRanking_State_ReenterRanking(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1652,7 +1652,7 @@ static BOOL VsRecorderViewerRanking_State_ReenterRanking(UnkStruct_0208C06C *par
     return 0;
 }
 
-static void VsRecorderViewerRanking_DrawMessageWithPlayerName(UnkStruct_0208C06C *param0, int param1, BOOL param2)
+static void VsRecorderViewerRanking_DrawMessageWithPlayerName(VsRecorderState *param0, int param1, BOOL param2)
 {
     String *v0;
     Window *v1 = &param0->unk_8A4;
@@ -1690,9 +1690,9 @@ static void VsRecorderViewerRanking_DrawMessageWithPlayerName(UnkStruct_0208C06C
     String_Free(v0);
 }
 
-static BOOL VsRecorderViewerRanking_State_ViewSelectedRecord(UnkStruct_0208C06C *a0)
+static BOOL VsRecorderViewerRanking_State_ViewSelectedRecord(VsRecorderState *a0)
 {
-    UnkStruct_0208C06C *r4 = a0;
+    VsRecorderState *r4 = a0;
     VsRecorderViewerRankingContext *r5 = r4->unk_860;
     if (VsRecorderViewerList_HasRecordingValue(r4, BattleRecording_GetSummaryValue(BattleRecording_GetSummary(), 4, 0))) {
         switch (r4->unk_08) {
@@ -1843,7 +1843,7 @@ static BOOL VsRecorderViewerRanking_State_ViewSelectedRecord(UnkStruct_0208C06C 
     return FALSE;
 }
 
-static void VsRecorderViewerRanking_RemoveMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_RemoveMessageWindow(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1851,7 +1851,7 @@ static void VsRecorderViewerRanking_RemoveMessageWindow(UnkStruct_0208C06C *para
     Window_Remove(&v0->unk_94[0]);
 }
 
-static void VsRecorderViewerRanking_SetMessageWindowText(UnkStruct_0208C06C *param0, int param1)
+static void VsRecorderViewerRanking_SetMessageWindowText(VsRecorderState *param0, int param1)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     Window *v1;
@@ -1868,7 +1868,7 @@ static void VsRecorderViewerRanking_SetMessageWindowText(UnkStruct_0208C06C *par
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerRanking_CreateMessageWindow(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_CreateMessageWindow(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     Window *v1;
@@ -1881,7 +1881,7 @@ static void VsRecorderViewerRanking_CreateMessageWindow(UnkStruct_0208C06C *para
     VsRecorderViewerRanking_SetMessageWindowText(param0, 121 + v0->unk_10);
 }
 
-static void VsRecorderViewerRanking_CreateStatWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_CreateStatWindows(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
     Window *v1;
@@ -1917,7 +1917,7 @@ static void VsRecorderViewerRanking_CreateStatWindows(UnkStruct_0208C06C *param0
     Window_ScheduleCopyToVRAM(v1);
 }
 
-static void VsRecorderViewerRanking_RemoveStatWindows(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_RemoveStatWindows(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -1929,7 +1929,7 @@ static void VsRecorderViewerRanking_RemoveStatWindows(UnkStruct_0208C06C *param0
 
 static void VsRecorderViewerRanking_HandleMainButtonTouch(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRankingContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -1970,7 +1970,7 @@ static void VsRecorderViewerRanking_HandleMainButtonTouch(u32 param0, enum Touch
 
 static void VsRecorderViewerRanking_HandleProfileTouch(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRankingContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -2001,7 +2001,7 @@ static void VsRecorderViewerRanking_HandleProfileTouch(u32 param0, enum TouchScr
 
 static void VsRecorderViewerRanking_HandleSummaryListTouch(u32 param0, enum TouchScreenButtonState param1, void *param2)
 {
-    UnkStruct_0208C06C *v0 = param2;
+    VsRecorderState *v0 = param2;
     VsRecorderViewerRankingContext *v1 = v0->unk_860;
 
     if (param1 != TOUCH_BUTTON_PRESSED) {
@@ -2021,7 +2021,7 @@ static void VsRecorderViewerRanking_HandleSummaryListTouch(u32 param0, enum Touc
     }
 }
 
-static void VsRecorderViewerRanking_LoadProfileAndSummary(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_LoadProfileAndSummary(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
@@ -2032,7 +2032,7 @@ static void VsRecorderViewerRanking_LoadProfileAndSummary(UnkStruct_0208C06C *pa
     MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_220.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
-static void VsRecorderViewerRanking_BuildRankingIconGrid(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_BuildRankingIconGrid(VsRecorderState *param0)
 {
     int v0, v1;
     int v2 = 0;
@@ -2117,7 +2117,7 @@ static void VsRecorderViewerRanking_BuildRankingIconGrid(UnkStruct_0208C06C *par
     VsRecorderViewerRanking_LayoutIconGrid(param0);
 }
 
-static void VsRecorderViewerRanking_SetIconGridVisible(UnkStruct_0208C06C *param0, BOOL param1)
+static void VsRecorderViewerRanking_SetIconGridVisible(VsRecorderState *param0, BOOL param1)
 {
     int v0, v1;
     VsRecorderViewerRankingContext *v2 = param0->unk_860;
@@ -2131,7 +2131,7 @@ static void VsRecorderViewerRanking_SetIconGridVisible(UnkStruct_0208C06C *param
     }
 }
 
-static void VsRecorderViewerRanking_FreeIconGridSprites(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_FreeIconGridSprites(VsRecorderState *param0)
 {
     int v0, v1;
     VsRecorderViewerRankingContext *v2 = param0->unk_860;
@@ -2146,7 +2146,7 @@ static void VsRecorderViewerRanking_FreeIconGridSprites(UnkStruct_0208C06C *para
     }
 }
 
-static void VsRecorderViewerRanking_ScrollIconGrid(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_ScrollIconGrid(VsRecorderState *param0)
 {
     int v0, v1;
     int v2 = 0;
@@ -2276,7 +2276,7 @@ static void VsRecorderViewerRanking_ScrollIconGrid(UnkStruct_0208C06C *param0)
     VsRecorderViewerList_SetDrawSuspended(param0, 0);
 }
 
-static void VsRecorderViewerRanking_FreeBottomPromptSpritesAndCleanup(UnkStruct_0208C06C *param0)
+static void VsRecorderViewerRanking_FreeBottomPromptSpritesAndCleanup(VsRecorderState *param0)
 {
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
