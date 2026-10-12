@@ -15,32 +15,32 @@
 #include "vram_transfer.h"
 
 typedef struct {
-    u16 unk_00;
+    u16 resourceID;
     u16 unk_02;
-    SpriteResource *unk_04;
+    SpriteResource *resource;
 } SlotMachineSpriteResource;
 
 typedef struct SlotMachineSpriteManager_t {
     enum HeapID heapID;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0A;
-    u8 unk_0B;
-    SpriteList *unk_0C;
-    G2dRenderer unk_10;
-    NNSG2dCellTransferState *unk_19C;
-    SpriteResourceCollection *unk_1A0;
-    SpriteResourceCollection *unk_1A4;
-    SpriteResourceCollection *unk_1A8;
-    SpriteResourceCollection *unk_1AC;
-    SlotMachineSpriteResource *unk_1B0;
-    SlotMachineSpriteResource *unk_1B4;
-    SlotMachineSpriteResource *unk_1B8;
-    SlotMachineSpriteResource *unk_1BC;
+    u8 maxCharCount;
+    u8 maxPlttCount;
+    u8 maxCellCount;
+    u8 maxAnimCount;
+    u8 freeCharID;
+    u8 freePlttID;
+    u8 freeCellID;
+    u8 freeAnimID;
+    SpriteList *spriteList;
+    G2dRenderer renderer;
+    NNSG2dCellTransferState *cellTransfer;
+    SpriteResourceCollection *charResources;
+    SpriteResourceCollection *plttResources;
+    SpriteResourceCollection *cellResources;
+    SpriteResourceCollection *animResources;
+    SlotMachineSpriteResource *charResourceData;
+    SlotMachineSpriteResource *plttResourceData;
+    SlotMachineSpriteResource *cellResourceData;
+    SlotMachineSpriteResource *animResourceData;
 } SlotMachineSpriteManager;
 
 SlotMachineSpriteManager *SlotMachineSprite_New(u32 heapID, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8, u32 param9, u32 param10)
@@ -50,44 +50,44 @@ SlotMachineSpriteManager *SlotMachineSprite_New(u32 heapID, u32 param1, u32 para
     GF_ASSERT(v0 != NULL);
 
     v0->heapID = heapID;
-    v0->unk_04 = param3;
-    v0->unk_05 = param4;
-    v0->unk_06 = param5;
-    v0->unk_07 = param6;
-    v0->unk_08 = param7;
-    v0->unk_09 = param8;
-    v0->unk_0A = param9;
-    v0->unk_0B = param10;
-    v0->unk_0C = SpriteList_InitRendering(param1, &v0->unk_10, heapID);
-    v0->unk_19C = CellTransfer_New(param2, heapID);
+    v0->maxCharCount = param3;
+    v0->maxPlttCount = param4;
+    v0->maxCellCount = param5;
+    v0->maxAnimCount = param6;
+    v0->freeCharID = param7;
+    v0->freePlttID = param8;
+    v0->freeCellID = param9;
+    v0->freeAnimID = param10;
+    v0->spriteList = SpriteList_InitRendering(param1, &v0->renderer, heapID);
+    v0->cellTransfer = CellTransfer_New(param2, heapID);
 
     VramTransfer_New(param2, heapID);
 
-    v0->unk_1A0 = SpriteResourceCollection_New(param3, 0, heapID);
-    v0->unk_1A4 = SpriteResourceCollection_New(param4, 1, heapID);
-    v0->unk_1A8 = SpriteResourceCollection_New(param5, 2, heapID);
-    v0->unk_1AC = SpriteResourceCollection_New(param6, 3, heapID);
-    v0->unk_1B0 = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param3);
-    v0->unk_1B4 = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param4);
-    v0->unk_1B8 = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param5);
-    v0->unk_1BC = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param6);
+    v0->charResources = SpriteResourceCollection_New(param3, 0, heapID);
+    v0->plttResources = SpriteResourceCollection_New(param4, 1, heapID);
+    v0->cellResources = SpriteResourceCollection_New(param5, 2, heapID);
+    v0->animResources = SpriteResourceCollection_New(param6, 3, heapID);
+    v0->charResourceData = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param3);
+    v0->plttResourceData = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param4);
+    v0->cellResourceData = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param5);
+    v0->animResourceData = Heap_Alloc(heapID, (sizeof(SlotMachineSpriteResource)) * param6);
 
     {
         u32 v1;
 
-        for (v1 = 0; v1 < param3; v0->unk_1B0[v1].unk_00 = param7, v1++) {
+        for (v1 = 0; v1 < param3; v0->charResourceData[v1].resourceID = param7, v1++) {
             (void)0;
         }
 
-        for (v1 = 0; v1 < param4; v0->unk_1B4[v1].unk_00 = param8, v1++) {
+        for (v1 = 0; v1 < param4; v0->plttResourceData[v1].resourceID = param8, v1++) {
             (void)0;
         }
 
-        for (v1 = 0; v1 < param5; v0->unk_1B8[v1].unk_00 = param9, v1++) {
+        for (v1 = 0; v1 < param5; v0->cellResourceData[v1].resourceID = param9, v1++) {
             (void)0;
         }
 
-        for (v1 = 0; v1 < param6; v0->unk_1BC[v1].unk_00 = param10, v1++) {
+        for (v1 = 0; v1 < param6; v0->animResourceData[v1].resourceID = param10, v1++) {
             (void)0;
         }
     }
@@ -99,48 +99,48 @@ void SlotMachineSprite_Free(SlotMachineSpriteManager *param0)
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1B0[v0].unk_00 != param0->unk_08) {
-            SpriteTransfer_ResetCharTransfer(param0->unk_1B0[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->charResourceData[v0].resourceID != param0->freeCharID) {
+            SpriteTransfer_ResetCharTransfer(param0->charResourceData[v0].resource);
         }
     }
 
-    for (v0 = 0; v0 < param0->unk_05; v0++) {
-        if (param0->unk_1B4[v0].unk_00 != param0->unk_09) {
-            SpriteTransfer_ResetPlttTransfer(param0->unk_1B4[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxPlttCount; v0++) {
+        if (param0->plttResourceData[v0].resourceID != param0->freePlttID) {
+            SpriteTransfer_ResetPlttTransfer(param0->plttResourceData[v0].resource);
         }
     }
 
-    for (v0 = 0; v0 < param0->unk_06; v0++) {
-        if (param0->unk_1B8[v0].unk_00 != param0->unk_0A) {
-            SpriteResource_ReleaseData(param0->unk_1B8[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxCellCount; v0++) {
+        if (param0->cellResourceData[v0].resourceID != param0->freeCellID) {
+            SpriteResource_ReleaseData(param0->cellResourceData[v0].resource);
         }
     }
 
-    for (v0 = 0; v0 < param0->unk_07; v0++) {
-        if (param0->unk_1BC[v0].unk_00 != param0->unk_0B) {
-            SpriteResource_ReleaseData(param0->unk_1BC[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxAnimCount; v0++) {
+        if (param0->animResourceData[v0].resourceID != param0->freeAnimID) {
+            SpriteResource_ReleaseData(param0->animResourceData[v0].resource);
         }
     }
 
-    SpriteResourceCollection_Delete(param0->unk_1A0);
-    SpriteResourceCollection_Delete(param0->unk_1A4);
-    SpriteResourceCollection_Delete(param0->unk_1A8);
-    SpriteResourceCollection_Delete(param0->unk_1AC);
-    Heap_Free(param0->unk_1B0);
-    Heap_Free(param0->unk_1B4);
-    Heap_Free(param0->unk_1B8);
-    Heap_Free(param0->unk_1BC);
+    SpriteResourceCollection_Delete(param0->charResources);
+    SpriteResourceCollection_Delete(param0->plttResources);
+    SpriteResourceCollection_Delete(param0->cellResources);
+    SpriteResourceCollection_Delete(param0->animResources);
+    Heap_Free(param0->charResourceData);
+    Heap_Free(param0->plttResourceData);
+    Heap_Free(param0->cellResourceData);
+    Heap_Free(param0->animResourceData);
     VramTransfer_Free();
-    CellTransfer_Free(param0->unk_19C);
-    SpriteList_DeleteAll(param0->unk_0C);
-    SpriteList_Delete(param0->unk_0C);
+    CellTransfer_Free(param0->cellTransfer);
+    SpriteList_DeleteAll(param0->spriteList);
+    SpriteList_Delete(param0->spriteList);
     Heap_Free(param0);
 }
 
 void SlotMachineSprite_Update(SlotMachineSpriteManager *param0)
 {
-    SpriteList_Update(param0->unk_0C);
+    SpriteList_Update(param0->spriteList);
     CellTransfer_Update();
 }
 
@@ -148,11 +148,11 @@ void SlotMachineSprite_AddTiles(SlotMachineSpriteManager *param0, u32 param1, NA
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1B0[v0].unk_00 == param0->unk_08) {
-            param0->unk_1B0[v0].unk_00 = param4;
-            param0->unk_1B0[v0].unk_02 = 0;
-            param0->unk_1B0[v0].unk_04 = SpriteResourceCollection_AddTilesFrom(param0->unk_1A0, param2, param3, 0, param4, param1, param0->heapID);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->charResourceData[v0].resourceID == param0->freeCharID) {
+            param0->charResourceData[v0].resourceID = param4;
+            param0->charResourceData[v0].unk_02 = 0;
+            param0->charResourceData[v0].resource = SpriteResourceCollection_AddTilesFrom(param0->charResources, param2, param3, 0, param4, param1, param0->heapID);
             return;
         }
     }
@@ -164,9 +164,9 @@ void SlotMachineSprite_RequestChar(SlotMachineSpriteManager *param0, u32 param1)
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1B0[v0].unk_00 == param1) {
-            SpriteTransfer_RequestCharAtEnd(param0->unk_1B0[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->charResourceData[v0].resourceID == param1) {
+            SpriteTransfer_RequestCharAtEnd(param0->charResourceData[v0].resource);
             return;
         }
     }
@@ -178,9 +178,9 @@ void SlotMachineSprite_ReleaseChar(SlotMachineSpriteManager *param0, u32 param1)
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1B0[v0].unk_00 == param1) {
-            SpriteResource_ReleaseData(param0->unk_1B0[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->charResourceData[v0].resourceID == param1) {
+            SpriteResource_ReleaseData(param0->charResourceData[v0].resource);
             return;
         }
     }
@@ -192,11 +192,11 @@ void SlotMachineSprite_AddPalette(SlotMachineSpriteManager *param0, u32 param1, 
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1B4[v0].unk_00 == param0->unk_09) {
-            param0->unk_1B4[v0].unk_00 = param4;
-            param0->unk_1B4[v0].unk_02 = 0;
-            param0->unk_1B4[v0].unk_04 = SpriteResourceCollection_AddPaletteFrom(param0->unk_1A4, param2, param3, 0, param4, param1, 1, param0->heapID);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->plttResourceData[v0].resourceID == param0->freePlttID) {
+            param0->plttResourceData[v0].resourceID = param4;
+            param0->plttResourceData[v0].unk_02 = 0;
+            param0->plttResourceData[v0].resource = SpriteResourceCollection_AddPaletteFrom(param0->plttResources, param2, param3, 0, param4, param1, 1, param0->heapID);
             return;
         }
     }
@@ -208,9 +208,9 @@ void SlotMachineSprite_RequestPltt(SlotMachineSpriteManager *param0, u32 param1)
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_05; v0++) {
-        if (param0->unk_1B4[v0].unk_00 == param1) {
-            SpriteTransfer_RequestPlttFreeSpace(param0->unk_1B4[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxPlttCount; v0++) {
+        if (param0->plttResourceData[v0].resourceID == param1) {
+            SpriteTransfer_RequestPlttFreeSpace(param0->plttResourceData[v0].resource);
             return;
         }
     }
@@ -222,9 +222,9 @@ void SlotMachineSprite_ReleasePltt(SlotMachineSpriteManager *param0, u32 param1)
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_05; v0++) {
-        if (param0->unk_1B4[v0].unk_00 == param1) {
-            SpriteResource_ReleaseData(param0->unk_1B4[v0].unk_04);
+    for (v0 = 0; v0 < param0->maxPlttCount; v0++) {
+        if (param0->plttResourceData[v0].resourceID == param1) {
+            SpriteResource_ReleaseData(param0->plttResourceData[v0].resource);
             return;
         }
     }
@@ -236,11 +236,11 @@ void SlotMachineSprite_AddCell(SlotMachineSpriteManager *param0, NARC *param1, u
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1B8[v0].unk_00 == param0->unk_0A) {
-            param0->unk_1B8[v0].unk_00 = param3;
-            param0->unk_1B8[v0].unk_02 = 0;
-            param0->unk_1B8[v0].unk_04 = SpriteResourceCollection_AddFrom(param0->unk_1A8, param1, param2, 0, param3, 2, param0->heapID);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->cellResourceData[v0].resourceID == param0->freeCellID) {
+            param0->cellResourceData[v0].resourceID = param3;
+            param0->cellResourceData[v0].unk_02 = 0;
+            param0->cellResourceData[v0].resource = SpriteResourceCollection_AddFrom(param0->cellResources, param1, param2, 0, param3, 2, param0->heapID);
             return;
         }
     }
@@ -252,11 +252,11 @@ void SlotMachineSprite_AddAnim(SlotMachineSpriteManager *param0, NARC *param1, u
 {
     u32 v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_1BC[v0].unk_00 == param0->unk_0B) {
-            param0->unk_1BC[v0].unk_00 = param3;
-            param0->unk_1BC[v0].unk_02 = 0;
-            param0->unk_1BC[v0].unk_04 = SpriteResourceCollection_AddFrom(param0->unk_1AC, param1, param2, 0, param3, 3, param0->heapID);
+    for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+        if (param0->animResourceData[v0].resourceID == param0->freeAnimID) {
+            param0->animResourceData[v0].resourceID = param3;
+            param0->animResourceData[v0].unk_02 = 0;
+            param0->animResourceData[v0].resource = SpriteResourceCollection_AddFrom(param0->animResources, param1, param2, 0, param3, 3, param0->heapID);
             return;
         }
     }
@@ -268,45 +268,45 @@ void SlotMachineSprite_RemoveResources(SlotMachineSpriteManager *param0, u32 par
 {
     u32 v0;
 
-    if (param1 != param0->unk_08) {
-        for (v0 = 0; v0 < param0->unk_04; v0++) {
-            if (param0->unk_1B0[v0].unk_00 == param1) {
-                SpriteTransfer_ResetCharTransfer(param0->unk_1B0[v0].unk_04);
-                SpriteResourceCollection_Remove(param0->unk_1A0, param0->unk_1B0[v0].unk_04);
-                param0->unk_1B0[v0].unk_00 = param0->unk_08;
+    if (param1 != param0->freeCharID) {
+        for (v0 = 0; v0 < param0->maxCharCount; v0++) {
+            if (param0->charResourceData[v0].resourceID == param1) {
+                SpriteTransfer_ResetCharTransfer(param0->charResourceData[v0].resource);
+                SpriteResourceCollection_Remove(param0->charResources, param0->charResourceData[v0].resource);
+                param0->charResourceData[v0].resourceID = param0->freeCharID;
                 break;
             }
         }
     }
 
-    if (param2 != param0->unk_09) {
-        for (v0 = 0; v0 < param0->unk_05; v0++) {
-            if (param0->unk_1B4[v0].unk_00 == param2) {
-                SpriteTransfer_ResetPlttTransfer(param0->unk_1B4[v0].unk_04);
-                SpriteResourceCollection_Remove(param0->unk_1A4, param0->unk_1B4[v0].unk_04);
-                param0->unk_1B4[v0].unk_00 = param0->unk_09;
+    if (param2 != param0->freePlttID) {
+        for (v0 = 0; v0 < param0->maxPlttCount; v0++) {
+            if (param0->plttResourceData[v0].resourceID == param2) {
+                SpriteTransfer_ResetPlttTransfer(param0->plttResourceData[v0].resource);
+                SpriteResourceCollection_Remove(param0->plttResources, param0->plttResourceData[v0].resource);
+                param0->plttResourceData[v0].resourceID = param0->freePlttID;
                 break;
             }
         }
     }
 
-    if (param3 != param0->unk_0A) {
-        for (v0 = 0; v0 < param0->unk_06; v0++) {
-            if (param0->unk_1B8[v0].unk_00 == param3) {
-                SpriteResource_ReleaseData(param0->unk_1B8[v0].unk_04);
-                SpriteResourceCollection_Remove(param0->unk_1A8, param0->unk_1B8[v0].unk_04);
-                param0->unk_1B8[v0].unk_00 = param0->unk_0A;
+    if (param3 != param0->freeCellID) {
+        for (v0 = 0; v0 < param0->maxCellCount; v0++) {
+            if (param0->cellResourceData[v0].resourceID == param3) {
+                SpriteResource_ReleaseData(param0->cellResourceData[v0].resource);
+                SpriteResourceCollection_Remove(param0->cellResources, param0->cellResourceData[v0].resource);
+                param0->cellResourceData[v0].resourceID = param0->freeCellID;
                 break;
             }
         }
     }
 
-    if (param4 != param0->unk_0B) {
-        for (v0 = 0; v0 < param0->unk_07; v0++) {
-            if (param0->unk_1BC[v0].unk_00 == param4) {
-                SpriteResource_ReleaseData(param0->unk_1BC[v0].unk_04);
-                SpriteResourceCollection_Remove(param0->unk_1AC, param0->unk_1BC[v0].unk_04);
-                param0->unk_1BC[v0].unk_00 = param0->unk_0B;
+    if (param4 != param0->freeAnimID) {
+        for (v0 = 0; v0 < param0->maxAnimCount; v0++) {
+            if (param0->animResourceData[v0].resourceID == param4) {
+                SpriteResource_ReleaseData(param0->animResourceData[v0].resource);
+                SpriteResourceCollection_Remove(param0->animResources, param0->animResourceData[v0].resource);
+                param0->animResourceData[v0].resourceID = param0->freeAnimID;
                 break;
             }
         }
@@ -319,39 +319,39 @@ void SlotMachineSprite_CreateSprite(SlotMachineSpriteManager *param0, SlotMachin
     SpriteListTemplate v1;
     Sprite *v2;
 
-    if (param8 == param0->unk_0B) {
+    if (param8 == param0->freeAnimID) {
         param8 = 0xffffffff;
     }
 
     SpriteResourcesHeader_Init(
-        &v0, param5, param6, param7, param8, 0xffffffff, 0xffffffff, param4, param9, param0->unk_1A0, param0->unk_1A4, param0->unk_1A8, param0->unk_1AC, NULL, NULL);
+        &v0, param5, param6, param7, param8, 0xffffffff, 0xffffffff, param4, param9, param0->charResources, param0->plttResources, param0->cellResources, param0->animResources, NULL, NULL);
 
     if (param4 == 1) {
-        param1->unk_08 = v0.imageProxy;
-        param1->unk_00 = 1;
+        param1->imageProxy = v0.imageProxy;
+        param1->hasCharTransfer = 1;
     } else {
-        param1->unk_00 = 0;
+        param1->hasCharTransfer = 0;
     }
 
-    v1.list = param0->unk_0C;
+    v1.list = param0->spriteList;
     v1.resourceData = &v0;
     v1.position = *param2;
     v1.priority = param10;
     v1.vramType = param3;
     v1.heapID = param0->heapID;
 
-    param1->unk_04 = SpriteList_Add(&v1);
-    GF_ASSERT(param1->unk_04 != NULL);
+    param1->sprite = SpriteList_Add(&v1);
+    GF_ASSERT(param1->sprite != NULL);
 }
 
 void SlotMachineSprite_DeleteSprite(SlotMachineSprite *param0)
 {
-    if (param0->unk_00 == 1) {
-        SpriteTransfer_DeleteCharTransfer(param0->unk_08);
+    if (param0->hasCharTransfer == 1) {
+        SpriteTransfer_DeleteCharTransfer(param0->imageProxy);
     }
 
-    Sprite_Delete(param0->unk_04);
-    param0->unk_04 = NULL;
+    Sprite_Delete(param0->sprite);
+    param0->sprite = NULL;
 }
 
 void SlotMachineSprite_GetPosition(Sprite *param0, VecFx32 *param1)

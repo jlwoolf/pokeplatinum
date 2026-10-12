@@ -21,140 +21,140 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    SlotMachineReelStateEnum unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    vu32 unk_0C;
-    SlotMachineReelType unk_10;
-    VecFx32 unk_14;
+    SlotMachineReelStateEnum state;
+    u32 step;
+    u32 done;
+    vu32 loadState;
+    SlotMachineReelType reelType;
+    VecFx32 position;
     VecFx32 unk_20;
-    u32 unk_2C;
-    u32 unk_30;
-    int unk_34;
-    SlotMachineContext *unk_38;
-    SlotMachineSprite unk_3C;
+    u32 rotation;
+    u32 timer;
+    int stepIndex;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineReelState;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    fx32 unk_04;
-    SlotMachineReelIndex unk_08;
+    SlotMachineContext *context;
+    fx32 offset;
+    SlotMachineReelIndex reelIndex;
 } SlotMachineReelArgs;
 
 typedef struct {
-    SlotMachineReelArgs unk_00;
-    SlotMachineSprite unk_0C;
+    SlotMachineReelArgs args;
+    SlotMachineSprite sprite;
 } SlotMachineReel;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    SlotMachineSprite unk_0C;
+    SlotMachineContext *context;
+    u32 place;
+    u32 modulus;
+    SlotMachineSprite sprite;
 } SlotMachineDigit;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    SlotMachineSprite unk_0C;
+    SlotMachineContext *context;
+    u32 place;
+    u32 modulus;
+    SlotMachineSprite sprite;
 } SlotMachineDigit2;
 
 typedef struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    vu32 unk_0C;
-    SlotMachineContext *unk_10;
-    SlotMachineSprite unk_14;
+    u32 state;
+    u32 done;
+    u32 timer;
+    vu32 loadState;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineSymbolSprite;
 
 typedef struct {
     u32 unk_00;
-    SlotMachineWinSymbolState unk_04;
-    u32 unk_08;
-    u32 unk_0C;
-    u32 unk_10;
-    int unk_14;
-    SlotMachineWinType unk_18;
+    SlotMachineWinSymbolState state;
+    u32 step;
+    u32 done;
+    u32 loadState;
+    int timer;
+    SlotMachineWinType winType;
     void *unk_1C;
-    SlotMachineContext *unk_20;
-    SlotMachineSprite unk_24;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineWinSymbol;
 
 typedef struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0C;
-    vu32 unk_10;
+    u32 state;
+    u32 done;
+    u32 timer;
+    u32 loopCount;
+    vu32 loadState;
     VecFx32 unk_14;
     VecFx32 unk_20;
-    SlotMachineContext *unk_2C;
-    SlotMachineSprite unk_30;
-    SlotMachineSprite unk_3C;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite1;
+    SlotMachineSprite sprite2;
 } SlotMachineBonus;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    SlotMachineSprite unk_04;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineButton;
 
 typedef struct {
-    int unk_00;
-    SlotMachineContext *unk_04;
-    SlotMachineSprite unk_08;
+    int timer;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineButton2;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    SlotMachineSprite unk_04;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineButton3;
 
 typedef struct {
-    int unk_00;
-    SlotMachineContext *unk_04;
-    SlotMachineSprite unk_08;
+    int timer;
+    SlotMachineContext *context;
+    SlotMachineSprite sprite;
 } SlotMachineButton4;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    SlotMachineSprite unk_04[2];
+    SlotMachineContext *context;
+    SlotMachineSprite sprites[2];
 } SlotMachineCreditDigit;
 
 typedef struct {
-    SlotMachineContext *unk_00;
-    SlotMachineSprite unk_04[5];
+    SlotMachineContext *context;
+    SlotMachineSprite sprites[5];
 } SlotMachinePayoutDigit;
 
 typedef struct {
-    SlotMachineNumberType unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    int unk_0C;
-    int unk_10;
-    SlotMachineContext *unk_14;
-    SlotMachineSprite unk_18[5];
+    SlotMachineNumberType numberType;
+    u32 value;
+    u32 digitCount;
+    int timer;
+    int spriteCount;
+    SlotMachineContext *context;
+    SlotMachineSprite sprites[5];
 } SlotMachineNumber;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    SlotMachineContext *unk_08;
-    SlotMachineSprite unk_0C[3];
+    int timer;
+    int digitCount;
+    SlotMachineContext *context;
+    SlotMachineSprite sprites[3];
 } SlotMachineNumber2;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    SlotMachineSymbol unk_18;
-    SlotMachinePaletteIndex unk_1C;
-    SlotMachineSprite unk_20[3];
-    SlotMachineContext *unk_44;
+    int state;
+    int finished;
+    int loadState;
+    int timer;
+    int flashCount;
+    int resourcesRemoved;
+    SlotMachineSymbol symbol;
+    SlotMachinePaletteIndex paletteIndex;
+    SlotMachineSprite sprites[3];
+    SlotMachineContext *context;
 } SlotMachineJackpot;
 
 static void SlotMachine_ReelState_LoadResources(SlotMachineReelState *param0, SlotMachineReelType param1);
@@ -181,14 +181,14 @@ void SlotMachine_InitReelSprites(SlotMachineContext *param0)
     SlotMachineReelArgs v4;
     VecFx32 v5 = { 0, 0, 0 };
 
-    v4.unk_00 = param0;
+    v4.context = param0;
 
     for (v0 = 0, v1 = (FX32_ONE * (40 + 28)); v0 < 3; v0++, v1 += (FX32_ONE * 60)) {
         for (v2 = 0; v2 < (FX32_ONE * 160); v2 += (FX32_ONE * 32)) {
             v5.x = v1;
-            v4.unk_08 = v0;
-            v4.unk_04 = v2;
-            v3 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineReelFuncs, &v5, 0, &v4, 139);
+            v4.reelIndex = v0;
+            v4.offset = v2;
+            v3 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineReelFuncs, &v5, 0, &v4, 139);
         }
     }
 }
@@ -199,11 +199,11 @@ static int SlotMachine_Reel_Init(OverworldAnimManager *param0, void *param1)
     SlotMachineReel *v1 = param1;
     const SlotMachineReelArgs *v2 = OverworldAnimManager_GetUserData(param0);
 
-    v1->unk_00 = *v2;
+    v1->args = *v2;
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v1->unk_00.unk_00->unk_450, &v1->unk_0C, &v0, (NNS_G2D_VRAM_TYPE_2DMAIN), 0, 0, 0, 0, 0, 3, 2);
-    Sprite_SetAnimateFlag(v1->unk_0C.unk_04, 1);
+    SlotMachineSprite_CreateSprite(v1->args.context->spriteManager, &v1->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DMAIN), 0, 0, 0, 0, 0, 3, 2);
+    Sprite_SetAnimateFlag(v1->sprite.sprite, 1);
 
     return 1;
 }
@@ -211,7 +211,7 @@ static int SlotMachine_Reel_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Reel_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineReel *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_0C);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Reel_Update(OverworldAnimManager *param0, void *param1)
@@ -222,20 +222,20 @@ static void SlotMachine_Reel_Update(OverworldAnimManager *param0, void *param1)
     VecFx32 v3;
     SlotMachineReel *v4 = param1;
 
-    v0 = v4->unk_00.unk_08;
-    v2 = v4->unk_00.unk_00->unk_90[v0] + v4->unk_00.unk_04;
+    v0 = v4->args.reelIndex;
+    v2 = v4->args.context->reelPositions[v0] + v4->args.offset;
     v2 %= (FX32_ONE * 160);
 
     OverworldAnimManager_GetPosition(param0, &v3);
-    v3.y = v2 + (FX32_ONE * 16) + v4->unk_00.unk_00->unk_9C[v0];
-    Sprite_SetPosition(v4->unk_0C.unk_04, &v3);
+    v3.y = v2 + (FX32_ONE * 16) + v4->args.context->reelBounce[v0];
+    Sprite_SetPosition(v4->sprite.sprite, &v3);
 
     v2 = ((v2) / 32);
-    v1 = sSlotMachineReelSymbolAnim[SlotMachine_GetReelSymbol(v4->unk_00.unk_00, v0, ((v2) / FX32_ONE))];
+    v1 = sSlotMachineReelSymbolAnim[SlotMachine_GetReelSymbol(v4->args.context, v0, ((v2) / FX32_ONE))];
 
-    if (v1 != Sprite_GetActiveAnim(v4->unk_0C.unk_04)) {
-        Sprite_SetAnim(v4->unk_0C.unk_04, v1);
-        Sprite_SetAnimFrame(v4->unk_0C.unk_04, 0);
+    if (v1 != Sprite_GetActiveAnim(v4->sprite.sprite)) {
+        Sprite_SetAnim(v4->sprite.sprite, v1);
+        Sprite_SetAnimFrame(v4->sprite.sprite, 0);
     }
 }
 
@@ -258,7 +258,7 @@ void SlotMachine_InitPayoutDigits(SlotMachineContext *param0)
     VecFx32 v1 = { (FX32_ONE * 108), (FX32_ONE * 180), 0 };
 
     for (v0 = 1; v0 < 100000; v0 *= 10, v1.x -= (FX32_ONE * 8)) {
-        OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachinePayoutDigitFuncs2, &v1, v0, param0, 141);
+        OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachinePayoutDigitFuncs2, &v1, v0, param0, 141);
     }
 }
 
@@ -267,13 +267,13 @@ static int SlotMachine_Digit_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v0;
     SlotMachineDigit *v1 = param1;
 
-    v1->unk_04 = OverworldAnimManager_GetUserInt(param0);
-    v1->unk_08 = v1->unk_04 * 10;
-    v1->unk_00 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v1->place = OverworldAnimManager_GetUserInt(param0);
+    v1->modulus = v1->place * 10;
+    v1->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v1->unk_00->unk_450, &v1->unk_0C, &v0, (NNS_G2D_VRAM_TYPE_2DMAIN), 0, 1, 1, 1, 1, 1, 1);
-    Sprite_SetAnimateFlag(v1->unk_0C.unk_04, 1);
+    SlotMachineSprite_CreateSprite(v1->context->spriteManager, &v1->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DMAIN), 0, 1, 1, 1, 1, 1, 1);
+    Sprite_SetAnimateFlag(v1->sprite.sprite, 1);
 
     return 1;
 }
@@ -281,33 +281,33 @@ static int SlotMachine_Digit_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Digit_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineDigit *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_0C);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Digit_Update(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
     SlotMachineDigit *v1 = param1;
-    u32 v2 = v1->unk_00->unk_60;
+    u32 v2 = v1->context->coins;
 
-    if ((v1->unk_04 > 1) && (v2 < v1->unk_04)) {
-        Sprite_SetDrawFlag(v1->unk_0C.unk_04, FALSE);
+    if ((v1->place > 1) && (v2 < v1->place)) {
+        Sprite_SetDrawFlag(v1->sprite.sprite, FALSE);
         return;
     }
 
-    Sprite_SetDrawFlag(v1->unk_0C.unk_04, TRUE);
+    Sprite_SetDrawFlag(v1->sprite.sprite, TRUE);
 
-    v2 %= v1->unk_08;
-    v2 /= v1->unk_04;
+    v2 %= v1->modulus;
+    v2 /= v1->place;
 
-    if (v2 != Sprite_GetActiveAnim(v1->unk_0C.unk_04)) {
-        Sprite_SetAnim(v1->unk_0C.unk_04, v2);
-        Sprite_RestartAnim(v1->unk_0C.unk_04);
+    if (v2 != Sprite_GetActiveAnim(v1->sprite.sprite)) {
+        Sprite_SetAnim(v1->sprite.sprite, v2);
+        Sprite_RestartAnim(v1->sprite.sprite);
     }
 
     OverworldAnimManager_GetPosition(param0, &v0);
     v0.x += sSlotMachinePayoutDigitOffset[v2];
-    Sprite_SetPosition(v1->unk_0C.unk_04, &v0);
+    Sprite_SetPosition(v1->sprite.sprite, &v0);
 }
 
 static void SlotMachine_Digit_Noop(OverworldAnimManager *param0, void *param1)
@@ -331,7 +331,7 @@ void SlotMachine_InitCreditDigits(SlotMachineContext *param0)
     VecFx32 v1 = { (FX32_ONE * 180), (FX32_ONE * 180), 0 };
 
     for (v0 = 1; v0 < 100000; v0 *= 10, v1.x -= (FX32_ONE * 8)) {
-        OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineCreditDigitFuncs2, &v1, v0, param0, 141);
+        OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineCreditDigitFuncs2, &v1, v0, param0, 141);
     }
 }
 
@@ -340,13 +340,13 @@ static int SlotMachine_Digit2_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v0;
     SlotMachineDigit2 *v1 = param1;
 
-    v1->unk_04 = OverworldAnimManager_GetUserInt(param0);
-    v1->unk_08 = v1->unk_04 * 10;
-    v1->unk_00 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v1->place = OverworldAnimManager_GetUserInt(param0);
+    v1->modulus = v1->place * 10;
+    v1->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v1->unk_00->unk_450, &v1->unk_0C, &v0, (NNS_G2D_VRAM_TYPE_2DMAIN), 0, 1, 1, 1, 1, 1, 1);
-    Sprite_SetAnimateFlag(v1->unk_0C.unk_04, 1);
+    SlotMachineSprite_CreateSprite(v1->context->spriteManager, &v1->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DMAIN), 0, 1, 1, 1, 1, 1, 1);
+    Sprite_SetAnimateFlag(v1->sprite.sprite, 1);
 
     return 1;
 }
@@ -354,33 +354,33 @@ static int SlotMachine_Digit2_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Digit2_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineDigit2 *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_0C);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Digit2_Update(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
     SlotMachineDigit2 *v1 = param1;
-    u32 v2 = v1->unk_00->unk_64;
+    u32 v2 = v1->context->winAmount;
 
-    if (v2 < v1->unk_04) {
-        Sprite_SetDrawFlag(v1->unk_0C.unk_04, FALSE);
+    if (v2 < v1->place) {
+        Sprite_SetDrawFlag(v1->sprite.sprite, FALSE);
         return;
     }
 
-    Sprite_SetDrawFlag(v1->unk_0C.unk_04, TRUE);
+    Sprite_SetDrawFlag(v1->sprite.sprite, TRUE);
 
-    v2 %= v1->unk_08;
-    v2 /= v1->unk_04;
+    v2 %= v1->modulus;
+    v2 /= v1->place;
 
-    if (v2 != Sprite_GetActiveAnim(v1->unk_0C.unk_04)) {
-        Sprite_SetAnim(v1->unk_0C.unk_04, v2);
-        Sprite_RestartAnim(v1->unk_0C.unk_04);
+    if (v2 != Sprite_GetActiveAnim(v1->sprite.sprite)) {
+        Sprite_SetAnim(v1->sprite.sprite, v2);
+        Sprite_RestartAnim(v1->sprite.sprite);
     }
 
     OverworldAnimManager_GetPosition(param0, &v0);
     v0.x += sSlotMachineCreditDigitOffset[v2];
-    Sprite_SetPosition(v1->unk_0C.unk_04, &v0);
+    Sprite_SetPosition(v1->sprite.sprite, &v0);
 }
 
 static void SlotMachine_Digit2_Noop(OverworldAnimManager *param0, void *param1)
@@ -404,7 +404,7 @@ OverworldAnimManager *SlotMachine_CreateReel(SlotMachineContext *param0, SlotMac
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 0), (FX32_ONE * 400), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineReelStateFuncs, &v1, param1, param0, 134);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineReelStateFuncs, &v1, param1, param0, 134);
     return v0;
 }
 
@@ -412,10 +412,10 @@ void SlotMachine_SetReelState(OverworldAnimManager *param0, SlotMachineReelState
 {
     SlotMachineReelState *v0 = OverworldAnimManager_GetFuncsContext(param0);
 
-    v0->unk_00 = param1;
-    v0->unk_04 = 0;
-    v0->unk_08 = 0;
-    v0->unk_30 = 0;
+    v0->state = param1;
+    v0->step = 0;
+    v0->done = 0;
+    v0->timer = 0;
 }
 
 void SlotMachine_SetReelVisible(OverworldAnimManager *param0, int param1)
@@ -423,24 +423,24 @@ void SlotMachine_SetReelVisible(OverworldAnimManager *param0, int param1)
     SlotMachineReelState *v0 = OverworldAnimManager_GetFuncsContext(param0);
 
     if (param1 == 1) {
-        Sprite_SetDrawFlag(v0->unk_3C.unk_04, FALSE);
+        Sprite_SetDrawFlag(v0->sprite.sprite, FALSE);
     } else {
-        Sprite_SetDrawFlag(v0->unk_3C.unk_04, TRUE);
+        Sprite_SetDrawFlag(v0->sprite.sprite, TRUE);
     }
 }
 
 int SlotMachine_IsReelDone(OverworldAnimManager *param0)
 {
     SlotMachineReelState *v0 = OverworldAnimManager_GetFuncsContext(param0);
-    return v0->unk_08;
+    return v0->done;
 }
 
 static int SlotMachine_ReelState_Init(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineReelState *v0 = param1;
 
-    v0->unk_38 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
-    v0->unk_10 = OverworldAnimManager_GetUserInt(param0);
+    v0->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v0->reelType = OverworldAnimManager_GetUserInt(param0);
 
     return 1;
 }
@@ -449,9 +449,9 @@ static void SlotMachine_ReelState_Exit(OverworldAnimManager *param0, void *param
 {
     SlotMachineReelState *v0 = param1;
 
-    if (v0->unk_3C.unk_04 != NULL) {
-        SlotMachine_ReelState_FreeResources(v0->unk_38);
-        SlotMachineSprite_DeleteSprite(&v0->unk_3C);
+    if (v0->sprite.sprite != NULL) {
+        SlotMachine_ReelState_FreeResources(v0->context);
+        SlotMachineSprite_DeleteSprite(&v0->sprite);
     }
 }
 
@@ -463,8 +463,8 @@ static void SlotMachine_ReelState_Update(OverworldAnimManager *param0, void *par
     int (*const *v2)(SlotMachineReelState *);
 
     do {
-        v2 = sSlotMachineReelStateFuncs2[v1->unk_00];
-        v0 = v2[v1->unk_04](v1);
+        v2 = sSlotMachineReelStateFuncs2[v1->state];
+        v0 = v2[v1->step](v1);
     } while (v0 == 1);
 }
 
@@ -483,15 +483,15 @@ static const OverworldAnimManagerFuncs sSlotMachineReelStateFuncs = {
 
 static int SlotMachine_ReelState_Load(SlotMachineReelState *param0)
 {
-    SlotMachine_ReelState_LoadResources(param0, param0->unk_10);
-    param0->unk_04++;
+    SlotMachine_ReelState_LoadResources(param0, param0->reelType);
+    param0->step++;
     return 0;
 }
 
 static int SlotMachine_ReelState_WaitLoad(SlotMachineReelState *param0)
 {
-    if (param0->unk_0C == 2) {
-        param0->unk_04++;
+    if (param0->loadState == 2) {
+        param0->step++;
     }
 
     return 0;
@@ -501,10 +501,10 @@ static int SlotMachine_ReelState_CreateSprite(SlotMachineReelState *param0)
 {
     VecFx32 v0 = { (FX32_ONE * 0), (FX32_ONE * (192 + 224)), 0 };
 
-    SlotMachine_ReelState_CreateSprite2(param0->unk_38, &param0->unk_3C, &v0);
+    SlotMachine_ReelState_CreateSprite2(param0->context, &param0->sprite, &v0);
 
-    param0->unk_08 = 1;
-    param0->unk_04++;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
@@ -526,14 +526,14 @@ static int SlotMachine_ReelState_Spin(SlotMachineReelState *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * 192)), 0 };
     VecFx32 v1 = { 0x2000, 0x2000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v1);
-    Sprite_SetAffineZRotation(param0->unk_3C.unk_04, 0);
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_3C.unk_04, 0);
-    Sprite_SetAnimFrame(param0->unk_3C.unk_04, 0);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetAffineZRotation(param0->sprite.sprite, 0);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 0);
+    Sprite_SetAnimFrame(param0->sprite.sprite, 0);
     Sound_PlayEffect(SEQ_SE_DP_UG_020_sseq);
 
-    param0->unk_04++;
+    param0->step++;
     return 0;
 }
 
@@ -541,37 +541,37 @@ static int SlotMachine_ReelState_SpinUpdate(SlotMachineReelState *param0)
 {
     VecFx32 v0, v1;
 
-    SlotMachineSprite_GetPosition(param0->unk_3C.unk_04, &v0);
-    SlotMachineSprite_GetScale(param0->unk_3C.unk_04, &v1);
+    SlotMachineSprite_GetPosition(param0->sprite.sprite, &v0);
+    SlotMachineSprite_GetScale(param0->sprite.sprite, &v1);
 
     v0.y -= (FX32_ONE * 3) + (FX32_ONE / 1);
     v1.x -= 0x1c7;
     v1.y -= 0x1c7;
 
-    param0->unk_30++;
+    param0->timer++;
 
-    if (param0->unk_30 >= 9) {
+    if (param0->timer >= 9) {
         v0.y = ((FX32_ONE * 192) + (FX32_ONE * 160));
         v1.x = 0x1000;
         v1.y = 0x1000;
-        param0->unk_30 = 0;
-        param0->unk_04++;
+        param0->timer = 0;
+        param0->step++;
     }
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v0);
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
 
     return 0;
 }
 
 static int SlotMachine_ReelState_SpinEnd(SlotMachineReelState *param0)
 {
-    param0->unk_30++;
+    param0->timer++;
 
-    if (param0->unk_30 >= 3) {
-        param0->unk_30 = 0;
-        param0->unk_08 = 1;
-        param0->unk_04++;
+    if (param0->timer >= 3) {
+        param0->timer = 0;
+        param0->done = 1;
+        param0->step++;
     }
 
     return 0;
@@ -583,24 +583,24 @@ static int (*const sSlotMachineReelState_Spin[])(SlotMachineReelState *) = {
 
 static int SlotMachine_ReelState_Stop(SlotMachineReelState *param0)
 {
-    Sprite_SetAnim(param0->unk_3C.unk_04, 1);
-    Sprite_RestartAnim(param0->unk_3C.unk_04);
-    Sprite_SetAnimateFlag(param0->unk_3C.unk_04, 1);
+    Sprite_SetAnim(param0->sprite.sprite, 1);
+    Sprite_RestartAnim(param0->sprite.sprite);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 1);
 
     Sound_PlayEffect(SEQ_SE_DP_SLOT01_sseq);
-    param0->unk_04++;
+    param0->step++;
 
     return 0;
 }
 
 static int SlotMachine_ReelState_StopEnd(SlotMachineReelState *param0)
 {
-    param0->unk_30++;
+    param0->timer++;
 
-    if (param0->unk_30 >= 4) {
-        param0->unk_30 = 0;
-        param0->unk_08 = 1;
-        param0->unk_04++;
+    if (param0->timer >= 4) {
+        param0->timer = 0;
+        param0->done = 1;
+        param0->step++;
     }
 
     return 0;
@@ -615,15 +615,15 @@ static int SlotMachine_ReelState_Win(SlotMachineReelState *param0)
     VecFx32 v0 = { 0x1000, 0x1000, 0 };
     VecFx32 v1 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * 160)), 0 };
 
-    param0->unk_14 = v1;
+    param0->position = v1;
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v1);
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v0);
-    Sprite_SetAffineZRotation(param0->unk_3C.unk_04, 0);
-    Sprite_SetAnim(param0->unk_3C.unk_04, 3);
-    Sprite_RestartAnim(param0->unk_3C.unk_04);
+    Sprite_SetPosition(param0->sprite.sprite, &v1);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v0);
+    Sprite_SetAffineZRotation(param0->sprite.sprite, 0);
+    Sprite_SetAnim(param0->sprite.sprite, 3);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_04++;
+    param0->step++;
     return 1;
 }
 
@@ -632,17 +632,17 @@ static int SlotMachine_ReelState_WinUpdate(SlotMachineReelState *param0)
     VecFx32 v0;
     fx32 v1[8] = { (FX32_ONE * -8), (FX32_ONE * 0), (FX32_ONE * -6), (FX32_ONE * 0), (FX32_ONE * -4), (FX32_ONE * 0), (FX32_ONE * -2), (FX32_ONE * 0) };
 
-    v0 = param0->unk_14;
-    v0.y += v1[param0->unk_30 / 2];
+    v0 = param0->position;
+    v0.y += v1[param0->timer / 2];
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v0);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
 
-    param0->unk_30++;
+    param0->timer++;
 
-    if (param0->unk_30 >= 16) {
-        param0->unk_30 = 0;
-        param0->unk_08 = 1;
-        param0->unk_04++;
+    if (param0->timer >= 16) {
+        param0->timer = 0;
+        param0->done = 1;
+        param0->step++;
     }
 
     return 0;
@@ -657,15 +657,15 @@ static int SlotMachine_ReelState_Lose(SlotMachineReelState *param0)
     VecFx32 v0 = { 0x1000, 0x1000, 0 };
     VecFx32 v1 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * 160)), 0 };
 
-    param0->unk_14 = v1;
+    param0->position = v1;
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v1);
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v0);
-    Sprite_SetAffineZRotation(param0->unk_3C.unk_04, 0);
-    Sprite_SetAnim(param0->unk_3C.unk_04, 4);
-    Sprite_RestartAnim(param0->unk_3C.unk_04);
+    Sprite_SetPosition(param0->sprite.sprite, &v1);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v0);
+    Sprite_SetAffineZRotation(param0->sprite.sprite, 0);
+    Sprite_SetAnim(param0->sprite.sprite, 4);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_04++;
+    param0->step++;
     return 1;
 }
 
@@ -674,26 +674,26 @@ static int SlotMachine_ReelState_LoseUpdate(SlotMachineReelState *param0)
     fx32 v0;
     VecFx32 v1, v2;
 
-    SlotMachineSprite_GetPosition(param0->unk_3C.unk_04, &v1);
-    SlotMachineSprite_GetScale(param0->unk_3C.unk_04, &v2);
+    SlotMachineSprite_GetPosition(param0->sprite.sprite, &v1);
+    SlotMachineSprite_GetScale(param0->sprite.sprite, &v2);
 
     v1.y += (FX32_ONE * 4);
     v2.x += 0x1c7;
     v2.y += 0x1c7;
 
-    param0->unk_30++;
+    param0->timer++;
 
-    if (param0->unk_30 >= 10) {
+    if (param0->timer >= 10) {
         v1.y = ((FX32_ONE * 192) + (FX32_ONE * 256));
         v2.x = 0x1000;
         v2.y = 0x1000;
-        param0->unk_30 = 0;
-        param0->unk_08 = 1;
-        param0->unk_04++;
+        param0->timer = 0;
+        param0->done = 1;
+        param0->step++;
     }
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v1);
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v2);
+    Sprite_SetPosition(param0->sprite.sprite, &v1);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v2);
 
     return 0;
 }
@@ -708,20 +708,20 @@ static int SlotMachine_ReelState_Jackpot(SlotMachineReelState *param0)
     VecFx32 v1 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * 160)), 0 };
     VecFx32 v2 = { 0, 0, 0 };
 
-    param0->unk_14 = v1;
+    param0->position = v1;
     param0->unk_20 = v2;
-    param0->unk_30 = 0;
-    param0->unk_34 = 0;
-    param0->unk_2C = 0;
-    param0->unk_08 = 1;
+    param0->timer = 0;
+    param0->stepIndex = 0;
+    param0->rotation = 0;
+    param0->done = 1;
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v1);
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v0);
-    Sprite_SetAffineZRotation(param0->unk_3C.unk_04, 0);
-    Sprite_SetAnim(param0->unk_3C.unk_04, 2);
-    Sprite_RestartAnim(param0->unk_3C.unk_04);
+    Sprite_SetPosition(param0->sprite.sprite, &v1);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v0);
+    Sprite_SetAffineZRotation(param0->sprite.sprite, 0);
+    Sprite_SetAnim(param0->sprite.sprite, 2);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_04++;
+    param0->step++;
     return 1;
 }
 
@@ -731,22 +731,22 @@ static int SlotMachine_ReelState_JackpotUpdate(SlotMachineReelState *param0)
     fx32 v1[8] = { (FX32_ONE * -2), 0, (FX32_ONE * 2), 0, (FX32_ONE * 2), 0, (FX32_ONE * -2), 0 };
     u32 v2[8] = { 4, 1, 4, 8, 4, 1, 4, 8 };
 
-    param0->unk_2C += v0[param0->unk_34];
-    param0->unk_14.x += v1[param0->unk_34];
-    param0->unk_30++;
+    param0->rotation += v0[param0->stepIndex];
+    param0->position.x += v1[param0->stepIndex];
+    param0->timer++;
 
-    if (param0->unk_30 >= v2[param0->unk_34]) {
-        param0->unk_34++;
+    if (param0->timer >= v2[param0->stepIndex]) {
+        param0->stepIndex++;
 
-        if (param0->unk_34 >= 8) {
-            param0->unk_34 = 0;
+        if (param0->stepIndex >= 8) {
+            param0->stepIndex = 0;
         }
 
-        param0->unk_30 = 0;
+        param0->timer = 0;
     }
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &param0->unk_14);
-    Sprite_SetAffineZRotation(param0->unk_3C.unk_04, param0->unk_2C);
+    Sprite_SetPosition(param0->sprite.sprite, &param0->position);
+    Sprite_SetAffineZRotation(param0->sprite.sprite, param0->rotation);
 
     return 0;
 }
@@ -761,17 +761,17 @@ static int SlotMachine_ReelState_Bonus(SlotMachineReelState *param0)
     VecFx32 v1 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * 160)), 0 };
     VecFx32 v2 = { 0, 0, 0 };
 
-    param0->unk_14 = v1;
+    param0->position = v1;
     param0->unk_20 = v2;
-    param0->unk_08 = 1;
+    param0->done = 1;
 
-    Sprite_SetPosition(param0->unk_3C.unk_04, &v1);
-    Sprite_SetAffineScale(param0->unk_3C.unk_04, &v0);
-    Sprite_SetAffineZRotation(param0->unk_3C.unk_04, 0);
-    Sprite_SetAnim(param0->unk_3C.unk_04, 2);
-    Sprite_RestartAnim(param0->unk_3C.unk_04);
+    Sprite_SetPosition(param0->sprite.sprite, &v1);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v0);
+    Sprite_SetAffineZRotation(param0->sprite.sprite, 0);
+    Sprite_SetAnim(param0->sprite.sprite, 2);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_04++;
+    param0->step++;
 
     return 1;
 }
@@ -787,16 +787,16 @@ static int (*const *const sSlotMachineReelStateFuncs2[SlotMachineReelStateEnum_0
 static void SlotMachine_ReelState_LoadResources(SlotMachineReelState *param0, SlotMachineReelType param1)
 {
     SysTask *v0;
-    SlotMachineContext *v1 = param0->unk_38;
+    SlotMachineContext *v1 = param0->context;
     const SlotMachineSpriteResources *v2;
 
     GF_ASSERT(param1 < SlotMachineReelType_05);
     v2 = &sSlotMachineReelResources[param1];
 
-    SlotMachineSprite_AddTiles(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, v2->unk_00, 2);
-    SlotMachineSprite_AddPalette(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, v2->unk_04, 2);
-    SlotMachineSprite_AddCell(v1->unk_450, v1->unk_438, v2->unk_08, 2);
-    SlotMachineSprite_AddAnim(v1->unk_450, v1->unk_438, v2->unk_0C, 2);
+    SlotMachineSprite_AddTiles(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, v2->tilesID, 2);
+    SlotMachineSprite_AddPalette(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, v2->paletteID, 2);
+    SlotMachineSprite_AddCell(v1->spriteManager, v1->narc, v2->cellID, 2);
+    SlotMachineSprite_AddAnim(v1->spriteManager, v1->narc, v2->animID, 2);
 
     v0 = SysTask_ExecuteOnVBlank(SlotMachine_ReelState_RequestChar, param0, 257);
     GF_ASSERT(v0 != NULL);
@@ -807,18 +807,18 @@ static void SlotMachine_ReelState_LoadResources(SlotMachineReelState *param0, Sl
 
 static void SlotMachine_ReelState_FreeResources(SlotMachineContext *param0)
 {
-    SlotMachineSprite_RemoveResources(param0->unk_450, 2, 2, 2, 2);
+    SlotMachineSprite_RemoveResources(param0->spriteManager, 2, 2, 2, 2);
 }
 
 static void SlotMachine_ReelState_RequestChar(SysTask *param0, void *param1)
 {
     SlotMachineReelState *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_38;
+    SlotMachineContext *v1 = v0->context;
 
-    SlotMachineSprite_RequestChar(v1->unk_450, 2);
-    SlotMachineSprite_RequestPltt(v1->unk_450, 2);
+    SlotMachineSprite_RequestChar(v1->spriteManager, 2);
+    SlotMachineSprite_RequestPltt(v1->spriteManager, 2);
 
-    v0->unk_0C = 1;
+    v0->loadState = 1;
 
     SysTask_Done(param0);
 }
@@ -826,11 +826,11 @@ static void SlotMachine_ReelState_RequestChar(SysTask *param0, void *param1)
 static void SlotMachine_ReelState_ReleaseChar(SysTask *param0, void *param1)
 {
     SlotMachineReelState *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_38;
+    SlotMachineContext *v1 = v0->context;
 
-    if (v0->unk_0C == 1) {
-        SlotMachineSprite_ReleasePltt(v1->unk_450, 2);
-        v0->unk_0C = 2;
+    if (v0->loadState == 1) {
+        SlotMachineSprite_ReleasePltt(v1->spriteManager, 2);
+        v0->loadState = 2;
         SysTask_Done(param0);
     }
 }
@@ -840,13 +840,13 @@ static void SlotMachine_ReelState_CreateSprite2(SlotMachineContext *param0, Slot
     VecFx32 v0 = { 0, 0, 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    SlotMachineSprite_CreateSprite(param0->unk_450, param1, param2, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 2, 2, 2, 2, 2, 7);
+    SlotMachineSprite_CreateSprite(param0->spriteManager, param1, param2, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 2, 2, 2, 2, 2, 7);
 
-    Sprite_SetAffineOverwriteMode(param1->unk_04, 2);
-    Sprite_SetAffineTranslation(param1->unk_04, &v0);
-    Sprite_SetAffineScale(param1->unk_04, &v1);
-    Sprite_SetAffineZRotation(param1->unk_04, CalcAngleRotationIdx_Wraparound(0));
-    Sprite_SetAnimateFlag(param1->unk_04, 1);
+    Sprite_SetAffineOverwriteMode(param1->sprite, 2);
+    Sprite_SetAffineTranslation(param1->sprite, &v0);
+    Sprite_SetAffineScale(param1->sprite, &v1);
+    Sprite_SetAffineZRotation(param1->sprite, CalcAngleRotationIdx_Wraparound(0));
+    Sprite_SetAnimateFlag(param1->sprite, 1);
 }
 
 static const OverworldAnimManagerFuncs sSlotMachineSymbolFuncs;
@@ -856,7 +856,7 @@ OverworldAnimManager *SlotMachine_CreateSymbol(SlotMachineContext *param0)
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 16))), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineSymbolFuncs, &v1, 0, param0, 135);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineSymbolFuncs, &v1, 0, param0, 135);
     return v0;
 }
 
@@ -864,7 +864,7 @@ static int SlotMachine_Symbol_Init(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineSymbolSprite *v0 = param1;
 
-    v0->unk_10 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v0->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
     SlotMachine_Symbol_LoadResources(v0);
 
     return 1;
@@ -874,9 +874,9 @@ static void SlotMachine_Symbol_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineSymbolSprite *v0 = param1;
 
-    if (v0->unk_14.unk_04 != NULL) {
-        SlotMachineSprite_RemoveResources(v0->unk_10->unk_450, 3, 3, 3, 3);
-        SlotMachineSprite_DeleteSprite(&v0->unk_14);
+    if (v0->sprite.sprite != NULL) {
+        SlotMachineSprite_RemoveResources(v0->context->spriteManager, 3, 3, 3, 3);
+        SlotMachineSprite_DeleteSprite(&v0->sprite);
     }
 }
 
@@ -884,9 +884,9 @@ static void SlotMachine_Symbol_Update(OverworldAnimManager *param0, void *param1
 {
     SlotMachineSymbolSprite *v0 = param1;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_0C != 2) {
+        if (v0->loadState != 2) {
             return;
         }
 
@@ -894,25 +894,25 @@ static void SlotMachine_Symbol_Update(OverworldAnimManager *param0, void *param1
             VecFx32 v1;
 
             OverworldAnimManager_GetPosition(param0, &v1);
-            SlotMachineSprite_CreateSprite(v0->unk_10->unk_450, &v0->unk_14, &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 3, 3, 3, 3, 2, 5);
-            Sprite_SetAnimateFlag(v0->unk_14.unk_04, 1);
+            SlotMachineSprite_CreateSprite(v0->context->spriteManager, &v0->sprite, &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 3, 3, 3, 3, 2, 5);
+            Sprite_SetAnimateFlag(v0->sprite.sprite, 1);
 
-            v0->unk_00++;
+            v0->state++;
         }
     case 1:
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 < 15) {
+        if (v0->timer < 15) {
             return;
         }
 
-        v0->unk_00++;
-        v0->unk_04 = 1;
+        v0->state++;
+        v0->done = 1;
         break;
     case 2:
-        SlotMachineSprite_RemoveResources(v0->unk_10->unk_450, 3, 3, 3, 3);
-        SlotMachineSprite_DeleteSprite(&v0->unk_14);
-        v0->unk_00++;
+        SlotMachineSprite_RemoveResources(v0->context->spriteManager, 3, 3, 3, 3);
+        SlotMachineSprite_DeleteSprite(&v0->sprite);
+        v0->state++;
     case 3:
         break;
     }
@@ -934,12 +934,12 @@ static const OverworldAnimManagerFuncs sSlotMachineSymbolFuncs = {
 static void SlotMachine_Symbol_RequestChar(SysTask *param0, void *param1)
 {
     SlotMachineSymbolSprite *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_10;
+    SlotMachineContext *v1 = v0->context;
 
-    SlotMachineSprite_RequestChar(v1->unk_450, 3);
-    SlotMachineSprite_RequestPltt(v1->unk_450, 3);
+    SlotMachineSprite_RequestChar(v1->spriteManager, 3);
+    SlotMachineSprite_RequestPltt(v1->spriteManager, 3);
 
-    v0->unk_0C = 1;
+    v0->loadState = 1;
 
     SysTask_Done(param0);
 }
@@ -947,11 +947,11 @@ static void SlotMachine_Symbol_RequestChar(SysTask *param0, void *param1)
 static void SlotMachine_Symbol_ReleaseChar(SysTask *param0, void *param1)
 {
     SlotMachineSymbolSprite *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_10;
+    SlotMachineContext *v1 = v0->context;
 
-    if (v0->unk_0C == 1) {
-        SlotMachineSprite_ReleasePltt(v1->unk_450, 3);
-        v0->unk_0C = 2;
+    if (v0->loadState == 1) {
+        SlotMachineSprite_ReleasePltt(v1->spriteManager, 3);
+        v0->loadState = 2;
         SysTask_Done(param0);
     }
 }
@@ -959,12 +959,12 @@ static void SlotMachine_Symbol_ReleaseChar(SysTask *param0, void *param1)
 static void SlotMachine_Symbol_LoadResources(SlotMachineSymbolSprite *param0)
 {
     SysTask *v0;
-    SlotMachineContext *v1 = param0->unk_10;
+    SlotMachineContext *v1 = param0->context;
 
-    SlotMachineSprite_AddTiles(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, 44, 3);
-    SlotMachineSprite_AddPalette(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, 47, 3);
-    SlotMachineSprite_AddCell(v1->unk_450, v1->unk_438, 45, 3);
-    SlotMachineSprite_AddAnim(v1->unk_450, v1->unk_438, 46, 3);
+    SlotMachineSprite_AddTiles(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, 44, 3);
+    SlotMachineSprite_AddPalette(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, 47, 3);
+    SlotMachineSprite_AddCell(v1->spriteManager, v1->narc, 45, 3);
+    SlotMachineSprite_AddAnim(v1->spriteManager, v1->narc, 46, 3);
 
     v0 = SysTask_ExecuteOnVBlank(SlotMachine_Symbol_RequestChar, param0, 257);
     GF_ASSERT(v0 != NULL);
@@ -979,24 +979,24 @@ static int (*const *const sSlotMachineWinSymbolStateFuncs[SlotMachineWinSymbolSt
 static void SlotMachine_WinSymbol_RequestChar(SysTask *param0, void *param1)
 {
     SlotMachineWinSymbol *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_20;
+    SlotMachineContext *v1 = v0->context;
 
-    SlotMachineSprite_RequestChar(v1->unk_450, 4);
-    SlotMachineSprite_RequestPltt(v1->unk_450, 4);
+    SlotMachineSprite_RequestChar(v1->spriteManager, 4);
+    SlotMachineSprite_RequestPltt(v1->spriteManager, 4);
 
-    v0->unk_10 = 1;
+    v0->loadState = 1;
     SysTask_Done(param0);
 }
 
 static void SlotMachine_WinSymbol_ReleaseChar(SysTask *param0, void *param1)
 {
     SlotMachineWinSymbol *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_20;
+    SlotMachineContext *v1 = v0->context;
 
-    if (v0->unk_10 == 1) {
-        SlotMachineSprite_ReleasePltt(v1->unk_450, 4);
+    if (v0->loadState == 1) {
+        SlotMachineSprite_ReleasePltt(v1->spriteManager, 4);
 
-        v0->unk_10 = 2;
+        v0->loadState = 2;
         SysTask_Done(param0);
     }
 }
@@ -1004,13 +1004,13 @@ static void SlotMachine_WinSymbol_ReleaseChar(SysTask *param0, void *param1)
 static void SlotMachine_WinSymbol_LoadResources(SlotMachineWinSymbol *param0)
 {
     SysTask *v0;
-    SlotMachineContext *v1 = param0->unk_20;
-    const SlotMachineSpriteResources *v2 = &sSlotMachineWinSymbolResources[param0->unk_18];
+    SlotMachineContext *v1 = param0->context;
+    const SlotMachineSpriteResources *v2 = &sSlotMachineWinSymbolResources[param0->winType];
 
-    SlotMachineSprite_AddTiles(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, v2->unk_00, 4);
-    SlotMachineSprite_AddPalette(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, v2->unk_04, 4);
-    SlotMachineSprite_AddCell(v1->unk_450, v1->unk_438, v2->unk_08, 4);
-    SlotMachineSprite_AddAnim(v1->unk_450, v1->unk_438, v2->unk_0C, 4);
+    SlotMachineSprite_AddTiles(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, v2->tilesID, 4);
+    SlotMachineSprite_AddPalette(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, v2->paletteID, 4);
+    SlotMachineSprite_AddCell(v1->spriteManager, v1->narc, v2->cellID, 4);
+    SlotMachineSprite_AddAnim(v1->spriteManager, v1->narc, v2->animID, 4);
 
     v0 = SysTask_ExecuteOnVBlank(SlotMachine_WinSymbol_RequestChar, param0, 257);
     GF_ASSERT(v0 != NULL);
@@ -1024,7 +1024,7 @@ OverworldAnimManager *SlotMachine_CreateWinSymbol(SlotMachineContext *param0, Sl
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 128), (FX32_ONE * 160), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineWinSymbolFuncs, &v1, param1, param0, 137);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineWinSymbolFuncs, &v1, param1, param0, 137);
 
     return v0;
 }
@@ -1033,24 +1033,24 @@ void SlotMachine_SetWinSymbolState(OverworldAnimManager *param0, SlotMachineWinS
 {
     SlotMachineWinSymbol *v0 = OverworldAnimManager_GetFuncsContext(param0);
 
-    v0->unk_04 = param1;
-    v0->unk_08 = 0;
-    v0->unk_0C = 0;
-    v0->unk_14 = 0;
+    v0->state = param1;
+    v0->step = 0;
+    v0->done = 0;
+    v0->timer = 0;
 }
 
 int SlotMachine_IsWinSymbolDone(OverworldAnimManager *param0)
 {
     SlotMachineWinSymbol *v0 = OverworldAnimManager_GetFuncsContext(param0);
-    return v0->unk_0C;
+    return v0->done;
 }
 
 static int SlotMachine_WinSymbol_Init(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineWinSymbol *v0 = param1;
 
-    v0->unk_20 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
-    v0->unk_18 = OverworldAnimManager_GetUserInt(param0);
+    v0->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v0->winType = OverworldAnimManager_GetUserInt(param0);
 
     SlotMachine_WinSymbol_LoadResources(v0);
 
@@ -1061,11 +1061,11 @@ static void SlotMachine_WinSymbol_Exit(OverworldAnimManager *param0, void *param
 {
     SlotMachineWinSymbol *v0 = param1;
 
-    if (v0->unk_24.unk_04 != NULL) {
-        SlotMachineContext *v1 = v0->unk_20;
+    if (v0->sprite.sprite != NULL) {
+        SlotMachineContext *v1 = v0->context;
 
-        SlotMachineSprite_RemoveResources(v1->unk_450, 4, 4, 4, 4);
-        SlotMachineSprite_DeleteSprite(&v0->unk_24);
+        SlotMachineSprite_RemoveResources(v1->spriteManager, 4, 4, 4, 4);
+        SlotMachineSprite_DeleteSprite(&v0->sprite);
     }
 }
 
@@ -1077,8 +1077,8 @@ static void SlotMachine_WinSymbol_Update(OverworldAnimManager *param0, void *par
     int (*const *v2)(SlotMachineWinSymbol *);
 
     do {
-        v2 = sSlotMachineWinSymbolStateFuncs[v1->unk_04];
-        v0 = v2[v1->unk_08](v1);
+        v2 = sSlotMachineWinSymbolStateFuncs[v1->state];
+        v0 = v2[v1->step](v1);
     } while (v0 == 1);
 }
 
@@ -1097,18 +1097,18 @@ static const OverworldAnimManagerFuncs sSlotMachineWinSymbolFuncs = {
 
 static int SlotMachine_WinSymbol_Show(SlotMachineWinSymbol *param0)
 {
-    if (param0->unk_10 == 2) {
+    if (param0->loadState == 2) {
         VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * 256)), 0 };
         VecFx32 v1 = { 0, 0, 0 };
         VecFx32 v2 = { 0x1000, 0x1000, 0 };
 
-        SlotMachineSprite_CreateSprite(param0->unk_20->unk_450, &param0->unk_24, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 4, 4, 4, 4, 2, 6);
-        Sprite_SetAffineOverwriteMode(param0->unk_24.unk_04, 2);
-        Sprite_SetAffineTranslation(param0->unk_24.unk_04, &v1);
-        Sprite_SetAffineZRotation(param0->unk_24.unk_04, CalcAngleRotationIdx_Wraparound(0));
+        SlotMachineSprite_CreateSprite(param0->context->spriteManager, &param0->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 4, 4, 4, 4, 2, 6);
+        Sprite_SetAffineOverwriteMode(param0->sprite.sprite, 2);
+        Sprite_SetAffineTranslation(param0->sprite.sprite, &v1);
+        Sprite_SetAffineZRotation(param0->sprite.sprite, CalcAngleRotationIdx_Wraparound(0));
 
-        param0->unk_0C = 1;
-        param0->unk_08++;
+        param0->done = 1;
+        param0->step++;
     }
 
     return 0;
@@ -1129,13 +1129,13 @@ static int SlotMachine_WinSymbol_Anim1(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x400, 0x400, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_24.unk_04, 1);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, 0);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 0);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 1);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, 0);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 0);
 
-    param0->unk_08++;
+    param0->step++;
     return 0;
 }
 
@@ -1143,38 +1143,38 @@ static int SlotMachine_WinSymbol_Anim2(SlotMachineWinSymbol *param0)
 {
     VecFx32 v0, v1;
 
-    SlotMachineSprite_GetPosition(param0->unk_24.unk_04, &v0);
-    SlotMachineSprite_GetScale(param0->unk_24.unk_04, &v1);
+    SlotMachineSprite_GetPosition(param0->sprite.sprite, &v0);
+    SlotMachineSprite_GetScale(param0->sprite.sprite, &v1);
 
     v1.x += 0xc0;
     v1.y += 0xc0;
 
-    param0->unk_14++;
+    param0->timer++;
 
-    if (param0->unk_14 >= 16) {
+    if (param0->timer >= 16) {
         v0.y = ((FX32_ONE * 192) + (FX32_ONE * (160 - 32)));
         v1.x = 0x1000;
         v1.y = 0x1000;
-        param0->unk_14 = 0;
-        param0->unk_08++;
+        param0->timer = 0;
+        param0->step++;
 
         Sound_PlayPokemonCry(SPECIES_CLEFAIRY, 0);
     }
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
     return 0;
 }
 
 static int SlotMachine_WinSymbol_Anim3(SlotMachineWinSymbol *param0)
 {
-    Sprite_UpdateAnim(param0->unk_24.unk_04, (FX32_ONE * 1));
-    param0->unk_14++;
+    Sprite_UpdateAnim(param0->sprite.sprite, (FX32_ONE * 1));
+    param0->timer++;
 
-    if (param0->unk_14 >= 9) {
-        param0->unk_14 = 0;
-        param0->unk_08++;
-        param0->unk_0C = 1;
+    if (param0->timer >= 9) {
+        param0->timer = 0;
+        param0->step++;
+        param0->done = 1;
     }
 
     return 0;
@@ -1189,14 +1189,14 @@ static int SlotMachine_WinSymbol_Anim4(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_24.unk_04, 1);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, 0);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 0);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 1);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, 0);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 0);
     Sound_PlayEffect(SEQ_SE_DP_SLOT02_sseq);
 
-    param0->unk_08++;
+    param0->step++;
     return 0;
 }
 
@@ -1204,25 +1204,25 @@ static int SlotMachine_WinSymbol_Anim5(SlotMachineWinSymbol *param0)
 {
     VecFx32 v0, v1;
 
-    SlotMachineSprite_GetPosition(param0->unk_24.unk_04, &v0);
-    SlotMachineSprite_GetScale(param0->unk_24.unk_04, &v1);
+    SlotMachineSprite_GetPosition(param0->sprite.sprite, &v0);
+    SlotMachineSprite_GetScale(param0->sprite.sprite, &v1);
 
     v1.x -= 0x180;
     v1.y -= 0x180;
 
-    param0->unk_14++;
+    param0->timer++;
 
-    if (param0->unk_14 >= 8) {
+    if (param0->timer >= 8) {
         v0.y = ((FX32_ONE * 192) + (FX32_ONE * 272));
         v1.x = 0x1000;
         v1.y = 0x1000;
-        param0->unk_14 = 0;
-        param0->unk_08++;
-        param0->unk_0C = 1;
+        param0->timer = 0;
+        param0->step++;
+        param0->done = 1;
     }
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
 
     return 0;
 }
@@ -1236,15 +1236,15 @@ static int SlotMachine_WinSymbol_Anim6(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_24.unk_04, 0);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 0);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, 0);
-    Sprite_RestartAnim(param0->unk_24.unk_04);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 0);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 0);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, 0);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_0C = 1;
-    param0->unk_08++;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
@@ -1258,18 +1258,18 @@ static int SlotMachine_WinSymbol_Anim7(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 1);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, FX32_ONE / 2);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 1);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, FX32_ONE / 2);
 
-    if (Sprite_GetActiveAnim(param0->unk_24.unk_04) != 2) {
-        Sprite_SetAnim(param0->unk_24.unk_04, 2);
-        Sprite_RestartAnim(param0->unk_24.unk_04);
+    if (Sprite_GetActiveAnim(param0->sprite.sprite) != 2) {
+        Sprite_SetAnim(param0->sprite.sprite, 2);
+        Sprite_RestartAnim(param0->sprite.sprite);
     }
 
-    param0->unk_0C = 1;
-    param0->unk_08++;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
@@ -1283,15 +1283,15 @@ static int SlotMachine_WinSymbol_Anim8(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_24.unk_04, 5);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 1);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, FX32_ONE);
-    Sprite_RestartAnim(param0->unk_24.unk_04);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 5);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 1);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, FX32_ONE);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_0C = 1;
-    param0->unk_08++;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
@@ -1305,15 +1305,15 @@ static int SlotMachine_WinSymbol_Anim9(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_24.unk_04, 4);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 1);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, FX32_ONE);
-    Sprite_RestartAnim(param0->unk_24.unk_04);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 4);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 1);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, FX32_ONE);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_0C = 1;
-    param0->unk_08++;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
@@ -1327,15 +1327,15 @@ static int SlotMachine_WinSymbol_Anim10(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnim(param0->unk_24.unk_04, 3);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 1);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, FX32_ONE);
-    Sprite_RestartAnim(param0->unk_24.unk_04);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnim(param0->sprite.sprite, 3);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 1);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, FX32_ONE);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_0C = 1;
-    param0->unk_08++;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
@@ -1349,31 +1349,31 @@ static int SlotMachine_WinSymbol_Anim11(SlotMachineWinSymbol *param0)
     VecFx32 v0 = { (FX32_ONE * 128), ((FX32_ONE * 192) + (FX32_ONE * (160 - 32))), 0 };
     VecFx32 v1 = { 0x1000, 0x1000, 0 };
 
-    Sprite_SetAffineScale(param0->unk_24.unk_04, &v1);
-    Sprite_SetPosition(param0->unk_24.unk_04, &v0);
-    Sprite_SetAnimateFlag(param0->unk_24.unk_04, 0);
-    Sprite_SetAnimSpeed(param0->unk_24.unk_04, FX32_ONE);
+    Sprite_SetAffineScale(param0->sprite.sprite, &v1);
+    Sprite_SetPosition(param0->sprite.sprite, &v0);
+    Sprite_SetAnimateFlag(param0->sprite.sprite, 0);
+    Sprite_SetAnimSpeed(param0->sprite.sprite, FX32_ONE);
 
-    Sprite_SetAnim(param0->unk_24.unk_04, 5);
-    Sprite_RestartAnim(param0->unk_24.unk_04);
+    Sprite_SetAnim(param0->sprite.sprite, 5);
+    Sprite_RestartAnim(param0->sprite.sprite);
 
-    param0->unk_14 = 0;
-    param0->unk_0C = 1;
-    param0->unk_08++;
+    param0->timer = 0;
+    param0->done = 1;
+    param0->step++;
 
     return 0;
 }
 
 static int SlotMachine_WinSymbol_Anim12(SlotMachineWinSymbol *param0)
 {
-    Sprite_UpdateAnim(param0->unk_24.unk_04, FX32_ONE);
+    Sprite_UpdateAnim(param0->sprite.sprite, FX32_ONE);
 
-    if (Sprite_IsAnimated(param0->unk_24.unk_04) == 0) {
-        param0->unk_14++;
+    if (Sprite_IsAnimated(param0->sprite.sprite) == 0) {
+        param0->timer++;
 
-        if (param0->unk_14 >= 8) {
-            param0->unk_14 = 0;
-            Sprite_RestartAnim(param0->unk_24.unk_04);
+        if (param0->timer >= 8) {
+            param0->timer = 0;
+            Sprite_RestartAnim(param0->sprite.sprite);
         }
     }
 
@@ -1393,12 +1393,12 @@ static const OverworldAnimManagerFuncs sSlotMachineBonusFuncs;
 static void SlotMachine_Bonus_RequestChar(SysTask *param0, void *param1)
 {
     SlotMachineBonus *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_2C;
+    SlotMachineContext *v1 = v0->context;
 
-    SlotMachineSprite_RequestChar(v1->unk_450, 5);
-    SlotMachineSprite_RequestPltt(v1->unk_450, 5);
+    SlotMachineSprite_RequestChar(v1->spriteManager, 5);
+    SlotMachineSprite_RequestPltt(v1->spriteManager, 5);
 
-    v0->unk_10 = 1;
+    v0->loadState = 1;
 
     SysTask_Done(param0);
 }
@@ -1406,11 +1406,11 @@ static void SlotMachine_Bonus_RequestChar(SysTask *param0, void *param1)
 static void SlotMachine_Bonus_ReleaseChar(SysTask *param0, void *param1)
 {
     SlotMachineBonus *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_2C;
+    SlotMachineContext *v1 = v0->context;
 
-    if (v0->unk_10 = 1) {
-        SlotMachineSprite_ReleasePltt(v1->unk_450, 5);
-        v0->unk_10 = 2;
+    if (v0->loadState = 1) {
+        SlotMachineSprite_ReleasePltt(v1->spriteManager, 5);
+        v0->loadState = 2;
         SysTask_Done(param0);
     }
 }
@@ -1418,12 +1418,12 @@ static void SlotMachine_Bonus_ReleaseChar(SysTask *param0, void *param1)
 static void SlotMachine_Bonus_LoadResources(SlotMachineBonus *param0)
 {
     SysTask *v0;
-    SlotMachineContext *v1 = param0->unk_2C;
+    SlotMachineContext *v1 = param0->context;
 
-    SlotMachineSprite_AddTiles(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, 56, 5);
-    SlotMachineSprite_AddPalette(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DSUB), v1->unk_438, 59, 5);
-    SlotMachineSprite_AddCell(v1->unk_450, v1->unk_438, 57, 5);
-    SlotMachineSprite_AddAnim(v1->unk_450, v1->unk_438, 58, 5);
+    SlotMachineSprite_AddTiles(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, 56, 5);
+    SlotMachineSprite_AddPalette(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DSUB), v1->narc, 59, 5);
+    SlotMachineSprite_AddCell(v1->spriteManager, v1->narc, 57, 5);
+    SlotMachineSprite_AddAnim(v1->spriteManager, v1->narc, 58, 5);
 
     v0 = SysTask_ExecuteOnVBlank(SlotMachine_Bonus_RequestChar, param0, 257);
     GF_ASSERT(v0 != NULL);
@@ -1436,7 +1436,7 @@ OverworldAnimManager *SlotMachine_CreateBonus(SlotMachineContext *param0)
     OverworldAnimManager *v0;
     VecFx32 v1 = { 0, 0, 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineBonusFuncs, &v1, 0, param0, 136);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineBonusFuncs, &v1, 0, param0, 136);
     return v0;
 }
 
@@ -1444,14 +1444,14 @@ int SlotMachine_IsBonusDone(OverworldAnimManager *param0)
 {
     SlotMachineBonus *v0 = OverworldAnimManager_GetFuncsContext(param0);
 
-    return v0->unk_04;
+    return v0->done;
 }
 
 static int SlotMachine_Bonus_Init(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineBonus *v0 = param1;
 
-    v0->unk_2C = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v0->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
     SlotMachine_Bonus_LoadResources(v0);
     return 1;
 }
@@ -1460,12 +1460,12 @@ static void SlotMachine_Bonus_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineBonus *v0 = param1;
 
-    if (v0->unk_30.unk_04 != NULL) {
-        SlotMachineSprite_RemoveResources(v0->unk_2C->unk_450, 5, 5, 5, 5);
-        SlotMachineSprite_DeleteSprite(&v0->unk_30);
+    if (v0->sprite1.sprite != NULL) {
+        SlotMachineSprite_RemoveResources(v0->context->spriteManager, 5, 5, 5, 5);
+        SlotMachineSprite_DeleteSprite(&v0->sprite1);
 
-        if (v0->unk_3C.unk_04 != NULL) {
-            SlotMachineSprite_DeleteSprite(&v0->unk_3C);
+        if (v0->sprite2.sprite != NULL) {
+            SlotMachineSprite_DeleteSprite(&v0->sprite2);
         }
     }
 }
@@ -1493,19 +1493,19 @@ static void SlotMachine_Bonus_Update(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineBonus *v0 = param1;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_10 != 2) {
+        if (v0->loadState != 2) {
             return;
         }
 
         {
             VecFx32 v1 = { 0, ((FX32_ONE * 192) + (FX32_ONE * 256)), 0 };
 
-            SlotMachineSprite_CreateSprite(v0->unk_2C->unk_450, &v0->unk_30, &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 5, 5, 5, 5, 2, 4);
-            SlotMachineSprite_CreateSprite(v0->unk_2C->unk_450, &v0->unk_3C, &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 5, 5, 5, 5, 2, 4);
-            Sprite_SetFlipMode(v0->unk_3C.unk_04, 1);
-            v0->unk_00++;
+            SlotMachineSprite_CreateSprite(v0->context->spriteManager, &v0->sprite1, &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 5, 5, 5, 5, 2, 4);
+            SlotMachineSprite_CreateSprite(v0->context->spriteManager, &v0->sprite2, &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 1, 5, 5, 5, 5, 2, 4);
+            Sprite_SetFlipMode(v0->sprite2.sprite, 1);
+            v0->state++;
         }
     case 1: {
         int v2 = 0;
@@ -1531,127 +1531,127 @@ static void SlotMachine_Bonus_Update(OverworldAnimManager *param0, void *param1)
         v4.x = (FX32_ONE * -32) + v3.x;
         v4.y = ((FX32_ONE * 192) + (FX32_ONE * 228)) - v3.y;
 
-        Sprite_SetPosition(v0->unk_30.unk_04, &v4);
+        Sprite_SetPosition(v0->sprite1.sprite, &v4);
 
         v4.x = (FX32_ONE * 288) - v3.x;
         v4.y = ((FX32_ONE * 192) + (FX32_ONE * 228)) - v3.y;
 
-        Sprite_SetPosition(v0->unk_3C.unk_04, &v4);
+        Sprite_SetPosition(v0->sprite2.sprite, &v4);
 
         if (v2 == 2) {
-            v0->unk_00++;
+            v0->state++;
         }
     } break;
     case 2:
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 < 8) {
+        if (v0->timer < 8) {
             break;
         }
 
-        v0->unk_08 = 0;
-        v0->unk_00++;
+        v0->timer = 0;
+        v0->state++;
     case 3:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -2), (FX32_ONE * -4), v0->unk_30.unk_04, 0);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -2), (FX32_ONE * -4), v0->sprite1.sprite, 0);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            v0->unk_08 = 0;
-            v0->unk_00++;
+        if (v0->timer >= 4) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     case 4:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 2), (FX32_ONE * 4), v0->unk_30.unk_04, 0);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 2), (FX32_ONE * 4), v0->sprite1.sprite, 0);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            v0->unk_08 = 0;
-            v0->unk_00++;
+        if (v0->timer >= 4) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     case 5:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -2), (FX32_ONE * -4), v0->unk_3C.unk_04, 1);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -2), (FX32_ONE * -4), v0->sprite2.sprite, 1);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            v0->unk_08 = 0;
-            v0->unk_00++;
+        if (v0->timer >= 4) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     case 6:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 2), (FX32_ONE * 4), v0->unk_3C.unk_04, 1);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 2), (FX32_ONE * 4), v0->sprite2.sprite, 1);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            v0->unk_08 = 0;
+        if (v0->timer >= 4) {
+            v0->timer = 0;
 
-            v0->unk_0C++;
+            v0->loopCount++;
 
-            if (v0->unk_0C < 2) {
-                v0->unk_00 = 3;
+            if (v0->loopCount < 2) {
+                v0->state = 3;
             } else {
-                v0->unk_0C = 0;
-                v0->unk_00++;
+                v0->loopCount = 0;
+                v0->state++;
             }
         }
         break;
     case 7:
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 < 8) {
+        if (v0->timer < 8) {
             break;
         }
 
-        v0->unk_08 = 0;
-        v0->unk_00++;
+        v0->timer = 0;
+        v0->state++;
     case 8:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -2), (FX32_ONE * -4), v0->unk_30.unk_04, 0);
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 0), (FX32_ONE * 0), v0->unk_3C.unk_04, 1);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -2), (FX32_ONE * -4), v0->sprite1.sprite, 0);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 0), (FX32_ONE * 0), v0->sprite2.sprite, 1);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            v0->unk_08 = 0;
-            v0->unk_00++;
+        if (v0->timer >= 4) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     case 9:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 2), (FX32_ONE * 4), v0->unk_30.unk_04, 0);
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 0), (FX32_ONE * 0), v0->unk_3C.unk_04, 1);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 2), (FX32_ONE * 4), v0->sprite1.sprite, 0);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 0), (FX32_ONE * 0), v0->sprite2.sprite, 1);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            v0->unk_08 = 0;
+        if (v0->timer >= 4) {
+            v0->timer = 0;
 
-            v0->unk_0C++;
+            v0->loopCount++;
 
-            if (v0->unk_0C < 2) {
-                v0->unk_00 = 8;
+            if (v0->loopCount < 2) {
+                v0->state = 8;
             } else {
-                v0->unk_0C = 0;
-                v0->unk_00++;
+                v0->loopCount = 0;
+                v0->state++;
             }
         }
         break;
     case 10:
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -8), (FX32_ONE * -8), v0->unk_30.unk_04, 0);
-        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 0), (FX32_ONE * 0), v0->unk_3C.unk_04, 1);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * -32), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * -8), (FX32_ONE * -8), v0->sprite1.sprite, 0);
+        SlotMachine_Bonus_MoveSprite(param0, (FX32_ONE * 288), ((FX32_ONE * 192) + (FX32_ONE * 228)), (FX32_ONE * 0), (FX32_ONE * 0), v0->sprite2.sprite, 1);
 
-        v0->unk_08++;
+        v0->timer++;
 
-        if (v0->unk_08 >= 4) {
-            SlotMachineSprite_DeleteSprite(&v0->unk_30);
-            SlotMachineSprite_DeleteSprite(&v0->unk_3C);
-            SlotMachineSprite_RemoveResources(v0->unk_2C->unk_450, 5, 5, 5, 5);
+        if (v0->timer >= 4) {
+            SlotMachineSprite_DeleteSprite(&v0->sprite1);
+            SlotMachineSprite_DeleteSprite(&v0->sprite2);
+            SlotMachineSprite_RemoveResources(v0->context->spriteManager, 5, 5, 5, 5);
         }
 
-        v0->unk_00++;
-        v0->unk_04 = 1;
+        v0->state++;
+        v0->done = 1;
     }
 }
 
@@ -1675,7 +1675,7 @@ OverworldAnimManager *SlotMachine_CreateButton(SlotMachineContext *param0)
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 24), ((FX32_ONE * 192) + (FX32_ONE * 8)), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineButtonFuncs, &v1, 0, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineButtonFuncs, &v1, 0, param0, 142);
     return v0;
 }
 
@@ -1684,11 +1684,11 @@ static int SlotMachine_Button_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v0;
     SlotMachineButton *v1 = param1;
 
-    v1->unk_00 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v1->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v1->unk_00->unk_450, &v1->unk_04, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 6, 6, 6, 6, 2, 3);
-    Sprite_SetAnimateFlag(v1->unk_04.unk_04, 1);
+    SlotMachineSprite_CreateSprite(v1->context->spriteManager, &v1->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 6, 6, 6, 6, 2, 3);
+    Sprite_SetAnimateFlag(v1->sprite.sprite, 1);
 
     return 1;
 }
@@ -1696,20 +1696,20 @@ static int SlotMachine_Button_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Button_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineButton *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_04);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Button_Update(OverworldAnimManager *param0, void *param1)
 {
     int v0 = 1;
     SlotMachineButton *v1 = param1;
-    SlotMachineReelAnimTask *v2 = &v1->unk_00->unk_13C;
+    SlotMachineReelAnimTask *v2 = &v1->context->reelAnimTask;
 
-    if (v2->unk_0C == 1) {
+    if (v2->spritesFinished == 1) {
         v0 = 0;
     }
 
-    Sprite_SetDrawFlag(v1->unk_04.unk_04, v0);
+    Sprite_SetDrawFlag(v1->sprite.sprite, v0);
 }
 
 static const OverworldAnimManagerFuncs sSlotMachineButtonFuncs = {
@@ -1729,7 +1729,7 @@ OverworldAnimManager *SlotMachine_CreateButton2(SlotMachineContext *param0)
 
     v0.x = (FX32_ONE * (128 - (((6 + 5) * 8) / 2)));
     v0.y = ((FX32_ONE * 192) + (FX32_ONE * (96 + 16)));
-    v1 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineButton2Funcs, &v0, 0, param0, 142);
+    v1 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineButton2Funcs, &v0, 0, param0, 142);
 
     return v1;
 }
@@ -1741,16 +1741,16 @@ static int SlotMachine_Button2_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v2 = { 0x2000, 0x2000, 0 };
     SlotMachineButton2 *v3 = param1;
 
-    v3->unk_04 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v3->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v3->unk_04->unk_450, &v3->unk_08, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 6, 6, 6, 6, 2, 3);
+    SlotMachineSprite_CreateSprite(v3->context->spriteManager, &v3->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 6, 6, 6, 6, 2, 3);
 
-    Sprite_SetAffineOverwriteMode(v3->unk_08.unk_04, 2);
-    Sprite_SetAffineTranslation(v3->unk_08.unk_04, &v1);
-    Sprite_SetAffineScale(v3->unk_08.unk_04, &v2);
-    Sprite_SetAffineZRotation(v3->unk_08.unk_04, CalcAngleRotationIdx_Wraparound(0));
-    Sprite_SetAnimateFlag(v3->unk_08.unk_04, 1);
+    Sprite_SetAffineOverwriteMode(v3->sprite.sprite, 2);
+    Sprite_SetAffineTranslation(v3->sprite.sprite, &v1);
+    Sprite_SetAffineScale(v3->sprite.sprite, &v2);
+    Sprite_SetAffineZRotation(v3->sprite.sprite, CalcAngleRotationIdx_Wraparound(0));
+    Sprite_SetAnimateFlag(v3->sprite.sprite, 1);
 
     return 1;
 }
@@ -1758,7 +1758,7 @@ static int SlotMachine_Button2_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Button2_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineButton2 *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_08);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Button2_Update(OverworldAnimManager *param0, void *param1)
@@ -1766,9 +1766,9 @@ static void SlotMachine_Button2_Update(OverworldAnimManager *param0, void *param
     int v0 = 1;
     SlotMachineButton2 *v1 = param1;
 
-    v1->unk_00++;
+    v1->timer++;
 
-    if (v1->unk_00 >= 45) {
+    if (v1->timer >= 45) {
         OverworldAnimManager_Finish(param0);
     }
 }
@@ -1788,7 +1788,7 @@ OverworldAnimManager *SlotMachine_CreateButton3(SlotMachineContext *param0)
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 200), ((FX32_ONE * 192) + (FX32_ONE * 184)), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineButton3Funcs, &v1, 0, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineButton3Funcs, &v1, 0, param0, 142);
     return v0;
 }
 
@@ -1797,11 +1797,11 @@ static int SlotMachine_Button3_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v0;
     SlotMachineButton *v1 = param1;
 
-    v1->unk_00 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v1->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v1->unk_00->unk_450, &v1->unk_04, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 7, 6, 7, 7, 2, 3);
-    Sprite_SetAnimateFlag(v1->unk_04.unk_04, 1);
+    SlotMachineSprite_CreateSprite(v1->context->spriteManager, &v1->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 7, 6, 7, 7, 2, 3);
+    Sprite_SetAnimateFlag(v1->sprite.sprite, 1);
 
     return 1;
 }
@@ -1809,20 +1809,20 @@ static int SlotMachine_Button3_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Button3_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineButton3 *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_04);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Button3_Update(OverworldAnimManager *param0, void *param1)
 {
     int v0 = 1;
     SlotMachineButton3 *v1 = param1;
-    SlotMachineReelAnimTask *v2 = &v1->unk_00->unk_13C;
+    SlotMachineReelAnimTask *v2 = &v1->context->reelAnimTask;
 
-    if (v2->unk_0C == 1) {
+    if (v2->spritesFinished == 1) {
         v0 = 0;
     }
 
-    Sprite_SetDrawFlag(v1->unk_04.unk_04, v0);
+    Sprite_SetDrawFlag(v1->sprite.sprite, v0);
 }
 
 static const OverworldAnimManagerFuncs sSlotMachineButton3Funcs = {
@@ -1842,7 +1842,7 @@ OverworldAnimManager *SlotMachine_CreateButton4(SlotMachineContext *param0)
 
     v1.x = (FX32_ONE * (128 - (((10 + 5) * 8) / 2)));
     v1.y = ((FX32_ONE * 192) + (FX32_ONE * (96 - 16)));
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineButton4Funcs, &v1, 0, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineButton4Funcs, &v1, 0, param0, 142);
 
     return v0;
 }
@@ -1854,16 +1854,16 @@ static int SlotMachine_Button4_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v2 = { 0x2000, 0x2000, 0 };
     SlotMachineButton4 *v3 = param1;
 
-    v3->unk_04 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v3->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    SlotMachineSprite_CreateSprite(v3->unk_04->unk_450, &v3->unk_08, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 7, 6, 7, 7, 2, 3);
+    SlotMachineSprite_CreateSprite(v3->context->spriteManager, &v3->sprite, &v0, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 7, 6, 7, 7, 2, 3);
 
-    Sprite_SetAffineOverwriteMode(v3->unk_08.unk_04, 2);
-    Sprite_SetAffineTranslation(v3->unk_08.unk_04, &v1);
-    Sprite_SetAffineScale(v3->unk_08.unk_04, &v2);
-    Sprite_SetAffineZRotation(v3->unk_08.unk_04, CalcAngleRotationIdx_Wraparound(0));
-    Sprite_SetAnimateFlag(v3->unk_08.unk_04, 1);
+    Sprite_SetAffineOverwriteMode(v3->sprite.sprite, 2);
+    Sprite_SetAffineTranslation(v3->sprite.sprite, &v1);
+    Sprite_SetAffineScale(v3->sprite.sprite, &v2);
+    Sprite_SetAffineZRotation(v3->sprite.sprite, CalcAngleRotationIdx_Wraparound(0));
+    Sprite_SetAnimateFlag(v3->sprite.sprite, 1);
 
     return 1;
 }
@@ -1871,7 +1871,7 @@ static int SlotMachine_Button4_Init(OverworldAnimManager *param0, void *param1)
 static void SlotMachine_Button4_Exit(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineButton4 *v0 = param1;
-    SlotMachineSprite_DeleteSprite(&v0->unk_08);
+    SlotMachineSprite_DeleteSprite(&v0->sprite);
 }
 
 static void SlotMachine_Button4_Update(OverworldAnimManager *param0, void *param1)
@@ -1879,9 +1879,9 @@ static void SlotMachine_Button4_Update(OverworldAnimManager *param0, void *param
     int v0 = 1;
     SlotMachineButton4 *v1 = param1;
 
-    v1->unk_00++;
+    v1->timer++;
 
-    if (v1->unk_00 >= 45) {
+    if (v1->timer >= 45) {
         OverworldAnimManager_Finish(param0);
     }
 }
@@ -1901,7 +1901,7 @@ OverworldAnimManager *SlotMachine_CreateCreditDigit(SlotMachineContext *param0)
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 14), ((FX32_ONE * 192) + (FX32_ONE * 8)), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineCreditDigitFuncs, &v1, 0, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineCreditDigitFuncs, &v1, 0, param0, 142);
     return v0;
 }
 
@@ -1911,13 +1911,13 @@ static int SlotMachine_CreditDigit_Init(OverworldAnimManager *param0, void *para
     VecFx32 v1;
     SlotMachineCreditDigit *v2 = param1;
 
-    v2->unk_00 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v2->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
     OverworldAnimManager_GetPosition(param0, &v1);
 
     for (v0 = 0; v0 < 2; v0++) {
-        SlotMachineSprite_CreateSprite(v2->unk_00->unk_450, &v2->unk_04[v0], &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 8, 6, 8, 8, 2, 3);
-        Sprite_SetDrawFlag(v2->unk_04[v0].unk_04, FALSE);
-        Sprite_SetAnimateFlag(v2->unk_04[v0].unk_04, 1);
+        SlotMachineSprite_CreateSprite(v2->context->spriteManager, &v2->sprites[v0], &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 8, 6, 8, 8, 2, 3);
+        Sprite_SetDrawFlag(v2->sprites[v0].sprite, FALSE);
+        Sprite_SetAnimateFlag(v2->sprites[v0].sprite, 1);
     }
 
     return 1;
@@ -1927,19 +1927,19 @@ static void SlotMachine_CreditDigit_Exit(OverworldAnimManager *param0, void *par
 {
     SlotMachineCreditDigit *v0 = param1;
 
-    SlotMachineSprite_DeleteSprite(&v0->unk_04[0]);
-    SlotMachineSprite_DeleteSprite(&v0->unk_04[1]);
+    SlotMachineSprite_DeleteSprite(&v0->sprites[0]);
+    SlotMachineSprite_DeleteSprite(&v0->sprites[1]);
 }
 
 static void SlotMachine_CreditDigit_Update(OverworldAnimManager *param0, void *param1)
 {
     SlotMachineCreditDigit *v0 = param1;
-    SlotMachineReelAnimTask *v1 = &v0->unk_00->unk_13C;
+    SlotMachineReelAnimTask *v1 = &v0->context->reelAnimTask;
 
-    Sprite_SetDrawFlag(v0->unk_04[0].unk_04, FALSE);
-    Sprite_SetDrawFlag(v0->unk_04[1].unk_04, FALSE);
+    Sprite_SetDrawFlag(v0->sprites[0].sprite, FALSE);
+    Sprite_SetDrawFlag(v0->sprites[1].sprite, FALSE);
 
-    if (v1->unk_0C == 1) {
+    if (v1->spritesFinished == 1) {
         return;
     }
 
@@ -1947,7 +1947,7 @@ static void SlotMachine_CreditDigit_Update(OverworldAnimManager *param0, void *p
         VecFx32 v2 = { (FX32_ONE * 52), ((FX32_ONE * 192) + (FX32_ONE * 8)), 0 };
         u32 v3 = 0, v4, v5;
 
-        v5 = v0->unk_00->unk_10;
+        v5 = v0->context->payoutLines;
 
         if (v5 > 99) {
             v5 = 99;
@@ -1956,20 +1956,20 @@ static void SlotMachine_CreditDigit_Update(OverworldAnimManager *param0, void *p
         v4 = (v5 % 100) / 10;
 
         if (v4) {
-            Sprite_SetPosition(v0->unk_04[v3].unk_04, &v2);
-            Sprite_SetAnim(v0->unk_04[v3].unk_04, v4);
-            Sprite_RestartAnim(v0->unk_04[v3].unk_04);
-            Sprite_SetDrawFlag(v0->unk_04[v3].unk_04, TRUE);
+            Sprite_SetPosition(v0->sprites[v3].sprite, &v2);
+            Sprite_SetAnim(v0->sprites[v3].sprite, v4);
+            Sprite_RestartAnim(v0->sprites[v3].sprite);
+            Sprite_SetDrawFlag(v0->sprites[v3].sprite, TRUE);
             v2.x += (FX32_ONE * 8);
             v3++;
         }
 
         v4 = (v5 % 10);
 
-        Sprite_SetPosition(v0->unk_04[v3].unk_04, &v2);
-        Sprite_SetAnim(v0->unk_04[v3].unk_04, v4);
-        Sprite_RestartAnim(v0->unk_04[v3].unk_04);
-        Sprite_SetDrawFlag(v0->unk_04[v3].unk_04, TRUE);
+        Sprite_SetPosition(v0->sprites[v3].sprite, &v2);
+        Sprite_SetAnim(v0->sprites[v3].sprite, v4);
+        Sprite_RestartAnim(v0->sprites[v3].sprite);
+        Sprite_SetDrawFlag(v0->sprites[v3].sprite, TRUE);
     }
 }
 
@@ -1988,7 +1988,7 @@ OverworldAnimManager *SlotMachine_CreatePayoutDigit(SlotMachineContext *param0)
     OverworldAnimManager *v0;
     VecFx32 v1 = { (FX32_ONE * 14), ((FX32_ONE * 192) + (FX32_ONE * 8)), 0 };
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachinePayoutDigitFuncs, &v1, 0, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachinePayoutDigitFuncs, &v1, 0, param0, 142);
     return v0;
 }
 
@@ -1998,10 +1998,10 @@ static int SlotMachine_PayoutDigit_Init(OverworldAnimManager *param0, void *para
     VecFx32 v1 = { (FX32_ONE * 220), ((FX32_ONE * 192) + (FX32_ONE * 184)), 0 };
     SlotMachinePayoutDigit *v2 = param1;
 
-    v2->unk_00 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v2->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
     for (v0 = 0; v0 < 5; v0++, v1.x += (FX32_ONE * 8)) {
-        SlotMachineSprite_CreateSprite(v2->unk_00->unk_450, &v2->unk_04[v0], &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 8, 6, 8, 8, 2, 3);
+        SlotMachineSprite_CreateSprite(v2->context->spriteManager, &v2->sprites[v0], &v1, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 8, 6, 8, 8, 2, 3);
     }
 
     return 1;
@@ -2013,7 +2013,7 @@ static void SlotMachine_PayoutDigit_Exit(OverworldAnimManager *param0, void *par
     int v1;
 
     for (v1 = 0; v1 < 5; v1++) {
-        SlotMachineSprite_DeleteSprite(&v0->unk_04[v1]);
+        SlotMachineSprite_DeleteSprite(&v0->sprites[v1]);
     }
 }
 
@@ -2021,16 +2021,16 @@ static void SlotMachine_PayoutDigit_Update(OverworldAnimManager *param0, void *p
 {
     int v0;
     SlotMachinePayoutDigit *v1 = param1;
-    SlotMachineReelAnimTask *v2 = &v1->unk_00->unk_13C;
+    SlotMachineReelAnimTask *v2 = &v1->context->reelAnimTask;
 
     {
         int v3 = 1;
 
-        if (v2->unk_0C == 1) {
+        if (v2->spritesFinished == 1) {
             v3 = 0;
         }
 
-        for (v0 = 0; v0 < 5; Sprite_SetDrawFlag(v1->unk_04[v0].unk_04, v3), v0++) {
+        for (v0 = 0; v0 < 5; Sprite_SetDrawFlag(v1->sprites[v0].sprite, v3), v0++) {
             (void)0;
         }
 
@@ -2043,7 +2043,7 @@ static void SlotMachine_PayoutDigit_Update(OverworldAnimManager *param0, void *p
         int v4;
         int v5 = 0, v6, v7;
 
-        v7 = v1->unk_00->unk_14;
+        v7 = v1->context->payoutCoins;
 
         if (v7 > 50000) {
             v7 = 50000;
@@ -2051,8 +2051,8 @@ static void SlotMachine_PayoutDigit_Update(OverworldAnimManager *param0, void *p
 
         for (v4 = 10000; v4 >= 1; v4 /= 10, v5++) {
             v6 = (v7 % (v4 * 10)) / v4;
-            Sprite_SetAnim(v1->unk_04[v5].unk_04, v6);
-            Sprite_RestartAnim(v1->unk_04[v5].unk_04);
+            Sprite_SetAnim(v1->sprites[v5].sprite, v6);
+            Sprite_RestartAnim(v1->sprites[v5].sprite);
         }
     }
 }
@@ -2073,7 +2073,7 @@ OverworldAnimManager *SlotMachine_CreateNumber(SlotMachineContext *param0, SlotM
     VecFx32 v1 = { 0, 0, 0 };
     u32 v2;
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineNumberFuncs, &v1, param1, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineNumberFuncs, &v1, param1, param0, 142);
 
     return v0;
 }
@@ -2087,64 +2087,64 @@ static int SlotMachine_Number_Init(OverworldAnimManager *param0, void *param1)
     SlotMachineNumber *v6 = param1;
     SlotMachineContext *v7 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
 
-    v6->unk_00 = OverworldAnimManager_GetUserInt(param0);
-    v6->unk_14 = v7;
+    v6->numberType = OverworldAnimManager_GetUserInt(param0);
+    v6->context = v7;
 
-    if (v6->unk_00 == SlotMachineNumberType_00) {
-        v6->unk_04 = v7->unk_1C;
+    if (v6->numberType == SlotMachineNumberType_00) {
+        v6->value = v7->bonusRoundStreak;
 
-        if (v6->unk_04 > 999) {
-            v6->unk_04 = 999;
+        if (v6->value > 999) {
+            v6->value = 999;
         }
 
-        if (v6->unk_04 >= 100) {
-            v6->unk_08 = 3;
-        } else if (v6->unk_04 >= 10) {
-            v6->unk_08 = 2;
+        if (v6->value >= 100) {
+            v6->digitCount = 3;
+        } else if (v6->value >= 10) {
+            v6->digitCount = 2;
         } else {
-            v6->unk_08 = 1;
+            v6->digitCount = 1;
         }
 
         v3.x = (FX32_ONE * (128 + (((4 + 5) * 16) / 2)));
         v3.y = ((FX32_ONE * 192) + (FX32_ONE * (96 + 16)));
     } else {
-        v6->unk_04 = v7->unk_14;
+        v6->value = v7->payoutCoins;
 
-        if (v6->unk_04 > 99999) {
-            v6->unk_04 = 99999;
+        if (v6->value > 99999) {
+            v6->value = 99999;
         }
 
-        if (v6->unk_04 >= 10000) {
-            v6->unk_08 = 5;
-        } else if (v6->unk_04 >= 1000) {
-            v6->unk_08 = 4;
-        } else if (v6->unk_04 >= 100) {
-            v6->unk_08 = 3;
-        } else if (v6->unk_04 >= 10) {
-            v6->unk_08 = 2;
+        if (v6->value >= 10000) {
+            v6->digitCount = 5;
+        } else if (v6->value >= 1000) {
+            v6->digitCount = 4;
+        } else if (v6->value >= 100) {
+            v6->digitCount = 3;
+        } else if (v6->value >= 10) {
+            v6->digitCount = 2;
         } else {
-            v6->unk_08 = 1;
+            v6->digitCount = 1;
         }
 
         v3.x = (FX32_ONE * (128 + (((4 + 5) * 16) / 2)));
         v3.y = ((FX32_ONE * 192) + (FX32_ONE * (96 - 16)));
     }
 
-    for (v0 = 0, v1 = 1; v0 < v6->unk_08; v0++, v1 *= 10, v3.x -= (FX32_ONE * 16)) {
-        SlotMachineSprite_CreateSprite(v6->unk_14->unk_450, &v6->unk_18[v0], &v3, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 8, 6, 8, 8, 2, 3);
+    for (v0 = 0, v1 = 1; v0 < v6->digitCount; v0++, v1 *= 10, v3.x -= (FX32_ONE * 16)) {
+        SlotMachineSprite_CreateSprite(v6->context->spriteManager, &v6->sprites[v0], &v3, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 8, 6, 8, 8, 2, 3);
 
-        Sprite_SetAffineOverwriteMode(v6->unk_18[v0].unk_04, 2);
-        Sprite_SetAffineTranslation(v6->unk_18[v0].unk_04, &v4);
-        Sprite_SetAffineScale(v6->unk_18[v0].unk_04, &v5);
-        Sprite_SetAffineZRotation(v6->unk_18[v0].unk_04, CalcAngleRotationIdx_Wraparound(0));
+        Sprite_SetAffineOverwriteMode(v6->sprites[v0].sprite, 2);
+        Sprite_SetAffineTranslation(v6->sprites[v0].sprite, &v4);
+        Sprite_SetAffineScale(v6->sprites[v0].sprite, &v5);
+        Sprite_SetAffineZRotation(v6->sprites[v0].sprite, CalcAngleRotationIdx_Wraparound(0));
 
-        v2 = (v6->unk_04 % (v1 * 10)) / v1;
+        v2 = (v6->value % (v1 * 10)) / v1;
 
-        Sprite_SetAnim(v6->unk_18[v0].unk_04, v2);
-        Sprite_RestartAnim(v6->unk_18[v0].unk_04);
+        Sprite_SetAnim(v6->sprites[v0].sprite, v2);
+        Sprite_RestartAnim(v6->sprites[v0].sprite);
     }
 
-    v6->unk_10 = v0;
+    v6->spriteCount = v0;
     return 1;
 }
 
@@ -2153,8 +2153,8 @@ static void SlotMachine_Number_Exit(OverworldAnimManager *param0, void *param1)
     int v0;
     SlotMachineNumber *v1 = param1;
 
-    for (v0 = 0; v0 < v1->unk_10; v0++) {
-        SlotMachineSprite_DeleteSprite(&v1->unk_18[v0]);
+    for (v0 = 0; v0 < v1->spriteCount; v0++) {
+        SlotMachineSprite_DeleteSprite(&v1->sprites[v0]);
     }
 }
 
@@ -2163,9 +2163,9 @@ static void SlotMachine_Number_Update(OverworldAnimManager *param0, void *param1
     int v0;
     SlotMachineNumber *v1 = param1;
 
-    v1->unk_0C++;
+    v1->timer++;
 
-    if (v1->unk_0C >= 45) {
+    if (v1->timer >= 45) {
         OverworldAnimManager_Finish(param0);
     }
 }
@@ -2189,7 +2189,7 @@ OverworldAnimManager *SlotMachine_CreateNumber2(SlotMachineContext *param0, u32 
         param1 = 999;
     }
 
-    v0 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineNumber2Funcs, &v1, param1, param0, 142);
+    v0 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineNumber2Funcs, &v1, param1, param0, 142);
     return v0;
 }
 
@@ -2200,29 +2200,29 @@ static int SlotMachine_Number2_Init(OverworldAnimManager *param0, void *param1)
     VecFx32 v4;
     SlotMachineNumber2 *v5 = param1;
 
-    v5->unk_08 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v5->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
     v1 = OverworldAnimManager_GetUserInt(param0);
 
     OverworldAnimManager_GetPosition(param0, &v4);
 
     if (v1 >= 100) {
         v2 = 100;
-        v5->unk_04 = 3;
+        v5->digitCount = 3;
         v4.x -= (FX32_ONE * 16);
     } else if (v1 >= 10) {
         v2 = 10;
-        v5->unk_04 = 2;
+        v5->digitCount = 2;
         v4.x -= (FX32_ONE * 8);
     } else {
         v2 = 1;
-        v5->unk_04 = 1;
+        v5->digitCount = 1;
     }
 
-    for (v0 = 0; v0 < v5->unk_04; v0++, v4.x += (FX32_ONE * 16), v2 /= 10) {
-        SlotMachineSprite_CreateSprite(v5->unk_08->unk_450, &v5->unk_0C[v0], &v4, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 9, 7, 9, 9, 2, 3);
+    for (v0 = 0; v0 < v5->digitCount; v0++, v4.x += (FX32_ONE * 16), v2 /= 10) {
+        SlotMachineSprite_CreateSprite(v5->context->spriteManager, &v5->sprites[v0], &v4, (NNS_G2D_VRAM_TYPE_2DSUB), 0, 9, 7, 9, 9, 2, 3);
 
         v3 = (v1 % (v2 * 10)) / v2;
-        Sprite_SetAnim(v5->unk_0C[v0].unk_04, v3);
+        Sprite_SetAnim(v5->sprites[v0].sprite, v3);
     }
 
     return 1;
@@ -2233,8 +2233,8 @@ static void SlotMachine_Number2_Exit(OverworldAnimManager *param0, void *param1)
     SlotMachineNumber2 *v0 = param1;
     int v1;
 
-    for (v1 = 0; v1 < v0->unk_04; v1++) {
-        SlotMachineSprite_DeleteSprite(&v0->unk_0C[v1]);
+    for (v1 = 0; v1 < v0->digitCount; v1++) {
+        SlotMachineSprite_DeleteSprite(&v0->sprites[v1]);
     }
 }
 
@@ -2243,9 +2243,9 @@ static void SlotMachine_Number2_Update(OverworldAnimManager *param0, void *param
     int v0;
     SlotMachineNumber2 *v1 = param1;
 
-    v1->unk_00++;
+    v1->timer++;
 
-    if (v1->unk_00 >= 60) {
+    if (v1->timer >= 60) {
         OverworldAnimManager_Finish(param0);
     }
 }
@@ -2263,7 +2263,7 @@ static const OverworldAnimManagerFuncs sSlotMachineJackpotFuncs;
 OverworldAnimManager *SlotMachine_CreateJackpot(SlotMachineContext *param0)
 {
     VecFx32 v0 = { 0, 0, 0 };
-    OverworldAnimManager *v1 = OverworldAnimManagerList_InitManager(param0->unk_44C, &sSlotMachineJackpotFuncs, &v0, 0, param0, 140);
+    OverworldAnimManager *v1 = OverworldAnimManagerList_InitManager(param0->animManagerList, &sSlotMachineJackpotFuncs, &v0, 0, param0, 140);
 
     return v1;
 }
@@ -2301,10 +2301,10 @@ static int SlotMachine_Jackpot_Init(OverworldAnimManager *param0, void *param1)
     u32 v0;
     SlotMachineJackpot *v1 = param1;
 
-    v1->unk_44 = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
-    v1->unk_18 = v1->unk_44->unk_44;
+    v1->context = (SlotMachineContext *)OverworldAnimManager_GetUserData(param0);
+    v1->symbol = v1->context->winSymbol;
 
-    v0 = v1->unk_44->unk_48;
+    v0 = v1->context->winLineMask;
 
     do {
         if (v0 & 0x1) {
@@ -2312,10 +2312,10 @@ static int SlotMachine_Jackpot_Init(OverworldAnimManager *param0, void *param1)
         }
 
         v0 >>= 1;
-        v1->unk_1C++;
-    } while (v1->unk_1C < SlotMachinePaletteIndex_05);
+        v1->paletteIndex++;
+    } while (v1->paletteIndex < SlotMachinePaletteIndex_05);
 
-    GF_ASSERT(v1->unk_1C < SlotMachinePaletteIndex_05);
+    GF_ASSERT(v1->paletteIndex < SlotMachinePaletteIndex_05);
 
     SlotMachine_Jackpot_LoadResources(v1);
     return 1;
@@ -2326,14 +2326,14 @@ static void SlotMachine_Jackpot_Exit(OverworldAnimManager *param0, void *param1)
     int v0;
     SlotMachineJackpot *v1 = param1;
 
-    if (v1->unk_14 == 0) {
+    if (v1->resourcesRemoved == 0) {
         for (v0 = 0; v0 < 3; v0++) {
-            if (v1->unk_20[v0].unk_04 != NULL) {
-                SlotMachineSprite_DeleteSprite(&v1->unk_20[v0]);
+            if (v1->sprites[v0].sprite != NULL) {
+                SlotMachineSprite_DeleteSprite(&v1->sprites[v0]);
             }
         }
 
-        SlotMachineSprite_RemoveResources(v1->unk_44->unk_450, 10, 8, 10, 10);
+        SlotMachineSprite_RemoveResources(v1->context->spriteManager, 10, 8, 10, 10);
     }
 }
 
@@ -2343,23 +2343,23 @@ static void SlotMachine_Jackpot_Update(OverworldAnimManager *param0, void *param
     VecFx32 v2;
     SlotMachineJackpot *v3 = param1;
 
-    switch (v3->unk_00) {
+    switch (v3->state) {
     case 0:
-        if (v3->unk_08 != 2) {
+        if (v3->loadState != 2) {
             break;
         }
 
         for (v0 = 0; v0 < 3; v0++) {
-            v2 = sSlotMachineJackpotPositions[v3->unk_1C][v0];
-            SlotMachineSprite_CreateSprite(v3->unk_44->unk_450, &v3->unk_20[v0], &v2, (NNS_G2D_VRAM_TYPE_2DBOTH), 0, 10, 0, 10, 10, 1, 0);
-            Sprite_SetAnimateFlag(v3->unk_20[v0].unk_04, 1);
+            v2 = sSlotMachineJackpotPositions[v3->paletteIndex][v0];
+            SlotMachineSprite_CreateSprite(v3->context->spriteManager, &v3->sprites[v0], &v2, (NNS_G2D_VRAM_TYPE_2DBOTH), 0, 10, 0, 10, 10, 1, 0);
+            Sprite_SetAnimateFlag(v3->sprites[v0].sprite, 1);
         }
 
-        v3->unk_00++;
+        v3->state++;
         break;
     case 1:
         for (v0 = 0, v1 = 0; v0 < 3; v0++) {
-            SlotMachineSprite_GetPosition(v3->unk_20[v0].unk_04, &v2);
+            SlotMachineSprite_GetPosition(v3->sprites[v0].sprite, &v2);
             v2.y += (FX32_ONE * 4);
 
             if (v2.y >= ((FX32_ONE * 192) + (FX32_ONE * 48))) {
@@ -2368,62 +2368,62 @@ static void SlotMachine_Jackpot_Update(OverworldAnimManager *param0, void *param
                 v1 = 1;
             }
 
-            Sprite_SetPosition(v3->unk_20[v0].unk_04, &v2);
+            Sprite_SetPosition(v3->sprites[v0].sprite, &v2);
         }
 
         if (v1 == 0) {
-            v3->unk_00++;
+            v3->state++;
         }
         break;
     case 2:
-        v3->unk_0C++;
+        v3->timer++;
 
-        if (v3->unk_0C >= 30) {
-            v3->unk_0C = 0;
-            v3->unk_00++;
+        if (v3->timer >= 30) {
+            v3->timer = 0;
+            v3->state++;
         }
         break;
     case 3:
-        v3->unk_0C++;
+        v3->timer++;
 
-        if (v3->unk_0C < 12) {
+        if (v3->timer < 12) {
             v1 = 0;
         } else {
             v1 = 1;
         }
 
         for (v0 = 0; v0 < 3; v0++) {
-            Sprite_SetDrawFlag(v3->unk_20[v0].unk_04, v1);
+            Sprite_SetDrawFlag(v3->sprites[v0].sprite, v1);
         }
 
-        if (v3->unk_0C >= 30) {
-            v3->unk_0C = 0;
-            v3->unk_10++;
+        if (v3->timer >= 30) {
+            v3->timer = 0;
+            v3->flashCount++;
 
-            if (v3->unk_10 >= 3) {
-                v3->unk_10 = 0;
-                v3->unk_00++;
+            if (v3->flashCount >= 3) {
+                v3->flashCount = 0;
+                v3->state++;
             }
         }
         break;
     case 4:
-        v3->unk_0C++;
+        v3->timer++;
 
-        if (v3->unk_0C >= 30) {
-            v3->unk_0C = 0;
-            v3->unk_00++;
+        if (v3->timer >= 30) {
+            v3->timer = 0;
+            v3->state++;
         }
         break;
     case 5:
         for (v0 = 0; v0 < 3; v0++) {
-            SlotMachineSprite_DeleteSprite(&v3->unk_20[v0]);
+            SlotMachineSprite_DeleteSprite(&v3->sprites[v0]);
         }
 
-        SlotMachineSprite_RemoveResources(v3->unk_44->unk_450, 10, 8, 10, 10);
+        SlotMachineSprite_RemoveResources(v3->context->spriteManager, 10, 8, 10, 10);
 
-        v3->unk_00++;
-        v3->unk_04 = 1;
-        v3->unk_14 = 1;
+        v3->state++;
+        v3->finished = 1;
+        v3->resourcesRemoved = 1;
     }
 }
 
@@ -2438,21 +2438,21 @@ static const OverworldAnimManagerFuncs sSlotMachineJackpotFuncs = {
 static void SlotMachine_Jackpot_RequestChar(SysTask *param0, void *param1)
 {
     SlotMachineJackpot *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_44;
+    SlotMachineContext *v1 = v0->context;
 
-    SlotMachineSprite_RequestChar(v1->unk_450, 10);
-    v0->unk_08 = 1;
+    SlotMachineSprite_RequestChar(v1->spriteManager, 10);
+    v0->loadState = 1;
     SysTask_Done(param0);
 }
 
 static void SlotMachine_Jackpot_ReleaseChar(SysTask *param0, void *param1)
 {
     SlotMachineJackpot *v0 = param1;
-    SlotMachineContext *v1 = v0->unk_44;
+    SlotMachineContext *v1 = v0->context;
 
-    if (v0->unk_08 == 1) {
-        SlotMachineSprite_ReleaseChar(v1->unk_450, 10);
-        v0->unk_08 = 2;
+    if (v0->loadState == 1) {
+        SlotMachineSprite_ReleaseChar(v1->spriteManager, 10);
+        v0->loadState = 2;
         SysTask_Done(param0);
     }
 }
@@ -2460,16 +2460,16 @@ static void SlotMachine_Jackpot_ReleaseChar(SysTask *param0, void *param1)
 static void SlotMachine_Jackpot_LoadResources(SlotMachineJackpot *param0)
 {
     SysTask *v0;
-    SlotMachineContext *v1 = param0->unk_44;
+    SlotMachineContext *v1 = param0->context;
 
-    if (param0->unk_18 == 0) {
-        SlotMachineSprite_AddTiles(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DBOTH), v1->unk_438, 14, 10);
-        SlotMachineSprite_AddCell(v1->unk_450, v1->unk_438, 15, 10);
-        SlotMachineSprite_AddAnim(v1->unk_450, v1->unk_438, 16, 10);
+    if (param0->symbol == 0) {
+        SlotMachineSprite_AddTiles(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DBOTH), v1->narc, 14, 10);
+        SlotMachineSprite_AddCell(v1->spriteManager, v1->narc, 15, 10);
+        SlotMachineSprite_AddAnim(v1->spriteManager, v1->narc, 16, 10);
     } else {
-        SlotMachineSprite_AddTiles(v1->unk_450, (NNS_G2D_VRAM_TYPE_2DBOTH), v1->unk_438, 17, 10);
-        SlotMachineSprite_AddCell(v1->unk_450, v1->unk_438, 18, 10);
-        SlotMachineSprite_AddAnim(v1->unk_450, v1->unk_438, 19, 10);
+        SlotMachineSprite_AddTiles(v1->spriteManager, (NNS_G2D_VRAM_TYPE_2DBOTH), v1->narc, 17, 10);
+        SlotMachineSprite_AddCell(v1->spriteManager, v1->narc, 18, 10);
+        SlotMachineSprite_AddAnim(v1->spriteManager, v1->narc, 19, 10);
     }
 
     v0 = SysTask_ExecuteOnVBlank(SlotMachine_Jackpot_RequestChar, param0, 257);

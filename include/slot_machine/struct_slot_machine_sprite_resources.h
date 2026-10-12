@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_SLOT_MACHINE_SPRITE_RESOURCES_H
 
 typedef struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0C;
+    u32 tilesID;
+    u32 paletteID;
+    u32 cellID;
+    u32 animID;
 } SlotMachineSpriteResources;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_SPRITE_RESOURCES_H

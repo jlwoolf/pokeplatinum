@@ -4,9 +4,9 @@
 #include "enums.h"
 
 typedef struct {
-    u32 unk_00;
-    SlotMachineBonusType unk_04;
-    SlotMachineBonusKind unk_08;
+    u32 weight;
+    SlotMachineBonusType bonusType;
+    SlotMachineBonusKind bonusKind;
 } SlotMachineBonusEntry;
 
 #endif // POKEPLATINUM_STRUCT_SLOT_MACHINE_BONUS_ENTRY_H

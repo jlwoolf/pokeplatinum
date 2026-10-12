@@ -4,9 +4,9 @@
 #include "enums.h"
 
 typedef struct {
-    SlotMachinePayoutThreshold unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    SlotMachinePayoutThreshold threshold;
+    u32 chanceA;
+    u32 chanceB;
     u32 unk_0C;
 } SlotMachinePayoutResult;
 
