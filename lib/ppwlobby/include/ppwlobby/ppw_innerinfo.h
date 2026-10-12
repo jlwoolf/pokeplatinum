@@ -9,27 +9,27 @@
 #include <functional>
 
 #include "ilobby/dwci_lobbydata.h"
-#include "ilobby/ov66_022364B0.h"
+#include "ilobby/dwci_lobby_util.h"
 #include "ppwlobby/ppw_lobby.h"
 
-class UnkClass_ov66_0223CA1C : public UnkClass_ov66_0225B6E4 {
+class PPW_LobbyInnerInfo : public DWCi_LobbyObject {
 public:
-    struct UnkClass_ov66_0223CA1C_SubStruct1 {
+    struct OpenedTime {
         s64 unk_00;
 
-        UnkClass_ov66_0223CA1C_SubStruct1()
+        OpenedTime()
             : unk_00(PPW_LOBBY_INVALID_TIME)
         {
         }
 
-        void UnkClass_ov66_0223CA1C_InlineFunc0()
+        void SetQuestionnaireReceived()
         {
-            unk_00 = inline_ov66_0223EE30();
+            unk_00 = PPW_GetCurrentTimeSeconds();
         }
     };
 
 private:
-    struct UnkClass_ov66_0223CA1C_SubStruct2 : std::binary_function<const PPW_LobbyScheduleRecord &, const PPW_LobbyScheduleRecord &, bool> {
+    struct ScheduleRecordLess : std::binary_function<const PPW_LobbyScheduleRecord &, const PPW_LobbyScheduleRecord &, bool> {
         bool operator()(const PPW_LobbyScheduleRecord &param0, const PPW_LobbyScheduleRecord &param1) const
         {
             return param0.time < param1.time;
@@ -38,7 +38,7 @@ private:
 
     int unk_00;
     BOOL unk_04;
-    UnkClass_ov66_0223CA1C_SubStruct1 unk_08;
+    OpenedTime unk_08;
     s64 unk_10;
     BOOL unk_18;
     u32 unk_1C;
@@ -53,63 +53,63 @@ private:
     BOOL unk_334;
 
 public:
-    UnkClass_ov66_0223CA1C();
+    PPW_LobbyInnerInfo();
 
-    BOOL ov66_0223CA80(PPW_LobbySchedule *param0, u32 &param1) const;
-    BOOL ov66_0223CB84(const u8 *param0, u32 param1);
-    BOOL ov66_0223EB80(const u8 *param0, u32 param1);
-    BOOL ov66_0223EBAC(const u8 *param0, u32 param1);
-    BOOL ov66_0223ED8C(const u8 *param0, u32 param1);
-    BOOL ov66_0223EDE4(PPW_LobbyQuestionnaire *param0);
-    void ov66_0223EE0C(const PPW_LobbyQuestionnaire *param0);
-    std::vector<u8, PPW_Allocator<u8> > ov66_0223CB2C() const;
-    void ov66_0223EE30();
-    BOOL ov66_0223F00C() const;
-    BOOL ov66_0223F0D0();
+    BOOL GetSchedule(PPW_LobbySchedule *param0, u32 &param1) const;
+    BOOL SetSchedule(const u8 *param0, u32 param1);
+    BOOL ValidateSchedule(const u8 *param0, u32 param1);
+    BOOL SetVip(const u8 *param0, u32 param1);
+    BOOL ValidateVip(const u8 *param0, u32 param1);
+    BOOL GetQuestionnaire(PPW_LobbyQuestionnaire *param0);
+    void SetQuestionnaire(const PPW_LobbyQuestionnaire *param0);
+    std::vector<u8, PPW_Allocator<u8> > SerializeSchedule() const;
+    void Update();
+    BOOL ShouldProgressSchedule() const;
+    BOOL ProgressSchedule();
 
-    BOOL UnkClass_ov66_0223CA1C_InlineFunc0()
+    BOOL SetQuestionnaireReceived()
     {
         unk_00 = 2;
         return TRUE;
     }
 
-    BOOL UnkClass_ov66_0223CA1C_InlineFunc1()
+    BOOL IsQuestionnaireReceived()
     {
         return unk_00 >= 2;
     }
 
-    BOOL UnkClass_ov66_0223CA1C_InlineFunc2()
+    BOOL SetScheduleReceived()
     {
         unk_00 = 4;
         return TRUE;
     }
 
-    BOOL UnkClass_ov66_0223CA1C_InlineFunc3() const
+    BOOL IsScheduleReceived() const
     {
         return unk_00 >= 4;
     }
 
-    BOOL UnkClass_ov66_0223CA1C_InlineFunc4() const
+    BOOL IsOpenedTimeSet() const
     {
         return unk_04;
     }
 
-    void UnkClass_ov66_0223CA1C_InlineFunc5(UnkClass_ov66_0223CA1C_SubStruct1 param0)
+    void SetOpenedTime(OpenedTime param0)
     {
         unk_04 = TRUE;
         unk_08 = param0;
     }
 
-    void UnkClass_ov66_0223CA1C_InlineFunc6(PPW_LobbyTimeInfo &param0) const
+    void GetTimeInfo(PPW_LobbyTimeInfo &param0) const
     {
-        param0.currentTime = inline_ov66_0223EE30();
+        param0.currentTime = PPW_GetCurrentTimeSeconds();
         param0.openedTime = unk_08.unk_00;
         param0.lockedTime = unk_10;
     }
 
-    UnkClass_ov66_0223CA1C_SubStruct1 UnkClass_ov66_0223CA1C_InlineFunc7()
+    OpenedTime RefreshOpenedTime()
     {
-        unk_08.UnkClass_ov66_0223CA1C_InlineFunc0();
+        unk_08.SetQuestionnaireReceived();
         return unk_08;
     }
 };

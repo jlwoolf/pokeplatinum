@@ -7,13 +7,13 @@ typedef void (*UnkFuncPtr_0225B6E4)();
 #include <functional>
 #include <limits>
 
-class UnkClass_ov66_0225B6E4 {
+class DWCi_LobbyObject {
 protected:
-    UnkClass_ov66_0225B6E4()
+    DWCi_LobbyObject()
     {
     }
 
-    ~UnkClass_ov66_0225B6E4()
+    ~DWCi_LobbyObject()
     {
     }
 
@@ -28,19 +28,19 @@ public:
     }
 
 private:
-    static UnkFuncPtr_0225B6E4 Unk_ov66_0225B6E4;
+    static UnkFuncPtr_0225B6E4 sAllocFailureCallback;
 
 public:
-    static UnkFuncPtr_0225B6E4 UnkClass_ov66_0225B6E4_InlineFunc0(UnkFuncPtr_0225B6E4 param0) throw()
+    static UnkFuncPtr_0225B6E4 ExchangeAllocFailureCallback(UnkFuncPtr_0225B6E4 param0) throw()
     {
-        UnkFuncPtr_0225B6E4 v0 = Unk_ov66_0225B6E4;
-        Unk_ov66_0225B6E4 = param0;
+        UnkFuncPtr_0225B6E4 v0 = sAllocFailureCallback;
+        sAllocFailureCallback = param0;
         return v0;
     }
 
 public:
     template <class T>
-    struct UnkClass_ov66_0225B6E4_BinaryFunc : std::binary_function<T *, T *, bool> {
+    struct LessComparator : std::binary_function<T *, T *, bool> {
         bool operator()(const T *param0, const T *param1) const
         {
             return *param0 < *param1;
@@ -88,7 +88,7 @@ public:
 
     pointer allocate(size_type param0, const void *param1 = 0)
     {
-        return (pointer)(UnkClass_ov66_0225B6E4::operator new(param0 * sizeof(T)));
+        return (pointer)(DWCi_LobbyObject::operator new(param0 * sizeof(T)));
     }
 
     void construct(pointer param0, const T &param1)
@@ -103,7 +103,7 @@ public:
 
     void deallocate(pointer param0, size_type param1)
     {
-        UnkClass_ov66_0225B6E4::operator delete((void *)param0);
+        DWCi_LobbyObject::operator delete((void *)param0);
     }
 };
 

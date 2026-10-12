@@ -1,30 +1,30 @@
 #ifndef PPWLOBBY_PARSER_H
 #define PPWLOBBY_PARSER_H
 
-#include "ilobby/ov66_022364B0.h"
+#include "ilobby/dwci_lobby_util.h"
 #include "ppwlobby/ppw_lobby.h"
 
-class UnkClass_ov66_02241184 : public UnkClass_ov66_0225B6E4 {
+class PPW_MessageParser : public DWCi_LobbyObject {
 public:
-    typedef enum UnkEnum_ov66_02241184 {
-        UnkEnum_ov66_02241184_0,
-        UnkEnum_ov66_02241184_1
-    } UnkEnum_ov66_02241184;
+    typedef enum MessageKind {
+        PPW_LOBBY_MESSAGE_KIND_SYSTEM,
+        PPW_LOBBY_MESSAGE_KIND_USER
+    } MessageKind;
 
-    struct UnkClass_ov66_02241184_SubStruct : public UnkClass_ov66_0225B6E4 {
+    struct ParsedMessage : public DWCi_LobbyObject {
         u32 unk_00;
         u32 unk_04;
         int unk_08;
-        UnkEnum_ov66_02241184 unk_0C;
+        MessageKind unk_0C;
         s32 unk_10;
         u32 unused;
         std::vector<u8, PPW_Allocator<u8> > unk_18;
 
-        UnkClass_ov66_02241184_SubStruct()
+        ParsedMessage()
             : unk_00(0)
             , unk_04(6)
             , unk_08(0)
-            , unk_0C(UnkClass_ov66_02241184::UnkEnum_ov66_02241184_0)
+            , unk_0C(PPW_MessageParser::PPW_LOBBY_MESSAGE_KIND_SYSTEM)
             , unk_10(0)
             , unused(0)
             , unk_18()
@@ -32,8 +32,8 @@ public:
         }
     };
 
-    static BOOL ov66_02241184(const PPWString &param0, UnkClass_ov66_02241184_SubStruct &param1);
-    static BOOL ov66_022416DC(int param0, UnkEnum_ov66_02241184 param1, s32 param2, const char *param3, std::size_t param4, PPWString &param5);
+    static BOOL Parse(const PPWString &param0, ParsedMessage &param1);
+    static BOOL Build(int param0, MessageKind param1, s32 param2, const char *param3, std::size_t param4, PPWString &param5);
 };
 
 #endif // PPWLOBBY_PARSER_H

@@ -8,49 +8,49 @@
 #include "ilobby/dwci_lobbynewhandler.h"
 // clang-format on
 
-static UnkClass_ov66_02243B64 *Unk_ov66_0225B6DC = NULL;
+static DWCi_LobbyManager *sLobbyManager = NULL;
 
-static void ov66_02242C08(CHAT param0, const char *param1, void *param2)
+static void ChatRawCallback(CHAT param0, const char *param1, void *param2)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return;
     }
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 }
 
-static void ov66_02242C24(CHAT param0, const char *param1, void *param2)
+static void ChatDisconnectedCallback(CHAT param0, const char *param1, void *param2)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc18().UnkClass_ov66_02243B64_Sub1_InlineFunc2(0);
+    sLobbyManager->GetTimers().Remove(0);
 
-    if (Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_CLOSING) {
-        if (Unk_ov66_0225B6DC) {
-            delete Unk_ov66_0225B6DC;
-            Unk_ov66_0225B6DC = NULL;
+    if (sLobbyManager->GetState() == DWCi_LOBBY_STATE_CLOSING) {
+        if (sLobbyManager) {
+            delete sLobbyManager;
+            sLobbyManager = NULL;
         }
     } else {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc13(DWCi_LOBBY_ERROR_SESSION);
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc16();
+        sLobbyManager->SetError(DWCi_LOBBY_ERROR_SESSION);
+        sLobbyManager->SetDisconnected();
     }
 }
 
-static void ov66_02242CE0(CHAT param0, const char *param1, const char *param2, int param3, void *param4)
+static void ChatPrivateMessageCallback(CHAT param0, const char *param1, const char *param2, int param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    if (inline_ov66_0224154C(param1, "SERVER", 6) == 0) {
-        if (inline_ov66_0224154C(param2, "Excess Flood", 12) != 0) {
+    if (PPW_StrniCmpCStr(param1, "SERVER", 6) == 0) {
+        if (PPW_StrniCmpCStr(param2, "Excess Flood", 12) != 0) {
             return;
         }
 
-        std::vector<PPWString, PPW_Allocator<PPWString> > v0 = ov66_02242F08<PPWString>(param2, " :");
+        std::vector<PPWString, PPW_Allocator<PPWString> > v0 = PPW_SplitStringAnyOf<PPWString>(param2, " :");
         if (v0.empty()) {
             return;
         }
@@ -60,7 +60,7 @@ static void ov66_02242CE0(CHAT param0, const char *param1, const char *param2, i
             return;
         }
 
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc11().lobbyExcessFloodCallback(v1, param4);
+        sLobbyManager->GetGlobalCallbacks().lobbyExcessFloodCallback(v1, param4);
         return;
     }
 
@@ -68,22 +68,22 @@ static void ov66_02242CE0(CHAT param0, const char *param1, const char *param2, i
         return;
     }
 
-    s32 v2 = Unk_ov66_0225B6DC->ov66_022474F4(param1);
+    s32 v2 = sLobbyManager->FindPidByNick(param1);
     if (v2 != DWC_LOBBY_INVALID_USER_ID) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc11().lobbyUserMessageReceivedCallback(v2, param2, param4);
+        sLobbyManager->GetGlobalCallbacks().lobbyUserMessageReceivedCallback(v2, param2, param4);
     }
 }
 
-static void ov66_022430D0(CHAT param0, const char *param1, const char *param2, void *param3)
+static void ChatInvitedCallback(CHAT param0, const char *param1, const char *param2, void *param3)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 }
 
-static void ov66_022430EC(CHAT param0, const char *param1, const char *param2, const char *param3, int param4, void *param5)
+static void ChatChannelMessageCallback(CHAT param0, const char *param1, const char *param2, const char *param3, int param4, void *param5)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
@@ -91,86 +91,86 @@ static void ov66_022430EC(CHAT param0, const char *param1, const char *param2, c
         return;
     }
 
-    s32 v0 = Unk_ov66_0225B6DC->ov66_022474F4(param2);
+    s32 v0 = sLobbyManager->FindPidByNick(param2);
 
-    const DWCi_LobbyChannelCallbacks *v1 = Unk_ov66_0225B6DC->ov66_02246B38(param1);
+    const DWCi_LobbyChannelCallbacks *v1 = sLobbyManager->FindChannel(param1);
 
-    v1->lobbyChannelMessageReceivedCallback(Unk_ov66_0225B6DC->ov66_022467D4(param1).c_str(), v0, param3, v1->param);
+    v1->lobbyChannelMessageReceivedCallback(sLobbyManager->StripChannelPrefix(param1).c_str(), v0, param3, v1->param);
 }
 
-static void ov66_022431E0(CHAT param0, const char *param1, const char *param2, const char *param3, void *param4)
+static void ChatKickedCallback(CHAT param0, const char *param1, const char *param2, const char *param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    Unk_ov66_0225B6DC->ov66_02247258(param1);
+    sLobbyManager->RemoveChannel(param1);
 }
 
-static void ov66_02243234(CHAT param0, const char *param1, const char *param2, int param3, void *param4)
+static void ChatUserJoinedCallback(CHAT param0, const char *param1, const char *param2, int param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    s32 v0 = Unk_ov66_0225B6DC->ov66_02247704(param1);
+    s32 v0 = sLobbyManager->GetChannelLimit(param1);
 
-    if (v0 != 0 && chatGetChannelNumUsers(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), param1) > v0) {
+    if (v0 != 0 && chatGetChannelNumUsers(sLobbyManager->GetChatSession(), param1) > v0) {
         return;
     }
 
-    PPWString v1 = Unk_ov66_0225B6DC->ov66_02247578(UnkClass_ov66_02243B64::ov66_02246928(param2));
+    PPWString v1 = sLobbyManager->FindNickByPid(DWCi_LobbyManager::ParsePidFromNick(param2));
 
-    if (Unk_ov66_0225B6DC->ov66_0224717C(v1, param1)) {
-        const DWCi_LobbyChannelCallbacks *v2 = Unk_ov66_0225B6DC->ov66_02246B38(param1);
+    if (sLobbyManager->RemoveUserFromChannel(v1, param1)) {
+        const DWCi_LobbyChannelCallbacks *v2 = sLobbyManager->FindChannel(param1);
 
-        v2->lobbyPlayerDisconnectedCallback(Unk_ov66_0225B6DC->ov66_022467D4(param1).c_str(), UnkClass_ov66_02243B64::ov66_02246928(param2), v2->param);
+        v2->lobbyPlayerDisconnectedCallback(sLobbyManager->StripChannelPrefix(param1).c_str(), DWCi_LobbyManager::ParsePidFromNick(param2), v2->param);
     }
 
-    s32 v3 = Unk_ov66_0225B6DC->ov66_02246C2C(param2, param1);
+    s32 v3 = sLobbyManager->AddUserToChannel(param2, param1);
 
     if (v3 == DWC_LOBBY_INVALID_USER_ID) {
         return;
     }
 
-    if (Unk_ov66_0225B6DC->ov66_02247690(param1)) {
-        const DWCi_LobbyChannelCallbacks *v4 = Unk_ov66_0225B6DC->ov66_02246B38(param1);
+    if (sLobbyManager->IsChannelJoined(param1)) {
+        const DWCi_LobbyChannelCallbacks *v4 = sLobbyManager->FindChannel(param1);
 
-        v4->lobbyPlayerConnectedCallback(Unk_ov66_0225B6DC->ov66_022467D4(param1).c_str(), v3, v4->param);
+        v4->lobbyPlayerConnectedCallback(sLobbyManager->StripChannelPrefix(param1).c_str(), v3, v4->param);
     }
 }
 
-static void ov66_022434D0(CHAT param0, const char *param1, const char *param2, int param3, const char *param4, const char *param5, void *param6)
+static void ChatUserPartedCallback(CHAT param0, const char *param1, const char *param2, int param3, const char *param4, const char *param5, void *param6)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    s32 v0 = Unk_ov66_0225B6DC->ov66_022474F4(param2);
+    s32 v0 = sLobbyManager->FindPidByNick(param2);
 
     if (v0 == DWC_LOBBY_INVALID_USER_ID) {
         return;
     }
 
-    const DWCi_LobbyChannelCallbacks *v1 = Unk_ov66_0225B6DC->ov66_02246B38(param1);
+    const DWCi_LobbyChannelCallbacks *v1 = sLobbyManager->FindChannel(param1);
 
-    v1->lobbyPlayerDisconnectedCallback(Unk_ov66_0225B6DC->ov66_022467D4(param1).c_str(), v0, v1->param);
+    v1->lobbyPlayerDisconnectedCallback(sLobbyManager->StripChannelPrefix(param1).c_str(), v0, v1->param);
 
-    Unk_ov66_0225B6DC->ov66_0224717C(param2, param1);
+    sLobbyManager->RemoveUserFromChannel(param2, param1);
 }
 
-static void ov66_022435FC(CHAT param0, const char *param1, const char *param2, const char *param3, void *param4)
+static void ChatUserChangedNickCallback(CHAT param0, const char *param1, const char *param2, const char *param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    Unk_ov66_0225B6DC->ov66_022475DC(param2, param3);
+    sLobbyManager->ChangeNick(param2, param3);
 }
 
-static void ov66_02243670(CHAT param0, const char *param1, const char *param2, int param3, void *param4)
+static void ChatUserModeChangedCallback(CHAT param0, const char *param1, const char *param2, int param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
@@ -194,148 +194,148 @@ static void ov66_02243670(CHAT param0, const char *param1, const char *param2, i
     }
 }
 
-static void ov66_02243744(CHAT param0, const char *param1, const char *param2, void *param3)
+static void ChatTopicChangedCallback(CHAT param0, const char *param1, const char *param2, void *param3)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    const DWCi_LobbyChannelCallbacks *v0 = Unk_ov66_0225B6DC->ov66_02246B38(param1);
+    const DWCi_LobbyChannelCallbacks *v0 = sLobbyManager->FindChannel(param1);
 
-    v0->lobbyTopicChangedCallback(Unk_ov66_0225B6DC->ov66_022467D4(param1).c_str(), param2, v0->param);
+    v0->lobbyTopicChangedCallback(sLobbyManager->StripChannelPrefix(param1).c_str(), param2, v0->param);
 }
 
-static void ov66_022437FC(CHAT param0, const char *param1, CHATChannelMode *param2, void *param3)
+static void ChatChannelModeChangedCallback(CHAT param0, const char *param1, CHATChannelMode *param2, void *param3)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
-        return;
-    }
-}
-
-static void ov66_02243818(CHAT param0, const char *param1, void *param2)
-{
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 }
 
-static void ov66_02243834(CHAT param0, CHATBool param1, int param2, void *param3)
+static void ChatUserListUpdatedCallback(CHAT param0, const char *param1, void *param2)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
+        return;
+    }
+}
+
+static void ChatConnectResultCallback(CHAT param0, CHATBool param1, int param2, void *param3)
+{
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc18().UnkClass_ov66_02243B64_Sub1_InlineFunc2(0);
+    sLobbyManager->GetTimers().Remove(0);
 
     if (param1 == CHATFalse) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc13(DWCi_LOBBY_ERROR_SESSION);
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc16();
+        sLobbyManager->SetError(DWCi_LOBBY_ERROR_SESSION);
+        sLobbyManager->SetDisconnected();
     } else {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc3(DWCi_LOBBY_STATE_CONNECTINGWAIT);
+        sLobbyManager->SetState(DWCi_LOBBY_STATE_CONNECTINGWAIT);
     }
 }
 
-static void ov66_022438CC(CHAT param0, unsigned int param1, char param2[128], void *param3)
+static void ChatUniqueNickCallback(CHAT param0, unsigned int param1, char param2[128], void *param3)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    strncpy(param2, Unk_ov66_0225B6DC->ov66_02243934().c_str(), 128 - 1);
+    strncpy(param2, sLobbyManager->GetLoginName().c_str(), 128 - 1);
 }
 
-static void ov66_02243944(CHAT param0, int param1, const char *param2, int param3, const char **param4, void *param5)
+static void ChatConnectStateChangedCallback(CHAT param0, int param1, const char *param2, int param3, const char **param4, void *param5)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
     if (param1 == CHAT_IN_USE) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc5(UnkClass_ov66_02243B64::ov66_022468DC(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc4()));
-        chatRetryWithNick(param0, Unk_ov66_0225B6DC->ov66_02243B64().c_str());
+        sLobbyManager->SetNickName(DWCi_LobbyManager::MakeNickName(sLobbyManager->GetPid()));
+        chatRetryWithNick(param0, sLobbyManager->GetNickName().c_str());
     } else if (param1 == CHAT_INVALID) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc5(UnkClass_ov66_02243B64::ov66_022468DC(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc4()));
-        chatRetryWithNick(param0, Unk_ov66_0225B6DC->ov66_02243B64().c_str());
+        sLobbyManager->SetNickName(DWCi_LobbyManager::MakeNickName(sLobbyManager->GetPid()));
+        chatRetryWithNick(param0, sLobbyManager->GetNickName().c_str());
     } else if ((param1 == CHAT_UNIQUENICK_EXPIRED) || (param1 == CHAT_NO_UNIQUENICK)) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc5(UnkClass_ov66_02243B64::ov66_022468DC(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc4()));
-        chatRegisterUniqueNick(param0, 2, Unk_ov66_0225B6DC->ov66_02243B64().c_str(), "");
+        sLobbyManager->SetNickName(DWCi_LobbyManager::MakeNickName(sLobbyManager->GetPid()));
+        chatRegisterUniqueNick(param0, 2, sLobbyManager->GetNickName().c_str(), "");
     } else if (param1 == CHAT_INVALID_UNIQUENICK) {
         return;
     } else if (param1 == CHAT_NICK_TOO_LONG) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc5(UnkClass_ov66_02243B64::ov66_022468DC(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc4()));
-        chatRetryWithNick(param0, Unk_ov66_0225B6DC->ov66_02243B64().c_str());
+        sLobbyManager->SetNickName(DWCi_LobbyManager::MakeNickName(sLobbyManager->GetPid()));
+        chatRetryWithNick(param0, sLobbyManager->GetNickName().c_str());
     }
 }
 
-static void ov66_02243B74(CHAT param0, CHATBool param1, int param2, const char **param3, const char **param4, int *param5, void *param6)
+static void ChatEnumChannelsCallback(CHAT param0, CHATBool param1, int param2, const char **param3, const char **param4, int *param5, void *param6)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
-    std::vector<char *, PPW_Allocator<char *> > v0 = Unk_ov66_0225B6DC->ov66_0224680C(param2, param3);
+    std::vector<char *, PPW_Allocator<char *> > v0 = sLobbyManager->StripChannelList(param2, param3);
 
-    UnkClass_ov66_02243B74<DWCi_LobbyEnumChannelsCallback> *v1 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc1<DWCi_LobbyEnumChannelsCallback>((u32)param6);
-    v1->UnkClass_ov66_02243B74_InlineFunc0()(param1 == CHATTrue, param2, (const char **)ov66_022364B0(v0), param4, (s32 *)param5, v1->ov66_02243C74());
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().ov66_0224640C((u32)param6);
+    DWCi_LobbyTypedCallback<DWCi_LobbyEnumChannelsCallback> *v1 = sLobbyManager->GetCallbacks().Find<DWCi_LobbyEnumChannelsCallback>((u32)param6);
+    v1->Get()(param1 == CHATTrue, param2, (const char **)PPW_GetVectorData(v0), param4, (s32 *)param5, v1->GetParam());
+    sLobbyManager->GetCallbacks().Remove((u32)param6);
 }
 
-static void ov66_02243D28(CHAT param0, CHATBool param1, int param2, const char *param3, const char *param4, int param5, void *param6)
+static void ChatEnumChannelsProgressCallback(CHAT param0, CHATBool param1, int param2, const char *param3, const char *param4, int param5, void *param6)
 {
     if (!param1) {
         return;
     }
 }
 
-static void ov66_02243D30(CHAT param0, CHATBool param1, const char *param2, int param3, const char **param4, int *param5, void *param6)
+static void ChatEnumUsersCallback(CHAT param0, CHATBool param1, const char *param2, int param3, const char **param4, int *param5, void *param6)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
     std::vector<s32, PPW_Allocator<s32> > v0;
 
     if (param3 != 0) {
-        v0 = Unk_ov66_0225B6DC->ov66_02246DF0(param3, param4, param2);
+        v0 = sLobbyManager->AddUsersToChannel(param3, param4, param2);
     }
 
-    UnkClass_ov66_02243B74<DWCi_LobbyEnumUsersCallback> *v1 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc1<DWCi_LobbyEnumUsersCallback>((u32)param6);
-    v1->UnkClass_ov66_02243B74_InlineFunc0()(param1 == CHATTrue, Unk_ov66_0225B6DC->ov66_022467D4(param2).c_str(), (s32)v0.size(), ov66_022364B0(v0), v1->ov66_02243C74());
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().ov66_0224640C((u32)param6);
+    DWCi_LobbyTypedCallback<DWCi_LobbyEnumUsersCallback> *v1 = sLobbyManager->GetCallbacks().Find<DWCi_LobbyEnumUsersCallback>((u32)param6);
+    v1->Get()(param1 == CHATTrue, sLobbyManager->StripChannelPrefix(param2).c_str(), (s32)v0.size(), PPW_GetVectorData(v0), v1->GetParam());
+    sLobbyManager->GetCallbacks().Remove((u32)param6);
 }
 
-static void ov66_02243F64(CHAT param0, CHATBool param1, const char *param2, int param3, const char **param4, int *param5, void *param6)
+static void ChatEnumUsersJoinCallback(CHAT param0, CHATBool param1, const char *param2, int param3, const char **param4, int *param5, void *param6)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
     if (param1 == CHATTrue) {
-        Unk_ov66_0225B6DC->ov66_02246DF0(param3, param4, param2);
+        sLobbyManager->AddUsersToChannel(param3, param4, param2);
     }
 
-    Unk_ov66_0225B6DC->ov66_022476C8(param2);
+    sLobbyManager->SetChannelJoined(param2);
 
-    const UnkClass_ov66_02243B74<DWCi_LobbyJoinChannelCallback> *v0 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc1<DWCi_LobbyJoinChannelCallback>((u32)param6);
-    v0->UnkClass_ov66_02243B74_InlineFunc0()(param1 == CHATTrue, DWCi_LOBBY_ENTER_RESULT_SUCCESS, Unk_ov66_0225B6DC->ov66_022467D4(param2).c_str(), v0->ov66_02243C74());
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().ov66_0224640C((u32)param6);
+    const DWCi_LobbyTypedCallback<DWCi_LobbyJoinChannelCallback> *v0 = sLobbyManager->GetCallbacks().Find<DWCi_LobbyJoinChannelCallback>((u32)param6);
+    v0->Get()(param1 == CHATTrue, DWCi_LOBBY_ENTER_RESULT_SUCCESS, sLobbyManager->StripChannelPrefix(param2).c_str(), v0->GetParam());
+    sLobbyManager->GetCallbacks().Remove((u32)param6);
 
     if (param1 == CHATFalse) {
-        DWCi_LobbyLeaveChannel(Unk_ov66_0225B6DC->ov66_022467D4(param2).c_str());
+        DWCi_LobbyLeaveChannel(sLobbyManager->StripChannelPrefix(param2).c_str());
     }
 }
 
-static void ov66_0224413C(CHAT param0, CHATBool param1, CHATEnterResult param2, const char *param3, void *param4)
+static void ChatEnterChannelCallback(CHAT param0, CHATBool param1, CHATEnterResult param2, const char *param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
     if (param1 == CHATTrue) {
-        s32 v0 = Unk_ov66_0225B6DC->ov66_02247704(param3);
+        s32 v0 = sLobbyManager->GetChannelLimit(param3);
 
         if (v0 != 0) {
-            s32 v1 = chatGetChannelNumUsers(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), param3);
+            s32 v1 = chatGetChannelNumUsers(sLobbyManager->GetChatSession(), param3);
 
             if (v0 == -1) {
                 param1 = CHATFalse;
@@ -344,26 +344,26 @@ static void ov66_0224413C(CHAT param0, CHATBool param1, CHATEnterResult param2, 
                 param1 = CHATFalse;
                 param2 = CHATChannelIsFull;
             } else {
-                chatSetChannelLimit(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), param3, v0);
+                chatSetChannelLimit(sLobbyManager->GetChatSession(), param3, v0);
             }
         }
     }
 
     if (param1 == CHATTrue) {
-        Unk_ov66_0225B6DC->ov66_02246C2C(Unk_ov66_0225B6DC->ov66_02243B64(), param3);
-        chatEnumUsers(param0, param3, ov66_02243F64, param4, CHATFalse);
+        sLobbyManager->AddUserToChannel(sLobbyManager->GetNickName(), param3);
+        chatEnumUsers(param0, param3, ChatEnumUsersJoinCallback, param4, CHATFalse);
     } else {
-        DWCi_LobbyLeaveChannel(Unk_ov66_0225B6DC->ov66_022467D4(param3).c_str());
+        DWCi_LobbyLeaveChannel(sLobbyManager->StripChannelPrefix(param3).c_str());
 
-        const UnkClass_ov66_02243B74<DWCi_LobbyJoinChannelCallback> *v2 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc1<DWCi_LobbyJoinChannelCallback>((u32)param4);
-        v2->UnkClass_ov66_02243B74_InlineFunc0()(FALSE, (DWCi_LOBBY_ENTER_RESULT)param2, Unk_ov66_0225B6DC->ov66_022467D4(param3).c_str(), v2->ov66_02243C74());
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().ov66_0224640C((u32)param4);
+        const DWCi_LobbyTypedCallback<DWCi_LobbyJoinChannelCallback> *v2 = sLobbyManager->GetCallbacks().Find<DWCi_LobbyJoinChannelCallback>((u32)param4);
+        v2->Get()(FALSE, (DWCi_LOBBY_ENTER_RESULT)param2, sLobbyManager->StripChannelPrefix(param3).c_str(), v2->GetParam());
+        sLobbyManager->GetCallbacks().Remove((u32)param4);
     }
 }
 
-static void ov66_0224439C(CHAT param0, CHATBool param1, const char *param2, const char *param3, int param4, const char **param5, const char **param6, void *param7)
+static void ChatGetChannelKeysCallback(CHAT param0, CHATBool param1, const char *param2, const char *param3, int param4, const char **param5, const char **param6, void *param7)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
@@ -374,12 +374,12 @@ static void ov66_0224439C(CHAT param0, CHATBool param1, const char *param2, cons
     s32 v0;
 
     if (param3) {
-        v0 = Unk_ov66_0225B6DC->ov66_022474F4(param3);
+        v0 = sLobbyManager->FindPidByNick(param3);
     } else {
         v0 = DWC_LOBBY_INVALID_USER_ID;
     }
 
-    UnkClass_ov66_02243B74<DWCi_LobbyGetChannelDataCallback> *v1 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc1<DWCi_LobbyGetChannelDataCallback>((u32)param7);
+    DWCi_LobbyTypedCallback<DWCi_LobbyGetChannelDataCallback> *v1 = sLobbyManager->GetCallbacks().Find<DWCi_LobbyGetChannelDataCallback>((u32)param7);
 
     char *v2 = NULL;
     char *v3 = NULL;
@@ -387,86 +387,86 @@ static void ov66_0224439C(CHAT param0, CHATBool param1, const char *param2, cons
         v2 = (char *)param5[0];
         v3 = (char *)param6[0];
     }
-    v1->UnkClass_ov66_02243B74_InlineFunc0()(param1 == CHATTrue, Unk_ov66_0225B6DC->ov66_022467D4(param2).c_str(), v0, v2, v3, v1->ov66_02243C74());
+    v1->Get()(param1 == CHATTrue, sLobbyManager->StripChannelPrefix(param2).c_str(), v0, v2, v3, v1->GetParam());
 
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().ov66_0224640C((u32)param7);
+    sLobbyManager->GetCallbacks().Remove((u32)param7);
 }
 
-static void ov66_02244528(CHAT param0, const char *param1, const char *param2, const char *param3, const char *param4, void *param5)
+static void ChatBroadcastKeyChangedCallback(CHAT param0, const char *param1, const char *param2, const char *param3, const char *param4, void *param5)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
     s32 v0;
 
     if (param2) {
-        v0 = Unk_ov66_0225B6DC->ov66_022474F4(param2);
+        v0 = sLobbyManager->FindPidByNick(param2);
     } else {
         v0 = DWC_LOBBY_INVALID_USER_ID;
     }
 
-    const DWCi_LobbyChannelCallbacks *v1 = Unk_ov66_0225B6DC->ov66_02246B38(param1);
+    const DWCi_LobbyChannelCallbacks *v1 = sLobbyManager->FindChannel(param1);
 
-    v1->lobbyBroadcastDataCallback(Unk_ov66_0225B6DC->ov66_022467D4(param1).c_str(), v0, param3, param4, v1->param);
+    v1->lobbyBroadcastDataCallback(sLobbyManager->StripChannelPrefix(param1).c_str(), v0, param3, param4, v1->param);
 }
 
-static void ov66_02244620(CHAT param0, CHATBool param1, const char *param2, CHATChannelMode *param3, void *param4)
+static void ChatGetChannelModeCallback(CHAT param0, CHATBool param1, const char *param2, CHATChannelMode *param3, void *param4)
 {
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return;
     }
 
     if (param1) {
-        ov66_022437FC(param0, param2, param3, param4);
+        ChatChannelModeChangedCallback(param0, param2, param3, param4);
     } else {
         return;
     }
 
-    UnkClass_ov66_02243B74<DWCi_LobbyGetChannelModeCallback> *v0 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc1<DWCi_LobbyGetChannelModeCallback>((u32)param4);
-    v0->UnkClass_ov66_02243B74_InlineFunc0()(param1 == CHATTrue, Unk_ov66_0225B6DC->ov66_022467D4(param2).c_str(), (DWCi_LobbyChannelMode *)param3, v0->ov66_02243C74());
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().ov66_0224640C((u32)param4);
+    DWCi_LobbyTypedCallback<DWCi_LobbyGetChannelModeCallback> *v0 = sLobbyManager->GetCallbacks().Find<DWCi_LobbyGetChannelModeCallback>((u32)param4);
+    v0->Get()(param1 == CHATTrue, sLobbyManager->StripChannelPrefix(param2).c_str(), (DWCi_LobbyChannelMode *)param3, v0->GetParam());
+    sLobbyManager->GetCallbacks().Remove((u32)param4);
 }
 
-static BOOL ov66_02244758(void *param0)
+static BOOL ChatConnectTimeoutCallback(void *param0)
 {
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc13(DWCi_LOBBY_ERROR_SESSION);
+    sLobbyManager->SetError(DWCi_LOBBY_ERROR_SESSION);
 
     return FALSE;
 }
 
 DWCi_LOBBY_STATE DWCi_LobbyProcess()
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_STATE_NOTINITIALIZED;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_STATE_ERROR;
     }
 
-    if (Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0()) {
-        chatThink(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0());
+    if (sLobbyManager->GetChatSession()) {
+        chatThink(sLobbyManager->GetChatSession());
     }
 
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc19();
+    sLobbyManager->UpdateTimers();
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_STATE_ERROR;
     }
 
-    if (Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc9() >= 3) {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc10();
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc13(DWCi_LOBBY_ERROR_SESSION);
-        return Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2();
+    if (sLobbyManager->GetRetryCount() >= 3) {
+        sLobbyManager->ClearRetryCount();
+        sLobbyManager->SetError(DWCi_LOBBY_ERROR_SESSION);
+        return sLobbyManager->GetState();
     }
 
-    switch (Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2()) {
+    switch (sLobbyManager->GetState()) {
     case DWCi_LOBBY_STATE_NOTINITIALIZED:
     case DWCi_LOBBY_STATE_CONNECTING:
         break;
     case DWCi_LOBBY_STATE_CONNECTINGWAIT:
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc14();
+        sLobbyManager->UpdateConnectingWait();
         break;
     case DWCi_LOBBY_STATE_CONNECTED:
     case DWCi_LOBBY_STATE_CLOSING:
@@ -474,16 +474,16 @@ DWCi_LOBBY_STATE DWCi_LobbyProcess()
         break;
     }
 
-    return Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2();
+    return sLobbyManager->GetState();
 }
 
 DWCi_LOBBY_ERROR DWCi_LobbyGetLastError()
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_ERROR_NONE;
     }
 
-    return Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc12();
+    return sLobbyManager->GetLastError();
 }
 
 s32 DWCi_LobbyToErrorCode(DWCi_LOBBY_ERROR err)
@@ -493,63 +493,63 @@ s32 DWCi_LobbyToErrorCode(DWCi_LOBBY_ERROR err)
 
 BOOL DWCi_LobbyInChannel(const char *channelName)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return FALSE;
     }
 
-    return chatInChannel(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str()) == CHATTrue;
+    return chatInChannel(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str()) == CHATTrue;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbyInitializePidAsync(const char *gameName, const char *secretKey, DWC_LOBBY_CHANNEL_PREFIX prefix, const DWCi_LobbyGlobalCallbacks *globalCallbacks, s32 pid)
 {
-    if (Unk_ov66_0225B6DC) {
+    if (sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    PPWString v0(UnkClass_ov66_02243B64::ov66_022468DC(pid));
+    PPWString v0(DWCi_LobbyManager::MakeNickName(pid));
     PPWString v1("DWCUser");
     PPWString v2("DWCName");
     CHAT v3 = NULL;
 
-    Unk_ov66_0225B6DC = new UnkClass_ov66_02243B64(gameName, secretKey, prefix, pid, v0, v1, v2, globalCallbacks);
-    if (!Unk_ov66_0225B6DC) {
+    sLobbyManager = new DWCi_LobbyManager(gameName, secretKey, prefix, pid, v0, v1, v2, globalCallbacks);
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_ALLOC;
     }
 
     DWCi_LOBBY_RESULT v4 = DWCi_LOBBY_RESULT_SUCCESS;
 
-    if (!ov66_02246368(Unk_ov66_0225B6DC)) {
+    if (!DWCi_LobbySetupNewHandler(sLobbyManager)) {
         v4 = DWCi_LOBBY_RESULT_ERROR_ALLOC;
         goto ERROR_ALLOC;
     }
 
     chatGlobalCallbacks gsGlobalCallbacks;
     MI_CpuClear8(&gsGlobalCallbacks, sizeof(chatGlobalCallbacks));
-    gsGlobalCallbacks.raw = ov66_02242C08;
-    gsGlobalCallbacks.disconnected = ov66_02242C24;
-    gsGlobalCallbacks.privateMessage = ov66_02242CE0;
-    gsGlobalCallbacks.invited = ov66_022430D0;
+    gsGlobalCallbacks.raw = ChatRawCallback;
+    gsGlobalCallbacks.disconnected = ChatDisconnectedCallback;
+    gsGlobalCallbacks.privateMessage = ChatPrivateMessageCallback;
+    gsGlobalCallbacks.invited = ChatInvitedCallback;
     gsGlobalCallbacks.param = globalCallbacks->param;
 
-    v3 = chatConnectSecure((Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc7() + "." + DWCi_LOBBY_SERVER_DOMAIN).c_str(), 6667, Unk_ov66_0225B6DC->ov66_02243B64().c_str(), Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc6().c_str(), Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc7().c_str(), Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc8().c_str(), &gsGlobalCallbacks, ov66_02243944, ov66_022438CC, ov66_02243834, globalCallbacks->param, CHATFalse);
+    v3 = chatConnectSecure((sLobbyManager->GetGameName() + "." + DWCi_LOBBY_SERVER_DOMAIN).c_str(), 6667, sLobbyManager->GetNickName().c_str(), sLobbyManager->GetUserName().c_str(), sLobbyManager->GetGameName().c_str(), sLobbyManager->GetSecretKey().c_str(), &gsGlobalCallbacks, ChatConnectStateChangedCallback, ChatUniqueNickCallback, ChatConnectResultCallback, globalCallbacks->param, CHATFalse);
     if (!v3) {
         v4 = DWCi_LOBBY_RESULT_ERROR_SESSION;
         goto ERROR_ALLOC;
     }
 
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc1(v3);
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc3(DWCi_LOBBY_STATE_CONNECTING);
+    sLobbyManager->SetChatSession(v3);
+    sLobbyManager->SetState(DWCi_LOBBY_STATE_CONNECTING);
 
-    Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc18().UnkClass_ov66_02243B64_Sub1_InlineFunc0(0, 30, ov66_02244758, Unk_ov66_0225B6DC, FALSE);
+    sLobbyManager->GetTimers().Add(0, 30, ChatConnectTimeoutCallback, sLobbyManager, FALSE);
 
     return DWCi_LOBBY_RESULT_SUCCESS;
 
 ERROR_ALLOC:
-    ov66_022463D8();
+    DWCi_LobbyShutdownNewHandler();
 
-    if (Unk_ov66_0225B6DC) {
-        delete Unk_ov66_0225B6DC;
-        Unk_ov66_0225B6DC = NULL;
+    if (sLobbyManager) {
+        delete sLobbyManager;
+        sLobbyManager = NULL;
     }
 
     return v4;
@@ -557,25 +557,25 @@ ERROR_ALLOC:
 
 DWCi_LOBBY_RESULT DWCi_LobbyShutdownAsync()
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_SUCCESS;
     }
 
-    if (Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_CLOSING) {
+    if (sLobbyManager->GetState() == DWCi_LOBBY_STATE_CLOSING) {
         return DWCi_LOBBY_RESULT_SUCCESS;
     }
 
-    ov66_022463D8();
+    DWCi_LobbyShutdownNewHandler();
 
-    if (Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc15()) {
-        chatDisconnect(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0());
-        if (Unk_ov66_0225B6DC) {
-            delete Unk_ov66_0225B6DC;
-            Unk_ov66_0225B6DC = NULL;
+    if (sLobbyManager->IsDisconnected()) {
+        chatDisconnect(sLobbyManager->GetChatSession());
+        if (sLobbyManager) {
+            delete sLobbyManager;
+            sLobbyManager = NULL;
         }
     } else {
-        Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc3(DWCi_LOBBY_STATE_CLOSING);
-        chatDisconnect(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0());
+        sLobbyManager->SetState(DWCi_LOBBY_STATE_CLOSING);
+        chatDisconnect(sLobbyManager->GetChatSession());
     }
 
     return DWCi_LOBBY_RESULT_SUCCESS;
@@ -583,75 +583,75 @@ DWCi_LOBBY_RESULT DWCi_LobbyShutdownAsync()
 
 DWCi_LOBBY_RESULT DWCi_LobbyJoinChannelLimitAsync(const char *channelName, const char *password, s32 limit, const DWCi_LobbyChannelCallbacks *channelCallbacks, DWCi_LobbyJoinChannelCallback callback, void *param)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
     BOOL unused = strlen(channelName) + 1 > DWC_LOBBY_MAX_CHANNEL_NAME_SIZE;
 
-    u32 v0 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc0(callback, param);
+    u32 v0 = sLobbyManager->GetCallbacks().Add(callback, param);
 
-    Unk_ov66_0225B6DC->ov66_022469C8(Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), *channelCallbacks, limit);
+    sLobbyManager->AddChannel(sLobbyManager->MakeFullChannelName(channelName).c_str(), *channelCallbacks, limit);
 
     chatChannelCallbacks v1;
     MI_CpuClear8(&v1, sizeof(chatChannelCallbacks));
-    v1.channelMessage = ov66_022430EC;
-    v1.channelModeChanged = ov66_022437FC;
-    v1.kicked = ov66_022431E0;
-    v1.topicChanged = ov66_02243744;
-    v1.userParted = ov66_022434D0;
-    v1.userJoined = ov66_02243234;
-    v1.userListUpdated = ov66_02243818;
-    v1.userModeChanged = ov66_02243670;
-    v1.userChangedNick = ov66_022435FC;
-    v1.broadcastKeyChanged = ov66_02244528;
+    v1.channelMessage = ChatChannelMessageCallback;
+    v1.channelModeChanged = ChatChannelModeChangedCallback;
+    v1.kicked = ChatKickedCallback;
+    v1.topicChanged = ChatTopicChangedCallback;
+    v1.userParted = ChatUserPartedCallback;
+    v1.userJoined = ChatUserJoinedCallback;
+    v1.userListUpdated = ChatUserListUpdatedCallback;
+    v1.userModeChanged = ChatUserModeChangedCallback;
+    v1.userChangedNick = ChatUserChangedNickCallback;
+    v1.broadcastKeyChanged = ChatBroadcastKeyChangedCallback;
     v1.param = (void *)channelCallbacks->param;
 
-    chatEnterChannel(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), password, &v1, ov66_0224413C, (void *)v0, CHATFalse);
+    chatEnterChannel(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), password, &v1, ChatEnterChannelCallback, (void *)v0, CHATFalse);
 
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbyLeaveChannel(const char *channelName)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    chatLeaveChannel(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), NULL);
+    chatLeaveChannel(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), NULL);
 
-    Unk_ov66_0225B6DC->ov66_02247258(Unk_ov66_0225B6DC->ov66_022467C4(channelName));
+    sLobbyManager->RemoveChannel(sLobbyManager->MakeFullChannelName(channelName));
 
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbySendChannelMessage(const char *channelName, const char *message)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
@@ -659,21 +659,21 @@ DWCi_LOBBY_RESULT DWCi_LobbySendChannelMessage(const char *channelName, const ch
         return DWCi_LOBBY_RESULT_ERROR_PARAM;
     }
 
-    chatSendChannelMessage(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), message, CHAT_UTM);
+    chatSendChannelMessage(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), message, CHAT_UTM);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbySendUserMessage(s32 userId, const char *message)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
@@ -681,26 +681,26 @@ DWCi_LOBBY_RESULT DWCi_LobbySendUserMessage(s32 userId, const char *message)
         return DWCi_LOBBY_RESULT_ERROR_PARAM;
     }
 
-    PPWString v0 = Unk_ov66_0225B6DC->ov66_02247578(userId);
+    PPWString v0 = sLobbyManager->FindNickByPid(userId);
     if (v0 == "") {
         return DWCi_LOBBY_RESULT_ERROR_PARAM;
     }
 
-    chatSendUserMessage(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), v0.c_str(), message, CHAT_UTM);
+    chatSendUserMessage(sLobbyManager->GetChatSession(), v0.c_str(), message, CHAT_UTM);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbySetChannelData(const char *channelName, s32 userId, const char *key, const char *value)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
@@ -712,27 +712,27 @@ DWCi_LOBBY_RESULT DWCi_LobbySetChannelData(const char *channelName, s32 userId, 
     if (userId == DWC_LOBBY_INVALID_USER_ID) {
         v0 = "";
     } else {
-        v0 = Unk_ov66_0225B6DC->ov66_02247578(userId);
+        v0 = sLobbyManager->FindNickByPid(userId);
         if (v0 == "") {
             return DWCi_LOBBY_RESULT_ERROR_PARAM;
         }
     }
 
-    chatSetChannelKeys(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), v0.c_str(), 1, &key, &value);
+    chatSetChannelKeys(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), v0.c_str(), 1, &key, &value);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbyGetChannelDataAsync(const char *channelName, s32 userId, const char *key, DWCi_LobbyGetChannelDataCallback callback, void *param)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
@@ -744,96 +744,96 @@ DWCi_LOBBY_RESULT DWCi_LobbyGetChannelDataAsync(const char *channelName, s32 use
     if (userId == DWC_LOBBY_INVALID_USER_ID) {
         v0 = "";
     } else {
-        v0 = Unk_ov66_0225B6DC->ov66_02247578(userId);
+        v0 = sLobbyManager->FindNickByPid(userId);
         if (v0 == "") {
             return DWCi_LOBBY_RESULT_ERROR_PARAM;
         }
     }
 
-    u32 v1 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc0(callback, param);
+    u32 v1 = sLobbyManager->GetCallbacks().Add(callback, param);
 
-    chatGetChannelKeys(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), v0.c_str(), 1, &key, ov66_0224439C, (void *)v1, CHATFalse);
+    chatGetChannelKeys(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), v0.c_str(), 1, &key, ChatGetChannelKeysCallback, (void *)v1, CHATFalse);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbyEnumChannelsAsync(const char *filter, DWCi_LobbyEnumChannelsCallback callback, void *param)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    u32 v0 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc0(callback, param);
+    u32 v0 = sLobbyManager->GetCallbacks().Add(callback, param);
 
-    chatEnumChannels(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(filter).c_str(), ov66_02243D28, ov66_02243B74, reinterpret_cast<void *>(v0), CHATFalse);
+    chatEnumChannels(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(filter).c_str(), ChatEnumChannelsProgressCallback, ChatEnumChannelsCallback, reinterpret_cast<void *>(v0), CHATFalse);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbyEnumUsersAsync(const char *channelName, DWCi_LobbyEnumUsersCallback callback, void *param)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (!chatInChannel(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str())) {
+    if (!chatInChannel(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str())) {
         return DWCi_LOBBY_RESULT_ERROR_CHANNEL;
     }
 
-    u32 v0 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc0(callback, param);
+    u32 v0 = sLobbyManager->GetCallbacks().Add(callback, param);
 
-    chatEnumUsers(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), ov66_02243D30, reinterpret_cast<void *>(v0), CHATFalse);
+    chatEnumUsers(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), ChatEnumUsersCallback, reinterpret_cast<void *>(v0), CHATFalse);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbySetChannelMode(const char *channelName, const DWCi_LobbyChannelMode *mode)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    chatSetChannelMode(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), (CHATChannelMode *)mode);
+    chatSetChannelMode(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), (CHATChannelMode *)mode);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
 
 DWCi_LOBBY_RESULT DWCi_LobbyGetChannelModeAsync(const char *channelName, DWCi_LobbyGetChannelModeCallback callback, void *param)
 {
-    if (!Unk_ov66_0225B6DC) {
+    if (!sLobbyManager) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() == DWCi_LOBBY_STATE_ERROR) {
+    if (sLobbyManager && sLobbyManager->GetState() == DWCi_LOBBY_STATE_ERROR) {
         return DWCi_LOBBY_RESULT_ERROR_CONDITION;
     }
 
-    if (Unk_ov66_0225B6DC && Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc2() != DWCi_LOBBY_STATE_CONNECTED) {
+    if (sLobbyManager && sLobbyManager->GetState() != DWCi_LOBBY_STATE_CONNECTED) {
         return DWCi_LOBBY_RESULT_ERROR_STATE;
     }
 
-    u32 v0 = Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc17().UnkClass_ov66_0224640C_InlineFunc0(callback, param);
+    u32 v0 = sLobbyManager->GetCallbacks().Add(callback, param);
 
-    chatGetChannelMode(Unk_ov66_0225B6DC->UnkClass_ov66_02243B64_InlineFunc0(), Unk_ov66_0225B6DC->ov66_022467C4(channelName).c_str(), ov66_02244620, reinterpret_cast<void *>(v0), CHATFalse);
+    chatGetChannelMode(sLobbyManager->GetChatSession(), sLobbyManager->MakeFullChannelName(channelName).c_str(), ChatGetChannelModeCallback, reinterpret_cast<void *>(v0), CHATFalse);
     return DWCi_LOBBY_RESULT_SUCCESS;
 }
