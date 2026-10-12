@@ -11,7 +11,7 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/hblank_system.h"
+#include "fieldmap/hblank_system.h"
 #include "underground/manager.h"
 #include "underground/menus.h"
 #include "underground/player.h"

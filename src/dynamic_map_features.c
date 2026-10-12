@@ -7,7 +7,7 @@
 #include "generated/map_headers.h"
 
 #include "field/field_system.h"
-#include "overlay005/villa_furniture.h"
+#include "fieldmap/villa_furniture.h"
 #include "field_events/great_marsh_tram.h"
 #include "gym_features/gym_features.h"
 #include "distortion_world/distortion_world.h"

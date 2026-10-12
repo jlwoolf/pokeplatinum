@@ -13,10 +13,10 @@
 #include "functypes/funcptr_020EDF0C.h"
 #include "functypes/funcptr_020EDF0C_1.h"
 #include "functypes/funcptr_020EDF0C_2.h"
-#include "overlay005/object_event_gfx_data.h"
-#include "overlay005/ov5_021ECC20.h"
-#include "overlay005/ov5_021ECE40.h"
-#include "overlay005/struct_ov5_021ED0A4.h"
+#include "fieldmap/object_event_gfx_data.h"
+#include "fieldmap/fieldmap_021ECC20.h"
+#include "fieldmap/fieldmap_021ECE40.h"
+#include "fieldmap/struct_fieldmap_021ED0A4.h"
 
 #include "berry_patch_graphics.h"
 #include "heap.h"
@@ -44,7 +44,7 @@ typedef struct MapObjectManager {
     int taskBasePriority;
     int unk_10;
     NARC *narc;
-    UnkStruct_ov5_021ED0A4 drawManager;
+    UnkStruct_fieldmap_021ED0A4 drawManager;
     UnkStruct_02061830_sub1 *unk_120;
     MapObject *mapObj;
     FieldSystem *fieldSystem;
@@ -209,7 +209,7 @@ void MapObjectMan_UpdateObjectsForMapChange(MapObjectManager *mapObjMan, enum Ma
         maxObjects--;
     }
 
-    ov5_021EDA38(mapObjMan, MapObjectMan_GetDrawManager(mapObjMan));
+    FieldMap_021EDA38(mapObjMan, MapObjectMan_GetDrawManager(mapObjMan));
 }
 
 static MapObjectManager *MapObjectMan_Alloc(int maxObjs)
@@ -951,7 +951,7 @@ static void MapObject_RefreshDraw(MapObject *mapObj)
 
     MapObject_RecalculateHeightIfNeeded(mapObj);
     MapObject_SetUnkA0(mapObj, 0);
-    ov5_021EDD78(mapObj, 0);
+    FieldMap_021EDD78(mapObj, 0);
 
     if (MapObject_CheckStatus14(mapObj) == FALSE) {
         MapObject_LoadRendererCallbacks(mapObj);
@@ -1113,7 +1113,7 @@ int MapObjectMan_GetTaskBasePriority(const MapObjectManager *mapObjMan)
     return mapObjMan->taskBasePriority;
 }
 
-UnkStruct_ov5_021ED0A4 *MapObjectMan_GetDrawManager(const MapObjectManager *mapObjMan)
+UnkStruct_fieldmap_021ED0A4 *MapObjectMan_GetDrawManager(const MapObjectManager *mapObjMan)
 {
     return &(((MapObjectManager *)mapObjMan)->drawManager);
 }

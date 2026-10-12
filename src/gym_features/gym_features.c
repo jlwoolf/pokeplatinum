@@ -19,16 +19,16 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/dynamic_terrain_height.h"
-#include "overlay005/field_effect_manager.h"
-#include "overlay005/fog_manager.h"
-#include "overlay005/land_data.h"
-#include "overlay005/map_prop.h"
-#include "overlay005/map_prop_animation.h"
-#include "overlay005/ov5_021F4018.h"
-#include "overlay005/ov5_021F47B0.h"
-#include "overlay005/ov5_021F5A10.h"
-#include "overlay005/veilstone_gym_object_renderer.h"
+#include "fieldmap/dynamic_terrain_height.h"
+#include "fieldmap/field_effect_manager.h"
+#include "fieldmap/fog_manager.h"
+#include "fieldmap/land_data.h"
+#include "fieldmap/map_prop.h"
+#include "fieldmap/map_prop_animation.h"
+#include "fieldmap/fieldmap_021F4018.h"
+#include "fieldmap/fieldmap_021F47B0.h"
+#include "fieldmap/fieldmap_021F5A10.h"
+#include "fieldmap/veilstone_gym_object_renderer.h"
 
 #include "badges.h"
 #include "bg_window.h"
@@ -2520,7 +2520,7 @@ void EternaGym_DynamicMapFeaturesInit(FieldSystem *fieldSystem)
     EternaGym_UpdateClockHandPositions(gymSystem);
 
     if (eternaClockPersisted->state < ETERNA_CLOCK_DEFEATED_THIRD_TRAINER) {
-        ov5_021F4098(fieldSystem, v8[eternaClockPersisted->state]);
+        FieldMap_021F4098(fieldSystem, v8[eternaClockPersisted->state]);
     }
 }
 
@@ -2852,9 +2852,9 @@ static BOOL FieldTask_EternaGym_AdvanceClockState(FieldTask *task)
             clockMan->stateDelay = 0;
 
             if (eternaClockPersisted->state == ETERNA_CLOCK_DEFEATED_SECOND_TRAINER) {
-                ov5_021F416C(fieldSystem, 1);
+                FieldMap_021F416C(fieldSystem, 1);
             } else if (eternaClockPersisted->state == ETERNA_CLOCK_DEFEATED_THIRD_TRAINER) {
-                ov5_021F416C(fieldSystem, 0);
+                FieldMap_021F416C(fieldSystem, 0);
             }
 
             Sound_PlayEffect(SEQ_SE_DP_T_AME_sseq);
@@ -3798,7 +3798,7 @@ void HearthomeGym_DynamicMapFeaturesInit(FieldSystem *fieldSystem)
 
     MapObject_ChangeGraphics(playerObj, graphicsID);
 
-    ov5_021F5AA4(fieldSystem, TRUE);
+    FieldMap_021F5AA4(fieldSystem, TRUE);
     HearthomeGym_InitTrainers(gymSystem);
 
     int i = 0;
@@ -3854,7 +3854,7 @@ void HearthomeGym_DynamicMapFeaturesInit(FieldSystem *fieldSystem)
             door++;
         }
 
-        ov5_021F4CEC(fieldSystem->fieldEffMan, features->clueX, features->clueZ, features->correctDoorID);
+        FieldMap_021F4CEC(fieldSystem->fieldEffMan, features->clueX, features->clueZ, features->correctDoorID);
     }
 
     gymSystem->emptyTask = SysTask_Start(HearthomeGym_EmptyTask, gymSystem, 0);
@@ -3926,7 +3926,7 @@ static void HearthomeGym_InitTrainers(HearthomeGymSystem *gymSystem)
                 trainer->unk_08 = 2;
             }
 
-            trainer->animMan = ov5_021F4840(gymSystem->fieldSystem->fieldEffMan, trainerObj, trainer->unk_08, 3);
+            trainer->animMan = FieldMap_021F4840(gymSystem->fieldSystem->fieldEffMan, trainerObj, trainer->unk_08, 3);
             trainer->emptyTask = SysTask_Start(HearthomeGym_EmptyTrainerTask, trainer, taskPriority);
             GF_ASSERT(trainer->emptyTask);
 

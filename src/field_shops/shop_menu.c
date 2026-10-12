@@ -11,8 +11,8 @@
 
 #include "applications/capsule_menu/main.h"
 #include "field/field_system.h"
-#include "overlay005/fieldmap.h"
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/fieldmap.h"
+#include "fieldmap/sprite_resource_manager.h"
 
 #include "bag.h"
 #include "bag_context.h"

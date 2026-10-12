@@ -12,10 +12,10 @@
 #include "struct_defs/player_data.h"
 
 #include "field/field_system.h"
-#include "overlay005/map_name_popup.h"
-#include "overlay005/ov5_021E135C.h"
-#include "overlay005/save_info_window.h"
-#include "overlay005/struct_ov5_021D432C_decl.h"
+#include "fieldmap/map_name_popup.h"
+#include "fieldmap/fieldmap_021E135C.h"
+#include "fieldmap/save_info_window.h"
+#include "fieldmap/struct_fieldmap_021D432C_decl.h"
 #include "field_events/field_warp.h"
 #include "field_events/hm_cut_in.h"
 #include "underground/comm_manager.h"
@@ -87,7 +87,7 @@ FS_EXTERN_OVERLAY(underground);
 typedef struct MapChangeData {
     int state;
     Location nextLocation;
-    UnkStruct_ov5_021D432C *unk_18; // unused
+    UnkStruct_fieldmap_021D432C *unk_18; // unused
 } MapChangeData;
 
 // Task environment for the lightweight map change used when moving between
@@ -103,7 +103,7 @@ typedef struct MapChangeFlyData {
     int state;
     SysTask *task;
     Location location;
-    UnkStruct_ov5_021D432C *unk_1C; // unused
+    UnkStruct_fieldmap_021D432C *unk_1C; // unused
 } MapChangeFlyData;
 
 // Task environment for recovering from an error (e.g. a corrupted save) by

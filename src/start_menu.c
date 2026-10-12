@@ -21,9 +21,9 @@
 #include "applications/pokemon_summary_screen/main.h"
 #include "applications/town_map/main.h"
 #include "field/field_system.h"
-#include "overlay005/fieldmap.h"
-#include "overlay005/save_info_window.h"
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/fieldmap.h"
+#include "fieldmap/save_info_window.h"
+#include "fieldmap/sprite_resource_manager.h"
 
 #include "appearance.h"
 #include "bag.h"

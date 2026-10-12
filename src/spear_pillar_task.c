@@ -7,7 +7,7 @@
 #include "struct_defs/struct_0209862C.h"
 
 #include "field/field_system.h"
-#include "overlay005/fieldmap.h"
+#include "fieldmap/fieldmap.h"
 #include "spear_pillar/spear_pillar.h"
 
 #include "field_system.h"

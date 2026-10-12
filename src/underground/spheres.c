@@ -7,7 +7,7 @@
 #include "generated/sphere_types.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021F575C.h"
+#include "fieldmap/fieldmap_021F575C.h"
 #include "underground/manager.h"
 #include "underground/menus.h"
 #include "underground/mining.h"
@@ -154,7 +154,7 @@ void Spheres_AdvanceBuriedSphereSparkleTimer(void)
         int z = Spheres_GetBuriedSphereZCoordAtIndex(index);
 
         if (x != 0 && z != 0) {
-            ov5_DisplayBuriedSphereSparkle(spheresEnv->fieldSystem, x, z);
+            FieldMap_DisplayBuriedSphereSparkle(spheresEnv->fieldSystem, x, z);
         }
     }
 }
@@ -385,7 +385,7 @@ void Spheres_TryBurySphere(enum SphereType sphereType, int sphereSize, int x, in
         SystemFlag_SetSphereAcquired(SaveData_GetVarsFlags(spheresEnv->fieldSystem->saveData));
         GameRecords_IncrementRecordValue(SaveData_GetGameRecords(spheresEnv->fieldSystem->saveData), RECORD_SPHERES_BURIED);
 
-        ov5_DisplayBuriedSphereSparkle(spheresEnv->fieldSystem, x, z);
+        FieldMap_DisplayBuriedSphereSparkle(spheresEnv->fieldSystem, x, z);
     }
 }
 

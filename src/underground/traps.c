@@ -9,9 +9,9 @@
 #include "generated/traps.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021EAFA4.h"
-#include "overlay005/ov5_021F4E08.h"
-#include "overlay005/ov5_021F55CC.h"
+#include "fieldmap/fieldmap_021EAFA4.h"
+#include "fieldmap/fieldmap_021F4E08.h"
+#include "fieldmap/fieldmap_021F55CC.h"
 #include "underground/manager.h"
 #include "underground/menus.h"
 #include "underground/mining.h"
@@ -864,7 +864,7 @@ void TrapsEnv_Init(void *dest, FieldSystem *fieldSystem)
         trapsEnv->helpedNetIDs[netID] = NETID_NONE;
     }
 
-    fieldSystem->unk_8C = ov5_021EB0C8(fieldSystem->camera);
+    fieldSystem->unk_8C = FieldMap_021EB0C8(fieldSystem->camera);
 
     Traps_InitRadarSpriteResources();
     Traps_LoadCurrentPlayerPlacedTraps();
@@ -872,7 +872,7 @@ void TrapsEnv_Init(void *dest, FieldSystem *fieldSystem)
 
 void Traps_DisableTrapGraphics(void)
 {
-    ov5_021EB184(&trapsEnv->fieldSystem->unk_8C);
+    FieldMap_021EB184(&trapsEnv->fieldSystem->unk_8C);
     Traps_DeleteRadarSpriteResources();
     Traps_StopAllLinkSpinTasks();
 
@@ -897,7 +897,7 @@ void Traps_DisableTrapGraphics(void)
 
 void Traps_EnableTrapGraphics(void)
 {
-    trapsEnv->fieldSystem->unk_8C = ov5_021EB0C8(trapsEnv->fieldSystem->camera);
+    trapsEnv->fieldSystem->unk_8C = FieldMap_021EB0C8(trapsEnv->fieldSystem->camera);
     trapsEnv->graphicsDisabled = FALSE;
 
     Traps_LoadCurrentPlayerPlacedTraps();
@@ -916,7 +916,7 @@ void TrapsEnv_Free(void)
     Traps_StopAllLinkSpinTasks();
     Traps_DeleteRadarSpriteResources();
 
-    ov5_021EB184(&trapsEnv->fieldSystem->unk_8C);
+    FieldMap_021EB184(&trapsEnv->fieldSystem->unk_8C);
 
     if (trapsEnv->retrievedTrapCount >= 10) {
         TVSegment_SaveTrapRecord(trapsEnv->fieldSystem, trapsEnv->retrievedTrapID, trapsEnv->retrievedTrapCount);
@@ -2142,7 +2142,7 @@ static int Traps_NotifyTrapTriggered(void)
     int x = PlayerAvatar_GetXPos(trapsEnv->fieldSystem->playerAvatar);
     int z = PlayerAvatar_GetZPos(trapsEnv->fieldSystem->playerAvatar);
 
-    ov5_021F5634(trapsEnv->fieldSystem, x, 0, z);
+    FieldMap_021F5634(trapsEnv->fieldSystem, x, 0, z);
     UndergroundTextPrinter_SetUndergroundTrapNameWithIndex(UndergroundMan_GetCommonTextPrinter(), 0, trapsEnv->triggeredTrapIDClient);
 
     int printerID = UndergroundTextPrinter_PrintTextInstant(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_TriggeredTrap, FALSE, NULL);
@@ -2264,7 +2264,7 @@ static void Traps_DummyClient(int netID, BOOL isTool, int toolInitialDir)
 static OverworldAnimManager *Traps_DrawPlacedTrap(int x, int z, int size, enum Trap trapID)
 {
     if (!trapsEnv->graphicsDisabled) {
-        OverworldAnimManager *trapTextureManager = ov5_DrawFloorTexture(trapsEnv->fieldSystem, x, z, size, trapID - 1);
+        OverworldAnimManager *trapTextureManager = FieldMap_DrawFloorTexture(trapsEnv->fieldSystem, x, z, size, trapID - 1);
         return trapTextureManager;
     }
 
@@ -3049,10 +3049,10 @@ static void Traps_HoleTrapClientTask(SysTask *sysTask, void *data)
             int z = PlayerAvatar_GetZPos(trapsEnv->fieldSystem->playerAvatar);
 
             if (!ctx->isPitTrap) {
-                ctx->holeTextureManager = ov5_DrawFloorTexture(trapsEnv->fieldSystem, x, z, 2, FLOOR_TEXTURE_BLACK_CIRCLE);
+                ctx->holeTextureManager = FieldMap_DrawFloorTexture(trapsEnv->fieldSystem, x, z, 2, FLOOR_TEXTURE_BLACK_CIRCLE);
                 Player_SetYPos(trapsEnv->fieldSystem->playerAvatar, -2 * FX32_ONE);
             } else {
-                ctx->holeTextureManager = ov5_DrawFloorTexture(trapsEnv->fieldSystem, x, z, 3, FLOOR_TEXTURE_BLACK_CIRCLE);
+                ctx->holeTextureManager = FieldMap_DrawFloorTexture(trapsEnv->fieldSystem, x, z, 3, FLOOR_TEXTURE_BLACK_CIRCLE);
                 Player_SetYPos(trapsEnv->fieldSystem->playerAvatar, -3 * FX32_ONE);
             }
         }
@@ -4046,7 +4046,7 @@ static BOOL Traps_ProcessBoulder(BgConfig *unused, RockTrapContext *ctx)
         ctx->timer = 0;
         int x = PlayerAvatar_GetXPos(trapsEnv->fieldSystem->playerAvatar);
         int z = PlayerAvatar_GetZPos(trapsEnv->fieldSystem->playerAvatar);
-        ctx->shadowManager = ov5_DrawGrowingFloorTexture(trapsEnv->fieldSystem, x, z, 5, FLOOR_TEXTURE_BLACK_CIRCLE);
+        ctx->shadowManager = FieldMap_DrawGrowingFloorTexture(trapsEnv->fieldSystem, x, z, 5, FLOOR_TEXTURE_BLACK_CIRCLE);
         ctx->subState = ROCK_TRAP_SUBSTATE_INIT_BOULDER_FALL;
         Sound_PlayEffect(SEQ_SE_DP_FW466_sseq);
         break;

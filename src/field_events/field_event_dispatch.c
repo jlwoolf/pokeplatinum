@@ -4,12 +4,12 @@
 #include <string.h>
 
 #include "field/field_system.h"
-#include "overlay005/struct_ov5_021D1BEC_decl.h"
+#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
 #include "field_events/field_events_0223E140.h"
 
 #include "camera.h"
 
-static UnkStruct_ov5_021D1BEC *sFieldEvent;
+static UnkStruct_fieldmap_021D1BEC *sFieldEvent;
 
 BOOL FieldEventDispatch_ProcessCommand(FieldSystem *fieldSystem, int param1)
 {

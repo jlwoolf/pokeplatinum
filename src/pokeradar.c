@@ -8,7 +8,7 @@
 #include "struct_defs/radar_chain_records.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021F2D20.h"
+#include "fieldmap/fieldmap_021F2D20.h"
 #include "field_events/radar_chain_records.h"
 
 #include "bag.h"
@@ -182,12 +182,12 @@ void FieldSystem_CreateShakingRadarPatches(FieldSystem *fieldSystem, RadarChain 
             int x = chain->patch[patchRing].x;
             int z = chain->patch[patchRing].z;
             if (chain->patch[patchRing].shiny) {
-                chain->patch[patchRing].animManager = ov5_021F3154(fieldSystem, x, z, 2);
+                chain->patch[patchRing].animManager = FieldMap_021F3154(fieldSystem, x, z, 2);
             } else {
                 if (chain->patch[patchRing].shakeType == PATCH_SHAKE_SOFT) {
-                    chain->patch[patchRing].animManager = ov5_021F3154(fieldSystem, x, z, 0);
+                    chain->patch[patchRing].animManager = FieldMap_021F3154(fieldSystem, x, z, 0);
                 } else {
-                    chain->patch[patchRing].animManager = ov5_021F3154(fieldSystem, x, z, 1);
+                    chain->patch[patchRing].animManager = FieldMap_021F3154(fieldSystem, x, z, 1);
                 }
             }
         } else {
@@ -204,7 +204,7 @@ BOOL RadarChain_ArePatchesFinished(RadarChain *chain)
 
     for (u8 patchRing = 0; patchRing < NUM_GRASS_PATCHES; patchRing++) {
         if (chain->patch[patchRing].animManager != NULL) {
-            if (ov5_021F31A8(chain->patch[patchRing].animManager)) {
+            if (FieldMap_021F31A8(chain->patch[patchRing].animManager)) {
                 OverworldAnimManager_Finish(chain->patch[patchRing].animManager);
                 chain->patch[patchRing].animManager = NULL;
                 finishedPatches++;

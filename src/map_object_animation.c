@@ -8,9 +8,9 @@
 
 #include "struct_decls/map_object.h"
 
-#include "overlay005/map_object_anim_cmd.h"
-#include "overlay005/ov5_021F3E74.h"
-#include "overlay005/ov5_021F5A10.h"
+#include "fieldmap/map_object_anim_cmd.h"
+#include "fieldmap/fieldmap_021F3E74.h"
+#include "fieldmap/fieldmap_021F5A10.h"
 
 #include "heap.h"
 #include "map_header_data.h"
@@ -1256,7 +1256,7 @@ static void MovementAction_InitEmote(MapObject *mapObj, int emoteType, int varia
     EmoteMovementData *data = MapObject_InitMovementData(mapObj, sizeof(EmoteMovementData));
 
     data->emoteType = emoteType;
-    data->animManager = ov5_021F5D8C(mapObj, emoteType, 1, variant);
+    data->animManager = FieldMap_021F5D8C(mapObj, emoteType, 1, variant);
 
     MapObject_AdvanceMovementStep(mapObj);
 }
@@ -1265,7 +1265,7 @@ static BOOL MovementAction_Emote_Step1(MapObject *mapObj)
 {
     EmoteMovementData *data = MapObject_GetMovementData(mapObj);
 
-    if (ov5_021F5C4C(data->animManager) == 1) {
+    if (FieldMap_021F5C4C(data->animManager) == 1) {
         OverworldAnimManager_Finish(data->animManager);
         MapObject_AdvanceMovementStep(mapObj);
         return TRUE;
@@ -1455,7 +1455,7 @@ static BOOL MovementAction_RevealTrainer_Step0(MapObject *mapObj)
     VecFx32 v2 = { 0, 0, 0 };
     MapObject_SetSpriteJumpOffset(mapObj, &v2);
 
-    ov5_021F3F10(mapObj);
+    FieldMap_021F3F10(mapObj);
 
     MapObject_SetStatusFlagOn(mapObj, MAP_OBJ_STATUS_START_MOVEMENT | MAP_OBJ_STATUS_START_JUMP);
     MapObject_SetStatusFlagOff(mapObj, MAP_OBJ_STATUS_HIDE_SHADOW);

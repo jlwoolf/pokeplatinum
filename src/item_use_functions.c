@@ -13,12 +13,12 @@
 #include "applications/party_menu/main.h"
 #include "applications/poffin_case/main.h"
 #include "field/field_system.h"
-#include "overlay005/fieldmap.h"
-#include "overlay005/fishing.h"
-#include "overlay005/ov5_021DFB54.h"
-#include "overlay005/ov5_021F007C.h"
-#include "overlay005/save_info_window.h"
-#include "overlay005/struct_ov5_021F0468_decl.h"
+#include "fieldmap/fieldmap.h"
+#include "fieldmap/fishing.h"
+#include "fieldmap/fieldmap_021DFB54.h"
+#include "fieldmap/fieldmap_021F007C.h"
+#include "fieldmap/save_info_window.h"
+#include "fieldmap/struct_fieldmap_021F0468_decl.h"
 #include "field_events/field_warp.h"
 #include "savedata/save_table.h"
 
@@ -755,7 +755,7 @@ static void UseHoneyFromMenu(ItemMenuUseContext *usageContext, const ItemUseCont
 {
     FieldSystem *fieldSystem;
     StartMenu *menu;
-    UnkStruct_ov5_021F0468 *v2;
+    UnkStruct_fieldmap_021F0468 *v2;
     int v3;
 
     fieldSystem = FieldTask_GetFieldSystem(usageContext->fieldTask);
@@ -763,12 +763,12 @@ static void UseHoneyFromMenu(ItemMenuUseContext *usageContext, const ItemUseCont
 
     FieldSystem_StartFieldMap(fieldSystem);
 
-    v3 = ov5_021F0484();
+    v3 = FieldMap_021F0484();
     v2 = Heap_AllocAtEnd(HEAP_ID_FIELD2, v3);
 
     memset(v2, 0, v3);
 
-    menu->callback = ov5_021F0488;
+    menu->callback = FieldMap_021F0488;
     menu->taskData = v2;
     menu->state = START_MENU_STATE_NEW_TASK;
 

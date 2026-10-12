@@ -8,7 +8,7 @@
 #include "applications/pokemon_summary_screen/main.h"
 #include "field/field_system.h"
 #include "functypes/funcptr_0205AB10.h"
-#include "overlay005/fieldmap.h"
+#include "fieldmap/fieldmap.h"
 
 #include "bag.h"
 #include "battle_regulation.h"

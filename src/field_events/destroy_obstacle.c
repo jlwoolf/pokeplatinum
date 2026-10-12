@@ -5,7 +5,7 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/struct_ov5_021D1BEC_decl.h"
+#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
 #include "field_events/hidden_effect.h"
 
 #include "heap.h"
@@ -13,15 +13,15 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    UnkStruct_ov5_021D1BEC *unk_00;
+    UnkStruct_fieldmap_021D1BEC *unk_00;
     u16 *unk_04;
     u32 unk_08;
     u32 unk_0C;
 } DestroyObstacleTask;
 
-typedef UnkStruct_ov5_021D1BEC *(*DestroyObstacle_NewFunc)(FieldSystem *);
-typedef void (*DestroyObstacle_FreeFunc)(UnkStruct_ov5_021D1BEC *);
-typedef BOOL (*DestroyObstacle_FinishedFunc)(UnkStruct_ov5_021D1BEC *);
+typedef UnkStruct_fieldmap_021D1BEC *(*DestroyObstacle_NewFunc)(FieldSystem *);
+typedef void (*DestroyObstacle_FreeFunc)(UnkStruct_fieldmap_021D1BEC *);
+typedef BOOL (*DestroyObstacle_FinishedFunc)(UnkStruct_fieldmap_021D1BEC *);
 
 static const DestroyObstacle_NewFunc sDestroyObstacleNewFuncs[3] = {
     HiddenEffectSingle_New,

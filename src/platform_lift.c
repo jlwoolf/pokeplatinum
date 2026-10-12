@@ -10,8 +10,8 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/dynamic_terrain_height.h"
-#include "overlay005/map_prop.h"
+#include "fieldmap/dynamic_terrain_height.h"
+#include "fieldmap/map_prop.h"
 
 #include "field_system.h"
 #include "field_task.h"

@@ -17,8 +17,8 @@
 #include "struct_defs/struct_0205C95C.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021F134C.h"
-#include "overlay005/ov5_021F600C.h"
+#include "fieldmap/fieldmap_021F134C.h"
+#include "fieldmap/fieldmap_021F600C.h"
 
 #include "comm_manager.h"
 #include "easy_chat_sentence.h"
@@ -420,9 +420,9 @@ static void UnionRoomTrainers_WarpIn(UnionRoomTrainer *trainer, MapObject *mapOb
 
     if (trainer->friendRank != 0) {
         if (trainer->friendRank == 1) {
-            trainer->friendEffect = ov5_021F16D4(mapObj, 1);
+            trainer->friendEffect = FieldMap_021F16D4(mapObj, 1);
         } else if (trainer->friendRank >= 2) {
-            trainer->friendEffect = ov5_021F16D4(mapObj, 2);
+            trainer->friendEffect = FieldMap_021F16D4(mapObj, 2);
         }
 
         trainer->friendRank = 0;
@@ -447,7 +447,7 @@ static void UnionRoomTrainers_StartWarpEffect(UnionRoomTrainer *trainer, MapObje
 {
     if (trainer->startWarpEffect == 1) {
         if (trainer->effectActive == 0) {
-            trainer->warpEffect = ov5_021F6094(mapObj);
+            trainer->warpEffect = FieldMap_021F6094(mapObj);
             trainer->effectTimer = 30;
             trainer->startWarpEffect = 0;
             trainer->effectActive = 1;
@@ -516,9 +516,9 @@ void UnionRoomTrainers_ShowConnected(MapObjectManager *mapObjMan, UnionRoomTrain
 
                 if (trainer->friendRank != 0) {
                     if (trainer->friendRank == 1) {
-                        trainer->friendEffect = ov5_021F16D4(mapObj, 1);
+                        trainer->friendEffect = FieldMap_021F16D4(mapObj, 1);
                     } else if (trainer->friendRank >= 2) {
-                        trainer->friendEffect = ov5_021F16D4(mapObj, 2);
+                        trainer->friendEffect = FieldMap_021F16D4(mapObj, 2);
                     }
 
                     trainer->friendRank = 0;

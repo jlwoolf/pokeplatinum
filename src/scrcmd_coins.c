@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "field/field_system.h"
-#include "overlay005/field_menu.h"
+#include "fieldmap/field_menu.h"
 
 #include "bg_window.h"
 #include "coins.h"

@@ -1,0 +1,12 @@
+#ifndef POKEPLATINUM_FIELDMAP_021F37A8_H
+#define POKEPLATINUM_FIELDMAP_021F37A8_H
+
+#include "struct_decls/map_object.h"
+
+#include "fieldmap/field_effect_manager.h"
+
+void *FieldMap_021F37A8(FieldEffectManager *param0);
+void FieldMap_021F37C4(void *param0);
+void FieldMap_021F3844(MapObject *param0, int param1);
+
+#endif // POKEPLATINUM_FIELDMAP_021F37A8_H

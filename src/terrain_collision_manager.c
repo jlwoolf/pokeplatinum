@@ -7,11 +7,11 @@
 #include "constants/quadrant.h"
 
 #include "field/field_system.h"
-#include "overlay005/bdhc.h"
-#include "overlay005/dynamic_terrain_height.h"
-#include "overlay005/land_data.h"
-#include "overlay005/land_data_manager_decl.h"
-#include "overlay005/map_prop.h"
+#include "fieldmap/bdhc.h"
+#include "fieldmap/dynamic_terrain_height.h"
+#include "fieldmap/land_data.h"
+#include "fieldmap/land_data_manager_decl.h"
+#include "fieldmap/map_prop.h"
 
 #include "dynamic_map_features.h"
 #include "map_matrix.h"

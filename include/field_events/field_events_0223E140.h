@@ -2,7 +2,7 @@
 #define POKEPLATINUM_FIELD_EVENTS_0223E140_H
 
 #include "field/field_system_decl.h"
-#include "overlay005/struct_ov5_021D1BEC_decl.h"
+#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
 #include "field_events/struct_screen_transition_decl.h"
 #include "field_events/struct_brightness_fader_decl.h"
 #include "field_events/struct_climax_actor_manager_decl.h"
@@ -16,16 +16,16 @@
 
 void ScreenTransition_StartSimple(FieldTask *param0);
 void ScreenTransition_StartWithSound(FieldTask *param0);
-UnkStruct_ov5_021D1BEC *ClimaxSequence_New(FieldSystem *fieldSystem);
-void ClimaxSequence_Delete(UnkStruct_ov5_021D1BEC *param0);
-BOOL ClimaxSequence_IsFinished(UnkStruct_ov5_021D1BEC *param0);
-UnkStruct_ov5_021D1BEC *ClimaxObjectEffect_New(FieldSystem *fieldSystem);
-void ClimaxObjectEffect_Delete(UnkStruct_ov5_021D1BEC *param0);
-UnkStruct_ov5_021D1BEC *ClimaxScene_New(FieldSystem *fieldSystem, u32 param1);
-UnkStruct_ov5_021D1BEC *ClimaxActor_New(FieldSystem *fieldSystem);
-void ClimaxActor_Delete(UnkStruct_ov5_021D1BEC *param0);
-void ClimaxActor_Finish(UnkStruct_ov5_021D1BEC *param0);
-u32 ClimaxActor_GetState(UnkStruct_ov5_021D1BEC *param0);
+UnkStruct_fieldmap_021D1BEC *ClimaxSequence_New(FieldSystem *fieldSystem);
+void ClimaxSequence_Delete(UnkStruct_fieldmap_021D1BEC *param0);
+BOOL ClimaxSequence_IsFinished(UnkStruct_fieldmap_021D1BEC *param0);
+UnkStruct_fieldmap_021D1BEC *ClimaxObjectEffect_New(FieldSystem *fieldSystem);
+void ClimaxObjectEffect_Delete(UnkStruct_fieldmap_021D1BEC *param0);
+UnkStruct_fieldmap_021D1BEC *ClimaxScene_New(FieldSystem *fieldSystem, u32 param1);
+UnkStruct_fieldmap_021D1BEC *ClimaxActor_New(FieldSystem *fieldSystem);
+void ClimaxActor_Delete(UnkStruct_fieldmap_021D1BEC *param0);
+void ClimaxActor_Finish(UnkStruct_fieldmap_021D1BEC *param0);
+u32 ClimaxActor_GetState(UnkStruct_fieldmap_021D1BEC *param0);
 void ScreenTransition_Free(ScreenTransition *param0);
 void ScreenTransition_Init(ScreenTransition *param0, fx32 param1, fx32 param2, u32 param3, u32 param4, Camera *camera);
 void ScreenTransition_Update(ScreenTransition *param0);

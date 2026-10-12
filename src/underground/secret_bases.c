@@ -12,9 +12,9 @@
 #include "generated/traps.h"
 
 #include "field/field_system.h"
-#include "overlay005/map_prop.h"
-#include "overlay005/ov5_021F55CC.h"
-#include "overlay005/ov5_021F5894.h"
+#include "fieldmap/map_prop.h"
+#include "fieldmap/fieldmap_021F55CC.h"
+#include "fieldmap/fieldmap_021F5894.h"
 #include "underground/comm_manager.h"
 #include "underground/manager.h"
 #include "underground/menus.h"
@@ -1802,7 +1802,7 @@ static void SecretBases_DiggerDrillTask(SysTask *sysTask, void *data)
         UndergroundTextPrinter_SetUndergroundTrapName(UndergroundMan_GetCommonTextPrinter(), TRAP_DIGGER_DRILL);
         Sound_PlayEffect(SEQ_SE_DP_DORIRU_sseq);
 
-        ov5_021F58FC(PlayerAvatar_GetMapObject(fieldSystem->playerAvatar), 0, 0, 0);
+        FieldMap_021F58FC(PlayerAvatar_GetMapObject(fieldSystem->playerAvatar), 0, 0, 0);
         UndergroundTextPrinter_PrintText(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_ItemWasUsed, FALSE, NULL);
 
         ctx->state = DRILL_STATE_WAIT;
@@ -1824,7 +1824,7 @@ static void SecretBases_DiggerDrillTask(SysTask *sysTask, void *data)
 
         UndergroundTextPrinter_PrintText(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_DiscoveredCavern, FALSE, NULL);
         SecretBases_SetBaseEntrancePropLocation(x, z, dir, NETID_CURRENT_PLAYER_BASE);
-        ov5_021F5634(fieldSystem, x, 0, z);
+        FieldMap_021F5634(fieldSystem, x, 0, z);
 
         ctx->state = DRILL_STATE_PRINT_PROMPT;
     } break;
@@ -1903,7 +1903,7 @@ static void SecretBases_DiggerDrillTask(SysTask *sysTask, void *data)
         int x = CommPlayer_GetXInFrontOfPlayer(CommSys_CurNetId());
         int z = CommPlayer_GetZInFrontOfPlayer(CommSys_CurNetId());
 
-        ov5_021F5634(fieldSystem, x, 0, z);
+        FieldMap_021F5634(fieldSystem, x, 0, z);
 
         SysTask_Done(sysTask);
         Heap_Free(ctx);

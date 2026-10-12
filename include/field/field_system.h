@@ -9,17 +9,17 @@
 
 #include "applications/trade_room/defs.h"
 #include "field/field_system_sub2_decl.h"
-#include "overlay005/area_data.h"
-#include "overlay005/area_light.h"
-#include "overlay005/dynamic_terrain_height.h"
-#include "overlay005/field_effect_manager.h"
-#include "overlay005/fog_manager.h"
-#include "overlay005/land_data_manager_decl.h"
-#include "overlay005/map_prop.h"
-#include "overlay005/map_prop_animation.h"
-#include "overlay005/model_attributes.h"
-#include "overlay005/ov5_021EAFA4.h"
-#include "overlay005/signpost.h"
+#include "fieldmap/area_data.h"
+#include "fieldmap/area_light.h"
+#include "fieldmap/dynamic_terrain_height.h"
+#include "fieldmap/field_effect_manager.h"
+#include "fieldmap/fog_manager.h"
+#include "fieldmap/land_data_manager_decl.h"
+#include "fieldmap/map_prop.h"
+#include "fieldmap/map_prop_animation.h"
+#include "fieldmap/model_attributes.h"
+#include "fieldmap/fieldmap_021EAFA4.h"
+#include "fieldmap/signpost.h"
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DCE0_sub1.h"
 #include "underground/struct_underground_top_screen_context_decl.h"
 #include "union_room_chat/union_room_chat_decl.h"
@@ -109,7 +109,7 @@ typedef struct FieldSystem_t {
     UnionRoomTrainers *unk_80;
     UnionRoomChat *unk_84;
     TradeRoom *tradeRoom;
-    UnkStruct_ov5_021EB0E0 *unk_8C;
+    UnkStruct_fieldmap_021EB0E0 *unk_8C;
     int menuCursorPos;
     RadarChain *chain;
     BagCursor *bagCursor;

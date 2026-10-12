@@ -50,24 +50,24 @@
 #include "cutscenes/boat_cutscene.h"
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/enable_poketch_task.h"
-#include "overlay005/field_menu.h"
-#include "overlay005/footprint_type.h"
-#include "overlay005/honey_tree.h"
-#include "overlay005/land_data.h"
-#include "overlay005/map_object_anim_cmd.h"
-#include "overlay005/ov5_021D431C.h"
-#include "overlay005/ov5_021D5EB8.h"
-#include "overlay005/ov5_021DFB54.h"
-#include "overlay005/ov5_021EA874.h"
-#include "overlay005/ov5_021ECC20.h"
-#include "overlay005/ov5_021F6454.h"
-#include "overlay005/save_info_window.h"
-#include "overlay005/scrcmd_move_tutor.h"
-#include "overlay005/script_message.h"
-#include "overlay005/signpost.h"
-#include "overlay005/size_contest.h"
-#include "overlay005/vs_seeker.h"
+#include "fieldmap/enable_poketch_task.h"
+#include "fieldmap/field_menu.h"
+#include "fieldmap/footprint_type.h"
+#include "fieldmap/honey_tree.h"
+#include "fieldmap/land_data.h"
+#include "fieldmap/map_object_anim_cmd.h"
+#include "fieldmap/fieldmap_021D431C.h"
+#include "fieldmap/fieldmap_021D5EB8.h"
+#include "fieldmap/fieldmap_021DFB54.h"
+#include "fieldmap/fieldmap_021EA874.h"
+#include "fieldmap/fieldmap_021ECC20.h"
+#include "fieldmap/fieldmap_021F6454.h"
+#include "fieldmap/save_info_window.h"
+#include "fieldmap/scrcmd_move_tutor.h"
+#include "fieldmap/script_message.h"
+#include "fieldmap/signpost.h"
+#include "fieldmap/size_contest.h"
+#include "fieldmap/vs_seeker.h"
 #include "field_events/elevator_animation.h"
 #include "field_events/great_marsh_tram.h"
 #include "field_events/healing_machine_animation.h"
@@ -2479,7 +2479,7 @@ static BOOL ScrCmd_FacePlayer(ScriptContext *ctx)
         return FALSE;
     }
 
-    ov5_021ECDFC(*object, dir);
+    FieldMap_021ECDFC(*object, dir);
 
     return FALSE;
 }
@@ -3014,7 +3014,7 @@ static UnkStruct_02041DC8 *PhotoViewerArgs_New(enum HeapID heapID, FieldSystem *
 
 static BOOL ScrCmd_0A2(ScriptContext *ctx)
 {
-    ov5_021EAF50(ctx->fieldSystem);
+    FieldMap_021EAF50(ctx->fieldSystem);
     return TRUE;
 }
 
@@ -3706,7 +3706,7 @@ static BOOL ScrCmd_0C3(ScriptContext *ctx)
     FieldOverworldState *fieldState = SaveData_GetFieldOverworldState(ctx->fieldSystem->saveData);
 
     FieldOverworldState_SetWeather(fieldState, OVERWORLD_WEATHER_CLEAR);
-    ov5_021D5F7C(ctx->fieldSystem->unk_04->unk_0C, FieldOverworldState_GetWeather(fieldState));
+    FieldMap_021D5F7C(ctx->fieldSystem->unk_04->unk_0C, FieldOverworldState_GetWeather(fieldState));
 
     return TRUE;
 }
@@ -3716,7 +3716,7 @@ static BOOL ScrCmd_0C4(ScriptContext *ctx)
     FieldOverworldState *fieldState = SaveData_GetFieldOverworldState(ctx->fieldSystem->saveData);
 
     FieldOverworldState_SetWeather(fieldState, OVERWORLD_WEATHER_CLEAR);
-    ov5_021D5F7C(ctx->fieldSystem->unk_04->unk_0C, FieldOverworldState_GetWeather(fieldState));
+    FieldMap_021D5F7C(ctx->fieldSystem->unk_04->unk_0C, FieldOverworldState_GetWeather(fieldState));
 
     return TRUE;
 }
@@ -3747,7 +3747,7 @@ static BOOL ScriptContext_WaitForHMCutInFinished(ScriptContext *ctx)
 
 static BOOL ScrCmd_ChangeIntoContestAttire(ScriptContext *ctx)
 {
-    ov5_021E0DD4(ctx->task);
+    FieldMap_021E0DD4(ctx->task);
     return TRUE;
 }
 
@@ -4702,7 +4702,7 @@ static BOOL ScrCmd_18C(ScriptContext *ctx)
         GF_ASSERT(FALSE);
     }
 
-    ov5_021ECDFC(mapObj, dir);
+    FieldMap_021ECDFC(mapObj, dir);
     return FALSE;
 }
 
@@ -5737,7 +5737,7 @@ static BOOL ScrCmd_258(ScriptContext *ctx)
     SysTask **v0 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PLAYER_TASK);
 
     *v0 = NULL;
-    *v0 = ov5_021E1000(ctx->fieldSystem);
+    *v0 = FieldMap_021E1000(ctx->fieldSystem);
 
     return TRUE;
 }
@@ -5746,7 +5746,7 @@ static BOOL ScrCmd_259(ScriptContext *ctx)
 {
     SysTask **v0 = FieldSystem_GetScriptMemberPtr(ctx->fieldSystem, SCRIPT_MANAGER_PLAYER_TASK);
 
-    ov5_021E100C(*v0);
+    FieldMap_021E100C(*v0);
     return TRUE;
 }
 
@@ -6676,7 +6676,7 @@ static void Task_SetDeferredWeather(SysTask *task, void *param1)
     FieldSystem *fieldSystem = param1;
 
     if (fieldSystem->unk_04->unk_0C) {
-        ov5_021D5F24(fieldSystem->unk_04->unk_0C, OVERWORLD_WEATHER_26);
+        FieldMap_021D5F24(fieldSystem->unk_04->unk_0C, OVERWORLD_WEATHER_26);
         SysTask_Done(task);
     }
 }
@@ -6695,7 +6695,7 @@ static BOOL ScrCmd_Unused_2CE(ScriptContext *ctx)
     FieldSystem *fieldSystem = ctx->fieldSystem;
     u16 v1 = FieldOverworldState_GetWeather(SaveData_GetFieldOverworldState(fieldSystem->saveData));
 
-    ov5_021D5F24(fieldSystem->unk_04->unk_0C, v1);
+    FieldMap_021D5F24(fieldSystem->unk_04->unk_0C, v1);
     return TRUE;
 }
 

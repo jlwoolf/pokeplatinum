@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "field/field_system.h"
-#include "overlay005/fieldmap.h"
+#include "fieldmap/fieldmap.h"
 
 #include "bg_window.h"
 #include "colored_arrow.h"

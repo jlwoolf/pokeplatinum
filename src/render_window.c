@@ -6,7 +6,7 @@
 #include "constants/narc.h"
 #include "generated/signpost_types.h"
 
-#include "overlay005/sprite_resource_manager.h"
+#include "fieldmap/sprite_resource_manager.h"
 
 #include "bg_window.h"
 #include "character_sprite.h"

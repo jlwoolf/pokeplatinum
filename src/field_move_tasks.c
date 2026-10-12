@@ -14,8 +14,8 @@
 
 #include "applications/town_map/main.h"
 #include "field/field_system.h"
-#include "overlay005/ov5_021DFB54.h"
-#include "overlay005/ov5_021F101C.h"
+#include "fieldmap/fieldmap_021DFB54.h"
+#include "fieldmap/fieldmap_021F101C.h"
 #include "field_events/field_warp.h"
 #include "field_events/hm_cut_in.h"
 
@@ -820,7 +820,7 @@ static void FieldMoves_SetSweetScentTask(FieldMovePokemon *fieldMoveMon, const F
 
     FieldSystem_StartFieldMap(fieldSystem);
 
-    startMenu->callback = ov5_021F101C;
+    startMenu->callback = FieldMap_021F101C;
     startMenu->taskData = v2;
     startMenu->state = START_MENU_STATE_NEW_TASK;
 

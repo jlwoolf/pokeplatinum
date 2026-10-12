@@ -5,7 +5,7 @@
 #include <nitro/types.h>
 
 #include "field/field_system_decl.h"
-#include "overlay005/map_prop.h"
+#include "fieldmap/map_prop.h"
 
 typedef const fx32 (*GetHeightFunc)(const FieldSystem *, const fx32, const fx32, const fx32, u8 *);
 typedef BOOL (*GetTileAttributesFunc)(const FieldSystem *, const int, const int, u16 *);

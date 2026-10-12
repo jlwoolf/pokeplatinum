@@ -18,7 +18,7 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay005/honey_tree.h"
+#include "fieldmap/honey_tree.h"
 #include "field_events/dual_slot_encounters.h"
 #include "field_events/feebas_fishing.h"
 #include "field_events/great_marsh_daily_encounters.h"

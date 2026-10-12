@@ -3,7 +3,7 @@
 #include <nitro.h>
 
 #include "field/field_system.h"
-#include "overlay005/map_prop_animation.h"
+#include "fieldmap/map_prop_animation.h"
 
 #include "field_task.h"
 #include "system_flags.h"

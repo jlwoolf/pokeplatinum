@@ -14,8 +14,8 @@
 #include "struct_decls/map_object_manager.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021ECC20.h"
-#include "overlay005/ov5_021F5A10.h"
+#include "fieldmap/fieldmap_021ECC20.h"
+#include "fieldmap/fieldmap_021F5A10.h"
 #include "gym_features/gym_features.h"
 
 #include "heap.h"
@@ -489,7 +489,7 @@ static int ApproachingTrainerTask_TryFaceDirection(ApproachingTrainerData *data)
         return 0;
     }
 
-    ov5_021ECDFC(data->mapObj, data->direction);
+    FieldMap_021ECDFC(data->mapObj, data->direction);
     MapObject_SetStatusFlagOn(mapObj, MAP_OBJ_STATUS_PAUSE_MOVEMENT);
 
     data->state = STATE_CHECK_REVEAL_OR_FACE_DIRECTION;
@@ -548,7 +548,7 @@ static int ApproachingTrainerTask_WaitFaceDirection(ApproachingTrainerData *data
 
 static int ApproachingTrainerTask_Unk_05(ApproachingTrainerData *data)
 {
-    data->animMan = ov5_021F5D8C(data->mapObj, 0, 0, 0);
+    data->animMan = FieldMap_021F5D8C(data->mapObj, 0, 0, 0);
     data->state = STATE_UNK_06;
 
     return 0;
@@ -556,7 +556,7 @@ static int ApproachingTrainerTask_Unk_05(ApproachingTrainerData *data)
 
 static int ApproachingTrainerTask_Unk_06(ApproachingTrainerData *data)
 {
-    if (ov5_021F5C4C(data->animMan) == 1) {
+    if (FieldMap_021F5C4C(data->animMan) == 1) {
         OverworldAnimManager_Finish(data->animMan);
         data->state = STATE_DELAY_CHECK_NEXT_TO_PLAYER;
     }

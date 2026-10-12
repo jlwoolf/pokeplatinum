@@ -8,7 +8,7 @@
 #include "constants/species.h"
 #include "generated/trainer_classes.h"
 
-#include "overlay005/encounter_effect.h"
+#include "fieldmap/encounter_effect.h"
 
 #include "field_battle_data_transfer.h"
 #include "party.h"

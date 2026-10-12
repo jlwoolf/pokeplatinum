@@ -6,8 +6,8 @@
 #include "generated/journal_location_events.h"
 
 #include "field/field_system.h"
-#include "overlay005/map_object_anim_cmd.h"
-#include "overlay005/ov5_021F0EB0.h"
+#include "fieldmap/map_object_anim_cmd.h"
+#include "fieldmap/fieldmap_021F0EB0.h"
 #include "field_events/hm_cut_in.h"
 
 #include "field_map_change.h"
@@ -162,8 +162,8 @@ BOOL FieldWarp_EscapeRopeFadeOut(FieldTask *task)
 
 static enum FieldWarpStateResult StartWarpOutSpinning(FieldTask *task, FieldSystem *fieldSystem, FieldWarp *fieldWarp)
 {
-    fieldWarp->unk_14 = ov5_021F0EB0(fieldSystem, HEAP_ID_FIELD1);
-    ov5_021F0F10(fieldWarp->unk_14, 1, FX32_CONST(-150), 15);
+    fieldWarp->unk_14 = FieldMap_021F0EB0(fieldSystem, HEAP_ID_FIELD1);
+    FieldMap_021F0F10(fieldWarp->unk_14, 1, FX32_CONST(-150), 15);
     fieldWarp->animationTask = MapObject_StartAnimation(fieldWarp->player, sFadeOutWarpAnimation);
     fieldWarp->state++;
 
@@ -219,7 +219,7 @@ static enum FieldWarpStateResult FinishFadeOut(FieldTask *task, FieldSystem *fie
     }
 
     MapObject_FinishAnimation(fieldWarp->animationTask);
-    ov5_021F0EFC(fieldWarp->unk_14);
+    FieldMap_021F0EFC(fieldWarp->unk_14);
 
     fieldWarp->state++;
 
@@ -292,8 +292,8 @@ static enum FieldWarpStateResult StartFadeIn(FieldTask *task, FieldSystem *field
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 6, 1, HEAP_ID_FIELD1);
     }
 
-    fieldWarp->unk_14 = ov5_021F0EB0(fieldSystem, HEAP_ID_FIELD1);
-    ov5_021F0F10(fieldWarp->unk_14, 1, FX32_CONST(-150), 1);
+    fieldWarp->unk_14 = FieldMap_021F0EB0(fieldSystem, HEAP_ID_FIELD1);
+    FieldMap_021F0F10(fieldWarp->unk_14, 1, FX32_CONST(-150), 1);
     fieldWarp->animationTask = MapObject_StartAnimation(fieldWarp->player, sWarpFastSpinningAnimation);
     fieldWarp->state++;
 
@@ -311,7 +311,7 @@ static enum FieldWarpStateResult FinishFadeIn(FieldTask *task, FieldSystem *fiel
         return STATE_RESULT_NEXT_STATE;
     }
 
-    ov5_021F0F10(fieldWarp->unk_14, 2, 0, 60);
+    FieldMap_021F0F10(fieldWarp->unk_14, 2, 0, 60);
 
     fieldWarp->state++;
     return STATE_RESULT_REPEAT_STATE;
@@ -343,11 +343,11 @@ static enum FieldWarpStateResult FinishWarpInAnimation(FieldTask *task, FieldSys
         return STATE_RESULT_NEXT_STATE;
     }
 
-    if (!ov5_021F0EF0(fieldWarp->unk_14)) {
+    if (!FieldMap_021F0EF0(fieldWarp->unk_14)) {
         return STATE_RESULT_NEXT_STATE;
     }
 
-    ov5_021F0EFC(fieldWarp->unk_14);
+    FieldMap_021F0EFC(fieldWarp->unk_14);
     MapObject_FinishAnimation(fieldWarp->animationTask);
 
     return STATE_RESULT_END_TASK;

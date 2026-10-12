@@ -15,7 +15,7 @@
 #include "struct_defs/struct_020590C4.h"
 
 #include "field/field_system.h"
-#include "overlay005/ov5_021F55CC.h"
+#include "fieldmap/fieldmap_021F55CC.h"
 #include "underground/comm_manager.h"
 #include "underground/manager.h"
 #include "underground/mining.h"
@@ -436,7 +436,7 @@ static void CommPlayer_Add(u8 netId)
 
         if (sCommPlayerManager->isUnderground && !sCommPlayerManager->isActive[netId]) {
             if (!sCommPlayerManager->isDisabled) {
-                ov5_021F5634(sCommPlayerManager->fieldSystem, sCommPlayerManager->playerLocation[netId].x, 0, sCommPlayerManager->playerLocation[netId].z);
+                FieldMap_021F5634(sCommPlayerManager->fieldSystem, sCommPlayerManager->playerLocation[netId].x, 0, sCommPlayerManager->playerLocation[netId].z);
             }
 
             sCommPlayerManager->isActive[netId] = TRUE;
@@ -911,7 +911,7 @@ void CommPlayer_RecvDelete(int unused0, int unused1, void *src, void *unused2)
         UndergroundMan_SetPlayerLeft(netId);
 
         if (!sCommPlayerManager->isDisabled) {
-            ov5_021F5634(sCommPlayerManager->fieldSystem, sCommPlayerManager->playerLocation[netId].x, 0, sCommPlayerManager->playerLocation[netId].z);
+            FieldMap_021F5634(sCommPlayerManager->fieldSystem, sCommPlayerManager->playerLocation[netId].x, 0, sCommPlayerManager->playerLocation[netId].z);
         }
     }
 

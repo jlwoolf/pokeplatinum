@@ -9,8 +9,8 @@
 #include "struct_decls/map_object_manager.h"
 
 #include "field/field_system.h"
-#include "overlay005/field_effect_manager.h"
-#include "overlay005/ov5_021F3D00.h"
+#include "fieldmap/field_effect_manager.h"
+#include "fieldmap/fieldmap_021F3D00.h"
 
 #include "map_object.h"
 #include "map_object_move.h"
@@ -527,7 +527,7 @@ void MapObjectMovement_Disguise_Load(MapObject *mapObj)
 static int Disguise_StartAnim(MapObject *mapObj, DisguiseData *param1)
 {
     if (param1->revealed == 0) {
-        OverworldAnimManager *v0 = ov5_021F3D90(mapObj, param1->disguiseType);
+        OverworldAnimManager *v0 = FieldMap_021F3D90(mapObj, param1->disguiseType);
 
         Disguise_SetAnimManager(mapObj, v0);
     }
@@ -546,7 +546,7 @@ static int Disguise_WaitForDraw(MapObject *mapObj, DisguiseData *param1)
 
         if (v0 == NULL) {
             if (MapObject_IsDrawReady(mapObj) == 1) {
-                v0 = ov5_021F3D90(mapObj, param1->disguiseType);
+                v0 = FieldMap_021F3D90(mapObj, param1->disguiseType);
                 Disguise_SetAnimManager(mapObj, v0);
             }
         }

@@ -10,18 +10,18 @@
 #include "struct_decls/map_object_manager.h"
 
 #include "field/field_system.h"
-#include "overlay005/object_event_gfx_data.h"
-#include "overlay005/ov5_021ECC20.h"
-#include "overlay005/ov5_021F134C.h"
-#include "overlay005/ov5_021F17B8.h"
-#include "overlay005/ov5_021F1CC8.h"
-#include "overlay005/ov5_021F2A7C.h"
-#include "overlay005/ov5_021F2BD0.h"
-#include "overlay005/ov5_021F2D20.h"
-#include "overlay005/ov5_021F3284.h"
-#include "overlay005/ov5_021F348C.h"
-#include "overlay005/ov5_021F37A8.h"
-#include "overlay005/ov5_021F3A50.h"
+#include "fieldmap/object_event_gfx_data.h"
+#include "fieldmap/fieldmap_021ECC20.h"
+#include "fieldmap/fieldmap_021F134C.h"
+#include "fieldmap/fieldmap_021F17B8.h"
+#include "fieldmap/fieldmap_021F1CC8.h"
+#include "fieldmap/fieldmap_021F2A7C.h"
+#include "fieldmap/fieldmap_021F2BD0.h"
+#include "fieldmap/fieldmap_021F2D20.h"
+#include "fieldmap/fieldmap_021F3284.h"
+#include "fieldmap/fieldmap_021F348C.h"
+#include "fieldmap/fieldmap_021F37A8.h"
+#include "fieldmap/fieldmap_021F3A50.h"
 
 #include "map_object.h"
 #include "map_tile_behavior.h"
@@ -208,7 +208,7 @@ static void MapObject_ApplyMoveInitEffects(MapObject *mapObj)
     if (MapObject_IsDrawReady(mapObj) == TRUE) {
         u8 currTileBehavior = MapObject_GetCurrTileBehavior(mapObj);
         u8 prevTileBehavior = MapObject_GetPrevTileBehavior(mapObj);
-        const ObjectEventGfxRenderDetailsEntry *v2 = ov5_021ECD04(mapObj);
+        const ObjectEventGfxRenderDetailsEntry *v2 = FieldMap_021ECD04(mapObj);
 
         MapObject_DetermineElevatedBridgeStatus(mapObj, currTileBehavior, prevTileBehavior, v2);
         MapObject_BendTallGrass(mapObj, currTileBehavior, prevTileBehavior, v2);
@@ -231,7 +231,7 @@ static void MapObject_ApplyStepStartEffects(MapObject *mapObj)
     if (MapObject_IsDrawReady(mapObj) == TRUE) {
         u8 currTileBehavior = MapObject_GetCurrTileBehavior(mapObj);
         u8 prevTileBehavior = MapObject_GetPrevTileBehavior(mapObj);
-        const ObjectEventGfxRenderDetailsEntry *v2 = ov5_021ECD04(mapObj);
+        const ObjectEventGfxRenderDetailsEntry *v2 = FieldMap_021ECD04(mapObj);
 
         MapObject_DetermineElevatedBridgeStatus(mapObj, currTileBehavior, prevTileBehavior, v2);
         MapObject_RustleTallGrass(mapObj, currTileBehavior, prevTileBehavior, v2);
@@ -256,7 +256,7 @@ static void MapObject_ApplyJumpStartEffects(MapObject *mapObj)
     if (MapObject_IsDrawReady(mapObj) == TRUE) {
         u8 currTileBehavior = MapObject_GetCurrTileBehavior(mapObj);
         u8 prevTileBehavior = MapObject_GetPrevTileBehavior(mapObj);
-        const ObjectEventGfxRenderDetailsEntry *v2 = ov5_021ECD04(mapObj);
+        const ObjectEventGfxRenderDetailsEntry *v2 = FieldMap_021ECD04(mapObj);
 
         MapObject_DetermineElevatedBridgeStatus(mapObj, currTileBehavior, prevTileBehavior, v2);
         MapObject_UpdateMovementShadow(mapObj, currTileBehavior, prevTileBehavior, v2);
@@ -275,7 +275,7 @@ static void MapObject_ApplyStepEndEffects(MapObject *mapObj)
     if (MapObject_IsDrawReady(mapObj) == TRUE) {
         u8 currTileBehavior = MapObject_GetCurrTileBehavior(mapObj);
         u8 prevTileBehavior = MapObject_GetPrevTileBehavior(mapObj);
-        const ObjectEventGfxRenderDetailsEntry *v2 = ov5_021ECD04(mapObj);
+        const ObjectEventGfxRenderDetailsEntry *v2 = FieldMap_021ECD04(mapObj);
 
         MapObject_SinkIntoTerrain(mapObj, currTileBehavior, prevTileBehavior, v2);
         MapObject_CreatePuddleRippleAtPos(mapObj, currTileBehavior, prevTileBehavior, v2);
@@ -294,7 +294,7 @@ static void MapObject_ApplyJumpEndEffects(MapObject *mapObj)
     if (MapObject_IsDrawReady(mapObj) == TRUE) {
         u8 currTileBehavior = MapObject_GetCurrTileBehavior(mapObj);
         u8 prevTileBehavior = MapObject_GetPrevTileBehavior(mapObj);
-        const ObjectEventGfxRenderDetailsEntry *v2 = ov5_021ECD04(mapObj);
+        const ObjectEventGfxRenderDetailsEntry *v2 = FieldMap_021ECD04(mapObj);
 
         MapObject_SinkIntoTerrain(mapObj, currTileBehavior, prevTileBehavior, v2);
         MapObject_CreatePuddleRippleAtPos(mapObj, currTileBehavior, prevTileBehavior, v2);
@@ -357,7 +357,7 @@ static void MapObject_SinkIntoTerrain(MapObject *mapObj, u8 currTileBehavior, u8
 static void MapObject_BendTallGrass(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsTallGrass(currTileBehavior) == TRUE) {
-        ov5_021F2EA4(mapObj, 0);
+        FieldMap_021F2EA4(mapObj, 0);
     }
 }
 
@@ -365,7 +365,7 @@ static void MapObject_BendTallGrass(MapObject *mapObj, u8 currTileBehavior, u8 p
 static void MapObject_RustleTallGrass(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsTallGrass(currTileBehavior) == TRUE) {
-        ov5_021F2EA4(mapObj, 1);
+        FieldMap_021F2EA4(mapObj, 1);
     }
 }
 
@@ -380,17 +380,17 @@ static void MapObject_LeaveFootprints(MapObject *mapObj, u8 currTileBehavior, u8
 
     if (TileBehavior_IsSnowWithShadows(prevTileBehavior) == TRUE) {
         if (renderDetails->trackType == 1) {
-            ov5_021F1EBC(mapObj);
+            FieldMap_021F1EBC(mapObj);
         } else if (renderDetails->trackType == 2) {
-            ov5_021F1EC8(mapObj);
+            FieldMap_021F1EC8(mapObj);
         }
     }
 
     if (MapObject_IsOnSand(mapObj, prevTileBehavior) == TRUE) {
         if (renderDetails->trackType == 1) {
-            ov5_021F1E8C(mapObj);
+            FieldMap_021F1E8C(mapObj);
         } else if (renderDetails->trackType == 2) {
-            ov5_021F1E98(mapObj);
+            FieldMap_021F1E98(mapObj);
         }
         return;
     }
@@ -398,12 +398,12 @@ static void MapObject_LeaveFootprints(MapObject *mapObj, u8 currTileBehavior, u8
     if (TileBehavior_IsDeeperSnow(prevTileBehavior) == TRUE
         || TileBehavior_IsDeepestSnow(prevTileBehavior) == TRUE
         || TileBehavior_IsDeepSnow(prevTileBehavior)) {
-        ov5_021F1EB0(mapObj);
+        FieldMap_021F1EB0(mapObj);
         return;
     }
 
     if (MapObject_IsOnShallowSnow(mapObj, prevTileBehavior) == TRUE) {
-        ov5_021F1EA4(mapObj);
+        FieldMap_021F1EA4(mapObj);
         return;
     }
 }
@@ -414,7 +414,7 @@ static void MapObject_UpdateShallowWaterEffect(MapObject *mapObj, u8 currTileBeh
 {
     if (TileBehavior_IsShallowWater(currTileBehavior) == TRUE) {
         if (MapObject_CheckStatus26(mapObj) == FALSE) {
-            ov5_021F331C(mapObj, 1);
+            FieldMap_021F331C(mapObj, 1);
             MapObject_SetStatus26(mapObj, 1);
         }
     } else {
@@ -461,7 +461,7 @@ static void MapObject_UpdateMovementShadow(MapObject *mapObj, u8 currTileBehavio
         MapObject_SetStatusFlagOn(mapObj, MAP_OBJ_STATUS_HIDE_SHADOW);
     } else {
         if (!MapObject_CheckStatus(mapObj, MAP_OBJ_STATUS_SHOW_SHADOW)) {
-            ov5_021F1570(mapObj);
+            FieldMap_021F1570(mapObj);
             MapObject_SetStatusFlagOn(mapObj, MAP_OBJ_STATUS_SHOW_SHADOW);
         }
     }
@@ -509,7 +509,7 @@ static void MapObject_ShowLandingDust(MapObject *mapObj, u8 currTileBehavior, u8
         return;
     }
 
-    ov5_021F3638(mapObj);
+    FieldMap_021F3638(mapObj);
 }
 
 // Immediate (Bend) and fully animated (Rustle) variants of the very tall
@@ -517,14 +517,14 @@ static void MapObject_ShowLandingDust(MapObject *mapObj, u8 currTileBehavior, u8
 static void MapObject_BendVeryTallGrass(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsVeryTallGrass(currTileBehavior) == TRUE) {
-        ov5_021F3844(mapObj, 0);
+        FieldMap_021F3844(mapObj, 0);
     }
 }
 
 static void MapObject_RustleVeryTallGrass(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsVeryTallGrass(currTileBehavior) == TRUE) {
-        ov5_021F3844(mapObj, 1);
+        FieldMap_021F3844(mapObj, 1);
     }
 }
 
@@ -533,14 +533,14 @@ static void MapObject_RustleVeryTallGrass(MapObject *mapObj, u8 currTileBehavior
 static void MapObject_BendMudWithGrass(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsMudWithGrass(currTileBehavior) == TRUE) {
-        ov5_021F3AEC(mapObj, 0);
+        FieldMap_021F3AEC(mapObj, 0);
     }
 }
 
 static void MapObject_RustleMudWithGrass(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsMudWithGrass(currTileBehavior) == TRUE) {
-        ov5_021F3AEC(mapObj, 1);
+        FieldMap_021F3AEC(mapObj, 1);
     }
 }
 
@@ -549,28 +549,28 @@ static void MapObject_RustleMudWithGrass(MapObject *mapObj, u8 currTileBehavior,
 static void MapObject_CreatePuddleRippleAtPrevPos(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsPuddle(prevTileBehavior) == TRUE) {
-        ov5_021F2AE4(mapObj, MapObject_GetXPrev(mapObj), MapObject_GetYPrev(mapObj), MapObject_GetZPrev(mapObj));
+        FieldMap_021F2AE4(mapObj, MapObject_GetXPrev(mapObj), MapObject_GetYPrev(mapObj), MapObject_GetZPrev(mapObj));
     }
 }
 
 static void MapObject_CreatePuddleRippleAtPos(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsPuddle(currTileBehavior) == TRUE) {
-        ov5_021F2AE4(mapObj, MapObject_GetX(mapObj), MapObject_GetY(mapObj), MapObject_GetZ(mapObj));
+        FieldMap_021F2AE4(mapObj, MapObject_GetX(mapObj), MapObject_GetY(mapObj), MapObject_GetZ(mapObj));
     }
 }
 
 static void MapObject_CreateMudSplashAtPrevPos(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsMud(prevTileBehavior) == TRUE) {
-        ov5_021F2C38(mapObj, MapObject_GetXPrev(mapObj), MapObject_GetYPrev(mapObj), MapObject_GetZPrev(mapObj));
+        FieldMap_021F2C38(mapObj, MapObject_GetXPrev(mapObj), MapObject_GetYPrev(mapObj), MapObject_GetZPrev(mapObj));
     }
 }
 
 static void MapObject_CreateMudSplashAtPos(MapObject *mapObj, u8 currTileBehavior, u8 prevTileBehavior, const ObjectEventGfxRenderDetailsEntry *renderDetails)
 {
     if (TileBehavior_IsMud(currTileBehavior) == TRUE) {
-        ov5_021F2C38(mapObj, MapObject_GetX(mapObj), MapObject_GetY(mapObj), MapObject_GetZ(mapObj));
+        FieldMap_021F2C38(mapObj, MapObject_GetX(mapObj), MapObject_GetY(mapObj), MapObject_GetZ(mapObj));
     }
 }
 
@@ -610,7 +610,7 @@ static void MapObject_InitReflection(MapObject *mapObj, u8 currTileBehavior, u8 
                 v2 = 1;
             }
 
-            ov5_021F1800(mapObj, v2);
+            FieldMap_021F1800(mapObj, v2);
         }
     }
 }
