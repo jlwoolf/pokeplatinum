@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay011/particle_helper.h"
+#include "battle_particles/particle_helper.h"
 #include "contest_competition/contest_competition_0223F118.h"
 #include "contest_competition/contest_competition_022476F8.h"
 #include "contest_competition/contest_competition_02247A48.h"
@@ -43,7 +43,7 @@
 #include "contest_util.h"
 #include "vram_transfer.h"
 
-FS_EXTERN_OVERLAY(overlay11);
+FS_EXTERN_OVERLAY(battle_particles);
 FS_EXTERN_OVERLAY(battle_anim);
 FS_EXTERN_OVERLAY(image_clip_app);
 
@@ -337,7 +337,7 @@ int VisualCompetitionScoring_Exit(ApplicationManager *appMan, int *param1)
     Heap_Destroy(HEAP_ID_22);
     LockTextSpeed();
     NetworkIcon_Destroy();
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
+    Overlay_UnloadByID(FS_OVERLAY_ID(battle_particles));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
     Overlay_UnloadByID(FS_OVERLAY_ID(image_clip_app));
 

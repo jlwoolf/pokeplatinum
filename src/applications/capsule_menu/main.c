@@ -45,7 +45,7 @@
 
 #include "constdata/const_020F64C0.h"
 
-FS_EXTERN_OVERLAY(overlay11);
+FS_EXTERN_OVERLAY(battle_particles);
 FS_EXTERN_OVERLAY(battle_anim);
 FS_EXTERN_OVERLAY(capsule_menu);
 
@@ -252,7 +252,7 @@ static int CapsuleMenu_Exit(ApplicationManager *appMan, int *unused)
     }
 
     Heap_Destroy(HEAP_ID_53);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
+    Overlay_UnloadByID(FS_OVERLAY_ID(battle_particles));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
 
     return 1;

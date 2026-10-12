@@ -5,7 +5,7 @@
 
 #include "battle_anim/emitter_callbacks.h"
 #include "battle_anim/generic_emitter_callback.h"
-#include "overlay011/particle_helper.h"
+#include "battle_particles/particle_helper.h"
 
 #include "narc.h"
 #include "particle_system.h"
@@ -69,7 +69,7 @@ void *BattleParticleUtil_ReadMemberFromNARC(NARC *narc, int memberIdx, enum Heap
 
 ParticleSystem *BattleParticleUtil_CreateParticleSystemFromOpenNarc(NARC *narc, enum HeapID heapID, int memberIdx, BOOL uploadImmediately)
 {
-    ParticleSystem *particleSys = ov11_0221F888(heapID);
+    ParticleSystem *particleSys = ParticleHelper_CreateSmallParticleSystem(heapID);
 
     if (particleSys == NULL) {
         return NULL;

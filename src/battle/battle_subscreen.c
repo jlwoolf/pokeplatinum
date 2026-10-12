@@ -16,7 +16,7 @@
 #include "battle/battle_system.h"
 #include "battle/cursor_renderer.h"
 #include "battle/indicator.h"
-#include "overlay011/move_palettes.h"
+#include "battle_particles/move_palettes.h"
 
 #include "assert.h"
 #include "bg_window.h"

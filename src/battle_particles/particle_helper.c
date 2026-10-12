@@ -1,4 +1,4 @@
-#include "overlay011/particle_helper.h"
+#include "battle_particles/particle_helper.h"
 
 #include "camera.h"
 #include "heap.h"
@@ -21,7 +21,7 @@ ParticleSystem *ParticleHelper_CreateParticleSystem(enum HeapID heapID)
     return ps;
 }
 
-ParticleSystem *ov11_0221F888(enum HeapID heapID)
+ParticleSystem *ParticleHelper_CreateSmallParticleSystem(enum HeapID heapID)
 {
     void *heap = Heap_Alloc(heapID, 0x4200);
     if (heap == NULL) {

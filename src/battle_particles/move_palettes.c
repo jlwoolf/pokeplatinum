@@ -1,4 +1,4 @@
-#include "overlay011/move_palettes.h"
+#include "battle_particles/move_palettes.h"
 
 #include "constants/graphics.h"
 #include "generated/pokemon_types.h"
@@ -364,7 +364,7 @@ ALIGN_4 static const u16 sMovePaletteNone[] = {
     RGB(0, 0, 0),
 };
 
-ALIGN_4 static const u16 Unk_ov11_0221FBAC[] = {
+ALIGN_4 static const u16 sUnusedMovePalette[] = {
     RGB(19, 1, 0),
     RGB(19, 1, 0),
     RGB(19, 1, 0),
@@ -406,11 +406,11 @@ ALIGN_4 static const u16 *const sMovePaletteTable[] = {
     sMovePaletteDark
 };
 
-void include_unk_ov11_0221FBAC();
+void include_unk_sUnusedMovePalette();
 
-void include_unk_ov11_0221FBAC()
+void include_unk_sUnusedMovePalette()
 {
-    Unk_ov11_0221FBAC[0];
+    sUnusedMovePalette[0];
 }
 
 const u16 *GetMoveTypePalette(int moveType)
