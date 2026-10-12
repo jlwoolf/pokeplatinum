@@ -5,9 +5,9 @@
 #include "spear_pillar/struct_spear_pillar_screen_scroll.h"
 
 typedef struct {
-    SpearPillarScreenScroll unk_00;
-    SpearPillarSprite unk_0C[3];
-    SpearPillarSprite unk_D4[3];
+    SpearPillarScreenScroll screenScroll;
+    SpearPillarSprite pokemonSprites[3];
+    SpearPillarSprite shadowSprites[3];
 } SpearPillarLakeTrioSprites;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_LAKE_TRIO_SPRITES_H

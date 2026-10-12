@@ -7,16 +7,16 @@
 
 typedef struct {
     Camera *camera;
-    VecFx32 *unk_04;
-    int unk_08;
-    s32 unk_0C;
-    s32 unk_10;
-    s32 unk_14;
-    fx32 unk_18;
-    fx32 unk_1C;
-    fx32 unk_20;
-    s32 unk_24[5];
-    fx32 unk_38[5];
+    VecFx32 *targetPos;
+    int duration;
+    s32 angleDeltaX;
+    s32 angleDeltaY;
+    s32 angleDeltaZ;
+    fx32 posDeltaX;
+    fx32 posDeltaY;
+    fx32 posDeltaZ;
+    s32 angleSteps[5];
+    fx32 posSteps[5];
     CameraAngle cameraAngle;
 } SpearPillarCameraAnim;
 

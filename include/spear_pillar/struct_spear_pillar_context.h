@@ -18,25 +18,25 @@
 #include "sprite_system.h"
 
 typedef struct {
-    NARC *unk_00;
-    SpriteSystem *unk_04;
-    SpriteManager *unk_08;
-    BgConfig *unk_0C;
-    PaletteData *unk_10;
-    G3DPipelineBuffers *unk_14;
+    NARC *narc;
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    BgConfig *bgConfig;
+    PaletteData *paletteData;
+    G3DPipelineBuffers *pipelineBuffers;
     Camera *camera;
-    NNSFndAllocator unk_1C;
-    MessageLoader *unk_2C;
-    Window unk_30;
-    int unk_40;
-    VecFx32 unk_44;
-    SpearPillarBlend unk_50;
-    SpearPillarCapture *unk_54;
-    SpearPillarCameraAnim unk_58;
-    SpearPillarDialgaPalkiaCameraShake unk_AC;
-    u8 unk_C0;
-    u8 unk_C1;
-    u8 unk_C2;
+    NNSFndAllocator allocator;
+    MessageLoader *messageLoader;
+    Window window;
+    int textPrinter;
+    VecFx32 cameraTarget;
+    SpearPillarBlend blend;
+    SpearPillarCapture *capture;
+    SpearPillarCameraAnim cameraAnim;
+    SpearPillarDialgaPalkiaCameraShake cameraShake;
+    u8 blendPhase;
+    u8 blendLevel;
+    u8 blendTimer;
 } SpearPillarContext;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_CONTEXT_H

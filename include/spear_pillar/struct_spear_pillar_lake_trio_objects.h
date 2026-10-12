@@ -4,8 +4,8 @@
 #include "spear_pillar/struct_spear_pillar_object.h"
 
 typedef struct {
-    SpearPillarObject unk_00[3];
-    SpearPillarObject unk_498;
+    SpearPillarObject lakeTrio[3];
+    SpearPillarObject background;
 } SpearPillarLakeTrioObjects;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_LAKE_TRIO_OBJECTS_H

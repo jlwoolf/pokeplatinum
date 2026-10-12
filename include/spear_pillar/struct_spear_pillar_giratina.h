@@ -8,12 +8,12 @@
 #include "spear_pillar/struct_spear_pillar_context.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    SpearPillarLakeTrioSprites unk_08;
-    SpearPillarGiratinaObjects unk_1A0;
-    SpearPillarContext *unk_1EBC;
-    SpearPillarTaskArgs *unk_1EC0;
+    int state;
+    int frameCounter;
+    SpearPillarLakeTrioSprites sprites;
+    SpearPillarGiratinaObjects objects;
+    SpearPillarContext *context;
+    SpearPillarTaskArgs *taskArgs;
 } SpearPillarGiratina;
 
 #endif // POKEPLATINUM_STRUCT_SPEAR_PILLAR_GIRATINA_H

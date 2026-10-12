@@ -68,11 +68,11 @@ static void SpearPillarGiratina_InitCamera(Camera *camera, VecFx32 *param1)
 
 static void SpearPillarGiratina_LoadGraphics(SpearPillarGiratina *param0)
 {
-    NARC *v0 = param0->unk_1EBC->unk_00;
-    BgConfig *v1 = param0->unk_1EBC->unk_0C;
-    SpriteSystem *v2 = param0->unk_1EBC->unk_04;
-    SpriteManager *v3 = param0->unk_1EBC->unk_08;
-    PaletteData *v4 = param0->unk_1EBC->unk_10;
+    NARC *v0 = param0->context->narc;
+    BgConfig *v1 = param0->context->bgConfig;
+    SpriteSystem *v2 = param0->context->spriteSystem;
+    SpriteManager *v3 = param0->context->spriteManager;
+    PaletteData *v4 = param0->context->paletteData;
     int v5 = 50000;
 
     Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 18, v1, 5, 0, 0, 0, HEAP_ID_111);
@@ -85,118 +85,118 @@ static void SpearPillarGiratina_LoadGraphics(SpearPillarGiratina *param0)
     SpriteSystem_LoadAnimResObjFromOpenNarc(v2, v3, v0, 47, FALSE, v5);
     SpriteSystem_LoadCharResObjFromOpenNarc(v2, v3, v0, 49, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, v5);
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_04, 46, param0->unk_1EBC->unk_00);
+    SpearPillar_LoadObject(&param0->objects.background, 46, param0->context->narc);
 
     {
         int v6;
 
         for (v6 = 0; v6 < 4; v6++) {
-            SpearPillar_LoadObject(&param0->unk_1A0.unk_16FC[v6], 65, param0->unk_1EBC->unk_00);
-            Easy3DObject_SetScale(&param0->unk_1A0.unk_16FC[v6].unk_00, FX32_CONST(1.2), FX32_CONST(1.0), FX32_CONST(1.2));
+            SpearPillar_LoadObject(&param0->objects.shadows[v6], 65, param0->context->narc);
+            Easy3DObject_SetScale(&param0->objects.shadows[v6].object, FX32_CONST(1.2), FX32_CONST(1.0), FX32_CONST(1.2));
         }
     }
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_314, 24, param0->unk_1EBC->unk_00);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_314, 22, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_314, 23, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.rift, 24, param0->context->narc);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.rift, 22, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.rift, 23, param0->context->narc, &param0->context->allocator);
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_49C, 53, param0->unk_1EBC->unk_00);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_49C, 51, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_49C, 52, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.portal, 53, param0->context->narc);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.portal, 51, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.portal, 52, param0->context->narc, &param0->context->allocator);
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_18C, 55, param0->unk_1EBC->unk_00);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_18C, 54, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_18C, 56, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.shadowRift, 55, param0->context->narc);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.shadowRift, 54, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.shadowRift, 56, param0->context->narc, &param0->context->allocator);
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_624[0], 66, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetPosition(&param0->unk_1A0.unk_624[0].unk_00, FX32_CONST(-50), FX32_CONST(+0), FX32_CONST(-50));
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_624[0], 67, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.dialgaPalkia[0], 66, param0->context->narc);
+    Easy3DObject_SetPosition(&param0->objects.dialgaPalkia[0].object, FX32_CONST(-50), FX32_CONST(+0), FX32_CONST(-50));
+    SpearPillar_LoadObjectAnim(0, &param0->objects.dialgaPalkia[0], 67, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_624[0].unk_160 = 1;
-    param0->unk_1A0.unk_624[0].unk_164 = 1;
-    param0->unk_1A0.unk_624[0].unk_154 = FX32_HALF;
+    param0->objects.dialgaPalkia[0].isAnimating = 1;
+    param0->objects.dialgaPalkia[0].useAnimation = 1;
+    param0->objects.dialgaPalkia[0].animSpeed = FX32_HALF;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_624[1], 68, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetPosition(&param0->unk_1A0.unk_624[1].unk_00, FX32_CONST(+50), FX32_CONST(+0), FX32_CONST(-50));
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_624[1], 69, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.dialgaPalkia[1], 68, param0->context->narc);
+    Easy3DObject_SetPosition(&param0->objects.dialgaPalkia[1].object, FX32_CONST(+50), FX32_CONST(+0), FX32_CONST(-50));
+    SpearPillar_LoadObjectAnim(0, &param0->objects.dialgaPalkia[1], 69, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_624[1].unk_160 = 1;
-    param0->unk_1A0.unk_624[1].unk_164 = 1;
-    param0->unk_1A0.unk_624[1].unk_154 = FX32_HALF;
+    param0->objects.dialgaPalkia[1].isAnimating = 1;
+    param0->objects.dialgaPalkia[1].useAnimation = 1;
+    param0->objects.dialgaPalkia[1].animSpeed = FX32_HALF;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_934[0], 26, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetPosition(&param0->unk_1A0.unk_934[0].unk_00, FX32_CONST(0), FX32_CONST(-90), FX32_CONST(0));
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_934[0].unk_00, 0);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_934[0], 25, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_934[0], 27, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.legendaries[0], 26, param0->context->narc);
+    Easy3DObject_SetPosition(&param0->objects.legendaries[0].object, FX32_CONST(0), FX32_CONST(-90), FX32_CONST(0));
+    Easy3DObject_SetVisible(&param0->objects.legendaries[0].object, 0);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.legendaries[0], 25, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.legendaries[0], 27, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_934[0].unk_168 = 1;
+    param0->objects.legendaries[0].loopAnim1 = 1;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_934[1], 29, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_934[1].unk_00, 0);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_934[1], 28, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_934[1], 30, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.legendaries[1], 29, param0->context->narc);
+    Easy3DObject_SetVisible(&param0->objects.legendaries[1].object, 0);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.legendaries[1], 28, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.legendaries[1], 30, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_934[1].unk_168 = 1;
+    param0->objects.legendaries[1].loopAnim1 = 1;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_934[2], 32, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_934[2].unk_00, 0);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_934[2], 31, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_934[2], 33, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.legendaries[2], 32, param0->context->narc);
+    Easy3DObject_SetVisible(&param0->objects.legendaries[2].object, 0);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.legendaries[2], 31, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.legendaries[2], 33, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_934[2].unk_168 = 1;
+    param0->objects.legendaries[2].loopAnim1 = 1;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_934[3], 35, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_934[3].unk_00, 0);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_934[3], 34, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_934[3], 36, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.legendaries[3], 35, param0->context->narc);
+    Easy3DObject_SetVisible(&param0->objects.legendaries[3].object, 0);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.legendaries[3], 34, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.legendaries[3], 36, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_934[3].unk_168 = 1;
+    param0->objects.legendaries[3].loopAnim1 = 1;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_934[4], 38, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_934[4].unk_00, 0);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_934[4], 37, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObjectAnim(1, &param0->unk_1A0.unk_934[4], 39, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.legendaries[4], 38, param0->context->narc);
+    Easy3DObject_SetVisible(&param0->objects.legendaries[4].object, 0);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.legendaries[4], 37, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObjectAnim(1, &param0->objects.legendaries[4], 39, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_934[4].unk_168 = 1;
+    param0->objects.legendaries[4].loopAnim1 = 1;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_10DC[0], 41, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_10DC[0].unk_00, 0);
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_10DC[0], 40, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_10DC[1], 42, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetVisible(&param0->unk_1A0.unk_10DC[1].unk_00, 0);
+    SpearPillar_LoadObject(&param0->objects.portals[0], 41, param0->context->narc);
+    Easy3DObject_SetVisible(&param0->objects.portals[0].object, 0);
+    SpearPillar_LoadObjectAnim(0, &param0->objects.portals[0], 40, param0->context->narc, &param0->context->allocator);
+    SpearPillar_LoadObject(&param0->objects.portals[1], 42, param0->context->narc);
+    Easy3DObject_SetVisible(&param0->objects.portals[1].object, 0);
 
-    if (TrainerInfo_Gender(param0->unk_1EC0->trainerInfo) != 1) {
-        SpearPillar_LoadObject(&param0->unk_1A0.unk_13EC[0], 61, param0->unk_1EBC->unk_00);
-        SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_13EC[0], 62, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    if (TrainerInfo_Gender(param0->taskArgs->trainerInfo) != 1) {
+        SpearPillar_LoadObject(&param0->objects.characters[0], 61, param0->context->narc);
+        SpearPillar_LoadObjectAnim(0, &param0->objects.characters[0], 62, param0->context->narc, &param0->context->allocator);
     } else {
-        SpearPillar_LoadObject(&param0->unk_1A0.unk_13EC[0], 63, param0->unk_1EBC->unk_00);
-        SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_13EC[0], 64, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+        SpearPillar_LoadObject(&param0->objects.characters[0], 63, param0->context->narc);
+        SpearPillar_LoadObjectAnim(0, &param0->objects.characters[0], 64, param0->context->narc, &param0->context->allocator);
     }
 
-    Easy3DObject_SetPosition(&param0->unk_1A0.unk_13EC[0].unk_00, FX32_CONST(1), FX32_CONST(+0), FX32_CONST(+140));
+    Easy3DObject_SetPosition(&param0->objects.characters[0].object, FX32_CONST(1), FX32_CONST(+0), FX32_CONST(+140));
 
-    param0->unk_1A0.unk_13EC[0].unk_164 = 1;
-    param0->unk_1A0.unk_13EC[0].unk_154 = (FX32_HALF >> 1);
-    param0->unk_1A0.unk_13EC[0].unk_158 = 2;
+    param0->objects.characters[0].useAnimation = 1;
+    param0->objects.characters[0].animSpeed = (FX32_HALF >> 1);
+    param0->objects.characters[0].animID = 2;
 
-    SpearPillar_LoadObject(&param0->unk_1A0.unk_13EC[1], 13, param0->unk_1EBC->unk_00);
-    Easy3DObject_SetPosition(&param0->unk_1A0.unk_13EC[1].unk_00, FX32_CONST(1), FX32_CONST(+0), FX32_CONST(+60));
-    SpearPillar_LoadObjectAnim(0, &param0->unk_1A0.unk_13EC[1], 14, param0->unk_1EBC->unk_00, &param0->unk_1EBC->unk_1C);
+    SpearPillar_LoadObject(&param0->objects.characters[1], 13, param0->context->narc);
+    Easy3DObject_SetPosition(&param0->objects.characters[1].object, FX32_CONST(1), FX32_CONST(+0), FX32_CONST(+60));
+    SpearPillar_LoadObjectAnim(0, &param0->objects.characters[1], 14, param0->context->narc, &param0->context->allocator);
 
-    param0->unk_1A0.unk_13EC[1].unk_164 = 1;
-    param0->unk_1A0.unk_13EC[1].unk_154 = (FX32_HALF >> 1);
-    param0->unk_1A0.unk_13EC[1].unk_158 = 2;
+    param0->objects.characters[1].useAnimation = 1;
+    param0->objects.characters[1].animSpeed = (FX32_HALF >> 1);
+    param0->objects.characters[1].animID = 2;
 }
 
 static void SpearPillarGiratina_InitSprites(SpearPillarGiratina *param0)
 {
     int v0;
-    NARC *v1 = param0->unk_1EBC->unk_00;
-    BgConfig *v2 = param0->unk_1EBC->unk_0C;
-    SpriteSystem *v3 = param0->unk_1EBC->unk_04;
-    SpriteManager *v4 = param0->unk_1EBC->unk_08;
-    PaletteData *v5 = param0->unk_1EBC->unk_10;
+    NARC *v1 = param0->context->narc;
+    BgConfig *v2 = param0->context->bgConfig;
+    SpriteSystem *v3 = param0->context->spriteSystem;
+    SpriteManager *v4 = param0->context->spriteManager;
+    PaletteData *v5 = param0->context->paletteData;
     SpriteTemplate v6;
 
     v6.x = 0;
@@ -218,25 +218,25 @@ static void SpearPillarGiratina_InitSprites(SpearPillarGiratina *param0)
     v6.resources[3] = 50000;
 
     for (v0 = 0; v0 < 3; v0++) {
-        param0->unk_08.unk_0C[v0].unk_00 = SpriteSystem_NewSprite(v3, v4, &v6);
+        param0->sprites.pokemonSprites[v0].sprite = SpriteSystem_NewSprite(v3, v4, &v6);
 
-        ManagedSprite_TickFrame(param0->unk_08.unk_0C[v0].unk_00);
-        ManagedSprite_SetAffineOverwriteMode(param0->unk_08.unk_0C[v0].unk_00, AFFINE_OVERWRITE_MODE_DOUBLE);
-        ManagedSprite_SetAffineScale(param0->unk_08.unk_0C[v0].unk_00, 0.5f, 0.5f);
-        ManagedSprite_SetExplicitPaletteOffset(param0->unk_08.unk_0C[v0].unk_00, v0);
-        ManagedSprite_SetPositionXY(param0->unk_08.unk_0C[v0].unk_00, 16 + (v0 * 64), 64);
+        ManagedSprite_TickFrame(param0->sprites.pokemonSprites[v0].sprite);
+        ManagedSprite_SetAffineOverwriteMode(param0->sprites.pokemonSprites[v0].sprite, AFFINE_OVERWRITE_MODE_DOUBLE);
+        ManagedSprite_SetAffineScale(param0->sprites.pokemonSprites[v0].sprite, 0.5f, 0.5f);
+        ManagedSprite_SetExplicitPaletteOffset(param0->sprites.pokemonSprites[v0].sprite, v0);
+        ManagedSprite_SetPositionXY(param0->sprites.pokemonSprites[v0].sprite, 16 + (v0 * 64), 64);
 
-        param0->unk_08.unk_0C[v0].unk_0C = 1;
-        param0->unk_08.unk_0C[v0].unk_08 = v0;
-        param0->unk_08.unk_0C[v0].unk_14 = 50;
-        param0->unk_08.unk_0C[v0].unk_1C = v0 * 120;
-        param0->unk_08.unk_0C[v0].unk_20 = param0->unk_08.unk_0C[v0].unk_1C;
-        param0->unk_08.unk_0C[v0].unk_24 = v0;
-        param0->unk_08.unk_0C[v0].unk_28[0] = 1;
-        param0->unk_08.unk_0C[v0].unk_28[1] = 1;
-        param0->unk_08.unk_0C[v0].unk_28[2] = LCRNG_Next() % 10;
-        param0->unk_08.unk_0C[v0].unk_28[3] = 0;
-        param0->unk_08.unk_0C[v0].unk_40 = SysTask_Start(SpearPillarSprite_Task, &param0->unk_08.unk_0C[v0], 4096);
+        param0->sprites.pokemonSprites[v0].state = 1;
+        param0->sprites.pokemonSprites[v0].index = v0;
+        param0->sprites.pokemonSprites[v0].yPos = 50;
+        param0->sprites.pokemonSprites[v0].orbitAngle = v0 * 120;
+        param0->sprites.pokemonSprites[v0].wobbleAngle = param0->sprites.pokemonSprites[v0].orbitAngle;
+        param0->sprites.pokemonSprites[v0].jitterRange = v0;
+        param0->sprites.pokemonSprites[v0].params[0] = 1;
+        param0->sprites.pokemonSprites[v0].params[1] = 1;
+        param0->sprites.pokemonSprites[v0].params[2] = LCRNG_Next() % 10;
+        param0->sprites.pokemonSprites[v0].params[3] = 0;
+        param0->sprites.pokemonSprites[v0].task = SysTask_Start(SpearPillarSprite_Task, &param0->sprites.pokemonSprites[v0], 4096);
     }
 }
 
@@ -245,8 +245,8 @@ static void SpearPillarGiratina_FreeSprites(SpearPillarGiratina *param0)
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        SysTask_Done(param0->unk_08.unk_0C[v0].unk_40);
-        Sprite_DeleteAndFreeResources(param0->unk_08.unk_0C[v0].unk_00);
+        SysTask_Done(param0->sprites.pokemonSprites[v0].task);
+        Sprite_DeleteAndFreeResources(param0->sprites.pokemonSprites[v0].sprite);
     }
 }
 
@@ -256,15 +256,15 @@ void *SpearPillarGiratina_Init(SpearPillar *param0)
 
     memset(v0, 0, sizeof(SpearPillarGiratina));
 
-    v0->unk_1EBC = &param0->unk_0C;
-    v0->unk_1EC0 = param0->unk_D0;
+    v0->context = &param0->context;
+    v0->taskArgs = param0->taskArgs;
 
     SpearPillarGiratina_LoadGraphics(v0);
     SpearPillarGiratina_InitSprites(v0);
 
     {
-        SpearPillarScreen_InitScroll(&v0->unk_08.unk_00, HEAP_ID_111);
-        SpearPillarScreen_Scroll(&v0->unk_08.unk_00, 0, 191, (0xffff / 192) * 2, FX32_CONST(4), 1 * 100, REG_DB_BG1HOFS_ADDR, 0, 0x1000, 1);
+        SpearPillarScreen_InitScroll(&v0->sprites.screenScroll, HEAP_ID_111);
+        SpearPillarScreen_Scroll(&v0->sprites.screenScroll, 0, 191, (0xffff / 192) * 2, FX32_CONST(4), 1 * 100, REG_DB_BG1HOFS_ADDR, 0, 0x1000, 1);
     }
 
     {
@@ -288,8 +288,8 @@ void *SpearPillarGiratina_Init(SpearPillar *param0)
         }
     }
 
-    SpearPillarGiratina_InitCamera(v0->unk_1EBC->camera, &v0->unk_1EBC->unk_44);
-    v0->unk_1EBC->unk_44.y = FX32_CONST(0);
+    SpearPillarGiratina_InitCamera(v0->context->camera, &v0->context->cameraTarget);
+    v0->context->cameraTarget.y = FX32_CONST(0);
 
     SpearPillar_Set3DScreen(1);
     SpearPillar_SetBrightness(param0, +16);
@@ -301,333 +301,333 @@ BOOL SpearPillarGiratina_Main(void *param0)
 {
     SpearPillarGiratina *v0 = (SpearPillarGiratina *)param0;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 6, 1, HEAP_ID_111);
-        v0->unk_1EBC->unk_50.unk_03 = 0;
-        G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
-        G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
-        v0->unk_00++;
+        v0->context->blend.brightness = 0;
+        G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
+        G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
+        v0->state++;
     case 1:
         if (IsScreenFadeDone() == FALSE) {
             break;
         }
-        v0->unk_00++;
+        v0->state++;
         break;
     case 2: {
-        v0->unk_1EBC->unk_58.unk_0C = 20;
-        v0->unk_1EBC->unk_58.unk_10 = 0;
-        v0->unk_1EBC->unk_58.unk_14 = 0;
-        v0->unk_1EBC->unk_58.unk_08 = 60;
-        v0->unk_1EBC->unk_58.camera = v0->unk_1EBC->camera;
-        v0->unk_1EBC->unk_58.unk_18 = 0;
-        v0->unk_1EBC->unk_58.unk_1C = 0;
-        v0->unk_1EBC->unk_58.unk_20 = 0;
-        v0->unk_1EBC->unk_58.unk_04 = &v0->unk_1EBC->unk_44;
+        v0->context->cameraAnim.angleDeltaX = 20;
+        v0->context->cameraAnim.angleDeltaY = 0;
+        v0->context->cameraAnim.angleDeltaZ = 0;
+        v0->context->cameraAnim.duration = 60;
+        v0->context->cameraAnim.camera = v0->context->camera;
+        v0->context->cameraAnim.posDeltaX = 0;
+        v0->context->cameraAnim.posDeltaY = 0;
+        v0->context->cameraAnim.posDeltaZ = 0;
+        v0->context->cameraAnim.targetPos = &v0->context->cameraTarget;
 
-        SpearPillar_StartCameraAnim(&v0->unk_1EBC->unk_58);
-        v0->unk_00++;
+        SpearPillar_StartCameraAnim(&v0->context->cameraAnim);
+        v0->state++;
     } break;
     case 3:
-        if (SpearPillar_UpdateCameraAnim(&v0->unk_1EBC->unk_58)) {
-            SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 20);
-            v0->unk_00++;
+        if (SpearPillar_UpdateCameraAnim(&v0->context->cameraAnim)) {
+            SpearPillar_PrintMessage(v0->context, v0->taskArgs, 20);
+            v0->state++;
         }
         break;
     case 4:
-        if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
+        if (Text_IsPrinterActive(v0->context->textPrinter)) {
             break;
         }
 
-        SpearPillar_EraseMessage(v0->unk_1EBC);
-        v0->unk_00++;
+        SpearPillar_EraseMessage(v0->context);
+        v0->state++;
         break;
     case 5: {
-        v0->unk_1EBC->unk_58.unk_0C = 0;
-        v0->unk_1EBC->unk_58.unk_10 = 0;
-        v0->unk_1EBC->unk_58.unk_14 = 0;
-        v0->unk_1EBC->unk_58.unk_08 = 60;
-        v0->unk_1EBC->unk_58.camera = v0->unk_1EBC->camera;
-        v0->unk_1EBC->unk_58.unk_18 = 0;
-        v0->unk_1EBC->unk_58.unk_1C = 0;
-        v0->unk_1EBC->unk_58.unk_20 = FX32_CONST(70);
-        v0->unk_1EBC->unk_58.unk_04 = &v0->unk_1EBC->unk_44;
-        SpearPillar_StartCameraAnim(&v0->unk_1EBC->unk_58);
-        v0->unk_00++;
+        v0->context->cameraAnim.angleDeltaX = 0;
+        v0->context->cameraAnim.angleDeltaY = 0;
+        v0->context->cameraAnim.angleDeltaZ = 0;
+        v0->context->cameraAnim.duration = 60;
+        v0->context->cameraAnim.camera = v0->context->camera;
+        v0->context->cameraAnim.posDeltaX = 0;
+        v0->context->cameraAnim.posDeltaY = 0;
+        v0->context->cameraAnim.posDeltaZ = FX32_CONST(70);
+        v0->context->cameraAnim.targetPos = &v0->context->cameraTarget;
+        SpearPillar_StartCameraAnim(&v0->context->cameraAnim);
+        v0->state++;
     } break;
     case 6:
-        if (SpearPillar_UpdateCameraAnim(&v0->unk_1EBC->unk_58) == 0) {
+        if (SpearPillar_UpdateCameraAnim(&v0->context->cameraAnim) == 0) {
             break;
         }
 
-        if (++v0->unk_04 < 10) {
+        if (++v0->frameCounter < 10) {
             break;
         }
 
-        SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 21);
-        SpearPillarObject_StartAnim(&v0->unk_1A0.unk_13EC[1], sSpearPillarGiratinaAnim0);
+        SpearPillar_PrintMessage(v0->context, v0->taskArgs, 21);
+        SpearPillarObject_StartAnim(&v0->objects.characters[1], sSpearPillarGiratinaAnim0);
 
-        v0->unk_00++;
-        v0->unk_04 = 0;
+        v0->state++;
+        v0->frameCounter = 0;
         break;
     case 7:
-        if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
+        if (Text_IsPrinterActive(v0->context->textPrinter)) {
             break;
         }
 
-        SpearPillar_EraseMessage(v0->unk_1EBC);
-        SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 22);
+        SpearPillar_EraseMessage(v0->context);
+        SpearPillar_PrintMessage(v0->context, v0->taskArgs, 22);
         Sound_FadeOutBGM(0, 10);
-        v0->unk_00++;
+        v0->state++;
         break;
     case 8:
-        if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
+        if (Text_IsPrinterActive(v0->context->textPrinter)) {
             break;
         }
 
-        SpearPillar_EraseMessage(v0->unk_1EBC);
-        v0->unk_04++;
+        SpearPillar_EraseMessage(v0->context);
+        v0->frameCounter++;
 
-        if (v0->unk_04 == 15) {
+        if (v0->frameCounter == 15) {
             {
                 int v1;
 
                 for (v1 = 0; v1 < 3; v1++) {
-                    v0->unk_08.unk_0C[v1].unk_0C %= 2;
-                    v0->unk_08.unk_0C[v1].unk_0C += 2;
+                    v0->sprites.pokemonSprites[v1].state %= 2;
+                    v0->sprites.pokemonSprites[v1].state += 2;
                 }
             }
         }
 
-        if (v0->unk_04 < 30) {
+        if (v0->frameCounter < 30) {
             break;
         }
 
-        if (v0->unk_04 == 31) {
+        if (v0->frameCounter == 31) {
             (void)0;
         }
 
-        if (v0->unk_1EBC->unk_50.unk_03 > -6) {
-            if (v0->unk_04 % 2) {
-                v0->unk_1EBC->unk_50.unk_03--;
+        if (v0->context->blend.brightness > -6) {
+            if (v0->frameCounter % 2) {
+                v0->context->blend.brightness--;
             }
 
-            G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
-            G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
+            G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
+            G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
         } else {
-            SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 23);
+            SpearPillar_PrintMessage(v0->context, v0->taskArgs, 23);
 
-            v0->unk_04 = 0;
-            v0->unk_00++;
+            v0->frameCounter = 0;
+            v0->state++;
         }
         break;
     case 9:
-        if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
+        if (Text_IsPrinterActive(v0->context->textPrinter)) {
             break;
         }
 
-        SpearPillar_EraseMessage(v0->unk_1EBC);
-        SpearPillarObject_StartAnim(&v0->unk_1A0.unk_13EC[1], sSpearPillarGiratinaAnim1);
+        SpearPillar_EraseMessage(v0->context);
+        SpearPillarObject_StartAnim(&v0->objects.characters[1], sSpearPillarGiratinaAnim1);
 
         {
-            v0->unk_1EBC->unk_58.unk_0C = 0;
-            v0->unk_1EBC->unk_58.unk_10 = 0;
-            v0->unk_1EBC->unk_58.unk_14 = 0;
-            v0->unk_1EBC->unk_58.unk_08 = 90;
-            v0->unk_1EBC->unk_58.camera = v0->unk_1EBC->camera;
-            v0->unk_1EBC->unk_58.unk_18 = 0;
-            v0->unk_1EBC->unk_58.unk_1C = 0;
-            v0->unk_1EBC->unk_58.unk_20 = -FX32_CONST(80);
-            v0->unk_1EBC->unk_58.unk_04 = &v0->unk_1EBC->unk_44;
-            SpearPillar_StartCameraAnim(&v0->unk_1EBC->unk_58);
-            v0->unk_00++;
+            v0->context->cameraAnim.angleDeltaX = 0;
+            v0->context->cameraAnim.angleDeltaY = 0;
+            v0->context->cameraAnim.angleDeltaZ = 0;
+            v0->context->cameraAnim.duration = 90;
+            v0->context->cameraAnim.camera = v0->context->camera;
+            v0->context->cameraAnim.posDeltaX = 0;
+            v0->context->cameraAnim.posDeltaY = 0;
+            v0->context->cameraAnim.posDeltaZ = -FX32_CONST(80);
+            v0->context->cameraAnim.targetPos = &v0->context->cameraTarget;
+            SpearPillar_StartCameraAnim(&v0->context->cameraAnim);
+            v0->state++;
         }
         break;
     case 10:
-        if (SpearPillar_UpdateCameraAnim(&v0->unk_1EBC->unk_58) == 0) {
+        if (SpearPillar_UpdateCameraAnim(&v0->context->cameraAnim) == 0) {
             break;
         }
 
-        v0->unk_00++;
-        v0->unk_04 = 0;
+        v0->state++;
+        v0->frameCounter = 0;
         break;
     case 11:
-        v0->unk_1A0.unk_10DC[0].unk_160 = 1;
-        Easy3DObject_SetVisible(&v0->unk_1A0.unk_10DC[0].unk_00, 1);
+        v0->objects.portals[0].isAnimating = 1;
+        Easy3DObject_SetVisible(&v0->objects.portals[0].object, 1);
         Sound_PlayBGM(SEQ_PL_EV_GIRA_sseq);
         Sound_SetSceneAndPlayBGM(SOUND_SCENE_SUB_63, SEQ_NONE, 0);
-        v0->unk_00++;
+        v0->state++;
         break;
     case 12:
-        if ((++v0->unk_04) == 60) {
-            SpearPillarObject_StartAnim(&v0->unk_1A0.unk_13EC[1], sSpearPillarGiratinaAnim2);
+        if ((++v0->frameCounter) == 60) {
+            SpearPillarObject_StartAnim(&v0->objects.characters[1], sSpearPillarGiratinaAnim2);
         }
 
-        if ((v0->unk_04 == 15) || (v0->unk_04 == 45) || (v0->unk_04 == 75) || (v0->unk_04 == 95) || (v0->unk_04 == 115) || (v0->unk_04 == 130) || (v0->unk_04 == 145)) {
+        if ((v0->frameCounter == 15) || (v0->frameCounter == 45) || (v0->frameCounter == 75) || (v0->frameCounter == 95) || (v0->frameCounter == 115) || (v0->frameCounter == 130) || (v0->frameCounter == 145)) {
             Sound_PlayEffect(SEQ_SE_PL_W060_sseq);
-            Sound_SetPitchForSequence(1477, 0xffff, (v0->unk_04 / 30 * 32) + (v0->unk_04 % 32 * 10));
+            Sound_SetPitchForSequence(1477, 0xffff, (v0->frameCounter / 30 * 32) + (v0->frameCounter % 32 * 10));
         }
 
-        if (v0->unk_1A0.unk_10DC[0].unk_160 == 0) {
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_10DC[0].unk_00, 0);
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_10DC[1].unk_00, 1);
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[0].unk_00, 1);
+        if (v0->objects.portals[0].isAnimating == 0) {
+            Easy3DObject_SetVisible(&v0->objects.portals[0].object, 0);
+            Easy3DObject_SetVisible(&v0->objects.portals[1].object, 1);
+            Easy3DObject_SetVisible(&v0->objects.legendaries[0].object, 1);
 
-            v0->unk_1A0.unk_934[0].unk_160 = 1;
-            v0->unk_04 = 0;
-            v0->unk_00++;
+            v0->objects.legendaries[0].isAnimating = 1;
+            v0->frameCounter = 0;
+            v0->state++;
         }
         break;
     case 13:
-        if (v0->unk_1A0.unk_934[0].unk_00.position.y < FX32_CONST(-50)) {
-            v0->unk_1A0.unk_934[0].unk_00.position.y += FX32_HALF;
+        if (v0->objects.legendaries[0].object.position.y < FX32_CONST(-50)) {
+            v0->objects.legendaries[0].object.position.y += FX32_HALF;
         } else {
-            v0->unk_04 = 0;
-            v0->unk_00++;
+            v0->frameCounter = 0;
+            v0->state++;
         }
         break;
     case 14:
-        if (v0->unk_1A0.unk_934[0].unk_160 == 0) {
-            v0->unk_1A0.unk_934[1].unk_00.position.y = v0->unk_1A0.unk_934[0].unk_00.position.y;
-            v0->unk_1A0.unk_934[1].unk_160 = 1;
-            v0->unk_1A0.unk_934[1].unk_164 = 1;
-            v0->unk_1A0.unk_314.unk_160 = 1;
-            v0->unk_1A0.unk_314.unk_16C = 1;
-            v0->unk_1A0.unk_18C.unk_160 = 1;
-            v0->unk_1A0.unk_18C.unk_168 = 1;
+        if (v0->objects.legendaries[0].isAnimating == 0) {
+            v0->objects.legendaries[1].object.position.y = v0->objects.legendaries[0].object.position.y;
+            v0->objects.legendaries[1].isAnimating = 1;
+            v0->objects.legendaries[1].useAnimation = 1;
+            v0->objects.rift.isAnimating = 1;
+            v0->objects.rift.updateAnim1 = 1;
+            v0->objects.shadowRift.isAnimating = 1;
+            v0->objects.shadowRift.loopAnim1 = 1;
 
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[0].unk_00, 0);
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[1].unk_00, 1);
+            Easy3DObject_SetVisible(&v0->objects.legendaries[0].object, 0);
+            Easy3DObject_SetVisible(&v0->objects.legendaries[1].object, 1);
 
-            v0->unk_00++;
+            v0->state++;
         }
         break;
     case 15:
-        v0->unk_04++;
+        v0->frameCounter++;
 
-        if (v0->unk_04 == 1) {
+        if (v0->frameCounter == 1) {
             Sound_PlayEffect(SEQ_SE_PL_W082C_sseq);
         }
 
-        if (v0->unk_04 == 20) {
-            SpearPillarObject_StartAnim(&v0->unk_1A0.unk_13EC[1], sSpearPillarGiratinaAnim3);
+        if (v0->frameCounter == 20) {
+            SpearPillarObject_StartAnim(&v0->objects.characters[1], sSpearPillarGiratinaAnim3);
         }
 
-        if (v0->unk_04 == 15 + 25) {
+        if (v0->frameCounter == 15 + 25) {
             Sound_PlayPokemonCryEx(POKECRY_NORMAL, SPECIES_DIALGA, -80, 40, HEAP_ID_111, 0);
         }
 
-        if (v0->unk_04 == 40 + 25) {
+        if (v0->frameCounter == 40 + 25) {
             Sound_PlayPokemonCryEx(POKECRY_NORMAL, SPECIES_PALKIA, +80, 40, HEAP_ID_111, 0);
         }
 
-        if (v0->unk_04 < 15 + 25) {
-            v0->unk_1A0.unk_624[0].unk_00.position.z -= FX32_HALF >> 1;
+        if (v0->frameCounter < 15 + 25) {
+            v0->objects.dialgaPalkia[0].object.position.z -= FX32_HALF >> 1;
         } else {
-            v0->unk_1A0.unk_624[0].unk_00.position.z -= FX32_HALF;
+            v0->objects.dialgaPalkia[0].object.position.z -= FX32_HALF;
         }
 
-        if (v0->unk_04 < 40 + 25) {
-            v0->unk_1A0.unk_624[1].unk_00.position.z -= FX32_HALF >> 1;
+        if (v0->frameCounter < 40 + 25) {
+            v0->objects.dialgaPalkia[1].object.position.z -= FX32_HALF >> 1;
         } else {
-            v0->unk_1A0.unk_624[1].unk_00.position.z -= FX32_HALF;
+            v0->objects.dialgaPalkia[1].object.position.z -= FX32_HALF;
         }
 
-        if (v0->unk_1A0.unk_934[1].unk_00.position.y < FX32_CONST(0)) {
-            v0->unk_1A0.unk_934[1].unk_00.position.y += FX32_HALF;
+        if (v0->objects.legendaries[1].object.position.y < FX32_CONST(0)) {
+            v0->objects.legendaries[1].object.position.y += FX32_HALF;
         } else {
-            v0->unk_1A0.unk_934[1].unk_00.position.y = FX32_CONST(0);
-            v0->unk_04 = 0;
-            SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 24);
-            v0->unk_00++;
+            v0->objects.legendaries[1].object.position.y = FX32_CONST(0);
+            v0->frameCounter = 0;
+            SpearPillar_PrintMessage(v0->context, v0->taskArgs, 24);
+            v0->state++;
         }
         break;
     case 16:
-        if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
+        if (Text_IsPrinterActive(v0->context->textPrinter)) {
             break;
         }
 
-        SpearPillar_EraseMessage(v0->unk_1EBC);
+        SpearPillar_EraseMessage(v0->context);
 
-        v0->unk_1A0.unk_49C.unk_160 = 1;
-        v0->unk_1A0.unk_49C.unk_164 = 0;
-        v0->unk_1A0.unk_49C.unk_16C = 1;
-        v0->unk_1A0.unk_934[2].unk_160 = 1;
+        v0->objects.portal.isAnimating = 1;
+        v0->objects.portal.useAnimation = 0;
+        v0->objects.portal.updateAnim1 = 1;
+        v0->objects.legendaries[2].isAnimating = 1;
 
-        Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[1].unk_00, 0);
-        Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[2].unk_00, 1);
+        Easy3DObject_SetVisible(&v0->objects.legendaries[1].object, 0);
+        Easy3DObject_SetVisible(&v0->objects.legendaries[2].object, 1);
         Sound_PlayPokemonCryEx(POKECRY_FIELD_EVENT, SPECIES_GIRATINA, 0, 127, HEAP_ID_111, 0);
 
-        v0->unk_04 = 0;
-        v0->unk_00++;
+        v0->frameCounter = 0;
+        v0->state++;
         break;
     case 17:
-        if (v0->unk_1A0.unk_934[2].unk_160 == 0) {
-            SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 25);
+        if (v0->objects.legendaries[2].isAnimating == 0) {
+            SpearPillar_PrintMessage(v0->context, v0->taskArgs, 25);
 
-            v0->unk_1A0.unk_934[3].unk_160 = 1;
-            v0->unk_1A0.unk_934[3].unk_164 = 1;
-            v0->unk_1A0.unk_49C.unk_160 = 0;
+            v0->objects.legendaries[3].isAnimating = 1;
+            v0->objects.legendaries[3].useAnimation = 1;
+            v0->objects.portal.isAnimating = 0;
 
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_49C.unk_00, 0);
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[2].unk_00, 0);
-            Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[3].unk_00, 1);
+            Easy3DObject_SetVisible(&v0->objects.portal.object, 0);
+            Easy3DObject_SetVisible(&v0->objects.legendaries[2].object, 0);
+            Easy3DObject_SetVisible(&v0->objects.legendaries[3].object, 1);
 
-            v0->unk_00++;
+            v0->state++;
         }
         break;
     case 18:
-        if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
+        if (Text_IsPrinterActive(v0->context->textPrinter)) {
             break;
         }
 
-        if (v0->unk_04 == 0) {
-            SpearPillar_EraseMessage(v0->unk_1EBC);
+        if (v0->frameCounter == 0) {
+            SpearPillar_EraseMessage(v0->context);
         }
 
         Sound_PlayBGM(SEQ_PL_EV_GIRA2_sseq);
 
-        v0->unk_1A0.unk_934[4].unk_160 = 1;
+        v0->objects.legendaries[4].isAnimating = 1;
 
-        Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[3].unk_00, 0);
-        Easy3DObject_SetVisible(&v0->unk_1A0.unk_934[4].unk_00, 1);
-        v0->unk_04 = 0;
-        v0->unk_00++;
+        Easy3DObject_SetVisible(&v0->objects.legendaries[3].object, 0);
+        Easy3DObject_SetVisible(&v0->objects.legendaries[4].object, 1);
+        v0->frameCounter = 0;
+        v0->state++;
         break;
     case 19:
-        if ((++v0->unk_04) == 238) {
+        if ((++v0->frameCounter) == 238) {
             Sound_PlayPokemonCryEx(POKECRY_FIELD_EVENT, SPECIES_GIRATINA, 0, 127, HEAP_ID_111, 0);
         }
 
-        if (v0->unk_04 == 170) {
-            SpearPillar_PrintMessage(v0->unk_1EBC, v0->unk_1EC0, 26);
+        if (v0->frameCounter == 170) {
+            SpearPillar_PrintMessage(v0->context, v0->taskArgs, 26);
         }
 
-        if (v0->unk_04 == 180) {
+        if (v0->frameCounter == 180) {
             (void)0;
         }
 
-        if (v0->unk_04 == 210) {
+        if (v0->frameCounter == 210) {
             (void)0;
         }
 
-        if (v0->unk_04 == 220) {
+        if (v0->frameCounter == 220) {
             (void)0;
         }
 
-        if (v0->unk_04 == 230) {
+        if (v0->frameCounter == 230) {
             (void)0;
         }
 
-        if (v0->unk_1A0.unk_934[4].unk_160 == 0) {
-            if (Text_IsPrinterActive(v0->unk_1EBC->unk_40)) {
-                Text_RemovePrinter(v0->unk_1EBC->unk_40);
+        if (v0->objects.legendaries[4].isAnimating == 0) {
+            if (Text_IsPrinterActive(v0->context->textPrinter)) {
+                Text_RemovePrinter(v0->context->textPrinter);
             }
 
-            v0->unk_1EBC->unk_50.unk_03 = -16;
+            v0->context->blend.brightness = -16;
 
-            G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
-            G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
+            G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
+            G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
 
             {
                 u16 currentBGM = Sound_GetCurrentBGM();
@@ -635,47 +635,47 @@ BOOL SpearPillarGiratina_Main(void *param0)
                 Sound_StopBGM(currentBGM, 0);
             }
 
-            SpearPillar_EraseMessage(v0->unk_1EBC);
+            SpearPillar_EraseMessage(v0->context);
 
-            v0->unk_00++;
-            v0->unk_04 = 0;
+            v0->state++;
+            v0->frameCounter = 0;
         }
         break;
     case 20:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 1, 1, HEAP_ID_111);
-        v0->unk_00++;
+        v0->state++;
     case 21:
         if (IsScreenFadeDone() == FALSE) {
             break;
         }
 
-        v0->unk_1EBC->unk_50.unk_03 = 0;
-        G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
-        G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->unk_1EBC->unk_50.unk_03);
-        v0->unk_00++;
+        v0->context->blend.brightness = 0;
+        G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
+        G2S_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, v0->context->blend.brightness);
+        v0->state++;
         break;
     default:
-        if ((++v0->unk_04) >= 60) {
-            v0->unk_00 = 0;
+        if ((++v0->frameCounter) >= 60) {
+            v0->state = 0;
             return 0;
         }
 
         break;
     }
 
-    v0->unk_1A0.unk_16FC[0].unk_00.position = v0->unk_1A0.unk_624[0].unk_00.position;
-    v0->unk_1A0.unk_16FC[1].unk_00.position = v0->unk_1A0.unk_624[1].unk_00.position;
-    v0->unk_1A0.unk_16FC[2].unk_00.position = v0->unk_1A0.unk_13EC[0].unk_00.position;
-    v0->unk_1A0.unk_16FC[3].unk_00.position = v0->unk_1A0.unk_13EC[1].unk_00.position;
-    v0->unk_1A0.unk_16FC[0].unk_00.position.z -= (FX32_ONE * 2);
-    v0->unk_1A0.unk_16FC[1].unk_00.position.z -= (FX32_ONE * 2);
-    v0->unk_1A0.unk_16FC[2].unk_00.position.z -= (FX32_ONE * 2);
-    v0->unk_1A0.unk_16FC[3].unk_00.position.z -= (FX32_ONE * 2);
-    v0->unk_1A0.unk_16FC[2].unk_00.position.x -= FX32_ONE;
-    v0->unk_1A0.unk_16FC[3].unk_00.position.x -= FX32_ONE;
+    v0->objects.shadows[0].object.position = v0->objects.dialgaPalkia[0].object.position;
+    v0->objects.shadows[1].object.position = v0->objects.dialgaPalkia[1].object.position;
+    v0->objects.shadows[2].object.position = v0->objects.characters[0].object.position;
+    v0->objects.shadows[3].object.position = v0->objects.characters[1].object.position;
+    v0->objects.shadows[0].object.position.z -= (FX32_ONE * 2);
+    v0->objects.shadows[1].object.position.z -= (FX32_ONE * 2);
+    v0->objects.shadows[2].object.position.z -= (FX32_ONE * 2);
+    v0->objects.shadows[3].object.position.z -= (FX32_ONE * 2);
+    v0->objects.shadows[2].object.position.x -= FX32_ONE;
+    v0->objects.shadows[3].object.position.x -= FX32_ONE;
 
     SpearPillarGiratina_DrawFrame(v0);
-    SpearPillar_BlendBg(v0->unk_1EBC);
+    SpearPillar_BlendBg(v0->context);
 
     return 1;
 }
@@ -684,43 +684,43 @@ BOOL SpearPillarGiratina_Exit(void *param0)
 {
     SpearPillarGiratina *v0 = (SpearPillarGiratina *)param0;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 0:
         SpearPillarGiratina_FreeSprites(v0);
-        SpearPillarScreen_FreeScroll(&v0->unk_08.unk_00);
-        v0->unk_00++;
+        SpearPillarScreen_FreeScroll(&v0->sprites.screenScroll);
+        v0->state++;
         break;
     case 1:
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_04, &v0->unk_1EBC->unk_1C, 0);
+        SpearPillar_FreeObject(&v0->objects.background, &v0->context->allocator, 0);
 
         {
             int v1;
 
             for (v1 = 0; v1 < 4; v1++) {
-                SpearPillar_FreeObject(&v0->unk_1A0.unk_16FC[v1], &v0->unk_1EBC->unk_1C, 0);
+                SpearPillar_FreeObject(&v0->objects.shadows[v1], &v0->context->allocator, 0);
             }
         }
 
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_314, &v0->unk_1EBC->unk_1C, 2);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_49C, &v0->unk_1EBC->unk_1C, 2);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_18C, &v0->unk_1EBC->unk_1C, 2);
+        SpearPillar_FreeObject(&v0->objects.rift, &v0->context->allocator, 2);
+        SpearPillar_FreeObject(&v0->objects.portal, &v0->context->allocator, 2);
+        SpearPillar_FreeObject(&v0->objects.shadowRift, &v0->context->allocator, 2);
 
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_624[0], &v0->unk_1EBC->unk_1C, 1);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_624[1], &v0->unk_1EBC->unk_1C, 1);
+        SpearPillar_FreeObject(&v0->objects.dialgaPalkia[0], &v0->context->allocator, 1);
+        SpearPillar_FreeObject(&v0->objects.dialgaPalkia[1], &v0->context->allocator, 1);
 
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_934[0], &v0->unk_1EBC->unk_1C, 2);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_934[1], &v0->unk_1EBC->unk_1C, 2);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_934[2], &v0->unk_1EBC->unk_1C, 2);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_934[3], &v0->unk_1EBC->unk_1C, 2);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_934[4], &v0->unk_1EBC->unk_1C, 2);
+        SpearPillar_FreeObject(&v0->objects.legendaries[0], &v0->context->allocator, 2);
+        SpearPillar_FreeObject(&v0->objects.legendaries[1], &v0->context->allocator, 2);
+        SpearPillar_FreeObject(&v0->objects.legendaries[2], &v0->context->allocator, 2);
+        SpearPillar_FreeObject(&v0->objects.legendaries[3], &v0->context->allocator, 2);
+        SpearPillar_FreeObject(&v0->objects.legendaries[4], &v0->context->allocator, 2);
 
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_10DC[0], &v0->unk_1EBC->unk_1C, 1);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_10DC[1], &v0->unk_1EBC->unk_1C, 0);
+        SpearPillar_FreeObject(&v0->objects.portals[0], &v0->context->allocator, 1);
+        SpearPillar_FreeObject(&v0->objects.portals[1], &v0->context->allocator, 0);
 
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_13EC[0], &v0->unk_1EBC->unk_1C, 1);
-        SpearPillar_FreeObject(&v0->unk_1A0.unk_13EC[1], &v0->unk_1EBC->unk_1C, 1);
+        SpearPillar_FreeObject(&v0->objects.characters[0], &v0->context->allocator, 1);
+        SpearPillar_FreeObject(&v0->objects.characters[1], &v0->context->allocator, 1);
 
-        v0->unk_00++;
+        v0->state++;
         break;
     default:
         Heap_Free(v0);
@@ -735,33 +735,33 @@ static void SpearPillarGiratina_DrawFrame(SpearPillarGiratina *param0)
     G3_ResetG3X();
     Camera_ComputeViewMatrix();
 
-    SpearPillar_SetupLighting(param0->unk_1EBC);
-    SpearPillar_UpdateCamera(param0->unk_1EBC);
+    SpearPillar_SetupLighting(param0->context);
+    SpearPillar_UpdateCamera(param0->context);
 
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_04);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_314);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_49C);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_18C);
+    SpearPillar_DrawObject(&param0->objects.background);
+    SpearPillar_DrawObject(&param0->objects.rift);
+    SpearPillar_DrawObject(&param0->objects.portal);
+    SpearPillar_DrawObject(&param0->objects.shadowRift);
 
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_10DC[0]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_10DC[1]);
+    SpearPillar_DrawObject(&param0->objects.portals[0]);
+    SpearPillar_DrawObject(&param0->objects.portals[1]);
 
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_934[0]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_934[1]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_934[2]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_934[3]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_934[4]);
+    SpearPillar_DrawObject(&param0->objects.legendaries[0]);
+    SpearPillar_DrawObject(&param0->objects.legendaries[1]);
+    SpearPillar_DrawObject(&param0->objects.legendaries[2]);
+    SpearPillar_DrawObject(&param0->objects.legendaries[3]);
+    SpearPillar_DrawObject(&param0->objects.legendaries[4]);
 
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_624[0]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_624[1]);
+    SpearPillar_DrawObject(&param0->objects.dialgaPalkia[0]);
+    SpearPillar_DrawObject(&param0->objects.dialgaPalkia[1]);
 
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_13EC[0]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_13EC[1]);
+    SpearPillar_DrawObject(&param0->objects.characters[0]);
+    SpearPillar_DrawObject(&param0->objects.characters[1]);
 
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_16FC[0]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_16FC[1]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_16FC[2]);
-    SpearPillar_DrawObject(&param0->unk_1A0.unk_16FC[3]);
+    SpearPillar_DrawObject(&param0->objects.shadows[0]);
+    SpearPillar_DrawObject(&param0->objects.shadows[1]);
+    SpearPillar_DrawObject(&param0->objects.shadows[2]);
+    SpearPillar_DrawObject(&param0->objects.shadows[3]);
 
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_W);
 }
