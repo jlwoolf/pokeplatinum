@@ -1,12 +1,12 @@
-#include "game_opening/ov77_021D54B0.h"
+#include "game_opening/opening_cutscene_sprites.h"
 
 #include <nitro.h>
 #include <string.h>
 
 #include "constants/graphics.h"
 
-#include "game_opening/ov77_021D6670.h"
-#include "game_opening/struct_ov77_021D6734_decl.h"
+#include "game_opening/opening_cutscene_sparkles.h"
+#include "game_opening/struct_opening_cutscene_sparkle_pool_decl.h"
 
 #include "cell_transfer.h"
 #include "char_transfer.h"
@@ -22,9 +22,9 @@
 
 SDK_COMPILER_ASSERT(((3 + 1 + 1 + 2 + 4) + 6) == 17);
 
-void include_data_ov77_021D79B8(void);
+void OpeningCutsceneSprites_IncludeData(void);
 
-typedef struct UnkStruct_ov77_021D5564_t {
+typedef struct OpeningCutsceneSprites_t {
     SpriteList *unk_00;
     G2dRenderer unk_04;
     SpriteResourceCollection *unk_190[4];
@@ -32,16 +32,16 @@ typedef struct UnkStruct_ov77_021D5564_t {
     Sprite *unk_250[17];
     SpriteResourcesHeader unk_294[3];
     NNSG2dCellTransferState *unk_300;
-} UnkStruct_ov77_021D5564;
+} OpeningCutsceneSprites;
 
-static const u8 Unk_ov77_021D7914[4] = {
+static const u8 sOpeningCutsceneSpriteResourceCounts[4] = {
     0xB,
     0xB,
     0xB,
     0xB
 };
 
-static int Unk_ov77_021D79B8[17] = {
+static int sOpeningCutsceneSpriteIndices[17] = {
     0x0,
     0x1,
     0x2,
@@ -74,22 +74,22 @@ static u16 dummy[16] = {
     0x0
 };
 
-static fx32 Unk_ov77_021D79AC[3] = {
+static fx32 sOpeningCutsceneTrioOffset0[3] = {
     (FX32_ONE / 2) * 12,
     (FX32_ONE / 2) * 11,
     (FX32_ONE / 2) * 10
 };
 
-static fx32 Unk_ov77_021D79A0[1] = {
+static fx32 sOpeningCutsceneTrioOffset1[1] = {
     (FX32_ONE / 2) * 10
 };
 
-static fx32 Unk_ov77_021D79A4[2] = {
+static fx32 sOpeningCutsceneTrioOffset2[2] = {
     (FX32_ONE / 2) * 8,
     (FX32_ONE / 2) * 11
 };
 
-static void ov77_021D54B0()
+static void OpeningCutsceneSprites_InitTransfers()
 {
     const int heapID = HEAP_ID_76;
 
@@ -107,7 +107,7 @@ static void ov77_021D54B0()
     VramTransfer_New((3 * 2), heapID);
 }
 
-static void ov77_021D54E8(const int param0, UnkStruct_ov77_021D5564 *param1, const int param2, AffineSpriteListTemplate *param3, SpriteResourcesHeader *param4, int param5, int param6)
+static void OpeningCutsceneSprites_SetupTemplate(const int param0, OpeningCutsceneSprites *param1, const int param2, AffineSpriteListTemplate *param3, SpriteResourcesHeader *param4, int param5, int param6)
 {
     SpriteResourcesHeader_Init(param4, param0, param0, param0, param0, 0xffffffff, 0xffffffff, param5, param2, param1->unk_190[0], param1->unk_190[1], param1->unk_190[2], param1->unk_190[3], NULL, NULL);
 
@@ -127,12 +127,12 @@ static void ov77_021D54E8(const int param0, UnkStruct_ov77_021D5564 *param1, con
     }
 }
 
-const int ov77_021D555C(void)
+const int OpeningCutsceneSprites_GetSize(void)
 {
-    return sizeof(UnkStruct_ov77_021D5564);
+    return sizeof(OpeningCutsceneSprites);
 }
 
-void ov77_021D5564(UnkStruct_ov77_021D5564 *param0)
+void OpeningCutsceneSprites_Init(OpeningCutsceneSprites *param0)
 {
     int i;
     const int heapID = HEAP_ID_76;
@@ -140,7 +140,7 @@ void ov77_021D5564(UnkStruct_ov77_021D5564 *param0)
     GX_SetOBJVRamModeChar(GX_OBJVRAMMODE_CHAR_1D_32K);
     GXS_SetOBJVRamModeChar(GX_OBJVRAMMODE_CHAR_1D_32K);
 
-    ov77_021D54B0();
+    OpeningCutsceneSprites_InitTransfers();
     NNS_G2dInitOamManagerModule();
     RenderOam_Init(0, 128, 0, 32, 0, 128, 0, 32, heapID);
 
@@ -148,7 +148,7 @@ void ov77_021D5564(UnkStruct_ov77_021D5564 *param0)
     param0->unk_300 = CellTransfer_New(3, heapID);
 
     for (i = 0; i < 4; i++) {
-        param0->unk_190[i] = SpriteResourceCollection_New(Unk_ov77_021D7914[i], i, heapID);
+        param0->unk_190[i] = SpriteResourceCollection_New(sOpeningCutsceneSpriteResourceCounts[i], i, heapID);
     }
 
     param0->unk_1A0[0][0] = SpriteResourceCollection_AddTiles(param0->unk_190[0], 128, 46, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
@@ -204,7 +204,7 @@ void ov77_021D5564(UnkStruct_ov77_021D5564 *param0)
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-void ov77_021D5BAC(UnkStruct_ov77_021D5564 *param0)
+void OpeningCutsceneSprites_Free(OpeningCutsceneSprites *param0)
 {
     u8 v0;
 
@@ -234,7 +234,7 @@ void ov77_021D5BAC(UnkStruct_ov77_021D5564 *param0)
     VramTransfer_Free();
 }
 
-void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
+void OpeningCutsceneSprites_Create(OpeningCutsceneSprites *param0)
 {
     int v0;
     SpriteResourcesHeader v1;
@@ -265,7 +265,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
     };
 
     {
-        ov77_021D54E8(0, param0, 0, &v2, &param0->unk_294[0], 1, NNS_G2D_VRAM_TYPE_2DMAIN);
+        OpeningCutsceneSprites_SetupTemplate(0, param0, 0, &v2, &param0->unk_294[0], 1, NNS_G2D_VRAM_TYPE_2DMAIN);
 
         v2.position.x = FX32_ONE * (128 - 48);
         v2.position.y = FX32_ONE * (14 * 8);
@@ -274,7 +274,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetAnimateFlag(param0->unk_250[0], 0);
         Sprite_SetDrawFlag(param0->unk_250[0], FALSE);
 
-        ov77_021D54E8(1, param0, 0, &v2, &param0->unk_294[2], 1, NNS_G2D_VRAM_TYPE_2DSUB);
+        OpeningCutsceneSprites_SetupTemplate(1, param0, 0, &v2, &param0->unk_294[2], 1, NNS_G2D_VRAM_TYPE_2DSUB);
 
         v2.position.x = FX32_ONE * (128 - 48);
         v2.position.y = FX32_ONE * (14 * 8) + (192 << FX32_SHIFT);
@@ -283,7 +283,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetAnimateFlag(param0->unk_250[1], 0);
         Sprite_SetDrawFlag(param0->unk_250[1], FALSE);
 
-        ov77_021D54E8(2, param0, 0, &v2, &param0->unk_294[1], 1, NNS_G2D_VRAM_TYPE_2DMAIN);
+        OpeningCutsceneSprites_SetupTemplate(2, param0, 0, &v2, &param0->unk_294[1], 1, NNS_G2D_VRAM_TYPE_2DMAIN);
 
         v2.position.x = FX32_ONE * (128 + 48);
         v2.position.y = FX32_ONE * (14 * 8);
@@ -292,7 +292,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetAnimateFlag(param0->unk_250[2], 0);
         Sprite_SetDrawFlag(param0->unk_250[2], FALSE);
 
-        ov77_021D54E8(3, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+        OpeningCutsceneSprites_SetupTemplate(3, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
         v2.position.x = FX32_ONE * -64;
         v2.position.y = FX32_ONE * (14 * 8);
@@ -301,7 +301,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetAnimateFlag(param0->unk_250[3], 1);
         Sprite_SetDrawFlag(param0->unk_250[3], FALSE);
 
-        ov77_021D54E8(6, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+        OpeningCutsceneSprites_SetupTemplate(6, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
         v2.position.x = FX32_ONE * (256 + 64);
         v2.position.y = FX32_ONE * (14 * 8);
@@ -310,7 +310,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetAnimateFlag(param0->unk_250[10], 1);
         Sprite_SetDrawFlag(param0->unk_250[10], FALSE);
 
-        ov77_021D54E8(7, param0, 1, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+        OpeningCutsceneSprites_SetupTemplate(7, param0, 1, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
         v2.position.x = FX32_ONE * 128;
         v2.position.y = FX32_ONE * (12 * 8);
@@ -320,7 +320,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetDrawFlag(param0->unk_250[11], FALSE);
         Sprite_SetAffineOverwriteMode(param0->unk_250[11], 1);
 
-        ov77_021D54E8(8, param0, 1, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DSUB);
+        OpeningCutsceneSprites_SetupTemplate(8, param0, 1, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DSUB);
 
         v2.position.x = FX32_ONE * 128;
         v2.position.y = FX32_ONE * (12 * 8) + (192 << FX32_SHIFT);
@@ -330,7 +330,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetDrawFlag(param0->unk_250[12], FALSE);
         Sprite_SetAffineOverwriteMode(param0->unk_250[12], 1);
 
-        ov77_021D54E8(9, param0, 3, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+        OpeningCutsceneSprites_SetupTemplate(9, param0, 3, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
         v2.position.x = FX32_ONE * 128;
         v2.position.y = FX32_ONE * (0xd * 8);
@@ -344,7 +344,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetAnimateFlag(param0->unk_250[14], 1);
         Sprite_SetDrawFlag(param0->unk_250[14], FALSE);
 
-        ov77_021D54E8(10, param0, 3, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DSUB);
+        OpeningCutsceneSprites_SetupTemplate(10, param0, 3, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DSUB);
 
         v2.position.x = FX32_ONE * 128;
         v2.position.y = FX32_ONE * (0xd * 8) + (192 << FX32_SHIFT);
@@ -359,7 +359,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
         Sprite_SetDrawFlag(param0->unk_250[16], FALSE);
 
         for (v0 = 0; v0 < 6; v0++) {
-            ov77_021D54E8(4, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+            OpeningCutsceneSprites_SetupTemplate(4, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
             v2.position.x = FX32_ONE * v4[v0];
             v2.position.y = FX32_ONE * v5[v0];
@@ -371,7 +371,7 @@ void ov77_021D5C3C(UnkStruct_ov77_021D5564 *param0)
     }
 }
 
-void ov77_021D5FB4(UnkStruct_ov77_021D5564 *param0, UnkStruct_ov77_021D6734 *param1)
+void OpeningCutsceneSprites_CreateForeground(OpeningCutsceneSprites *param0, OpeningCutsceneSparklePool *param1)
 {
     int v0;
     SpriteResourcesHeader v1;
@@ -379,10 +379,10 @@ void ov77_021D5FB4(UnkStruct_ov77_021D5564 *param0, UnkStruct_ov77_021D6734 *par
     Sprite **v3;
 
     {
-        ov77_021D54E8(5, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DSUB);
+        OpeningCutsceneSprites_SetupTemplate(5, param0, 0, &v2, &v1, 0, NNS_G2D_VRAM_TYPE_2DSUB);
 
         for (v0 = 0; v0 < 16; v0++) {
-            v3 = ov77_021D6794(param1, v0);
+            v3 = OpeningCutsceneSparklePool_GetSprite(param1, v0);
             (*v3) = SpriteList_AddAffine(&v2);
             Sprite_SetAnimateFlag(*v3, 0);
             Sprite_SetDrawFlag(*v3, FALSE);
@@ -390,18 +390,18 @@ void ov77_021D5FB4(UnkStruct_ov77_021D5564 *param0, UnkStruct_ov77_021D6734 *par
     }
 }
 
-void ov77_021D6000(UnkStruct_ov77_021D5564 *param0, UnkStruct_ov77_021D6734 *param1)
+void OpeningCutsceneSprites_HideForeground(OpeningCutsceneSprites *param0, OpeningCutsceneSparklePool *param1)
 {
     int v0;
     Sprite **v1;
 
     for (v0 = 0; v0 < 16; v0++) {
-        v1 = ov77_021D6794(param1, v0);
+        v1 = OpeningCutsceneSparklePool_GetSprite(param1, v0);
         Sprite_SetDrawFlag(*v1, FALSE);
     }
 }
 
-void ov77_021D6020(UnkStruct_ov77_021D5564 *param0)
+void OpeningCutsceneSprites_Update(OpeningCutsceneSprites *param0)
 {
     SpriteList_Update(param0->unk_00);
 
@@ -410,19 +410,19 @@ void ov77_021D6020(UnkStruct_ov77_021D5564 *param0)
     }
 }
 
-void ov77_021D603C(UnkStruct_ov77_021D5564 *param0, const u8 param1, const u8 param2)
+void OpeningCutsceneSprites_SetVisible(OpeningCutsceneSprites *param0, const u8 param1, const u8 param2)
 {
     Sprite_SetDrawFlag(param0->unk_250[param1], param2);
 }
 
-void ov77_021D6050(UnkStruct_ov77_021D5564 *param0, const u8 param1)
+void OpeningCutsceneSprites_SetAnimate(OpeningCutsceneSprites *param0, const u8 param1)
 {
     Sprite_SetAnimateFlag(param0->unk_250[0], param1);
     Sprite_SetAnimateFlag(param0->unk_250[2], param1);
     Sprite_SetAnimateFlag(param0->unk_250[1], param1);
 }
 
-void ov77_021D607C(UnkStruct_ov77_021D5564 *param0)
+void OpeningCutsceneSprites_MovePair(OpeningCutsceneSprites *param0)
 {
     VecFx32 v0;
 
@@ -437,7 +437,7 @@ void ov77_021D607C(UnkStruct_ov77_021D5564 *param0)
     Sprite_SetPosition(param0->unk_250[2], &v0);
 }
 
-BOOL ov77_021D60E0(UnkStruct_ov77_021D5564 *param0, int param1)
+BOOL OpeningCutsceneSprites_MoveActorLeft(OpeningCutsceneSprites *param0, int param1)
 {
     VecFx32 v0;
 
@@ -446,7 +446,7 @@ BOOL ov77_021D60E0(UnkStruct_ov77_021D5564 *param0, int param1)
     }
 
     if (param1 == ((47 * 30 - 15) + 15)) {
-        ov77_021D603C(param0, 3, 1);
+        OpeningCutsceneSprites_SetVisible(param0, 3, 1);
     }
 
     if (param1 < (53 * 30 - 15)) {
@@ -468,7 +468,7 @@ BOOL ov77_021D60E0(UnkStruct_ov77_021D5564 *param0, int param1)
         if (v0.x >= (256 + 64) * FX32_ONE) {
             v0.x = (256 + 64) * FX32_ONE;
             Sprite_SetPosition(param0->unk_250[3], &v0);
-            ov77_021D603C(param0, 3, 0);
+            OpeningCutsceneSprites_SetVisible(param0, 3, 0);
             return 1;
         }
 
@@ -477,7 +477,7 @@ BOOL ov77_021D60E0(UnkStruct_ov77_021D5564 *param0, int param1)
     }
 }
 
-BOOL ov77_021D61B8(UnkStruct_ov77_021D5564 *param0, int param1)
+BOOL OpeningCutsceneSprites_MoveActorRight(OpeningCutsceneSprites *param0, int param1)
 {
     VecFx32 v0;
 
@@ -486,7 +486,7 @@ BOOL ov77_021D61B8(UnkStruct_ov77_021D5564 *param0, int param1)
     }
 
     if (param1 == (((47 * 30 - 15) + 15) + 3 * 30)) {
-        ov77_021D603C(param0, 10, 1);
+        OpeningCutsceneSprites_SetVisible(param0, 10, 1);
     }
 
     if (param1 < (53 * 30 - 15)) {
@@ -508,7 +508,7 @@ BOOL ov77_021D61B8(UnkStruct_ov77_021D5564 *param0, int param1)
         if (v0.x <= -64 * FX32_ONE) {
             v0.x = -64 * FX32_ONE;
             Sprite_SetPosition(param0->unk_250[10], &v0);
-            ov77_021D603C(param0, 10, 0);
+            OpeningCutsceneSprites_SetVisible(param0, 10, 0);
             return 1;
         }
 
@@ -517,7 +517,7 @@ BOOL ov77_021D61B8(UnkStruct_ov77_021D5564 *param0, int param1)
     }
 }
 
-void ov77_021D6290(UnkStruct_ov77_021D5564 *param0, fx32 param1)
+void OpeningCutsceneSprites_ScrollStripes(OpeningCutsceneSprites *param0, fx32 param1)
 {
     const VecFx32 *v0;
     VecFx32 v1;
@@ -556,7 +556,7 @@ void ov77_021D6290(UnkStruct_ov77_021D5564 *param0, fx32 param1)
     Sprite_SetPosition(param0->unk_250[v3 + 1], &v1);
 }
 
-void ov77_021D636C(UnkStruct_ov77_021D5564 *param0, int param1)
+void OpeningCutsceneSprites_SetStripePalette(OpeningCutsceneSprites *param0, int param1)
 {
     const VecFx32 *v0;
     VecFx32 v1;
@@ -593,7 +593,7 @@ void ov77_021D636C(UnkStruct_ov77_021D5564 *param0, int param1)
     Sprite_SetPosition(param0->unk_250[15], &v1);
 }
 
-void ov77_021D6470(UnkStruct_ov77_021D5564 *param0, int param1)
+void OpeningCutsceneSprites_RotateStripes(OpeningCutsceneSprites *param0, int param1)
 {
     u16 v0;
     const VecFx32 *v1;
@@ -627,13 +627,13 @@ void ov77_021D6470(UnkStruct_ov77_021D5564 *param0, int param1)
     }
 }
 
-void include_data_ov77_021D79B8(void)
+void OpeningCutsceneSprites_IncludeData(void)
 {
     dummy[0];
-    Unk_ov77_021D79B8[0];
+    sOpeningCutsceneSpriteIndices[0];
 }
 
-void ov77_021D6530(UnkStruct_ov77_021D5564 *param0, const int param1)
+void OpeningCutsceneSprites_MoveTrio(OpeningCutsceneSprites *param0, const int param1)
 {
     u8 v0;
     VecFx32 v1;
@@ -653,7 +653,7 @@ void ov77_021D6530(UnkStruct_ov77_021D5564 *param0, const int param1)
     if (param1 >= (1460 - 15)) {
         for (v0 = 0; v0 < 3; v0++) {
             v1 = *Sprite_GetPosition(param0->unk_250[v2[v0]]);
-            v1.x -= Unk_ov77_021D79AC[v0];
+            v1.x -= sOpeningCutsceneTrioOffset0[v0];
             v1.y -= (FX32_ONE * 4);
             Sprite_SetPosition(param0->unk_250[v2[v0]], &v1);
         }
@@ -662,7 +662,7 @@ void ov77_021D6530(UnkStruct_ov77_021D5564 *param0, const int param1)
     if (param1 >= (1490 - 15 + 15)) {
         for (v0 = 0; v0 < 1; v0++) {
             v1 = *Sprite_GetPosition(param0->unk_250[v3[v0]]);
-            v1.x -= Unk_ov77_021D79A0[v0];
+            v1.x -= sOpeningCutsceneTrioOffset1[v0];
             v1.y -= (FX32_ONE * 3);
             Sprite_SetPosition(param0->unk_250[v3[v0]], &v1);
         }
@@ -671,7 +671,7 @@ void ov77_021D6530(UnkStruct_ov77_021D5564 *param0, const int param1)
     if (param1 >= (1510 - 15 + 15)) {
         for (v0 = 0; v0 < 2; v0++) {
             v1 = *Sprite_GetPosition(param0->unk_250[v4[v0]]);
-            v1.x -= Unk_ov77_021D79A4[v0];
+            v1.x -= sOpeningCutsceneTrioOffset2[v0];
             v1.y -= (FX32_ONE * 3);
             Sprite_SetPosition(param0->unk_250[v4[v0]], &v1);
         }

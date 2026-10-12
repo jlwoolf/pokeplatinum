@@ -3,13 +3,13 @@
 
 #include "constants/graphics.h"
 
-#include "game_opening/ov77_021D54B0.h"
-#include "game_opening/ov77_021D6670.h"
-#include "game_opening/ov77_021D6C70.h"
-#include "game_opening/struct_ov77_021D5564_decl.h"
-#include "game_opening/struct_ov77_021D670C_decl.h"
-#include "game_opening/struct_ov77_021D6734_decl.h"
-#include "game_opening/struct_ov77_021D6CFC_decl.h"
+#include "game_opening/opening_cutscene_sprites.h"
+#include "game_opening/opening_cutscene_sparkles.h"
+#include "game_opening/opening_cutscene_pokemon_effects.h"
+#include "game_opening/struct_opening_cutscene_sprites_decl.h"
+#include "game_opening/struct_opening_cutscene_sprite_manager_decl.h"
+#include "game_opening/struct_opening_cutscene_sparkle_pool_decl.h"
+#include "game_opening/struct_opening_cutscene_pokemon_effects_decl.h"
 #include "distortion_world/camera_configuration.h"
 
 #include "bg_window.h"
@@ -39,22 +39,22 @@ FS_EXTERN_OVERLAY(game_opening);
 typedef struct {
     NNSG3dRenderObj unk_00;
     NNSG3dResFileHeader *unk_54;
-} UnkStruct_ov77_021D37C0_sub1_sub1;
+} OpeningCutscene3dModel;
 
 typedef struct {
     void *unk_00;
     NNSG3dResTex *unk_04;
     Camera *camera;
-    UnkStruct_ov77_021D37C0_sub1_sub1 unk_0C[6];
+    OpeningCutscene3dModel unk_0C[6];
     int unk_21C;
-} UnkStruct_ov77_021D37C0_sub1;
+} OpeningCutscene3dScene;
 
 typedef struct {
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
     u8 unk_03;
-} UnkStruct_ov77_021D5308_sub1;
+} OpeningCutsceneLogoWipe;
 
 typedef struct {
     u8 unk_00;
@@ -67,9 +67,9 @@ typedef struct {
     u8 unk_08;
     BgConfig *unk_0C;
     SysTask *unk_10;
-    UnkStruct_ov77_021D670C *unk_14;
+    OpeningCutsceneSpriteManager *unk_14;
     u8 *unk_18;
-} UnkStruct_ov77_021D2F38;
+} OpeningCutsceneIntroState;
 
 typedef struct {
     u8 unk_00;
@@ -84,10 +84,10 @@ typedef struct {
     u8 unk_09;
     int unk_0C;
     BgConfig *unk_10;
-    UnkStruct_ov77_021D5564 *unk_14;
-    UnkStruct_ov77_021D6734 *unk_18;
-    UnkStruct_ov77_021D6CFC *unk_1C;
-    UnkStruct_ov77_021D37C0_sub1 unk_20;
+    OpeningCutsceneSprites *unk_14;
+    OpeningCutsceneSparklePool *unk_18;
+    OpeningCutscenePokemonEffects *unk_1C;
+    OpeningCutscene3dScene unk_20;
     u16 *unk_240;
     u8 unk_244;
     u8 unk_245;
@@ -108,7 +108,7 @@ typedef struct {
     u8 unk_25D;
     fx32 unk_260;
     fx32 unk_264;
-} UnkStruct_ov77_021D37C0;
+} OpeningCutsceneCutsceneState;
 
 typedef struct {
     u8 unk_00;
@@ -117,8 +117,8 @@ typedef struct {
     u8 unk_03;
     fx32 unk_04;
     BgConfig *unk_08;
-    UnkStruct_ov77_021D5308_sub1 unk_0C;
-} UnkStruct_ov77_021D5308;
+    OpeningCutsceneLogoWipe unk_0C;
+} OpeningCutsceneLogoState;
 
 typedef struct {
     enum HeapID heapID;
@@ -127,76 +127,76 @@ typedef struct {
     BgConfig *unk_0C;
     G3DPipelineBuffers *unk_10;
     u32 unk_14;
-    UnkStruct_ov77_021D2F38 unk_18;
-    UnkStruct_ov77_021D37C0 unk_34;
-    UnkStruct_ov77_021D5308 unk_298;
+    OpeningCutsceneIntroState unk_18;
+    OpeningCutsceneCutsceneState unk_34;
+    OpeningCutsceneLogoState unk_298;
     u8 unk_2A8;
-} UnkStruct_ov77_021D2E9C;
+} OpeningCutsceneAppData;
 
 void EnqueueApplication(FSOverlayID param0, const ApplicationManagerTemplate *param1);
-static int ov77_021D2D08(ApplicationManager *appMan, int *param1);
-static int ov77_021D2D94(ApplicationManager *appMan, int *param1);
-static int ov77_021D2E60(ApplicationManager *appMan, int *param1);
-static BOOL ov77_021D2E9C(UnkStruct_ov77_021D2E9C *param0);
-static BOOL ov77_021D33F0(UnkStruct_ov77_021D2E9C *param0);
-static BOOL ov77_021D5254(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D2AA0(void);
-static void ov77_021D2C80(void);
-static void ov77_021D2CE8(void);
-static void ov77_021D35B8(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D361C(UnkStruct_ov77_021D2E9C *param0, BOOL param1);
-static void ov77_021D2F0C(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0);
-static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1);
-static void ov77_021D3234(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D32A4(SysTask *param0, void *param1);
-static void ov77_021D3300(SysTask *param0, void *param1);
-static void ov77_021D3360(SysTask *param0, void *param1);
-static void ov77_021D33A8(SysTask *param0, void *param1);
-static void ov77_021D34A8(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3A10(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1);
-static void ov77_021D3DC4(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D3B5C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1);
-static void ov77_021D40B8(UnkStruct_ov77_021D37C0 *param0, int param1);
-static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1);
-static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0);
-static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, const int param2);
-static void ov77_021D4B70(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D4BE4(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D4C04(UnkStruct_ov77_021D37C0 *param0, int param1);
-static void ov77_021D4DC8(UnkStruct_ov77_021D37C0 *param0, int param1);
-static void ov77_021D4E90(UnkStruct_ov77_021D37C0 *param0);
-static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1);
-static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, int param2);
-static void ov77_021D36F8(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D52C8(UnkStruct_ov77_021D2E9C *param0);
-static void ov77_021D5308(UnkStruct_ov77_021D5308 *param0);
-static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1);
-static void ov77_021D5478(UnkStruct_ov77_021D2E9C *param0);
+static int OpeningCutscene_Init(ApplicationManager *appMan, int *param1);
+static int OpeningCutscene_Main(ApplicationManager *appMan, int *param1);
+static int OpeningCutscene_Exit(ApplicationManager *appMan, int *param1);
+static BOOL OpeningCutscene_UpdateIntroPhase(OpeningCutsceneAppData *param0);
+static BOOL OpeningCutscene_UpdateCutscenePhase(OpeningCutsceneAppData *param0);
+static BOOL OpeningCutscene_UpdateLogoPhase(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_InitG3d(void);
+static void OpeningCutscene_EnableWindow(void);
+static void OpeningCutscene_DisableWindow(void);
+static void OpeningCutscene_Free3dResources(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_FreeBg(OpeningCutsceneAppData *param0, BOOL param1);
+static void OpeningCutscene_InitIntro(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_LoadIntroGraphics(OpeningCutsceneIntroState *param0);
+static BOOL OpeningCutscene_UpdateIntro(OpeningCutsceneIntroState *param0, const int param1);
+static void OpeningCutscene_FreeIntro(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_FadeInBg1Task(SysTask *param0, void *param1);
+static void OpeningCutscene_FadeOutBg1Task(SysTask *param0, void *param1);
+static void OpeningCutscene_FadeInBg2Task(SysTask *param0, void *param1);
+static void OpeningCutscene_FadeOutBg2Task(SysTask *param0, void *param1);
+static void OpeningCutscene_InitCutscene(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_LoadCutsceneGraphics(OpeningCutsceneCutsceneState *param0);
+static void OpeningCutscene_LoadScene1Graphics(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1);
+static void OpeningCutscene_SyncScreenLayout(OpeningCutsceneCutsceneState *param0);
+static void OpeningCutscene_LoadScene2Graphics(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1);
+static void OpeningCutscene_Load3dModel(OpeningCutsceneCutsceneState *param0, int param1);
+static BOOL OpeningCutscene_Load3dModelProgressive(OpeningCutsceneCutsceneState *param0, int param1);
+static void OpeningCutscene_Draw3dScene(OpeningCutsceneCutsceneState *param0);
+static BOOL OpeningCutscene_UpdateCutsceneTimeline(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1, const int param2);
+static void OpeningCutscene_AdvanceBackgrounds(OpeningCutsceneCutsceneState *param0);
+static void OpeningCutscene_ScheduleStripeScroll(OpeningCutsceneCutsceneState *param0);
+static void OpeningCutscene_UpdateWindowWipe(OpeningCutsceneCutsceneState *param0, int param1);
+static void OpeningCutscene_ScrollLayersOut(OpeningCutsceneCutsceneState *param0, int param1);
+static void OpeningCutscene_ScrollLayersOutFinal(OpeningCutsceneCutsceneState *param0);
+static void OpeningCutscene_UpdateCamera(OpeningCutsceneCutsceneState *param0, const int param1);
+static void OpeningCutscene_HandleTimelineEvents(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1, int param2);
+static void OpeningCutscene_FreeCutscene(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_InitLogo(OpeningCutsceneAppData *param0);
+static void OpeningCutscene_LoadLogoGraphics(OpeningCutsceneLogoState *param0);
+static BOOL OpeningCutscene_UpdateLogo(OpeningCutsceneLogoState *param0, const int param1);
+static void OpeningCutscene_FreeLogo(OpeningCutsceneAppData *param0);
 
 extern const ApplicationManagerTemplate gTitleScreenAppTemplate;
 
 const ApplicationManagerTemplate gOpeningCutsceneAppTemplate = {
-    ov77_021D2D08,
-    ov77_021D2D94,
-    ov77_021D2E60,
+    OpeningCutscene_Init,
+    OpeningCutscene_Main,
+    OpeningCutscene_Exit,
     0xffffffff
 };
 
-static const int Unk_ov77_021D7458[] = {
+static const int sOpeningCutscene3dTextureMembers[] = {
     0x66,
     0x6D,
     0x70
 };
 
-const int Unk_ov77_021D779C[][6] = {
+const int sOpeningCutscene3dModelMembers[][6] = {
     { 0x64, 0x65, 0x0, 0x0, 0x0, 0x0 },
     { 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C },
     { 0x6E, 0x6F, 0x0, 0x0, 0x0, 0x0 }
 };
 
-static const CameraConfiguration Unk_ov77_021D74FC = {
+static const CameraConfiguration sOpeningCutsceneCameraConfiguration = {
     0x29AEC1,
     { -0x29fe, 0x0, 0x0 },
     0x0,
@@ -204,7 +204,7 @@ static const CameraConfiguration Unk_ov77_021D74FC = {
     0x0
 };
 
-static const GXRgb Unk_ov77_021D74EC[8] = {
+static const GXRgb sOpeningCutsceneEdgeColorTable[8] = {
     GX_RGB(0, 0, 0),
     GX_RGB(4, 4, 4),
     GX_RGB(4, 4, 4),
@@ -215,21 +215,21 @@ static const GXRgb Unk_ov77_021D74EC[8] = {
     GX_RGB(4, 4, 4)
 };
 
-const VecFx32 Unk_ov77_021D776C[4] = {
+const VecFx32 sOpeningCutsceneLightVectors[4] = {
     { -2043, -3548, 0x6E },
     { 0x0, 0x0, 0x0 },
     { 0x0, 0x0, 0x1000 },
     { 0x0, 0x0, 0x1000 }
 };
 
-const GXRgb Unk_ov77_021D7444[4] = {
+const GXRgb sOpeningCutsceneLightColors[4] = {
     GX_RGB(24, 24, 18),
     GX_RGB(0, 0, 0),
     GX_RGB(2, 2, 12),
     GX_RGB(31, 31, 31),
 };
 
-static void ov77_021D25B0(void)
+static void OpeningCutscene_InitVramBanks(void)
 {
     GXBanks v0 = {
         GX_VRAM_BG_128_B,
@@ -247,7 +247,7 @@ static void ov77_021D25B0(void)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov77_021D25D0(void)
+static void OpeningCutscene_InitVramBanksCutscene(void)
 {
     GXBanks v0 = {
         GX_VRAM_BG_128_B,
@@ -265,7 +265,7 @@ static void ov77_021D25D0(void)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov77_021D25F0(void)
+static void OpeningCutscene_InitVramBanksLogo(void)
 {
     GXBanks v0 = {
         GX_VRAM_BG_256_AB,
@@ -283,7 +283,7 @@ static void ov77_021D25F0(void)
     GXLayers_SetBanks(&v0);
 }
 
-static void ov77_021D2610(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitIntroBg(OpeningCutsceneAppData *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -416,7 +416,7 @@ static void ov77_021D2610(UnkStruct_ov77_021D2E9C *param0)
     Bg_MaskPalette(BG_LAYER_SUB_0, 0x0);
 }
 
-static void ov77_021D2724(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitCutsceneBg(OpeningCutsceneAppData *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -562,9 +562,9 @@ static void ov77_021D2724(UnkStruct_ov77_021D2E9C *param0)
     Bg_MaskPalette(BG_LAYER_SUB_0, 0x0);
 }
 
-static void ov77_021D2828(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitSceneBg(OpeningCutsceneAppData *param0)
 {
-    ov77_021D361C(param0, 0);
+    OpeningCutscene_FreeBg(param0, 0);
 
     {
         BgTemplate v0 = {
@@ -681,10 +681,10 @@ static void ov77_021D2828(UnkStruct_ov77_021D2E9C *param0)
     param0->unk_34.unk_25A = 1;
 }
 
-static void ov77_021D2900(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitSceneBg2(OpeningCutsceneAppData *param0)
 {
-    ov77_021D35B8(param0);
-    ov77_021D2828(param0);
+    OpeningCutscene_Free3dResources(param0);
+    OpeningCutscene_InitSceneBg(param0);
 
     {
         GraphicsModes v0 = {
@@ -754,7 +754,7 @@ static void ov77_021D2900(UnkStruct_ov77_021D2E9C *param0)
     param0->unk_34.unk_25A = 2;
 }
 
-static void ov77_021D2A00(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitLogoBg(OpeningCutsceneAppData *param0)
 {
     param0->unk_0C = BgConfig_New(param0->heapID);
 
@@ -791,13 +791,13 @@ static void ov77_021D2A00(UnkStruct_ov77_021D2E9C *param0)
     Bg_MaskPalette(BG_LAYER_MAIN_2, 0x0);
 }
 
-static void ov77_021D2A58(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitG3dPipeline(OpeningCutsceneAppData *param0)
 {
     NNSGfdTexKey v0;
     NNSGfdPlttKey v1;
     u32 v2, v3;
 
-    param0->unk_10 = G3DPipeline_Init(param0->heapID, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, ov77_021D2AA0);
+    param0->unk_10 = G3DPipeline_Init(param0->heapID, TEXTURE_VRAM_SIZE_128K, PALETTE_VRAM_SIZE_64K, OpeningCutscene_InitG3d);
 
     v0 = NNS_GfdAllocTexVram(0x2000 * 4, 0, 0);
     v1 = NNS_GfdAllocPlttVram(0x20 * 4, 0, NNS_GFD_ALLOC_FROM_LOW);
@@ -805,7 +805,7 @@ static void ov77_021D2A58(UnkStruct_ov77_021D2E9C *param0)
     v3 = NNS_GfdGetPlttKeyAddr(v1);
 }
 
-static void ov77_021D2AA0(void)
+static void OpeningCutscene_InitG3d(void)
 {
     NNS_G3dGeFlushBuffer();
 
@@ -815,23 +815,23 @@ static void ov77_021D2AA0(void)
     G3X_AlphaTest(0, 0);
     G3X_AlphaBlend(1);
     G3X_EdgeMarking(1);
-    G3X_SetEdgeColorTable(Unk_ov77_021D74EC);
+    G3X_SetEdgeColorTable(sOpeningCutsceneEdgeColorTable);
     G3X_SetFog(0, GX_FOGBLEND_COLOR_ALPHA, GX_FOGSLOPE_0x8000, 0);
     G3X_SetClearColor(GX_RGB(0, 0, 0), 0, 0x7fff, 63, 0);
     G3_ViewPort(0, 0, 255, 191);
 }
 
-static void ov77_021D2B30(void *param0)
+static void OpeningCutscene_VBlankCallbackIntro(void *param0)
 {
-    UnkStruct_ov77_021D2E9C *v0 = param0;
+    OpeningCutsceneAppData *v0 = param0;
     RenderOam_Transfer();
 }
 
-static void ov77_021D2B38(void *param0)
+static void OpeningCutscene_VBlankCallback(void *param0)
 {
     int v0;
-    UnkStruct_ov77_021D2E9C *v1 = param0;
-    UnkStruct_ov77_021D37C0 *v2 = &v1->unk_34;
+    OpeningCutsceneAppData *v1 = param0;
+    OpeningCutsceneCutsceneState *v2 = &v1->unk_34;
 
     if (v2->unk_25B == 1) {
         gSystem.whichScreenIs3D = DS_SCREEN_SUB;
@@ -869,21 +869,21 @@ static void ov77_021D2B38(void *param0)
     G2S_SetWnd0Position(v2->unk_252, v2->unk_256, v2->unk_254, v2->unk_258);
 
     if (v2->unk_245 == 1) {
-        ov77_021D2C80();
+        OpeningCutscene_EnableWindow();
         v2->unk_245 = 0;
     }
 
     if (v2->unk_246 == 1) {
-        ov77_021D2CE8();
+        OpeningCutscene_DisableWindow();
         v2->unk_246 = 0;
     }
 
     VramTransfer_Process();
     RenderOam_Transfer();
-    ov77_021D6E40(v1->unk_34.unk_1C);
+    OpeningCutscenePokemonEffects_UpdateSprites(v1->unk_34.unk_1C);
 }
 
-static void ov77_021D2C80(void)
+static void OpeningCutscene_EnableWindow(void)
 {
     GX_SetVisibleWnd(GX_WNDMASK_W0);
     G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
@@ -893,15 +893,15 @@ static void ov77_021D2C80(void)
     G2S_SetWndOutsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_OBJ, 1);
 }
 
-static void ov77_021D2CE8(void)
+static void OpeningCutscene_DisableWindow(void)
 {
     GX_SetVisibleWnd(0);
     GXS_SetVisibleWnd(0);
 }
 
-static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
+static int OpeningCutscene_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov77_021D2E9C *v0;
+    OpeningCutsceneAppData *v0;
 
     BrightnessController_ResetAllControllers();
     SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_WHITE);
@@ -913,8 +913,8 @@ static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
     SetAutorepeat(4, 8);
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_76, 0xa0000);
 
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_ov77_021D2E9C), HEAP_ID_76);
-    memset(v0, 0, sizeof(UnkStruct_ov77_021D2E9C));
+    v0 = ApplicationManager_NewData(appMan, sizeof(OpeningCutsceneAppData), HEAP_ID_76);
+    memset(v0, 0, sizeof(OpeningCutsceneAppData));
 
     v0->heapID = HEAP_ID_76;
     v0->unk_08 = 0;
@@ -929,9 +929,9 @@ static int ov77_021D2D08(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
+static int OpeningCutscene_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov77_021D2E9C *v0 = ApplicationManager_Data(appMan);
+    OpeningCutsceneAppData *v0 = ApplicationManager_Data(appMan);
 
     if ((v0->unk_2A8) && ((gSystem.pressedKeys & PAD_BUTTON_A) || (gSystem.pressedKeys & PAD_BUTTON_START))) {
         v0->unk_08 = 1;
@@ -946,17 +946,17 @@ static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
         (*param1)++;
         break;
     case 1:
-        if (ov77_021D2E9C(v0)) {
+        if (OpeningCutscene_UpdateIntroPhase(v0)) {
             (*param1)++;
         }
         break;
     case 2:
-        if (ov77_021D33F0(v0)) {
+        if (OpeningCutscene_UpdateCutscenePhase(v0)) {
             (*param1)++;
         }
         break;
     case 3:
-        if (ov77_021D5254(v0)) {
+        if (OpeningCutscene_UpdateLogoPhase(v0)) {
             (*param1)++;
         }
         break;
@@ -978,9 +978,9 @@ static int ov77_021D2D94(ApplicationManager *appMan, int *param1)
     return 0;
 }
 
-static int ov77_021D2E60(ApplicationManager *appMan, int *param1)
+static int OpeningCutscene_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_ov77_021D2E9C *v0 = ApplicationManager_Data(appMan);
+    OpeningCutsceneAppData *v0 = ApplicationManager_Data(appMan);
 
     if (IsScreenFadeDone() == FALSE) {
         FinishScreenFade();
@@ -994,7 +994,7 @@ static int ov77_021D2E60(ApplicationManager *appMan, int *param1)
     return 1;
 }
 
-static BOOL ov77_021D2E9C(UnkStruct_ov77_021D2E9C *param0)
+static BOOL OpeningCutscene_UpdateIntroPhase(OpeningCutsceneAppData *param0)
 {
     u8 *v0 = &(param0->unk_18.unk_00);
 
@@ -1004,40 +1004,40 @@ static BOOL ov77_021D2E9C(UnkStruct_ov77_021D2E9C *param0)
 
     switch (*v0) {
     case 0:
-        ov77_021D2F0C(param0);
+        OpeningCutscene_InitIntro(param0);
         (*v0)++;
         break;
     case 1:
-        ov77_021D2F38(&param0->unk_18);
+        OpeningCutscene_LoadIntroGraphics(&param0->unk_18);
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D30D0(&param0->unk_18, param0->unk_04)) {
+        if (OpeningCutscene_UpdateIntro(&param0->unk_18, param0->unk_04)) {
             (*v0)++;
         }
         break;
     case 3:
-        ov77_021D3234(param0);
+        OpeningCutscene_FreeIntro(param0);
         return 1;
     }
 
     return 0;
 }
 
-static void ov77_021D2F0C(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitIntro(OpeningCutsceneAppData *param0)
 {
-    ov77_021D25B0();
-    ov77_021D2610(param0);
+    OpeningCutscene_InitVramBanks();
+    OpeningCutscene_InitIntroBg(param0);
 
     param0->unk_18.unk_0C = param0->unk_0C;
-    param0->unk_18.unk_14 = ov77_021D670C();
+    param0->unk_18.unk_14 = OpeningCutsceneSpriteManager_New();
 
-    SetVBlankCallback(ov77_021D2B30, (void *)param0);
+    SetVBlankCallback(OpeningCutscene_VBlankCallbackIntro, (void *)param0);
 
     param0->unk_18.unk_02 = 1;
 }
 
-static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0)
+static void OpeningCutscene_LoadIntroGraphics(OpeningCutsceneIntroState *param0)
 {
     Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 16, param0->unk_0C, 2, 0, 0, 0, HEAP_ID_76);
     Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 16, param0->unk_0C, 6, 0, 0, 0, HEAP_ID_76);
@@ -1072,18 +1072,18 @@ static void ov77_021D2F38(UnkStruct_ov77_021D2F38 *param0)
     GXLayers_TurnBothDispOn();
 }
 
-static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
+static BOOL OpeningCutscene_UpdateIntro(OpeningCutsceneIntroState *param0, const int param1)
 {
     u8 *v0 = &(param0->unk_01);
 
-    ov77_021D69C0(param0->unk_14, param1);
+    OpeningCutsceneSpriteManager_Update(param0->unk_14, param1);
 
     switch (*v0) {
     case 0:
         param0->unk_07 = 0;
         param0->unk_06 = 0;
         param0->unk_08 = 0;
-        param0->unk_10 = SysTask_Start(ov77_021D32A4, param0, 0);
+        param0->unk_10 = SysTask_Start(OpeningCutscene_FadeInBg1Task, param0, 0);
         Sound_SetSceneAndPlayBGM(SOUND_SCENE_TITLE_SCREEN, SEQ_TITLE00_sseq, 1);
         (*v0)++;
         break;
@@ -1092,7 +1092,7 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
             param0->unk_07 = 0;
             param0->unk_06 = 16;
             param0->unk_08 = 0;
-            param0->unk_10 = SysTask_Start(ov77_021D3300, param0, 0);
+            param0->unk_10 = SysTask_Start(OpeningCutscene_FadeOutBg1Task, param0, 0);
             (*v0)++;
         }
         break;
@@ -1110,7 +1110,7 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
             param0->unk_07 = 0;
             param0->unk_06 = 0;
             param0->unk_08 = 0;
-            param0->unk_10 = SysTask_Start(ov77_021D3360, param0, 0);
+            param0->unk_10 = SysTask_Start(OpeningCutscene_FadeInBg2Task, param0, 0);
             (*v0)++;
         }
         break;
@@ -1119,7 +1119,7 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
             param0->unk_07 = 0;
             param0->unk_06 = 0;
             param0->unk_08 = 0;
-            param0->unk_10 = SysTask_Start(ov77_021D33A8, param0, 0);
+            param0->unk_10 = SysTask_Start(OpeningCutscene_FadeOutBg2Task, param0, 0);
             (*v0)++;
         }
         break;
@@ -1138,12 +1138,12 @@ static BOOL ov77_021D30D0(UnkStruct_ov77_021D2F38 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D3234(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_FreeIntro(OpeningCutsceneAppData *param0)
 {
     SetVBlankCallback(NULL, NULL);
 
     if (param0->unk_18.unk_02) {
-        ov77_021D67B0(param0->unk_18.unk_14);
+        OpeningCutsceneSpriteManager_Free(param0->unk_18.unk_14);
 
         Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_1);
         Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
@@ -1163,9 +1163,9 @@ static void ov77_021D3234(UnkStruct_ov77_021D2E9C *param0)
     }
 }
 
-static void ov77_021D32A4(SysTask *param0, void *param1)
+static void OpeningCutscene_FadeInBg1Task(SysTask *param0, void *param1)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    OpeningCutsceneIntroState *v0 = param1;
 
     v0->unk_07++;
 
@@ -1184,9 +1184,9 @@ static void ov77_021D32A4(SysTask *param0, void *param1)
     G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
 }
 
-static void ov77_021D3300(SysTask *param0, void *param1)
+static void OpeningCutscene_FadeOutBg1Task(SysTask *param0, void *param1)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    OpeningCutsceneIntroState *v0 = param1;
 
     v0->unk_07++;
 
@@ -1206,9 +1206,9 @@ static void ov77_021D3300(SysTask *param0, void *param1)
     G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
 }
 
-static void ov77_021D3360(SysTask *param0, void *param1)
+static void OpeningCutscene_FadeInBg2Task(SysTask *param0, void *param1)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    OpeningCutsceneIntroState *v0 = param1;
 
     v0->unk_07++;
 
@@ -1226,9 +1226,9 @@ static void ov77_021D3360(SysTask *param0, void *param1)
     G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
 }
 
-static void ov77_021D33A8(SysTask *param0, void *param1)
+static void OpeningCutscene_FadeOutBg2Task(SysTask *param0, void *param1)
 {
-    UnkStruct_ov77_021D2F38 *v0 = param1;
+    OpeningCutsceneIntroState *v0 = param1;
 
     v0->unk_07++;
 
@@ -1246,7 +1246,7 @@ static void ov77_021D33A8(SysTask *param0, void *param1)
     G2S_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_PLANEMASK_BG3, v0->unk_06, 16);
 }
 
-static BOOL ov77_021D33F0(UnkStruct_ov77_021D2E9C *param0)
+static BOOL OpeningCutscene_UpdateCutscenePhase(OpeningCutsceneAppData *param0)
 {
     u8 *v0 = &(param0->unk_34.unk_00);
 
@@ -1256,85 +1256,85 @@ static BOOL ov77_021D33F0(UnkStruct_ov77_021D2E9C *param0)
 
     switch (*v0) {
     case 0:
-        ov77_021D34A8(param0);
+        OpeningCutscene_InitCutscene(param0);
         (*v0)++;
         break;
     case 1:
-        ov77_021D37C0(&param0->unk_34);
+        OpeningCutscene_LoadCutsceneGraphics(&param0->unk_34);
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D40DC(&param0->unk_34, 0) == 1) {
+        if (OpeningCutscene_Load3dModelProgressive(&param0->unk_34, 0) == 1) {
             param0->unk_34.unk_06 = 1;
             (*v0)++;
         }
         break;
     case 3:
-        if (ov77_021D4230(param0, &param0->unk_34, param0->unk_04)) {
+        if (OpeningCutscene_UpdateCutsceneTimeline(param0, &param0->unk_34, param0->unk_04)) {
             (*v0)++;
         }
 
-        ov77_021D6020(param0->unk_34.unk_14);
+        OpeningCutsceneSprites_Update(param0->unk_34.unk_14);
 
         if (param0->unk_34.unk_06) {
             if (param0->unk_34.unk_05 == 0) {
-                ov77_021D4188(&param0->unk_34);
+                OpeningCutscene_Draw3dScene(&param0->unk_34);
             }
         } else {
-            ov77_021D6E50(param0->unk_34.unk_1C);
+            OpeningCutscenePokemonEffects_Draw(param0->unk_34.unk_1C);
         }
         break;
     case 4:
-        ov77_021D36F8(param0);
+        OpeningCutscene_FreeCutscene(param0);
         return 1;
     }
 
     return 0;
 }
 
-static void ov77_021D34A8(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitCutscene(OpeningCutsceneAppData *param0)
 {
     u8 v0;
     int v1;
     int v2;
 
-    ov77_021D25D0();
-    ov77_021D2724(param0);
-    ov77_021D2A58(param0);
+    OpeningCutscene_InitVramBanksCutscene();
+    OpeningCutscene_InitCutsceneBg(param0);
+    OpeningCutscene_InitG3dPipeline(param0);
 
-    v1 = ov77_021D555C();
-    v2 = ov77_021D6CB8();
+    v1 = OpeningCutsceneSprites_GetSize();
+    v2 = OpeningCutscenePokemonEffects_GetSize();
 
     param0->unk_34.unk_14 = Heap_Alloc(HEAP_ID_76, v1);
-    param0->unk_34.unk_18 = ov77_021D6734(16);
+    param0->unk_34.unk_18 = OpeningCutsceneSparklePool_New(16);
     param0->unk_34.unk_1C = Heap_Alloc(HEAP_ID_76, v2);
 
     memset(param0->unk_34.unk_14, 0, v1);
     memset(param0->unk_34.unk_1C, 0, v2);
 
     param0->unk_34.unk_08 = 4;
-    ov77_021D6CFC(param0->unk_34.unk_1C);
+    OpeningCutscenePokemonEffects_Init(param0->unk_34.unk_1C);
     param0->unk_34.unk_10 = param0->unk_0C;
 
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
     GXLayers_SwapDisplay();
 
     for (v0 = 0; v0 < 4; v0++) {
-        NNS_G3dGlbLightVector(v0, Unk_ov77_021D776C[v0].x, Unk_ov77_021D776C[v0].y, Unk_ov77_021D776C[v0].z);
-        NNS_G3dGlbLightColor(v0, Unk_ov77_021D7444[v0]);
+        NNS_G3dGlbLightVector(v0, sOpeningCutsceneLightVectors[v0].x, sOpeningCutsceneLightVectors[v0].y, sOpeningCutsceneLightVectors[v0].z);
+        NNS_G3dGlbLightColor(v0, sOpeningCutsceneLightColors[v0]);
     }
 
     NNS_G3dGlbMaterialColorDiffAmb(GX_RGB(16, 16, 16), GX_RGB(10, 12, 12), 0);
     NNS_G3dGlbMaterialColorSpecEmi(GX_RGB(18, 18, 18), GX_RGB(14, 14, 14), 0);
     NNS_G3dGlbPolygonAttr(13, GX_POLYGONMODE_MODULATE, GX_CULL_BACK, 0, 31, GX_POLYGON_ATTR_MISC_FOG);
 
-    SetVBlankCallback(ov77_021D2B38, (void *)param0);
+    SetVBlankCallback(OpeningCutscene_VBlankCallback, (void *)param0);
     BrightnessController_SetScreenBrightness(-16, GX_BLEND_PLANEMASK_BG3, BRIGHTNESS_MAIN_SCREEN);
 
     param0->unk_34.unk_02 = 1;
 }
 
-static void ov77_021D35B8(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_Free3dResources(OpeningCutsceneAppData *param0)
 {
     int v0;
 
@@ -1355,7 +1355,7 @@ static void ov77_021D35B8(UnkStruct_ov77_021D2E9C *param0)
     }
 }
 
-static void ov77_021D361C(UnkStruct_ov77_021D2E9C *param0, BOOL param1)
+static void OpeningCutscene_FreeBg(OpeningCutsceneAppData *param0, BOOL param1)
 {
     if (param0->unk_34.unk_02 && (param0->unk_0C != NULL)) {
         if (param0->unk_34.unk_25A == 0) {
@@ -1392,21 +1392,21 @@ static void ov77_021D361C(UnkStruct_ov77_021D2E9C *param0, BOOL param1)
     }
 }
 
-static void ov77_021D36F8(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_FreeCutscene(OpeningCutsceneAppData *param0)
 {
     u8 v0;
 
     GX_SetVisibleWnd(GX_WNDMASK_NONE);
-    ov77_021D35B8(param0);
+    OpeningCutscene_Free3dResources(param0);
 
     if (param0->unk_34.unk_03) {
-        ov77_021D5BAC(param0->unk_34.unk_14);
+        OpeningCutsceneSprites_Free(param0->unk_34.unk_14);
         param0->unk_34.unk_03 = 0;
     }
 
     if (param0->unk_34.unk_02) {
         if (param0->unk_34.unk_18 != NULL) {
-            ov77_021D6760(param0->unk_34.unk_18);
+            OpeningCutsceneSparklePool_Free(param0->unk_34.unk_18);
             param0->unk_34.unk_18 = NULL;
         }
 
@@ -1416,12 +1416,12 @@ static void ov77_021D36F8(UnkStruct_ov77_021D2E9C *param0)
         }
 
         if (param0->unk_34.unk_1C != NULL) {
-            ov77_021D6E28(param0->unk_34.unk_1C);
+            OpeningCutscenePokemonEffects_Free(param0->unk_34.unk_1C);
             Heap_Free(param0->unk_34.unk_1C);
             param0->unk_34.unk_1C = NULL;
         }
 
-        ov77_021D361C(param0, 1);
+        OpeningCutscene_FreeBg(param0, 1);
 
         if (param0->unk_34.unk_240 != NULL) {
             Heap_Free(param0->unk_34.unk_240);
@@ -1441,7 +1441,7 @@ static void ov77_021D36F8(UnkStruct_ov77_021D2E9C *param0)
     SetVBlankCallback(NULL, NULL);
 }
 
-static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
+static void OpeningCutscene_LoadCutsceneGraphics(OpeningCutsceneCutsceneState *param0)
 {
     u8 v0;
     NARC *v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
@@ -1484,9 +1484,9 @@ static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
         Graphics_LoadPaletteWithSrcOffsetFromOpenNARC(v1, 13, 4, 0x20 * 0xe, 0x20 * 0xe, 0x20 * 2, HEAP_ID_76);
     }
 
-    ov77_021D5564(param0->unk_14);
-    ov77_021D5C3C(param0->unk_14);
-    ov77_021D5FB4(param0->unk_14, param0->unk_18);
+    OpeningCutsceneSprites_Init(param0->unk_14);
+    OpeningCutsceneSprites_Create(param0->unk_14);
+    OpeningCutsceneSprites_CreateForeground(param0->unk_14, param0->unk_18);
 
     MI_CpuClear16((void *)HW_BG_PLTT, 2);
     MI_CpuClear16((void *)HW_DB_BG_PLTT, 2);
@@ -1501,7 +1501,7 @@ static void ov77_021D37C0(UnkStruct_ov77_021D37C0 *param0)
     param0->unk_03 = 1;
 }
 
-static void ov77_021D3A10(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1)
+static void OpeningCutscene_LoadScene1Graphics(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1)
 {
     u8 v0;
     NARC *v1;
@@ -1536,12 +1536,12 @@ static void ov77_021D3A10(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     NARC_dtor(v1);
 }
 
-static void ov77_021D3B5C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1)
+static void OpeningCutscene_LoadScene2Graphics(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1)
 {
     u8 v0;
     NARC *v1;
 
-    ov77_021D2828(param0);
+    OpeningCutscene_InitSceneBg(param0);
 
     v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
 
@@ -1581,12 +1581,12 @@ static void ov77_021D3B5C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     NARC_dtor(v1);
 }
 
-static void ov77_021D3D4C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1)
+static void OpeningCutscene_LoadScene3Graphics(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1)
 {
     u8 v0;
     NARC *v1;
 
-    ov77_021D2900(param0);
+    OpeningCutscene_InitSceneBg2(param0);
 
     v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
 
@@ -1598,7 +1598,7 @@ static void ov77_021D3D4C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     NARC_dtor(v1);
 }
 
-static void ov77_021D3DC4(UnkStruct_ov77_021D37C0 *param0)
+static void OpeningCutscene_SyncScreenLayout(OpeningCutsceneCutsceneState *param0)
 {
     if (gSystem.whichScreenIs3D == DS_SCREEN_MAIN) {
         Bg_SetOffset(param0->unk_10, BG_LAYER_MAIN_1, 3, 0);
@@ -1630,12 +1630,12 @@ static void ov77_021D3DC4(UnkStruct_ov77_021D37C0 *param0)
         Bg_SetPriority(BG_LAYER_SUB_3, 0);
     }
 
-    ov77_021D636C(param0->unk_14, 0);
+    OpeningCutsceneSprites_SetStripePalette(param0->unk_14, 0);
 }
 
-static void ov77_021D3EDC(UnkStruct_ov77_021D37C0 *param0, int param1)
+static void OpeningCutscene_Load3dTexture(OpeningCutsceneCutsceneState *param0, int param1)
 {
-    param0->unk_20.unk_00 = NARC_AllocAndReadWholeMemberByIndexPair(NARC_INDEX_DEMO__TITLE__OP_DEMO, Unk_ov77_021D7458[param1], 76);
+    param0->unk_20.unk_00 = NARC_AllocAndReadWholeMemberByIndexPair(NARC_INDEX_DEMO__TITLE__OP_DEMO, sOpeningCutscene3dTextureMembers[param1], 76);
     param0->unk_20.unk_04 = NNS_G3dGetTex((NNSG3dResFileHeader *)param0->unk_20.unk_00);
 
     {
@@ -1658,7 +1658,7 @@ static void ov77_021D3EDC(UnkStruct_ov77_021D37C0 *param0, int param1)
     }
 }
 
-static void ov77_021D3F24(UnkStruct_ov77_021D37C0 *param0, int param1, int param2, int param3)
+static void OpeningCutscene_Load3dModels(OpeningCutsceneCutsceneState *param0, int param1, int param2, int param3)
 {
     u8 v0;
     NARC *v1;
@@ -1673,11 +1673,11 @@ static void ov77_021D3F24(UnkStruct_ov77_021D37C0 *param0, int param1, int param
     v1 = NARC_ctor(NARC_INDEX_DEMO__TITLE__OP_DEMO, HEAP_ID_76);
 
     for (v0 = param2; v0 < param3; v0++) {
-        if (Unk_ov77_021D779C[param1][v0] == 0) {
+        if (sOpeningCutscene3dModelMembers[param1][v0] == 0) {
             break;
         }
 
-        param0->unk_20.unk_0C[v0].unk_54 = NARC_AllocAndReadWholeMember(v1, Unk_ov77_021D779C[param1][v0], 76);
+        param0->unk_20.unk_0C[v0].unk_54 = NARC_AllocAndReadWholeMember(v1, sOpeningCutscene3dModelMembers[param1][v0], 76);
 
         v2 = Easy3D_BindTextureToResource(param0->unk_20.unk_0C[v0].unk_54, param0->unk_20.unk_04);
         GF_ASSERT(v2);
@@ -1701,14 +1701,14 @@ static void ov77_021D3F24(UnkStruct_ov77_021D37C0 *param0, int param1, int param
     NARC_dtor(v1);
 }
 
-static void ov77_021D4044(UnkStruct_ov77_021D37C0 *param0, int param1)
+static void OpeningCutscene_Init3dCamera(OpeningCutsceneCutsceneState *param0, int param1)
 {
     param0->unk_20.camera = Camera_Alloc(HEAP_ID_76);
 
     {
         VecFx32 v0 = { 0, 0, FX32_ONE * 16 * 6 };
 
-        Camera_InitWithTarget(&v0, Unk_ov77_021D74FC.distance, &Unk_ov77_021D74FC.cameraAngle, Unk_ov77_021D74FC.fovY, Unk_ov77_021D74FC.projectionMtx, 0, param0->unk_20.camera);
+        Camera_InitWithTarget(&v0, sOpeningCutsceneCameraConfiguration.distance, &sOpeningCutsceneCameraConfiguration.cameraAngle, sOpeningCutsceneCameraConfiguration.fovY, sOpeningCutsceneCameraConfiguration.projectionMtx, 0, param0->unk_20.camera);
         Camera_SetFOV(0x981, param0->unk_20.camera);
 
         {
@@ -1720,30 +1720,30 @@ static void ov77_021D4044(UnkStruct_ov77_021D37C0 *param0, int param1)
     }
 }
 
-static void ov77_021D40B8(UnkStruct_ov77_021D37C0 *param0, int param1)
+static void OpeningCutscene_Load3dModel(OpeningCutsceneCutsceneState *param0, int param1)
 {
-    ov77_021D3EDC(param0, param1);
-    ov77_021D3F24(param0, param1, 0, 6);
-    ov77_021D4044(param0, param1);
+    OpeningCutscene_Load3dTexture(param0, param1);
+    OpeningCutscene_Load3dModels(param0, param1, 0, 6);
+    OpeningCutscene_Init3dCamera(param0, param1);
 
     param0->unk_04 = 1;
 }
 
-static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1)
+static BOOL OpeningCutscene_Load3dModelProgressive(OpeningCutsceneCutsceneState *param0, int param1)
 {
     if (param1 == 0) {
         switch (param0->unk_09) {
         case 0:
             param0->unk_05 = 1;
-            ov77_021D3EDC(param0, param1);
-            ov77_021D4044(param0, param1);
+            OpeningCutscene_Load3dTexture(param0, param1);
+            OpeningCutscene_Init3dCamera(param0, param1);
             break;
         case 1:
-            ov77_021D3F24(param0, param1, 0, 1);
+            OpeningCutscene_Load3dModels(param0, param1, 0, 1);
             break;
         case 2:
         default:
-            ov77_021D3F24(param0, param1, 1, 6);
+            OpeningCutscene_Load3dModels(param0, param1, 1, 6);
             param0->unk_09 = 0;
             param0->unk_05 = 0;
             param0->unk_04 = 1;
@@ -1753,18 +1753,18 @@ static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1)
         switch (param0->unk_09) {
         case 0:
             param0->unk_05 = 1;
-            ov77_021D3EDC(param0, param1);
-            ov77_021D4044(param0, param1);
+            OpeningCutscene_Load3dTexture(param0, param1);
+            OpeningCutscene_Init3dCamera(param0, param1);
             break;
         case 1:
-            ov77_021D3F24(param0, param1, 0, 2);
+            OpeningCutscene_Load3dModels(param0, param1, 0, 2);
             break;
         case 2:
-            ov77_021D3F24(param0, param1, 2, 4);
+            OpeningCutscene_Load3dModels(param0, param1, 2, 4);
             break;
         case 3:
         default:
-            ov77_021D3F24(param0, param1, 4, 6);
+            OpeningCutscene_Load3dModels(param0, param1, 4, 6);
             param0->unk_09 = 0;
             param0->unk_05 = 0;
             param0->unk_04 = 1;
@@ -1776,7 +1776,7 @@ static BOOL ov77_021D40DC(UnkStruct_ov77_021D37C0 *param0, int param1)
     return 0;
 }
 
-static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0)
+static void OpeningCutscene_Draw3dScene(OpeningCutsceneCutsceneState *param0)
 {
     u8 v0;
     MtxFx33 v1 = { FX32_ONE, 0, 0, 0, FX32_ONE, 0, 0, 0, FX32_ONE };
@@ -1805,12 +1805,12 @@ static void ov77_021D4188(UnkStruct_ov77_021D37C0 *param0)
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_W);
 }
 
-static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, const int param2)
+static BOOL OpeningCutscene_UpdateCutsceneTimeline(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1, const int param2)
 {
     u8 *v0 = &(param1->unk_01);
 
     if (!param1->unk_07) {
-        ov77_021D6BA0(param1->unk_18, param1->unk_244);
+        OpeningCutsceneSparklePool_StartSpawning(param1->unk_18, param1->unk_244);
     }
 
     param1->unk_07 = (param1->unk_07 + 1) % param1->unk_08;
@@ -1830,12 +1830,12 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     case 1:
         if ((BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN) == TRUE) && (param2 == 700)) {
             Bg_ToggleLayer(BG_LAYER_MAIN_0, 1);
-            ov77_021D6CD0(param1->unk_1C, 9);
-            ov77_021D6CD0(param1->unk_1C, 10);
-            ov77_021D6CD0(param1->unk_1C, 11);
+            OpeningCutscenePokemonEffects_CreateEmitter(param1->unk_1C, 9);
+            OpeningCutscenePokemonEffects_CreateEmitter(param1->unk_1C, 10);
+            OpeningCutscenePokemonEffects_CreateEmitter(param1->unk_1C, 11);
             G2_SetBlendAlpha(0, GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3, 0, 0);
             param1->unk_25D = 1;
-            ov77_021D6050(param1->unk_14, 1);
+            OpeningCutsceneSprites_SetAnimate(param1->unk_14, 1);
             (*v0)++;
         }
         break;
@@ -1856,7 +1856,7 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
             param1->unk_25B = 1;
             param1->unk_25D = 0;
             param1->unk_25C = 1;
-            GF_ASSERT(ParticleSystem_GetActiveEmitterCount(ov77_021D6CBC(param1->unk_1C)) == 0);
+            GF_ASSERT(ParticleSystem_GetActiveEmitterCount(OpeningCutscenePokemonEffects_GetParticleSystem(param1->unk_1C)) == 0);
         }
 
         if (param2 == 945) {
@@ -1872,9 +1872,9 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         break;
     case 3:
         if (1) {
-            ov77_021D513C(param0, param1, param2);
-            ov77_021D4F38(param1, param2);
-            ov77_021D6530(param1->unk_14, param2);
+            OpeningCutscene_HandleTimelineEvents(param0, param1, param2);
+            OpeningCutscene_UpdateCamera(param1, param2);
+            OpeningCutsceneSprites_MoveTrio(param1->unk_14, param2);
 
             if (param2 == ((40 * 30 - 15) + 6)) {
                 (void)0;
@@ -1884,8 +1884,8 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
                 (void)0;
             }
 
-            ov77_021D60E0(param1->unk_14, param2);
-            ov77_021D61B8(param1->unk_14, param2);
+            OpeningCutsceneSprites_MoveActorLeft(param1->unk_14, param2);
+            OpeningCutsceneSprites_MoveActorRight(param1->unk_14, param2);
 
             if (param2 >= 1576) {
                 StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 18, 1, HEAP_ID_76);
@@ -1895,18 +1895,18 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
 
         break;
     case 4:
-        ov77_021D4F38(param1, param2);
-        ov77_021D6530(param1->unk_14, param2);
-        ov77_021D60E0(param1->unk_14, param2);
-        ov77_021D61B8(param1->unk_14, param2);
+        OpeningCutscene_UpdateCamera(param1, param2);
+        OpeningCutsceneSprites_MoveTrio(param1->unk_14, param2);
+        OpeningCutsceneSprites_MoveActorLeft(param1->unk_14, param2);
+        OpeningCutsceneSprites_MoveActorRight(param1->unk_14, param2);
 
         if (IsScreenFadeDone() && (param2 >= 1600)) {
             Bg_ToggleLayer(BG_LAYER_SUB_0, 0);
-            ov77_021D6000(param1->unk_14, param1->unk_18);
+            OpeningCutsceneSprites_HideForeground(param1->unk_14, param1->unk_18);
             param1->unk_244 = 1;
-            ov77_021D3A10(param0, param1);
-            ov77_021D603C(param1->unk_14, 1, 1);
-            ov77_021D603C(param1->unk_14, 2, 1);
+            OpeningCutscene_LoadScene1Graphics(param0, param1);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 1, 1);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 2, 1);
 
             Bg_ToggleLayer(BG_LAYER_MAIN_1, 1);
             Bg_ToggleLayer(BG_LAYER_MAIN_2, 1);
@@ -1947,8 +1947,8 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 5:
-        ov77_021D4B70(param1);
-        ov77_021D607C(param1->unk_14);
+        OpeningCutscene_AdvanceBackgrounds(param1);
+        OpeningCutsceneSprites_MovePair(param1->unk_14);
 
         if (IsScreenFadeDone()) {
             if (param2 >= (62 * 30 - 15 - 15)) {
@@ -1964,15 +1964,15 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
                 param1->unk_248 = (1 << 1) | (1 << 5);
                 param1->unk_246 = 1;
 
-                ov77_021D603C(param1->unk_14, 1, 0);
-                ov77_021D603C(param1->unk_14, 2, 0);
+                OpeningCutsceneSprites_SetVisible(param1->unk_14, 1, 0);
+                OpeningCutsceneSprites_SetVisible(param1->unk_14, 2, 0);
                 (*v0)++;
             }
         }
         break;
     case 6:
-        ov77_021D4BE4(param1);
-        ov77_021D4C04(param1, param2);
+        OpeningCutscene_ScheduleStripeScroll(param1);
+        OpeningCutscene_UpdateWindowWipe(param1, param2);
 
         if (param2 == (64 * 30 - 15 - 15 - 45)) {
             StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
@@ -1980,8 +1980,8 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 7:
-        ov77_021D4BE4(param1);
-        ov77_021D4C04(param1, param2);
+        OpeningCutscene_ScheduleStripeScroll(param1);
+        OpeningCutscene_UpdateWindowWipe(param1, param2);
 
         if (IsScreenFadeDone()) {
             param1->unk_247 = (1 << 1) | (1 << 5);
@@ -1995,9 +1995,9 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 8:
-        ov77_021D4BE4(param1);
-        ov77_021D4C04(param1, param2);
-        ov77_021D6470(param1->unk_14, param2);
+        OpeningCutscene_ScheduleStripeScroll(param1);
+        OpeningCutscene_UpdateWindowWipe(param1, param2);
+        OpeningCutsceneSprites_RotateStripes(param1->unk_14, param2);
 
         if (IsScreenFadeDone()) {
             if (param2 == (65 * 30 - 15 - 15 - 45 - 15)) {
@@ -2005,8 +2005,8 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
                 Bg_ScheduleScroll(param1->unk_10, 1, 3, 256);
                 Bg_ScheduleScroll(param1->unk_10, 5, 0, 0);
                 Bg_ScheduleScroll(param1->unk_10, 5, 3, 256);
-                ov77_021D603C(param1->unk_14, 11, 1);
-                ov77_021D603C(param1->unk_14, 12, 1);
+                OpeningCutsceneSprites_SetVisible(param1->unk_14, 11, 1);
+                OpeningCutsceneSprites_SetVisible(param1->unk_14, 12, 1);
             } else if (param2 >= (1935 - 15)) {
                 StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 4, 1, HEAP_ID_76);
                 (*v0)++;
@@ -2014,31 +2014,31 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 9:
-        ov77_021D6470(param1->unk_14, param2);
+        OpeningCutsceneSprites_RotateStripes(param1->unk_14, param2);
 
         if (IsScreenFadeDone()) {
             StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 64, 1, HEAP_ID_76);
-            ov77_021D603C(param1->unk_14, 11, 0);
-            ov77_021D603C(param1->unk_14, 12, 0);
-            ov77_021D603C(param1->unk_14, 13, 1);
-            ov77_021D603C(param1->unk_14, 14, 1);
-            ov77_021D603C(param1->unk_14, 15, 1);
-            ov77_021D603C(param1->unk_14, 16, 1);
-            ov77_021D636C(param1->unk_14, 0);
-            ov77_021D3B5C(param0, param1);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 11, 0);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 12, 0);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 13, 1);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 14, 1);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 15, 1);
+            OpeningCutsceneSprites_SetVisible(param1->unk_14, 16, 1);
+            OpeningCutsceneSprites_SetStripePalette(param1->unk_14, 0);
+            OpeningCutscene_LoadScene2Graphics(param0, param1);
             gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
             GXLayers_SwapDisplay();
-            ov77_021D3DC4(param1);
+            OpeningCutscene_SyncScreenLayout(param1);
             param1->unk_246 = 1;
             (*v0)++;
         } else {
-            ov77_021D4BE4(param1);
-            ov77_021D4C04(param1, param2);
+            OpeningCutscene_ScheduleStripeScroll(param1);
+            OpeningCutscene_UpdateWindowWipe(param1, param2);
         }
         break;
     case 10:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
-        ov77_021D4DC8(param1, param2);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutscene_ScrollLayersOut(param1, param2);
 
         if (IsScreenFadeDone()) {
             if (param2 >= (1995 + 15)) {
@@ -2048,7 +2048,7 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 11:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             G2_SetBlendAlpha(GX_BLEND_PLANEMASK_NONE, GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD, 0, 0);
@@ -2058,23 +2058,23 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 12:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
-            if (ov77_021D6E78(param1->unk_1C, 0, param2)) {
+            if (OpeningCutscenePokemonEffects_RunAnimation(param1->unk_1C, 0, param2)) {
                 StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
                 (*v0)++;
             }
         }
         break;
     case 13:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             if (1) {
                 gSystem.whichScreenIs3D = DS_SCREEN_SUB;
                 GXLayers_SwapDisplay();
-                ov77_021D3DC4(param1);
+                OpeningCutscene_SyncScreenLayout(param1);
 
                 StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
                 (*v0)++;
@@ -2082,11 +2082,11 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 14:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             if (param2 >= (2085 + 15 + 30)) {
-                if (ov77_021D6E78(param1->unk_1C, 1, param2)) {
+                if (OpeningCutscenePokemonEffects_RunAnimation(param1->unk_1C, 1, param2)) {
                     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 4, 1, HEAP_ID_76);
                     param1->unk_0C = 0;
                     (*v0)++;
@@ -2095,7 +2095,7 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 15:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             MI_CpuCopy16(param1->unk_240, (void *)HW_BG_PLTT, 0x200);
@@ -2103,9 +2103,9 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
             gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
             GXLayers_SwapDisplay();
 
-            ov77_021D3D4C(param0, param1);
-            ov77_021D3DC4(param1);
-            ov77_021D636C(param1->unk_14, 1);
+            OpeningCutscene_LoadScene3Graphics(param0, param1);
+            OpeningCutscene_SyncScreenLayout(param1);
+            OpeningCutsceneSprites_SetStripePalette(param1->unk_14, 1);
 
             Bg_ScheduleScroll(param1->unk_10, 1, 0, -60);
             Bg_ScheduleScroll(param1->unk_10, 2, 0, -60);
@@ -2118,7 +2118,7 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 16:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             StartScreenFade(FADE_SUB_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 16, 1, HEAP_ID_76);
@@ -2126,11 +2126,11 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 17:
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             if (param2 >= (2200 + 15)) {
-                ov77_021D4E90(param1);
+                OpeningCutscene_ScrollLayersOutFinal(param1);
             }
 
             if (param2 >= ((2200 + 15) + 1)) {
@@ -2142,8 +2142,8 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         }
         break;
     case 18:
-        ov77_021D4E90(param1);
-        ov77_021D6290(param1->unk_14, 16 << FX32_SHIFT);
+        OpeningCutscene_ScrollLayersOutFinal(param1);
+        OpeningCutsceneSprites_ScrollStripes(param1->unk_14, 16 << FX32_SHIFT);
 
         if (IsScreenFadeDone()) {
             gSystem.whichScreenIs3D = DS_SCREEN_SUB;
@@ -2159,7 +2159,7 @@ static BOOL ov77_021D4230(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
     return 0;
 }
 
-static void ov77_021D4B70(UnkStruct_ov77_021D37C0 *param0)
+static void OpeningCutscene_AdvanceBackgrounds(OpeningCutsceneCutsceneState *param0)
 {
     param0->unk_260 += 0x280;
     param0->unk_264 += 0x110;
@@ -2173,13 +2173,13 @@ static void ov77_021D4B70(UnkStruct_ov77_021D37C0 *param0)
     param0->unk_0C = 0;
 }
 
-static void ov77_021D4BE4(UnkStruct_ov77_021D37C0 *param0)
+static void OpeningCutscene_ScheduleStripeScroll(OpeningCutsceneCutsceneState *param0)
 {
     Bg_ScheduleScroll(param0->unk_10, 3, 1, 16);
     Bg_ScheduleScroll(param0->unk_10, 7, 1, -16);
 }
 
-static void ov77_021D4C04(UnkStruct_ov77_021D37C0 *param0, int param1)
+static void OpeningCutscene_UpdateWindowWipe(OpeningCutsceneCutsceneState *param0, int param1)
 {
     if (param1 == (65 * 30 - 15 - 15 - 45 - 15)) {
         G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
@@ -2220,7 +2220,7 @@ static void ov77_021D4C04(UnkStruct_ov77_021D37C0 *param0, int param1)
     }
 }
 
-static void ov77_021D4DC8(UnkStruct_ov77_021D37C0 *param0, int param1)
+static void OpeningCutscene_ScrollLayersOut(OpeningCutsceneCutsceneState *param0, int param1)
 {
     int v0, v1;
 
@@ -2276,7 +2276,7 @@ static void ov77_021D4DC8(UnkStruct_ov77_021D37C0 *param0, int param1)
     }
 }
 
-static void ov77_021D4E90(UnkStruct_ov77_021D37C0 *param0)
+static void OpeningCutscene_ScrollLayersOutFinal(OpeningCutsceneCutsceneState *param0)
 {
     int v0, v1;
 
@@ -2324,7 +2324,7 @@ static void ov77_021D4E90(UnkStruct_ov77_021D37C0 *param0)
     Bg_ScheduleScroll(param0->unk_10, 7, 0, v0);
 }
 
-static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1)
+static void OpeningCutscene_UpdateCamera(OpeningCutsceneCutsceneState *param0, const int param1)
 {
     VecFx32 v0 = { 0, 0, 0 };
 
@@ -2344,7 +2344,7 @@ static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1)
         Camera_Move(&v0, param0->unk_20.camera);
     } else if (param1 == ((40 * 30 - 15) + 6)) {
         VecFx32 v2 = { -(FX32_ONE * 16 * 4), 0, -FX32_ONE * 16 * 3 };
-        Camera_InitWithTarget(&v2, Unk_ov77_021D74FC.distance, &Unk_ov77_021D74FC.cameraAngle, Unk_ov77_021D74FC.fovY, Unk_ov77_021D74FC.projectionMtx, 0, param0->unk_20.camera);
+        Camera_InitWithTarget(&v2, sOpeningCutsceneCameraConfiguration.distance, &sOpeningCutsceneCameraConfiguration.cameraAngle, sOpeningCutsceneCameraConfiguration.fovY, sOpeningCutsceneCameraConfiguration.projectionMtx, 0, param0->unk_20.camera);
 
         {
             VecFx32 v3 = { 0, FX32_ONE * 16 * 5, 0 };
@@ -2380,7 +2380,7 @@ static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1)
         Bg_ScheduleScroll(param0->unk_10, 1, 1, 4);
     } else if (param1 == ((47 * 30 - 15) + 6)) {
         VecFx32 v6 = { FX32_ONE * 16 * 30, 0, FX32_ONE * 0 - 0x70000 };
-        Camera_InitWithTarget(&v6, Unk_ov77_021D74FC.distance, &Unk_ov77_021D74FC.cameraAngle, Unk_ov77_021D74FC.fovY, Unk_ov77_021D74FC.projectionMtx, 0, param0->unk_20.camera);
+        Camera_InitWithTarget(&v6, sOpeningCutsceneCameraConfiguration.distance, &sOpeningCutsceneCameraConfiguration.cameraAngle, sOpeningCutsceneCameraConfiguration.fovY, sOpeningCutsceneCameraConfiguration.projectionMtx, 0, param0->unk_20.camera);
         {
             VecFx32 v7 = { 0, FX32_ONE * 16 * 5, 0 };
             Camera_Move(&v7, param0->unk_20.camera);
@@ -2416,7 +2416,7 @@ static void ov77_021D4F38(UnkStruct_ov77_021D37C0 *param0, const int param1)
     }
 }
 
-static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37C0 *param1, int param2)
+static void OpeningCutscene_HandleTimelineEvents(OpeningCutsceneAppData *param0, OpeningCutsceneCutsceneState *param1, int param2)
 {
     BOOL v0;
 
@@ -2426,17 +2426,17 @@ static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         break;
     case ((40 * 30 - 15) + 6):
         GF_ASSERT(IsScreenFadeDone() == TRUE);
-        ov77_021D35B8(param0);
-        ov77_021D40DC(param1, 1);
+        OpeningCutscene_Free3dResources(param0);
+        OpeningCutscene_Load3dModelProgressive(param1, 1);
         break;
     case (((40 * 30 - 15) + 6) + 1):
-        ov77_021D40DC(param1, 1);
+        OpeningCutscene_Load3dModelProgressive(param1, 1);
         break;
     case (((40 * 30 - 15) + 6) + 2):
-        ov77_021D40DC(param1, 1);
+        OpeningCutscene_Load3dModelProgressive(param1, 1);
         break;
     case (((40 * 30 - 15) + 6) + 3):
-        v0 = ov77_021D40DC(param1, 1);
+        v0 = OpeningCutscene_Load3dModelProgressive(param1, 1);
         GF_ASSERT(v0 == 1);
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
         break;
@@ -2445,14 +2445,14 @@ static void ov77_021D513C(UnkStruct_ov77_021D2E9C *param0, UnkStruct_ov77_021D37
         break;
     case ((47 * 30 - 15) + 6):
         GF_ASSERT(IsScreenFadeDone() == TRUE);
-        ov77_021D35B8(param0);
-        ov77_021D40B8(param1, 2);
+        OpeningCutscene_Free3dResources(param0);
+        OpeningCutscene_Load3dModel(param1, 2);
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 4, 1, HEAP_ID_76);
         break;
     }
 }
 
-static BOOL ov77_021D5254(UnkStruct_ov77_021D2E9C *param0)
+static BOOL OpeningCutscene_UpdateLogoPhase(OpeningCutsceneAppData *param0)
 {
     u8 *v0 = &(param0->unk_298.unk_00);
 
@@ -2462,33 +2462,33 @@ static BOOL ov77_021D5254(UnkStruct_ov77_021D2E9C *param0)
 
     switch (*v0) {
     case 0:
-        ov77_021D52C8(param0);
+        OpeningCutscene_InitLogo(param0);
         (*v0)++;
         break;
     case 1:
-        ov77_021D5308(&param0->unk_298);
+        OpeningCutscene_LoadLogoGraphics(&param0->unk_298);
         (*v0)++;
         break;
     case 2:
-        if (ov77_021D5390(&param0->unk_298, param0->unk_04)) {
+        if (OpeningCutscene_UpdateLogo(&param0->unk_298, param0->unk_04)) {
             (*v0)++;
         }
         break;
     case 3:
-        ov77_021D5478(param0);
+        OpeningCutscene_FreeLogo(param0);
         return 1;
     }
 
     return 0;
 }
 
-static void ov77_021D52C8(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_InitLogo(OpeningCutsceneAppData *param0)
 {
     int v0;
     int v1;
 
-    ov77_021D25F0();
-    ov77_021D2A00(param0);
+    OpeningCutscene_InitVramBanksLogo();
+    OpeningCutscene_InitLogoBg(param0);
 
     param0->unk_298.unk_08 = param0->unk_0C;
 
@@ -2500,7 +2500,7 @@ static void ov77_021D52C8(UnkStruct_ov77_021D2E9C *param0)
     param0->unk_298.unk_02 = 1;
 }
 
-static void ov77_021D5308(UnkStruct_ov77_021D5308 *param0)
+static void OpeningCutscene_LoadLogoGraphics(OpeningCutsceneLogoState *param0)
 {
     Graphics_LoadPalette(NARC_INDEX_DEMO__TITLE__OP_DEMO, 99, 0, 0, 0, HEAP_ID_76);
     Graphics_LoadTilesToBgLayer(NARC_INDEX_DEMO__TITLE__OP_DEMO, 98, param0->unk_08, 2, 0, 0, 0, HEAP_ID_76);
@@ -2518,7 +2518,7 @@ static void ov77_021D5308(UnkStruct_ov77_021D5308 *param0)
     param0->unk_03 = 1;
 }
 
-static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
+static BOOL OpeningCutscene_UpdateLogo(OpeningCutsceneLogoState *param0, const int param1)
 {
     u8 *v0 = &(param0->unk_01);
 
@@ -2560,7 +2560,7 @@ static BOOL ov77_021D5390(UnkStruct_ov77_021D5308 *param0, const int param1)
     return 0;
 }
 
-static void ov77_021D5478(UnkStruct_ov77_021D2E9C *param0)
+static void OpeningCutscene_FreeLogo(OpeningCutsceneAppData *param0)
 {
     if (param0->unk_298.unk_02) {
         Bg_FreeTilemapBuffer(param0->unk_0C, BG_LAYER_MAIN_2);
