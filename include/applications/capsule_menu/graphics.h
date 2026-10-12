@@ -25,9 +25,9 @@
 void CapsuleGraphics_InitFontOAMManager(CapsuleAppManager *appMan);
 void CapsuleGraphics_FreeFonts(CapsuleAppManager *appMan);
 void CapsuleGraphics_LoadPaletteBuffer(CapsuleAppManager *appMan);
-void ov76_0223B940(CapsuleAppManager *appMan);
+void CapsuleGraphics_CreateFontOAMs(CapsuleAppManager *appMan);
 void CapsuleGraphics_SetFontOAMDrawFlag(CapsuleAppManager *appMan, BOOL flag);
-void ov76_0223B98C(CapsuleAppManager *appMan, int index, int param2, int param3, int param4);
+void CapsuleGraphics_CreateFontOAM(CapsuleAppManager *appMan, int index, int param2, int param3, int param4);
 void CapsuleGraphics_PopulateSealPage(CapsuleAppManager *appMan, int pageCutoff);
 void CapsuleGraphics_LoadPageSprites(CapsuleAppManager *appMan);
 void CapsuleGraphics_InitPageSprites(CapsuleAppManager *appMan);

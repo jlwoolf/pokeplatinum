@@ -76,7 +76,7 @@ typedef struct {
 static BOOL CapsuleManager_SelectionActions(CapsuleAppManager *appMan);
 static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan);
 static BOOL CapsuleManager_HandleFades(CapsuleAppManager *appMan);
-static BOOL ov76_0223E950(CapsuleAppManager *appMan);
+static BOOL CapsuleManager_HandleCapsuleMonRemoval(CapsuleAppManager *appMan);
 static BOOL CapsuleManager_HandleSpritesAndInputs(CapsuleAppManager *appMan);
 static BOOL CapsuleManager_Dummy(CapsuleAppManager *appMan);
 
@@ -205,13 +205,13 @@ static int CapsuleManager_FreeMenuWindow(CapsuleAppManager *appMan)
     return 1;
 }
 
-static int ov76_0223D4FC(CapsuleAppManager *appMan)
+static int CapsuleManager_HandleSealMenuEdit(CapsuleAppManager *appMan)
 {
     CapsuleManager_UpdateStates(appMan, 1, 0, 3);
     return 0;
 }
 
-static int ov76_0223D50C(CapsuleAppManager *appMan)
+static int CapsuleManager_HandleSealMenuSet(CapsuleAppManager *appMan)
 {
     SealPlacement_UpdateSeals(appMan);
     SealPlacement_LoadCapsuleSeals(appMan);
@@ -221,31 +221,31 @@ static int ov76_0223D50C(CapsuleAppManager *appMan)
     return 0;
 }
 
-static int ov76_0223D530(CapsuleAppManager *appMan)
+static int CapsuleManager_HandleSealMenuRemove(CapsuleAppManager *appMan)
 {
     CapsuleManager_UpdateStates(appMan, 3, 0, 3);
     return 0;
 }
 
-static int ov76_0223D540(CapsuleAppManager *appMan)
+static int CapsuleManager_HandleSealMenuShift(CapsuleAppManager *appMan)
 {
     CapsuleManager_UpdateStates(appMan, 4, 0, 3);
     return 0;
 }
 
 const SealListMenuEntry gSealListMenuEntries[] = {
-    { 0, ov76_0223D4FC },
+    { 0, CapsuleManager_HandleSealMenuEdit },
     { 1, CapsuleManager_FreeMenuWindow },
-    { 2, ov76_0223D50C },
-    { 3, ov76_0223D530 },
-    { 4, ov76_0223D540 },
+    { 2, CapsuleManager_HandleSealMenuSet },
+    { 3, CapsuleManager_HandleSealMenuRemove },
+    { 4, CapsuleManager_HandleSealMenuShift },
 };
 
 static BOOL (*const sCapsuleFunctions[])(CapsuleAppManager *appMan) = {
     CapsuleManager_SelectionActions,
     CapsuleManager_HandleCancelUpdateSeals,
     CapsuleManager_HandleFades,
-    ov76_0223E950,
+    CapsuleManager_HandleCapsuleMonRemoval,
     CapsuleManager_HandleSpritesAndInputs,
     CapsuleManager_Dummy,
 };
@@ -342,7 +342,7 @@ static BOOL CapsuleManager_SelectionActions(CapsuleAppManager *appMan)
         CapsuleGraphics_InitPageSprites(appMan);
         CapsuleGraphics_SetPageSpritesDrawFlag(appMan, 0);
         CapsuleGraphics_SetSelectionIndicatorDrawFlags(appMan, 0);
-        ov76_0223B940(appMan);
+        CapsuleGraphics_CreateFontOAMs(appMan);
         CapsuleGraphics_SetFontOAMDrawFlag(appMan, 0);
         CapsuleGraphics_PrintMessage(appMan->graphicsMan.windows, 7);
         CapsuleGraphics_StartDisplay();
@@ -371,7 +371,7 @@ static BOOL CapsuleManager_SelectionActions(CapsuleAppManager *appMan)
         int newCapsuleIndex;
 
         if (TouchScreen_Tapped() == 1) {
-            ov76_0223D4FC(appMan);
+            CapsuleManager_HandleSealMenuEdit(appMan);
             break;
         }
 
@@ -732,7 +732,7 @@ static void CapsuleManager_ZeroThrownMonScale(CapsuleAppManager *appMan)
     PokemonSprite_SetAttribute(appMan->graphicsMan.pokemonSprite, MON_SPRITE_SCALE_Y, 0);
 }
 
-static BOOL ov76_0223DE78(CapsuleAppManager *appMan)
+static BOOL CapsuleManager_GrowThrownMonSprite(CapsuleAppManager *appMan)
 {
     if (PokemonSprite_GetAttribute(appMan->graphicsMan.pokemonSprite, MON_SPRITE_SCALE_X) == 0x100) {
         return 0;
@@ -749,7 +749,7 @@ static BOOL ov76_0223DE78(CapsuleAppManager *appMan)
     return 1;
 }
 
-static BOOL ov76_0223DEF4(CapsuleAppManager *appMan)
+static BOOL CapsuleManager_ShrinkThrownMonSprite(CapsuleAppManager *appMan)
 {
     if (PokemonSprite_GetAttribute(appMan->graphicsMan.pokemonSprite, MON_SPRITE_SCALE_X) == 0x0) {
         return 0;
@@ -883,7 +883,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
             }
 
             if (BallRotation_IsDone(appMan->graphicsMan.ballRotation) == 1) {
-                ov76_0223DE78(appMan);
+                CapsuleManager_GrowThrownMonSprite(appMan);
                 BallCapsuleSealEffect_PlayDefault(appMan->graphicsMan.sealEffect);
                 CapsuleManager_SetThrownMonSpriteHidden(appMan, 0);
                 CapsuleManager_ZeroThrownMonScale(appMan);
@@ -892,7 +892,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
             }
             break;
         case THROW_WAIT_FOR_ROTATION_END_STATE_ID: {
-            BOOL v4 = ov76_0223DE78(appMan);
+            BOOL v4 = CapsuleManager_GrowThrownMonSprite(appMan);
 
             if (BallRotation_IsActive(appMan->graphicsMan.ballRotation) != 0) {
                 break;
@@ -950,7 +950,7 @@ static BOOL CapsuleManager_HandleCancelUpdateSeals(CapsuleAppManager *appMan)
             }
             break;
         case THROW_WAIT_FREE_STATE_ID: {
-            BOOL v6 = ov76_0223DEF4(appMan);
+            BOOL v6 = CapsuleManager_ShrinkThrownMonSprite(appMan);
 
             if ((BallRotation_IsActive(appMan->graphicsMan.ballRotation) == 0) && (v6 == 0)) {
                 PaletteData_StartFade(appMan->graphicsMan.paletteData, 2, 0x80B, 0, 10, 0, 0);
@@ -1223,7 +1223,7 @@ void CapsuleManager_AssignCapsuleMon(CapsuleAppManager *appMan, int capsuleIndex
     CapsuleGraphics_SetCapsuleSpriteAnim(appMan);
 }
 
-static BOOL ov76_0223E950(CapsuleAppManager *appMan)
+static BOOL CapsuleManager_HandleCapsuleMonRemoval(CapsuleAppManager *appMan)
 {
     switch (appMan->stateID) {
     case CAPSULE_INIT_STATE_ID:
