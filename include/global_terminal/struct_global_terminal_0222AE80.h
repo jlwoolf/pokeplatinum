@@ -9,14 +9,14 @@
 
 typedef struct {
     u32 integrity;
-    GlobalTerminalPhotoMon unk_04;
-    u32 unk_24;
+    GlobalTerminalPhotoMon photoMon;
+    u32 accessoryFlags;
     EasyChatSentence title;
-    GlobalTerminalPhotoAccessory unk_30[10];
-    u8 unk_58;
+    GlobalTerminalPhotoAccessory accessories[10];
+    u8 backdrop;
     u8 language;
-    u8 unk_5A[2];
-    VsRecorderViewerBoxChecksum unk_5C;
+    u8 unused_5A[2];
+    VsRecorderViewerBoxChecksum checksum;
 } GlobalTerminalDressUpPhoto;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AE80_H

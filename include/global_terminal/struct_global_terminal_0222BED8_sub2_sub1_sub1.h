@@ -4,16 +4,16 @@
 #include "easy_chat_sentence.h"
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u16 unk_04[4];
-    u32 unk_0C;
-    u32 unk_10;
-    u16 unk_14[8];
-    EasyChatSentence unk_24;
-    EasyChatSentence unk_2C;
+    u8 unused_00;
+    u8 unused_01;
+    u8 unused_02;
+    u8 unused_03;
+    u16 unused_04[4];
+    u32 unused_0C;
+    u32 unused_10;
+    u16 unused_14[8];
+    EasyChatSentence unused_24;
+    EasyChatSentence unused_2C;
 } GlobalTerminalRecordAltExtra1Entry;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BED8_SUB2_SUB1_SUB1_H

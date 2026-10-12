@@ -2,14 +2,14 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BDAC_SUB1_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01[3];
-    u8 unk_04[16];
-    u64 unk_14[16];
-    u8 unk_94[12];
-    u64 unk_A0[12];
-    u16 unk_100[20];
-    u64 unk_128[20];
+    u8 rankingID;
+    u8 unused_01[3];
+    u8 appearance0[16];
+    u64 values0[16];
+    u8 appearance1[12];
+    u64 values1[12];
+    u16 appearance2[20];
+    u64 values2[20];
 } GlobalTerminalPlayTimeDataEntry;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BDAC_SUB1_H

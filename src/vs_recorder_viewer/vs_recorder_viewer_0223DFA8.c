@@ -320,7 +320,7 @@ static BOOL VsRecorderViewerRanking_State_TransferSelectedRecord(VsRecorderState
         param0->unk_08++;
         break;
     case 3:
-        if (GlobalTerminalTransfer_UploadId(VsRecorderViewerTransfer_GetTransfer(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80.unk_58) == 1) {
+        if (GlobalTerminalTransfer_UploadId(VsRecorderViewerTransfer_GetTransfer(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->data.recordingID) == 1) {
             param0->unk_08++;
         }
         break;
@@ -2026,10 +2026,10 @@ static void VsRecorderViewerRanking_LoadProfileAndSummary(VsRecorderState *param
     VsRecorderViewerRankingContext *v0 = param0->unk_860;
 
     v0->unk_194.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    GlobalTerminal_DeserializePlayerProfile(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00, v0->unk_194.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->profile, v0->unk_194.unk_00);
     v0->unk_220.unk_00 = v0->unk_194.unk_00;
     v0->unk_220.unk_04 = BattleRecording_NewSummary(HEAP_ID_102);
-    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_220.unk_04, sizeof(GlobalTerminalRecordAltData));
+    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->data, v0->unk_220.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
 static void VsRecorderViewerRanking_BuildRankingIconGrid(VsRecorderState *param0)
@@ -2054,7 +2054,7 @@ static void VsRecorderViewerRanking_BuildRankingIconGrid(VsRecorderState *param0
             continue;
         }
 
-        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v7 + v0]->unk_80)) {
+        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v7 + v0]->data)) {
             v11 = 1;
         } else {
             v11 = 0;
@@ -2070,30 +2070,30 @@ static void VsRecorderViewerRanking_BuildRankingIconGrid(VsRecorderState *param0
             }
 
             for (v12 = 0; v12 < 3; v12++) {
-                v4 = param0->unk_8B4.unk_1D58[v7 + v0]->unk_80.unk_00[v8[v11][v12]];
+                v4 = param0->unk_8B4.unk_1D58[v7 + v0]->data.species[v8[v11][v12]];
 
                 if (v4 == 0) {
                     continue;
                 }
 
                 v9[v14] = v4;
-                v10[v14] = param0->unk_8B4.unk_1D58[v7 + v0]->unk_80.unk_18[v8[v11][v12]];
+                v10[v14] = param0->unk_8B4.unk_1D58[v7 + v0]->data.forms[v8[v11][v12]];
                 v14++;
             }
 
-            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v7 + v0]->unk_80)) {
+            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v7 + v0]->data)) {
                 v14 = 3;
             }
 
             for (v12 = 3; v12 < 6; v12++) {
-                v4 = param0->unk_8B4.unk_1D58[v7 + v0]->unk_80.unk_00[v8[v11][v12]];
+                v4 = param0->unk_8B4.unk_1D58[v7 + v0]->data.species[v8[v11][v12]];
 
                 if (v4 == 0) {
                     continue;
                 }
 
                 v9[v14] = v4;
-                v10[v14] = param0->unk_8B4.unk_1D58[v7 + v0]->unk_80.unk_18[v8[v11][v12]];
+                v10[v14] = param0->unk_8B4.unk_1D58[v7 + v0]->data.forms[v8[v11][v12]];
                 v14++;
             }
         }
@@ -2205,7 +2205,7 @@ static void VsRecorderViewerRanking_ScrollIconGrid(VsRecorderState *param0)
         int v12[6] = { 0, 0, 0, 0, 0, 0 };
         int v13 = 0;
 
-        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->unk_80)) {
+        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->data)) {
             v13 = 1;
         }
 
@@ -2219,30 +2219,30 @@ static void VsRecorderViewerRanking_ScrollIconGrid(VsRecorderState *param0)
             }
 
             for (v14 = 0; v14 < 3; v14++) {
-                v6 = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_00[v10[v13][v14]];
+                v6 = param0->unk_8B4.unk_1D58[v9]->data.species[v10[v13][v14]];
 
                 if (v6 == 0) {
                     continue;
                 }
 
                 v11[v16] = v6;
-                v12[v16] = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_18[v10[v13][v14]];
+                v12[v16] = param0->unk_8B4.unk_1D58[v9]->data.forms[v10[v13][v14]];
                 v16++;
             }
 
-            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->unk_80)) {
+            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->data)) {
                 v16 = 3;
             }
 
             for (v14 = 3; v14 < 6; v14++) {
-                v6 = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_00[v10[v13][v14]];
+                v6 = param0->unk_8B4.unk_1D58[v9]->data.species[v10[v13][v14]];
 
                 if (v6 == 0) {
                     continue;
                 }
 
                 v11[v16] = v6;
-                v12[v16] = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_18[v10[v13][v14]];
+                v12[v16] = param0->unk_8B4.unk_1D58[v9]->data.forms[v10[v13][v14]];
                 v16++;
             }
         }

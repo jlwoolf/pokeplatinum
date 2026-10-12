@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BDC8_H
 
 typedef struct {
-    u64 unk_00;
+    u64 recordingID;
 } GlobalTerminalBattleRecordingResult;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BDC8_H

@@ -21,7 +21,7 @@
 void GlobalTerminal_SerializeDressUpPhoto(SaveData *saveData, const DressUpPhoto *photo, GlobalTerminalDressUpPhoto *param2)
 {
     DressUpPhoto_Serialize(photo, param2);
-    param2->unk_5C.unk_00 = SaveData_CalculateChecksum(saveData, param2, sizeof(GlobalTerminalDressUpPhoto) - (sizeof(VsRecorderViewerBoxChecksum)));
+    param2->checksum.unk_00 = SaveData_CalculateChecksum(saveData, param2, sizeof(GlobalTerminalDressUpPhoto) - (sizeof(VsRecorderViewerBoxChecksum)));
 }
 
 void GlobalTerminal_DeserializeDressUpPhoto(const GlobalTerminalDressUpPhoto *param0, DressUpPhoto *photo)

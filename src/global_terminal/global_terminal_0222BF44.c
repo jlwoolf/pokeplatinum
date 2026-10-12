@@ -44,36 +44,36 @@
 #include "wifi_list.h"
 
 typedef struct {
-    WiFiLobbyAppState *unk_00;
-    BgConfig *unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    StringTemplate *unk_20;
-    MessageLoader *unk_24;
-    MessageLoader *unk_28;
-    MessageLoader *unk_2C;
-    MessageLoader *unk_30;
-    String *unk_34;
-    String *unk_38;
-    String *unk_3C;
-    int unk_40;
-    Window unk_44;
-    Window unk_54;
-    Window unk_64;
-    Window unk_74;
-    Menu *unk_84;
-    void *unk_88;
-    int unk_8C;
-    int unk_90;
-    int unk_94;
-    int unk_98;
-    StringList *unk_9C;
-    ListMenu *unk_A0;
-    GlobalTerminalPaletteBlend unk_A4;
+    WiFiLobbyAppState *appState;
+    BgConfig *bgConfig;
+    int state;
+    int nextState;
+    int errorCode;
+    int dwcError;
+    int dwcErrorDetail;
+    int dwcErrorType;
+    StringTemplate *stringTemplate;
+    MessageLoader *gtsMessageLoader;
+    MessageLoader *connectMessageLoader;
+    MessageLoader *messageLoader;
+    MessageLoader *unused_30;
+    String *messageString;
+    String *titleString;
+    String *formatString;
+    int printerID;
+    Window messageWindow;
+    Window headerWindow;
+    Window dialogWindow;
+    Window unused_74;
+    Menu *menu;
+    void *waitDial;
+    int unused_8C;
+    int stateStep;
+    int waitCounter;
+    int unused_98;
+    StringList *unused_9C;
+    ListMenu *unused_A0;
+    GlobalTerminalPaletteBlend paletteBlend;
 } GlobalTerminalApp;
 
 int GlobalTerminal_Init(ApplicationManager *appMan, int *unused);
@@ -155,22 +155,22 @@ int GlobalTerminal_Init(ApplicationManager *appMan, int *unused)
 
     GlobalTerminalApp *v0 = ApplicationManager_NewData(appMan, sizeof(GlobalTerminalApp), HEAP_ID_117);
     MI_CpuClear8(v0, sizeof(GlobalTerminalApp));
-    v0->unk_00 = ApplicationManager_Args(appMan);
-    v0->unk_04 = BgConfig_New(HEAP_ID_117);
+    v0->appState = ApplicationManager_Args(appMan);
+    v0->bgConfig = BgConfig_New(HEAP_ID_117);
 
     VramTransfer_New(64, HEAP_ID_117);
     SetAutorepeat(4, 8);
-    GlobalTerminal_InitGraphics(v0->unk_04);
+    GlobalTerminal_InitGraphics(v0->bgConfig);
     EnableTouchPad();
     InitializeTouchPad(4);
 
-    v0->unk_20 = StringTemplate_New(11, 64, HEAP_ID_117);
-    v0->unk_24 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_GTS, HEAP_ID_117);
-    v0->unk_28 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0674, HEAP_ID_117);
-    v0->unk_2C = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0695, HEAP_ID_117);
-    v0->unk_34 = String_Init(90 * 2, HEAP_ID_117);
-    v0->unk_3C = String_Init(16 * 8 * 2, HEAP_ID_117);
-    v0->unk_38 = MessageLoader_GetNewString(v0->unk_24, 31);
+    v0->stringTemplate = StringTemplate_New(11, 64, HEAP_ID_117);
+    v0->gtsMessageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_GTS, HEAP_ID_117);
+    v0->connectMessageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0674, HEAP_ID_117);
+    v0->messageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0695, HEAP_ID_117);
+    v0->messageString = String_Init(90 * 2, HEAP_ID_117);
+    v0->formatString = String_Init(16 * 8 * 2, HEAP_ID_117);
+    v0->titleString = MessageLoader_GetNewString(v0->gtsMessageLoader, 31);
 
     GlobalTerminal_LoadGraphics(v0);
     GlobalTerminal_InitWindows(v0);
@@ -190,18 +190,18 @@ int GlobalTerminal_Init(ApplicationManager *appMan, int *unused)
     RenderControlFlags_SetSpeedUpOnTouch(FALSE);
     SetVBlankCallback(GlobalTerminal_VBlankCallback, v0);
 
-    if (v0->unk_00->vsRecorderLaunched) {
+    if (v0->appState->vsRecorderLaunched) {
         NetworkIcon_Init();
         GlobalTerminal_SetNextState(v0, 13, 8);
     } else {
-        if (v0->unk_00->args->unk_08) {
-            v0->unk_08 = 1;
+        if (v0->appState->args->unk_08) {
+            v0->state = 1;
         } else {
-            v0->unk_08 = 0;
+            v0->state = 0;
         }
     }
 
-    v0->unk_00->vsRecorderRequested = 0;
+    v0->appState->vsRecorderRequested = 0;
     return 1;
 }
 
@@ -216,13 +216,13 @@ int GlobalTerminal_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 1:
-        int v2 = v0->unk_08;
-        int v1 = (*sGlobalTerminalStateHandlers[v0->unk_08])(v0);
+        int v2 = v0->state;
+        int v1 = (*sGlobalTerminalStateHandlers[v0->state])(v0);
 
-        if (v2 != v0->unk_08) {
-            v0->unk_90 = 0;
-            v0->unk_98 = 0;
-            v0->unk_94 = 0;
+        if (v2 != v0->state) {
+            v0->stateStep = 0;
+            v0->unused_98 = 0;
+            v0->waitCounter = 0;
         }
 
         if (v1 == 1) {
@@ -236,7 +236,7 @@ int GlobalTerminal_Main(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    GlobalTerminal_PaletteBlendNoop(&v0->unk_A4);
+    GlobalTerminal_PaletteBlendNoop(&v0->paletteBlend);
     return 0;
 }
 
@@ -244,18 +244,18 @@ int GlobalTerminal_Exit(ApplicationManager *appMan, int *param1)
 {
     GlobalTerminalApp *v0 = ApplicationManager_Data(appMan);
 
-    GlobalTerminal_FreePaletteBlend(&v0->unk_A4);
+    GlobalTerminal_FreePaletteBlend(&v0->paletteBlend);
 
-    MessageLoader_Free(v0->unk_2C);
-    MessageLoader_Free(v0->unk_28);
-    MessageLoader_Free(v0->unk_24);
-    StringTemplate_Free(v0->unk_20);
-    String_Free(v0->unk_38);
-    String_Free(v0->unk_3C);
-    String_Free(v0->unk_34);
+    MessageLoader_Free(v0->messageLoader);
+    MessageLoader_Free(v0->connectMessageLoader);
+    MessageLoader_Free(v0->gtsMessageLoader);
+    StringTemplate_Free(v0->stringTemplate);
+    String_Free(v0->titleString);
+    String_Free(v0->formatString);
+    String_Free(v0->messageString);
     GlobalTerminal_FreeWindows(v0);
-    Heap_Free(v0->unk_04);
-    GlobalTerminal_FreeGraphics(v0->unk_04);
+    Heap_Free(v0->bgConfig);
+    GlobalTerminal_FreeGraphics(v0->bgConfig);
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
     VramTransfer_Free();
@@ -276,9 +276,9 @@ static void GlobalTerminal_VBlankCallback(void *param0)
 
     VramTransfer_Process();
     RenderOam_Transfer();
-    Bg_RunScheduledUpdates(v0->unk_04);
+    Bg_RunScheduledUpdates(v0->bgConfig);
 
-    GlobalTerminal_PaletteBlendNoop2(&v0->unk_A4);
+    GlobalTerminal_PaletteBlendNoop2(&v0->paletteBlend);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
@@ -419,14 +419,14 @@ static void GlobalTerminal_FreeGraphics(BgConfig *param0)
 
 static void GlobalTerminal_LoadGraphics(GlobalTerminalApp *param0)
 {
-    BgConfig *v0 = param0->unk_04;
+    BgConfig *v0 = param0->bgConfig;
     NARC *v1 = NARC_ctor(NARC_INDEX_DATA__WIFIP2PMATCH, HEAP_ID_117);
 
     Graphics_LoadPaletteFromOpenNARC(v1, 3, 0, 0, 0, HEAP_ID_117);
     Graphics_LoadPaletteFromOpenNARC(v1, 3, 4, 0, 0, HEAP_ID_117);
     Font_LoadScreenIndicatorsPalette(PAL_LOAD_MAIN_BG, PLTT_OFFSET(13), HEAP_ID_117);
     Font_LoadScreenIndicatorsPalette(PAL_LOAD_SUB_BG, PLTT_OFFSET(13), HEAP_ID_117);
-    LoadMessageBoxGraphics(v0, BG_LAYER_MAIN_0, 1, 10, Options_Frame(SaveData_GetOptions(param0->unk_00->args->saveData)), HEAP_ID_117);
+    LoadMessageBoxGraphics(v0, BG_LAYER_MAIN_0, 1, 10, Options_Frame(SaveData_GetOptions(param0->appState->args->saveData)), HEAP_ID_117);
     LoadStandardWindowGraphics(v0, BG_LAYER_MAIN_0, 1 + (18 + 12), 11, 0, HEAP_ID_117);
     Graphics_LoadTilesToBgLayerFromOpenNARC(v1, 2, v0, 1, 0, 0, 0, HEAP_ID_117);
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v1, 5, v0, 1, 0, 32 * 24 * 2, 0, HEAP_ID_117);
@@ -435,29 +435,29 @@ static void GlobalTerminal_LoadGraphics(GlobalTerminalApp *param0)
     Bg_MaskPalette(BG_LAYER_MAIN_0, 0);
     Bg_MaskPalette(BG_LAYER_SUB_0, 0);
 
-    GlobalTerminal_InitPaletteBlend(&param0->unk_A4, v1, 4, 117);
+    GlobalTerminal_InitPaletteBlend(&param0->paletteBlend, v1, 4, 117);
 
     NARC_dtor(v1);
 }
 
 static void GlobalTerminal_InitWindows(GlobalTerminalApp *param0)
 {
-    Window_Add(param0->unk_04, &param0->unk_64, 0, 4, 4, 23, 16, 13, ((1 + (18 + 12)) + 9) + 27 * 4);
-    Window_FillTilemap(&param0->unk_64, 0x0);
-    Window_Add(param0->unk_04, &param0->unk_54, 0, 4, 1, 24, 2, 13, (((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16);
-    Window_FillTilemap(&param0->unk_54, 0x0);
+    Window_Add(param0->bgConfig, &param0->dialogWindow, 0, 4, 4, 23, 16, 13, ((1 + (18 + 12)) + 9) + 27 * 4);
+    Window_FillTilemap(&param0->dialogWindow, 0x0);
+    Window_Add(param0->bgConfig, &param0->headerWindow, 0, 4, 1, 24, 2, 13, (((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16);
+    Window_FillTilemap(&param0->headerWindow, 0x0);
 
-    GlobalTerminal_DrawText(&param0->unk_54, param0->unk_38, 0, 1, 1, TEXT_COLOR(15, 14, 0));
+    GlobalTerminal_DrawText(&param0->headerWindow, param0->titleString, 0, 1, 1, TEXT_COLOR(15, 14, 0));
 
-    Window_Add(param0->unk_04, &param0->unk_44, 0, 2, 19, 27, 4, 13, (1 + (18 + 12)) + 9);
-    Window_FillTilemap(&param0->unk_44, 0x0);
+    Window_Add(param0->bgConfig, &param0->messageWindow, 0, 2, 19, 27, 4, 13, (1 + (18 + 12)) + 9);
+    Window_FillTilemap(&param0->messageWindow, 0x0);
 }
 
 static void GlobalTerminal_FreeWindows(GlobalTerminalApp *param0)
 {
-    Window_Remove(&param0->unk_44);
-    Window_Remove(&param0->unk_54);
-    Window_Remove(&param0->unk_64);
+    Window_Remove(&param0->messageWindow);
+    Window_Remove(&param0->headerWindow);
+    Window_Remove(&param0->dialogWindow);
 }
 
 static int GlobalTerminal_AlignText(Window *param0, String *param1, int param2, int param3, u32 param4, int param5)
@@ -488,13 +488,13 @@ static void GlobalTerminal_ShowMessage(GlobalTerminalApp *param0, int param1)
 {
     String *v0 = String_Init(16 * 8 * 2, HEAP_ID_117);
 
-    MessageLoader_GetString(param0->unk_2C, param1, v0);
-    StringTemplate_Format(param0->unk_20, param0->unk_3C, v0);
-    Window_FillTilemap(&param0->unk_64, 15);
-    Window_DrawStandardFrame(&param0->unk_64, 1, 1 + (18 + 12), 11);
+    MessageLoader_GetString(param0->messageLoader, param1, v0);
+    StringTemplate_Format(param0->stringTemplate, param0->formatString, v0);
+    Window_FillTilemap(&param0->dialogWindow, 15);
+    Window_DrawStandardFrame(&param0->dialogWindow, 1, 1 + (18 + 12), 11);
 
-    param0->unk_40 = Text_AddPrinterWithParams(&param0->unk_64, FONT_MESSAGE, param0->unk_3C, 0, 0, TEXT_SPEED_INSTANT, NULL);
-    param0->unk_40 = 0xff;
+    param0->printerID = Text_AddPrinterWithParams(&param0->dialogWindow, FONT_MESSAGE, param0->formatString, 0, 0, TEXT_SPEED_INSTANT, NULL);
+    param0->printerID = 0xff;
 
     String_Free(v0);
 }
@@ -509,8 +509,8 @@ static void GlobalTerminal_ShowError(GlobalTerminalApp *param0, int param1, int 
         v0 = 11;
     }
 
-    StringTemplate_SetNumber(param0->unk_20, 0, param2, 5, 2, 1);
-    Window_EraseMessageBox(&param0->unk_44, 1);
+    StringTemplate_SetNumber(param0->stringTemplate, 0, param2, 5, 2, 1);
+    Window_EraseMessageBox(&param0->messageWindow, 1);
 
     GlobalTerminal_ShowMessage(param0, v0);
 }
@@ -526,16 +526,16 @@ static int GlobalTerminal_IsTextActive(int param0)
 
 static void GlobalTerminal_AddWaitDial(GlobalTerminalApp *param0)
 {
-    if (param0->unk_88 == NULL) {
-        param0->unk_88 = Window_AddWaitDial(&param0->unk_44, 1);
+    if (param0->waitDial == NULL) {
+        param0->waitDial = Window_AddWaitDial(&param0->messageWindow, 1);
     }
 }
 
 static void GlobalTerminal_DestroyWaitDial(GlobalTerminalApp *param0)
 {
-    if (param0->unk_88 != NULL) {
-        DestroyWaitDial(param0->unk_88);
-        param0->unk_88 = NULL;
+    if (param0->waitDial != NULL) {
+        DestroyWaitDial(param0->waitDial);
+        param0->waitDial = NULL;
     }
 }
 
@@ -554,23 +554,23 @@ static void GlobalTerminal_PrintMessage(GlobalTerminalApp *param0, MessageLoader
 {
     String *v0 = MessageLoader_GetNewString(param1, param2);
 
-    StringTemplate_Format(param0->unk_20, param0->unk_34, v0);
+    StringTemplate_Format(param0->stringTemplate, param0->messageString, v0);
     String_Free(v0);
-    Window_FillTilemap(&param0->unk_44, 0xf0f);
-    Window_DrawMessageBoxWithScrollCursor(&param0->unk_44, 0, 1, 10);
+    Window_FillTilemap(&param0->messageWindow, 0xf0f);
+    Window_DrawMessageBoxWithScrollCursor(&param0->messageWindow, 0, 1, 10);
 
-    param0->unk_40 = Text_AddPrinterWithParams(&param0->unk_44, FONT_MESSAGE, param0->unk_34, 0, 0, param3, NULL);
-    param0->unk_8C = 0;
+    param0->printerID = Text_AddPrinterWithParams(&param0->messageWindow, FONT_MESSAGE, param0->messageString, 0, 0, param3, NULL);
+    param0->unused_8C = 0;
 
     if ((param3 == 0xff) || (param3 == 0)) {
-        param0->unk_40 = 0xff;
+        param0->printerID = 0xff;
     }
 }
 
 static void GlobalTerminal_SetNextState(GlobalTerminalApp *param0, int param1, int param2)
 {
-    param0->unk_08 = param1;
-    param0->unk_0C = param2;
+    param0->state = param1;
+    param0->nextState = param2;
 }
 
 static BOOL GlobalTerminal_IsRetryableError(int param0, int param1)
@@ -605,35 +605,35 @@ static BOOL GlobalTerminal_IsRetryableError(int param0, int param1)
 
 static int GlobalTerminal_StateConfirmConnect(GlobalTerminalApp *param0)
 {
-    if (GlobalTerminal_IsTextActive(param0->unk_40) == 1) {
+    if (GlobalTerminal_IsTextActive(param0->printerID) == 1) {
         return 0;
     }
 
-    switch (param0->unk_90) {
+    switch (param0->stateStep) {
     case 0:
-        param0->unk_90++;
+        param0->stateStep++;
         break;
     case 1:
-        GlobalTerminal_PrintMessage(param0, param0->unk_2C, 17, TEXT_SPEED_FAST, 0xf0f);
-        param0->unk_90++;
+        GlobalTerminal_PrintMessage(param0, param0->messageLoader, 17, TEXT_SPEED_FAST, 0xf0f);
+        param0->stateStep++;
         break;
     case 2:
-        param0->unk_84 = GlobalTerminal_MakeYesNoMenu(param0->unk_04, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
-        param0->unk_90++;
+        param0->menu = GlobalTerminal_MakeYesNoMenu(param0->bgConfig, 13, ((((1 + (18 + 12)) + 9) + 27 * 4) + 23 * 16) + 24 * 2);
+        param0->stateStep++;
         break;
     case 3: {
-        int v0 = Menu_ProcessInputAndHandleExit(param0->unk_84, 117);
+        int v0 = Menu_ProcessInputAndHandleExit(param0->menu, 117);
 
         if (v0 != 0xffffffff) {
             if (v0 == 0xfffffffe) {
-                param0->unk_08 = 8;
+                param0->state = 8;
             } else {
-                param0->unk_90++;
+                param0->stateStep++;
             }
         }
     } break;
     case 4:
-        param0->unk_08 = 1;
+        param0->state = 1;
         break;
     }
 
@@ -642,24 +642,24 @@ static int GlobalTerminal_StateConfirmConnect(GlobalTerminalApp *param0)
 
 static int GlobalTerminal_StateInitConnection(GlobalTerminalApp *param0)
 {
-    switch (param0->unk_90) {
+    switch (param0->stateStep) {
     case 0:
-        CommManager_InitializeGlobalWifi(param0->unk_00->args->saveData);
+        CommManager_InitializeGlobalWifi(param0->appState->args->saveData);
         NetworkIcon_Init();
-        GlobalTerminal_PrintMessage(param0, param0->unk_28, 1, TEXT_SPEED_FAST, 0xf0f);
+        GlobalTerminal_PrintMessage(param0, param0->connectMessageLoader, 1, TEXT_SPEED_FAST, 0xf0f);
         GlobalTerminal_AddWaitDial(param0);
-        param0->unk_90++;
+        param0->stateStep++;
         break;
     case 1:
-        if (GlobalTerminal_IsTextActive(param0->unk_40) == 0) {
-            param0->unk_90++;
+        if (GlobalTerminal_IsTextActive(param0->printerID) == 0) {
+            param0->stateStep++;
         }
         break;
     case 2:
-        DWC_InitInetEx(&param0->unk_00->inetControl, DEFAULT_DWC_DMA_NUMBER, DEFAULT_DWC_POWER_MODE, DEFAULT_DWC_SSL_PRIORITY);
+        DWC_InitInetEx(&param0->appState->inetControl, DEFAULT_DWC_DMA_NUMBER, DEFAULT_DWC_POWER_MODE, DEFAULT_DWC_SSL_PRIORITY);
         DWC_SetAuthServer(DWC_CONNECTINET_AUTH_RELEASE);
         DWC_ConnectInetAsync();
-        param0->unk_08 = 2;
+        param0->state = 2;
         break;
     }
 
@@ -678,14 +678,14 @@ static int GlobalTerminal_StateProcessConnection(GlobalTerminalApp *param0)
             DWCErrorType v2;
 
             v0 = DWC_GetLastErrorEx(&v1, &v2);
-            param0->unk_14 = v0;
-            param0->unk_18 = v1;
-            param0->unk_1C = v2;
+            param0->dwcError = v0;
+            param0->dwcErrorDetail = v1;
+            param0->dwcErrorType = v2;
         }
             DWC_ClearError();
             DWC_CleanupInet();
             GlobalTerminal_DestroyWaitDial(param0);
-            param0->unk_08 = 6;
+            param0->state = 6;
             break;
         case DWC_CONNECTINET_STATE_NOT_INITIALIZED:
         case DWC_CONNECTINET_STATE_IDLE:
@@ -700,8 +700,8 @@ static int GlobalTerminal_StateProcessConnection(GlobalTerminalApp *param0)
             DWCError v3 = DWC_GetLastError(&v4);
 
             GlobalTerminal_DestroyWaitDial(param0);
-            param0->unk_08 = 10;
-            param0->unk_10 = -2;
+            param0->state = 10;
+            param0->errorCode = -2;
         } break;
         case DWC_CONNECTINET_STATE_CONNECTED: {
             DWCApInfo v5;
@@ -713,7 +713,7 @@ static int GlobalTerminal_StateProcessConnection(GlobalTerminalApp *param0)
             }
         }
 
-            param0->unk_08 = 3;
+            param0->state = 3;
             break;
         }
     }
@@ -724,7 +724,7 @@ static int GlobalTerminal_StateProcessConnection(GlobalTerminalApp *param0)
 static int GlobalTerminal_StateLogin(GlobalTerminalApp *param0)
 {
     DWC_NASLoginAsync();
-    param0->unk_08 = 4;
+    param0->state = 4;
     return 0;
 }
 
@@ -732,7 +732,7 @@ static int GlobalTerminal_StateProcessLogin(GlobalTerminalApp *param0)
 {
     switch (DWC_NASLoginProcess()) {
     case DWC_NASLOGIN_STATE_SUCCESS:;
-        param0->unk_08 = 5;
+        param0->state = 5;
         break;
     case DWC_NASLOGIN_STATE_ERROR:
     case DWC_NASLOGIN_STATE_CANCELED:
@@ -744,30 +744,30 @@ static int GlobalTerminal_StateProcessLogin(GlobalTerminalApp *param0)
 
             DWCError v2 = DWC_GetLastErrorEx(&v0, &v1);
 
-            param0->unk_14 = v2;
-            param0->unk_18 = v0;
-            param0->unk_1C = v1;
+            param0->dwcError = v2;
+            param0->dwcErrorDetail = v0;
+            param0->dwcErrorType = v1;
 
             DWC_ClearError();
             DWC_CleanupInet();
 
-            param0->unk_08 = 6;
+            param0->state = 6;
 
             switch (v1) {
             case DWC_ETYPE_LIGHT:
             case DWC_ETYPE_SHOW_ERROR:
-                param0->unk_08 = 6;
+                param0->state = 6;
                 break;
             case DWC_ETYPE_SHUTDOWN_GHTTP:
                 DWC_ShutdownGHTTP();
-                param0->unk_08 = 6;
+                param0->state = 6;
                 break;
             case DWC_ETYPE_DISCONNECT:
-                param0->unk_08 = 6;
+                param0->state = 6;
                 break;
             case DWC_ETYPE_SHUTDOWN_FM:
                 DWC_ShutdownFriendsMatch();
-                param0->unk_08 = 6;
+                param0->state = 6;
                 break;
             case DWC_ETYPE_SHUTDOWN_ND:
             case DWC_ETYPE_FATAL:
@@ -775,7 +775,7 @@ static int GlobalTerminal_StateProcessLogin(GlobalTerminalApp *param0)
                 break;
             }
             if ((v0 < -20000) && (v0 >= -29999)) {
-                param0->unk_08 = 6;
+                param0->state = 6;
             }
         }
         break;
@@ -787,8 +787,8 @@ static int GlobalTerminal_StateProcessLogin(GlobalTerminalApp *param0)
 static int GlobalTerminal_StateLaunchVsRecorder(GlobalTerminalApp *param0)
 {
     s32 profileID;
-    WiFiList *wiFiList = SaveData_GetWiFiList(param0->unk_00->args->saveData);
-    SystemData *sysData = SaveData_GetSystemData(param0->unk_00->args->saveData);
+    WiFiList *wiFiList = SaveData_GetWiFiList(param0->appState->args->saveData);
+    SystemData *sysData = SaveData_GetSystemData(param0->appState->args->saveData);
     DWCUserData *userData = WiFiList_GetUserData(wiFiList);
     profileID = SystemData_GetDWCProfileId(sysData);
 
@@ -798,17 +798,17 @@ static int GlobalTerminal_StateLaunchVsRecorder(GlobalTerminalApp *param0)
 
     profileID = SystemData_GetDWCProfileId(sysData);
 
-    param0->unk_08 = 9;
-    param0->unk_00->vsRecorderRequested = 1;
+    param0->state = 9;
+    param0->appState->vsRecorderRequested = 1;
 
     return 0;
 }
 
 static int GlobalTerminal_StateShowError(GlobalTerminalApp *param0)
 {
-    int errorCode = NintendoWFC_GetErrorCode(-param0->unk_18, param0->unk_1C);
-    GlobalTerminal_ShowError(param0, errorCode, -param0->unk_18);
-    param0->unk_08 = 7;
+    int errorCode = NintendoWFC_GetErrorCode(-param0->dwcErrorDetail, param0->dwcErrorType);
+    GlobalTerminal_ShowError(param0, errorCode, -param0->dwcErrorDetail);
+    param0->state = 7;
 
     return 0;
 }
@@ -816,13 +816,13 @@ static int GlobalTerminal_StateShowError(GlobalTerminalApp *param0)
 static int GlobalTerminal_StateWaitErrorAck(GlobalTerminalApp *param0)
 {
     if (gSystem.pressedKeys & PAD_BUTTON_A || gSystem.pressedKeys & PAD_BUTTON_B) {
-        Window_EraseStandardFrame(&param0->unk_64, 0);
-        param0->unk_90 = 0;
+        Window_EraseStandardFrame(&param0->dialogWindow, 0);
+        param0->stateStep = 0;
 
-        if (GlobalTerminal_IsRetryableError(-param0->unk_18, param0->unk_1C) == 1) {
-            param0->unk_08 = 0;
+        if (GlobalTerminal_IsRetryableError(-param0->dwcErrorDetail, param0->dwcErrorType) == 1) {
+            param0->state = 0;
         } else {
-            param0->unk_08 = 8;
+            param0->state = 8;
         }
     }
 
@@ -831,14 +831,14 @@ static int GlobalTerminal_StateWaitErrorAck(GlobalTerminalApp *param0)
 
 static int GlobalTerminal_StateDisconnect(GlobalTerminalApp *param0)
 {
-    if (param0->unk_08 != 9) {
+    if (param0->state != 9) {
         CommManager_EndGlobalWifi();
     }
 
     NetworkIcon_Destroy();
     GlobalTerminal_DestroyWaitDial(param0);
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_117);
-    param0->unk_08 = 0;
+    param0->state = 0;
 
     return 1;
 }
@@ -847,7 +847,7 @@ static int GlobalTerminal_StateShowErrorCode(GlobalTerminalApp *param0)
 {
     int v0 = 0;
 
-    switch (param0->unk_10) {
+    switch (param0->errorCode) {
     case 1:
         v0 = 144;
         break;
@@ -867,7 +867,7 @@ static int GlobalTerminal_StateShowErrorCode(GlobalTerminalApp *param0)
         break;
     }
 
-    GlobalTerminal_PrintMessage(param0, param0->unk_24, v0, TEXT_SPEED_FAST, 0xf0f);
+    GlobalTerminal_PrintMessage(param0, param0->gtsMessageLoader, v0, TEXT_SPEED_FAST, 0xf0f);
     GlobalTerminal_SetNextState(param0, 12, 11);
 
     return 0;
@@ -875,32 +875,32 @@ static int GlobalTerminal_StateShowErrorCode(GlobalTerminalApp *param0)
 
 static int GlobalTerminal_StateCleanupAndExit(GlobalTerminalApp *param0)
 {
-    switch (param0->unk_90) {
+    switch (param0->stateStep) {
     case 0:
-        GlobalTerminal_PrintMessage(param0, param0->unk_24, 178, TEXT_SPEED_FAST, 0xf0f);
-        param0->unk_90++;
+        GlobalTerminal_PrintMessage(param0, param0->gtsMessageLoader, 178, TEXT_SPEED_FAST, 0xf0f);
+        param0->stateStep++;
         break;
     case 1:
-        if (GlobalTerminal_IsTextActive(param0->unk_40) == 0) {
+        if (GlobalTerminal_IsTextActive(param0->printerID) == 0) {
             CommManager_EndGlobalWifi();
             DWC_CleanupInet();
-            param0->unk_90++;
+            param0->stateStep++;
         }
         break;
     case 2:
-        GlobalTerminal_PrintMessage(param0, param0->unk_24, 179, TEXT_SPEED_FAST, 0xf0f);
-        param0->unk_90++;
+        GlobalTerminal_PrintMessage(param0, param0->gtsMessageLoader, 179, TEXT_SPEED_FAST, 0xf0f);
+        param0->stateStep++;
         break;
     case 3:
-        if (GlobalTerminal_IsTextActive(param0->unk_40) == 0) {
-            param0->unk_90++;
+        if (GlobalTerminal_IsTextActive(param0->printerID) == 0) {
+            param0->stateStep++;
         }
         break;
     default:
-        param0->unk_94++;
+        param0->waitCounter++;
 
-        if (param0->unk_94 > 30) {
-            param0->unk_08 = 8;
+        if (param0->waitCounter > 30) {
+            param0->state = 8;
         }
 
         break;
@@ -911,8 +911,8 @@ static int GlobalTerminal_StateCleanupAndExit(GlobalTerminalApp *param0)
 
 static int GlobalTerminal_StateWaitMessage(GlobalTerminalApp *param0)
 {
-    if (GlobalTerminal_IsTextActive(param0->unk_40) == 0) {
-        param0->unk_08 = param0->unk_0C;
+    if (GlobalTerminal_IsTextActive(param0->printerID) == 0) {
+        param0->state = param0->nextState;
     }
 
     return 0;
@@ -920,29 +920,29 @@ static int GlobalTerminal_StateWaitMessage(GlobalTerminalApp *param0)
 
 static int GlobalTerminal_StateDisconnectAndExit(GlobalTerminalApp *param0)
 {
-    if (GlobalTerminal_IsTextActive(param0->unk_40) == 1) {
+    if (GlobalTerminal_IsTextActive(param0->printerID) == 1) {
         return 0;
     }
 
-    switch (param0->unk_90) {
+    switch (param0->stateStep) {
     case 0:
-        GlobalTerminal_PrintMessage(param0, param0->unk_2C, 26, TEXT_SPEED_FAST, 0xf0f);
-        param0->unk_90++;
+        GlobalTerminal_PrintMessage(param0, param0->messageLoader, 26, TEXT_SPEED_FAST, 0xf0f);
+        param0->stateStep++;
         break;
     case 1:
         DWC_CleanupInet();
         CommManager_EndGlobalWifi();
-        param0->unk_90++;
+        param0->stateStep++;
         break;
     case 2:
         NetworkIcon_Destroy();
-        GlobalTerminal_PrintMessage(param0, param0->unk_2C, 27, TEXT_SPEED_FAST, 0xf0f);
-        param0->unk_90++;
+        GlobalTerminal_PrintMessage(param0, param0->messageLoader, 27, TEXT_SPEED_FAST, 0xf0f);
+        param0->stateStep++;
         break;
     case 3:
-        param0->unk_94++;
-        if (param0->unk_94 > 30) {
-            param0->unk_08 = param0->unk_0C;
+        param0->waitCounter++;
+        if (param0->waitCounter > 30) {
+            param0->state = param0->nextState;
         }
         break;
     }

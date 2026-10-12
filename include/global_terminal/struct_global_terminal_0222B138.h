@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B138_H
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
+    int unused_00;
+    int unused_04;
+    int unused_08;
 } GlobalTerminalTaskState;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B138_H

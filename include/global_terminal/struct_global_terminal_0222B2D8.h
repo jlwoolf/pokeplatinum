@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B2D8_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01[3];
-    u32 unk_04;
+    u8 unused_00;
+    u8 unused_01[3];
+    u32 unused_04;
 } GlobalTerminalPlayTimeEntry;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B2D8_H

@@ -5,8 +5,8 @@
 #include "global_terminal/struct_global_terminal_0222BED8_sub1.h"
 
 typedef struct {
-    GlobalTerminalPlayerProfile unk_00;
-    GlobalTerminalRecordAltData unk_80;
+    GlobalTerminalPlayerProfile profile;
+    GlobalTerminalRecordAltData data;
 } GlobalTerminalRecord;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BE20_H

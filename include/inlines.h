@@ -32,21 +32,21 @@ static inline void GlobalTerminal_InitPaletteBlend(GlobalTerminalPaletteBlend *p
 
     v1 = Graphics_GetPlttDataFromOpenNARC(param1, param2, &v0, heapID);
 
-    MI_CpuCopy16(&((u16 *)(v0->pRawData))[0 * 16], param0->unk_08, 4 * 0x20);
-    MI_CpuCopy16(&((u16 *)(v0->pRawData))[0 * 16], param0->unk_88, 4 * 0x20);
+    MI_CpuCopy16(&((u16 *)(v0->pRawData))[0 * 16], param0->sourcePalettes, 4 * 0x20);
+    MI_CpuCopy16(&((u16 *)(v0->pRawData))[0 * 16], param0->blendTable, 4 * 0x20);
     Heap_Free(v1);
     GlobalTerminal_BuildBlendTable(param0);
 
-    param0->unk_04 = 1;
-    param0->unk_00 = SysTask_ExecuteOnVBlank(GlobalTerminal_UpdatePaletteBlend, param0, 20);
+    param0->active = 1;
+    param0->task = SysTask_ExecuteOnVBlank(GlobalTerminal_UpdatePaletteBlend, param0, 20);
 }
 
 static inline void GlobalTerminal_FreePaletteBlend(GlobalTerminalPaletteBlend *param0)
 {
-    if (param0->unk_00 != NULL) {
-        SysTask_Done(param0->unk_00);
-        param0->unk_00 = NULL;
-        param0->unk_04 = 0;
+    if (param0->task != NULL) {
+        SysTask_Done(param0->task);
+        param0->task = NULL;
+        param0->active = 0;
     }
 }
 
@@ -62,7 +62,7 @@ static inline void GlobalTerminal_PaletteBlendNoop2(GlobalTerminalPaletteBlend *
 
 static inline void inline_ov96_0223BDEC(GlobalTerminalPaletteBlend *param0, BOOL param1)
 {
-    param0->unk_04 = param1;
+    param0->active = param1;
 }
 
 static inline void GlobalTerminal_BuildBlendTable(GlobalTerminalPaletteBlend *param0)
@@ -77,7 +77,7 @@ static inline void GlobalTerminal_BuildBlendTable(GlobalTerminalPaletteBlend *pa
         do {
             GF_ASSERT(v1 < (((16 << 8) / 0x300 + 2) * (4 - 1)));
             for (v4 = 1; v4 < 1 + 15; v4++) {
-                BlendPalette(&param0->unk_08[v0][v4], &param0->unk_88[v1][v4], 1, v3 >> 8, param0->unk_08[v2][v4]);
+                BlendPalette(&param0->sourcePalettes[v0][v4], &param0->blendTable[v1][v4], 1, v3 >> 8, param0->sourcePalettes[v2][v4]);
             }
             v1++;
             if (v5 == 1) {
@@ -90,37 +90,37 @@ static inline void GlobalTerminal_BuildBlendTable(GlobalTerminalPaletteBlend *pa
             }
         } while (TRUE);
     }
-    DC_FlushRange(param0->unk_88, (((16 << 8) / 0x300 + 2) * (4 - 1)) * 16 * sizeof(u16));
+    DC_FlushRange(param0->blendTable, (((16 << 8) / 0x300 + 2) * (4 - 1)) * 16 * sizeof(u16));
 }
 
 static inline void GlobalTerminal_UpdatePaletteBlend(SysTask *param0, void *param1)
 {
     GlobalTerminalPaletteBlend *v0 = param1;
 
-    if (v0->unk_04 == 0) {
+    if (v0->active == 0) {
         return;
     }
 
-    v0->unk_32B ^= 1;
+    v0->toggle ^= 1;
 
-    if (v0->unk_32B & 1) {
+    if (v0->toggle & 1) {
         return;
     }
 
-    GX_LoadBGPltt((const void *)v0->unk_88[v0->unk_328], 0 * 0x20, 1 * 0x20);
-    GXS_LoadBGPltt((const void *)v0->unk_88[v0->unk_328], 0 * 0x20, 1 * 0x20);
+    GX_LoadBGPltt((const void *)v0->blendTable[v0->blendIndex], 0 * 0x20, 1 * 0x20);
+    GXS_LoadBGPltt((const void *)v0->blendTable[v0->blendIndex], 0 * 0x20, 1 * 0x20);
 
-    if (v0->unk_32A == 0) {
-        v0->unk_328++;
-        if (v0->unk_328 >= (((16 << 8) / 0x300 + 2) * (4 - 1))) {
-            v0->unk_328 = (((16 << 8) / 0x300 + 2) * (4 - 1)) - 2;
-            v0->unk_32A ^= 1;
+    if (v0->blendDirection == 0) {
+        v0->blendIndex++;
+        if (v0->blendIndex >= (((16 << 8) / 0x300 + 2) * (4 - 1))) {
+            v0->blendIndex = (((16 << 8) / 0x300 + 2) * (4 - 1)) - 2;
+            v0->blendDirection ^= 1;
         }
     } else {
-        v0->unk_328--;
-        if (v0->unk_328 < 0) {
-            v0->unk_328 = 1;
-            v0->unk_32A ^= 1;
+        v0->blendIndex--;
+        if (v0->blendIndex < 0) {
+            v0->blendIndex = 1;
+            v0->blendDirection ^= 1;
         }
     }
 }

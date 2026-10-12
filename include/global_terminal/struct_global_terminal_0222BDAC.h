@@ -4,7 +4,7 @@
 #include "global_terminal/struct_global_terminal_0222BDAC_sub1.h"
 
 typedef struct {
-    GlobalTerminalPlayTimeDataEntry unk_00[3];
+    GlobalTerminalPlayTimeDataEntry entries[3];
 } GlobalTerminalPlayTimeData;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BDAC_H

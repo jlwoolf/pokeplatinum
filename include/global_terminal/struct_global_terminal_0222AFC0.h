@@ -6,26 +6,26 @@
 #include "easy_chat_sentence.h"
 
 typedef struct {
-    u16 unk_00[8];
-    u32 unk_10;
-    u8 unk_14;
-    u8 unk_15;
-    u8 unk_16;
-    u8 unk_17;
-    u8 unk_18;
-    u8 unk_19;
-    u8 unk_1A;
-    u8 unk_1B_0 : 1;
-    u8 unk_1B_1 : 7;
-    u16 unk_1C;
-    u8 unk_1E;
-    u8 unk_1F;
+    u16 name[8];
+    u32 id;
+    u8 gender;
+    u8 month;
+    u8 appearance;
+    u8 country;
+    u8 region;
+    u8 version;
+    u8 language;
+    u8 isEgg : 1;
+    u8 form : 7;
+    u16 species;
+    u8 introMessageIsString;
+    u8 unused_1F;
     union {
-        EasyChatSentence unk_20_val1;
-        u16 unk_20_val2[40];
+        EasyChatSentence introSentence;
+        u16 introMessage[40];
     };
-    u8 unk_70[12];
-    VsRecorderViewerBoxChecksum unk_7C;
+    u8 unused_70[12];
+    VsRecorderViewerBoxChecksum checksum;
 } GlobalTerminalPlayerProfile;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AFC0_H

@@ -905,7 +905,7 @@ static BOOL VsRecorderViewerProfile_ShowDownloadedPhoto(VsRecorderState *param0)
     case 0:
 
         v0->unk_0C = 0;
-        GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
+        GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->photo, v0->unk_230.photo);
         v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
 
         PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
@@ -1081,13 +1081,13 @@ static BOOL VsRecorderViewerProfile_SwitchToProfileView(VsRecorderState *param0)
     case 2:
         if (v0->unk_0C == 0) {
             VsRecorderViewerList_SetDrawSuspended(param0, 1);
-            GlobalTerminal_DeserializePlayerProfile(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_00, v0->unk_250.unk_00);
+            GlobalTerminal_DeserializePlayerProfile(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->profile, v0->unk_250.unk_00);
             VsRecorderViewerList_InitProfile(&v0->unk_250, param0);
             VsRecorderViewerList_SetProfileSpritesVisible(&v0->unk_250, 0);
             VsRecorderViewerList_SetDrawSuspended(param0, 0);
             VsRecorderViewerList_LoadBgTilemap(param0, 80, 3);
         } else {
-            GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
+            GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->photo, v0->unk_230.photo);
             v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
             PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
             VsRecorderViewerProfile_SetPhotoClipWindow();
@@ -1174,7 +1174,7 @@ static BOOL VsRecorderViewerProfile_SwitchToPhotoView(VsRecorderState *param0)
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
 
         if (v0->unk_0C == 0) {
-            GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_80, v0->unk_230.photo);
+            GlobalTerminal_DeserializeDressUpPhoto(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->photo, v0->unk_230.photo);
             v0->unk_228 = PhotoSprite_CreateForDressUp(&v0->unk_218, v0->unk_230.photo);
             PhotoSprite_SetTransformEnabled(v0->unk_228, 0);
             VsRecorderViewerProfile_SetPhotoClipWindow();
@@ -1184,7 +1184,7 @@ static BOOL VsRecorderViewerProfile_SwitchToPhotoView(VsRecorderState *param0)
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
             GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
         } else {
-            GlobalTerminal_DeserializePlayerProfile(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->unk_00, v0->unk_250.unk_00);
+            GlobalTerminal_DeserializePlayerProfile(&v0->unk_230.unk_0C[v0->unk_230.unk_04]->profile, v0->unk_250.unk_00);
             VsRecorderViewerList_InitProfile(&v0->unk_250, param0);
             VsRecorderViewerList_SetProfileSpritesVisible(&v0->unk_250, 0);
             VsRecorderViewerList_LoadBgTilemap(param0, 80, 3);

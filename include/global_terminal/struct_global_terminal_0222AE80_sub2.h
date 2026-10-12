@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AE80_SUB2_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    s8 unk_03;
+    u8 accessoryID;
+    u8 xPos;
+    u8 yPos;
+    s8 priority;
 } GlobalTerminalPhotoAccessory;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AE80_SUB2_H
