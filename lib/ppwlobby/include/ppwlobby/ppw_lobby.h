@@ -219,7 +219,7 @@ PPW_LOBBY_RESULT PPW_LobbyShutdownAsync();
 PPW_LOBBY_STATE PPW_LobbyProcess();
 PPW_LOBBY_ERROR PPW_LobbyGetLastError();
 s32 PPW_LobbyToErrorCode(PPW_LOBBY_ERROR err);
-PPW_LOBBY_ERROR ov66_02237134(PPW_LOBBY_RESULT result);
+PPW_LOBBY_ERROR PPW_LobbyResultToError(PPW_LOBBY_RESULT result);
 PPW_LOBBY_RESULT PPW_LobbyJoinSubChannelAsync(PPW_LOBBY_CHANNEL_KIND channelKind);
 PPW_LOBBY_RESULT PPW_LobbyLeaveSubChannel();
 PPW_LOBBY_RESULT PPW_LobbyGetTimeInfo(PPW_LobbyTimeInfo *timeInfo);

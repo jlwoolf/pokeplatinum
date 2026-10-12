@@ -260,7 +260,7 @@ PPW_LOBBY_ERROR WiFiPlazaLobby_Network_GetLastError(void)
         return PPW_LobbyGetLastError();
     }
 
-    return ov66_02237134(sNetworkContext->result);
+    return PPW_LobbyResultToError(sNetworkContext->result);
 }
 
 s32 WiFiPlazaLobby_Network_ToErrorCode(PPW_LOBBY_ERROR lobbyError)
