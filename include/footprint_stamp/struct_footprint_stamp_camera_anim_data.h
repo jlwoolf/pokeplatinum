@@ -13,16 +13,16 @@
 #include "footprint_stamp/struct_footprint_stamp_camera_anim_tilt_down.h"
 
 typedef struct {
-    FootprintStampCameraAnimZoomIn unk_00;
-    FootprintStampCameraAnimShake unk_08;
-    FootprintStampCameraAnimRotateLeft unk_18;
-    FootprintStampCameraAnimRotateRight unk_28;
-    FootprintStampCameraAnimTiltUp unk_38;
-    FootprintStampCameraAnimSpin unk_48;
-    FootprintStampCameraAnimZoomOut unk_58;
-    FootprintStampCameraAnimSwayX unk_60;
-    FootprintStampCameraAnimSwayY unk_80;
-    FootprintStampCameraAnimTiltDown unk_A0;
+    FootprintStampCameraAnimZoomIn zoomIn;
+    FootprintStampCameraAnimShake shake;
+    FootprintStampCameraAnimRotateLeft rotateLeft;
+    FootprintStampCameraAnimRotateRight rotateRight;
+    FootprintStampCameraAnimTiltUp tiltUp;
+    FootprintStampCameraAnimSpin spin;
+    FootprintStampCameraAnimZoomOut zoomOut;
+    FootprintStampCameraAnimSwayX swayX;
+    FootprintStampCameraAnimSwayY swayY;
+    FootprintStampCameraAnimTiltDown tiltDown;
 } FootprintStampCameraAnimData;
 
 #endif // POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_CAMERA_ANIM_DATA_H

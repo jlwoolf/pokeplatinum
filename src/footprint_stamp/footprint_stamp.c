@@ -65,63 +65,63 @@
 #include "yes_no_touch_menu.h"
 
 typedef struct {
-    Easy3DModel unk_00; // The footprint board's 3D model.
-    Easy3DObject unk_10; // The placed instance of the board model.
+    Easy3DModel model; // The footprint board's 3D model.
+    Easy3DObject object; // The placed instance of the board model.
 } FootprintStampBoardModel;
 
 typedef struct {
-    FontOAM *unk_00; // OAM used to draw the "EXIT" label.
-    CharTransferAllocation unk_04; // Character transfer allocation backing the OAM.
-    u16 unk_10; // Rendered width of the string in pixels.
+    FontOAM *oam; // OAM used to draw the "EXIT" label.
+    CharTransferAllocation allocation; // Character transfer allocation backing the OAM.
+    u16 width; // Rendered width of the string in pixels.
 } FootprintStampText;
 
 typedef struct FootprintStampApp_t {
-    WiFiPlazaLobbyFootprintStampArgs *unk_00; // Wi-Fi lobby communication data passed in as args.
+    WiFiPlazaLobbyFootprintStampArgs *args; // Wi-Fi lobby communication data passed in as args.
     SaveData *saveData;
-    BgConfig *unk_08;
-    PaletteData *unk_0C;
-    FontOAMManager *unk_10;
-    G3DPipelineBuffers *unk_14;
-    SysTask *unk_18; // Per-frame task that updates the models and draws sprites.
-    SpriteSystem *unk_1C;
-    SpriteManager *unk_20;
-    YesNoTouchMenu *unk_24;
-    u8 unk_28;
-    u8 unk_29;
-    StringTemplate *unk_2C;
-    MessageLoader *unk_30;
-    Window unk_34[8]; // One window per Wi-Fi lobby player slot.
-    Window unk_B4;
-    String *unk_C4;
-    u8 unk_C8;
+    BgConfig *bgConfig;
+    PaletteData *paletteData;
+    FontOAMManager *fontOAMManager;
+    G3DPipelineBuffers *g3dPipeline;
+    SysTask *sysTask; // Per-frame task that updates the models and draws sprites.
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    YesNoTouchMenu *yesNoMenu;
+    u8 menuOpen;
+    u8 waitFrames;
+    StringTemplate *stringTemplate;
+    MessageLoader *messageLoader;
+    Window playerWindows[8]; // One window per Wi-Fi lobby player slot.
+    Window messageWindow;
+    String *string;
+    u8 printerId;
     Camera *camera;
-    fx32 unk_D0; // Horizontal field of view, computed from the camera.
-    fx32 unk_D4; // Vertical field of view, computed from the camera.
-    FootprintStampBoardModel unk_D8;
-    NARC *unk_160; // graphic/footprint_board.narc
-    NARC *unk_164; // poketool/pokefoot/pokefoot.narc
-    FootprintStampCommState unk_168;
-    s32 unk_170[8]; // Last-seen DWC user ID for each player slot.
-    int unk_190;
-    FootprintStampModelManager unk_194;
-    FootprintStampEntry unk_8D8[6]; // The player's party, as footprint entries.
-    u8 unk_920;
-    u8 unk_921; // Palette row reserved for the selected party member.
-    ManagedSprite *unk_924[6];
-    ManagedSprite *unk_93C[6];
-    ManagedSprite *unk_954[6];
-    ManagedSprite *unk_96C;
-    ManagedSprite *unk_970[8]; // Footprints of other players in the lobby.
-    ManagedSprite *unk_990[3];
-    u16 unk_99C[8]; // Species currently shown in each player slot.
-    u16 unk_9AC[8]; // Stamp color currently shown in each player slot.
-    int unk_9BC;
-    u16 unk_9C0[2048]; // Saved copy of the player-name tilemap.
-    FootprintStampText unk_19C0;
-    int unk_19D4;
-    int unk_19D8;
-    int unk_19DC;
-    BOOL unk_19E0; // Whether Arceus may be shown (from Wi-Fi room data).
+    fx32 fovX; // Horizontal field of view, computed from the camera.
+    fx32 fovY; // Vertical field of view, computed from the camera.
+    FootprintStampBoardModel boardModel;
+    NARC *boardNarc; // graphic/footprint_board.narc
+    NARC *pokefootNarc; // poketool/pokefoot/pokefoot.narc
+    FootprintStampCommState commState;
+    s32 playerUserIds[8]; // Last-seen DWC user ID for each player slot.
+    int slotRefreshTimer;
+    FootprintStampModelManager modelManager;
+    FootprintStampEntry partyEntries[6]; // The player's party, as footprint entries.
+    u8 selectedSlot;
+    u8 paletteRow; // Palette row reserved for the selected party member.
+    ManagedSprite *partySprites[6];
+    ManagedSprite *partyShadowSprites[6];
+    ManagedSprite *partyFootprintSprites[6];
+    ManagedSprite *cursorSprite;
+    ManagedSprite *playerFootprintSprites[8]; // Footprints of other players in the lobby.
+    ManagedSprite *selectionSprites[3];
+    u16 playerSpecies[8]; // Species currently shown in each player slot.
+    u16 playerStampColors[8]; // Stamp color currently shown in each player slot.
+    int state;
+    u16 nameTilemapBackup[2048]; // Saved copy of the player-name tilemap.
+    FootprintStampText text;
+    int scrollTarget;
+    int scrollOffset;
+    int scrollStep;
+    BOOL isArceusRoom; // Whether Arceus may be shown (from Wi-Fi room data).
 } FootprintStampApp;
 
 static void FootprintStamp_SysTask(SysTask *param0, void *param1);
@@ -345,74 +345,74 @@ int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(FootprintStampApp), HEAP_ID_118);
     MI_CpuClear8(v0, sizeof(FootprintStampApp));
 
-    v0->unk_00 = ApplicationManager_Args(appMan);
-    v0->saveData = WiFiPlazaLobby_State_GetSaveData(v0->unk_00->unk_00);
-    v0->unk_19E0 = WiFiPlazaLobby_State_IsArceusRoom(v0->unk_00->unk_00);
+    v0->args = ApplicationManager_Args(appMan);
+    v0->saveData = WiFiPlazaLobby_State_GetSaveData(v0->args->unk_00);
+    v0->isArceusRoom = WiFiPlazaLobby_State_IsArceusRoom(v0->args->unk_00);
 
     FootprintStamp_InitCommState(v0);
-    FootprintStamp_LoadPartyEntries(v0->unk_00->unk_04, v0->saveData, v0->unk_8D8);
+    FootprintStamp_LoadPartyEntries(v0->args->unk_04, v0->saveData, v0->partyEntries);
 
-    v0->unk_19D4 = (32 << 8);
-    v0->unk_19D8 = v0->unk_19D4;
-    v0->unk_14 = FootprintStamp_InitPipeline(HEAP_ID_118);
-    v0->unk_0C = PaletteData_New(HEAP_ID_118);
+    v0->scrollTarget = (32 << 8);
+    v0->scrollOffset = v0->scrollTarget;
+    v0->g3dPipeline = FootprintStamp_InitPipeline(HEAP_ID_118);
+    v0->paletteData = PaletteData_New(HEAP_ID_118);
 
-    PaletteData_SetAutoTransparent(v0->unk_0C, TRUE);
-    PaletteData_AllocBuffer(v0->unk_0C, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_118);
-    PaletteData_AllocBuffer(v0->unk_0C, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_118);
-    PaletteData_AllocBuffer(v0->unk_0C, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 14, HEAP_ID_118);
-    PaletteData_AllocBuffer(v0->unk_0C, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_118);
-    PaletteData_SetAutoTransparent(v0->unk_0C, TRUE);
+    PaletteData_SetAutoTransparent(v0->paletteData, TRUE);
+    PaletteData_AllocBuffer(v0->paletteData, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_118);
+    PaletteData_AllocBuffer(v0->paletteData, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_118);
+    PaletteData_AllocBuffer(v0->paletteData, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 14, HEAP_ID_118);
+    PaletteData_AllocBuffer(v0->paletteData, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_118);
+    PaletteData_SetAutoTransparent(v0->paletteData, TRUE);
 
-    v0->unk_08 = BgConfig_New(HEAP_ID_118);
+    v0->bgConfig = BgConfig_New(HEAP_ID_118);
 
     VramTransfer_New(64, HEAP_ID_118);
     SetAutorepeat(4, 8);
 
-    FootprintStamp_InitGraphics(v0->unk_08);
+    FootprintStamp_InitGraphics(v0->bgConfig);
 
     EnableTouchPad();
     InitializeTouchPad(4);
     Font_InitManager(FONT_SUBSCREEN, HEAP_ID_118);
 
-    v0->unk_2C = StringTemplate_Default(HEAP_ID_118);
-    v0->unk_30 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0650, HEAP_ID_118);
-    v0->unk_10 = FontOAMManager_New(4, HEAP_ID_118);
-    v0->unk_160 = NARC_ctor(NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, HEAP_ID_118);
-    v0->unk_164 = NARC_ctor(NARC_INDEX_POKETOOL__POKEFOOT__POKEFOOT, HEAP_ID_118);
+    v0->stringTemplate = StringTemplate_Default(HEAP_ID_118);
+    v0->messageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0650, HEAP_ID_118);
+    v0->fontOAMManager = FontOAMManager_New(4, HEAP_ID_118);
+    v0->boardNarc = NARC_ctor(NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, HEAP_ID_118);
+    v0->pokefootNarc = NARC_ctor(NARC_INDEX_POKETOOL__POKEFOOT__POKEFOOT, HEAP_ID_118);
 
-    FootprintStamp_LoadBoardGraphics(v0, v0->unk_160);
-    FootprintStamp_LoadBoardModel(v0, v0->unk_160);
+    FootprintStamp_LoadBoardGraphics(v0, v0->boardNarc);
+    FootprintStamp_LoadBoardModel(v0, v0->boardNarc);
     FootprintStamp_InitCamera(v0);
     FootprintStamp_InitWindows(v0);
 
-    v0->unk_C4 = String_Init(256, HEAP_ID_118);
-    v0->unk_1C = SpriteSystem_Alloc(HEAP_ID_118);
+    v0->string = String_Init(256, HEAP_ID_118);
+    v0->spriteSystem = SpriteSystem_Alloc(HEAP_ID_118);
 
-    SpriteSystem_Init(v0->unk_1C, &sRenderOamTemplate, &sCharTransferTemplate, 16 + 16);
+    SpriteSystem_Init(v0->spriteSystem, &sRenderOamTemplate, &sCharTransferTemplate, 16 + 16);
     ReserveVramForWirelessIconChars(NNS_G2D_VRAM_TYPE_2DMAIN, GX_OBJVRAMMODE_CHAR_1D_128K);
     ReserveSlotsForWirelessIconPalette(NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    v0->unk_20 = SpriteManager_New(v0->unk_1C);
+    v0->spriteManager = SpriteManager_New(v0->spriteSystem);
 
-    SpriteSystem_InitSprites(v0->unk_1C, v0->unk_20, 64 + 64);
-    SpriteSystem_InitManagerWithCapacities(v0->unk_1C, v0->unk_20, &sSpriteResourceCapacities);
-    SetSubScreenViewRect(SpriteSystem_GetRenderer(v0->unk_1C), 0, (192 + 80) << FX32_SHIFT);
+    SpriteSystem_InitSprites(v0->spriteSystem, v0->spriteManager, 64 + 64);
+    SpriteSystem_InitManagerWithCapacities(v0->spriteSystem, v0->spriteManager, &sSpriteResourceCapacities);
+    SetSubScreenViewRect(SpriteSystem_GetRenderer(v0->spriteSystem), 0, (192 + 80) << FX32_SHIFT);
     NetworkIcon_Init();
 
-    FootprintStampModels_Init(&v0->unk_194, v0->unk_19E0);
-    FootprintStamp_LoadMainSprites(v0, v0->unk_160);
-    FootprintStamp_LoadSubSprites(v0, v0->unk_160);
+    FootprintStampModels_Init(&v0->modelManager, v0->isArceusRoom);
+    FootprintStamp_LoadMainSprites(v0, v0->boardNarc);
+    FootprintStamp_LoadSubSprites(v0, v0->boardNarc);
     FootprintStamp_CreatePartySprites(v0);
     FootprintStamp_CreateSubSprites(v0);
     FootprintStamp_RefreshPartySprites(v0);
 
-    v0->unk_24 = YesNoTouchMenu_New(HEAP_ID_118);
+    v0->yesNoMenu = YesNoTouchMenu_New(HEAP_ID_118);
 
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_118);
 
-    if (v0->unk_00->unk_00 != NULL) {
-        WiFiPlazaLobby_State_SetBGMVolumeDucked(v0->unk_00->unk_00, 1);
+    if (v0->args->unk_00 != NULL) {
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v0->args->unk_00, 1);
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
@@ -432,7 +432,7 @@ int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
     RenderControlFlags_SetAutoScrollFlags(AUTO_SCROLL_DISABLED);
     RenderControlFlags_SetSpeedUpOnTouch(FALSE);
 
-    v0->unk_18 = SysTask_Start(FootprintStamp_SysTask, v0, 60000);
+    v0->sysTask = SysTask_Start(FootprintStamp_SysTask, v0, 60000);
 
     SetVBlankCallback(FootprintStamp_VBlankCallback, v0);
 
@@ -443,11 +443,11 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
 {
     FootprintStampApp *v0 = ApplicationManager_Data(appMan);
 
-    FootprintStampModels_Update(&v0->unk_194, v0->camera, v0->unk_9BC, v0->unk_00->unk_04);
+    FootprintStampModels_Update(&v0->modelManager, v0->camera, v0->state, v0->args->unk_04);
 
     switch (*param1) {
     case 0:
-        v0->unk_168.unk_00 = 1;
+        v0->commState.isActive = 1;
         FootprintStampComm_Init(v0);
 
         {
@@ -458,18 +458,18 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
         break;
     case 1:
         if (IsScreenFadeDone() == TRUE) {
-            v0->unk_9BC = 1;
+            v0->state = 1;
             (*param1)++;
         }
         break;
     case 2:
         if (gSystem.touchPressed && (gSystem.touchY < 160)) {
             if (FootprintStamp_ScrollPartySprites(v0, (32 << 8) / 6) == 1) {
-                v0->unk_8D8[v0->unk_920].touchX = gSystem.touchX;
-                v0->unk_8D8[v0->unk_920].touchY = gSystem.touchY;
+                v0->partyEntries[v0->selectedSlot].touchX = gSystem.touchX;
+                v0->partyEntries[v0->selectedSlot].touchY = gSystem.touchY;
 
-                FootprintStamp_AddEntry(v0, &v0->unk_8D8[v0->unk_920], v0->unk_168.unk_04);
-                FootprintStampComm_SendEntry(&v0->unk_8D8[v0->unk_920]);
+                FootprintStamp_AddEntry(v0, &v0->partyEntries[v0->selectedSlot], v0->commState.localUserId);
+                FootprintStampComm_SendEntry(&v0->partyEntries[v0->selectedSlot]);
             } else {
                 (void)0;
             }
@@ -477,85 +477,85 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
 
         {
             int v2;
-            v2 = FootprintStampPlayers_CheckTouch(v0->unk_8D8, v0->unk_920);
+            v2 = FootprintStampPlayers_CheckTouch(v0->partyEntries, v0->selectedSlot);
 
             if (v2 < 6) {
-                v0->unk_920 = v2;
+                v0->selectedSlot = v2;
                 FootprintStamp_SelectPartySlot(v0, v2);
             } else if (((*param1) == 2) && (v2 == 0xfe)) {
                 Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
-                PaletteData_Blend(v0->unk_0C, PLTTBUF_MAIN_BG, 0 * 16 + 9, 1, 8, 0x0);
-                PaletteData_Blend(v0->unk_0C, PLTTBUF_MAIN_OBJ, v0->unk_921 * 16, 16, 8, 0x0);
+                PaletteData_Blend(v0->paletteData, PLTTBUF_MAIN_BG, 0 * 16 + 9, 1, 8, 0x0);
+                PaletteData_Blend(v0->paletteData, PLTTBUF_MAIN_OBJ, v0->paletteRow * 16, 16, 8, 0x0);
                 *param1 = 3;
             }
         }
         break;
     case 3:
-        Window_FillTilemap(&v0->unk_B4, 0xf);
-        Window_DrawMessageBoxWithScrollCursor(&v0->unk_B4, 0, 1, 14);
-        MessageLoader_GetString(v0->unk_30, 2, v0->unk_C4);
-        v0->unk_C8 = Text_AddPrinterWithParams(&v0->unk_B4, FONT_MESSAGE, v0->unk_C4, 0, 0, Options_TextFrameDelay(SaveData_GetOptions(v0->saveData)), NULL);
+        Window_FillTilemap(&v0->messageWindow, 0xf);
+        Window_DrawMessageBoxWithScrollCursor(&v0->messageWindow, 0, 1, 14);
+        MessageLoader_GetString(v0->messageLoader, 2, v0->string);
+        v0->printerId = Text_AddPrinterWithParams(&v0->messageWindow, FONT_MESSAGE, v0->string, 0, 0, Options_TextFrameDelay(SaveData_GetOptions(v0->saveData)), NULL);
         (*param1)++;
         break;
     case 4:
-        if (Text_IsPrinterActive(v0->unk_C8) == 0) {
+        if (Text_IsPrinterActive(v0->printerId) == 0) {
             YesNoTouchMenuParams v3;
 
-            v3.bgConfig = v0->unk_08;
+            v3.bgConfig = v0->bgConfig;
             v3.bgLayer = BG_LAYER_MAIN_1;
             v3.baseTile = (1 + (18 + 12));
             v3.palette = 11;
             v3.tilemapLeft = 25;
             v3.tilemapTop = 6;
 
-            YesNoTouchMenu_InitWithParams(v0->unk_24, &v3);
+            YesNoTouchMenu_InitWithParams(v0->yesNoMenu, &v3);
 
-            v0->unk_28 = 1;
+            v0->menuOpen = 1;
             (*param1)++;
         }
 
         break;
     case 5:
-        PaletteData_LoadBufferFromHardware(v0->unk_0C, PLTTBUF_MAIN_BG, PLTT_DEST(11), PALETTE_SIZE_BYTES * 2);
+        PaletteData_LoadBufferFromHardware(v0->paletteData, PLTTBUF_MAIN_BG, PLTT_DEST(11), PALETTE_SIZE_BYTES * 2);
         {
-            u32 v4 = YesNoTouchMenu_ProcessInput(v0->unk_24);
+            u32 v4 = YesNoTouchMenu_ProcessInput(v0->yesNoMenu);
 
             switch (v4) {
             case YES_NO_TOUCH_MENU_YES:
-                YesNoTouchMenu_Reset(v0->unk_24);
-                v0->unk_28 = 0;
-                Window_EraseMessageBox(&v0->unk_B4, 0);
-                v0->unk_168.unk_00 = 0;
-                v0->unk_9BC = 3;
+                YesNoTouchMenu_Reset(v0->yesNoMenu);
+                v0->menuOpen = 0;
+                Window_EraseMessageBox(&v0->messageWindow, 0);
+                v0->commState.isActive = 0;
+                v0->state = 3;
                 *param1 = 9;
                 break;
             case YES_NO_TOUCH_MENU_NO:
-                YesNoTouchMenu_Reset(v0->unk_24);
-                v0->unk_28 = 0;
-                Window_EraseMessageBox(&v0->unk_B4, 0);
-                PaletteData_Blend(v0->unk_0C, PLTTBUF_MAIN_BG, 0 * 16 + 9, 1, 0, 0x0);
-                PaletteData_Blend(v0->unk_0C, PLTTBUF_MAIN_OBJ, v0->unk_921 * 16, 16, 0, 0x0);
+                YesNoTouchMenu_Reset(v0->yesNoMenu);
+                v0->menuOpen = 0;
+                Window_EraseMessageBox(&v0->messageWindow, 0);
+                PaletteData_Blend(v0->paletteData, PLTTBUF_MAIN_BG, 0 * 16 + 9, 1, 0, 0x0);
+                PaletteData_Blend(v0->paletteData, PLTTBUF_MAIN_OBJ, v0->paletteRow * 16, 16, 0, 0x0);
                 *param1 = 2;
                 break;
             }
         }
         break;
     case 6:
-        Window_FillTilemap(&v0->unk_B4, 0xf);
-        Window_DrawMessageBoxWithScrollCursor(&v0->unk_B4, 0, 1, 14);
-        MessageLoader_GetString(v0->unk_30, 3, v0->unk_C4);
-        v0->unk_C8 = Text_AddPrinterWithParams(&v0->unk_B4, FONT_MESSAGE, v0->unk_C4, 0, 0, Options_TextFrameDelay(SaveData_GetOptions(v0->saveData)), NULL);
+        Window_FillTilemap(&v0->messageWindow, 0xf);
+        Window_DrawMessageBoxWithScrollCursor(&v0->messageWindow, 0, 1, 14);
+        MessageLoader_GetString(v0->messageLoader, 3, v0->string);
+        v0->printerId = Text_AddPrinterWithParams(&v0->messageWindow, FONT_MESSAGE, v0->string, 0, 0, Options_TextFrameDelay(SaveData_GetOptions(v0->saveData)), NULL);
         (*param1)++;
         break;
     case 7:
-        if (Text_IsPrinterActive(v0->unk_C8) == 0) {
+        if (Text_IsPrinterActive(v0->printerId) == 0) {
             (*param1)++;
         }
         break;
     case 8:
-        v0->unk_29++;
+        v0->waitFrames++;
 
-        if (v0->unk_29 > 90) {
+        if (v0->waitFrames > 90) {
             *param1 = 9;
         }
         break;
@@ -580,27 +580,27 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
     FootprintStamp_UpdateSelectionSprites(v0);
     FootprintStamp_UpdatePartySpritePositions(v0);
 
-    if (v0->unk_9BC == 1) {
-        v0->unk_190++;
+    if (v0->state == 1) {
+        v0->slotRefreshTimer++;
 
-        if (v0->unk_190 > 30) {
-            v0->unk_190 = 0;
+        if (v0->slotRefreshTimer > 30) {
+            v0->slotRefreshTimer = 0;
             FootprintStamp_UpdatePlayerSlots(v0);
         }
 
-        if (((WiFiPlazaLobby_Time_HasWifiError() == 1) || (WiFiPlazaLobby_State_IsLobbyClosed(v0->unk_00->unk_00) == 1)) && ((*param1) != 4)) {
-            if (v0->unk_28 == 1) {
-                YesNoTouchMenu_Reset(v0->unk_24);
+        if (((WiFiPlazaLobby_Time_HasWifiError() == 1) || (WiFiPlazaLobby_State_IsLobbyClosed(v0->args->unk_00) == 1)) && ((*param1) != 4)) {
+            if (v0->menuOpen == 1) {
+                YesNoTouchMenu_Reset(v0->yesNoMenu);
             }
 
-            v0->unk_168.unk_00 = 0;
-            v0->unk_9BC = 3;
+            v0->commState.isActive = 0;
+            v0->state = 3;
 
             if (WiFiPlazaLobby_Time_HasWifiError() == 1) {
                 (*param1) = 9;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_PINPON_sseq);
-                WiFiPlazaLobby_State_SetPlayerWarpPending(v0->unk_00->unk_00);
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v0->args->unk_00);
                 (*param1) = 6;
             }
         }
@@ -615,36 +615,36 @@ int FootprintStamp_Exit(ApplicationManager *appMan, int *param1)
 {
     FootprintStampApp *v0 = ApplicationManager_Data(appMan);
 
-    SysTask_Done(v0->unk_18);
+    SysTask_Done(v0->sysTask);
     FootprintStamp_FreePartySprites(v0);
     FootprintStamp_FreeSubSprites(v0);
-    YesNoTouchMenu_Free(v0->unk_24);
-    FootprintStampModels_Free(&v0->unk_194);
+    YesNoTouchMenu_Free(v0->yesNoMenu);
+    FootprintStampModels_Free(&v0->modelManager);
 
-    String_Free(v0->unk_C4);
+    String_Free(v0->string);
     Font_Free(FONT_SUBSCREEN);
-    FontOAMManager_Free(v0->unk_10);
-    MessageLoader_Free(v0->unk_30);
-    StringTemplate_Free(v0->unk_2C);
+    FontOAMManager_Free(v0->fontOAMManager);
+    MessageLoader_Free(v0->messageLoader);
+    StringTemplate_Free(v0->stringTemplate);
 
     FootprintStamp_FreeWindows(v0);
-    FootprintStamp_FreeGraphics(v0->unk_08);
+    FootprintStamp_FreeGraphics(v0->bgConfig);
 
-    Heap_Free(v0->unk_08);
-    SpriteSystem_FreeResourcesAndManager(v0->unk_1C, v0->unk_20);
-    SpriteSystem_Free(v0->unk_1C);
-    PaletteData_FreeBuffer(v0->unk_0C, PLTTBUF_MAIN_BG);
-    PaletteData_FreeBuffer(v0->unk_0C, PLTTBUF_SUB_BG);
-    PaletteData_FreeBuffer(v0->unk_0C, PLTTBUF_MAIN_OBJ);
-    PaletteData_FreeBuffer(v0->unk_0C, PLTTBUF_SUB_OBJ);
-    PaletteData_Free(v0->unk_0C);
+    Heap_Free(v0->bgConfig);
+    SpriteSystem_FreeResourcesAndManager(v0->spriteSystem, v0->spriteManager);
+    SpriteSystem_Free(v0->spriteSystem);
+    PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_MAIN_BG);
+    PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_SUB_BG);
+    PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_MAIN_OBJ);
+    PaletteData_FreeBuffer(v0->paletteData, PLTTBUF_SUB_OBJ);
+    PaletteData_Free(v0->paletteData);
 
     FootprintStamp_FreeBoardModel(v0);
     FootprintStamp_FreeCamera(v0);
-    FootprintStamp_FreePipeline(v0->unk_14);
+    FootprintStamp_FreePipeline(v0->g3dPipeline);
 
-    NARC_dtor(v0->unk_160);
-    NARC_dtor(v0->unk_164);
+    NARC_dtor(v0->boardNarc);
+    NARC_dtor(v0->pokefootNarc);
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
     VramTransfer_Free();
@@ -663,10 +663,10 @@ static void FootprintStamp_SysTask(SysTask *param0, void *param1)
 {
     FootprintStampApp *v0 = param1;
 
-    FootprintStampModels_UpdateAnimations(&v0->unk_194);
+    FootprintStampModels_UpdateAnimations(&v0->modelManager);
     FootprintStamp_DrawBoard(v0);
 
-    SpriteSystem_DrawSprites(v0->unk_20);
+    SpriteSystem_DrawSprites(v0->spriteManager);
     SpriteSystem_UpdateTransfer();
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
 }
@@ -675,12 +675,12 @@ static void FootprintStamp_VBlankCallback(void *param0)
 {
     FootprintStampApp *v0 = param0;
 
-    FootprintStampModels_FlushTextures(&v0->unk_194, v0->unk_9BC);
+    FootprintStampModels_FlushTextures(&v0->modelManager, v0->state);
 
     VramTransfer_Process();
     SpriteSystem_TransferOam();
-    PaletteData_CommitFadedBuffers(v0->unk_0C);
-    Bg_RunScheduledUpdates(v0->unk_08);
+    PaletteData_CommitFadedBuffers(v0->paletteData);
+    Bg_RunScheduledUpdates(v0->bgConfig);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
@@ -865,44 +865,44 @@ static void FootprintStamp_FreeGraphics(BgConfig *param0)
 
 static void FootprintStamp_LoadBoardGraphics(FootprintStampApp *param0, NARC *param1)
 {
-    BgConfig *v0 = param0->unk_08;
+    BgConfig *v0 = param0->bgConfig;
     u16 *v1;
 
-    PaletteData_LoadBufferFromFileStart(param0->unk_0C, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 19, HEAP_ID_118, PLTTBUF_MAIN_BG, 0x200 - 0x40, 0);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 18, param0->unk_08, 2, 0, 0, 0, HEAP_ID_118);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 17, param0->unk_08, 2, 0, 0, 0, HEAP_ID_118);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 20, param0->unk_08, 3, 0, 0, 0, HEAP_ID_118);
-    PaletteData_LoadBufferFromFileStart(param0->unk_0C, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 23, HEAP_ID_118, PLTTBUF_SUB_BG, 0, 0);
+    PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 19, HEAP_ID_118, PLTTBUF_MAIN_BG, 0x200 - 0x40, 0);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 18, param0->bgConfig, 2, 0, 0, 0, HEAP_ID_118);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 17, param0->bgConfig, 2, 0, 0, 0, HEAP_ID_118);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 20, param0->bgConfig, 3, 0, 0, 0, HEAP_ID_118);
+    PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 23, HEAP_ID_118, PLTTBUF_SUB_BG, 0, 0);
 
-    if (param0->unk_00->unk_04 == 0) {
-        PaletteData_CopyBuffer(param0->unk_0C, 1, 16 * 1, 1, 16 * 0, PALETTE_SIZE_BYTES);
+    if (param0->args->unk_04 == 0) {
+        PaletteData_CopyBuffer(param0->paletteData, 1, 16 * 1, 1, 16 * 0, PALETTE_SIZE_BYTES);
     }
 
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 22, param0->unk_08, 6, 0, 0, 0, HEAP_ID_118);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 21, param0->unk_08, 6, 0, 0, 0, HEAP_ID_118);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 24, param0->unk_08, 7, 0, 0, 0, HEAP_ID_118);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 22, param0->bgConfig, 6, 0, 0, 0, HEAP_ID_118);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 21, param0->bgConfig, 6, 0, 0, 0, HEAP_ID_118);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 24, param0->bgConfig, 7, 0, 0, 0, HEAP_ID_118);
 
-    v1 = Bg_GetTilemapBuffer(param0->unk_08, 6);
+    v1 = Bg_GetTilemapBuffer(param0->bgConfig, 6);
 
-    MI_CpuCopy16(v1, param0->unk_9C0, 0x800);
+    MI_CpuCopy16(v1, param0->nameTilemapBackup, 0x800);
     MI_CpuClear16(v1, 0x800);
 
     {
         int v2;
         v2 = Options_Frame(SaveData_GetOptions(param0->saveData));
 
-        PaletteData_LoadBufferFromFileStart(param0->unk_0C, NARC_INDEX_GRAPHIC__PL_WINFRAME, GetMessageBoxPaletteNARCMember(v2), HEAP_ID_118, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(14));
-        LoadMessageBoxGraphics(param0->unk_08, BG_LAYER_MAIN_1, 1, 14, v2, HEAP_ID_118);
-        PaletteData_LoadBufferFromFileStart(param0->unk_0C, NARC_INDEX_GRAPHIC__PL_FONT, 6, HEAP_ID_118, 0, PALETTE_SIZE_BYTES, PLTT_DEST(13));
+        PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__PL_WINFRAME, GetMessageBoxPaletteNARCMember(v2), HEAP_ID_118, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(14));
+        LoadMessageBoxGraphics(param0->bgConfig, BG_LAYER_MAIN_1, 1, 14, v2, HEAP_ID_118);
+        PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__PL_FONT, 6, HEAP_ID_118, 0, PALETTE_SIZE_BYTES, PLTT_DEST(13));
 
-        if (param0->unk_00->unk_04 == 0) {
-            PaletteData_LoadBufferFromFileStart(param0->unk_0C, NARC_INDEX_GRAPHIC__PL_FONT, 6, HEAP_ID_118, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(13));
+        if (param0->args->unk_04 == 0) {
+            PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__PL_FONT, 6, HEAP_ID_118, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(13));
         } else {
-            PaletteData_LoadBufferFromFileStart(param0->unk_0C, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 25, HEAP_ID_118, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(13));
+            PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 25, HEAP_ID_118, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(13));
         }
     }
 
-    Bg_ScheduleTilemapTransfer(param0->unk_08, 6);
+    Bg_ScheduleTilemapTransfer(param0->bgConfig, 6);
 }
 
 static void FootprintStamp_LoadMainSprites(FootprintStampApp *param0, NARC *param1)
@@ -910,32 +910,32 @@ static void FootprintStamp_LoadMainSprites(FootprintStampApp *param0, NARC *para
     int v0, v1;
     u16 v2;
 
-    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->unk_0C, PLTTBUF_MAIN_OBJ, param0->unk_1C, param0->unk_20, param1, 3, FALSE, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 10001);
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 4, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10007);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 5, FALSE, 10002);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 6, FALSE, 10002);
+    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->spriteSystem, param0->spriteManager, param1, 3, FALSE, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 10001);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 4, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10007);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 5, FALSE, 10002);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 6, FALSE, 10002);
 
     for (v0 = 0; v0 < 6; v0++) {
-        SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 16, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10001 + v0);
+        SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 16, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10001 + v0);
     }
 
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 15, FALSE, 10001);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 14, FALSE, 10001);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 15, FALSE, 10001);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 14, FALSE, 10001);
 
-    v1 = SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->unk_0C, PLTTBUF_MAIN_OBJ, param0->unk_1C, param0->unk_20, param1, 3, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
+    v1 = SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->spriteSystem, param0->spriteManager, param1, 3, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
 
-    if (param0->unk_00->unk_04 == 0) {
+    if (param0->args->unk_04 == 0) {
         v2 = 0x0;
     } else {
         v2 = 0x7fff;
     }
 
-    PaletteData_FillBufferRange(param0->unk_0C, PLTTBUF_MAIN_OBJ, PLTTSEL_BOTH, v2, v1 * 16, v1 * 16 + 16);
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 2, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10008);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 1, FALSE, 10003);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 0, FALSE, 10003);
+    PaletteData_FillBufferRange(param0->paletteData, PLTTBUF_MAIN_OBJ, PLTTSEL_BOTH, v2, v1 * 16, v1 * 16 + 16);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 2, FALSE, NNS_G2D_VRAM_TYPE_2DMAIN, 10008);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 1, FALSE, 10003);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 0, FALSE, 10003);
 
-    param0->unk_921 = SpriteSystem_LoadPaletteBuffer(param0->unk_0C, 2, param0->unk_1C, param0->unk_20, 187, 26, 0, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
+    param0->paletteRow = SpriteSystem_LoadPaletteBuffer(param0->paletteData, 2, param0->spriteSystem, param0->spriteManager, 187, 26, 0, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10003);
 }
 
 static void FootprintStamp_CreatePartySprites(FootprintStampApp *param0)
@@ -949,10 +949,10 @@ static void FootprintStamp_CreatePartySprites(FootprintStampApp *param0)
         v1.x = 16 + 32 * v0;
         v1.y = 176;
 
-        param0->unk_924[v0] = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &v1);
+        param0->partySprites[v0] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
-        ManagedSprite_SetAnim(param0->unk_924[v0], v0);
-        Sprite_TickFrame(param0->unk_924[v0]->sprite);
+        ManagedSprite_SetAnim(param0->partySprites[v0], v0);
+        Sprite_TickFrame(param0->partySprites[v0]->sprite);
     }
 
     v1 = sPartyShadowSpriteTemplate;
@@ -961,10 +961,10 @@ static void FootprintStamp_CreatePartySprites(FootprintStampApp *param0)
         v1.x = 16 + 32 * v0;
         v1.y = 176;
 
-        param0->unk_93C[v0] = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &v1);
+        param0->partyShadowSprites[v0] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
-        ManagedSprite_SetAnim(param0->unk_93C[v0], v0);
-        Sprite_TickFrame(param0->unk_93C[v0]->sprite);
+        ManagedSprite_SetAnim(param0->partyShadowSprites[v0], v0);
+        Sprite_TickFrame(param0->partyShadowSprites[v0]->sprite);
     }
 
     v1 = sPartyFootprintSpriteTemplate;
@@ -974,16 +974,16 @@ static void FootprintStamp_CreatePartySprites(FootprintStampApp *param0)
         v1.y = 176;
         v1.resources[0] = 10001 + v0;
 
-        param0->unk_954[v0] = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &v1);
-        Sprite_TickFrame(param0->unk_954[v0]->sprite);
+        param0->partyFootprintSprites[v0] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
+        Sprite_TickFrame(param0->partyFootprintSprites[v0]->sprite);
     }
 
     {
         String *v2;
 
-        v2 = MessageLoader_GetNewString(param0->unk_30, 1);
-        FootprintStamp_CreateTextOAM(param0, &param0->unk_19C0, v2, FONT_SUBSCREEN, TEXT_COLOR(1, 2, 3), 0, 10003, 0x1c * 8, 176, 1);
-        FontOAM_SetDrawFlag(param0->unk_19C0.unk_00, 1);
+        v2 = MessageLoader_GetNewString(param0->messageLoader, 1);
+        FootprintStamp_CreateTextOAM(param0, &param0->text, v2, FONT_SUBSCREEN, TEXT_COLOR(1, 2, 3), 0, 10003, 0x1c * 8, 176, 1);
+        FontOAM_SetDrawFlag(param0->text.oam, 1);
         String_Free(v2);
     }
 }
@@ -993,35 +993,35 @@ static void FootprintStamp_FreePartySprites(FootprintStampApp *param0)
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_924[v0]);
+        Sprite_DeleteAndFreeResources(param0->partySprites[v0]);
     }
 
     for (v0 = 0; v0 < 6; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_93C[v0]);
+        Sprite_DeleteAndFreeResources(param0->partyShadowSprites[v0]);
     }
 
     for (v0 = 0; v0 < 6; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_954[v0]);
+        Sprite_DeleteAndFreeResources(param0->partyFootprintSprites[v0]);
     }
 
-    FootprintStamp_FreeTextOAM(&param0->unk_19C0);
+    FootprintStamp_FreeTextOAM(&param0->text);
 }
 
 static void FootprintStamp_LoadSubSprites(FootprintStampApp *param0, NARC *param1)
 {
     int v0;
 
-    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->unk_0C, PLTTBUF_SUB_OBJ, param0->unk_1C, param0->unk_20, param1, 10, FALSE, 1, NNS_G2D_VRAM_TYPE_2DSUB, 10004);
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 9, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, 10009);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 8, FALSE, 10004);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 7, FALSE, 10004);
+    SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_SUB_OBJ, param0->spriteSystem, param0->spriteManager, param1, 10, FALSE, 1, NNS_G2D_VRAM_TYPE_2DSUB, 10004);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 9, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, 10009);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 8, FALSE, 10004);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 7, FALSE, 10004);
 
     for (v0 = 0; v0 < 8; v0++) {
-        SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 13, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, 10010 + v0);
+        SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 13, FALSE, NNS_G2D_VRAM_TYPE_2DSUB, 10010 + v0);
     }
 
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 12, FALSE, 10005);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_1C, param0->unk_20, param1, 11, FALSE, 10005);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 12, FALSE, 10005);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param1, 11, FALSE, 10005);
 }
 
 static void FootprintStamp_CreateSubSprites(FootprintStampApp *param0)
@@ -1029,20 +1029,20 @@ static void FootprintStamp_CreateSubSprites(FootprintStampApp *param0)
     int v0;
     SpriteTemplate v1;
 
-    param0->unk_96C = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &sCursorSpriteTemplate);
+    param0->cursorSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &sCursorSpriteTemplate);
 
-    Sprite_TickFrame(param0->unk_96C->sprite);
-    ManagedSprite_SetDrawFlag(param0->unk_96C, 0);
+    Sprite_TickFrame(param0->cursorSprite->sprite);
+    ManagedSprite_SetDrawFlag(param0->cursorSprite, 0);
 
     v1 = sSubFootprintSpriteTemplate;
 
     for (v0 = 0; v0 < 8; v0++) {
         v1.resources[0] = 10010 + v0;
-        param0->unk_970[v0] = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &v1);
+        param0->playerFootprintSprites[v0] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_970[v0], sSubSpritePositions[v0][0], sSubSpritePositions[v0][1], (192 + 80) << FX32_SHIFT);
-        Sprite_TickFrame(param0->unk_970[v0]->sprite);
-        ManagedSprite_SetDrawFlag(param0->unk_970[v0], 0);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->playerFootprintSprites[v0], sSubSpritePositions[v0][0], sSubSpritePositions[v0][1], (192 + 80) << FX32_SHIFT);
+        Sprite_TickFrame(param0->playerFootprintSprites[v0]->sprite);
+        ManagedSprite_SetDrawFlag(param0->playerFootprintSprites[v0], 0);
     }
 }
 
@@ -1050,10 +1050,10 @@ static void FootprintStamp_FreeSubSprites(FootprintStampApp *param0)
 {
     int v0;
 
-    Sprite_DeleteAndFreeResources(param0->unk_96C);
+    Sprite_DeleteAndFreeResources(param0->cursorSprite);
 
     for (v0 = 0; v0 < 8; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_970[v0]);
+        Sprite_DeleteAndFreeResources(param0->playerFootprintSprites[v0]);
     }
 }
 
@@ -1063,36 +1063,36 @@ static void FootprintStamp_RefreshPartySprites(FootprintStampApp *param0)
     u16 *v2, *v3;
     int v4 = 0;
 
-    v2 = PaletteData_GetUnfadedBuffer(param0->unk_0C, 2);
-    v3 = PaletteData_GetFadedBuffer(param0->unk_0C, 2);
+    v2 = PaletteData_GetUnfadedBuffer(param0->paletteData, 2);
+    v3 = PaletteData_GetFadedBuffer(param0->paletteData, 2);
 
     for (v0 = 0; v0 < 6; v0++) {
-        if ((param0->unk_8D8[v0].species == 0) || (param0->unk_8D8[v0].species > NATIONAL_DEX_COUNT)) {
-            ManagedSprite_SetDrawFlag(param0->unk_924[v0], 0);
-            ManagedSprite_SetDrawFlag(param0->unk_93C[v0], 0);
-            ManagedSprite_SetDrawFlag(param0->unk_954[v0], 0);
+        if ((param0->partyEntries[v0].species == 0) || (param0->partyEntries[v0].species > NATIONAL_DEX_COUNT)) {
+            ManagedSprite_SetDrawFlag(param0->partySprites[v0], 0);
+            ManagedSprite_SetDrawFlag(param0->partyShadowSprites[v0], 0);
+            ManagedSprite_SetDrawFlag(param0->partyFootprintSprites[v0], 0);
 
             for (v1 = 0; v1 < 4; v1++) {
-                Bg_FillTilemapRect(param0->unk_08, 2, sEmptySlotTiles[v1], 0 + 4 * v0, 0x14 + v1, 4, 1, 17);
+                Bg_FillTilemapRect(param0->bgConfig, 2, sEmptySlotTiles[v1], 0 + 4 * v0, 0x14 + v1, 4, 1, 17);
             }
         } else {
-            FootprintStamp_LoadFootprintTexture(param0->unk_8D8[v0].species, param0->unk_8D8[v0].form, param0->unk_954[v0], param0->unk_160, param0->unk_164, NNS_G2D_VRAM_TYPE_2DMAIN, param0->unk_19E0);
+            FootprintStamp_LoadFootprintTexture(param0->partyEntries[v0].species, param0->partyEntries[v0].form, param0->partyFootprintSprites[v0], param0->boardNarc, param0->pokefootNarc, NNS_G2D_VRAM_TYPE_2DMAIN, param0->isArceusRoom);
 
-            v2[1 * 16 + 1 + v0] = param0->unk_8D8[v0].stampColor;
-            v3[1 * 16 + 1 + v0] = param0->unk_8D8[v0].stampColor;
+            v2[1 * 16 + 1 + v0] = param0->partyEntries[v0].stampColor;
+            v3[1 * 16 + 1 + v0] = param0->partyEntries[v0].stampColor;
 
             BlendPalette(&v2[1 * 16 + 1 + v0], &v2[2 * 16 + 1 + v0], 1, 12, 0x0);
             v3[2 * 16 + 1 + v0] = v2[2 * 16 + 1 + v0];
 
             if (v4 == 0) {
                 v4++;
-                param0->unk_920 = v0;
+                param0->selectedSlot = v0;
             }
         }
     }
 
     FootprintStamp_HighlightPartySlot(param0, 0);
-    Bg_ScheduleTilemapTransfer(param0->unk_08, 2);
+    Bg_ScheduleTilemapTransfer(param0->bgConfig, 2);
 }
 
 static BOOL FootprintStamp_LoadFootprintTexture(int param0, int param1, ManagedSprite *param2, NARC *param3, NARC *param4, NNS_G2D_VRAM_TYPE param5, BOOL param6)
@@ -1157,8 +1157,8 @@ static void FootprintStamp_InitCamera(FootprintStampApp *param0)
 
         CalcLinearFov(v1, v2, v3, &v4, &v5);
 
-        param0->unk_D0 = v4;
-        param0->unk_D4 = v5;
+        param0->fovX = v4;
+        param0->fovY = v5;
     }
 }
 
@@ -1171,22 +1171,22 @@ static void FootprintStamp_LoadBoardModel(FootprintStampApp *param0, NARC *param
 {
     int v0;
 
-    if (param0->unk_00->unk_04 == 0) {
+    if (param0->args->unk_04 == 0) {
         v0 = 28;
     } else {
         v0 = 27;
     }
 
-    Easy3DModel_LoadFrom(&param0->unk_D8.unk_00, param1, v0, HEAP_ID_118);
-    Easy3DObject_Init(&param0->unk_D8.unk_10, &param0->unk_D8.unk_00);
-    Easy3DObject_SetPosition(&param0->unk_D8.unk_10, FX32_CONST(0), FX32_CONST(0), FX32_CONST(0));
-    Easy3DObject_SetScale(&param0->unk_D8.unk_10, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
-    Easy3DObject_SetVisible(&param0->unk_D8.unk_10, 1);
+    Easy3DModel_LoadFrom(&param0->boardModel.model, param1, v0, HEAP_ID_118);
+    Easy3DObject_Init(&param0->boardModel.object, &param0->boardModel.model);
+    Easy3DObject_SetPosition(&param0->boardModel.object, FX32_CONST(0), FX32_CONST(0), FX32_CONST(0));
+    Easy3DObject_SetScale(&param0->boardModel.object, FX32_CONST(1.00f), FX32_CONST(1.00f), FX32_CONST(1.00f));
+    Easy3DObject_SetVisible(&param0->boardModel.object, 1);
 }
 
 static void FootprintStamp_FreeBoardModel(FootprintStampApp *param0)
 {
-    Easy3DModel_Release(&param0->unk_D8.unk_00);
+    Easy3DModel_Release(&param0->boardModel.model);
 }
 
 static void FootprintStamp_DrawBoard(FootprintStampApp *param0)
@@ -1219,8 +1219,8 @@ static void FootprintStamp_DrawBoard(FootprintStampApp *param0)
     NNS_G3dGePushMtx();
 
     {
-        Easy3DObject_Draw(&param0->unk_D8.unk_10);
-        FootprintStampModels_Draw(&param0->unk_194);
+        Easy3DObject_Draw(&param0->boardModel.object);
+        FootprintStampModels_Draw(&param0->modelManager);
     }
 
     NNS_G3dGePopMtx(1);
@@ -1230,12 +1230,12 @@ static void FootprintStamp_InitWindows(FootprintStampApp *param0)
 {
     int v0;
 
-    Window_Add(param0->unk_08, &param0->unk_B4, 1, 2, 1, 27, 4, 13, (1 + (18 + 12)) + (29 * 4));
-    Window_FillTilemap(&param0->unk_B4, 0xf);
+    Window_Add(param0->bgConfig, &param0->messageWindow, 1, 2, 1, 27, 4, 13, (1 + (18 + 12)) + (29 * 4));
+    Window_FillTilemap(&param0->messageWindow, 0xf);
 
     for (v0 = 0; v0 < 8; v0++) {
-        Window_Add(param0->unk_08, &param0->unk_34[v0], 5, sPartyWindowPositions[v0][0], sPartyWindowPositions[v0][1], 8, 2, 13, (0x4000 / 0x20) + (8 * 2) * v0);
-        Window_FillTilemap(&param0->unk_34[v0], 0x0);
+        Window_Add(param0->bgConfig, &param0->playerWindows[v0], 5, sPartyWindowPositions[v0][0], sPartyWindowPositions[v0][1], 8, 2, 13, (0x4000 / 0x20) + (8 * 2) * v0);
+        Window_FillTilemap(&param0->playerWindows[v0], 0x0);
     }
 }
 
@@ -1243,10 +1243,10 @@ static void FootprintStamp_FreeWindows(FootprintStampApp *param0)
 {
     int v0;
 
-    Window_Remove(&param0->unk_B4);
+    Window_Remove(&param0->messageWindow);
 
     for (v0 = 0; v0 < 8; v0++) {
-        Window_Remove(&param0->unk_34[v0]);
+        Window_Remove(&param0->playerWindows[v0]);
     }
 }
 
@@ -1277,8 +1277,8 @@ static void FootprintStamp_FreePipeline(G3DPipelineBuffers *param0)
 
 static void FootprintStamp_InitCommState(FootprintStampApp *param0)
 {
-    FootprintStampCommState *v0 = &param0->unk_168;
-    v0->unk_04 = WiFiPlazaLobby_Network_GetMyUserId();
+    FootprintStampCommState *v0 = &param0->commState;
+    v0->localUserId = WiFiPlazaLobby_Network_GetMyUserId();
 }
 
 static void FootprintStamp_InitEntry(FootprintStampApp *param0, FootprintStampAddPayload *param1)
@@ -1287,7 +1287,7 @@ static void FootprintStamp_InitEntry(FootprintStampApp *param0, FootprintStampAd
 
     MI_CpuClear8(param1, sizeof(FootprintStampAddPayload));
 
-    v0 = &param1->unk_00;
+    v0 = &param1->entry;
 
     v0->species = 150;
     v0->stampColor = 0x1f;
@@ -1297,7 +1297,7 @@ static void FootprintStamp_InitEntry(FootprintStampApp *param0, FootprintStampAd
 
 FootprintStampCommState *FootprintStamp_GetCommState(FootprintStampApp *param0)
 {
-    return &param0->unk_168;
+    return &param0->commState;
 }
 
 static void FootprintStamp_LoadPartyEntries(int param0, SaveData *saveData, FootprintStampEntry *param2)
@@ -1326,18 +1326,18 @@ BOOL FootprintStamp_AddEntry(FootprintStampApp *param0, const FootprintStampEntr
     int v0;
     u32 v1;
 
-    v0 = FootprintStampModels_Add(param0, &param0->unk_194, param1, param0->unk_160, param0->unk_164, param0->unk_19E0);
+    v0 = FootprintStampModels_Add(param0, &param0->modelManager, param1, param0->boardNarc, param0->pokefootNarc, param0->isArceusRoom);
 
     if (v0 == 1) {
         v1 = WiFiPlazaLobby_Network_FindSubChannelPlayerIndex(param2);
 
         if (v1 != 0xffffffff) {
-            if ((param0->unk_99C[v1] != param1->species) || (param0->unk_9AC[v1] != param1->stampColor)) {
-                param0->unk_99C[v1] = param1->species;
-                param0->unk_9AC[v1] = param1->stampColor;
-                FootprintStamp_LoadFootprintTexture(param1->species, param1->form, param0->unk_970[v1], param0->unk_160, param0->unk_164, NNS_G2D_VRAM_TYPE_2DSUB, param0->unk_19E0);
-                ManagedSprite_SetDrawFlag(param0->unk_970[v1], 1);
-                PaletteData_FillBufferRange(param0->unk_0C, PLTTBUF_SUB_BG, PLTTSEL_BOTH, param1->stampColor, (2 * 16 + 1) + v1, (2 * 16 + 1) + v1 + 1);
+            if ((param0->playerSpecies[v1] != param1->species) || (param0->playerStampColors[v1] != param1->stampColor)) {
+                param0->playerSpecies[v1] = param1->species;
+                param0->playerStampColors[v1] = param1->stampColor;
+                FootprintStamp_LoadFootprintTexture(param1->species, param1->form, param0->playerFootprintSprites[v1], param0->boardNarc, param0->pokefootNarc, NNS_G2D_VRAM_TYPE_2DSUB, param0->isArceusRoom);
+                ManagedSprite_SetDrawFlag(param0->playerFootprintSprites[v1], 1);
+                PaletteData_FillBufferRange(param0->paletteData, PLTTBUF_SUB_BG, PLTTSEL_BOTH, param1->stampColor, (2 * 16 + 1) + v1, (2 * 16 + 1) + v1 + 1);
             }
         }
 
@@ -1358,54 +1358,54 @@ static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
     WiFiPlazaLobby_Network_GetSubChannelPlayerList(&v0);
 
     for (v1 = 0; v1 < 8; v1++) {
-        if (param0->unk_170[v1] != v0.unk_04[v1]) {
+        if (param0->playerUserIds[v1] != v0.unk_04[v1]) {
             if (v0.unk_04[v1] != DWC_LOBBY_INVALID_USER_ID) {
-                FootprintStampPlayers_DrawName(param0->unk_30, param0->unk_2C, param0->unk_34, param0->unk_00->unk_00, v0.unk_04[v1]);
+                FootprintStampPlayers_DrawName(param0->messageLoader, param0->stringTemplate, param0->playerWindows, param0->args->unk_00, v0.unk_04[v1]);
 
                 {
                     u16 *v5;
                     int v6, v7;
 
-                    v5 = Bg_GetTilemapBuffer(param0->unk_08, 6);
+                    v5 = Bg_GetTilemapBuffer(param0->bgConfig, 6);
 
                     for (v7 = sPlayerSlotRects[v1][1]; v7 < sPlayerSlotRects[v1][1] + sPlayerSlotRects[v1][3]; v7++) {
-                        MI_CpuCopy16(&param0->unk_9C0[v7 * 32 + sPlayerSlotRects[v1][0]], &v5[v7 * 32 + sPlayerSlotRects[v1][0]], sPlayerSlotRects[v1][2] * 2);
+                        MI_CpuCopy16(&param0->nameTilemapBackup[v7 * 32 + sPlayerSlotRects[v1][0]], &v5[v7 * 32 + sPlayerSlotRects[v1][0]], sPlayerSlotRects[v1][2] * 2);
                     }
 
-                    Bg_ScheduleTilemapTransfer(param0->unk_08, 6);
+                    Bg_ScheduleTilemapTransfer(param0->bgConfig, 6);
                 }
 
                 v2++;
             } else {
-                FootprintStampPlayers_ClearName(param0->unk_34, v1);
+                FootprintStampPlayers_ClearName(param0->playerWindows, v1);
 
-                param0->unk_99C[v1] = 0;
-                param0->unk_9AC[v1] = 0;
+                param0->playerSpecies[v1] = 0;
+                param0->playerStampColors[v1] = 0;
 
-                ManagedSprite_SetDrawFlag(param0->unk_970[v1], 0);
-                Bg_FillTilemapRect(param0->unk_08, 6, 0, sPlayerSlotRects[v1][0], sPlayerSlotRects[v1][1], sPlayerSlotRects[v1][2], sPlayerSlotRects[v1][3], 16);
-                Bg_ScheduleTilemapTransfer(param0->unk_08, 6);
+                ManagedSprite_SetDrawFlag(param0->playerFootprintSprites[v1], 0);
+                Bg_FillTilemapRect(param0->bgConfig, 6, 0, sPlayerSlotRects[v1][0], sPlayerSlotRects[v1][1], sPlayerSlotRects[v1][2], sPlayerSlotRects[v1][3], 16);
+                Bg_ScheduleTilemapTransfer(param0->bgConfig, 6);
                 v3++;
             }
 
-            if (v0.unk_04[v1] == param0->unk_168.unk_04) {
-                ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_96C, sCursorSpritePositions[v1][0], sCursorSpritePositions[v1][1], (192 + 80) << FX32_SHIFT);
-                ManagedSprite_SetDrawFlag(param0->unk_96C, 1);
+            if (v0.unk_04[v1] == param0->commState.localUserId) {
+                ManagedSprite_SetPositionXYWithSubscreenOffset(param0->cursorSprite, sCursorSpritePositions[v1][0], sCursorSpritePositions[v1][1], (192 + 80) << FX32_SHIFT);
+                ManagedSprite_SetDrawFlag(param0->cursorSprite, 1);
             }
         }
 
-        param0->unk_170[v1] = v0.unk_04[v1];
+        param0->playerUserIds[v1] = v0.unk_04[v1];
     }
 
     v4 = 0;
 
     for (v1 = 0; v1 < 8; v1++) {
-        if (param0->unk_170[v1] != DWC_LOBBY_INVALID_USER_ID) {
+        if (param0->playerUserIds[v1] != DWC_LOBBY_INVALID_USER_ID) {
             v4++;
         }
     }
 
-    param0->unk_194.unk_73F = v4;
+    param0->modelManager.playerCount = v4;
 
     if (v2 > 0) {
         Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
@@ -1420,12 +1420,12 @@ static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
 
 void FootprintStamp_DrawPlayerName(FootprintStampApp *param0, s32 param1)
 {
-    FootprintStampPlayers_DrawName(param0->unk_30, param0->unk_2C, param0->unk_34, param0->unk_00->unk_00, param1);
+    FootprintStampPlayers_DrawName(param0->messageLoader, param0->stringTemplate, param0->playerWindows, param0->args->unk_00, param1);
 }
 
 void FootprintStamp_ClearPlayerName(FootprintStampApp *param0, u32 param1)
 {
-    FootprintStampPlayers_ClearName(param0->unk_34, param1);
+    FootprintStampPlayers_ClearName(param0->playerWindows, param1);
 }
 
 static void FootprintStamp_SelectPartySlot(FootprintStampApp *param0, int param1)
@@ -1436,10 +1436,10 @@ static void FootprintStamp_SelectPartySlot(FootprintStampApp *param0, int param1
     v0 = sSelectionSpriteTemplate;
 
     for (v1 = 0; v1 < 3; v1++) {
-        if (param0->unk_990[v1] == NULL) {
+        if (param0->selectionSprites[v1] == NULL) {
             v0.x = 16 + 32 * param1;
             v0.y = 176;
-            param0->unk_990[v1] = SpriteSystem_NewSprite(param0->unk_1C, param0->unk_20, &v0);
+            param0->selectionSprites[v1] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v0);
 
             break;
         }
@@ -1453,8 +1453,8 @@ static void FootprintStamp_HighlightPartySlot(FootprintStampApp *param0, int par
 {
     u16 *v0, *v1;
 
-    v0 = PaletteData_GetUnfadedBuffer(param0->unk_0C, 2);
-    v1 = PaletteData_GetFadedBuffer(param0->unk_0C, 2);
+    v0 = PaletteData_GetUnfadedBuffer(param0->paletteData, 2);
+    v1 = PaletteData_GetFadedBuffer(param0->paletteData, 2);
 
     MI_CpuCopy16(&v0[1 * 16 + 1], &v1[1 * 16 + 1], 6 * 2);
     BlendPalette(&v0[1 * 16 + 1 + param1], &v1[1 * 16 + 1 + param1], 1, 6, 0x0);
@@ -1465,12 +1465,12 @@ static void FootprintStamp_UpdateSelectionSprites(FootprintStampApp *param0)
     int v0;
 
     for (v0 = 0; v0 < 3; v0++) {
-        if (param0->unk_990[v0] != NULL) {
-            if (ManagedSprite_IsAnimated(param0->unk_990[v0]) == 0) {
-                Sprite_DeleteAndFreeResources(param0->unk_990[v0]);
-                param0->unk_990[v0] = NULL;
+        if (param0->selectionSprites[v0] != NULL) {
+            if (ManagedSprite_IsAnimated(param0->selectionSprites[v0]) == 0) {
+                Sprite_DeleteAndFreeResources(param0->selectionSprites[v0]);
+                param0->selectionSprites[v0] = NULL;
             } else {
-                Sprite_TickFrame(param0->unk_990[v0]->sprite);
+                Sprite_TickFrame(param0->selectionSprites[v0]->sprite);
             }
         }
     }
@@ -1487,10 +1487,10 @@ static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintSta
     SpriteManager *v6;
     int v7, v8;
 
-    GF_ASSERT(param1->unk_00 == NULL);
+    GF_ASSERT(param1->oam == NULL);
 
-    v5 = param0->unk_08;
-    v6 = param0->unk_20;
+    v5 = param0->bgConfig;
+    v6 = param0->spriteManager;
 
     FootprintStamp_MeasureText(param2, param3, &v7, &v8);
 
@@ -1507,7 +1507,7 @@ static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintSta
 
     param8 -= 8;
 
-    v0.fontOAMManager = param0->unk_10;
+    v0.fontOAMManager = param0->fontOAMManager;
     v0.window = &v1;
     v0.spriteList = SpriteManager_GetSpriteList(v6);
     v0.paletteProxy = SpriteManager_FindPlttResourceProxy(v6, param6);
@@ -1526,15 +1526,15 @@ static void FootprintStamp_CreateTextOAM(FootprintStampApp *param0, FootprintSta
     FontOAM_SetXY(v4, param7, param8);
     Window_Remove(&v1);
 
-    param1->unk_00 = v4;
-    param1->unk_04 = v2;
-    param1->unk_10 = v7;
+    param1->oam = v4;
+    param1->allocation = v2;
+    param1->width = v7;
 }
 
 static void FootprintStamp_FreeTextOAM(FootprintStampText *param0)
 {
-    FontOAM_Free(param0->unk_00);
-    CharTransfer_ClearRange(&param0->unk_04);
+    FontOAM_Free(param0->oam);
+    CharTransfer_ClearRange(&param0->allocation);
 }
 
 static void FootprintStamp_MeasureText(const String *param0, int param1, int *param2, int *param3)
@@ -1554,42 +1554,42 @@ static void FootprintStamp_UpdatePartySpritePositions(FootprintStampApp *param0)
 {
     int v0, v1;
 
-    if (param0->unk_19D4 == param0->unk_19D8) {
-        param0->unk_19D4 += ((32 << 8) / 60);
+    if (param0->scrollTarget == param0->scrollOffset) {
+        param0->scrollTarget += ((32 << 8) / 60);
 
-        if (param0->unk_19D4 > (32 << 8)) {
-            param0->unk_19D4 = (32 << 8);
+        if (param0->scrollTarget > (32 << 8)) {
+            param0->scrollTarget = (32 << 8);
         }
 
-        param0->unk_19D8 = param0->unk_19D4;
+        param0->scrollOffset = param0->scrollTarget;
     } else {
-        param0->unk_19D8 -= param0->unk_19DC;
+        param0->scrollOffset -= param0->scrollStep;
 
-        if (param0->unk_19D8 < param0->unk_19D4) {
-            param0->unk_19D8 = param0->unk_19D4;
+        if (param0->scrollOffset < param0->scrollTarget) {
+            param0->scrollOffset = param0->scrollTarget;
         }
     }
 
-    v0 = 32 - (param0->unk_19D8 >> 8);
+    v0 = 32 - (param0->scrollOffset >> 8);
 
     for (v1 = 0; v1 < 6; v1++) {
-        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->unk_924[v1], 16 + 32 * v1, 176 + v0, (192 + 80) << FX32_SHIFT);
+        ManagedSprite_SetPositionXYWithSubscreenOffset(param0->partySprites[v1], 16 + 32 * v1, 176 + v0, (192 + 80) << FX32_SHIFT);
     }
 }
 
 static BOOL FootprintStamp_ScrollPartySprites(FootprintStampApp *param0, int param1)
 {
-    if (param0->unk_19D4 < param1) {
+    if (param0->scrollTarget < param1) {
         return 0;
     }
 
-    if (param0->unk_19D8 < param0->unk_19D4) {
+    if (param0->scrollOffset < param0->scrollTarget) {
         GF_ASSERT(FALSE);
-        param0->unk_19D8 = param0->unk_19D4;
+        param0->scrollOffset = param0->scrollTarget;
     }
 
-    param0->unk_19D4 -= param1;
-    param0->unk_19DC = (param0->unk_19D8 - param0->unk_19D4) / 4;
+    param0->scrollTarget -= param1;
+    param0->scrollStep = (param0->scrollOffset - param0->scrollTarget) / 4;
 
     return 1;
 }

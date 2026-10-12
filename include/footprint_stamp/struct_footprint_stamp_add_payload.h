@@ -4,7 +4,7 @@
 #include "footprint_stamp/struct_footprint_stamp_entry.h"
 
 typedef struct {
-    FootprintStampEntry unk_00; // The footprint entry being broadcast.
+    FootprintStampEntry entry; // The footprint entry being broadcast.
 } FootprintStampAddPayload;
 
 #endif // POKEPLATINUM_STRUCT_FOOTPRINT_STAMP_ADD_PAYLOAD_H
