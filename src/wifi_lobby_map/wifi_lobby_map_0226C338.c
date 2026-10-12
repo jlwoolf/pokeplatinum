@@ -8,37 +8,37 @@
 typedef struct {
     GXRgb unk_00;
     GXRgb unk_02[4];
-} UnkStruct_wifi_lobby_map_0226E678;
+} WiFiLobbyMapLightPalette;
 
 typedef struct {
     GXRgb unk_00;
-} UnkStruct_wifi_lobby_map_0226E670;
+} WiFiLobbyMapLightColor;
 
 typedef struct {
     s8 unk_00[4];
-} UnkStruct_wifi_lobby_map_0226C4CC;
+} WiFiLobbyMapColor;
 
 typedef struct {
-    UnkStruct_wifi_lobby_map_0226C4CC unk_00[2];
-    UnkStruct_wifi_lobby_map_0226C4CC unk_08[4];
-} UnkStruct_wifi_lobby_map_0226C568;
+    WiFiLobbyMapColor unk_00[2];
+    WiFiLobbyMapColor unk_08[4];
+} WiFiLobbyMapLightColors;
 
-typedef struct UnkStruct_wifi_lobby_map_0226C39C_t {
-    UnkStruct_wifi_lobby_map_0226C568 unk_00;
-    UnkStruct_wifi_lobby_map_0226C568 unk_18;
-    UnkStruct_wifi_lobby_map_0226C568 unk_30;
+typedef struct WiFiLobbyMapLighting_t {
+    WiFiLobbyMapLightColors unk_00;
+    WiFiLobbyMapLightColors unk_18;
+    WiFiLobbyMapLightColors unk_30;
     s32 unk_48[2];
     s32 unk_50[4];
-} UnkStruct_wifi_lobby_map_0226C39C;
+} WiFiLobbyMapLighting;
 
-static void wifi_lobby_map_0226C4CC(const UnkStruct_wifi_lobby_map_0226C4CC *param0, GXRgb *param1);
-static void wifi_lobby_map_0226C4E8(UnkStruct_wifi_lobby_map_0226C4CC *param0, const GXRgb *param1);
-static void wifi_lobby_map_0226C50C(const UnkStruct_wifi_lobby_map_0226C4CC *param0, const UnkStruct_wifi_lobby_map_0226C4CC *param1, UnkStruct_wifi_lobby_map_0226C4CC *param2, s32 param3, s32 param4);
-static void wifi_lobby_map_0226C568(UnkStruct_wifi_lobby_map_0226C568 *param0, const UnkStruct_wifi_lobby_map_0226E678 *param1);
-static void wifi_lobby_map_0226C58C(UnkStruct_wifi_lobby_map_0226C568 *param0, const UnkStruct_wifi_lobby_map_0226E670 *param1);
-static void wifi_lobby_map_0226C598(const UnkStruct_wifi_lobby_map_0226C568 *param0);
+static void wifi_lobby_map_0226C4CC(const WiFiLobbyMapColor *param0, GXRgb *param1);
+static void wifi_lobby_map_0226C4E8(WiFiLobbyMapColor *param0, const GXRgb *param1);
+static void wifi_lobby_map_0226C50C(const WiFiLobbyMapColor *param0, const WiFiLobbyMapColor *param1, WiFiLobbyMapColor *param2, s32 param3, s32 param4);
+static void wifi_lobby_map_0226C568(WiFiLobbyMapLightColors *param0, const WiFiLobbyMapLightPalette *param1);
+static void wifi_lobby_map_0226C58C(WiFiLobbyMapLightColors *param0, const WiFiLobbyMapLightColor *param1);
+static void wifi_lobby_map_0226C598(const WiFiLobbyMapLightColors *param0);
 
-static const UnkStruct_wifi_lobby_map_0226E678 Unk_wifi_lobby_map_0226E678[6] = {
+static const WiFiLobbyMapLightPalette Unk_wifi_lobby_map_0226E678[6] = {
     { GX_RGB(23, 23, 25),
         {
             GX_RGB(16, 16, 16),
@@ -87,20 +87,20 @@ static const UnkStruct_wifi_lobby_map_0226E678 Unk_wifi_lobby_map_0226E678[6] = 
     },
 };
 
-static const UnkStruct_wifi_lobby_map_0226E670 Unk_wifi_lobby_map_0226E670[4] = {
+static const WiFiLobbyMapLightColor Unk_wifi_lobby_map_0226E670[4] = {
     { GX_RGB(14, 14, 14) },
     { GX_RGB(20, 20, 20) },
     { GX_RGB(31, 31, 31) },
     { GX_RGB(8, 8, 8) },
 };
 
-UnkStruct_wifi_lobby_map_0226C39C *wifi_lobby_map_0226C338(u32 heapID, int param1, int param2, int param3)
+WiFiLobbyMapLighting *wifi_lobby_map_0226C338(u32 heapID, int param1, int param2, int param3)
 {
-    UnkStruct_wifi_lobby_map_0226C39C *v0;
+    WiFiLobbyMapLighting *v0;
     int v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_wifi_lobby_map_0226C39C));
-    memset(v0, 0, sizeof(UnkStruct_wifi_lobby_map_0226C39C));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapLighting));
+    memset(v0, 0, sizeof(WiFiLobbyMapLighting));
 
     wifi_lobby_map_0226C568(&v0->unk_00, &Unk_wifi_lobby_map_0226E678[param1]);
     wifi_lobby_map_0226C58C(&v0->unk_00, &Unk_wifi_lobby_map_0226E670[param2]);
@@ -118,12 +118,12 @@ UnkStruct_wifi_lobby_map_0226C39C *wifi_lobby_map_0226C338(u32 heapID, int param
     return v0;
 }
 
-void wifi_lobby_map_0226C39C(UnkStruct_wifi_lobby_map_0226C39C *param0)
+void wifi_lobby_map_0226C39C(WiFiLobbyMapLighting *param0)
 {
     Heap_Free(param0);
 }
 
-void wifi_lobby_map_0226C3A4(UnkStruct_wifi_lobby_map_0226C39C *param0)
+void wifi_lobby_map_0226C3A4(WiFiLobbyMapLighting *param0)
 {
     int v0;
     BOOL v1 = 0;
@@ -149,7 +149,7 @@ void wifi_lobby_map_0226C3A4(UnkStruct_wifi_lobby_map_0226C39C *param0)
     }
 }
 
-void wifi_lobby_map_0226C430(UnkStruct_wifi_lobby_map_0226C39C *param0, int param1)
+void wifi_lobby_map_0226C430(WiFiLobbyMapLighting *param0, int param1)
 {
     int v0;
 
@@ -166,7 +166,7 @@ void wifi_lobby_map_0226C430(UnkStruct_wifi_lobby_map_0226C39C *param0, int para
     }
 }
 
-void wifi_lobby_map_0226C4A0(UnkStruct_wifi_lobby_map_0226C39C *param0, int param1)
+void wifi_lobby_map_0226C4A0(WiFiLobbyMapLighting *param0, int param1)
 {
     param0->unk_18.unk_00[1] = param0->unk_00.unk_00[1];
     param0->unk_48[1] = 0;
@@ -174,24 +174,24 @@ void wifi_lobby_map_0226C4A0(UnkStruct_wifi_lobby_map_0226C39C *param0, int para
     wifi_lobby_map_0226C4E8(&param0->unk_30.unk_00[1], &Unk_wifi_lobby_map_0226E670[param1].unk_00);
 }
 
-void wifi_lobby_map_0226C4C8(UnkStruct_wifi_lobby_map_0226C39C *param0, int param1)
+void wifi_lobby_map_0226C4C8(WiFiLobbyMapLighting *param0, int param1)
 {
     return;
 }
 
-static void wifi_lobby_map_0226C4CC(const UnkStruct_wifi_lobby_map_0226C4CC *param0, GXRgb *param1)
+static void wifi_lobby_map_0226C4CC(const WiFiLobbyMapColor *param0, GXRgb *param1)
 {
     *param1 = GX_RGB(param0->unk_00[0], param0->unk_00[1], param0->unk_00[2]);
 }
 
-static void wifi_lobby_map_0226C4E8(UnkStruct_wifi_lobby_map_0226C4CC *param0, const GXRgb *param1)
+static void wifi_lobby_map_0226C4E8(WiFiLobbyMapColor *param0, const GXRgb *param1)
 {
     param0->unk_00[0] = ((*param1) & GX_RGB_R_MASK) >> GX_RGB_R_SHIFT;
     param0->unk_00[1] = ((*param1) & GX_RGB_G_MASK) >> GX_RGB_G_SHIFT;
     param0->unk_00[2] = ((*param1) & GX_RGB_B_MASK) >> GX_RGB_B_SHIFT;
 }
 
-static void wifi_lobby_map_0226C50C(const UnkStruct_wifi_lobby_map_0226C4CC *param0, const UnkStruct_wifi_lobby_map_0226C4CC *param1, UnkStruct_wifi_lobby_map_0226C4CC *param2, s32 param3, s32 param4)
+static void wifi_lobby_map_0226C50C(const WiFiLobbyMapColor *param0, const WiFiLobbyMapColor *param1, WiFiLobbyMapColor *param2, s32 param3, s32 param4)
 {
     s32 v0;
     s32 v1;
@@ -206,7 +206,7 @@ static void wifi_lobby_map_0226C50C(const UnkStruct_wifi_lobby_map_0226C4CC *par
     param2->unk_00[2] = param0->unk_00[2] + ((param3 * v2) / param4);
 }
 
-static void wifi_lobby_map_0226C568(UnkStruct_wifi_lobby_map_0226C568 *param0, const UnkStruct_wifi_lobby_map_0226E678 *param1)
+static void wifi_lobby_map_0226C568(WiFiLobbyMapLightColors *param0, const WiFiLobbyMapLightPalette *param1)
 {
     int v0;
 
@@ -217,12 +217,12 @@ static void wifi_lobby_map_0226C568(UnkStruct_wifi_lobby_map_0226C568 *param0, c
     }
 }
 
-static void wifi_lobby_map_0226C58C(UnkStruct_wifi_lobby_map_0226C568 *param0, const UnkStruct_wifi_lobby_map_0226E670 *param1)
+static void wifi_lobby_map_0226C58C(WiFiLobbyMapLightColors *param0, const WiFiLobbyMapLightColor *param1)
 {
     wifi_lobby_map_0226C4E8(&param0->unk_00[1], &param1->unk_00);
 }
 
-static void wifi_lobby_map_0226C598(const UnkStruct_wifi_lobby_map_0226C568 *param0)
+static void wifi_lobby_map_0226C598(const WiFiLobbyMapLightColors *param0)
 {
     int v0;
     GXRgb v1, v2;

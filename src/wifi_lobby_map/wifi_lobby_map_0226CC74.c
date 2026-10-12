@@ -9,25 +9,25 @@
 #include "wifi_lobby_map/wifi_lobby_map_0225C9B4.h"
 #include "wifi_lobby_map/wifi_lobby_map_0225D9A4.h"
 #include "wifi_lobby_map/wifi_lobby_map_02262DA8.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225CA20_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225CC54_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225DEE8_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_02263344_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_actor_manager_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_actor_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_app_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_task_decl.h"
 
 #include "sound_playback.h"
 #include "string_gf.h"
 
 typedef struct {
     u32 unk_00;
-} UnkStruct_wifi_lobby_map_0226CC74;
+} WiFiLobbyMapObjectTaskState;
 
-BOOL wifi_lobby_map_0226CC74(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2)
+BOOL wifi_lobby_map_0226CC74(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, u32 param2)
 {
-    UnkStruct_wifi_lobby_map_0226CC74 *v0;
+    WiFiLobbyMapObjectTaskState *v0;
     WiFiPlazaLobbyState *v1;
-    UnkStruct_wifi_lobby_map_0225CA20 *v2;
-    UnkStruct_wifi_lobby_map_0225CC54 *v3;
-    UnkStruct_wifi_lobby_map_0225CC54 *v4;
+    WiFiLobbyMapActorManager *v2;
+    WiFiLobbyMapActor *v3;
+    WiFiLobbyMapActor *v4;
     String *v5;
 
     v0 = wifi_lobby_map_02262E80(param0);
@@ -38,7 +38,7 @@ BOOL wifi_lobby_map_0226CC74(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0:
-        v0 = wifi_lobby_map_02262E3C(param0, sizeof(UnkStruct_wifi_lobby_map_0226CC74));
+        v0 = wifi_lobby_map_02262E3C(param0, sizeof(WiFiLobbyMapObjectTaskState));
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
 
         {

@@ -11,16 +11,16 @@
 #include "graphics.h"
 #include "heap.h"
 
-typedef struct UnkStruct_wifi_lobby_map_0225C894_t {
+typedef struct WiFiLobbyMapGrid_t {
     WiFi2DCharGrid *unk_00;
-} UnkStruct_wifi_lobby_map_0225C894;
+} WiFiLobbyMapGrid;
 
-UnkStruct_wifi_lobby_map_0225C894 *wifi_lobby_map_0225C858(enum HeapID heapID)
+WiFiLobbyMapGrid *wifi_lobby_map_0225C858(enum HeapID heapID)
 {
-    UnkStruct_wifi_lobby_map_0225C894 *v0;
+    WiFiLobbyMapGrid *v0;
     void *v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_wifi_lobby_map_0225C894));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapGrid));
     v0->unk_00 = WiFi2DCharGrid_New(35, 42, heapID);
 
     v1 = LoadMemberFromNARC(NARC_INDEX_APPLICATION__WIFI_LOBBY__MAP_CONV__WFLBY_MAP, 0, 0, heapID, 1);
@@ -31,29 +31,29 @@ UnkStruct_wifi_lobby_map_0225C894 *wifi_lobby_map_0225C858(enum HeapID heapID)
     return v0;
 }
 
-void wifi_lobby_map_0225C894(UnkStruct_wifi_lobby_map_0225C894 *param0)
+void wifi_lobby_map_0225C894(WiFiLobbyMapGrid *param0)
 {
     WiFi2DCharGrid_Free(param0->unk_00);
     Heap_Free(param0);
 }
 
-u16 wifi_lobby_map_0225C8A8(const UnkStruct_wifi_lobby_map_0225C894 *param0)
+u16 wifi_lobby_map_0225C8A8(const WiFiLobbyMapGrid *param0)
 {
     return 35;
 }
 
-BOOL wifi_lobby_map_0225C8AC(const UnkStruct_wifi_lobby_map_0225C894 *param0, u16 param1, u16 param2)
+BOOL wifi_lobby_map_0225C8AC(const WiFiLobbyMapGrid *param0, u16 param1, u16 param2)
 {
     return WiFi2DCharGrid_IsTileBlocked(param0->unk_00, param1, param2);
 }
 
-u32 wifi_lobby_map_0225C8B8(const UnkStruct_wifi_lobby_map_0225C894 *param0, u16 param1, u16 param2)
+u32 wifi_lobby_map_0225C8B8(const WiFiLobbyMapGrid *param0, u16 param1, u16 param2)
 {
     u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_00, param1, param2);
     return v0 >> 15;
 }
 
-u32 wifi_lobby_map_0225C8C4(const UnkStruct_wifi_lobby_map_0225C894 *param0, u16 param1, u16 param2)
+u32 wifi_lobby_map_0225C8C4(const WiFiLobbyMapGrid *param0, u16 param1, u16 param2)
 {
     u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_00, param1, param2);
     v0 &= 0x7fff;
@@ -61,7 +61,7 @@ u32 wifi_lobby_map_0225C8C4(const UnkStruct_wifi_lobby_map_0225C894 *param0, u16
     return v0;
 }
 
-BOOL wifi_lobby_map_0225C8D8(const UnkStruct_wifi_lobby_map_0225C894 *param0, u32 param1, u16 *param2, u16 *param3, u32 param4)
+BOOL wifi_lobby_map_0225C8D8(const WiFiLobbyMapGrid *param0, u32 param1, u16 *param2, u16 *param3, u32 param4)
 {
     int v0, v1, v2;
     u32 v3;
@@ -187,7 +187,7 @@ BOOL wifi_lobby_map_0225C990(u32 param0)
     return 0;
 }
 
-const WiFi2DCharGrid *wifi_lobby_map_0225C9B0(const UnkStruct_wifi_lobby_map_0225C894 *param0)
+const WiFi2DCharGrid *wifi_lobby_map_0225C9B0(const WiFiLobbyMapGrid *param0)
 {
     return param0->unk_00;
 }

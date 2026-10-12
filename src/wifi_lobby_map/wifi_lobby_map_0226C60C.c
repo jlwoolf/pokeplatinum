@@ -12,38 +12,38 @@
 #include "wifi_lobby_map/wifi_lobby_map_0226C338.h"
 #include "wifi_lobby_map/wifi_lobby_map_0226C8B4.h"
 #include "wifi_lobby_map/wifi_lobby_map_0226CE54.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225CA20_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225DEE8_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_02261E10_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0226C39C_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0226C914_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0226CF38_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_actor_manager_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_app_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_object_manager_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_lighting_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_fireworks_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_float_manager_decl.h"
 
 #include "heap.h"
 
-typedef struct UnkStruct_wifi_lobby_map_0226C6F8_t {
-    UnkStruct_wifi_lobby_map_0225DEE8 *unk_00;
+typedef struct WiFiLobbyMapTimeEventManager_t {
+    WiFiLobbyMapApp *unk_00;
     WiFiPlazaLobbyState *unk_04;
-    UnkStruct_wifi_lobby_map_02261E10 *unk_08;
-    UnkStruct_wifi_lobby_map_0225CA20 *unk_0C;
-    UnkStruct_wifi_lobby_map_0226C39C *unk_10;
-    UnkStruct_wifi_lobby_map_0226CF38 *unk_14;
-    UnkStruct_wifi_lobby_map_0226C914 *unk_18;
-} UnkStruct_wifi_lobby_map_0226C6F8;
+    WiFiLobbyMapObjectManager *unk_08;
+    WiFiLobbyMapActorManager *unk_0C;
+    WiFiLobbyMapLighting *unk_10;
+    WiFiLobbyMapFloatManager *unk_14;
+    WiFiLobbyMapFireworks *unk_18;
+} WiFiLobbyMapTimeEventManager;
 
 static u32 wifi_lobby_map_0226C81C(PPW_LOBBY_TIME_EVENT param0);
 static u32 wifi_lobby_map_0226C848(PPW_LOBBY_TIME_EVENT param0);
 static u32 wifi_lobby_map_0226C87C(PPW_LOBBY_TIME_EVENT param0);
-static void wifi_lobby_map_0226C8A8(UnkStruct_wifi_lobby_map_0226C6F8 *param0);
+static void wifi_lobby_map_0226C8A8(WiFiLobbyMapTimeEventManager *param0);
 
-UnkStruct_wifi_lobby_map_0226C6F8 *wifi_lobby_map_0226C60C(u32 heapID, UnkStruct_wifi_lobby_map_0225DEE8 *param1)
+WiFiLobbyMapTimeEventManager *wifi_lobby_map_0226C60C(u32 heapID, WiFiLobbyMapApp *param1)
 {
-    UnkStruct_wifi_lobby_map_0226C6F8 *v0;
+    WiFiLobbyMapTimeEventManager *v0;
     u32 v1, v2, v3;
     u32 v4, v5, v6, v7, v8, v9;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_wifi_lobby_map_0226C6F8));
-    memset(v0, 0, sizeof(UnkStruct_wifi_lobby_map_0226C6F8));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapTimeEventManager));
+    memset(v0, 0, sizeof(WiFiLobbyMapTimeEventManager));
 
     v0->unk_00 = param1;
     v0->unk_04 = wifi_lobby_map_0225DEE8(param1);
@@ -96,7 +96,7 @@ UnkStruct_wifi_lobby_map_0226C6F8 *wifi_lobby_map_0226C60C(u32 heapID, UnkStruct
     return v0;
 }
 
-void wifi_lobby_map_0226C6F8(UnkStruct_wifi_lobby_map_0226C6F8 *param0)
+void wifi_lobby_map_0226C6F8(WiFiLobbyMapTimeEventManager *param0)
 {
     wifi_lobby_map_0226C914(param0->unk_18);
     wifi_lobby_map_0226CF38(param0->unk_14);
@@ -105,7 +105,7 @@ void wifi_lobby_map_0226C6F8(UnkStruct_wifi_lobby_map_0226C6F8 *param0)
     Heap_Free(param0);
 }
 
-void wifi_lobby_map_0226C718(UnkStruct_wifi_lobby_map_0226C6F8 *param0)
+void wifi_lobby_map_0226C718(WiFiLobbyMapTimeEventManager *param0)
 {
     if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->unk_04, 1)) {
         u32 v0;
@@ -162,7 +162,7 @@ void wifi_lobby_map_0226C718(UnkStruct_wifi_lobby_map_0226C6F8 *param0)
     wifi_lobby_map_0226C924(param0->unk_18);
 }
 
-BOOL wifi_lobby_map_0226C810(const UnkStruct_wifi_lobby_map_0226C6F8 *param0, u32 param1, int param2)
+BOOL wifi_lobby_map_0226C810(const WiFiLobbyMapTimeEventManager *param0, u32 param1, int param2)
 {
     return wifi_lobby_map_0226CFFC(param0->unk_14, param1, param2);
 }
@@ -217,7 +217,7 @@ static u32 wifi_lobby_map_0226C87C(PPW_LOBBY_TIME_EVENT param0)
     return 0;
 }
 
-static void wifi_lobby_map_0226C8A8(UnkStruct_wifi_lobby_map_0226C6F8 *param0)
+static void wifi_lobby_map_0226C8A8(WiFiLobbyMapTimeEventManager *param0)
 {
     NNS_G3dGlbLightColor(2, GX_RGB(0, 0, 0));
 }
