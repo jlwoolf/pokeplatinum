@@ -60,7 +60,7 @@
 #include "library_tv/library_tv.h"
 #include "overlay005/daycare.h"
 #include "overlay006/struct_npc_trade_animation_template.h"
-#include "overlay007/accessory_shop.h"
+#include "field_shops/accessory_shop.h"
 #include "image_clip_app/image_clip_app_02255D44.h"
 #include "image_clip_app/image_clip_app_0225B660.h"
 #include "mix_records/mix_records.h"

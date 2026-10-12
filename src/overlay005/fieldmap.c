@@ -86,7 +86,7 @@
 #define FIELD_MAP_INIT_STATE_DONE          3
 
 FS_EXTERN_OVERLAY(overlay6);
-FS_EXTERN_OVERLAY(overlay7);
+FS_EXTERN_OVERLAY(field_shops);
 FS_EXTERN_OVERLAY(gym_features);
 FS_EXTERN_OVERLAY(distortion_world);
 
@@ -173,7 +173,7 @@ static BOOL FieldMap_Init(ApplicationManager *appMan, int *state)
                 break;
 
             case FIELD_EXTENSION_OVERLAY_GENERIC:
-                Overlay_LoadByID(FS_OVERLAY_ID(overlay7), OVERLAY_LOAD_ASYNC);
+                Overlay_LoadByID(FS_OVERLAY_ID(field_shops), OVERLAY_LOAD_ASYNC);
                 break;
 
             case FIELD_EXTENSION_OVERLAY_DISTORTION_WORLD:
@@ -347,7 +347,7 @@ static BOOL FieldMap_Exit(ApplicationManager *appMan, int *param1)
             if (fieldSystem->mapLoadMode->loadExtOverlay) {
                 Overlay_UnloadByID(FS_OVERLAY_ID(overlay6));
                 Overlay_UnloadByID(FS_OVERLAY_ID(gym_features));
-                Overlay_UnloadByID(FS_OVERLAY_ID(overlay7));
+                Overlay_UnloadByID(FS_OVERLAY_ID(field_shops));
                 Overlay_UnloadByID(FS_OVERLAY_ID(distortion_world));
             }
 

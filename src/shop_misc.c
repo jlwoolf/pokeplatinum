@@ -4,7 +4,7 @@
 
 #include "field/field_system.h"
 #include "overlay005/fieldmap.h"
-#include "overlay007/shop_menu.h"
+#include "field_shops/shop_menu.h"
 
 #include "bag_context.h"
 #include "field_task.h"

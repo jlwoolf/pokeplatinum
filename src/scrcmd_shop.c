@@ -10,7 +10,7 @@
 #include "generated/mart_specialties_id.h"
 
 #include "data/mart_items.h"
-#include "overlay007/shop_menu.h"
+#include "field_shops/shop_menu.h"
 
 #include "field_script_context.h"
 #include "inlines.h"
