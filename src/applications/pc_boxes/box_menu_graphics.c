@@ -30,21 +30,21 @@ static void BoxMenuGraphics_ClearMessageWindow(BgConfig *param0, Window *param1)
 
 BOOL BoxMenuGraphics_Load(BoxMenuGraphics *param0, BoxGraphics *param1, const BoxApplication *param2, BgConfig *param3, SpriteList *param4, MessageLoader *boxMessagesLoader, const StringTemplate *messageVariableBuffer, int optionsFrame, NARC *param8)
 {
-    param0->unk_0C = param1;
-    param0->unk_00 = param3;
-    param0->unk_08 = param2;
-    param0->unk_2C = messageVariableBuffer;
-    param0->unk_20 = optionsFrame;
-    param0->unk_10 = boxMessagesLoader;
-    param0->unk_14 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_POKEMON_STORAGE_SYSTEM, HEAP_ID_BOX_GRAPHICS);
-    param0->unk_30 = String_Init(64, HEAP_ID_BOX_GRAPHICS);
-    param0->unk_34 = String_Init(64, HEAP_ID_BOX_GRAPHICS);
-    param0->unk_1C = 0;
-    param0->unk_1E = 0;
-    param0->unk_18 = NULL;
-    param0->unk_24 = Graphics_GetCharDataFromOpenNARC(param8, 25, 1, &(param0->unk_28), HEAP_ID_BOX_GRAPHICS);
+    param0->boxGraphics = param1;
+    param0->bgConfig = param3;
+    param0->boxApp = param2;
+    param0->messageVariableBuffer = messageVariableBuffer;
+    param0->optionsFrame = optionsFrame;
+    param0->boxMessagesLoader = boxMessagesLoader;
+    param0->systemMessagesLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_POKEMON_STORAGE_SYSTEM, HEAP_ID_BOX_GRAPHICS);
+    param0->messageString = String_Init(64, HEAP_ID_BOX_GRAPHICS);
+    param0->formattedString = String_Init(64, HEAP_ID_BOX_GRAPHICS);
+    param0->messageVisible = 0;
+    param0->menuVisible = 0;
+    param0->windows = NULL;
+    param0->charDataFile = Graphics_GetCharDataFromOpenNARC(param8, 25, 1, &(param0->charData), HEAP_ID_BOX_GRAPHICS);
 
-    if ((param0->unk_24 == NULL) || (param0->unk_30 == NULL) || (param0->unk_34 == NULL)) {
+    if ((param0->charDataFile == NULL) || (param0->messageString == NULL) || (param0->formattedString == NULL)) {
         return 0;
     }
 
@@ -53,31 +53,31 @@ BOOL BoxMenuGraphics_Load(BoxMenuGraphics *param0, BoxGraphics *param1, const Bo
 
 void BoxMenuGraphics_Free(BoxMenuGraphics *param0)
 {
-    if (param0->unk_18) {
+    if (param0->windows) {
         int v0;
 
         for (v0 = 0; v0 < 2; v0++) {
-            Window_Remove(&(param0->unk_18[v0]));
+            Window_Remove(&(param0->windows[v0]));
         }
 
-        if (param0->unk_24) {
-            Heap_Free(param0->unk_24);
+        if (param0->charDataFile) {
+            Heap_Free(param0->charDataFile);
         }
 
-        if (param0->unk_14) {
-            MessageLoader_Free(param0->unk_14);
+        if (param0->systemMessagesLoader) {
+            MessageLoader_Free(param0->systemMessagesLoader);
         }
 
-        if (param0->unk_30) {
-            String_Free(param0->unk_30);
+        if (param0->messageString) {
+            String_Free(param0->messageString);
         }
 
-        if (param0->unk_34) {
-            String_Free(param0->unk_34);
+        if (param0->formattedString) {
+            String_Free(param0->formattedString);
         }
 
-        Heap_Free(param0->unk_18);
-        param0->unk_18 = NULL;
+        Heap_Free(param0->windows);
+        param0->windows = NULL;
     }
 }
 
@@ -88,33 +88,33 @@ void BoxMenuGraphics_InitWindows(BoxMenuGraphics *param0)
         { 1, 19, 3, 12, 16, 4, 593 }
     };
 
-    param0->unk_18 = Window_New(HEAP_ID_BOX_GRAPHICS, 2);
+    param0->windows = Window_New(HEAP_ID_BOX_GRAPHICS, 2);
 
-    if (param0->unk_18) {
+    if (param0->windows) {
         int v1;
 
         for (v1 = 0; v1 < 2; v1++) {
-            Window_AddFromTemplate(param0->unk_00, &param0->unk_18[v1], &v0[v1]);
+            Window_AddFromTemplate(param0->bgConfig, &param0->windows[v1], &v0[v1]);
         }
     }
 
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_GRAPHIC__PL_WINFRAME, 0, param0->unk_00, 1, 512, 0, 0, HEAP_ID_BOX_GRAPHICS);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_GRAPHIC__PL_WINFRAME, 0, param0->bgConfig, 1, 512, 0, 0, HEAP_ID_BOX_GRAPHICS);
     Graphics_LoadPalette(NARC_INDEX_GRAPHIC__PL_WINFRAME, 24, 0, 7 * 0x20, 0x20, HEAP_ID_BOX_GRAPHICS);
-    LoadMessageBoxGraphics(param0->unk_00, BG_LAYER_MAIN_1, 521, 8, param0->unk_20, HEAP_ID_BOX_GRAPHICS);
+    LoadMessageBoxGraphics(param0->bgConfig, BG_LAYER_MAIN_1, 521, 8, param0->optionsFrame, HEAP_ID_BOX_GRAPHICS);
 }
 
 void BoxMenuGraphics_DrawMessage(BoxMenuGraphics *param0, u32 boxMessageID)
 {
-    Window_PutToTilemap(&param0->unk_18[0]);
-    BoxMenuGraphics_DrawMessageFrame(param0->unk_00, param0->unk_18[0].bgLayer, param0->unk_18[0].tilemapLeft, param0->unk_18[0].tilemapTop, param0->unk_18[0].width, param0->unk_18[0].height);
-    Window_FillTilemap(&param0->unk_18[0], 15);
-    MessageLoader_GetString(param0->unk_10, boxMessageID, param0->unk_30);
-    StringTemplate_Format(param0->unk_2C, param0->unk_34, param0->unk_30);
-    Text_AddPrinterWithParams(&(param0->unk_18[0]), FONT_MESSAGE, param0->unk_34, 0, 0, TEXT_SPEED_NO_TRANSFER, NULL);
-    Window_LoadTiles(&(param0->unk_18[0]));
-    Bg_CopyTilemapBufferToVRAM(param0->unk_00, 1);
+    Window_PutToTilemap(&param0->windows[0]);
+    BoxMenuGraphics_DrawMessageFrame(param0->bgConfig, param0->windows[0].bgLayer, param0->windows[0].tilemapLeft, param0->windows[0].tilemapTop, param0->windows[0].width, param0->windows[0].height);
+    Window_FillTilemap(&param0->windows[0], 15);
+    MessageLoader_GetString(param0->boxMessagesLoader, boxMessageID, param0->messageString);
+    StringTemplate_Format(param0->messageVariableBuffer, param0->formattedString, param0->messageString);
+    Text_AddPrinterWithParams(&(param0->windows[0]), FONT_MESSAGE, param0->formattedString, 0, 0, TEXT_SPEED_NO_TRANSFER, NULL);
+    Window_LoadTiles(&(param0->windows[0]));
+    Bg_CopyTilemapBufferToVRAM(param0->bgConfig, 1);
 
-    param0->unk_1C = 1;
+    param0->messageVisible = 1;
 }
 
 static void BoxMenuGraphics_DrawMessageFrame(BgConfig *param0, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5)
@@ -164,11 +164,11 @@ void BoxMenuGraphics_DrawMenu(BoxMenuGraphics *param0, const BoxMenu *menu)
     Window *v0;
     u32 v1, i;
 
-    if (param0->unk_1E) {
-        BoxMenuGraphics_ClearMenuWindow(param0->unk_00, &param0->unk_18[1]);
+    if (param0->menuVisible) {
+        BoxMenuGraphics_ClearMenuWindow(param0->bgConfig, &param0->windows[1]);
     }
 
-    v0 = &(param0->unk_18[1]);
+    v0 = &(param0->windows[1]);
     Window_FillTilemap(v0, 15);
     v1 = (8 - menu->totalMenuItems) * 16;
 
@@ -176,8 +176,8 @@ void BoxMenuGraphics_DrawMenu(BoxMenuGraphics *param0, const BoxMenu *menu)
         if ((menu->menuItems[i] >= BOX_MENU_FIRST_MARKING) && (menu->menuItems[i] <= BOX_MENU_LAST_MARKING)) {
             BoxMenuGraphics_DrawMarking(param0, v0, menu->markings, menu->menuItems[i] - BOX_MENU_FIRST_MARKING);
         } else {
-            MessageLoader_GetString(param0->unk_14, 24 + menu->menuItems[i], param0->unk_30);
-            Text_AddPrinterWithParamsAndColor(v0, FONT_SYSTEM, param0->unk_30, 10, v1, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(11, 12, 15), NULL);
+            MessageLoader_GetString(param0->systemMessagesLoader, 24 + menu->menuItems[i], param0->messageString);
+            Text_AddPrinterWithParamsAndColor(v0, FONT_SYSTEM, param0->messageString, 10, v1, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(11, 12, 15), NULL);
         }
 
         v1 += 16;
@@ -187,14 +187,14 @@ void BoxMenuGraphics_DrawMenu(BoxMenuGraphics *param0, const BoxMenu *menu)
     BoxMenuGraphics_DrawMenuFrame(param0, menu->totalMenuItems);
 
     Window_LoadTiles(v0);
-    Bg_CopyTilemapBufferToVRAM(param0->unk_00, 1);
+    Bg_CopyTilemapBufferToVRAM(param0->bgConfig, 1);
 
-    param0->unk_1E = 1;
+    param0->menuVisible = 1;
 }
 
 static void BoxMenuGraphics_DrawMarking(BoxMenuGraphics *param0, Window *param1, u8 markings, u32 markingID)
 {
-    Window_BlitBitmapRectWithTransparency(param1, param0->unk_28->pRawData, markingID * 8, ((markings & (1 << markingID)) ? 0 : 8), 48, 16, 44, markingID * 16 + 4, 8, 8, 0xff);
+    Window_BlitBitmapRectWithTransparency(param1, param0->charData->pRawData, markingID * 8, ((markings & (1 << markingID)) ? 0 : 8), 48, 16, 44, markingID * 16 + 4, 8, 8, 0xff);
 }
 
 static void BoxMenuGraphics_DrawMenuFrame(BoxMenuGraphics *param0, u32 param1)
@@ -202,7 +202,7 @@ static void BoxMenuGraphics_DrawMenuFrame(BoxMenuGraphics *param0, u32 param1)
     u16 *v0;
     u32 v1, v2, v3, v4;
 
-    v0 = Bg_GetTilemapBuffer(param0->unk_00, 1);
+    v0 = Bg_GetTilemapBuffer(param0->bgConfig, 1);
     v0 += (3 * 32 + 19);
     v3 = 593;
     v4 = 8 - param1;
@@ -218,32 +218,32 @@ static void BoxMenuGraphics_DrawMenuFrame(BoxMenuGraphics *param0, u32 param1)
         v0 += 32;
     }
 
-    BoxMenuGraphics_DrawMenuCursorFrame(param0->unk_00, 1, 19, 3 + v4 * 2, 12, param1 * 2);
+    BoxMenuGraphics_DrawMenuCursorFrame(param0->bgConfig, 1, 19, 3 + v4 * 2, 12, param1 * 2);
 }
 
 void BoxMenuGraphics_Hide(BoxMenuGraphics *param0)
 {
-    if (param0->unk_1C) {
-        BoxMenuGraphics_ClearMessageWindow(param0->unk_00, &param0->unk_18[0]);
-        param0->unk_1C = 0;
+    if (param0->messageVisible) {
+        BoxMenuGraphics_ClearMessageWindow(param0->bgConfig, &param0->windows[0]);
+        param0->messageVisible = 0;
     }
 
-    if (param0->unk_1E) {
-        BoxMenuGraphics_ClearMenuWindow(param0->unk_00, &param0->unk_18[1]);
-        param0->unk_1E = 0;
+    if (param0->menuVisible) {
+        BoxMenuGraphics_ClearMenuWindow(param0->bgConfig, &param0->windows[1]);
+        param0->menuVisible = 0;
     }
 
-    Bg_CopyTilemapBufferToVRAM(param0->unk_00, 1);
+    Bg_CopyTilemapBufferToVRAM(param0->bgConfig, 1);
 }
 
 void BoxMenuGraphics_HideMenu(BoxMenuGraphics *param0)
 {
-    if (param0->unk_1E) {
-        BoxMenuGraphics_ClearMenuWindow(param0->unk_00, &param0->unk_18[1]);
-        param0->unk_1E = 0;
+    if (param0->menuVisible) {
+        BoxMenuGraphics_ClearMenuWindow(param0->bgConfig, &param0->windows[1]);
+        param0->menuVisible = 0;
     }
 
-    Bg_CopyTilemapBufferToVRAM(param0->unk_00, 1);
+    Bg_CopyTilemapBufferToVRAM(param0->bgConfig, 1);
 }
 
 void BoxGraphics_DrawMenuCursorBox(BoxMenuGraphics *param0, const BoxMenu *menu)
@@ -251,7 +251,7 @@ void BoxGraphics_DrawMenuCursorBox(BoxMenuGraphics *param0, const BoxMenu *menu)
     Window *menuWindow;
     u32 v1;
 
-    menuWindow = &(param0->unk_18[1]);
+    menuWindow = &(param0->windows[1]);
     v1 = (8 - menu->totalMenuItems) * 16;
 
     Window_FillRectWithColor(menuWindow, 15, 0, v1, 10, menu->totalMenuItems * 16);
@@ -264,7 +264,7 @@ void BoxMenuGraphics_UpdateMarkings(BoxMenuGraphics *param0, const BoxMenu *menu
     Window *v0;
     int v1;
 
-    v0 = &(param0->unk_18[1]);
+    v0 = &(param0->windows[1]);
 
     for (v1 = 0; v1 < 6; v1++) {
         BoxMenuGraphics_DrawMarking(param0, v0, menu->markings, v1);

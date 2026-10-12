@@ -14,33 +14,33 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    BoxGraphics *unk_00;
-    BgConfig *unk_04;
-    SpriteList *unk_08;
-    const BoxApplication *unk_0C;
-    Window *unk_10;
-    void *unk_14;
-    NNSG2dCharacterData *unk_18;
-    void *unk_1C;
-    NNSG2dCellDataBank *unk_20;
+    BoxGraphics *boxGraphics;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    const BoxApplication *boxApp;
+    Window *windows;
+    void *charDataFile;
+    NNSG2dCharacterData *charData;
+    void *cellBank;
+    NNSG2dCellDataBank *cellBankData;
     u8 padding_24[8];
-    void *unk_2C;
-    NNSG2dScreenData *unk_30;
-    void *unk_34;
-    NNSG2dScreenData *unk_38;
-    Bitmap unk_3C;
-    FontSpecialCharsContext *unk_44;
-    Sprite *unk_48[18];
-    Sprite *unk_90;
-    u32 unk_94[18];
-    SysTask *unk_DC;
-    s32 unk_E0;
-    u16 unk_E4[8][48];
-    u8 unk_3E4[18][1024];
-    u8 unk_4BE4[18];
+    void *screenDataFile1;
+    NNSG2dScreenData *screenData1;
+    void *screenDataFile2;
+    NNSG2dScreenData *screenData2;
+    Bitmap boxIconBitmap;
+    FontSpecialCharsContext *fontContext;
+    Sprite *boxIconSprites[18];
+    Sprite *monIconSprite;
+    u32 boxMonCounts[18];
+    SysTask *task;
+    s32 boxSelectionBoxID;
+    u16 paletteBuffer[8][48];
+    u8 iconBuffer[18][1024];
+    u8 iconLoaded[18];
     u8 padding_4BF6[2];
-    MessageLoader *unk_4BF8;
-    String *unk_4BFC;
+    MessageLoader *itemDescriptionLoader;
+    String *string;
 } BoxSelectionPopup;
 
 #endif // POKEPLATINUM_STRUCT_BOX_SELECTION_POPUP_H

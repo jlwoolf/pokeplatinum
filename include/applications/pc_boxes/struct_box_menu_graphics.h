@@ -12,21 +12,21 @@
 #include "string_template.h"
 
 typedef struct {
-    BgConfig *unk_00;
+    BgConfig *bgConfig;
     u8 padding_04[4];
-    const BoxApplication *unk_08;
-    BoxGraphics *unk_0C;
-    MessageLoader *unk_10;
-    MessageLoader *unk_14;
-    Window *unk_18;
-    u16 unk_1C;
-    u16 unk_1E;
-    int unk_20;
-    void *unk_24;
-    NNSG2dCharacterData *unk_28;
-    const StringTemplate *unk_2C;
-    String *unk_30;
-    String *unk_34;
+    const BoxApplication *boxApp;
+    BoxGraphics *boxGraphics;
+    MessageLoader *boxMessagesLoader;
+    MessageLoader *systemMessagesLoader;
+    Window *windows;
+    u16 messageVisible;
+    u16 menuVisible;
+    int optionsFrame;
+    void *charDataFile;
+    NNSG2dCharacterData *charData;
+    const StringTemplate *messageVariableBuffer;
+    String *messageString;
+    String *formattedString;
 } BoxMenuGraphics;
 
 #endif // POKEPLATINUM_STRUCT_BOX_MENU_GRAPHICS_H
