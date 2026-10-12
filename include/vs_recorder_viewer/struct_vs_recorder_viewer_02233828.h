@@ -5,14 +5,14 @@
 #include "global_terminal/struct_global_terminal_0222BED8.h"
 
 typedef struct {
-    GlobalTerminalRecordAlt *unk_00;
-    GlobalTerminalRecordAlt unk_04;
-    u8 unk_1D54;
+    GlobalTerminalRecordAlt *record;
+    GlobalTerminalRecordAlt recordCopy;
+    u8 recordFlag;
     u8 padding_1D55[3];
-    GlobalTerminalRecord *unk_1D58[30];
-    GlobalTerminalRecord unk_1DD0[30];
-    int unk_3900;
-    u8 unk_3904[32];
+    GlobalTerminalRecord *records[30];
+    GlobalTerminalRecord recordCopies[30];
+    int recordCount;
+    u8 recordFlags[32];
 } VsRecorderViewerListRecordStore;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02233828_H

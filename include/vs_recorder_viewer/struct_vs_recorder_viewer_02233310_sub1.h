@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02233310_SUB1_H
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
+    int selection;
+    int scroll;
+    int scrollMargin;
+    int scrollMarginAlt;
 } VsRecorderViewerListScrollState;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02233310_SUB1_H

@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB3_H
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
+    int action;
+    int value;
+    int forward;
 } VsRecorderViewerIdEntrySelection;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB3_H

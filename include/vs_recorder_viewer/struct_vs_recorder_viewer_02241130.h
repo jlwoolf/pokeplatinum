@@ -7,12 +7,12 @@
 #include "savedata.h"
 
 typedef struct {
-    int unk_00;
+    int profileId;
     enum HeapID heapID;
     SaveData *saveData;
-    VsRecorderViewerTransferCallbacks unk_0C;
-    VsRecorderViewerTransferStringFunc unk_38;
-    void *unk_3C;
+    VsRecorderViewerTransferCallbacks callbacks;
+    VsRecorderViewerTransferStringFunc stringFunc;
+    void *userData;
 } VsRecorderViewerTransferInitParams;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02241130_H

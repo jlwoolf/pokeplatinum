@@ -20,36 +20,36 @@ static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0);
 
 static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0)
 {
-    return param0->unk_14.unk_54.active;
+    return param0->unk_14.transferContext.active;
 }
 
 VsRecorderViewerTransferContext *VsRecorderViewerTransfer_GetTransfer(VsRecorderState *param0)
 {
-    return &param0->unk_14.unk_54;
+    return &param0->unk_14.transferContext;
 }
 
 void VsRecorderViewerTransfer_Init(VsRecorderState *param0)
 {
     VsRecorderViewerTransferInitParams v0;
 
-    v0.unk_00 = SystemData_GetDWCProfileId(SaveData_GetSystemData(param0->saveData));
+    v0.profileId = SystemData_GetDWCProfileId(SaveData_GetSystemData(param0->saveData));
     v0.heapID = HEAP_ID_102;
     v0.saveData = param0->saveData;
-    v0.unk_0C.unk_00 = param0;
-    v0.unk_0C.unk_04 = VsRecorderViewerProfile_ProfilePhotoCallback;
-    v0.unk_0C.unk_08 = VsRecorderViewerProfile_ProfileCallback;
-    v0.unk_0C.unk_0C = VsRecorderViewerBox_OnProfileBoxTransferComplete;
-    v0.unk_0C.unk_10 = VsRecorderViewerBox_OnBoxTransferComplete;
-    v0.unk_0C.unk_14 = VsRecorderViewerRankings_LoadPlayTime;
-    v0.unk_0C.unk_18 = VsRecorderViewerRankings_LoadPlayTimeProfile;
-    v0.unk_0C.unk_1C = VsRecorderViewerRecord_SetBattleRecordingId;
-    v0.unk_0C.unk_20 = VsRecorderViewerList_LoadRecordList;
-    v0.unk_0C.unk_24 = VsRecorderViewerRecord_LoadRecordAlt;
-    v0.unk_0C.unk_28 = VsRecorderViewerRecord_Noop;
-    v0.unk_3C = param0;
-    v0.unk_38 = NULL;
+    v0.callbacks.userData = param0;
+    v0.callbacks.profilePhotoCallback = VsRecorderViewerProfile_ProfilePhotoCallback;
+    v0.callbacks.profileCallback = VsRecorderViewerProfile_ProfileCallback;
+    v0.callbacks.profileBoxCompleteCallback = VsRecorderViewerBox_OnProfileBoxTransferComplete;
+    v0.callbacks.boxCompleteCallback = VsRecorderViewerBox_OnBoxTransferComplete;
+    v0.callbacks.loadPlayTimeCallback = VsRecorderViewerRankings_LoadPlayTime;
+    v0.callbacks.loadPlayTimeProfileCallback = VsRecorderViewerRankings_LoadPlayTimeProfile;
+    v0.callbacks.setBattleRecordingIdCallback = VsRecorderViewerRecord_SetBattleRecordingId;
+    v0.callbacks.loadRecordListCallback = VsRecorderViewerList_LoadRecordList;
+    v0.callbacks.loadRecordAltCallback = VsRecorderViewerRecord_LoadRecordAlt;
+    v0.callbacks.noopCallback = VsRecorderViewerRecord_Noop;
+    v0.userData = param0;
+    v0.stringFunc = NULL;
 
-    GlobalTerminalTransfer_Init(&param0->unk_14.unk_54, &v0);
+    GlobalTerminalTransfer_Init(&param0->unk_14.transferContext, &v0);
 }
 
 BOOL VsRecorderViewerTransfer_IsIdle(VsRecorderState *param0)

@@ -4,8 +4,8 @@
 #include "sprite_system.h"
 
 typedef struct {
-    int unk_00;
-    ManagedSprite *unk_04;
+    int index;
+    ManagedSprite *sprite;
 } VsRecorderViewerRankingIconCell;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223E01C_SUB1_SUB1_H

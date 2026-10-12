@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02235580_H
 
 typedef struct {
-    int unk_00;
-    BOOL unk_04;
-    BOOL unk_08;
-    BOOL unk_0C;
+    int fadeValue;
+    BOOL slideDone;
+    BOOL mainDone;
+    BOOL ringDone;
 } VsRecorderViewerSlideShowTransition;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02235580_H

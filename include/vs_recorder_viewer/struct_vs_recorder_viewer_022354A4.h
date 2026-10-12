@@ -7,21 +7,21 @@
 #include "sprite_system.h"
 
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0A;
+    s16 startX;
+    s16 startY;
+    s16 targetX;
+    s16 targetY;
+    s16 stepX;
+    s16 stepY;
     u8 padding_0C[16];
-    u8 unk_1C;
-    u8 unk_1D;
+    u8 stepCount;
+    u8 state;
     u8 padding_1E[2];
-    ManagedSprite *unk_20;
-    FontOAM *unk_24;
-    VsRecorderRing *unk_28;
-    BOOL *unk_2C;
-    BOOL *unk_30;
+    ManagedSprite *sprite;
+    FontOAM *fontOAM;
+    VsRecorderRing *ring;
+    BOOL *done;
+    BOOL *ringDone;
 } VsRecorderViewerSlideShowSlideAnim;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022354A4_H

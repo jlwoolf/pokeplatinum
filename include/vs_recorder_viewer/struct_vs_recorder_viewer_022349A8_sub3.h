@@ -10,27 +10,27 @@
 
 typedef struct {
     union {
-        VsRecorderViewerTransferProfileData unk_00_val1;
-        VsRecorderViewerTransferBoxData unk_00_val2;
-        VsRecorderViewerRankingsUploadProfile unk_00_val3;
-        VsRecorderViewerTransferRecordData *unk_00_val4;
-        VsRecorderViewerTransferPlayTime unk_00_val5;
-        VsRecorderViewerTransferValue unk_00_val6;
+        VsRecorderViewerTransferProfileData profilePhotoData;
+        VsRecorderViewerTransferBoxData boxData;
+        VsRecorderViewerRankingsUploadProfile rankingsProfile;
+        VsRecorderViewerTransferRecordData *recordData;
+        VsRecorderViewerTransferPlayTime playTime;
+        VsRecorderViewerTransferValue value;
     };
     union {
         struct {
-            u8 unk_00;
-            u8 unk_01;
-            u8 unk_02[2];
+            u8 id;
+            u8 box;
+            u8 unused_02[2];
         } val1;
         struct {
-            u16 unk_00;
-            u16 unk_02;
+            u16 id;
+            u16 unused_02;
         } val2;
         struct {
-            u64 unk_00;
+            u64 value;
         } val3;
-    } unk_21C;
+    } uploadParams;
 } VsRecorderViewerTransferPayload;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022349A8_SUB3_H

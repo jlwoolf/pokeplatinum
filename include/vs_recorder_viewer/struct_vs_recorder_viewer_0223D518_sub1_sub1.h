@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223D518_SUB1_SUB1_H
 
 typedef struct {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
+    u16 hours;
+    u8 minutes;
+    u8 seconds;
 } VsRecorderViewerRankingsPlayTimeStamp;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223D518_SUB1_SUB1_H

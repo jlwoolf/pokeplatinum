@@ -7,10 +7,10 @@
 #include "sprite_system.h"
 
 typedef struct {
-    PlayerProfile *unk_00;
-    ManagedSprite *unk_04;
-    ManagedSprite *unk_08;
-    Window unk_0C[8];
+    PlayerProfile *profile;
+    ManagedSprite *pokemonSprite;
+    ManagedSprite *trainerSprite;
+    Window windows[8];
 } VsRecorderViewerProfilePanel;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022323B8_H

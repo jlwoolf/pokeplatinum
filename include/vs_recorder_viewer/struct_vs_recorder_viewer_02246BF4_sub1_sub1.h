@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB1_SUB1_H
 
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    u8 unk_04;
-    u8 unk_05;
+    s16 offsetX;
+    s16 offsetY;
+    u8 timer;
+    u8 scaleIndex;
 } VsRecorderViewerIdEntryButtonRect;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02246BF4_SUB1_SUB1_H

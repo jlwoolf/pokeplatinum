@@ -78,7 +78,7 @@ int VsRecorderViewerList_GetThemeColorA(VsRecorderState *param0)
         0x5b9f,
     };
 
-    return v0[param0->unk_14.unk_48];
+    return v0[param0->unk_14.theme];
 }
 
 int VsRecorderViewerList_GetThemeColorB(VsRecorderState *param0)
@@ -97,7 +97,7 @@ int VsRecorderViewerList_GetThemeColorB(VsRecorderState *param0)
         return 0x7e05;
     }
 
-    return v0[param0->unk_14.unk_48];
+    return v0[param0->unk_14.theme];
 }
 
 int VsRecorderViewerList_GetThemeGraphicsFileIndex(VsRecorderState *param0, int param1)
@@ -138,7 +138,7 @@ int VsRecorderViewerList_GetThemeGraphicsFileIndex(VsRecorderState *param0, int 
         131,
         136,
     };
-    int v4 = param0->unk_14.unk_48;
+    int v4 = param0->unk_14.theme;
 
     switch (param1) {
     case 0:
@@ -158,17 +158,17 @@ int VsRecorderViewerList_GetThemeGraphicsFileIndex(VsRecorderState *param0, int 
 
 void VsRecorderViewerList_LoadThemeGraphics(VsRecorderState *param0, int param1)
 {
-    PaletteData *v0 = param0->unk_14.unk_14;
-    SpriteSystem *v1 = param0->unk_14.unk_04;
-    SpriteManager *v2 = param0->unk_14.unk_08;
-    NARC *v3 = param0->unk_14.unk_00;
+    PaletteData *v0 = param0->unk_14.palette;
+    SpriteSystem *v1 = param0->unk_14.spriteSystem;
+    SpriteManager *v2 = param0->unk_14.spriteManager;
+    NARC *v3 = param0->unk_14.narc;
 
     PaletteData_LoadBufferFromFileStart(v0, NARC_INDEX_RESOURCE__ENG__BATT_REC__BATT_REC_GRA, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 3), HEAP_ID_102, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * (8 + 1), PLTT_DEST(0));
     PaletteData_LoadBufferFromFileStart(v0, NARC_INDEX_RESOURCE__ENG__BATT_REC__BATT_REC_GRA, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 3), HEAP_ID_102, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * (8 + 1), PLTT_DEST(0));
     PaletteData_LoadBufferFromFileStart(v0, NARC_INDEX_RESOURCE__ENG__BATT_REC__BATT_REC_GRA, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 0), HEAP_ID_102, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES, PLTT_DEST(14));
     PaletteData_LoadBufferFromFileStart(v0, NARC_INDEX_RESOURCE__ENG__BATT_REC__BATT_REC_GRA, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 0), HEAP_ID_102, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(14));
-    VsRecorderRing_LoadColorPalette(param0->unk_6F0, param0->unk_14.unk_48);
-    VsRecorderRing_LoadColorPalette(param0->unk_6F0, param0->unk_14.unk_48);
+    VsRecorderRing_LoadColorPalette(param0->unk_6F0, param0->unk_14.theme);
+    VsRecorderRing_LoadColorPalette(param0->unk_6F0, param0->unk_14.theme);
     SpriteManager_UnloadPlttObjById(v2, 9999);
     SpriteManager_UnloadPlttObjById(v2, 10000);
     SpriteSystem_LoadPaletteBufferFromOpenNarc(v0, 2, v1, v2, v3, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 2), 0, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 9999);
@@ -177,10 +177,10 @@ void VsRecorderViewerList_LoadThemeGraphics(VsRecorderState *param0, int param1)
 
 void VsRecorderViewerList_BlendPalettes(VsRecorderState *param0)
 {
-    PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xFFFF, 0, param0->unk_14.unk_44);
-    PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_BG, 0xFFFF, 0, param0->unk_14.unk_44);
-    PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xFFFF, 0, param0->unk_14.unk_44);
-    PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0xFFFF, 0, param0->unk_14.unk_44);
+    PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xFFFF, 0, param0->unk_14.themeColor);
+    PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_BG, 0xFFFF, 0, param0->unk_14.themeColor);
+    PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xFFFF, 0, param0->unk_14.themeColor);
+    PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0xFFFF, 0, param0->unk_14.themeColor);
 }
 
 u16 *VsRecorderViewerList_LoadPokedexAlphabetical(enum HeapID heapID, int unused, int *pokedexLength)
@@ -218,9 +218,9 @@ void VsRecorderViewerList_OpenSubMessage(VsRecorderState *param0, int param1)
     G2S_BlendNone();
     Bg_SetPriority(BG_LAYER_SUB_2, 0);
     Window_Init(v1);
-    Window_Add(param0->unk_14.unk_10, v1, 6, 1, 19, 30, 4, 14, 32);
+    Window_Add(param0->unk_14.bgConfig, v1, 6, 1, 19, 30, 4, 14, 32);
 
-    v0 = MessageLoader_GetNewString(param0->unk_14.unk_34, param1);
+    v0 = MessageLoader_GetNewString(param0->unk_14.messageLoader, param1);
 
     Window_FillTilemap(v1, 0xCC);
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 12), NULL);
@@ -238,7 +238,7 @@ void VsRecorderViewerList_CloseSubMessage(VsRecorderState *param0)
 
     Window_ClearAndCopyToVRAM(&param0->unk_8A4);
     Window_Remove(&param0->unk_8A4);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 6);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 6);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 0);
     Bg_SetPriority(BG_LAYER_SUB_2, 2);
 
@@ -267,9 +267,9 @@ void VsRecorderViewerList_OpenMainMessage(VsRecorderState *param0, int param1)
     VsRecorderViewerMenu_LoadBgPanel(param0, 2, 0);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
     Window_Init(v1);
-    Window_Add(param0->unk_14.unk_10, v1, 2, 1, 19, 30, 4, 14, 32);
+    Window_Add(param0->unk_14.bgConfig, v1, 2, 1, 19, 30, 4, 14, 32);
 
-    v0 = MessageLoader_GetNewString(param0->unk_14.unk_34, param1);
+    v0 = MessageLoader_GetNewString(param0->unk_14.messageLoader, param1);
 
     Window_FillTilemap(v1, 0xCC);
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 12), NULL);
@@ -286,7 +286,7 @@ void VsRecorderViewerList_UpdateMessageText(VsRecorderState *param0, int param1)
         return;
     }
 
-    v0 = MessageLoader_GetNewString(param0->unk_14.unk_34, param1);
+    v0 = MessageLoader_GetNewString(param0->unk_14.messageLoader, param1);
 
     Window_FillTilemap(v1, 0xCC);
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 12), NULL);
@@ -304,7 +304,7 @@ void VsRecorderViewerList_CloseMainMessage(VsRecorderState *param0)
 
     Window_ClearAndCopyToVRAM(&param0->unk_8A4);
     Window_Remove(&param0->unk_8A4);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 2);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 2);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 0);
 }
 
@@ -330,9 +330,9 @@ void VsRecorderViewerList_OpenSubMessageWithBlend(VsRecorderState *param0, int p
     VsRecorderViewerMenu_LoadBgPanel(param0, 6, 0);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG2, 1);
     Window_Init(v1);
-    Window_Add(param0->unk_14.unk_10, v1, 6, 1, 19, 30, 4, 14, 32);
+    Window_Add(param0->unk_14.bgConfig, v1, 6, 1, 19, 30, 4, 14, 32);
 
-    v0 = MessageLoader_GetNewString(param0->unk_14.unk_34, param1);
+    v0 = MessageLoader_GetNewString(param0->unk_14.messageLoader, param1);
 
     Window_FillTilemap(v1, 0xCC);
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 12), NULL);
@@ -388,10 +388,10 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
         v1 = 1;
 
         for (v0 = 0; v0 < 8; v0++) {
-            v2 = &param0->unk_0C[v0];
-            v3 = MessageLoader_GetNewString(param1->unk_14.unk_34, sVsRecorderViewerListProfileMsgIDs[v0]);
+            v2 = &param0->windows[v0];
+            v3 = MessageLoader_GetNewString(param1->unk_14.messageLoader, sVsRecorderViewerListProfileMsgIDs[v0]);
             Window_Init(v2);
-            Window_Add(param1->unk_14.unk_10, v2, 2, sVsRecorderViewerListProfileWindowRects[v0][0], sVsRecorderViewerListProfileWindowRects[v0][1], sVsRecorderViewerListProfileWindowRects[v0][2], sVsRecorderViewerListProfileWindowRects[v0][3], 14, v1);
+            Window_Add(param1->unk_14.bgConfig, v2, 2, sVsRecorderViewerListProfileWindowRects[v0][0], sVsRecorderViewerListProfileWindowRects[v0][1], sVsRecorderViewerListProfileWindowRects[v0][2], sVsRecorderViewerListProfileWindowRects[v0][3], 14, v1);
             Window_FillTilemap(v2, 0x00);
             Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, v3, VsRecorderViewerList_CalcCenteredTextX(v2, v3), 0, (0xff), ((u32)(((15 & (0xff)) << 16) | ((13 & (0xff)) << 8) | ((0 & (0xff)) << 0))), NULL);
             Window_ScheduleCopyToVRAM(v2);
@@ -408,13 +408,13 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
         Window *v10;
         PlayerProfile *v11;
 
-        v11 = param0->unk_00;
+        v11 = param0->profile;
         v9 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
 
-        v10 = &param0->unk_0C[0];
+        v10 = &param0->windows[0];
         v6 = PlayerProfile_GetName(v11, HEAP_ID_102);
         VsRecorderViewerList_CheckNameChars(param1, v6);
-        v7 = MessageLoader_GetNewString(param1->unk_14.unk_34, 13);
+        v7 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 13);
         v8 = String_Init(255, HEAP_ID_102);
 
         StringTemplate_SetString(v9, 0, v6, 0, 1, GAME_LANGUAGE);
@@ -432,8 +432,8 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
         {
             int v12 = PlayerProfile_GetBirthdayMonth(v11);
 
-            v10 = &param0->unk_0C[2];
-            v6 = MessageLoader_GetNewString(param1->unk_14.unk_34, 15);
+            v10 = &param0->windows[2];
+            v6 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 15);
             v7 = PlayerProfile_GetName(v11, HEAP_ID_102);
             VsRecorderViewerList_CheckNameChars(param1, v7);
             v8 = String_Init(255, HEAP_ID_102);
@@ -452,8 +452,8 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
         }
 
         {
-            v10 = &param0->unk_0C[3];
-            v8 = MessageLoader_GetNewString(param1->unk_14.unk_34, 16);
+            v10 = &param0->windows[3];
+            v8 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 16);
             Window_FillTilemap(v10, 0x00);
             Text_AddPrinterWithParamsAndColor(v10, FONT_SYSTEM, v8, VsRecorderViewerList_CalcCenteredTextX(v10, v8), 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
             Window_ScheduleCopyToVRAM(v10);
@@ -463,17 +463,17 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
                 int v13 = PlayerProfile_GetCountry(v11);
                 int v14 = PlayerProfile_GetRegion(v11);
 
-                v10 = &param0->unk_0C[4];
+                v10 = &param0->windows[4];
                 Window_FillTilemap(v10, 0x00);
                 if (v13 == 0) {
-                    v8 = MessageLoader_GetNewString(param1->unk_14.unk_34, 21);
+                    v8 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 21);
 
                     Text_AddPrinterWithParamsAndColor(v10, FONT_SYSTEM, v8, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
                     Window_ScheduleCopyToVRAM(v10);
                     String_Free(v8);
                 } else {
                     v8 = String_Init(255, HEAP_ID_102);
-                    v6 = MessageLoader_GetNewString(param1->unk_14.unk_34, 22);
+                    v6 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 22);
                     StringTemplate_SetCountryName(v9, 0, v13);
                     StringTemplate_Format(v9, v8, v6);
 
@@ -482,10 +482,10 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
                     String_Free(v8);
                     String_Free(v6);
                     if (v14 != 0) {
-                        v10 = &param0->unk_0C[5];
+                        v10 = &param0->windows[5];
                         Window_FillTilemap(v10, 0x00);
                         v8 = String_Init(255, HEAP_ID_102);
-                        v6 = MessageLoader_GetNewString(param1->unk_14.unk_34, 23);
+                        v6 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 23);
                         StringTemplate_SetCityName(v9, 0, v13, v14);
                         StringTemplate_Format(v9, v8, v6);
 
@@ -501,8 +501,8 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
         }
 
         {
-            v10 = &param0->unk_0C[6];
-            v8 = MessageLoader_GetNewString(param1->unk_14.unk_34, 17);
+            v10 = &param0->windows[6];
+            v8 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 17);
             Window_FillTilemap(v10, 0x00);
             Text_AddPrinterWithParamsAndColor(v10, FONT_SYSTEM, v8, VsRecorderViewerList_CalcCenteredTextX(v10, v8), 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
             Window_ScheduleCopyToVRAM(v10);
@@ -511,7 +511,7 @@ static void VsRecorderViewerList_InitProfileWindows(VsRecorderViewerProfilePanel
             {
                 EasyChatSentence v15;
 
-                v10 = &param0->unk_0C[7];
+                v10 = &param0->windows[7];
 
                 v8 = PlayerProfile_GetIntroMessage(v11, &v15, HEAP_ID_102);
                 if (v8 == NULL) {
@@ -535,28 +535,28 @@ static void VsRecorderViewerList_FreeProfileWindows(VsRecorderViewerProfilePanel
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        Window_ClearAndCopyToVRAM(&param0->unk_0C[v0]);
-        Window_Remove(&param0->unk_0C[v0]);
+        Window_ClearAndCopyToVRAM(&param0->windows[v0]);
+        Window_Remove(&param0->windows[v0]);
     }
 }
 
 static void VsRecorderViewerList_SetPokemonSpriteVisible(VsRecorderViewerProfilePanel *param0, int param1)
 {
-    if (param0->unk_04) {
-        ManagedSprite_SetDrawFlag(param0->unk_04, param1);
+    if (param0->pokemonSprite) {
+        ManagedSprite_SetDrawFlag(param0->pokemonSprite, param1);
     }
 }
 
 static void VsRecorderViewerList_FreePokemonSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
-    SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 100000);
-    SpriteManager_UnloadPlttObjById(param1->unk_14.unk_08, 100000);
-    SpriteManager_UnloadCellObjById(param1->unk_14.unk_08, 100000);
-    SpriteManager_UnloadAnimObjById(param1->unk_14.unk_08, 100000);
+    SpriteManager_UnloadCharObjById(param1->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadPlttObjById(param1->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadCellObjById(param1->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadAnimObjById(param1->unk_14.spriteManager, 100000);
 
-    if (param0->unk_04) {
-        Sprite_DeleteAndFreeResources(param0->unk_04);
-        param0->unk_04 = NULL;
+    if (param0->pokemonSprite) {
+        Sprite_DeleteAndFreeResources(param0->pokemonSprite);
+        param0->pokemonSprite = NULL;
     }
 }
 
@@ -572,9 +572,9 @@ static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel 
     PaletteData *v7;
     SpriteTemplate v8;
 
-    v5 = param1->unk_14.unk_04;
-    v6 = param1->unk_14.unk_08;
-    v7 = param1->unk_14.unk_14;
+    v5 = param1->unk_14.spriteSystem;
+    v6 = param1->unk_14.spriteManager;
+    v7 = param1->unk_14.palette;
 
     v4 = SpriteSystem_LoadPaletteBuffer(v7, PLTTBUF_MAIN_OBJ, v5, v6, NARC_INDEX_POKETOOL__ICONGRA__PL_POKE_ICON, PokeIconPalettesFileIndex(), FALSE, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 100000);
 
@@ -591,9 +591,9 @@ static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel 
     {
         int v11;
 
-        v1 = PlayerProfile_GetSpecies(param0->unk_00);
-        v3 = PlayerProfile_GetForm(param0->unk_00);
-        v0 = PlayerProfile_GetIsEgg(param0->unk_00);
+        v1 = PlayerProfile_GetSpecies(param0->profile);
+        v3 = PlayerProfile_GetForm(param0->profile);
+        v0 = PlayerProfile_GetIsEgg(param0->profile);
 
         if (v1 == 0) {
             return;
@@ -619,26 +619,26 @@ static void VsRecorderViewerList_LoadPokemonSprite(VsRecorderViewerProfilePanel 
         v8.resources[4] = SPRITE_RESOURCE_NONE;
         v8.resources[5] = SPRITE_RESOURCE_NONE;
 
-        param0->unk_04 = SpriteSystem_NewSprite(param1->unk_14.unk_04, param1->unk_14.unk_08, &v8);
+        param0->pokemonSprite = SpriteSystem_NewSprite(param1->unk_14.spriteSystem, param1->unk_14.spriteManager, &v8);
         v2 = PokeIconPaletteIndex(v1, v3, v0);
 
-        ManagedSprite_SetExplicitPaletteOffset(param0->unk_04, v4 + v2);
-        ManagedSprite_SetAnim(param0->unk_04, 1);
+        ManagedSprite_SetExplicitPaletteOffset(param0->pokemonSprite, v4 + v2);
+        ManagedSprite_SetAnim(param0->pokemonSprite, 1);
     }
 }
 
 static void VsRecorderViewerList_SetTrainerSpriteVisible(VsRecorderViewerProfilePanel *param0, int param1)
 {
-    ManagedSprite_SetDrawFlag(param0->unk_08, param1);
+    ManagedSprite_SetDrawFlag(param0->trainerSprite, param1);
 }
 
 static void VsRecorderViewerList_FreeTrainerSprite(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
 {
-    SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 165535);
-    SpriteManager_UnloadPlttObjById(param1->unk_14.unk_08, 165535);
-    SpriteManager_UnloadCellObjById(param1->unk_14.unk_08, 165535);
-    SpriteManager_UnloadAnimObjById(param1->unk_14.unk_08, 165535);
-    Sprite_DeleteAndFreeResources(param0->unk_08);
+    SpriteManager_UnloadCharObjById(param1->unk_14.spriteManager, 165535);
+    SpriteManager_UnloadPlttObjById(param1->unk_14.spriteManager, 165535);
+    SpriteManager_UnloadCellObjById(param1->unk_14.spriteManager, 165535);
+    SpriteManager_UnloadAnimObjById(param1->unk_14.spriteManager, 165535);
+    Sprite_DeleteAndFreeResources(param0->trainerSprite);
 }
 
 static const int sVsRecorderViewerListAppearanceFileIndices[16][4] = {
@@ -692,10 +692,10 @@ static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel 
     int v7 = 9;
     int v8 = 10;
 
-    v0 = PlayerProfile_GetGender(param0->unk_00);
-    v1 = param1->unk_14.unk_04;
-    v2 = param1->unk_14.unk_08;
-    v3 = param1->unk_14.unk_14;
+    v0 = PlayerProfile_GetGender(param0->profile);
+    v1 = param1->unk_14.spriteSystem;
+    v2 = param1->unk_14.spriteManager;
+    v3 = param1->unk_14.palette;
 
     if (param1->unk_86C == 0) {
         if (v0 == 1) {
@@ -703,7 +703,7 @@ static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel 
             v6 = 16;
         }
     } else {
-        int v9 = PlayerProfile_GetAppearance(param0->unk_00);
+        int v9 = PlayerProfile_GetAppearance(param0->profile);
 
         if (v9 >= 16) {
             v9 = 0;
@@ -734,9 +734,9 @@ static void VsRecorderViewerList_LoadTrainerSprite(VsRecorderViewerProfilePanel 
     v4.resources[4] = SPRITE_RESOURCE_NONE;
     v4.resources[5] = SPRITE_RESOURCE_NONE;
 
-    param0->unk_08 = SpriteSystem_NewSprite(param1->unk_14.unk_04, param1->unk_14.unk_08, &v4);
-    ManagedSprite_SetAnim(param0->unk_08, 1);
-    ManagedSprite_TickFrame(param0->unk_08);
+    param0->trainerSprite = SpriteSystem_NewSprite(param1->unk_14.spriteSystem, param1->unk_14.spriteManager, &v4);
+    ManagedSprite_SetAnim(param0->trainerSprite, 1);
+    ManagedSprite_TickFrame(param0->trainerSprite);
 }
 
 void VsRecorderViewerList_InitProfile(VsRecorderViewerProfilePanel *param0, VsRecorderState *param1)
@@ -769,21 +769,21 @@ static void VsRecorderViewerList_DrawLocationString(VsRecorderViewerListWindow *
     int v4 = PlayerProfile_GetCountry(param1->unk_88C[0]);
     int v5 = PlayerProfile_GetRegion(param1->unk_88C[0]);
 
-    v3 = &param0->unk_18;
+    v3 = &param0->window;
 
     if ((v4 == 0) && (v5 == 0)) {
-        v0 = MessageLoader_GetNewString(param1->unk_14.unk_34, 125);
+        v0 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 125);
     } else {
         v2 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
 
         if (v5 != 0) {
             v0 = String_Init(255, HEAP_ID_102);
-            v1 = MessageLoader_GetNewString(param1->unk_14.unk_34, 23);
+            v1 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 23);
             StringTemplate_SetCityName(v2, 0, v4, v5);
             StringTemplate_Format(v2, v0, v1);
         } else {
             v0 = String_Init(255, HEAP_ID_102);
-            v1 = MessageLoader_GetNewString(param1->unk_14.unk_34, 22);
+            v1 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 22);
             StringTemplate_SetCountryName(v2, 0, v4);
             StringTemplate_Format(v2, v0, v1);
         }
@@ -803,33 +803,33 @@ void VsRecorderViewerList_InitWindow(VsRecorderViewerListWindow *param0, VsRecor
     Window *v1;
     String *v2;
 
-    v1 = &param0->unk_18;
+    v1 = &param0->window;
 
-    param0->unk_04 = param2->unk_04;
-    param0->unk_00 = 0;
-    param0->unk_0C = 0;
-    param0->unk_10 = param2->unk_24;
-    param0->unk_28 = param2;
-    param0->unk_34 = param1->unk_14.unk_34;
-    param0->unk_14 = (param0->unk_04 / param0->unk_10) + 1;
+    param0->entryCount = param2->entryCount;
+    param0->unused_00 = 0;
+    param0->lastDrawn = 0;
+    param0->visibleRows = param2->visibleRows;
+    param0->config = param2;
+    param0->messageLoader = param1->unk_14.messageLoader;
+    param0->pageCount = (param0->entryCount / param0->visibleRows) + 1;
 
-    if (param0->unk_04 < param0->unk_10) {
-        param0->unk_10 = param0->unk_04;
-        param0->unk_38.unk_08 = param0->unk_10 - 1;
-        param0->unk_38.unk_0C = param0->unk_10 - 1;
+    if (param0->entryCount < param0->visibleRows) {
+        param0->visibleRows = param0->entryCount;
+        param0->scrollState.scrollMargin = param0->visibleRows - 1;
+        param0->scrollState.scrollMarginAlt = param0->visibleRows - 1;
     }
 
     Window_Init(v1);
-    Window_Add(param1->unk_14.unk_10, v1, param2->unk_20, param2->unk_0C, param2->unk_10, param2->unk_14, param2->unk_18, 14, param2->unk_1C);
+    Window_Add(param1->unk_14.bgConfig, v1, param2->bgLayer, param2->tilemapLeft, param2->tilemapTop, param2->width, param2->height, 14, param2->baseTile);
     Window_FillTilemap(v1, 0x0);
 
-    for (v0 = 0; v0 < param0->unk_10; v0++) {
-        v2 = MessageLoader_GetNewString(param0->unk_34, param2->unk_00[v0].unk_00);
+    for (v0 = 0; v0 < param0->visibleRows; v0++) {
+        v2 = MessageLoader_GetNewString(param0->messageLoader, param2->entries[v0].messageID);
 
-        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, 0, (param2->unk_08 * 16) * v0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, 0, (param2->lineCount * 16) * v0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
         String_Free(v2);
 
-        if (param2->unk_00[v0].unk_00 == 16) {
+        if (param2->entries[v0].messageID == 16) {
             VsRecorderViewerList_DrawLocationString(param0, param1);
         }
     }
@@ -843,38 +843,38 @@ void VsRecorderViewerList_InitRecordWindow(VsRecorderViewerListWindow *param0, V
     Window *v1;
     String *v2;
 
-    v1 = &param0->unk_18;
+    v1 = &param0->window;
 
-    param0->unk_04 = param3->unk_04;
-    param0->unk_00 = 0;
-    param0->unk_0C = 0;
-    param0->unk_10 = param3->unk_24;
-    param0->unk_28 = param3;
+    param0->entryCount = param3->entryCount;
+    param0->unused_00 = 0;
+    param0->lastDrawn = 0;
+    param0->visibleRows = param3->visibleRows;
+    param0->config = param3;
 
     if (param2) {
-        param0->unk_34 = param2;
+        param0->messageLoader = param2;
     } else {
-        param0->unk_34 = param1->unk_14.unk_34;
+        param0->messageLoader = param1->unk_14.messageLoader;
     }
 
-    param0->unk_14 = (param0->unk_04 / param0->unk_10) + 1;
-    param0->unk_38.unk_08 = param0->unk_10 / 2;
-    param0->unk_38.unk_0C = param0->unk_10 / 2;
+    param0->pageCount = (param0->entryCount / param0->visibleRows) + 1;
+    param0->scrollState.scrollMargin = param0->visibleRows / 2;
+    param0->scrollState.scrollMarginAlt = param0->visibleRows / 2;
 
-    if (param0->unk_04 < param0->unk_10) {
-        param0->unk_10 = param0->unk_04;
-        param0->unk_38.unk_08 = param0->unk_10 - 1;
-        param0->unk_38.unk_0C = param0->unk_10 - 1;
+    if (param0->entryCount < param0->visibleRows) {
+        param0->visibleRows = param0->entryCount;
+        param0->scrollState.scrollMargin = param0->visibleRows - 1;
+        param0->scrollState.scrollMarginAlt = param0->visibleRows - 1;
     }
 
     Window_Init(v1);
-    Window_Add(param1->unk_14.unk_10, v1, param3->unk_20, param3->unk_0C, param3->unk_10, param3->unk_14, param3->unk_18, 14, param3->unk_1C);
+    Window_Add(param1->unk_14.bgConfig, v1, param3->bgLayer, param3->tilemapLeft, param3->tilemapTop, param3->width, param3->height, 14, param3->baseTile);
     Window_FillTilemap(v1, 0x0);
 
-    if (param3->unk_00) {
-        for (v0 = 0; v0 < param0->unk_10; v0++) {
-            v2 = MessageLoader_GetNewString(param0->unk_34, param3->unk_00[v0].unk_00);
-            Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, 0, (param3->unk_08 * 16) * v0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+    if (param3->entries) {
+        for (v0 = 0; v0 < param0->visibleRows; v0++) {
+            v2 = MessageLoader_GetNewString(param0->messageLoader, param3->entries[v0].messageID);
+            Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, 0, (param3->lineCount * 16) * v0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
             String_Free(v2);
         }
     } else {
@@ -884,13 +884,13 @@ void VsRecorderViewerList_InitRecordWindow(VsRecorderViewerListWindow *param0, V
         String *v6;
         int v7;
 
-        for (v0 = 0; v0 < param0->unk_10; v0++) {
+        for (v0 = 0; v0 < param0->visibleRows; v0++) {
             v4 = String_Init(255, HEAP_ID_102);
             v5 = String_Init(255, HEAP_ID_102);
-            v6 = MessageLoader_GetNewString(param1->unk_14.unk_34, 99);
+            v6 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 99);
 
             String_FormatInt(v5, (v0 + 1), 2, 1, 1);
-            String_CopyChars(v4, param1->unk_8B4.unk_1D58[v0]->profile.name);
+            String_CopyChars(v4, param1->unk_8B4.records[v0]->profile.name);
             VsRecorderViewerList_CheckNameChars(param1, v4);
 
             v7 = Font_CalcStringWidth(FONT_SYSTEM, v5, 0);
@@ -922,44 +922,44 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
     int v10[30] = { 0 };
     String *v11;
 
-    v1 = &param0->unk_18;
+    v1 = &param0->window;
 
-    param0->unk_04 = param3->unk_04;
-    param0->unk_00 = 0;
+    param0->entryCount = param3->entryCount;
+    param0->unused_00 = 0;
 
-    param0->unk_0C = 0;
-    param0->unk_10 = param3->unk_24;
-    param0->unk_28 = param3;
+    param0->lastDrawn = 0;
+    param0->visibleRows = param3->visibleRows;
+    param0->config = param3;
     if (param2) {
-        param0->unk_34 = param2;
+        param0->messageLoader = param2;
     } else {
-        param0->unk_34 = param1->unk_14.unk_34;
+        param0->messageLoader = param1->unk_14.messageLoader;
     }
 
-    param0->unk_14 = (param0->unk_04 / param0->unk_10) + 1;
-    if (param0->unk_04 < param0->unk_10) {
-        param0->unk_10 = param0->unk_04;
-        param0->unk_38.unk_08 = param0->unk_10 - 1;
-        param0->unk_38.unk_0C = param0->unk_10 - 1;
+    param0->pageCount = (param0->entryCount / param0->visibleRows) + 1;
+    if (param0->entryCount < param0->visibleRows) {
+        param0->visibleRows = param0->entryCount;
+        param0->scrollState.scrollMargin = param0->visibleRows - 1;
+        param0->scrollState.scrollMarginAlt = param0->visibleRows - 1;
     }
 
-    param0->unk_38.unk_08 = param0->unk_10 / 2;
-    param0->unk_38.unk_0C = param0->unk_10 / 2;
+    param0->scrollState.scrollMargin = param0->visibleRows / 2;
+    param0->scrollState.scrollMarginAlt = param0->visibleRows / 2;
 
     Window_Init(v1);
-    Window_Add(param1->unk_14.unk_10, v1, param3->unk_20, param3->unk_0C, param3->unk_10, param3->unk_14, param3->unk_18, 14, param3->unk_1C);
+    Window_Add(param1->unk_14.bgConfig, v1, param3->bgLayer, param3->tilemapLeft, param3->tilemapTop, param3->width, param3->height, 14, param3->baseTile);
     Window_FillTilemap(v1, 0x00);
 
     v7 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
 
-    u64 v12 = param0->unk_28->unk_00[0].unk_08;
+    u64 v12 = param0->config->entries[0].score;
     int v13[] = { 16, 12, 20 };
 
     v9 = v12;
     v10[0] = v8;
 
     for (v0 = 1; v0 < v13[param5]; v0++) {
-        u64 v14 = param0->unk_28->unk_00[v0].unk_08;
+        u64 v14 = param0->config->entries[v0].score;
 
         if (v14 == v9) {
             v10[v0] = v8;
@@ -970,8 +970,8 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
         }
     }
 
-    for (v0 = 0; v0 < param0->unk_10; v0++) {
-        v3 = MessageLoader_GetNewString(param1->unk_14.unk_34, 88 + param5);
+    for (v0 = 0; v0 < param0->visibleRows; v0++) {
+        v3 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 88 + param5);
 
         v4 = String_Init(255, HEAP_ID_102);
         v6 = String_Init(255, HEAP_ID_102);
@@ -979,18 +979,18 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
 
         switch (param5) {
         case 0:
-            int v15 = param0->unk_28->unk_00[v0].unk_04;
-            v5 = MessageLoader_GetNewString(param0->unk_34, v15);
+            int v15 = param0->config->entries[v0].value;
+            v5 = MessageLoader_GetNewString(param0->messageLoader, v15);
             StringTemplate_SetString(v7, 1, v5, 0, 1, GAME_LANGUAGE);
             break;
         case 1:
-            int v16 = param0->unk_28->unk_00[v0].unk_04;
+            int v16 = param0->config->entries[v0].value;
             v5 = String_Init(255, HEAP_ID_102);
             StringTemplate_SetMonthName(v7, 1, v16);
             break;
         case 2:
             u16 v17[255];
-            int v18 = param0->unk_28->unk_00[v0].unk_04;
+            int v18 = param0->config->entries[v0].value;
             v5 = String_Init(255, HEAP_ID_102);
             MessageLoader_GetSpeciesName(v18, 102, v17);
             String_CopyChars(v5, v17);
@@ -998,7 +998,7 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
             break;
         }
 
-        u64 v19 = param0->unk_28->unk_00[v0].unk_08;
+        u64 v19 = param0->config->entries[v0].score;
 
         String_FormatU64(v11, v19, VsRecorderViewerList_CountDigits(v19), 0, 1);
 
@@ -1006,12 +1006,12 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
         StringTemplate_SetString(v7, 0, v4, 0, 1, GAME_LANGUAGE);
         StringTemplate_Format(v7, v6, v3);
 
-        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v6, 0, v0 * (16 * param0->unk_28->unk_08), TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
-        if (param0->unk_28->unk_08 == 2) {
+        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v6, 0, v0 * (16 * param0->config->lineCount), TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+        if (param0->config->lineCount == 2) {
             if (param6) {
                 StringTemplate_SetString(v7, 2, v11, 0, 1, GAME_LANGUAGE);
                 StringTemplate_Format(v7, v6, param6);
-                Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v6, 16, (v0 * (16 * param0->unk_28->unk_08)) + 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+                Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v6, 16, (v0 * (16 * param0->config->lineCount)) + 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
             }
         }
 
@@ -1032,33 +1032,33 @@ void VsRecorderViewerList_InitRankingWindow(VsRecorderViewerListWindow *param0, 
 void VsRecorderViewerList_InitTwoColumnWindow(VsRecorderViewerListWindow *param0, VsRecorderState *param1, const VsRecorderViewerListConfig *param2, String *param3[20][2])
 {
     int v0;
-    Window *v1 = &param0->unk_18;
+    Window *v1 = &param0->window;
 
-    param0->unk_04 = param2->unk_04;
-    param0->unk_00 = 0;
-    param0->unk_0C = 0;
-    param0->unk_10 = param2->unk_24;
-    param0->unk_28 = param2;
-    param0->unk_34 = param1->unk_14.unk_34;
-    param0->unk_14 = (param0->unk_04 / param0->unk_10) + 1;
-    param0->unk_38.unk_08 = param0->unk_10 / 2;
-    param0->unk_38.unk_0C = param0->unk_10 / 2;
+    param0->entryCount = param2->entryCount;
+    param0->unused_00 = 0;
+    param0->lastDrawn = 0;
+    param0->visibleRows = param2->visibleRows;
+    param0->config = param2;
+    param0->messageLoader = param1->unk_14.messageLoader;
+    param0->pageCount = (param0->entryCount / param0->visibleRows) + 1;
+    param0->scrollState.scrollMargin = param0->visibleRows / 2;
+    param0->scrollState.scrollMarginAlt = param0->visibleRows / 2;
 
-    if (param0->unk_04 < param0->unk_10) {
-        param0->unk_10 = param0->unk_04;
-        param0->unk_38.unk_08 = param0->unk_10 - 1;
-        param0->unk_38.unk_0C = param0->unk_10 - 1;
+    if (param0->entryCount < param0->visibleRows) {
+        param0->visibleRows = param0->entryCount;
+        param0->scrollState.scrollMargin = param0->visibleRows - 1;
+        param0->scrollState.scrollMarginAlt = param0->visibleRows - 1;
     }
 
-    param0->unk_48 = 1;
+    param0->twoColumn = 1;
 
     Window_Init(v1);
-    Window_Add(param1->unk_14.unk_10, v1, param2->unk_20, param2->unk_0C, param2->unk_10, param2->unk_14, param2->unk_18, 14, param2->unk_1C);
+    Window_Add(param1->unk_14.bgConfig, v1, param2->bgLayer, param2->tilemapLeft, param2->tilemapTop, param2->width, param2->height, 14, param2->baseTile);
     Window_FillTilemap(v1, 0x0);
 
-    for (v0 = 0; v0 < param0->unk_10; v0++) {
-        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, param3[v0][0], 0, ((param2->unk_08 * 8) * v0) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
-        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, param3[v0][1], 136, ((param2->unk_08 * 8) * v0) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+    for (v0 = 0; v0 < param0->visibleRows; v0++) {
+        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, param3[v0][0], 0, ((param2->lineCount * 8) * v0) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+        Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, param3[v0][1], 136, ((param2->lineCount * 8) * v0) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
     }
 
     Window_ScheduleCopyToVRAM(v1);
@@ -1070,14 +1070,14 @@ int VsRecorderViewerList_UpdateTwoColumnWindow(VsRecorderViewerListWindow *param
     int v1 = 0;
     Window *v2;
 
-    if (param0->unk_38.unk_00 == param0->unk_0C) {
+    if (param0->scrollState.selection == param0->lastDrawn) {
         return v1;
     }
-    if (param0->unk_10 == param0->unk_04) {
+    if (param0->visibleRows == param0->entryCount) {
         return v1;
     }
 
-    v2 = &param0->unk_18;
+    v2 = &param0->window;
 
     Window_FillTilemap(v2, 0x0);
     {
@@ -1085,25 +1085,25 @@ int VsRecorderViewerList_UpdateTwoColumnWindow(VsRecorderViewerListWindow *param
         int v4 = 0;
         int v5;
 
-        if (param0->unk_38.unk_04 >= param0->unk_38.unk_08) {
-            v4 = param0->unk_38.unk_00 - param0->unk_38.unk_08;
-            if (param0->unk_38.unk_00 >= (param0->unk_04 - (param0->unk_38.unk_08 + 1))) {
-                v4 = param0->unk_04 - param0->unk_10;
+        if (param0->scrollState.scroll >= param0->scrollState.scrollMargin) {
+            v4 = param0->scrollState.selection - param0->scrollState.scrollMargin;
+            if (param0->scrollState.selection >= (param0->entryCount - (param0->scrollState.scrollMargin + 1))) {
+                v4 = param0->entryCount - param0->visibleRows;
             }
         }
 
-        for (v3 = 0; v3 < param0->unk_10; v3++) {
+        for (v3 = 0; v3 < param0->visibleRows; v3++) {
             if (param2[v4 + v3][0] == NULL) {
                 continue;
             }
 
-            Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, param2[v4 + v3][0], 0, ((param0->unk_28->unk_08 * 8) * v3) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
-            Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, param2[v4 + v3][1], 136, ((param0->unk_28->unk_08 * 8) * v3) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+            Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, param2[v4 + v3][0], 0, ((param0->config->lineCount * 8) * v3) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+            Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, param2[v4 + v3][1], 136, ((param0->config->lineCount * 8) * v3) + 4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
         }
     }
     Window_CopyToVRAM(v2);
 
-    param0->unk_0C = param0->unk_38.unk_00;
+    param0->lastDrawn = param0->scrollState.selection;
 
     return v1;
 }
@@ -1118,35 +1118,35 @@ int VsRecorderViewerList_UpdateRankingWindow(VsRecorderViewerListWindow *a0, VsR
     String *r7;
     String *sp48;
 
-    if (a0->unk_08 == a0->unk_0C) {
+    if (a0->scroll == a0->lastDrawn) {
         return 0;
     }
-    if (a0->unk_10 == a0->unk_04) {
+    if (a0->visibleRows == a0->entryCount) {
         return 0;
     }
 
-    sp58 = &a0->unk_18;
+    sp58 = &a0->window;
     StringTemplate *r5 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
     Window_FillTilemap(sp58, 0);
     int sp44 = 0;
     int sp40 = 0;
     u64 sp3c;
-    int sp18 = a0->unk_08;
-    int sp34 = sp18 + a0->unk_10;
+    int sp18 = a0->scroll;
+    int sp34 = sp18 + a0->visibleRows;
     int sp26c[30] = { 0 };
 
-    if (sp34 >= a0->unk_04) {
-        sp34 = a0->unk_04;
-        sp18 = a0->unk_04 - a0->unk_10;
+    if (sp34 >= a0->entryCount) {
+        sp34 = a0->entryCount;
+        sp18 = a0->entryCount - a0->visibleRows;
     }
 
-    u64 sp38 = a0->unk_28->unk_00[0].unk_08;
+    u64 sp38 = a0->config->entries[0].score;
     int sp60[] = { 0x10, 0xc, 0x14 };
     sp3c = sp38;
     sp26c[0] = 0;
 
     for (i = 1; i < sp60[a3]; i++) {
-        u64 r7 = a0->unk_28->unk_00[i].unk_08;
+        u64 r7 = a0->config->entries[i].score;
         if (r7 == sp3c) {
             sp26c[i] = sp40;
         } else {
@@ -1157,41 +1157,41 @@ int VsRecorderViewerList_UpdateRankingWindow(VsRecorderViewerListWindow *a0, VsR
     }
 
     for (i = sp18; i < sp34; i++) {
-        sp54 = MessageLoader_GetNewString(a1->unk_14.unk_34, 88 + a3);
+        sp54 = MessageLoader_GetNewString(a1->unk_14.messageLoader, 88 + a3);
         sp50 = String_Init(255, HEAP_ID_102);
         r7 = String_Init(255, HEAP_ID_102);
         sp48 = String_Init(255, HEAP_ID_102);
         switch (a3) {
         case 0:
-            int r1 = a0->unk_28->unk_00[i].unk_04;
-            sp4c = MessageLoader_GetNewString(a0->unk_34, r1);
+            int r1 = a0->config->entries[i].value;
+            sp4c = MessageLoader_GetNewString(a0->messageLoader, r1);
             StringTemplate_SetString(r5, 1, sp4c, 0, 1, GAME_LANGUAGE);
             break;
         case 1:
-            int sp30 = a0->unk_28->unk_00[i].unk_04;
+            int sp30 = a0->config->entries[i].value;
             sp4c = String_Init(255, HEAP_ID_102);
             StringTemplate_SetMonthName(r5, 1, sp30);
             break;
         case 2:
             charcode_t sp6c[255];
-            int sp2c = a0->unk_28->unk_00[i].unk_04;
+            int sp2c = a0->config->entries[i].value;
             sp4c = String_Init(255, HEAP_ID_102);
             MessageLoader_GetSpeciesName(sp2c, HEAP_ID_102, sp6c);
             String_CopyChars(sp4c, sp6c);
             StringTemplate_SetString(r5, 1, sp4c, 0, 1, GAME_LANGUAGE);
             break;
         }
-        u64 sp24 = a0->unk_28->unk_00[i].unk_08;
+        u64 sp24 = a0->config->entries[i].score;
         String_FormatU64(sp48, sp24, VsRecorderViewerList_CountDigits(sp24), PADDING_MODE_NONE, 1);
         String_FormatInt(sp50, sp26c[i] + 1, 2, PADDING_MODE_SPACES, 1);
         StringTemplate_SetString(r5, 0, sp50, 0, TRUE, GAME_LANGUAGE);
         StringTemplate_Format(r5, r7, sp54);
-        int yOffset = 16 * a0->unk_28->unk_08 * sp44;
+        int yOffset = 16 * a0->config->lineCount * sp44;
         Text_AddPrinterWithParamsAndColor(sp58, FONT_SYSTEM, r7, 0, yOffset, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
-        if (a0->unk_28->unk_08 == 2 && a4) {
+        if (a0->config->lineCount == 2 && a4) {
             StringTemplate_SetString(r5, 2, sp48, 0, 1, GAME_LANGUAGE);
             StringTemplate_Format(r5, r7, a4);
-            yOffset = (16 * a0->unk_28->unk_08 * sp44) + 16;
+            yOffset = (16 * a0->config->lineCount * sp44) + 16;
             Text_AddPrinterWithParamsAndColor(sp58, FONT_SYSTEM, r7, 0x10, yOffset, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
         }
         sp44++;
@@ -1205,7 +1205,7 @@ int VsRecorderViewerList_UpdateRankingWindow(VsRecorderViewerListWindow *a0, VsR
 
     Window_ScheduleCopyToVRAM(sp58);
     StringTemplate_Free(r5);
-    a0->unk_0C = a0->unk_08;
+    a0->lastDrawn = a0->scroll;
     return 0;
 }
 
@@ -1216,47 +1216,47 @@ int VsRecorderViewerList_UpdateRecordWindow(VsRecorderViewerListWindow *param0, 
     Window *v2;
     String *v3;
 
-    if (param0->unk_28->unk_28 != NULL) {
-        for (v0 = 0; v0 < param0->unk_10; v0++) {
-            if (TouchScreen_LocationPressed(&param0->unk_28->unk_28[v0])) {
+    if (param0->config->touchRects != NULL) {
+        for (v0 = 0; v0 < param0->visibleRows; v0++) {
+            if (TouchScreen_LocationPressed(&param0->config->touchRects[v0])) {
                 VsRecorderViewerList_PlayRingAnim(param1);
-                v1 = param0->unk_28->unk_00[param0->unk_08 + v0].unk_04;
+                v1 = param0->config->entries[param0->scroll + v0].value;
             }
         }
     }
 
-    if (param0->unk_08 == param0->unk_0C) {
+    if (param0->scroll == param0->lastDrawn) {
         return v1;
     }
 
-    if (param0->unk_10 == param0->unk_04) {
+    if (param0->visibleRows == param0->entryCount) {
         return v1;
     }
 
-    v2 = &param0->unk_18;
+    v2 = &param0->window;
 
     Window_FillTilemap(v2, 0x0);
 
     {
         int v4 = 0;
-        int v5 = param0->unk_08;
-        int v6 = v5 + param0->unk_10;
+        int v5 = param0->scroll;
+        int v6 = v5 + param0->visibleRows;
 
-        if (v6 >= param0->unk_04) {
-            v5 = param0->unk_04 - param0->unk_10;
-            v6 = param0->unk_04;
+        if (v6 >= param0->entryCount) {
+            v5 = param0->entryCount - param0->visibleRows;
+            v6 = param0->entryCount;
         }
 
         for (v0 = v5; v0 < v6; v0++) {
-            v3 = MessageLoader_GetNewString(param0->unk_34, param0->unk_28->unk_00[v0].unk_00);
-            Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, v3, 0, (param0->unk_28->unk_08 * 16) * v4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
+            v3 = MessageLoader_GetNewString(param0->messageLoader, param0->config->entries[v0].messageID);
+            Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, v3, 0, (param0->config->lineCount * 16) * v4, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
             String_Free(v3);
             v4++;
         }
     }
 
     Window_CopyToVRAM(v2);
-    param0->unk_0C = param0->unk_08;
+    param0->lastDrawn = param0->scroll;
 
     return v1;
 }
@@ -1268,15 +1268,15 @@ int VsRecorderViewerList_UpdateSpeciesWindow(VsRecorderViewerListWindow *param0,
     Window *v2;
     String *v3;
 
-    if (param0->unk_38.unk_00 == param0->unk_0C) {
+    if (param0->scrollState.selection == param0->lastDrawn) {
         return v1;
     }
 
-    if (param0->unk_10 == param0->unk_04) {
+    if (param0->visibleRows == param0->entryCount) {
         return v1;
     }
 
-    v2 = &param0->unk_18;
+    v2 = &param0->window;
     Window_FillTilemap(v2, 0x0);
 
     {
@@ -1289,21 +1289,21 @@ int VsRecorderViewerList_UpdateSpeciesWindow(VsRecorderViewerListWindow *param0,
         int v10;
         int v11;
 
-        if (param0->unk_38.unk_04 >= param0->unk_38.unk_08) {
-            v5 = param0->unk_38.unk_00 - param0->unk_38.unk_08;
+        if (param0->scrollState.scroll >= param0->scrollState.scrollMargin) {
+            v5 = param0->scrollState.selection - param0->scrollState.scrollMargin;
 
-            if (param0->unk_38.unk_00 >= (param0->unk_04 - (param0->unk_38.unk_08 + 1))) {
-                v5 = param0->unk_04 - param0->unk_10;
+            if (param0->scrollState.selection >= (param0->entryCount - (param0->scrollState.scrollMargin + 1))) {
+                v5 = param0->entryCount - param0->visibleRows;
             }
         }
 
-        for (v4 = 0; v4 < param0->unk_10; v4++) {
+        for (v4 = 0; v4 < param0->visibleRows; v4++) {
             v7 = String_Init(255, HEAP_ID_102);
             v8 = String_Init(255, HEAP_ID_102);
-            v9 = MessageLoader_GetNewString(param1->unk_14.unk_34, 99);
+            v9 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 99);
 
             String_FormatInt(v8, (v5 + v4 + 1), 2, 1, 1);
-            String_CopyChars(v7, param1->unk_8B4.unk_1D58[v5 + v4]->profile.name);
+            String_CopyChars(v7, param1->unk_8B4.records[v5 + v4]->profile.name);
             VsRecorderViewerList_CheckNameChars(param1, v7);
 
             v10 = Font_CalcStringWidth(FONT_SYSTEM, v8, 0);
@@ -1318,7 +1318,7 @@ int VsRecorderViewerList_UpdateSpeciesWindow(VsRecorderViewerListWindow *param0,
     }
 
     Window_CopyToVRAM(v2);
-    param0->unk_0C = param0->unk_38.unk_00;
+    param0->lastDrawn = param0->scrollState.selection;
 
     return v1;
 }
@@ -1329,14 +1329,14 @@ void VsRecorderViewerList_MoveSelection(VsRecorderViewerListWindow *param0, s16 
     int v1 = 0xFF;
 
     if (param1 < 0) {
-        if (param0->unk_38.unk_00 > 0) {
-            param0->unk_38.unk_00--;
+        if (param0->scrollState.selection > 0) {
+            param0->scrollState.selection--;
             v1 = 0;
             Sound_PlayEffect(SEQ_SE_PL_BUTTON_sseq);
         }
     } else if (param1 > 0) {
-        if (param0->unk_38.unk_00 < param0->unk_04 - 1) {
-            param0->unk_38.unk_00++;
+        if (param0->scrollState.selection < param0->entryCount - 1) {
+            param0->scrollState.selection++;
             v1 = 1;
             Sound_PlayEffect(SEQ_SE_PL_BUTTON_sseq);
         }
@@ -1344,29 +1344,29 @@ void VsRecorderViewerList_MoveSelection(VsRecorderViewerListWindow *param0, s16 
 
     switch (v1) {
     case 0:
-        if (param0->unk_38.unk_00 < param0->unk_38.unk_0C) {
-            v0 = param0->unk_38.unk_00;
-        } else if (param0->unk_38.unk_00 >= (param0->unk_04 - param0->unk_38.unk_0C)) {
-            v0 = param0->unk_38.unk_0C + 1;
+        if (param0->scrollState.selection < param0->scrollState.scrollMarginAlt) {
+            v0 = param0->scrollState.selection;
+        } else if (param0->scrollState.selection >= (param0->entryCount - param0->scrollState.scrollMarginAlt)) {
+            v0 = param0->scrollState.scrollMarginAlt + 1;
 
-            if (param0->unk_38.unk_00 >= (param0->unk_04 - param0->unk_38.unk_0C)) {
-                v0 += (param0->unk_38.unk_00 - (param0->unk_04 - param0->unk_38.unk_0C));
+            if (param0->scrollState.selection >= (param0->entryCount - param0->scrollState.scrollMarginAlt)) {
+                v0 += (param0->scrollState.selection - (param0->entryCount - param0->scrollState.scrollMarginAlt));
             }
         } else {
-            v0 = param0->unk_38.unk_0C;
+            v0 = param0->scrollState.scrollMarginAlt;
 
-            if (param0->unk_38.unk_00 <= param0->unk_38.unk_0C) {
-                v0 += (param0->unk_38.unk_00 - param0->unk_38.unk_0C);
+            if (param0->scrollState.selection <= param0->scrollState.scrollMarginAlt) {
+                v0 += (param0->scrollState.selection - param0->scrollState.scrollMarginAlt);
             }
         }
         break;
     case 1:
-        if (param0->unk_38.unk_00 <= param0->unk_38.unk_08) {
-            v0 = param0->unk_38.unk_00;
+        if (param0->scrollState.selection <= param0->scrollState.scrollMargin) {
+            v0 = param0->scrollState.selection;
         } else {
-            v0 = param0->unk_38.unk_08;
-            if (param0->unk_38.unk_00 >= (param0->unk_04 - param0->unk_38.unk_08)) {
-                v0 += (param0->unk_38.unk_00 - (param0->unk_04 - param0->unk_38.unk_08 - 1));
+            v0 = param0->scrollState.scrollMargin;
+            if (param0->scrollState.selection >= (param0->entryCount - param0->scrollState.scrollMargin)) {
+                v0 += (param0->scrollState.selection - (param0->entryCount - param0->scrollState.scrollMargin - 1));
             }
         }
         break;
@@ -1377,44 +1377,44 @@ void VsRecorderViewerList_MoveSelection(VsRecorderViewerListWindow *param0, s16 
     }
 
     if (v1 != 0xFF) {
-        param0->unk_38.unk_04 = v0;
+        param0->scrollState.scroll = v0;
     }
 
     {
         s16 v2 = 0;
 
-        if (param0->unk_38.unk_04 >= param0->unk_38.unk_08) {
-            v2 = param0->unk_38.unk_00 - param0->unk_38.unk_08;
+        if (param0->scrollState.scroll >= param0->scrollState.scrollMargin) {
+            v2 = param0->scrollState.selection - param0->scrollState.scrollMargin;
 
-            if (param0->unk_38.unk_00 >= (param0->unk_04 - (param0->unk_38.unk_08 + 1))) {
-                v2 = param0->unk_04 - param0->unk_10;
+            if (param0->scrollState.selection >= (param0->entryCount - (param0->scrollState.scrollMargin + 1))) {
+                v2 = param0->entryCount - param0->visibleRows;
             }
         }
 
-        param0->unk_08 = v2;
+        param0->scroll = v2;
         VsRecorderViewerList_UpdateArrowSpritesForScroll(param0);
     }
 }
 
 void VsRecorderViewerList_ScrollList(VsRecorderViewerListWindow *param0, s16 param1)
 {
-    s16 v0 = param0->unk_08;
+    s16 v0 = param0->scroll;
 
-    param0->unk_08 += param1;
+    param0->scroll += param1;
 
-    if (param0->unk_08 < 0) {
-        param0->unk_08 = 0;
+    if (param0->scroll < 0) {
+        param0->scroll = 0;
     }
 
-    if (param0->unk_10 == param0->unk_04) {
-        param0->unk_08 = 0;
+    if (param0->visibleRows == param0->entryCount) {
+        param0->scroll = 0;
     }
 
-    if (param0->unk_08 + param0->unk_10 > param0->unk_04) {
-        param0->unk_08 = param0->unk_04 - param0->unk_10;
+    if (param0->scroll + param0->visibleRows > param0->entryCount) {
+        param0->scroll = param0->entryCount - param0->visibleRows;
     }
 
-    if (v0 != param0->unk_08) {
+    if (v0 != param0->scroll) {
         Sound_PlayEffect(SEQ_SE_PL_BUTTON_sseq);
     }
 
@@ -1423,8 +1423,8 @@ void VsRecorderViewerList_ScrollList(VsRecorderViewerListWindow *param0, s16 par
 
 void VsRecorderViewerList_FreeWindow(VsRecorderViewerListWindow *param0)
 {
-    Window_ClearAndCopyToVRAM(&param0->unk_18);
-    Window_Remove(&param0->unk_18);
+    Window_ClearAndCopyToVRAM(&param0->window);
+    Window_Remove(&param0->window);
 }
 
 void VsRecorderViewerList_ResetWindow(VsRecorderViewerListWindow *param0)
@@ -1436,11 +1436,11 @@ void VsRecorderViewerList_LoadArrowSprites(VsRecorderViewerListWindow *param0, V
 {
     ManagedSprite *v0;
     SpriteTemplate v1;
-    NARC *v2 = param1->unk_14.unk_00;
-    BgConfig *v3 = param1->unk_14.unk_10;
-    SpriteSystem *v4 = param1->unk_14.unk_04;
-    SpriteManager *v5 = param1->unk_14.unk_08;
-    PaletteData *v6 = param1->unk_14.unk_14;
+    NARC *v2 = param1->unk_14.narc;
+    BgConfig *v3 = param1->unk_14.bgConfig;
+    SpriteSystem *v4 = param1->unk_14.spriteSystem;
+    SpriteManager *v5 = param1->unk_14.spriteManager;
+    PaletteData *v6 = param1->unk_14.palette;
 
     SpriteSystem_LoadCharResObjFromOpenNarc(v4, v5, v2, 127, FALSE, param2, 200000);
     SpriteSystem_LoadCellResObjFromOpenNarc(v4, v5, v2, 126, FALSE, 200000);
@@ -1467,23 +1467,23 @@ void VsRecorderViewerList_LoadArrowSprites(VsRecorderViewerListWindow *param0, V
         v1.resources[1] = 10000;
     }
 
-    param0->unk_2C[0] = SpriteSystem_NewSprite(param1->unk_14.unk_04, param1->unk_14.unk_08, &v1);
-    param0->unk_2C[1] = SpriteSystem_NewSprite(param1->unk_14.unk_04, param1->unk_14.unk_08, &v1);
+    param0->arrowSprites[0] = SpriteSystem_NewSprite(param1->unk_14.spriteSystem, param1->unk_14.spriteManager, &v1);
+    param0->arrowSprites[1] = SpriteSystem_NewSprite(param1->unk_14.spriteSystem, param1->unk_14.spriteManager, &v1);
 
-    ManagedSprite_SetExplicitPalette(param0->unk_2C[0], 2);
-    ManagedSprite_SetExplicitPalette(param0->unk_2C[1], 2);
-    ManagedSprite_SetAnim(param0->unk_2C[0], 0);
-    ManagedSprite_SetAnim(param0->unk_2C[1], 0);
-    ManagedSprite_TickFrame(param0->unk_2C[0]);
-    ManagedSprite_TickFrame(param0->unk_2C[1]);
-    ManagedSprite_SetFlipMode(param0->unk_2C[1], 2);
+    ManagedSprite_SetExplicitPalette(param0->arrowSprites[0], 2);
+    ManagedSprite_SetExplicitPalette(param0->arrowSprites[1], 2);
+    ManagedSprite_SetAnim(param0->arrowSprites[0], 0);
+    ManagedSprite_SetAnim(param0->arrowSprites[1], 0);
+    ManagedSprite_TickFrame(param0->arrowSprites[0]);
+    ManagedSprite_TickFrame(param0->arrowSprites[1]);
+    ManagedSprite_SetFlipMode(param0->arrowSprites[1], 2);
 
     if (param2 == 1) {
-        ManagedSprite_SetPositionXY(param0->unk_2C[0], 256 / 2, 24);
-        ManagedSprite_SetPositionXY(param0->unk_2C[1], 256 / 2, 120);
+        ManagedSprite_SetPositionXY(param0->arrowSprites[0], 256 / 2, 24);
+        ManagedSprite_SetPositionXY(param0->arrowSprites[1], 256 / 2, 120);
     } else {
-        ManagedSprite_SetPositionXY(param0->unk_2C[0], 256 / 2, 24 + 64);
-        ManagedSprite_SetPositionXY(param0->unk_2C[1], 256 / 2, 120 + 64);
+        ManagedSprite_SetPositionXY(param0->arrowSprites[0], 256 / 2, 24 + 64);
+        ManagedSprite_SetPositionXY(param0->arrowSprites[1], 256 / 2, 120 + 64);
     }
 
     VsRecorderViewerList_UpdateArrowSprites(param0);
@@ -1491,56 +1491,56 @@ void VsRecorderViewerList_LoadArrowSprites(VsRecorderViewerListWindow *param0, V
 
 void VsRecorderViewerList_SetArrowSpritesPosition(VsRecorderViewerListWindow *param0, s16 param1, s16 param2)
 {
-    ManagedSprite_SetPositionXY(param0->unk_2C[0], 256 / 2, param1);
-    ManagedSprite_SetPositionXY(param0->unk_2C[1], 256 / 2, param2);
+    ManagedSprite_SetPositionXY(param0->arrowSprites[0], 256 / 2, param1);
+    ManagedSprite_SetPositionXY(param0->arrowSprites[1], 256 / 2, param2);
 }
 
 void VsRecorderViewerList_UpdateArrowSprites(VsRecorderViewerListWindow *param0)
 {
-    ManagedSprite_SetDrawFlag(param0->unk_2C[0], 1);
-    ManagedSprite_SetDrawFlag(param0->unk_2C[1], 1);
+    ManagedSprite_SetDrawFlag(param0->arrowSprites[0], 1);
+    ManagedSprite_SetDrawFlag(param0->arrowSprites[1], 1);
 
-    if (param0->unk_08 == 0) {
-        ManagedSprite_SetDrawFlag(param0->unk_2C[0], 0);
+    if (param0->scroll == 0) {
+        ManagedSprite_SetDrawFlag(param0->arrowSprites[0], 0);
     }
 
-    if (param0->unk_08 + param0->unk_10 >= param0->unk_04) {
-        ManagedSprite_SetDrawFlag(param0->unk_2C[1], 0);
+    if (param0->scroll + param0->visibleRows >= param0->entryCount) {
+        ManagedSprite_SetDrawFlag(param0->arrowSprites[1], 0);
     }
 
-    ManagedSprite_TickTwoFrames(param0->unk_2C[0]);
-    ManagedSprite_TickTwoFrames(param0->unk_2C[1]);
+    ManagedSprite_TickTwoFrames(param0->arrowSprites[0]);
+    ManagedSprite_TickTwoFrames(param0->arrowSprites[1]);
 }
 
 void VsRecorderViewerList_UpdateArrowSpritesForScroll(VsRecorderViewerListWindow *param0)
 {
-    ManagedSprite_SetDrawFlag(param0->unk_2C[0], 1);
-    ManagedSprite_SetDrawFlag(param0->unk_2C[1], 1);
+    ManagedSprite_SetDrawFlag(param0->arrowSprites[0], 1);
+    ManagedSprite_SetDrawFlag(param0->arrowSprites[1], 1);
 
-    if (param0->unk_08 == 0) {
-        ManagedSprite_SetDrawFlag(param0->unk_2C[0], 0);
+    if (param0->scroll == 0) {
+        ManagedSprite_SetDrawFlag(param0->arrowSprites[0], 0);
     }
 
-    if (param0->unk_08 + param0->unk_10 >= param0->unk_04) {
-        ManagedSprite_SetDrawFlag(param0->unk_2C[1], 0);
+    if (param0->scroll + param0->visibleRows >= param0->entryCount) {
+        ManagedSprite_SetDrawFlag(param0->arrowSprites[1], 0);
     }
 
-    if (param0->unk_10 >= param0->unk_04) {
-        ManagedSprite_SetDrawFlag(param0->unk_2C[0], 0);
-        ManagedSprite_SetDrawFlag(param0->unk_2C[1], 0);
+    if (param0->visibleRows >= param0->entryCount) {
+        ManagedSprite_SetDrawFlag(param0->arrowSprites[0], 0);
+        ManagedSprite_SetDrawFlag(param0->arrowSprites[1], 0);
     }
 
-    ManagedSprite_TickTwoFrames(param0->unk_2C[0]);
-    ManagedSprite_TickTwoFrames(param0->unk_2C[1]);
+    ManagedSprite_TickTwoFrames(param0->arrowSprites[0]);
+    ManagedSprite_TickTwoFrames(param0->arrowSprites[1]);
 }
 
 void VsRecorderViewerList_FreeArrowSprites(VsRecorderViewerListWindow *param0, VsRecorderState *param1)
 {
-    SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 200000);
-    SpriteManager_UnloadCellObjById(param1->unk_14.unk_08, 200000);
-    SpriteManager_UnloadAnimObjById(param1->unk_14.unk_08, 200000);
-    Sprite_DeleteAndFreeResources(param0->unk_2C[0]);
-    Sprite_DeleteAndFreeResources(param0->unk_2C[1]);
+    SpriteManager_UnloadCharObjById(param1->unk_14.spriteManager, 200000);
+    SpriteManager_UnloadCellObjById(param1->unk_14.spriteManager, 200000);
+    SpriteManager_UnloadAnimObjById(param1->unk_14.spriteManager, 200000);
+    Sprite_DeleteAndFreeResources(param0->arrowSprites[0]);
+    Sprite_DeleteAndFreeResources(param0->arrowSprites[1]);
 }
 
 static ManagedSprite *VsRecorderViewerList_NewScrollIndicatorSprite(VsRecorderViewerListScrollBar *param0, VsRecorderState *param1, int param2, int param3)
@@ -1569,7 +1569,7 @@ static ManagedSprite *VsRecorderViewerList_NewScrollIndicatorSprite(VsRecorderVi
         v1.resources[1] = 10000;
     }
 
-    v0 = SpriteSystem_NewSprite(param1->unk_14.unk_04, param1->unk_14.unk_08, &v1);
+    v0 = SpriteSystem_NewSprite(param1->unk_14.spriteSystem, param1->unk_14.spriteManager, &v1);
     ManagedSprite_SetExplicitPalette(v0, 2);
     ManagedSprite_SetAnim(v0, param3);
     ManagedSprite_TickFrame(v0);
@@ -1579,8 +1579,8 @@ static ManagedSprite *VsRecorderViewerList_NewScrollIndicatorSprite(VsRecorderVi
 
 static void VsRecorderViewerList_FreeScrollIndicatorSprites(VsRecorderViewerListScrollBar *param0)
 {
-    Sprite_DeleteAndFreeResources(param0->unk_18[0]);
-    Sprite_DeleteAndFreeResources(param0->unk_18[1]);
+    Sprite_DeleteAndFreeResources(param0->sprites[0]);
+    Sprite_DeleteAndFreeResources(param0->sprites[1]);
 }
 
 void VsRecorderViewerList_InitScrollBar(VsRecorderViewerListScrollBar *param0, VsRecorderState *param1)
@@ -1590,11 +1590,11 @@ void VsRecorderViewerList_InitScrollBar(VsRecorderViewerListScrollBar *param0, V
 
 void VsRecorderViewerList_InitScrollBarWithAnim(VsRecorderViewerListScrollBar *param0, VsRecorderState *param1, int param2)
 {
-    param0->unk_18[0] = VsRecorderViewerList_NewScrollIndicatorSprite(param0, param1, 2, param2);
-    param0->unk_18[1] = VsRecorderViewerList_NewScrollIndicatorSprite(param0, param1, 2, param2);
+    param0->sprites[0] = VsRecorderViewerList_NewScrollIndicatorSprite(param0, param1, 2, param2);
+    param0->sprites[1] = VsRecorderViewerList_NewScrollIndicatorSprite(param0, param1, 2, param2);
 
-    ManagedSprite_SetPositionXY(param0->unk_18[0], 0 + 24, 72 + 64);
-    ManagedSprite_SetPositionXY(param0->unk_18[1], 256 - 24, 72 + 64);
+    ManagedSprite_SetPositionXY(param0->sprites[0], 0 + 24, 72 + 64);
+    ManagedSprite_SetPositionXY(param0->sprites[1], 256 - 24, 72 + 64);
 }
 
 void VsRecorderViewerList_ResetScrollBar(VsRecorderViewerListScrollBar *param0)
@@ -1609,17 +1609,17 @@ void VsRecorderViewerList_FreeScrollBar(VsRecorderViewerListScrollBar *param0)
 
 void VsRecorderViewerList_UpdateScrollDirection(VsRecorderViewerListScrollBar *param0, u32 param1)
 {
-    s32 v0 = param1 - param0->unk_0C;
+    s32 v0 = param1 - param0->holdY;
 
     if ((v0 * v0) >= (16 * 16)) {
         if (v0 < 0) {
-            param0->unk_10 = -1;
+            param0->direction = -1;
         } else {
-            param0->unk_10 = +1;
+            param0->direction = +1;
         }
-        param0->unk_0C = param1;
+        param0->holdY = param1;
     } else {
-        param0->unk_10 = 0;
+        param0->direction = 0;
     }
 }
 
@@ -1630,17 +1630,17 @@ static const TouchScreenHitTable sVsRecorderViewerListScrollHitTables[] = {
 
 void VsRecorderViewerList_UpdateScrollBarVisibility(VsRecorderViewerListScrollBar *param0, VsRecorderViewerListWindow *param1)
 {
-    if (param1->unk_48) {
-        if (param1->unk_04 < 2) {
-            param0->unk_14 = 0;
+    if (param1->twoColumn) {
+        if (param1->entryCount < 2) {
+            param0->visible = 0;
         } else {
-            param0->unk_14 = 1;
+            param0->visible = 1;
         }
     } else {
-        if (param1->unk_10 >= param1->unk_04) {
-            param0->unk_14 = 0;
+        if (param1->visibleRows >= param1->entryCount) {
+            param0->visible = 0;
         } else {
-            param0->unk_14 = 1;
+            param0->visible = 1;
         }
     }
 }
@@ -1654,17 +1654,17 @@ void VsRecorderViewerList_HandleScrollBarInput(VsRecorderViewerListScrollBar *pa
 
     v3 = TouchScreen_GetHoldState(&v0, &v1);
 
-    if (param0->unk_14) {
-        ManagedSprite_TickTwoFrames(param0->unk_18[0]);
-        ManagedSprite_TickTwoFrames(param0->unk_18[1]);
+    if (param0->visible) {
+        ManagedSprite_TickTwoFrames(param0->sprites[0]);
+        ManagedSprite_TickTwoFrames(param0->sprites[1]);
     }
 
-    if ((param0->unk_04 == 0) && (v3 == 0)) {
-        param0->unk_04 = 0;
-        param0->unk_00 = 0;
-        param0->unk_08 = 0;
-        param0->unk_0C = 0;
-        param0->unk_10 = 0;
+    if ((param0->active == 0) && (v3 == 0)) {
+        param0->active = 0;
+        param0->holdTimer = 0;
+        param0->holdX = 0;
+        param0->holdY = 0;
+        param0->direction = 0;
         return;
     }
 
@@ -1674,21 +1674,21 @@ void VsRecorderViewerList_HandleScrollBarInput(VsRecorderViewerListScrollBar *pa
     }
 
     if (v4) {
-        if (!param0->unk_04) {
-            param0->unk_04 = 1;
-            param0->unk_08 = v0;
-            param0->unk_0C = v1;
-            param0->unk_00 = 2;
+        if (!param0->active) {
+            param0->active = 1;
+            param0->holdX = v0;
+            param0->holdY = v1;
+            param0->holdTimer = 2;
         } else {
-            param0->unk_00--;
+            param0->holdTimer--;
             VsRecorderViewerList_UpdateScrollDirection(param0, v1);
         }
     } else {
-        if (param0->unk_04) {
-            param0->unk_04 = 0;
-            param0->unk_00 = 0;
-            param0->unk_08 = 0;
-            param0->unk_0C = 0;
+        if (param0->active) {
+            param0->active = 0;
+            param0->holdTimer = 0;
+            param0->holdX = 0;
+            param0->holdY = 0;
         }
     }
 }
@@ -1706,9 +1706,9 @@ void VsRecorderViewerList_StoreBattleRecording(VsRecorderState *param0)
     BattleRecording_New(param0->saveData, HEAP_ID_119, &v0);
 
     {
-        PlayerProfile *v1 = (PlayerProfile *)(&param0->unk_8B4.unk_00->profile);
-        BattleRecordingSummary *v2 = (BattleRecordingSummary *)(&param0->unk_8B4.unk_00->data);
-        BattleRecordingData *v3 = (BattleRecordingData *)(&param0->unk_8B4.unk_00->extra);
+        PlayerProfile *v1 = (PlayerProfile *)(&param0->unk_8B4.record->profile);
+        BattleRecordingSummary *v2 = (BattleRecordingSummary *)(&param0->unk_8B4.record->data);
+        BattleRecordingData *v3 = (BattleRecordingData *)(&param0->unk_8B4.record->extra);
         BattleRecording_Store(v1, v2, v3, NULL, param0->saveData);
     }
 }
@@ -1717,30 +1717,30 @@ static void VsRecorderViewerList_Task_UpdateNetwork(SysTask *param0, void *param
 {
     VsRecorderViewerListNetworkTask *v0 = param1;
 
-    VsRecorderViewerMain_SetWhichScreenIs3D(v0->unk_00);
+    VsRecorderViewerMain_SetWhichScreenIs3D(v0->screen3D);
     NetworkIcon_Update();
-    v0->unk_04 = 1;
+    v0->done = 1;
     SysTask_Done(param0);
 }
 
 void VsRecorderViewerList_StartNetworkTask(VsRecorderState *param0, int param1)
 {
-    param0->unk_52C.unk_00 = param1;
-    param0->unk_52C.unk_04 = 0;
+    param0->unk_52C.screen3D = param1;
+    param0->unk_52C.done = 0;
 
     SysTask_ExecuteOnVBlank(VsRecorderViewerList_Task_UpdateNetwork, &param0->unk_52C, 4);
 }
 
 BOOL VsRecorderViewerList_IsNetworkTaskDone(VsRecorderState *param0)
 {
-    return param0->unk_52C.unk_04;
+    return param0->unk_52C.done;
 }
 
 static void VsRecorderViewerList_Task_DrawSprites(SysTask *param0, void *param1)
 {
     VsRecorderState *v0 = param1;
 
-    if (v0->unk_14.unk_08 == NULL) {
+    if (v0->unk_14.spriteManager == NULL) {
         return;
     }
 
@@ -1748,17 +1748,17 @@ static void VsRecorderViewerList_Task_DrawSprites(SysTask *param0, void *param1)
         return;
     }
 
-    if (v0->unk_14.unk_510 == 1) {
+    if (v0->unk_14.drawing == 1) {
         return;
     }
 
-    v0->unk_14.unk_510 = 1;
+    v0->unk_14.drawing = 1;
 
-    PokemonSpriteManager_UpdateCharAndPltt(v0->unk_14.unk_50);
-    SpriteSystem_DrawSprites(v0->unk_14.unk_08);
+    PokemonSpriteManager_UpdateCharAndPltt(v0->unk_14.pokemonSpriteManager);
+    SpriteSystem_DrawSprites(v0->unk_14.spriteManager);
     SpriteSystem_TransferOam();
 
-    v0->unk_14.unk_510 = 0;
+    v0->unk_14.drawing = 0;
 }
 
 void VsRecorderViewerList_StartDrawTask(VsRecorderState *param0)
@@ -1787,18 +1787,18 @@ void VsRecorderViewerList_LoadRecordList(void *param0, const VsRecorderViewerTra
     VsRecorderState *v0 = param0;
     VsRecorderViewerListRecordStore *v1 = &v0->unk_8B4;
 
-    if (param1->unk_00 == 1) {
+    if (param1->done == 1) {
         (void)0;
     } else {
-        v1->unk_3900 = GlobalTerminalGds_GetRecordList(VsRecorderViewerTransfer_GetTransfer(v0), v1->unk_1D58, 30);
+        v1->recordCount = GlobalTerminalGds_GetRecordList(VsRecorderViewerTransfer_GetTransfer(v0), v1->records, 30);
 
         {
             int v2;
 
-            for (v2 = 0; v2 < v1->unk_3900; v2++) {
-                GF_ASSERT(v0->unk_8B4.unk_1D58[v2] != NULL);
-                MI_CpuCopy8(v0->unk_8B4.unk_1D58[v2], &v0->unk_8B4.unk_1DD0[v2], sizeof(GlobalTerminalRecord));
-                v0->unk_8B4.unk_3904[v2] = v0->unk_8B4.unk_1D58[v2]->data.isSaved;
+            for (v2 = 0; v2 < v1->recordCount; v2++) {
+                GF_ASSERT(v0->unk_8B4.records[v2] != NULL);
+                MI_CpuCopy8(v0->unk_8B4.records[v2], &v0->unk_8B4.recordCopies[v2], sizeof(GlobalTerminalRecord));
+                v0->unk_8B4.recordFlags[v2] = v0->unk_8B4.records[v2]->data.isSaved;
             }
         }
     }
@@ -1876,9 +1876,9 @@ void VsRecorderViewerList_FreeBattleRecordings(VsRecorderState *param0)
 
 void VsRecorderViewerList_LoadIconResources(VsRecorderState *param0)
 {
-    SpriteSystem *v0 = param0->unk_14.unk_04;
-    SpriteManager *v1 = param0->unk_14.unk_08;
-    PaletteData *v2 = param0->unk_14.unk_14;
+    SpriteSystem *v0 = param0->unk_14.spriteSystem;
+    SpriteManager *v1 = param0->unk_14.spriteManager;
+    PaletteData *v2 = param0->unk_14.palette;
 
     SpriteSystem_LoadPaletteBuffer(v2, 2, v0, v1, 19, PokeIconPalettesFileIndex(), 0, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 100000);
     SpriteSystem_LoadCellResObj(v0, v1, 19, PokeIcon64KCellsFileIndex(), 0, 100000);
@@ -1887,9 +1887,9 @@ void VsRecorderViewerList_LoadIconResources(VsRecorderState *param0)
 
 void VsRecorderViewerList_FreeIconResources(VsRecorderState *param0)
 {
-    SpriteManager_UnloadPlttObjById(param0->unk_14.unk_08, 100000);
-    SpriteManager_UnloadCellObjById(param0->unk_14.unk_08, 100000);
-    SpriteManager_UnloadAnimObjById(param0->unk_14.unk_08, 100000);
+    SpriteManager_UnloadPlttObjById(param0->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadCellObjById(param0->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadAnimObjById(param0->unk_14.spriteManager, 100000);
 }
 
 NARC *VsRecorderViewerList_OpenIconNarc(int param0)
@@ -1912,9 +1912,9 @@ ManagedSprite *VsRecorderViewerList_NewPokemonIconSprite(VsRecorderState *param0
     SpriteTemplate v4;
     int v5;
 
-    v1 = param0->unk_14.unk_04;
-    v2 = param0->unk_14.unk_08;
-    v3 = param0->unk_14.unk_14;
+    v1 = param0->unk_14.spriteSystem;
+    v2 = param0->unk_14.spriteManager;
+    v3 = param0->unk_14.palette;
 
     if (param3 == 0) {
         return NULL;
@@ -1956,7 +1956,7 @@ void VsRecorderViewerList_FreePokemonIconSprite(VsRecorderState *param0, int par
         return;
     }
 
-    SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 100000 + param1);
+    SpriteManager_UnloadCharObjById(param0->unk_14.spriteManager, 100000 + param1);
     Sprite_DeleteAndFreeResources(param2);
 }
 
@@ -1998,11 +1998,11 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
                 break;
             }
 
-            v2 = &param0->unk_3C[v0];
-            v3 = MessageLoader_GetNewString(param1->unk_14.unk_34, v5[v0]);
+            v2 = &param0->windows[v0];
+            v3 = MessageLoader_GetNewString(param1->unk_14.messageLoader, v5[v0]);
 
             Window_Init(v2);
-            Window_Add(param1->unk_14.unk_10, v2, 2, v4[v0][0], v4[v0][1], v4[v0][2], v4[v0][3], 14, v1);
+            Window_Add(param1->unk_14.bgConfig, v2, 2, v4[v0][0], v4[v0][1], v4[v0][2], v4[v0][3], 14, v1);
             Window_FillTilemap(v2, 0x0);
             Text_AddPrinterWithParamsAndColor(v2, FONT_SYSTEM, v3, VsRecorderViewerList_CalcCenteredTextX(v2, v3), 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
             Window_ScheduleCopyToVRAM(v2);
@@ -2021,13 +2021,13 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
         Window *v10;
         PlayerProfile *v11;
 
-        v11 = param0->unk_00;
+        v11 = param0->profile;
         v9 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
 
-        v10 = &param0->unk_3C[0];
+        v10 = &param0->windows[0];
         v6 = PlayerProfile_GetName(v11, HEAP_ID_102);
         VsRecorderViewerList_CheckNameChars(param1, v6);
-        v7 = MessageLoader_GetNewString(param1->unk_14.unk_34, 7);
+        v7 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 7);
         v8 = String_Init(255, HEAP_ID_102);
 
         StringTemplate_SetString(v9, 0, v6, 0, 1, GAME_LANGUAGE);
@@ -2041,10 +2041,10 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
         StringTemplate_ClearArgs(v9);
 
         {
-            int v12 = BattleRecording_GetSummaryValue(param0->unk_04, 3, 0);
+            int v12 = BattleRecording_GetSummaryValue(param0->summary, 3, 0);
 
-            v10 = &param0->unk_3C[1];
-            v8 = MessageLoader_GetNewString(param1->unk_14.unk_34, 132 + v12);
+            v10 = &param0->windows[1];
+            v8 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 132 + v12);
 
             Window_FillTilemap(v10, 0x0);
             Text_AddPrinterWithParamsAndColor(v10, FONT_SYSTEM, v8, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
@@ -2054,12 +2054,12 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
         }
 
         {
-            int v13 = BattleRecording_GetSummaryValue(param0->unk_04, 2, 0);
+            int v13 = BattleRecording_GetSummaryValue(param0->summary, 2, 0);
 
             if (v13 != 0) {
-                v10 = &param0->unk_3C[2];
+                v10 = &param0->windows[2];
                 v6 = String_Init(255, HEAP_ID_102);
-                v7 = MessageLoader_GetNewString(param1->unk_14.unk_34, 9);
+                v7 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 9);
                 v8 = String_Init(255, HEAP_ID_102);
 
                 String_FormatInt(v6, v13, 4, 0, 1);
@@ -2073,21 +2073,21 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
                 String_Free(v8);
                 StringTemplate_ClearArgs(v9);
             } else {
-                v10 = &param0->unk_3C[3];
+                v10 = &param0->windows[3];
                 Window_FillTilemap(v10, 0x0);
                 Window_ScheduleCopyToVRAM(v10);
             }
         }
 
         {
-            u64 v14 = BattleRecording_GetSummaryValue(param0->unk_04, 4, 0);
+            u64 v14 = BattleRecording_GetSummaryValue(param0->summary, 4, 0);
             u64 v15 = v14;
             u32 v16[3];
             String *v17 = String_Init(255, HEAP_ID_102);
             String *v18 = String_Init(255, HEAP_ID_102);
             String *v19 = String_Init(255, HEAP_ID_102);
 
-            v10 = &param0->unk_3C[4];
+            v10 = &param0->windows[4];
             v16[0] = v15 % 100000;
             v15 /= 100000;
             v16[1] = v15 % 100000;
@@ -2098,9 +2098,9 @@ static void VsRecorderViewerList_InitSummaryWindows(VsRecorderViewerSummaryPanel
                 int v20 = (v16[2] / 10) % 10;
 
                 if ((v20 == 0) && (v14 != 0)) {
-                    v7 = MessageLoader_GetNewString(param1->unk_14.unk_34, 12);
+                    v7 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 12);
                 } else {
-                    v7 = MessageLoader_GetNewString(param1->unk_14.unk_34, 11);
+                    v7 = MessageLoader_GetNewString(param1->unk_14.messageLoader, 11);
                 }
             }
 
@@ -2133,8 +2133,8 @@ static void VsRecorderViewerList_FreeSummaryWindows(VsRecorderViewerSummaryPanel
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        Window_ClearAndCopyToVRAM(&param0->unk_3C[v0]);
-        Window_Remove(&param0->unk_3C[v0]);
+        Window_ClearAndCopyToVRAM(&param0->windows[v0]);
+        Window_Remove(&param0->windows[v0]);
     }
 }
 
@@ -2165,7 +2165,7 @@ BOOL VsRecorderViewerList_IsSummaryResultSpecial(BattleRecordingSummary *param0)
 
 static BOOL VsRecorderViewerList_IsSummarySpecial(VsRecorderViewerSummaryPanel *param0)
 {
-    return VsRecorderViewerList_IsSummaryResultSpecial(param0->unk_04);
+    return VsRecorderViewerList_IsSummaryResultSpecial(param0->summary);
 }
 
 int VsRecorderViewerList_GetSummaryResultMessageID(VsRecorderViewerSummaryPanel *param0)
@@ -2223,9 +2223,9 @@ static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel
         },
     };
 
-    v10 = param1->unk_14.unk_04;
-    v11 = param1->unk_14.unk_08;
-    v12 = param1->unk_14.unk_14;
+    v10 = param1->unk_14.spriteSystem;
+    v11 = param1->unk_14.spriteManager;
+    v12 = param1->unk_14.palette;
 
     SpriteSystem_LoadPaletteBuffer(v12, 2, v10, v11, 19, PokeIconPalettesFileIndex(), 0, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 100000);
 
@@ -2258,8 +2258,8 @@ static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel
         do {
             for (v0 = v20; v0 < v21; v0++) {
                 v7[v16] = 0xFF;
-                v17 = BattleRecording_GetSummaryValue(param0->unk_04, 0, v0);
-                v18 = BattleRecording_GetSummaryValue(param0->unk_04, 1, v0);
+                v17 = BattleRecording_GetSummaryValue(param0->summary, 0, v0);
+                v18 = BattleRecording_GetSummaryValue(param0->summary, 1, v0);
 
                 if (v17 == 0) {
                     continue;
@@ -2283,7 +2283,7 @@ static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel
     }
 
     for (v0 = 0; v0 < 12; v0++) {
-        param0->unk_0C[v0] = NULL;
+        param0->sprites[v0] = NULL;
         v1 = v7[v0];
 
         if (v1 == 0) {
@@ -2311,13 +2311,13 @@ static void VsRecorderViewerList_LoadSummarySprites(VsRecorderViewerSummaryPanel
         v4.resources[4] = SPRITE_RESOURCE_NONE;
         v4.resources[5] = SPRITE_RESOURCE_NONE;
 
-        param0->unk_0C[v3] = SpriteSystem_NewSprite(param1->unk_14.unk_04, param1->unk_14.unk_08, &v4);
+        param0->sprites[v3] = SpriteSystem_NewSprite(param1->unk_14.spriteSystem, param1->unk_14.spriteManager, &v4);
 
         v5 = PokeIconPaletteIndex(v1, v2, 0);
-        ManagedSprite_SetExplicitPaletteOffset(param0->unk_0C[v3], 4 + v5);
-        ManagedSprite_SetAnim(param0->unk_0C[v3], 1);
-        ManagedSprite_TickFrame(param0->unk_0C[v3]);
-        ManagedSprite_SetPriority(param0->unk_0C[v3], 12 - v0);
+        ManagedSprite_SetExplicitPaletteOffset(param0->sprites[v3], 4 + v5);
+        ManagedSprite_SetAnim(param0->sprites[v3], 1);
+        ManagedSprite_TickFrame(param0->sprites[v3]);
+        ManagedSprite_SetPriority(param0->sprites[v3], 12 - v0);
         v3++;
     }
 }
@@ -2332,15 +2332,15 @@ void VsRecorderViewerList_FreeSummary(VsRecorderViewerSummaryPanel *param0, VsRe
 {
     int v0;
 
-    SpriteManager_UnloadPlttObjById(param1->unk_14.unk_08, 100000);
-    SpriteManager_UnloadCellObjById(param1->unk_14.unk_08, 100000);
-    SpriteManager_UnloadAnimObjById(param1->unk_14.unk_08, 100000);
+    SpriteManager_UnloadPlttObjById(param1->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadCellObjById(param1->unk_14.spriteManager, 100000);
+    SpriteManager_UnloadAnimObjById(param1->unk_14.spriteManager, 100000);
 
     for (v0 = 0; v0 < 12; v0++) {
-        if (param0->unk_0C[v0]) {
-            SpriteManager_UnloadCharObjById(param1->unk_14.unk_08, 100000 + v0);
-            Sprite_DeleteAndFreeResources(param0->unk_0C[v0]);
-            param0->unk_0C[v0] = NULL;
+        if (param0->sprites[v0]) {
+            SpriteManager_UnloadCharObjById(param1->unk_14.spriteManager, 100000 + v0);
+            Sprite_DeleteAndFreeResources(param0->sprites[v0]);
+            param0->sprites[v0] = NULL;
         }
     }
 
@@ -2352,8 +2352,8 @@ void VsRecorderViewerList_SetSummarySpritesVisible(VsRecorderViewerSummaryPanel 
     int v0;
 
     for (v0 = 0; v0 < 12; v0++) {
-        if (param0->unk_0C[v0]) {
-            ManagedSprite_SetDrawFlag(param0->unk_0C[v0], param1);
+        if (param0->sprites[v0]) {
+            ManagedSprite_SetDrawFlag(param0->sprites[v0], param1);
         }
     }
 }
@@ -2398,7 +2398,7 @@ void VsRecorderViewerList_SetBgPriorities(void)
 
 void VsRecorderViewerList_SetupRing(VsRecorderState *param0, VsRecorderRing *param1, s16 param2, s16 param3)
 {
-    if (param0->unk_14.unk_30 == 0) {
+    if (param0->unk_14.returnToMainMenu == 0) {
         VsRecorderRing_SetVisible(param1, 1);
     }
 
@@ -2425,7 +2425,7 @@ int VsRecorderViewerList_CountDigits(u64 param0)
 
 void VsRecorderViewerList_LoadBgTilemap(VsRecorderState *param0, int param1, int param2)
 {
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.unk_00, param1, param0->unk_14.unk_10, param2, 0, 0, 0, HEAP_ID_102);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.narc, param1, param0->unk_14.bgConfig, param2, 0, 0, 0, HEAP_ID_102);
 }
 
 static void VsRecorderViewerList_Task_ShrinkRing(SysTask *param0, void *param1)
@@ -2496,38 +2496,38 @@ void VsRecorderViewerList_PlayRingAnim(VsRecorderState *param0)
 
 BOOL VsRecorderViewerList_IsDrawSuspended(VsRecorderState *param0)
 {
-    return param0->unk_14.unk_514;
+    return param0->unk_14.drawSuspended;
 }
 
 void VsRecorderViewerList_SetDrawSuspended(VsRecorderState *param0, BOOL param1)
 {
-    param0->unk_14.unk_514 = param1;
+    param0->unk_14.drawSuspended = param1;
 }
 
 void VsRecorderViewerList_InitSpriteWithFont(VsRecorderState *param0, VsRecorderViewerTextSprite *param1, int param2, int param3, s16 param4, s16 param5, s16 param6, s16 param7, int param8, BOOL param9)
 {
-    param1->unk_08 = VsRecorderViewerMenu_CreateCursorSprite(param0, param2);
+    param1->sprite = VsRecorderViewerMenu_CreateCursorSprite(param0, param2);
 
     VsRecorderViewerMenu_InitLabelOAM(param1, &param0->unk_14, param2);
     VsRecorderViewerMenu_SetLabelOAMText(param1, &param0->unk_14, param3);
-    ManagedSprite_SetPositionXY(param1->unk_08, param4, param5);
-    FontOAM_SetXY(param1->unk_0C, param6, param7);
-    FontOAM_SetDrawFlag(param1->unk_0C, param9);
-    ManagedSprite_SetAnim(param1->unk_08, param8);
+    ManagedSprite_SetPositionXY(param1->sprite, param4, param5);
+    FontOAM_SetXY(param1->fontOAM, param6, param7);
+    FontOAM_SetDrawFlag(param1->fontOAM, param9);
+    ManagedSprite_SetAnim(param1->sprite, param8);
 }
 
 void VsRecorderViewerList_FreeSpriteWithFont(VsRecorderViewerTextSprite *param0)
 {
     VsRecorderViewerMenu_FreeLabelOAM(param0);
-    Sprite_DeleteAndFreeResources(param0->unk_08);
+    Sprite_DeleteAndFreeResources(param0->sprite);
 }
 
 int VsRecorderViewerList_GetMessageIndex(VsRecorderState *param0, int param1, int param2, int param3)
 {
-    param0->unk_14.unk_4F0.unk_00 = param0->unk_04;
-    param0->unk_14.unk_4F0.unk_04 = param0->unk_08;
-    param0->unk_14.unk_4F0.unk_08 = *param0->unk_10;
-    param0->unk_14.unk_4F0.unk_18 = 1;
+    param0->unk_14.subContext.unused_00 = param0->unk_04;
+    param0->unk_14.subContext.unused_04 = param0->unk_08;
+    param0->unk_14.subContext.savedValue = *param0->unk_10;
+    param0->unk_14.subContext.active = 1;
 
     {
         int v0 = 194;
@@ -2832,48 +2832,48 @@ int VsRecorderViewerList_GetMessageIndex(VsRecorderState *param0, int param1, in
         } break;
         }
 
-        param0->unk_14.unk_4F0.unk_0C = v0;
+        param0->unk_14.subContext.messageIndex = v0;
     }
 
-    return param0->unk_14.unk_4F0.unk_0C;
+    return param0->unk_14.subContext.messageIndex;
 }
 
 void VsRecorderViewerList_OpenMessage(VsRecorderState *param0, int param1, int param2, int param3)
 {
-    param0->unk_14.unk_4F0.unk_00 = param0->unk_04;
-    param0->unk_14.unk_4F0.unk_04 = param0->unk_08;
-    param0->unk_14.unk_4F0.unk_08 = *param0->unk_10;
-    param0->unk_14.unk_4F0.unk_10 = 0;
-    param0->unk_14.unk_4F0.unk_14 = 0;
-    param0->unk_14.unk_4F0.unk_0C = VsRecorderViewerList_GetMessageIndex(param0, param1, param2, param3);
-    param0->unk_14.unk_4F0.unk_18 = 1;
+    param0->unk_14.subContext.unused_00 = param0->unk_04;
+    param0->unk_14.subContext.unused_04 = param0->unk_08;
+    param0->unk_14.subContext.savedValue = *param0->unk_10;
+    param0->unk_14.subContext.state = 0;
+    param0->unk_14.subContext.timer = 0;
+    param0->unk_14.subContext.messageIndex = VsRecorderViewerList_GetMessageIndex(param0, param1, param2, param3);
+    param0->unk_14.subContext.active = 1;
     *param0->unk_10 = 18;
 }
 
 void VsRecorderViewerList_UpdateMessage(VsRecorderState *param0)
 {
-    switch (param0->unk_14.unk_4F0.unk_10) {
+    switch (param0->unk_14.subContext.state) {
     case 0:
-        if (param0->unk_14.unk_4F0.unk_14 < 8) {
-            param0->unk_14.unk_4F0.unk_14++;
+        if (param0->unk_14.subContext.timer < 8) {
+            param0->unk_14.subContext.timer++;
         } else {
-            VsRecorderViewerList_OpenMainMessage(param0, param0->unk_14.unk_4F0.unk_0C);
-            param0->unk_14.unk_4F0.unk_10++;
+            VsRecorderViewerList_OpenMainMessage(param0, param0->unk_14.subContext.messageIndex);
+            param0->unk_14.subContext.state++;
         }
 
         break;
     case 1:
         if (TouchScreen_Tapped()) {
             VsRecorderViewerList_CloseMainMessage(param0);
-            param0->unk_14.unk_4F0.unk_10++;
+            param0->unk_14.subContext.state++;
         }
 
         break;
     default:
-        if (param0->unk_14.unk_4F0.unk_14 > 0) {
-            param0->unk_14.unk_4F0.unk_14--;
+        if (param0->unk_14.subContext.timer > 0) {
+            param0->unk_14.subContext.timer--;
         } else {
-            *param0->unk_10 = param0->unk_14.unk_4F0.unk_08;
+            *param0->unk_10 = param0->unk_14.subContext.savedValue;
         }
 
         break;

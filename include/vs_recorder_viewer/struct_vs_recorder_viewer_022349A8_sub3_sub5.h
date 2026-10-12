@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022349A8_SUB3_SUB5_H
 
 typedef struct {
-    u32 unk_00;
+    u32 value;
 } VsRecorderViewerTransferValue;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022349A8_SUB3_SUB5_H

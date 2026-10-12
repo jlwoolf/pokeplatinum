@@ -40,11 +40,11 @@ static const u8 sVsRecorderViewerMenuSpritePriorities[][5] = {
 
 void VsRecorderViewerMenu_LoadBackground(VsRecorderState *param0)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
 
     if (param0->unk_00 == 0) {
         Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 67, v1, 1, 0, 0, 0, HEAP_ID_102);
@@ -66,16 +66,16 @@ void VsRecorderViewerMenu_LoadBackground(VsRecorderState *param0)
 
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 70, v1, 5, 0, 0, 0, HEAP_ID_102);
     Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 70, v1, 1, 0, 0, 0, HEAP_ID_102);
-    PaletteData_BlendMulti(v4, PLTTBUF_SUB_BG, 0x2, 16, param0->unk_14.unk_44);
+    PaletteData_BlendMulti(v4, PLTTBUF_SUB_BG, 0x2, 16, param0->unk_14.themeColor);
 }
 
 void VsRecorderViewerMenu_LoadBgPanel(VsRecorderState *param0, int param1, BOOL param2)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
     int v5 = 2;
 
     if (param2) {
@@ -88,11 +88,11 @@ void VsRecorderViewerMenu_LoadBgPanel(VsRecorderState *param0, int param1, BOOL 
 
 void VsRecorderViewerMenu_LoadBgPanelAlt(VsRecorderState *param0, int param1)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
     int v5 = 1;
 
     Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 45, v1, param1, 0, 0, 0, HEAP_ID_102);
@@ -101,11 +101,11 @@ void VsRecorderViewerMenu_LoadBgPanelAlt(VsRecorderState *param0, int param1)
 
 void VsRecorderViewerMenu_LoadEntrySpriteResources(VsRecorderState *param0)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
 
     if (param0->unk_00 == 0) {
         SpriteSystem_LoadPaletteBufferFromOpenNarc(v4, PLTTBUF_MAIN_OBJ, v2, v3, v0, VsRecorderViewerList_GetThemeGraphicsFileIndex(param0, 2), FALSE, 3, NNS_G2D_VRAM_TYPE_2DMAIN, 9999);
@@ -126,9 +126,9 @@ void VsRecorderViewerMenu_LoadEntrySpriteResources(VsRecorderState *param0)
 void VsRecorderViewerMenu_CreateDecorativeSprites(VsRecorderState *param0)
 {
     SpriteTemplate v0;
-    SpriteSystem *v1 = param0->unk_14.unk_04;
-    SpriteManager *v2 = param0->unk_14.unk_08;
-    PaletteData *v3 = param0->unk_14.unk_14;
+    SpriteSystem *v1 = param0->unk_14.spriteSystem;
+    SpriteManager *v2 = param0->unk_14.spriteManager;
+    PaletteData *v3 = param0->unk_14.palette;
 
     v0.x = 0;
     v0.y = 0;
@@ -189,49 +189,49 @@ void VsRecorderViewerMenu_CreateDecorativeSprites(VsRecorderState *param0)
                     v0.resources[3] = 10000;
                 }
 
-                param0->unk_6F8[v5].unk_00[v4] = SpriteSystem_NewSprite(v1, v2, &v0);
+                param0->unk_6F8[v5].sprites[v4] = SpriteSystem_NewSprite(v1, v2, &v0);
 
                 if (v4 == 0) {
-                    VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_6F8[v5].unk_00[v4], v6[v5], 192 / 2);
+                    VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_6F8[v5].sprites[v4], v6[v5], 192 / 2);
                 } else {
-                    VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_6F8[v5].unk_00[v4], v6[v5], 192 / 2);
+                    VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_6F8[v5].sprites[v4], v6[v5], 192 / 2);
                 }
 
-                ManagedSprite_TickFrame(param0->unk_6F8[v5].unk_00[v4]);
-                ManagedSprite_SetAffineOverwriteMode(param0->unk_6F8[v5].unk_00[v4], AFFINE_OVERWRITE_MODE_DOUBLE);
-                ManagedSprite_SetAffineScale(param0->unk_6F8[v5].unk_00[v4], v7[v5], 1.0f);
+                ManagedSprite_TickFrame(param0->unk_6F8[v5].sprites[v4]);
+                ManagedSprite_SetAffineOverwriteMode(param0->unk_6F8[v5].sprites[v4], AFFINE_OVERWRITE_MODE_DOUBLE);
+                ManagedSprite_SetAffineScale(param0->unk_6F8[v5].sprites[v4], v7[v5], 1.0f);
 
-                param0->unk_6F8[v5].unk_28 = 0;
-                param0->unk_6F8[v5].unk_19 = v5 % 3;
-                param0->unk_6F8[v5].unk_2C = 0;
-                param0->unk_6F8[v5].unk_10 = v7[v5];
-                param0->unk_6F8[v5].unk_24 = 10 + (v8[v5] * 2);
+                param0->unk_6F8[v5].step = 0;
+                param0->unk_6F8[v5].phase = v5 % 3;
+                param0->unk_6F8[v5].state = 0;
+                param0->unk_6F8[v5].scale = v7[v5];
+                param0->unk_6F8[v5].stepCount = 10 + (v8[v5] * 2);
 
                 if (v5 < 3) {
-                    param0->unk_6F8[v5].unk_20 = 0;
-                    param0->unk_6F8[v5].unk_16 = 0 + (8 + v8[v5]);
-                    param0->unk_6F8[v5].unk_18 = -1;
+                    param0->unk_6F8[v5].angle = 0;
+                    param0->unk_6F8[v5].targetX = 0 + (8 + v8[v5]);
+                    param0->unk_6F8[v5].direction = -1;
                 } else {
-                    param0->unk_6F8[v5].unk_20 = 0;
-                    param0->unk_6F8[v5].unk_16 = 255 - (8 + v8[v5]);
-                    param0->unk_6F8[v5].unk_18 = +1;
+                    param0->unk_6F8[v5].angle = 0;
+                    param0->unk_6F8[v5].targetX = 255 - (8 + v8[v5]);
+                    param0->unk_6F8[v5].direction = +1;
                 }
             }
 
-            param0->unk_6F8[v5].unk_08 = SysTask_ExecuteOnVBlank(VsRecorderViewerMenu_AnimatedSpriteTask, &param0->unk_6F8[v5], 5);
+            param0->unk_6F8[v5].task = SysTask_ExecuteOnVBlank(VsRecorderViewerMenu_AnimatedSpriteTask, &param0->unk_6F8[v5], 5);
         }
-        if (param0->unk_534.unk_1A4 != 0) {
+        if (param0->unk_534.mainEntryCount != 0) {
             BOOL v9;
 
             do {
                 v9 = 0;
 
                 for (v5 = 0; v5 < (3 * 2); v5++) {
-                    if (param0->unk_6F8[v5].unk_2C == 3) {
+                    if (param0->unk_6F8[v5].state == 3) {
                         continue;
                     }
 
-                    VsRecorderViewerMenu_AnimatedSpriteTask(param0->unk_6F8[v5].unk_08, &param0->unk_6F8[v5]);
+                    VsRecorderViewerMenu_AnimatedSpriteTask(param0->unk_6F8[v5].task, &param0->unk_6F8[v5]);
                     v9 = 1;
                 }
             } while (v9);
@@ -245,7 +245,7 @@ void VsRecorderViewerMenu_FreeDecorativeSprites(VsRecorderState *param0)
 
     for (v1 = 0; v1 < (3 * 2); v1++) {
         for (v0 = 0; v0 < 2; v0++) {
-            Sprite_DeleteAndFreeResources(param0->unk_6F8[v1].unk_00[v0]);
+            Sprite_DeleteAndFreeResources(param0->unk_6F8[v1].sprites[v0]);
         }
     }
 }
@@ -255,17 +255,17 @@ void VsRecorderViewerMenu_StopDecorativeSpriteTasks(VsRecorderState *param0)
     int v0;
 
     for (v0 = 0; v0 < (3 * 2); v0++) {
-        SysTask_Done(param0->unk_6F8[v0].unk_08);
+        SysTask_Done(param0->unk_6F8[v0].task);
     }
 }
 
 void VsRecorderViewerMenu_LoadEntryIconResources(VsRecorderState *param0)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
     int v5;
     int v6;
     int v7;
@@ -314,8 +314,8 @@ void VsRecorderViewerMenu_LoadEntryIconResources(VsRecorderState *param0)
 
 void VsRecorderViewerMenu_FreeEntryIconResources(VsRecorderState *param0)
 {
-    SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 10001);
-    SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 10002);
+    SpriteManager_UnloadCharObjById(param0->unk_14.spriteManager, 10001);
+    SpriteManager_UnloadCharObjById(param0->unk_14.spriteManager, 10002);
 }
 
 void VsRecorderViewerMenu_PositionMenuEntries(VsRecorderState *param0)
@@ -324,8 +324,8 @@ void VsRecorderViewerMenu_PositionMenuEntries(VsRecorderState *param0)
     VsRecorderViewerMenu *v1 = &param0->unk_534;
 
     for (v0 = 0; v0 < 5; v0++) {
-        VsRecorderViewerMenu_SetSpritePositionWithOffset(v1->unk_00[v0].unk_00, 42 + 8, (25 + (36 * 4) + (16 * (5 - (param0->unk_534.unk_1AC)))) + 48);
-        FontOAM_SetXY(param0->unk_534.unk_00[v0].unk_14, 36, -8);
+        VsRecorderViewerMenu_SetSpritePositionWithOffset(v1->mainEntries[v0].sprite, 42 + 8, (25 + (36 * 4) + (16 * (5 - (param0->unk_534.subEntryCount)))) + 48);
+        FontOAM_SetXY(param0->unk_534.mainEntries[v0].fontOAM, 36, -8);
     }
 
     v0 = 0;
@@ -333,26 +333,26 @@ void VsRecorderViewerMenu_PositionMenuEntries(VsRecorderState *param0)
     do {
         s16 v2, v3;
 
-        if (param0->unk_534.unk_1A4 == 0) {
+        if (param0->unk_534.mainEntryCount == 0) {
             break;
         }
 
-        VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.unk_00[v0].unk_00, &v2, &v3);
+        VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.mainEntries[v0].sprite, &v2, &v3);
 
-        if (param0->unk_534.unk_1A4 - 1 == v0) {
+        if (param0->unk_534.mainEntryCount - 1 == v0) {
             v2 = v2;
             v3 = (25 + (36 * (5 - 1)));
-            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v0].unk_00, (2 - 1));
+            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v0].sprite, (2 - 1));
         } else {
-            v2 = v2 - (4 * (param0->unk_534.unk_1A4 - v0));
-            v3 = (16 * (param0->unk_534.unk_1A4 - v0 - 1)) + (25 + (36 * (5 - (param0->unk_534.unk_1A4 - v0))));
-            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v0].unk_00, (3 - 1));
+            v2 = v2 - (4 * (param0->unk_534.mainEntryCount - v0));
+            v3 = (16 * (param0->unk_534.mainEntryCount - v0 - 1)) + (25 + (36 * (5 - (param0->unk_534.mainEntryCount - v0))));
+            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v0].sprite, (3 - 1));
         }
 
-        VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_534.unk_00[v0].unk_00, v2, v3);
+        VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_534.mainEntries[v0].sprite, v2, v3);
 
         v0++;
-    } while (v0 < param0->unk_534.unk_1A4);
+    } while (v0 < param0->unk_534.mainEntryCount);
 }
 
 void VsRecorderViewerMenu_CreateMenuEntries(VsRecorderState *param0)
@@ -360,15 +360,15 @@ void VsRecorderViewerMenu_CreateMenuEntries(VsRecorderState *param0)
     int v0;
     VsRecorderViewerMenu *v1 = &param0->unk_534;
     SpriteTemplate v2;
-    SpriteSystem *v3 = param0->unk_14.unk_04;
-    SpriteManager *v4 = param0->unk_14.unk_08;
-    PaletteData *v5 = param0->unk_14.unk_14;
+    SpriteSystem *v3 = param0->unk_14.spriteSystem;
+    SpriteManager *v4 = param0->unk_14.spriteManager;
+    PaletteData *v5 = param0->unk_14.palette;
 
     v2.x = 42;
-    v2.y = (25 + (36 * 4) + (16 * (5 - (param0->unk_534.unk_1AC)))) + 32;
+    v2.y = (25 + (36 * 4) + (16 * (5 - (param0->unk_534.subEntryCount)))) + 32;
 
-    if (param0->unk_534.unk_1AC == 2) {
-        v2.y = (25 + (36 * 4) + (16 * (4 - (param0->unk_534.unk_1AC)))) + 32;
+    if (param0->unk_534.subEntryCount == 2) {
+        v2.y = (25 + (36 * 4) + (16 * (4 - (param0->unk_534.subEntryCount)))) + 32;
     }
 
     v2.z = 0;
@@ -392,11 +392,11 @@ void VsRecorderViewerMenu_CreateMenuEntries(VsRecorderState *param0)
         v2.resources[2] = 10002;
         v2.resources[3] = 10002;
         v2.priority = sVsRecorderViewerMenuSpritePriorities[1][v0];
-        v1->unk_00[v0].unk_00 = SpriteSystem_NewSprite(v3, v4, &v2);
+        v1->mainEntries[v0].sprite = SpriteSystem_NewSprite(v3, v4, &v2);
 
-        ManagedSprite_TickFrame(v1->unk_00[v0].unk_00);
-        ManagedSprite_SetDrawFlag(v1->unk_00[v0].unk_00, 1);
-        VsRecorderViewerMenu_SetSpritePositionWithOffset(v1->unk_00[v0].unk_00, v2.x + 8, v2.y);
+        ManagedSprite_TickFrame(v1->mainEntries[v0].sprite);
+        ManagedSprite_SetDrawFlag(v1->mainEntries[v0].sprite, 1);
+        VsRecorderViewerMenu_SetSpritePositionWithOffset(v1->mainEntries[v0].sprite, v2.x + 8, v2.y);
 
         v2.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
         v2.resources[0] = 10001;
@@ -404,11 +404,11 @@ void VsRecorderViewerMenu_CreateMenuEntries(VsRecorderState *param0)
         v2.resources[2] = 10001;
         v2.resources[3] = 10001;
         v2.priority = sVsRecorderViewerMenuSpritePriorities[0][v0];
-        v1->unk_C8[v0].unk_00 = SpriteSystem_NewSprite(v3, v4, &v2);
+        v1->subEntries[v0].sprite = SpriteSystem_NewSprite(v3, v4, &v2);
 
-        ManagedSprite_TickFrame(v1->unk_C8[v0].unk_00);
-        VsRecorderViewerMenu_SetSpritePositionWithOffset(v1->unk_C8[v0].unk_00, v2.x, v2.y);
-        ManagedSprite_SetDrawFlag(v1->unk_C8[v0].unk_00, param0->unk_818[v0].enabled);
+        ManagedSprite_TickFrame(v1->subEntries[v0].sprite);
+        VsRecorderViewerMenu_SetSpritePositionWithOffset(v1->subEntries[v0].sprite, v2.x, v2.y);
+        ManagedSprite_SetDrawFlag(v1->subEntries[v0].sprite, param0->unk_818[v0].enabled);
     }
 
     v0 = 0;
@@ -416,28 +416,28 @@ void VsRecorderViewerMenu_CreateMenuEntries(VsRecorderState *param0)
     do {
         s16 v6, v7;
 
-        if (param0->unk_534.unk_1A4 == 0) {
+        if (param0->unk_534.mainEntryCount == 0) {
             break;
         }
 
-        VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.unk_00[v0].unk_00, &v6, &v7);
+        VsRecorderViewerMenu_GetSpritePositionWithOffset(param0->unk_534.mainEntries[v0].sprite, &v6, &v7);
 
-        if (param0->unk_534.unk_1A4 - 1 == v0) {
+        if (param0->unk_534.mainEntryCount - 1 == v0) {
             v6 = v6;
             v7 = (25 + (36 * (5 - 1)));
-            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v0].unk_00, 2 - 1);
+            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v0].sprite, 2 - 1);
         } else {
-            v6 = v6 - (4 * (param0->unk_534.unk_1A4 - v0));
-            v7 = (16 * (param0->unk_534.unk_1A4 - v0 - 1)) + (25 + (36 * (5 - (param0->unk_534.unk_1A4 - v0))));
-            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.unk_00[v0].unk_00, (3 - 1));
+            v6 = v6 - (4 * (param0->unk_534.mainEntryCount - v0));
+            v7 = (16 * (param0->unk_534.mainEntryCount - v0 - 1)) + (25 + (36 * (5 - (param0->unk_534.mainEntryCount - v0))));
+            ManagedSprite_SetExplicitPaletteOffset(param0->unk_534.mainEntries[v0].sprite, (3 - 1));
         }
 
-        VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_534.unk_00[v0].unk_00, v6, v7);
+        VsRecorderViewerMenu_SetSpritePositionWithOffset(param0->unk_534.mainEntries[v0].sprite, v6, v7);
 
         v0++;
-    } while (v0 < param0->unk_534.unk_1A4);
+    } while (v0 < param0->unk_534.mainEntryCount);
 
-    PaletteData_BlendMulti(v5, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.unk_44);
+    PaletteData_BlendMulti(v5, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.themeColor);
 }
 
 void VsRecorderViewerMenu_UpdateSubEntryLabels(VsRecorderState *param0)
@@ -445,14 +445,14 @@ void VsRecorderViewerMenu_UpdateSubEntryLabels(VsRecorderState *param0)
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        ManagedSprite_SetDrawFlag(param0->unk_534.unk_C8[v0].unk_00, param0->unk_818[v0].enabled);
+        ManagedSprite_SetDrawFlag(param0->unk_534.subEntries[v0].sprite, param0->unk_818[v0].enabled);
 
         if (param0->unk_818[v0].enabled == 0) {
             continue;
         }
 
-        ManagedSprite_SetAnim(param0->unk_534.unk_C8[v0].unk_00, param0->unk_818[v0].spriteAnimID);
-        VsRecorderViewerMenu_RenderEntryLabel(param0, &param0->unk_534.unk_C8[v0], param0->unk_818[v0].labelMessageID, &param0->unk_818[v0]);
+        ManagedSprite_SetAnim(param0->unk_534.subEntries[v0].sprite, param0->unk_818[v0].spriteAnimID);
+        VsRecorderViewerMenu_RenderEntryLabel(param0, &param0->unk_534.subEntries[v0], param0->unk_818[v0].labelMessageID, &param0->unk_818[v0]);
     }
 }
 
@@ -461,8 +461,8 @@ void VsRecorderViewerMenu_AttachEntryLabelSprites(VsRecorderState *param0)
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        FontOAM_SetParentSprite(param0->unk_534.unk_C8[v0].unk_14, param0->unk_534.unk_C8[v0].unk_00->sprite);
-        FontOAM_SetParentSprite(param0->unk_534.unk_00[v0].unk_14, param0->unk_534.unk_00[v0].unk_00->sprite);
+        FontOAM_SetParentSprite(param0->unk_534.subEntries[v0].fontOAM, param0->unk_534.subEntries[v0].sprite->sprite);
+        FontOAM_SetParentSprite(param0->unk_534.mainEntries[v0].fontOAM, param0->unk_534.mainEntries[v0].sprite->sprite);
     }
 }
 
@@ -470,16 +470,16 @@ void VsRecorderViewerMenu_UpdateMainEntryLabels(VsRecorderState *param0)
 {
     int v0;
 
-    if (param0->unk_534.unk_1A4 == 0) {
+    if (param0->unk_534.mainEntryCount == 0) {
         return;
     }
 
-    for (v0 = 0; v0 < param0->unk_534.unk_1A4; v0++) {
-        ManagedSprite_SetAnim(param0->unk_534.unk_00[v0].unk_00, param0->unk_534.unk_190[v0]->spriteAnimID);
-        VsRecorderViewerMenu_RenderEntryLabel(param0, &param0->unk_534.unk_00[v0], param0->unk_534.unk_190[v0]->labelMessageID, param0->unk_534.unk_190[v0]);
-        FontOAM_SetXY(param0->unk_534.unk_00[v0].unk_14, 36, -8);
-        FontOAM_SetDrawFlag(param0->unk_534.unk_00[v0].unk_14, 1);
-        ManagedSprite_SetDrawFlag(param0->unk_534.unk_00[v0].unk_00, 1);
+    for (v0 = 0; v0 < param0->unk_534.mainEntryCount; v0++) {
+        ManagedSprite_SetAnim(param0->unk_534.mainEntries[v0].sprite, param0->unk_534.entryConfigs[v0]->spriteAnimID);
+        VsRecorderViewerMenu_RenderEntryLabel(param0, &param0->unk_534.mainEntries[v0], param0->unk_534.entryConfigs[v0]->labelMessageID, param0->unk_534.entryConfigs[v0]);
+        FontOAM_SetXY(param0->unk_534.mainEntries[v0].fontOAM, 36, -8);
+        FontOAM_SetDrawFlag(param0->unk_534.mainEntries[v0].fontOAM, 1);
+        ManagedSprite_SetDrawFlag(param0->unk_534.mainEntries[v0].sprite, 1);
     }
 }
 
@@ -489,8 +489,8 @@ void VsRecorderViewerMenu_FreeMenuEntries(VsRecorderState *param0)
     VsRecorderViewerMenu *v1 = &param0->unk_534;
 
     for (v0 = 0; v0 < 5; v0++) {
-        Sprite_DeleteAndFreeResources(v1->unk_00[v0].unk_00);
-        Sprite_DeleteAndFreeResources(v1->unk_C8[v0].unk_00);
+        Sprite_DeleteAndFreeResources(v1->mainEntries[v0].sprite);
+        Sprite_DeleteAndFreeResources(v1->subEntries[v0].sprite);
     }
 }
 
@@ -499,20 +499,20 @@ void VsRecorderViewerMenu_SetMenuEntriesVisible(VsRecorderState *param0, BOOL pa
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        if (param0->unk_534.unk_00[v0].unk_0C == 0) {
-            FontOAM_SetDrawFlag(param0->unk_534.unk_00[v0].unk_14, 0);
-            ManagedSprite_SetDrawFlag(param0->unk_534.unk_00[v0].unk_00, 0);
+        if (param0->unk_534.mainEntries[v0].visible == 0) {
+            FontOAM_SetDrawFlag(param0->unk_534.mainEntries[v0].fontOAM, 0);
+            ManagedSprite_SetDrawFlag(param0->unk_534.mainEntries[v0].sprite, 0);
         } else {
-            FontOAM_SetDrawFlag(param0->unk_534.unk_00[v0].unk_14, param1);
-            ManagedSprite_SetDrawFlag(param0->unk_534.unk_00[v0].unk_00, param1);
+            FontOAM_SetDrawFlag(param0->unk_534.mainEntries[v0].fontOAM, param1);
+            ManagedSprite_SetDrawFlag(param0->unk_534.mainEntries[v0].sprite, param1);
         }
 
-        if (param0->unk_534.unk_C8[v0].unk_0C == 0) {
-            FontOAM_SetDrawFlag(param0->unk_534.unk_C8[v0].unk_14, 0);
-            ManagedSprite_SetDrawFlag(param0->unk_534.unk_C8[v0].unk_00, 0);
+        if (param0->unk_534.subEntries[v0].visible == 0) {
+            FontOAM_SetDrawFlag(param0->unk_534.subEntries[v0].fontOAM, 0);
+            ManagedSprite_SetDrawFlag(param0->unk_534.subEntries[v0].sprite, 0);
         } else {
-            FontOAM_SetDrawFlag(param0->unk_534.unk_C8[v0].unk_14, param1);
-            ManagedSprite_SetDrawFlag(param0->unk_534.unk_C8[v0].unk_00, param1);
+            FontOAM_SetDrawFlag(param0->unk_534.subEntries[v0].fontOAM, param1);
+            ManagedSprite_SetDrawFlag(param0->unk_534.subEntries[v0].sprite, param1);
         }
     }
 }
@@ -521,43 +521,43 @@ void VsRecorderViewerMenu_AnimatedSpriteTask(SysTask *param0, void *param1)
 {
     VsRecorderViewerMenuAnimatedSprite *v0 = param1;
 
-    v0->unk_1C++;
-    v0->unk_1C %= 2;
+    v0->tick++;
+    v0->tick %= 2;
 
-    if (v0->unk_1C) {
+    if (v0->tick) {
         return;
     }
 
-    switch (v0->unk_2C) {
+    switch (v0->state) {
     case 0: {
-        if (v0->unk_28 == 3) {
-            v0->unk_2C++;
-            v0->unk_28 = 0;
+        if (v0->step == 3) {
+            v0->state++;
+            v0->step = 0;
         } else {
-            v0->unk_28++;
+            v0->step++;
         }
     } break;
     case 1: {
         fx32 v1, v2;
         fx32 v3, v4;
 
-        if (v0->unk_28 == 4) {
-            v0->unk_2C++;
-            v0->unk_28 = 0;
+        if (v0->step == 4) {
+            v0->state++;
+            v0->step = 0;
         } else {
-            ManagedSprite_GetPositionFxXY(v0->unk_00[0], &v1, &v2);
-            ManagedSprite_GetPositionFxXY(v0->unk_00[1], &v3, &v4);
+            ManagedSprite_GetPositionFxXY(v0->sprites[0], &v1, &v2);
+            ManagedSprite_GetPositionFxXY(v0->sprites[1], &v3, &v4);
 
-            v1 = v1 + ((CalcSineDegrees_Wraparound((v0->unk_20 * 0xffff) / 360) * 1) * (v0->unk_18 * -1));
+            v1 = v1 + ((CalcSineDegrees_Wraparound((v0->angle * 0xffff) / 360) * 1) * (v0->direction * -1));
             v3 = v1;
 
-            v0->unk_20 += 32;
-            v0->unk_20 %= 360;
+            v0->angle += 32;
+            v0->angle %= 360;
 
-            ManagedSprite_SetPositionFxXY(v0->unk_00[0], v1, v2);
-            ManagedSprite_SetPositionFxXY(v0->unk_00[1], v3, v4);
+            ManagedSprite_SetPositionFxXY(v0->sprites[0], v1, v2);
+            ManagedSprite_SetPositionFxXY(v0->sprites[1], v3, v4);
 
-            v0->unk_28++;
+            v0->step++;
         }
     } break;
 
@@ -572,59 +572,59 @@ void VsRecorderViewerMenu_AnimatedSpriteTask(SysTask *param0, void *param1)
             0,
         };
 
-        ManagedSprite_GetPositionXY(v0->unk_00[0], &v5, &v6);
-        ManagedSprite_GetPositionXY(v0->unk_00[1], &v5, &v7);
+        ManagedSprite_GetPositionXY(v0->sprites[0], &v5, &v6);
+        ManagedSprite_GetPositionXY(v0->sprites[1], &v5, &v7);
 
-        if (v0->unk_28 == 0) {
-            v0->unk_14 = v0->unk_16 - v5;
-            v0->unk_14 /= v0->unk_24;
-            v0->unk_28++;
-        } else if (v0->unk_28 == v0->unk_24 + 1) {
-            v5 = v0->unk_16;
-            v0->unk_20 = v8[v0->unk_19];
-            v0->unk_2C++;
-            v0->unk_28 = 0;
+        if (v0->step == 0) {
+            v0->xStep = v0->targetX - v5;
+            v0->xStep /= v0->stepCount;
+            v0->step++;
+        } else if (v0->step == v0->stepCount + 1) {
+            v5 = v0->targetX;
+            v0->angle = v8[v0->phase];
+            v0->state++;
+            v0->step = 0;
         } else {
-            v5 += v0->unk_14;
-            v0->unk_28++;
+            v5 += v0->xStep;
+            v0->step++;
         }
 
-        ManagedSprite_SetPositionXY(v0->unk_00[0], v5, v6);
-        ManagedSprite_SetPositionXY(v0->unk_00[1], v5, v7);
+        ManagedSprite_SetPositionXY(v0->sprites[0], v5, v6);
+        ManagedSprite_SetPositionXY(v0->sprites[1], v5, v7);
     } break;
     case 3: {
         fx32 v9, v10;
         fx32 v11, v12;
 
-        if (v0->unk_28 == 0) {
-            ManagedSprite_GetPositionFxXY(v0->unk_00[0], &v0->unk_0C, &v10);
-            v0->unk_28++;
+        if (v0->step == 0) {
+            ManagedSprite_GetPositionFxXY(v0->sprites[0], &v0->baseX, &v10);
+            v0->step++;
         }
 
-        ManagedSprite_GetPositionFxXY(v0->unk_00[0], &v9, &v10);
-        ManagedSprite_GetPositionFxXY(v0->unk_00[1], &v11, &v12);
+        ManagedSprite_GetPositionFxXY(v0->sprites[0], &v9, &v10);
+        ManagedSprite_GetPositionFxXY(v0->sprites[1], &v11, &v12);
 
-        v9 = v0->unk_0C + ((CalcSineDegrees_Wraparound((v0->unk_20 * 0xffff) / 360) * 3) * (v0->unk_18 * -1));
+        v9 = v0->baseX + ((CalcSineDegrees_Wraparound((v0->angle * 0xffff) / 360) * 3) * (v0->direction * -1));
         v11 = v9;
 
-        if (v0->unk_19 % 2) {
-            v0->unk_20 -= 4;
+        if (v0->phase % 2) {
+            v0->angle -= 4;
         } else {
-            v0->unk_20 += 4;
+            v0->angle += 4;
         }
 
-        v0->unk_20 %= 360;
+        v0->angle %= 360;
 
-        ManagedSprite_SetPositionFxXY(v0->unk_00[0], v9, v10);
-        ManagedSprite_SetPositionFxXY(v0->unk_00[1], v11, v12);
+        ManagedSprite_SetPositionFxXY(v0->sprites[0], v9, v10);
+        ManagedSprite_SetPositionFxXY(v0->sprites[1], v11, v12);
     } break;
     }
 
-    if ((v0->unk_2C >= 2) && (v0->unk_10 > 0.1f)) {
-        v0->unk_10 -= 0.10f;
+    if ((v0->state >= 2) && (v0->scale > 0.1f)) {
+        v0->scale -= 0.10f;
 
-        ManagedSprite_SetAffineScale(v0->unk_00[0], v0->unk_10, 1.0f);
-        ManagedSprite_SetAffineScale(v0->unk_00[1], v0->unk_10, 1.0f);
+        ManagedSprite_SetAffineScale(v0->sprites[0], v0->scale, 1.0f);
+        ManagedSprite_SetAffineScale(v0->sprites[1], v0->scale, 1.0f);
     }
 }
 
@@ -652,36 +652,36 @@ void VsRecorderViewerMenu_CreateEntryLabels(VsRecorderState *param0)
     int v10, v11;
 
     for (v10 = 0; v10 < 5; v10++) {
-        v7[0] = &param0->unk_534.unk_C8[v10];
-        v7[1] = &param0->unk_534.unk_00[v10];
+        v7[0] = &param0->unk_534.subEntries[v10];
+        v7[1] = &param0->unk_534.mainEntries[v10];
 
         for (v11 = 0; v11 < 2; v11++) {
             Window_Init(&v6);
-            Window_AddToTopLeftCorner(param0->unk_14.unk_10, &v6, 20, 2, 0, 0);
+            Window_AddToTopLeftCorner(param0->unk_14.bgConfig, &v6, 20, 2, 0, 0);
 
-            v7[v11]->unk_18 = FontOAMWindow_New(&v6, HEAP_ID_102);
+            v7[v11]->fontOAMWindow = FontOAMWindow_New(&v6, HEAP_ID_102);
             v4 = FontOAM_GetWindowSize(&v6, v8[v11], HEAP_ID_102);
 
-            CharTransfer_AllocRange(v4, 1, v8[v11], &v7[v11]->unk_1C);
-            ManagedSprite_GetPositionXY(v7[v11]->unk_00, &v0, &v1);
+            CharTransfer_AllocRange(v4, 1, v8[v11], &v7[v11]->charTransfer);
+            ManagedSprite_GetPositionXY(v7[v11]->sprite, &v0, &v1);
 
-            v2.unk_00 = param0->unk_14.unk_3C;
+            v2.unk_00 = param0->unk_14.fontOAMManager;
             v2.unk_04 = &v6;
-            v2.unk_08 = SpriteManager_GetSpriteList(param0->unk_14.unk_08);
-            v2.unk_0C = SpriteManager_FindPlttResourceProxy(param0->unk_14.unk_08, v9[v11]);
-            v2.unk_10 = v7[v11]->unk_00->sprite;
-            v2.unk_14 = v7[v11]->unk_1C.offset;
+            v2.unk_08 = SpriteManager_GetSpriteList(param0->unk_14.spriteManager);
+            v2.unk_0C = SpriteManager_FindPlttResourceProxy(param0->unk_14.spriteManager, v9[v11]);
+            v2.unk_10 = v7[v11]->sprite->sprite;
+            v2.unk_14 = v7[v11]->charTransfer.offset;
             v2.unk_18 = v0 + 36;
             v2.unk_1C = v1 + -8;
             v2.unk_20 = 3;
             v2.unk_24 = sVsRecorderViewerMenuSpritePriorities[v11][v10] - 1;
             v2.unk_28 = v8[v11];
             v2.heapID = HEAP_ID_102;
-            v7[v11]->unk_14 = FontOAM_NewFromWindow(&v2, v7[v11]->unk_18);
+            v7[v11]->fontOAM = FontOAM_NewFromWindow(&v2, v7[v11]->fontOAMWindow);
 
-            FontOAM_SetExplicitPaletteOffsetAutoAdjust(v7[v11]->unk_14, (2 - 1));
+            FontOAM_SetExplicitPaletteOffsetAutoAdjust(v7[v11]->fontOAM, (2 - 1));
             Window_Remove(&v6);
-            FontOAM_SetDrawFlag(v7[v11]->unk_14, 0);
+            FontOAM_SetDrawFlag(v7[v11]->fontOAM, 0);
         }
     }
 }
@@ -695,14 +695,14 @@ void VsRecorderViewerMenu_RenderEntryLabel(VsRecorderState *param0, VsRecorderVi
     String *v4;
     String *v5;
 
-    v1 = param0->unk_14.unk_34;
+    v1 = param0->unk_14.messageLoader;
 
     if (param2 == 8) {
         if (param0->unk_88C[param3->dataIndex] == NULL) {
             v0 = MessageLoader_GetNewString(v1, param2);
         } else {
             v3 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
-            v4 = MessageLoader_GetNewString(param0->unk_14.unk_34, 7);
+            v4 = MessageLoader_GetNewString(param0->unk_14.messageLoader, 7);
             v5 = PlayerProfile_GetName(param0->unk_88C[param3->dataIndex], HEAP_ID_102);
             VsRecorderViewerList_CheckNameChars(param0, v5);
             v0 = String_Init(255, HEAP_ID_102);
@@ -718,7 +718,7 @@ void VsRecorderViewerMenu_RenderEntryLabel(VsRecorderState *param0, VsRecorderVi
             v0 = MessageLoader_GetNewString(v1, param2);
         } else {
             v3 = VsRecorderViewerList_NewStringTemplate(HEAP_ID_102);
-            v4 = MessageLoader_GetNewString(param0->unk_14.unk_34, 7);
+            v4 = MessageLoader_GetNewString(param0->unk_14.messageLoader, 7);
             v5 = PlayerProfile_GetName(param0->unk_88C[param3->dataIndex], HEAP_ID_102);
             VsRecorderViewerList_CheckNameChars(param0, v5);
             v0 = String_Init(255, HEAP_ID_102);
@@ -734,9 +734,9 @@ void VsRecorderViewerMenu_RenderEntryLabel(VsRecorderState *param0, VsRecorderVi
     }
 
     Window_Init(&v2);
-    Window_AddToTopLeftCorner(param0->unk_14.unk_10, &v2, 20, 2, 0, 0);
+    Window_AddToTopLeftCorner(param0->unk_14.bgConfig, &v2, 20, 2, 0, 0);
     Text_AddPrinterWithParamsAndColor(&v2, FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(14, 13, 0), NULL);
-    FontOAMWindow_UploadToVRAM(param1->unk_14, param1->unk_18, &v2, HEAP_ID_102);
+    FontOAMWindow_UploadToVRAM(param1->fontOAM, param1->fontOAMWindow, &v2, HEAP_ID_102);
     String_Free(v0);
     Window_Remove(&v2);
 }
@@ -747,13 +747,13 @@ void VsRecorderViewerMenu_FreeEntryLabels(VsRecorderState *param0)
     VsRecorderViewerMenuEntry *v2[2];
 
     for (v0 = 0; v0 < 5; v0++) {
-        v2[0] = &param0->unk_534.unk_C8[v0];
-        v2[1] = &param0->unk_534.unk_00[v0];
+        v2[0] = &param0->unk_534.subEntries[v0];
+        v2[1] = &param0->unk_534.mainEntries[v0];
 
         for (v1 = 0; v1 < 2; v1++) {
-            FontOAMWindow_Free(v2[v1]->unk_18);
-            FontOAM_Delete(v2[v1]->unk_14);
-            CharTransfer_ClearRange(&v2[v1]->unk_1C);
+            FontOAMWindow_Free(v2[v1]->fontOAMWindow);
+            FontOAM_Delete(v2[v1]->fontOAM);
+            CharTransfer_ClearRange(&v2[v1]->charTransfer);
         }
     }
 }
@@ -773,20 +773,20 @@ void VsRecorderViewerMenu_InitLabelOAM(VsRecorderViewerTextSprite *param0, VsRec
     }
 
     Window_Init(&v6);
-    Window_AddToTopLeftCorner(param1->unk_10, &v6, 20, 2, 0, 0);
+    Window_AddToTopLeftCorner(param1->bgConfig, &v6, 20, 2, 0, 0);
 
-    param0->unk_10 = FontOAMWindow_New(&v6, HEAP_ID_102);
+    param0->fontOAMWindow = FontOAMWindow_New(&v6, HEAP_ID_102);
     v4 = FontOAM_GetWindowSize(&v6, param2, HEAP_ID_102);
 
-    CharTransfer_AllocRange(v4, 1, param2, &param0->unk_14);
-    ManagedSprite_GetPositionXY(param0->unk_08, &v0, &v1);
+    CharTransfer_AllocRange(v4, 1, param2, &param0->charTransfer);
+    ManagedSprite_GetPositionXY(param0->sprite, &v0, &v1);
 
-    v2.unk_00 = param1->unk_3C;
+    v2.unk_00 = param1->fontOAMManager;
     v2.unk_04 = &v6;
-    v2.unk_08 = SpriteManager_GetSpriteList(param1->unk_08);
-    v2.unk_0C = SpriteManager_FindPlttResourceProxy(param1->unk_08, v7);
-    v2.unk_10 = param0->unk_08->sprite;
-    v2.unk_14 = param0->unk_14.offset;
+    v2.unk_08 = SpriteManager_GetSpriteList(param1->spriteManager);
+    v2.unk_0C = SpriteManager_FindPlttResourceProxy(param1->spriteManager, v7);
+    v2.unk_10 = param0->sprite->sprite;
+    v2.unk_14 = param0->charTransfer.offset;
     v2.unk_18 = v0 + 36;
     v2.unk_1C = v1 + -8;
     v2.unk_20 = 3;
@@ -794,11 +794,11 @@ void VsRecorderViewerMenu_InitLabelOAM(VsRecorderViewerTextSprite *param0, VsRec
     v2.unk_28 = param2;
     v2.heapID = HEAP_ID_102;
 
-    param0->unk_0C = FontOAM_NewFromWindow(&v2, param0->unk_10);
+    param0->fontOAM = FontOAM_NewFromWindow(&v2, param0->fontOAMWindow);
 
-    FontOAM_SetExplicitPaletteOffsetAutoAdjust(param0->unk_0C, (2 - 1));
+    FontOAM_SetExplicitPaletteOffsetAutoAdjust(param0->fontOAM, (2 - 1));
     Window_Remove(&v6);
-    FontOAM_SetDrawFlag(param0->unk_0C, 0);
+    FontOAM_SetDrawFlag(param0->fontOAM, 0);
 }
 
 void VsRecorderViewerMenu_SetLabelOAMText(VsRecorderViewerTextSprite *param0, VsRecorderViewerMenuContext *param1, int param2)
@@ -807,31 +807,31 @@ void VsRecorderViewerMenu_SetLabelOAMText(VsRecorderViewerTextSprite *param0, Vs
     MessageLoader *v1;
     Window v2;
 
-    v1 = param1->unk_34;
+    v1 = param1->messageLoader;
     v0 = MessageLoader_GetNewString(v1, param2);
 
     Window_Init(&v2);
-    Window_AddToTopLeftCorner(param1->unk_10, &v2, 20, 2, 0, 0);
+    Window_AddToTopLeftCorner(param1->bgConfig, &v2, 20, 2, 0, 0);
     Text_AddPrinterWithParamsAndColor(&v2, FONT_SYSTEM, v0, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(14, 13, 0), NULL);
-    FontOAMWindow_UploadToVRAM(param0->unk_0C, param0->unk_10, &v2, HEAP_ID_102);
+    FontOAMWindow_UploadToVRAM(param0->fontOAM, param0->fontOAMWindow, &v2, HEAP_ID_102);
     String_Free(v0);
     Window_Remove(&v2);
 }
 
 void VsRecorderViewerMenu_FreeLabelOAM(VsRecorderViewerTextSprite *param0)
 {
-    FontOAMWindow_Free(param0->unk_10);
-    FontOAM_Delete(param0->unk_0C);
-    CharTransfer_ClearRange(&param0->unk_14);
+    FontOAMWindow_Free(param0->fontOAMWindow);
+    FontOAM_Delete(param0->fontOAM);
+    CharTransfer_ClearRange(&param0->charTransfer);
 }
 
 void VsRecorderViewerMenu_LoadSpriteResourceSetA(VsRecorderState *param0, int param1)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
 
     SpriteSystem_LoadCharResObjFromOpenNarc(v2, v3, v0, 49, FALSE, param1, 11924);
     SpriteSystem_LoadCellResObjFromOpenNarc(v2, v3, v0, 26, FALSE, 11924);
@@ -840,11 +840,11 @@ void VsRecorderViewerMenu_LoadSpriteResourceSetA(VsRecorderState *param0, int pa
 
 void VsRecorderViewerMenu_LoadCursorSpriteResources(VsRecorderState *param0, int param1)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
 
     SpriteSystem_LoadCharResObjFromOpenNarc(v2, v3, v0, 122, FALSE, param1, 11924);
     SpriteSystem_LoadCellResObjFromOpenNarc(v2, v3, v0, 123, FALSE, 11924);
@@ -853,11 +853,11 @@ void VsRecorderViewerMenu_LoadCursorSpriteResources(VsRecorderState *param0, int
 
 void VsRecorderViewerMenu_LoadSpriteResourceSetB(VsRecorderState *param0, int param1)
 {
-    NARC *v0 = param0->unk_14.unk_00;
-    BgConfig *v1 = param0->unk_14.unk_10;
-    SpriteSystem *v2 = param0->unk_14.unk_04;
-    SpriteManager *v3 = param0->unk_14.unk_08;
-    PaletteData *v4 = param0->unk_14.unk_14;
+    NARC *v0 = param0->unk_14.narc;
+    BgConfig *v1 = param0->unk_14.bgConfig;
+    SpriteSystem *v2 = param0->unk_14.spriteSystem;
+    SpriteManager *v3 = param0->unk_14.spriteManager;
+    PaletteData *v4 = param0->unk_14.palette;
     int v5 = 30;
     int v6 = 32;
     int v7 = 31;
@@ -869,9 +869,9 @@ void VsRecorderViewerMenu_LoadSpriteResourceSetB(VsRecorderState *param0, int pa
 
 void VsRecorderViewerMenu_FreeCursorSpriteResources(VsRecorderState *param0)
 {
-    SpriteManager_UnloadCharObjById(param0->unk_14.unk_08, 11924);
-    SpriteManager_UnloadCellObjById(param0->unk_14.unk_08, 11924);
-    SpriteManager_UnloadAnimObjById(param0->unk_14.unk_08, 11924);
+    SpriteManager_UnloadCharObjById(param0->unk_14.spriteManager, 11924);
+    SpriteManager_UnloadCellObjById(param0->unk_14.spriteManager, 11924);
+    SpriteManager_UnloadAnimObjById(param0->unk_14.spriteManager, 11924);
 }
 
 ManagedSprite *VsRecorderViewerMenu_CreateCursorSprite(VsRecorderState *param0, int param1)
@@ -900,7 +900,7 @@ ManagedSprite *VsRecorderViewerMenu_CreateCursorSprite(VsRecorderState *param0, 
         v1.resources[1] = 10000;
     }
 
-    v0 = SpriteSystem_NewSprite(param0->unk_14.unk_04, param0->unk_14.unk_08, &v1);
+    v0 = SpriteSystem_NewSprite(param0->unk_14.spriteSystem, param0->unk_14.spriteManager, &v1);
 
     ManagedSprite_SetExplicitPalette(v0, 2);
     ManagedSprite_SetAnim(v0, 0);
@@ -941,7 +941,7 @@ void VsRecorderViewerMenu_InitMenuWithExtraEntry(VsRecorderState *param0)
     VsRecorderViewerMenu_PositionMenuEntries(param0);
     VsRecorderViewerMenu_UpdateMainEntryLabels(param0);
 
-    param0->unk_534.unk_1A4 += 1;
+    param0->unk_534.mainEntryCount += 1;
 }
 
 void VsRecorderViewerMenu_SetBlendAlpha(int *param0, int *param1, int param2, int param3, int param4, int param5, int param6)

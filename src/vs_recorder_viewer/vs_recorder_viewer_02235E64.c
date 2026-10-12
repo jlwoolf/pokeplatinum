@@ -88,10 +88,10 @@ static BOOL VsRecorderViewerBattleVideo_State_Init(VsRecorderState *param0)
     memset(v0, 0, sizeof(VsRecorderViewerBattleVideo));
     param0->unk_860 = v0;
 
-    Bg_ClearTilemap(param0->unk_14.unk_10, 2);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 3);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 6);
-    Bg_ClearTilemap(param0->unk_14.unk_10, 7);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 2);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 3);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 6);
+    Bg_ClearTilemap(param0->unk_14.bgConfig, 7);
 
     VsRecorderViewerMenu_SetDefaultBlendAlpha(&v0->unk_00, &v0->unk_04, 0);
     VsRecorderViewerMain_SetState(param0, 1);
@@ -109,9 +109,9 @@ static BOOL VsRecorderViewerBattleVideo_State_FadeIn(VsRecorderState *param0)
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.themeColor);
         break;
     case 1:
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
@@ -125,8 +125,8 @@ static BOOL VsRecorderViewerBattleVideo_State_FadeIn(VsRecorderState *param0)
         Bg_SetPriority(BG_LAYER_SUB_1, 3);
         Bg_SetPriority(BG_LAYER_SUB_2, 1);
         Bg_SetPriority(BG_LAYER_SUB_3, 2);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.unk_00, 62, param0->unk_14.unk_10, 3, 0, 0, 0, HEAP_ID_102);
-        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.unk_00, 62, param0->unk_14.unk_10, 7, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.narc, 62, param0->unk_14.bgConfig, 3, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.narc, 62, param0->unk_14.bgConfig, 7, 0, 0, 0, HEAP_ID_102);
         param0->unk_08++;
         break;
     default:
@@ -198,7 +198,7 @@ static BOOL VsRecorderViewerBattleVideo_State_SetupViewer(VsRecorderState *param
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     default:
         VsRecorderViewerMain_SetState(param0, 3);
@@ -290,10 +290,10 @@ static void VsRecorderViewerBattleVideo_CreateSavePromptWindows(VsRecorderState 
 
     v1 = &v0->unk_178[0];
     Window_Init(v1);
-    Window_Add(param0->unk_14.unk_10, v1, 6, 4, 6, 10, 2, 14, v3);
+    Window_Add(param0->unk_14.bgConfig, v1, 6, 4, 6, 10, 2, 14, v3);
     Window_FillTilemap(v1, 0x0);
 
-    v2 = MessageLoader_GetNewString(param0->unk_14.unk_34, 130);
+    v2 = MessageLoader_GetNewString(param0->unk_14.messageLoader, 130);
     v4 = VsRecorderViewerList_CalcCenteredTextX(v1, v2);
 
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, v4, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
@@ -304,10 +304,10 @@ static void VsRecorderViewerBattleVideo_CreateSavePromptWindows(VsRecorderState 
     v1 = &v0->unk_178[1];
 
     Window_Init(v1);
-    Window_Add(param0->unk_14.unk_10, v1, 6, 18, 6, 10, 2, 14, v3);
+    Window_Add(param0->unk_14.bgConfig, v1, 6, 18, 6, 10, 2, 14, v3);
     Window_FillTilemap(v1, 0x0);
 
-    v2 = MessageLoader_GetNewString(param0->unk_14.unk_34, 131);
+    v2 = MessageLoader_GetNewString(param0->unk_14.messageLoader, 131);
     v4 = VsRecorderViewerList_CalcCenteredTextX(v1, v2);
 
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, v4, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
@@ -357,12 +357,12 @@ static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(VsRecorderState *param0
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     case 2:
         VsRecorderViewerBattleVideo_CreateSavePromptWindows(param0);
         VsRecorderViewerList_OpenMainMessage(param0, 296);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.unk_00, 84, param0->unk_14.unk_10, 7, 0, 0, 0, HEAP_ID_102);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(param0->unk_14.narc, 84, param0->unk_14.bgConfig, 7, 0, 0, 0, HEAP_ID_102);
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG3, 1);
         GXLayers_EngineBToggleLayers(GX_PLANEMASK_BG3, 1);
         param0->unk_08++;
@@ -376,7 +376,7 @@ static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(VsRecorderState *param0
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     case 4:
         if (TouchScreen_LocationPressed(&sVsRecorderViewerBattleVideoSavePromptTouchRects[0])) {
@@ -414,7 +414,7 @@ static BOOL VsRecorderViewerBattleVideo_State_SavePrompt(VsRecorderState *param0
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     default:
         if (v0->unk_198 == 1) {
@@ -544,17 +544,17 @@ static BOOL VsRecorderViewerBattleVideo_State_Exit(VsRecorderState *param0)
             param0->unk_08++;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     case 2:
         VsRecorderViewerList_StartNetworkTask(param0, 1);
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
         VsRecorderViewerMenu_InitMenu(param0);
         VsRecorderViewerList_SetDrawSuspended(param0, 0);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 2);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 6);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 3);
-        Bg_ClearTilemap(param0->unk_14.unk_10, 7);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 2);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 6);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 3);
+        Bg_ClearTilemap(param0->unk_14.bgConfig, 7);
         param0->unk_08++;
         break;
     default:
@@ -565,13 +565,13 @@ static BOOL VsRecorderViewerBattleVideo_State_Exit(VsRecorderState *param0)
         if (VsRecorderViewerMenu_StepFadeValue(&v0->unk_08, 0)) {
             VsRecorderViewerList_BlendPalettes(param0);
             VsRecorderViewerMenu_ResetFadeValue(&v0->unk_08);
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.unk_44);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_MAIN_OBJ, 0xC, 16, param0->unk_14.themeColor);
             VsRecorderViewerMain_AdvanceState(param0, 1, 1, param0->unk_10);
             VsRecorderViewerMain_SetState(param0, 5);
             Heap_Free(v0);
         } else {
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
-            PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.unk_44);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
+            PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_BG, 0x2, v0->unk_08, param0->unk_14.themeColor);
         }
 
         break;
@@ -626,7 +626,7 @@ static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(VsRecorderState *param0
             v0->unk_198 = 0;
         }
 
-        PaletteData_BlendMulti(param0->unk_14.unk_14, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.unk_44);
+        PaletteData_BlendMulti(param0->unk_14.palette, PLTTBUF_SUB_OBJ, 0xC, v0->unk_08, param0->unk_14.themeColor);
         break;
     case 4:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_102);
@@ -639,7 +639,7 @@ static BOOL VsRecorderViewerBattleVideo_State_OpenViewer(VsRecorderState *param0
 
         break;
     default:
-        param0->unk_534.unk_1A4 += 1;
+        param0->unk_534.mainEntryCount += 1;
         VsRecorderViewerMain_ResetSelection(param0);
         VsRecorderViewerMain_SetState(param0, 3);
         break;
@@ -665,7 +665,7 @@ static void VsRecorderViewerBattleVideo_TouchCallback(u32 param0, enum TouchScre
     case 1:
         VsRecorderViewerList_PlayRingAnim(v0);
 
-        if ((v0->unk_86C == 0) || (BattleRecording_GetSummaryValue(v1->unk_9C.unk_04, 5, 0) == 1)) {
+        if ((v0->unk_86C == 0) || (BattleRecording_GetSummaryValue(v1->unk_9C.summary, 5, 0) == 1)) {
             VsRecorderViewerMain_SetState(v0, 7);
         } else {
             VsRecorderViewerMain_SetState(v0, 5);
@@ -682,9 +682,9 @@ static void VsRecorderViewerBattleVideo_LoadSelectedRecord(VsRecorderState *para
 {
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
-    v0->unk_10.unk_00 = param0->unk_88C[param0->unk_86C];
-    v0->unk_9C.unk_00 = v0->unk_10.unk_00;
-    v0->unk_9C.unk_04 = param0->unk_87C[param0->unk_86C];
+    v0->unk_10.profile = param0->unk_88C[param0->unk_86C];
+    v0->unk_9C.profile = v0->unk_10.profile;
+    v0->unk_9C.summary = param0->unk_87C[param0->unk_86C];
 }
 
 static void VsRecorderViewerBattleVideo_CreateMessageWindow(VsRecorderState *param0)
@@ -695,7 +695,7 @@ static void VsRecorderViewerBattleVideo_CreateMessageWindow(VsRecorderState *par
 
     v1 = &v0->unk_178[0];
     Window_Init(v1);
-    Window_Add(param0->unk_14.unk_10, v1, 6, 8, 3, 16, 2, 14, v2);
+    Window_Add(param0->unk_14.bgConfig, v1, 6, 8, 3, 16, 2, 14, v2);
     VsRecorderViewerBattleVideo_SetMessageWindowText(param0, 121);
 }
 
@@ -718,7 +718,7 @@ static void VsRecorderViewerBattleVideo_SetMessageWindowText(VsRecorderState *pa
 
     Window_FillTilemap(v1, 0x0);
 
-    v2 = MessageLoader_GetNewString(param0->unk_14.unk_34, param1);
+    v2 = MessageLoader_GetNewString(param0->unk_14.messageLoader, param1);
     v3 = VsRecorderViewerList_CalcCenteredTextX(v1, v2);
 
     Text_AddPrinterWithParamsAndColor(v1, FONT_SYSTEM, v2, v3, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 13, 0), NULL);
@@ -732,15 +732,15 @@ static void VsRecorderViewerBattleVideo_CreateStatusSprite(VsRecorderState *para
 
     VsRecorderViewerMenu_LoadSpriteResourceSetA(param0, NNS_G2D_VRAM_TYPE_2DSUB);
 
-    v0->unk_158[0].unk_08 = VsRecorderViewerMenu_CreateCursorSprite(param0, NNS_G2D_VRAM_TYPE_2DSUB);
+    v0->unk_158[0].sprite = VsRecorderViewerMenu_CreateCursorSprite(param0, NNS_G2D_VRAM_TYPE_2DSUB);
 
     VsRecorderViewerMenu_InitLabelOAM(&v0->unk_158[0], &param0->unk_14, NNS_G2D_VRAM_TYPE_2DSUB);
     VsRecorderViewerMenu_SetLabelOAMText(&v0->unk_158[0], &param0->unk_14, 3);
 
-    ManagedSprite_SetAnim(v0->unk_158[0].unk_08, 0);
-    ManagedSprite_SetPositionXY(v0->unk_158[0].unk_08, 80, 232);
-    FontOAM_SetXY(v0->unk_158[0].unk_0C, 36, -8);
-    FontOAM_SetDrawFlag(v0->unk_158[0].unk_0C, 1);
+    ManagedSprite_SetAnim(v0->unk_158[0].sprite, 0);
+    ManagedSprite_SetPositionXY(v0->unk_158[0].sprite, 80, 232);
+    FontOAM_SetXY(v0->unk_158[0].fontOAM, 36, -8);
+    FontOAM_SetDrawFlag(v0->unk_158[0].fontOAM, 1);
 }
 
 static void VsRecorderViewerBattleVideo_FreeStatusSprite(VsRecorderState *param0)
@@ -748,6 +748,6 @@ static void VsRecorderViewerBattleVideo_FreeStatusSprite(VsRecorderState *param0
     VsRecorderViewerBattleVideo *v0 = param0->unk_860;
 
     VsRecorderViewerMenu_FreeLabelOAM(&v0->unk_158[0]);
-    Sprite_DeleteAndFreeResources(v0->unk_158[0].unk_08);
+    Sprite_DeleteAndFreeResources(v0->unk_158[0].sprite);
     VsRecorderViewerMenu_FreeCursorSpriteResources(param0);
 }

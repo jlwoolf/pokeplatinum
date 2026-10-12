@@ -6,9 +6,9 @@
 #include "global_terminal/struct_global_terminal_0222BED8_sub2.h"
 
 typedef struct {
-    GlobalTerminalPlayerProfile unk_00;
-    GlobalTerminalRecordAltData unk_80;
-    GlobalTerminalRecordAltExtra unk_E4;
+    GlobalTerminalPlayerProfile profile;
+    GlobalTerminalRecordAltData record;
+    GlobalTerminalRecordAltExtra extra;
 } VsRecorderViewerTransferRecordData;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_022349A8_SUB3_SUB3_H

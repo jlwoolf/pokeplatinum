@@ -8,11 +8,11 @@
 #include "sprite_system.h"
 
 typedef struct {
-    PlayerProfile *unk_00;
-    BattleRecordingSummary *unk_04;
+    PlayerProfile *profile;
+    BattleRecordingSummary *summary;
     u8 padding_08[4];
-    ManagedSprite *unk_0C[12];
-    Window unk_3C[8];
+    ManagedSprite *sprites[12];
+    Window windows[8];
 } VsRecorderViewerSummaryPanel;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_02233F74_H

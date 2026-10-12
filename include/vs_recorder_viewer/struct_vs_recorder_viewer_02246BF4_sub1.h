@@ -7,12 +7,12 @@
 #include "touch_screen.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    BOOL unk_08;
-    ManagedSprite *unk_0C;
-    TouchScreenRect *unk_10;
-    VsRecorderViewerIdEntryButtonRect unk_14;
+    int value;
+    int category;
+    BOOL selected;
+    ManagedSprite *sprite;
+    TouchScreenRect *touchRect;
+    VsRecorderViewerIdEntryButtonRect rect;
     u8 padding_1A[2];
 } VsRecorderViewerIdEntryButton;
 

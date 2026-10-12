@@ -19,31 +19,31 @@
 #include "touch_screen_actions.h"
 
 typedef struct {
-    NARC *unk_00;
-    SpriteSystem *unk_04;
-    SpriteManager *unk_08;
+    NARC *narc;
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
     u8 padding_0C[4];
-    BgConfig *unk_10;
-    PaletteData *unk_14;
-    TouchScreenActions *unk_18;
-    TouchScreenRect unk_1C[5];
-    BOOL unk_30;
-    MessageLoader *unk_34;
-    MessageLoader *unk_38;
-    FontOAMManager *unk_3C;
-    int unk_40;
-    int unk_44;
-    u8 unk_48;
+    BgConfig *bgConfig;
+    PaletteData *palette;
+    TouchScreenActions *touchScreenActions;
+    TouchScreenRect touchRects[5];
+    BOOL returnToMainMenu;
+    MessageLoader *messageLoader;
+    MessageLoader *secondaryMessageLoader;
+    FontOAMManager *fontOAMManager;
+    int fadeValue;
+    int themeColor;
+    u8 theme;
     u8 padding_49[3];
-    G3DPipelineBuffers *unk_4C;
-    PokemonSpriteManager *unk_50;
-    VsRecorderViewerTransferContext unk_54;
-    VsRecorderViewerListScrollBar unk_46C;
-    VsRecorderViewerListWindow unk_48C;
+    G3DPipelineBuffers *g3dPipeline;
+    PokemonSpriteManager *pokemonSpriteManager;
+    VsRecorderViewerTransferContext transferContext;
+    VsRecorderViewerListScrollBar scrollBar;
+    VsRecorderViewerListWindow listWindow;
     u8 padding_4D8[24];
-    VsRecorderViewerMenuSubContext unk_4F0;
-    BOOL unk_510;
-    BOOL unk_514;
+    VsRecorderViewerMenuSubContext subContext;
+    BOOL drawing;
+    BOOL drawSuspended;
 } VsRecorderViewerMenuContext;
 
 #endif // POKEPLATINUM_STRUCT_VS_RECORDER_VIEWER_0223118C_H

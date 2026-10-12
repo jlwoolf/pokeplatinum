@@ -6,13 +6,13 @@
 #include "vs_recorder_viewer/struct_vs_recorder_viewer_022307C0_sub1.h"
 
 typedef struct {
-    VsRecorderViewerMenuEntry unk_00[5];
-    VsRecorderViewerMenuEntry unk_C8[5];
-    const VsRecorderMenuEntry *unk_190[5];
-    int unk_1A4;
+    VsRecorderViewerMenuEntry mainEntries[5];
+    VsRecorderViewerMenuEntry subEntries[5];
+    const VsRecorderMenuEntry *entryConfigs[5];
+    int mainEntryCount;
     u8 padding_1A8[4];
-    int unk_1AC;
-    int unk_1B0;
+    int subEntryCount;
+    int selectedIndex;
     u8 padding_1B4[8];
 } VsRecorderViewerMenu;
 
