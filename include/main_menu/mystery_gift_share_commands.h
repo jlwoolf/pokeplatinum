@@ -1,0 +1,6 @@
+#ifndef POKEPLATINUM_MAIN_MENU_0222D2F8_H
+#define POKEPLATINUM_MAIN_MENU_0222D2F8_H
+
+void MysteryGiftShare_InitCommands(void *param0);
+
+#endif // POKEPLATINUM_MAIN_MENU_0222D2F8_H

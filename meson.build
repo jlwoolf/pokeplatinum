@@ -221,7 +221,7 @@ main = executable('main',
         libsyscall_dep,
     ],
     link_with: [
-        libcrypto_ov97,
+        libcrypto_main_menu,
         libcrypto_static,
         libgds,
         libspl,

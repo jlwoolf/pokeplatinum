@@ -9,8 +9,8 @@
 
 #include "main_menu/main_menu_util.h"
 #include "main_menu/mystery_gift_app.h"
-#include "main_menu/ov97_0222D04C.h"
-#include "main_menu/ov97_02232054.h"
+#include "main_menu/mystery_gift_share.h"
+#include "main_menu/mystery_gift_util.h"
 #include "savedata/save_table.h"
 
 #include "bg_window.h"
@@ -1418,8 +1418,8 @@ static int WonderCardsApp_Main(ApplicationManager *appMan, enum WonderCardsAppSt
         *state = WC_APP_STATE_INIT_GRAPHICS;
         break;
     case WC_APP_STATE_INIT_GRAPHICS:
-        ov97_02232054();
-        ov97_02232074(appData->bgConfig);
+        MysteryGiftUtil_SetupGxBanks();
+        MysteryGiftUtil_InitBg(appData->bgConfig);
         *state = WC_APP_STATE_LOAD_GRAPHICS;
         break;
     case WC_APP_STATE_LOAD_GRAPHICS:
@@ -1585,7 +1585,7 @@ static int WonderCardsApp_Main(ApplicationManager *appMan, enum WonderCardsAppSt
     case WC_APP_STATE_DISTRIBUTION_UNDERWAY:
         if (--appData->shouldSendWc == FALSE) {
             MainMenuUtil_EncryptWonderCard(&appData->mysteryGiftAppData.eventData, &appData->currentWonderCard, appData->heapID);
-            ov97_0222D1F0((const void *)&appData->currentWonderCard, sizeof(WonderCard));
+            MysteryGiftShare_SendDataHuge((const void *)&appData->currentWonderCard, sizeof(WonderCard));
             UpdateShareCount(appData);
             *state = WC_APP_STATE_START_COMM_SYNC;
         }
@@ -1653,7 +1653,7 @@ static int PrepareSelectedWCForSharing(WonderCardsAppData *appData)
     appData->mysteryGiftAppData.eventData.header.shareable = FALSE;
     appData->mysteryGiftAppData.eventData.header.fromSharing = TRUE;
 
-    ov97_0222D1C4(&appData->mysteryGiftAppData, appData->saveData, 15);
+    MysteryGiftShare_StartServer(&appData->mysteryGiftAppData, appData->saveData, 15);
 
     return NULL;
 }
@@ -1801,7 +1801,7 @@ static void UpdateConnectedPlayersCount(WonderCardsAppData *appData, Window *win
 
 static void StopWirelessCommunication(WonderCardsAppData *appData, enum WonderCardsAppState *state, enum WonderCardsAppState nextState)
 {
-    ov97_0222D2DC();
+    MysteryGiftShare_End();
     NetworkIcon_Destroy();
     appData->queuedState = nextState;
     *state = WC_APP_STATE_WAIT_FOR_COMM_MAN_EXIT;
@@ -1852,7 +1852,7 @@ const ApplicationManagerTemplate gWonderCardsAppTemplate = {
 
 void WonderCardsApp_ShowWondercard(BgConfig *bgConfig, WonderCard *wonderCard, enum HeapID heapID)
 {
-    ov97_02232074(bgConfig);
+    MysteryGiftUtil_InitBg(bgConfig);
 
     WonderCardsAppData *appData = Heap_AllocAtEnd(heapID, sizeof(WonderCardsAppData));
     memset(appData, 0, sizeof(WonderCardsAppData));
