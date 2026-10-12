@@ -8,8 +8,8 @@
 #include "applications/pokedex/pokedex_sort_data.h"
 #include "applications/pokedex/pokedex_text_manager.h"
 #include "applications/pokedex/pokedex_updater.h"
-#include "applications/pokedex/struct_ov21_021D423C_decl.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_state_set_decl.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "bg_window.h"
 #include "heap.h"
@@ -48,30 +48,30 @@ int PokedexMain_Init(ApplicationManager *appMan, int *state);
 int PokedexMain_Main(ApplicationManager *appMan, int *state);
 int PokedexMain_Exit(ApplicationManager *appMan, int *state);
 PokedexApp *PokedexMain_NewPokedexApp(enum HeapID heapID, const PokedexOverlayArgs *pokedexOverlayArgs);
-BOOL ov21_021D10B8(PokedexApp *pokedexApp);
+BOOL PokedexMain_Update(PokedexApp *pokedexApp);
 void PokedexMain_InitGX(enum HeapID heapID);
 void PokedexMain_FreeGraphics(void);
-void ov21_021D12D8(PokedexApp *pokedexApp);
-PokedexUpdater *ov21_021D12EC(PokedexApp *pokedexApp);
-PokedexUpdater *ov21_021D1300(PokedexApp *pokedexApp);
-PokedexUpdater *ov21_021D1314(PokedexApp *pokedexApp);
-PokedexUpdater *ov21_021D1328(PokedexApp *pokedexApp);
-UnkStruct_ov21_021D423C *ov21_021D133C(PokedexApp *pokedexApp);
-UnkStruct_ov21_021D423C *ov21_021D1350(PokedexApp *pokedexApp);
-UnkStruct_ov21_021D423C *ov21_021D1364(PokedexApp *pokedexApp);
-UnkStruct_ov21_021D423C *ov21_021D1378(PokedexApp *pokedexApp);
-int *ov21_021D138C(PokedexApp *pokedexApp);
-int *ov21_021D13A0(PokedexApp *pokedexApp);
-int *ov21_021D13B4(PokedexApp *pokedexApp);
-int *ov21_021D13C8(PokedexApp *pokedexApp);
-BOOL *ov21_021D13DC(PokedexApp *pokedexApp);
+void PokedexMain_UpdateSprites(PokedexApp *pokedexApp);
+PokedexUpdater *PokedexMain_GetUpdater1(PokedexApp *pokedexApp);
+PokedexUpdater *PokedexMain_GetUpdater2(PokedexApp *pokedexApp);
+PokedexUpdater *PokedexMain_GetUpdater3(PokedexApp *pokedexApp);
+PokedexUpdater *PokedexMain_GetUpdater4(PokedexApp *pokedexApp);
+PokedexScreenStateSet *PokedexMain_GetScreenStateSet1(PokedexApp *pokedexApp);
+PokedexScreenStateSet *PokedexMain_GetScreenStateSet2(PokedexApp *pokedexApp);
+PokedexScreenStateSet *PokedexMain_GetScreenStateSet3(PokedexApp *pokedexApp);
+PokedexScreenStateSet *PokedexMain_GetScreenStateSet4(PokedexApp *pokedexApp);
+int *PokedexMain_GetTransitionRequest1(PokedexApp *pokedexApp);
+int *PokedexMain_GetTransitionRequest2(PokedexApp *pokedexApp);
+int *PokedexMain_GetTransitionRequest3(PokedexApp *pokedexApp);
+int *PokedexMain_GetTransitionRequest4(PokedexApp *pokedexApp);
+BOOL *PokedexMain_GetExitFlag(PokedexApp *pokedexApp);
 PokedexSortData *PokedexMain_GetSortData(PokedexApp *pokedexApp);
 PokedexGraphicData *PokedexMain_GetGraphicData(PokedexApp *pokedexApp);
-PokedexScreenManager *ov21_021D1410(PokedexApp *pokedexApp, int param1);
-PokedexScreenManager *ov21_021D1430(PokedexApp *pokedexApp, int param1);
-void ov21_021D144C(Sprite *param0, int param1);
+PokedexScreenManager *PokedexMain_GetScreenManager(PokedexApp *pokedexApp, int param1);
+PokedexScreenManager *PokedexMain_GetSubScreenManager(PokedexApp *pokedexApp, int param1);
+void PokedexMain_SetCursorAnimFrame(Sprite *param0, int param1);
 void PokedexMain_SetButtonY(Sprite *param0, PokedexTextData *textData, int setY);
-void ov21_021D1524(Sprite *param0, PokedexTextData *textData, int param2, int param3, int param4);
+void PokedexMain_SetTextSprite(Sprite *param0, PokedexTextData *textData, int param2, int param3, int param4);
 void PokedexMain_SetHitTableRect(TouchScreenHitTable *hitTable, int top, int bottom, int left, int right);
 void PokedexMain_SetLoadingScreenParams(PokedexLoadingScreen *pokedexLoadingScreen, BgConfig *bgConfig, int layer, NNSG2dScreenData *screenData, int topStart, int topEnd, int bottomStart, int bottomEnd, int duration);
 BOOL PokedexMain_LoadingScreenMove(PokedexLoadingScreen *pokedexLoadingScreen);
@@ -80,8 +80,8 @@ Window *PokedexMain_DisplayNameNumber(PokedexGraphicData *pokedexgraphicData, co
 Window *PokedexMain_DisplayNameNumberNational(PokedexTextManager *textMan, enum HeapID heapID, int species);
 Window *PokedexMain_DisplayNameNumberLocal(PokedexTextManager *textMan, enum HeapID heapID, int species);
 void PokedexMain_EntryNameNumber(PokedexGraphicData *param0, const PokedexSortData *pokedexSortData, enum HeapID heapID, int statusIndex, fx32 x, fx32 y);
-void ov21_021D1848(PokedexGraphicData *pokedexGraphicData, int param1, int param2);
-void ov21_021D1858(PokedexSpeciesLabel *param0, int param1, int param2);
+void PokedexMain_SetSpeciesLabelPos(PokedexGraphicData *pokedexGraphicData, int param1, int param2);
+void PokedexMain_SetSpeciesLabelXY(PokedexSpeciesLabel *param0, int param1, int param2);
 void PokedexMain_DisplayPokemonSprite(PokedexGraphicData *pokedexGraphicData, PokedexSortData *pokedexSortData, int species, int face, int x, int y);
 u32 PokedexMain_DisplaySpeciesSprite(PokedexGraphicData *pokedexGraphicData, const PokedexSortData *pokedexSortData, int species, int face, int x, int y, int formIndex, int spriteIndex);
 u32 PokedexMain_DisplayUnownSprite(PokedexGraphicData *pokedexGraphicData, const PokedexSortData *pokedexSortData, int face, int x, int y, int formIndex, int spriteIndex);

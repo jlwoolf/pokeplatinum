@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "applications/pokedex/formmain.h"
-#include "applications/pokedex/ov21_021E29DC.h"
+#include "applications/pokedex/pokedex_info_menu.h"
 #include "applications/pokedex/pokedex_app.h"
 #include "applications/pokedex/pokedex_data_manager.h"
 #include "applications/pokedex/pokedex_graphics.h"
@@ -13,8 +13,8 @@
 #include "applications/pokedex/pokedex_sort.h"
 #include "applications/pokedex/pokedex_sort_data.h"
 #include "applications/pokedex/pokedex_text_manager.h"
-#include "applications/pokedex/struct_ov21_021D4660.h"
-#include "applications/pokedex/struct_ov21_021E68F4.h"
+#include "applications/pokedex/struct_pokedex_screen_state.h"
+#include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"
@@ -84,10 +84,10 @@ typedef struct FormSubGraphics {
 
 static FormSubData *LoadAppData(enum HeapID heapID, PokedexApp *pokedexApp);
 static PokedexGraphicData **LoadAppGraphics(enum HeapID heapID, PokedexApp *pokedexApp);
-static UnkStruct_ov21_021D4660 *ScreenStates(enum HeapID heapID, PokedexApp *pokedexApp);
+static PokedexScreenState *ScreenStates(enum HeapID heapID, PokedexApp *pokedexApp);
 static void FreeFormSubData(FormSubData *formSubData);
 static void FreeGraphicData(PokedexGraphicData **graphicData);
-static void FreeScreenStates(UnkStruct_ov21_021D4660 *param0);
+static void FreeScreenStates(PokedexScreenState *param0);
 static int NumStates(void);
 static BOOL FormSubDataEnter(PokedexDataManager *dataMan, void *data);
 static BOOL FormSubDataUpdate(PokedexDataManager *dataMan, void *data);
@@ -125,7 +125,7 @@ void FormSub_Init(PokedexScreenManager *screenMan, PokedexApp *pokedexApp, enum 
 {
     FormSubData *formSubData = LoadAppData(heapID, pokedexApp);
     PokedexGraphicData **pokedexGraphicData = LoadAppGraphics(heapID, pokedexApp);
-    UnkStruct_ov21_021D4660 *screenStates = ScreenStates(heapID, pokedexApp);
+    PokedexScreenState *screenStates = ScreenStates(heapID, pokedexApp);
 
     screenMan->pageData = formSubData;
     screenMan->pageGraphics = pokedexGraphicData;
@@ -154,9 +154,9 @@ static FormSubData *LoadAppData(enum HeapID heapID, PokedexApp *pokedexApp)
     GF_ASSERT(formSubData);
     memset(formSubData, 0, sizeof(FormSubData));
 
-    formSubData->unk_00 = ov21_021D13A0(pokedexApp);
-    formSubData->subScreen = ov21_021D1430(pokedexApp, 3);
-    formSubData->mainScreen = ov21_021D1410(pokedexApp, 3);
+    formSubData->unk_00 = PokedexMain_GetTransitionRequest2(pokedexApp);
+    formSubData->subScreen = PokedexMain_GetSubScreenManager(pokedexApp, 3);
+    formSubData->mainScreen = PokedexMain_GetScreenManager(pokedexApp, 3);
     formSubData->sortData = PokedexMain_GetSortData(pokedexApp);
 
     return formSubData;
@@ -174,7 +174,7 @@ static PokedexGraphicData **LoadAppGraphics(enum HeapID heapID, PokedexApp *poke
     return graphicData;
 }
 
-static UnkStruct_ov21_021D4660 *ScreenStates(enum HeapID heapID, PokedexApp *param1)
+static PokedexScreenState *ScreenStates(enum HeapID heapID, PokedexApp *param1)
 {
     return NULL;
 }
@@ -191,7 +191,7 @@ static void FreeGraphicData(PokedexGraphicData **graphicData)
     Heap_Free(graphicData);
 }
 
-static void FreeScreenStates(UnkStruct_ov21_021D4660 *param0)
+static void FreeScreenStates(PokedexScreenState *param0)
 {
     return;
 }
@@ -231,10 +231,10 @@ static BOOL FormSubDataUpdate(PokedexDataManager *dataMan, void *data)
         return FALSE;
     }
 
-    if (ov21_021E33AC(formSubData->subScreen)) {
+    if (PokedexInfoMenu_IsSubActive2(formSubData->subScreen)) {
         SetButtonOutOfBounds(formSubPageData);
 
-        if (ov21_021E33BC(formSubData->subScreen) && (ov21_021D3998(formSubData->sortData) == 2)) {
+        if (PokedexInfoMenu_IsSubActive3(formSubData->subScreen) && (PokedexSort_GetInputState(formSubData->sortData) == 2)) {
             CheckButtonKeyHeld(formSubPageData, formSubData);
         }
 
@@ -298,7 +298,7 @@ static BOOL FormSubGraphicsUpdate(void *graphics, PokedexGraphicsManager *graphi
     PokedexGraphicData **graphicData = graphics;
     FormSubGraphics *formSubGraphics = graphicsMan->pageGraphics;
 
-    if (ov21_021E33AC(formSubData->subScreen)) {
+    if (PokedexInfoMenu_IsSubActive2(formSubData->subScreen)) {
         UpdateButtonDisplay(graphicData, formSubGraphics, formSubPageData, graphicsMan->heapID);
         CursorToButton(graphicData, formSubData);
     }
@@ -356,7 +356,7 @@ static void InitBlendTransition(FormSubGraphics *formSubGraphics, PokedexGraphic
 {
     SetSpriteOAMModesXLU(formSubGraphics);
 
-    if (ov21_021E33A4(formSubData->subScreen)) {
+    if (PokedexInfoMenu_IsSubActive1(formSubData->subScreen)) {
         if (isEntering) {
             PokedexGraphics_InitBlendTransition(&(*param1)->blendSub, 1, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), 1);
         } else {
@@ -369,7 +369,7 @@ static BOOL AdvanceBlendTransition(FormSubGraphics *formSubGraphics, PokedexGrap
 {
     BOOL transitionComplete;
 
-    if (ov21_021E33A4(formSubData->subScreen)) {
+    if (PokedexInfoMenu_IsSubActive1(formSubData->subScreen)) {
         transitionComplete = PokedexGraphics_TakeBlendTransitionStep(&(*graphicData)->blendSub);
     } else {
         transitionComplete = BrightnessController_IsTransitionComplete(BRIGHTNESS_SUB_SCREEN);
@@ -431,7 +431,7 @@ static void ButtonTouchActions(u32 button, enum TouchScreenButtonState touchScre
     case TOUCH_BUTTON_PRESSED:
         switch (button) {
         case FORMSUB_ANOTHER:
-            ov21_021E33B4(formSubData->subScreen, TRUE);
+            PokedexInfoMenu_SetSubActive(formSubData->subScreen, TRUE);
             formSubPageData->buttonPressed = TRUE;
             break;
         default:
@@ -579,7 +579,7 @@ static void UpdateButtonGraphics(PokedexGraphicData **graphicData, Sprite *sprit
     BOOL validFrame = FALSE;
     int memberIndex;
 
-    ov21_021D144C(sprite, buttonState);
+    PokedexMain_SetCursorAnimFrame(sprite, buttonState);
     UpdateButtonText(sprite, textData, y, textPaletteOffsetUnpressed, textPaletteOffsetPressed);
 
     switch (Sprite_GetAnimFrame(sprite)) {
@@ -643,7 +643,7 @@ static void CheckButtonKeyHeld(FormSubPageData *formSubPageData, FormSubData *fo
 
 static void CursorToButton(PokedexGraphicData **graphicdata, const FormSubData *formSubData)
 {
-    if (ov21_021E33BC(formSubData->subScreen) == 1) {
+    if (PokedexInfoMenu_IsSubActive3(formSubData->subScreen) == 1) {
         TransformCursor(graphicdata, BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
     }
 }
