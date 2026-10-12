@@ -11,11 +11,11 @@
 #include "wifi_lobby_map/wifi_lobby_map_0225C9B4.h"
 #include "wifi_lobby_map/wifi_lobby_map_0225D9A4.h"
 #include "wifi_lobby_map/wifi_lobby_map_02262DA8.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225CA20_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225CC54_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225DEE8_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_02263344_decl.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_02265F38.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_actor_manager_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_actor_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_app_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_task_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_recruit_substate.h"
 
 #include "comm_manager.h"
 #include "communication_information.h"
@@ -35,7 +35,7 @@ typedef struct {
     s16 unk_04;
     u8 unk_06;
     u8 unk_07;
-} UnkStruct_wifi_lobby_map_02266C68;
+} WiFiLobbyMapRecruitDisplay;
 
 typedef struct {
     s16 unk_00;
@@ -51,24 +51,24 @@ typedef struct {
     BOOL unk_14;
     ListMenuTemplate unk_18;
     u32 unk_38;
-    UnkStruct_wifi_lobby_map_02266C68 unk_3C;
-} UnkStruct_wifi_lobby_map_02266AF0;
+    WiFiLobbyMapRecruitDisplay unk_3C;
+} WiFiLobbyMapRecruitWork;
 
 typedef struct {
-    UnkStruct_wifi_lobby_map_02266C68 unk_00;
-} UnkStruct_wifi_lobby_map_022669FC;
+    WiFiLobbyMapRecruitDisplay unk_00;
+} WiFiLobbyMapActivityTaskState;
 
-static void wifi_lobby_map_02266AF0(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_02263344 *param1, UnkStruct_wifi_lobby_map_0225DEE8 *param2, u32 param3, u32 param4);
-static void wifi_lobby_map_02266B18(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_02263344 *param1, u32 param2, u32 param3);
-static void wifi_lobby_map_02266B30(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2, u32 param3);
-static void wifi_lobby_map_02266BA0(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1);
-static BOOL wifi_lobby_map_02266BAC(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, UnkStruct_wifi_lobby_map_02265F38 *param2, UnkStruct_wifi_lobby_map_02263344 *param3, u32 param4);
-static void wifi_lobby_map_02266C68(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2, u32 param3, s32 param4);
-static void wifi_lobby_map_02266CB0(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1);
-static void wifi_lobby_map_02266CCC(UnkStruct_wifi_lobby_map_02266C68 *param0, s32 param1);
-static void wifi_lobby_map_02266CFC(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, BOOL param2);
-static void wifi_lobby_map_02266CF0(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, BOOL param2);
-static void wifi_lobby_map_02266D08(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, BOOL param2, BOOL param3);
+static void wifi_lobby_map_02266AF0(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapTask *param1, WiFiLobbyMapApp *param2, u32 param3, u32 param4);
+static void wifi_lobby_map_02266B18(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapTask *param1, u32 param2, u32 param3);
+static void wifi_lobby_map_02266B30(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapApp *param1, u32 param2, u32 param3);
+static void wifi_lobby_map_02266BA0(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapApp *param1);
+static BOOL wifi_lobby_map_02266BAC(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapApp *param1, WiFiLobbyMapRecruitSubstate *param2, WiFiLobbyMapTask *param3, u32 param4);
+static void wifi_lobby_map_02266C68(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, u32 param2, u32 param3, s32 param4);
+static void wifi_lobby_map_02266CB0(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1);
+static void wifi_lobby_map_02266CCC(WiFiLobbyMapRecruitDisplay *param0, s32 param1);
+static void wifi_lobby_map_02266CFC(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, BOOL param2);
+static void wifi_lobby_map_02266CF0(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, BOOL param2);
+static void wifi_lobby_map_02266D08(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, BOOL param2, BOOL param3);
 
 static const ListMenuTemplate Unk_wifi_lobby_map_0226DC94 = {
     NULL,
@@ -92,10 +92,10 @@ static const ListMenuTemplate Unk_wifi_lobby_map_0226DC94 = {
     NULL
 };
 
-BOOL wifi_lobby_map_02265F38(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2)
+BOOL wifi_lobby_map_02265F38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, u32 param2)
 {
-    UnkStruct_wifi_lobby_map_02266AF0 *v0;
-    UnkStruct_wifi_lobby_map_02265F38 *v1;
+    WiFiLobbyMapRecruitWork *v0;
+    WiFiLobbyMapRecruitSubstate *v1;
     WiFiPlazaLobbyState *v2;
 
     v1 = wifi_lobby_map_02262E38(param0);
@@ -169,7 +169,7 @@ BOOL wifi_lobby_map_02265F38(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0:
-        v0 = wifi_lobby_map_02262E3C(param0, sizeof(UnkStruct_wifi_lobby_map_02266AF0));
+        v0 = wifi_lobby_map_02262E3C(param0, sizeof(WiFiLobbyMapRecruitWork));
         wifi_lobby_map_02262E8C(param0);
         break;
     case 1:
@@ -738,7 +738,7 @@ BOOL wifi_lobby_map_02265F38(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
     return 0;
 }
 
-BOOL wifi_lobby_map_022669B8(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2)
+BOOL wifi_lobby_map_022669B8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, u32 param2)
 {
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0:
@@ -761,9 +761,9 @@ BOOL wifi_lobby_map_022669B8(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
     return 0;
 }
 
-BOOL wifi_lobby_map_022669FC(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2)
+BOOL wifi_lobby_map_022669FC(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, u32 param2)
 {
-    UnkStruct_wifi_lobby_map_022669FC *v0 = wifi_lobby_map_02262E80(param0);
+    WiFiLobbyMapActivityTaskState *v0 = wifi_lobby_map_02262E80(param0);
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0: {
@@ -772,7 +772,7 @@ BOOL wifi_lobby_map_022669FC(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
         u32 v3;
         u32 v4;
 
-        v0 = wifi_lobby_map_02262E3C(param0, sizeof(UnkStruct_wifi_lobby_map_022669FC));
+        v0 = wifi_lobby_map_02262E3C(param0, sizeof(WiFiLobbyMapActivityTaskState));
         v2 = wifi_lobby_map_0225DF40(param1);
 
         switch (v2) {
@@ -808,8 +808,8 @@ BOOL wifi_lobby_map_022669FC(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
             wifi_lobby_map_0225DFEC(param1);
 
             {
-                UnkStruct_wifi_lobby_map_0225CA20 *v5;
-                UnkStruct_wifi_lobby_map_0225CC54 *v6;
+                WiFiLobbyMapActorManager *v5;
+                WiFiLobbyMapActor *v6;
 
                 v5 = wifi_lobby_map_0225DEF0(param1);
                 v6 = wifi_lobby_map_0225CCAC(v5);
@@ -828,7 +828,7 @@ BOOL wifi_lobby_map_022669FC(UnkStruct_wifi_lobby_map_02263344 *param0, UnkStruc
     return 0;
 }
 
-static void wifi_lobby_map_02266AF0(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_02263344 *param1, UnkStruct_wifi_lobby_map_0225DEE8 *param2, u32 param3, u32 param4)
+static void wifi_lobby_map_02266AF0(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapTask *param1, WiFiLobbyMapApp *param2, u32 param3, u32 param4)
 {
     String *v0 = wifi_lobby_map_0225E20C(param2, 0, param3);
     wifi_lobby_map_0225DF8C(param2, v0);
@@ -836,7 +836,7 @@ static void wifi_lobby_map_02266AF0(UnkStruct_wifi_lobby_map_02266AF0 *param0, U
     wifi_lobby_map_02262E88(param1, 25);
 }
 
-static void wifi_lobby_map_02266B18(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_02263344 *param1, u32 param2, u32 param3)
+static void wifi_lobby_map_02266B18(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapTask *param1, u32 param2, u32 param3)
 {
     param0->unk_04 = param2;
     param0->unk_06 = param3;
@@ -846,7 +846,7 @@ static void wifi_lobby_map_02266B18(UnkStruct_wifi_lobby_map_02266AF0 *param0, U
     wifi_lobby_map_02262E88(param1, 26);
 }
 
-static void wifi_lobby_map_02266B30(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2, u32 param3)
+static void wifi_lobby_map_02266B30(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapApp *param1, u32 param2, u32 param3)
 {
     int v0;
     String *v1;
@@ -870,12 +870,12 @@ static void wifi_lobby_map_02266B30(UnkStruct_wifi_lobby_map_02266AF0 *param0, U
     param0->unk_18.choices = wifi_lobby_map_0225E054(param1);
 }
 
-static void wifi_lobby_map_02266BA0(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1)
+static void wifi_lobby_map_02266BA0(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapApp *param1)
 {
     wifi_lobby_map_0225E034(param1);
 }
 
-static BOOL wifi_lobby_map_02266BAC(UnkStruct_wifi_lobby_map_02266AF0 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, UnkStruct_wifi_lobby_map_02265F38 *param2, UnkStruct_wifi_lobby_map_02263344 *param3, u32 param4)
+static BOOL wifi_lobby_map_02266BAC(WiFiLobbyMapRecruitWork *param0, WiFiLobbyMapApp *param1, WiFiLobbyMapRecruitSubstate *param2, WiFiLobbyMapTask *param3, u32 param4)
 {
     u32 v0;
     u32 v1;
@@ -924,7 +924,7 @@ static BOOL wifi_lobby_map_02266BAC(UnkStruct_wifi_lobby_map_02266AF0 *param0, U
     return 0;
 }
 
-static void wifi_lobby_map_02266C68(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, u32 param2, u32 param3, s32 param4)
+static void wifi_lobby_map_02266C68(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, u32 param2, u32 param3, s32 param4)
 {
     static const u8 v0[2] = {
         8,
@@ -933,7 +933,7 @@ static void wifi_lobby_map_02266C68(UnkStruct_wifi_lobby_map_02266C68 *param0, U
 
     GF_ASSERT(param3 < 2);
 
-    memset(param0, 0, sizeof(UnkStruct_wifi_lobby_map_02266C68));
+    memset(param0, 0, sizeof(WiFiLobbyMapRecruitDisplay));
 
     param0->unk_06 = param3;
     param0->unk_03 = param2;
@@ -942,13 +942,13 @@ static void wifi_lobby_map_02266C68(UnkStruct_wifi_lobby_map_02266C68 *param0, U
     wifi_lobby_map_0225E104(param1, 18, 3, 13, v0[param3]);
 }
 
-static void wifi_lobby_map_02266CB0(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1)
+static void wifi_lobby_map_02266CB0(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1)
 {
-    memset(param0, 0, sizeof(UnkStruct_wifi_lobby_map_02266C68));
+    memset(param0, 0, sizeof(WiFiLobbyMapRecruitDisplay));
     wifi_lobby_map_0225E12C(param1);
 }
 
-static void wifi_lobby_map_02266CCC(UnkStruct_wifi_lobby_map_02266C68 *param0, s32 param1)
+static void wifi_lobby_map_02266CCC(WiFiLobbyMapRecruitDisplay *param0, s32 param1)
 {
     s16 v0 = param1 / 30;
 
@@ -958,17 +958,17 @@ static void wifi_lobby_map_02266CCC(UnkStruct_wifi_lobby_map_02266C68 *param0, s
     }
 }
 
-static void wifi_lobby_map_02266CF0(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, BOOL param2)
+static void wifi_lobby_map_02266CF0(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, BOOL param2)
 {
     wifi_lobby_map_02266D08(param0, param1, param2, 0);
 }
 
-static void wifi_lobby_map_02266CFC(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, BOOL param2)
+static void wifi_lobby_map_02266CFC(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, BOOL param2)
 {
     wifi_lobby_map_02266D08(param0, param1, param2, 1);
 }
 
-static void wifi_lobby_map_02266D08(UnkStruct_wifi_lobby_map_02266C68 *param0, UnkStruct_wifi_lobby_map_0225DEE8 *param1, BOOL param2, BOOL param3)
+static void wifi_lobby_map_02266D08(WiFiLobbyMapRecruitDisplay *param0, WiFiLobbyMapApp *param1, BOOL param2, BOOL param3)
 {
     String *v0;
     u32 v1;

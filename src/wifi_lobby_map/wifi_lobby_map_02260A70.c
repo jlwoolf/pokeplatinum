@@ -4,16 +4,16 @@
 #include <string.h>
 
 #include "wifi_lobby_map/wifi_lobby_map_0225C9B4.h"
-#include "wifi_lobby_map/struct_wifi_lobby_map_0225CC54_decl.h"
+#include "wifi_lobby_map/struct_wifi_lobby_map_actor_decl.h"
 
 #include "camera.h"
 #include "heap.h"
 
-typedef struct UnkStruct_wifi_lobby_map_02260AD4_t {
+typedef struct WiFiLobbyMapCamera_t {
     Camera *camera;
-    const UnkStruct_wifi_lobby_map_0225CC54 *unk_04;
+    const WiFiLobbyMapActor *unk_04;
     VecFx32 unk_08;
-} UnkStruct_wifi_lobby_map_02260AD4;
+} WiFiLobbyMapCamera;
 
 static const CameraAngle Unk_wifi_lobby_map_0226D904 = {
     0xFFFFFFFFFFFFD602,
@@ -21,13 +21,13 @@ static const CameraAngle Unk_wifi_lobby_map_0226D904 = {
     0x0
 };
 
-UnkStruct_wifi_lobby_map_02260AD4 *wifi_lobby_map_02260A70(u32 heapID)
+WiFiLobbyMapCamera *wifi_lobby_map_02260A70(u32 heapID)
 {
-    UnkStruct_wifi_lobby_map_02260AD4 *v0;
+    WiFiLobbyMapCamera *v0;
     VecFx32 v1;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_wifi_lobby_map_02260AD4));
-    memset(v0, 0, sizeof(UnkStruct_wifi_lobby_map_02260AD4));
+    v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapCamera));
+    memset(v0, 0, sizeof(WiFiLobbyMapCamera));
     v0->camera = Camera_Alloc(heapID);
 
     Camera_InitWithTarget(&v0->unk_08, 0x29aec1, &Unk_wifi_lobby_map_0226D904, 0x5c1, 0, 1, v0->camera);
@@ -37,14 +37,14 @@ UnkStruct_wifi_lobby_map_02260AD4 *wifi_lobby_map_02260A70(u32 heapID)
     return v0;
 }
 
-void wifi_lobby_map_02260AD4(UnkStruct_wifi_lobby_map_02260AD4 *param0)
+void wifi_lobby_map_02260AD4(WiFiLobbyMapCamera *param0)
 {
     Camera_ClearActive();
     Camera_Delete(param0->camera);
     Heap_Free(param0);
 }
 
-void wifi_lobby_map_02260AEC(UnkStruct_wifi_lobby_map_02260AD4 *param0)
+void wifi_lobby_map_02260AEC(WiFiLobbyMapCamera *param0)
 {
     if (param0->unk_04) {
         wifi_lobby_map_0225D054(param0->unk_04, &param0->unk_08);
@@ -56,26 +56,26 @@ void wifi_lobby_map_02260AEC(UnkStruct_wifi_lobby_map_02260AD4 *param0)
     Camera_ComputeViewMatrix();
 }
 
-void wifi_lobby_map_02260B18(UnkStruct_wifi_lobby_map_02260AD4 *param0, fx32 param1, fx32 param2, fx32 param3)
+void wifi_lobby_map_02260B18(WiFiLobbyMapCamera *param0, fx32 param1, fx32 param2, fx32 param3)
 {
     param0->unk_08.x = param1;
     param0->unk_08.y = param2;
     param0->unk_08.z = param3;
 }
 
-void wifi_lobby_map_02260B20(UnkStruct_wifi_lobby_map_02260AD4 *param0, fx32 param1, fx32 param2, fx32 param3)
+void wifi_lobby_map_02260B20(WiFiLobbyMapCamera *param0, fx32 param1, fx32 param2, fx32 param3)
 {
     param0->unk_08.x = param1 + (FX32_CONST(8));
     param0->unk_08.y = param2;
     param0->unk_08.z = param3 + (-FX32_CONST(32));
 }
 
-void wifi_lobby_map_02260B38(UnkStruct_wifi_lobby_map_02260AD4 *param0, const UnkStruct_wifi_lobby_map_0225CC54 *param1)
+void wifi_lobby_map_02260B38(WiFiLobbyMapCamera *param0, const WiFiLobbyMapActor *param1)
 {
     param0->unk_04 = param1;
 }
 
-void wifi_lobby_map_02260B3C(UnkStruct_wifi_lobby_map_02260AD4 *param0)
+void wifi_lobby_map_02260B3C(WiFiLobbyMapCamera *param0)
 {
     param0->unk_04 = NULL;
 }
