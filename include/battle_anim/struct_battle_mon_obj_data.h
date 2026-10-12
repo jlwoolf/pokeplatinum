@@ -1,8 +1,8 @@
-#ifndef POKEPLATINUM_STRUCT_OV12_02223764_H
-#define POKEPLATINUM_STRUCT_OV12_02223764_H
+#ifndef POKEPLATINUM_STRUCT_BATTLE_MON_OBJ_DATA_H
+#define POKEPLATINUM_STRUCT_BATTLE_MON_OBJ_DATA_H
 
 #include "battle/pokemon_sprite_data.h"
-#include "battle_anim/struct_ov12_02223764_sub1.h"
+#include "battle_anim/struct_sprite_system_context.h"
 
 #include "pokemon_sprite.h"
 #include "sprite_system.h"
@@ -18,4 +18,4 @@ typedef struct BattleMonOBJData {
     PokemonSprite *pokemonSprites[4];
 } BattleMonOBJData;
 
-#endif // POKEPLATINUM_STRUCT_OV12_02223764_H
+#endif // POKEPLATINUM_STRUCT_BATTLE_MON_OBJ_DATA_H

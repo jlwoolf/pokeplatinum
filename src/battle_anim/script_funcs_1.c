@@ -9,9 +9,9 @@
 #include "battle_anim/battle_anim_helpers.h"
 #include "battle_anim/battle_anim_system.h"
 #include "battle_anim/battle_anim_util.h"
-#include "battle_anim/ov12_022380BC.h"
+#include "battle_anim/battler_sprite.h"
 #include "battle_anim/script_funcs_4.h"
-#include "battle_anim/struct_ov12_022380DC.h"
+#include "battle_anim/struct_battler_sprite_context.h"
 
 #include "battle_script_battlers.h"
 #include "bg_window.h"
@@ -643,9 +643,9 @@ static void BattleAnimTask_Snatch(SysTask *task, void *param)
                     BattlerSpriteContext_InitFromSystem(ctx->common.battleAnimSys, &battlerSpriteCtx, 3);
 
                     if (ctx->iteration == 2) {
-                        ov12_022382BC(&battlerSpriteCtx, BattleAnimSystem_GetHeapID(ctx->common.battleAnimSys));
+                        BattlerSprite_PopMonSprite(&battlerSpriteCtx, BattleAnimSystem_GetHeapID(ctx->common.battleAnimSys));
                     } else {
-                        ov12_022380CC(&battlerSpriteCtx, BattleAnimSystem_GetHeapID(ctx->common.battleAnimSys));
+                        BattlerSprite_LoadMonSpriteAlt(&battlerSpriteCtx, BattleAnimSystem_GetHeapID(ctx->common.battleAnimSys));
                     }
                 }
 

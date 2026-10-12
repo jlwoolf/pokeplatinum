@@ -7,8 +7,8 @@
 #include "struct_defs/move_animation.h"
 
 #include "battle/battle_anim_battler_context.h"
-#include "battle_anim/struct_ov12_02223764.h"
-#include "battle_anim/struct_ov12_022380DC.h"
+#include "battle_anim/struct_battle_mon_obj_data.h"
+#include "battle_anim/struct_battler_sprite_context.h"
 
 #include "bg_window.h"
 #include "palette.h"

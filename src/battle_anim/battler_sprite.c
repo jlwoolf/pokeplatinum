@@ -1,17 +1,17 @@
-#include "battle_anim/ov12_022380BC.h"
+#include "battle_anim/battler_sprite.h"
 
 #include <nitro.h>
 #include <string.h>
 
-#include "battle_anim/const_ov12_0223B0A0.h"
-#include "battle_anim/struct_ov12_022380DC.h"
+#include "battle_anim/battler_sprite_const.h"
+#include "battle_anim/struct_battler_sprite_context.h"
 
 #include "character_sprite.h"
 #include "narc.h"
 #include "pokemon.h"
 #include "pokemon_sprite.h"
 
-static void ov12_022380DC(BattlerSpriteContext *battlerSpriteCtx, int param1, int param2, enum HeapID heapID);
+static void BattlerSprite_LoadMonSpriteInternal(BattlerSpriteContext *battlerSpriteCtx, int param1, int param2, enum HeapID heapID);
 
 const s16 gEncounterCoords[][3] = {
     { 0x150, 0x70, 0xFFFFFFFFFFFFFE00 },
@@ -40,17 +40,17 @@ const s16 gSlideTrainerInCoords[][3] = {
     { 0x150, 0x32, 0xFFFFFFFFFFFFFE00 }
 };
 
-void ov12_022380BC(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
+void BattlerSprite_LoadMonSprite(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
 {
-    ov12_022380DC(battlerSpriteCtx, battlerSpriteCtx->targetBattler, 0, heapID);
+    BattlerSprite_LoadMonSpriteInternal(battlerSpriteCtx, battlerSpriteCtx->targetBattler, 0, heapID);
 }
 
-void ov12_022380CC(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
+void BattlerSprite_LoadMonSpriteAlt(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
 {
-    ov12_022380DC(battlerSpriteCtx, battlerSpriteCtx->sourceBattler, 1, heapID);
+    BattlerSprite_LoadMonSpriteInternal(battlerSpriteCtx, battlerSpriteCtx->sourceBattler, 1, heapID);
 }
 
-static void ov12_022380DC(BattlerSpriteContext *battlerSpriteCtx, int param1, int param2, enum HeapID heapID)
+static void BattlerSprite_LoadMonSpriteInternal(BattlerSpriteContext *battlerSpriteCtx, int param1, int param2, enum HeapID heapID)
 {
     PokemonSpriteTemplate v0;
     PokemonSpriteTemplate *v1;
@@ -100,7 +100,7 @@ static void ov12_022380DC(BattlerSpriteContext *battlerSpriteCtx, int param1, in
     battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->palette = v1->palette;
 
     v11 = battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset = LoadPokemonSpriteYOffset(v2, v3, v4, v6, v7);
-    v8 = ov12_022384CC(battlerSpriteCtx->types[battlerSpriteCtx->targetBattler], 1);
+    v8 = BattlerSprite_GetEncounterOffset(battlerSpriteCtx->types[battlerSpriteCtx->targetBattler], 1);
 
     PokemonSprite_SetAttribute(battlerSpriteCtx->sprites[battlerSpriteCtx->targetBattler], MON_SPRITE_Y_CENTER, v8 + v11);
 
@@ -120,7 +120,7 @@ static void ov12_022380DC(BattlerSpriteContext *battlerSpriteCtx, int param1, in
     }
 }
 
-void ov12_022382BC(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
+void BattlerSprite_PopMonSprite(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
 {
     PokemonSpriteTemplate *v0;
     int v1;
@@ -150,12 +150,12 @@ void ov12_022382BC(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
     battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->palette = v0->palette;
     battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset = LoadPokemonSpriteYOffset(v1, v2, v3, v4, v5);
 
-    v6 = ov12_022384CC(battlerSpriteCtx->types[battlerSpriteCtx->targetBattler], 1) + battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset;
+    v6 = BattlerSprite_GetEncounterOffset(battlerSpriteCtx->types[battlerSpriteCtx->targetBattler], 1) + battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset;
 
     PokemonSprite_SetAttribute(battlerSpriteCtx->sprites[battlerSpriteCtx->targetBattler], MON_SPRITE_Y_CENTER, v6);
 }
 
-void ov12_02238390(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
+void BattlerSprite_LoadSubstituteSprite(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
 {
     PokemonSpriteTemplate v0;
     PokemonSpriteTemplate *v1;
@@ -190,7 +190,7 @@ void ov12_02238390(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
 
     NARC_ReadWholeMemberByIndexPair(&v4, NARC_INDEX_POKETOOL__POKEGRA__HEIGHT_O, v3);
     battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset = v4;
-    v2 = ov12_022384CC(battlerSpriteCtx->types[battlerSpriteCtx->targetBattler], 1) + battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset;
+    v2 = BattlerSprite_GetEncounterOffset(battlerSpriteCtx->types[battlerSpriteCtx->targetBattler], 1) + battlerSpriteCtx->pokemonSpriteData[battlerSpriteCtx->targetBattler]->yOffset;
 
     PokemonSprite_SetAttribute(battlerSpriteCtx->sprites[battlerSpriteCtx->targetBattler], MON_SPRITE_Y_CENTER, v2);
 
@@ -203,7 +203,7 @@ void ov12_02238390(BattlerSpriteContext *battlerSpriteCtx, enum HeapID heapID)
     }
 }
 
-s16 ov12_022384CC(int battlerType, int coordIndex)
+s16 BattlerSprite_GetEncounterOffset(int battlerType, int coordIndex)
 {
     if (coordIndex == 0) {
         return gBattlerEncounterX[battlerType][0];

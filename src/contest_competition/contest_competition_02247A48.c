@@ -3,8 +3,8 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "battle_anim/ov12_02235E94.h"
-#include "battle_anim/struct_ov12_02237728.h"
+#include "battle_anim/ball_throw.h"
+#include "battle_anim/struct_ball_throw.h"
 #include "contest_competition/contest_competition_022476F8.h"
 #include "contest_competition/contest_competition_0224F18C.h"
 #include "contest_competition/struct_contest_competition_02243C28.h"
@@ -946,14 +946,14 @@ static void contest_competition_022489C8(SysTask *param0, void *param1)
     case 0:
         v0->unk_00.battlerType = 0;
         v0->unk_00.mon = v0->mon;
-        v0->unk_0C = ov12_02236004(HEAP_ID_22, &v0->unk_00);
-        ov12_02236320(v0->unk_0C);
-        ov12_02236384(v0->unk_0C, Contest_SetEmitterPos);
+        v0->unk_0C = BallCapsuleSealEffect_New(HEAP_ID_22, &v0->unk_00);
+        BallCapsuleSealEffect_Start(v0->unk_0C);
+        BallCapsuleSealEffect_Play(v0->unk_0C, Contest_SetEmitterPos);
         v0->state++;
         break;
     case 1:
-        if (ov12_022363C4(v0->unk_0C) == 0) {
-            ov12_02236428(v0->unk_0C);
+        if (BallCapsuleSealEffect_IsActive(v0->unk_0C) == 0) {
+            BallCapsuleSealEffect_Free(v0->unk_0C);
             v0->state++;
         }
         break;
@@ -988,16 +988,16 @@ static void contest_competition_02248A24(SysTask *param0, void *param1)
         v1.paletteSys = v0->unk_00->unk_0C.unk_44;
         v1.bgPrio = 1;
 
-        v0->ballRotation = ov12_02237728(&v1);
+        v0->ballRotation = BallRotation_New(&v1);
     }
         v0->unk_08++;
         break;
     case 2:
-        if (ov12_022377F8(v0->ballRotation) == 1) {
+        if (BallRotation_IsActive(v0->ballRotation) == 1) {
             break;
         }
     default:
-        ov12_0223783C(v0->ballRotation);
+        BallRotation_Free(v0->ballRotation);
         v0->unk_09 = 1;
         SysTask_Done(param0);
         return;

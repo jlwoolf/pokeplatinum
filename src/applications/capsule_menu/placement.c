@@ -7,7 +7,7 @@
 #include "struct_defs/seal_case.h"
 
 #include "applications/capsule_menu/main.h"
-#include "battle_anim/ov12_02237E54.h"
+#include "battle_anim/seal_anim.h"
 
 #include "ball_seal_info.h"
 #include "game_overlay.h"

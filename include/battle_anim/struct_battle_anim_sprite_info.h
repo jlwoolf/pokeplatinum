@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV12_02235998_H
-#define POKEPLATINUM_STRUCT_OV12_02235998_H
+#ifndef POKEPLATINUM_STRUCT_BATTLE_ANIM_SPRITE_INFO_H
+#define POKEPLATINUM_STRUCT_BATTLE_ANIM_SPRITE_INFO_H
 
 #include "math_util.h"
 #include "pokemon_sprite.h"
@@ -13,4 +13,4 @@ typedef struct BattleAnimSpriteInfo {
     int battler;
 } BattleAnimSpriteInfo;
 
-#endif // POKEPLATINUM_STRUCT_OV12_02235998_H
+#endif // POKEPLATINUM_STRUCT_BATTLE_ANIM_SPRITE_INFO_H

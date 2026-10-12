@@ -1,12 +1,12 @@
-#include "battle_anim/ov12_02237EFC.h"
+#include "battle_anim/particle_effect.h"
 
 #include <nitro.h>
 #include <string.h>
 
 #include "battle_anim/battle_anim_system.h"
 #include "battle_anim/battle_particle_util.h"
-#include "battle_anim/struct_ov12_02237EFC.h"
-#include "battle_anim/struct_ov12_02237F38.h"
+#include "battle_anim/struct_particle_effect_config.h"
+#include "battle_anim/struct_particle_effect_template.h"
 
 #include "heap.h"
 #include "particle_system.h"
@@ -14,7 +14,7 @@
 #include "sys_task.h"
 #include "sys_task_manager.h"
 
-typedef struct UnkStruct_ov12_02238004_t {
+typedef struct ParticleEffect {
     int unk_00;
     enum HeapID heapID;
     ParticleEffectTemplate particleEffectTemplate;
@@ -23,23 +23,23 @@ typedef struct UnkStruct_ov12_02238004_t {
     SysTask *unk_18;
     int unk_1C;
     BOOL unk_20;
-} UnkStruct_ov12_02238004;
+} ParticleEffect;
 
-typedef struct UnkStruct_ov12_02237F98_t {
+typedef struct ParticleEffectContext {
     enum HeapID heapID;
-    UnkStruct_ov12_02237EFC unk_04;
-    UnkStruct_ov12_02238004 *unk_08[16];
-} UnkStruct_ov12_02237F98;
+    ParticleEffectConfig unk_04;
+    ParticleEffect *unk_08[16];
+} ParticleEffectContext;
 
-static void ov12_02238030(SysTask *param0, void *param1);
-static void ov12_02238054(UnkStruct_ov12_02238004 *param0, SPLEmitterCallback param1);
-static void ov12_02238080(SPLEmitter *param0);
-static int ov12_02238088(int param0);
+static void ParticleEffect_UpdateTask(SysTask *param0, void *param1);
+static void ParticleEffect_CreateEmitters(ParticleEffect *param0, SPLEmitterCallback param1);
+static void ParticleEffect_EmitterCallback(SPLEmitter *param0);
+static int ParticleEffect_GetEmitterCount(int param0);
 
-UnkStruct_ov12_02237F98 *ov12_02237EFC(enum HeapID heapID, UnkStruct_ov12_02237EFC *param1)
+ParticleEffectContext *ParticleEffectContext_New(enum HeapID heapID, ParticleEffectConfig *param1)
 {
-    UnkStruct_ov12_02237F98 *v0 = NULL;
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov12_02237F98));
+    ParticleEffectContext *v0 = NULL;
+    v0 = Heap_Alloc(heapID, sizeof(ParticleEffectContext));
 
     if (v0 == NULL) {
         GF_ASSERT(FALSE);
@@ -65,17 +65,17 @@ UnkStruct_ov12_02237F98 *ov12_02237EFC(enum HeapID heapID, UnkStruct_ov12_02237E
     return v0;
 }
 
-UnkStruct_ov12_02238004 *ov12_02237F38(UnkStruct_ov12_02237F98 *param0, ParticleEffectTemplate *particleEffectTemplate)
+ParticleEffect *ParticleEffectContext_CreateEffect(ParticleEffectContext *param0, ParticleEffectTemplate *particleEffectTemplate)
 {
     int v0;
-    UnkStruct_ov12_02238004 *v1 = NULL;
+    ParticleEffect *v1 = NULL;
 
     for (v0 = 0; v0 < 16; v0++) {
         if (param0->unk_08[v0] != NULL) {
             continue;
         }
 
-        param0->unk_08[v0] = ov12_02237FC8(param0->heapID, particleEffectTemplate);
+        param0->unk_08[v0] = ParticleEffect_New(param0->heapID, particleEffectTemplate);
         param0->unk_08[v0]->unk_18 = NULL;
 
         v1 = param0->unk_08[v0];
@@ -91,7 +91,7 @@ UnkStruct_ov12_02238004 *ov12_02237F38(UnkStruct_ov12_02237F98 *param0, Particle
     return v1;
 }
 
-void ov12_02237F74(UnkStruct_ov12_02237F98 *param0)
+void ParticleEffectContext_Free(ParticleEffectContext *param0)
 {
     int v0;
 
@@ -106,7 +106,7 @@ void ov12_02237F74(UnkStruct_ov12_02237F98 *param0)
     Heap_Free(param0);
 }
 
-void ov12_02237F98(UnkStruct_ov12_02237F98 *param0)
+void ParticleEffectContext_FreeEffects(ParticleEffectContext *param0)
 {
     int v0;
 
@@ -129,13 +129,13 @@ void ov12_02237F98(UnkStruct_ov12_02237F98 *param0)
     }
 }
 
-UnkStruct_ov12_02238004 *ov12_02237FC8(enum HeapID heapID, ParticleEffectTemplate *particleEffectTemplate)
+ParticleEffect *ParticleEffect_New(enum HeapID heapID, ParticleEffectTemplate *particleEffectTemplate)
 {
-    UnkStruct_ov12_02238004 *v0;
+    ParticleEffect *v0;
 
     v0 == NULL;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_ov12_02238004));
+    v0 = Heap_Alloc(heapID, sizeof(ParticleEffect));
 
     if (v0 == NULL) {
         GF_ASSERT(FALSE);
@@ -144,27 +144,27 @@ UnkStruct_ov12_02238004 *ov12_02237FC8(enum HeapID heapID, ParticleEffectTemplat
 
     v0->heapID = heapID;
     v0->particleEffectTemplate = *particleEffectTemplate;
-    v0->unk_1C = ov12_02238088(v0->particleEffectTemplate.resourceID);
+    v0->unk_1C = ParticleEffect_GetEmitterCount(v0->particleEffectTemplate.resourceID);
     v0->unk_10 = BattleParticleUtil_CreateParticleSystem(v0->heapID, v0->particleEffectTemplate.resourceID, 1);
 
     return v0;
 }
 
-void ov12_02238004(UnkStruct_ov12_02238004 *param0)
+void ParticleEffect_Start(ParticleEffect *param0)
 {
     param0->unk_20 = 1;
-    ov12_02238054(param0, ov12_02238080);
-    param0->unk_18 = SysTask_Start(ov12_02238030, param0, 1000);
+    ParticleEffect_CreateEmitters(param0, ParticleEffect_EmitterCallback);
+    param0->unk_18 = SysTask_Start(ParticleEffect_UpdateTask, param0, 1000);
 }
 
-BOOL ov12_0223802C(UnkStruct_ov12_02238004 *param0)
+BOOL ParticleEffect_IsActive(ParticleEffect *param0)
 {
     return param0->unk_20;
 }
 
-static void ov12_02238030(SysTask *param0, void *param1)
+static void ParticleEffect_UpdateTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov12_02238004 *v0 = (UnkStruct_ov12_02238004 *)param1;
+    ParticleEffect *v0 = (ParticleEffect *)param1;
     int v1 = 0;
 
     v1 = ParticleSystem_GetActiveEmitterCount(v0->unk_10);
@@ -179,7 +179,7 @@ static void ov12_02238030(SysTask *param0, void *param1)
     SysTask_Done(param0);
 }
 
-static void ov12_02238054(UnkStruct_ov12_02238004 *param0, SPLEmitterCallback param1)
+static void ParticleEffect_CreateEmitters(ParticleEffect *param0, SPLEmitterCallback param1)
 {
     int v0;
 
@@ -190,12 +190,12 @@ static void ov12_02238054(UnkStruct_ov12_02238004 *param0, SPLEmitterCallback pa
     ParticleSystem_SetCameraProjection(param0->unk_10, param0->particleEffectTemplate.cameraProjection);
 }
 
-static void ov12_02238080(SPLEmitter *param0)
+static void ParticleEffect_EmitterCallback(SPLEmitter *param0)
 {
-    UnkStruct_ov12_02238004 *v0 = ParticleSystem_GetEmitterCallbackParam();
+    ParticleEffect *v0 = ParticleSystem_GetEmitterCallbackParam();
 }
 
-static int ov12_02238088(int param0)
+static int ParticleEffect_GetEmitterCount(int param0)
 {
     const int v0[] = {
         0x5,

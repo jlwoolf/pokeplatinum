@@ -645,10 +645,10 @@ Overlay battle_anim
 	Object main.nef.p/src_battle_anim_script_funcs_status.c.o
 	Object main.nef.p/src_battle_anim_script_funcs_stat_change.c.o
 	Object main.nef.p/src_battle_anim_battle_anim_util.c.o
-	Object main.nef.p/src_battle_anim_ov12_02235E94.c.o
-	Object main.nef.p/src_battle_anim_ov12_02237E54.c.o
-	Object main.nef.p/src_battle_anim_ov12_02237EFC.c.o
-	Object main.nef.p/src_battle_anim_ov12_022380BC.c.o
+	Object main.nef.p/src_battle_anim_ball_throw.c.o
+	Object main.nef.p/src_battle_anim_seal_anim.c.o
+	Object main.nef.p/src_battle_anim_particle_effect.c.o
+	Object main.nef.p/src_battle_anim_battler_sprite.c.o
 	Object main.nef.p/src_battle_anim_is_form_symmetrical.c.o
 }
 
