@@ -26,19 +26,19 @@ typedef struct {
     int unk_270;
     OSThread unk_274;
     OSMutex unk_334;
-} UnkStruct_ov61_0222E764;
+} GlobalTerminalGdsSession;
 
 typedef struct {
     u16 unk_00;
     u16 unk_02;
     long unk_04;
     long unk_08;
-} UnkStruct_ov61_0222DD8C;
+} GlobalTerminalGdsValueRequest;
 
 typedef struct {
     long unk_00;
     VsRecorderViewerTransferBoxData unk_04;
-} UnkStruct_ov61_0222DDCC;
+} GlobalTerminalGdsBoxRequest;
 
 typedef struct {
     u16 unk_00;
@@ -46,7 +46,7 @@ typedef struct {
     VsRecorderViewerTransferPlayTime unk_04;
     int unk_14;
     int unk_18;
-} UnkStruct_ov61_0222DF60;
+} GlobalTerminalGdsRecordRequest;
 
 typedef struct {
     u16 unk_00;
@@ -57,53 +57,53 @@ typedef struct {
     int unk_10;
     int unk_14;
     int unk_18;
-} UnkStruct_ov61_0222DFA8;
+} GlobalTerminalGdsRecordAltRequest;
 
 typedef struct {
     u64 unk_00;
     u32 unk_08;
-} UnkStruct_ov61_0222E058;
+} GlobalTerminalGdsIdRequest;
 
 typedef struct {
     u16 unk_00;
     u16 unk_02;
     VsRecorderViewerTransferConnection unk_04;
     void *unk_136;
-} UnkStruct_ov61_0222D1FC;
+} GlobalTerminalGdsRequestHeader;
 
-UnkStruct_ov61_0222E764 Unk_ov61_0222E764;
+GlobalTerminalGdsSession sGlobalTerminalGdsSession;
 
-void ov61_0222CEDC(void);
-BOOL ov61_0222CF40(char *url, int port, VsRecorderViewerTransferConnection *param2);
-void ov61_0222D040(void);
-BOOL ov61_0222D1FC(int param0, void *param1, void *param2, int param3);
-int ov61_0222D3E8(void);
-void *ov61_0222D3F8(void);
-int ov61_0222D430(void);
-int ov61_0222D464(void);
+void GlobalTerminalGds_Reset(void);
+BOOL GlobalTerminalGds_StartSession(char *url, int port, VsRecorderViewerTransferConnection *param2);
+void GlobalTerminalGds_ProcessLoop(void);
+BOOL GlobalTerminalGds_SubmitRequest(int param0, void *param1, void *param2, int param3);
+int GlobalTerminalGds_GetState(void);
+void *GlobalTerminalGds_GetResponseBuffer(void);
+int GlobalTerminalGds_GetReceivedLength(void);
+int GlobalTerminalGds_GetStatus(void);
 
-void *ov61_0222D498(u32 size);
-void ov61_0222D4AC(void *ptr);
-void ov61_0222D4C8(void);
-void ov61_0222D4DC(void);
-int ov61_0222D4F0(void);
-int ov61_0222D508(void);
-int ov61_0222D510(void);
-void ov61_0222D53C(void);
-int ov61_0222D54C(void);
-BOOL ov61_0222D6A0(void);
-void ov61_0222D770(void);
-BOOL ov61_0222D7B0(void);
-BOOL ov61_0222D8F8(void);
-BOOL ov61_0222DA0C(void);
-void ov61_0222DB8C(u32 param0);
-BOOL ov61_0222DB98(void);
+void *GlobalTerminalGds_Alloc(u32 size);
+void GlobalTerminalGds_Free(void *ptr);
+void GlobalTerminalGds_Lock(void);
+void GlobalTerminalGds_Unlock(void);
+int GlobalTerminalGds_InitMutex(void);
+int GlobalTerminalGds_InitTiming(void);
+int GlobalTerminalGds_InitTick(void);
+void GlobalTerminalGds_ShutdownTiming(void);
+int GlobalTerminalGds_CreateThread(void);
+BOOL GlobalTerminalGds_OpenSocket(void);
+void GlobalTerminalGds_CloseSocket(void);
+BOOL GlobalTerminalGds_ConnectSocket(void);
+BOOL GlobalTerminalGds_SendRequest(void);
+BOOL GlobalTerminalGds_ReceiveResponse(void);
+void GlobalTerminalGds_Sleep(u32 param0);
+BOOL GlobalTerminalGds_FetchToken(void);
 
-void ov61_0222E0B8(u8 *param0, int param1, u8 *param2);
-void ov61_0222E110(u8 *param0, int param1, u8 *param2);
-int ov61_0222E168(int param0);
-int ov61_0222E2A8(int param0);
+void GlobalTerminalGds_Encrypt(u8 *param0, int param1, u8 *param2);
+void GlobalTerminalGds_Decrypt(u8 *param0, int param1, u8 *param2);
+int GlobalTerminalGds_GetRequestSize(int param0);
+int GlobalTerminalGds_GetResponseAllocSize(int param0);
 
-void ov61_0222E478(void *param0, char *param1);
+void GlobalTerminalGds_ScrubData(void *param0, char *param1);
 
 #endif // GDS_INTERNAL_H

@@ -86,7 +86,7 @@ int GlobalTerminalGds_GetProfilePhotoList(VsRecorderViewerTransferContext *param
     GlobalTerminalProfilePhotoEntry *v2;
     int v3, v4;
 
-    v0 = ov61_0222DE80();
+    v0 = GlobalTerminalGds_GetResponseData();
     v1 = (GlobalTerminalProfilePhotoList *)(v0->unk_04);
     v4 = v1->unk_00;
 
@@ -164,7 +164,7 @@ int GlobalTerminalGds_GetBoxList(VsRecorderViewerTransferContext *param0, Global
     GlobalTerminalBoxEntry *v2;
     int v3, v4;
 
-    v0 = ov61_0222DE80();
+    v0 = GlobalTerminalGds_GetResponseData();
     v1 = (GlobalTerminalBoxList *)(v0->unk_04);
 
     v4 = v1->unk_00;
@@ -209,7 +209,7 @@ int GlobalTerminalGds_HandlePlayTime(VsRecorderViewerTransferContext *param0, Gl
 
 void GlobalTerminalGds_GetPlayTime(VsRecorderViewerTransferContext *param0, VsRecorderViewerRankingsPlayTime **param1)
 {
-    GlobalTerminalGdsResponse *v0 = ov61_0222DE80();
+    GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
     GlobalTerminalPlayTimeResult *v1 = (GlobalTerminalPlayTimeResult *)(v0->unk_04);
 
     *param1 = &v1->unk_00;
@@ -243,7 +243,7 @@ int GlobalTerminalGds_HandlePlayTimeProfile(VsRecorderViewerTransferContext *par
 
 void GlobalTerminalGds_GetPlayTimeProfile(VsRecorderViewerTransferContext *param0, GlobalTerminalPlayTimeData **param1, GlobalTerminalPlayTimeDataAlt **param2)
 {
-    GlobalTerminalGdsResponse *v0 = ov61_0222DE80();
+    GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
     GlobalTerminalPlayTimeProfile *v1 = (GlobalTerminalPlayTimeProfile *)(v0->unk_04);
 
     *param1 = &v1->unk_00;
@@ -282,7 +282,7 @@ int GlobalTerminalGds_HandleBattleRecording(VsRecorderViewerTransferContext *par
 
 u64 GlobalTerminalGds_GetBattleRecording(VsRecorderViewerTransferContext *param0)
 {
-    GlobalTerminalGdsResponse *v0 = ov61_0222DE80();
+    GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
     GlobalTerminalBattleRecordingResult *v1 = (GlobalTerminalBattleRecordingResult *)(v0->unk_04);
 
     return v1->unk_00;
@@ -317,7 +317,7 @@ int GlobalTerminalGds_GetRecordList(VsRecorderViewerTransferContext *param0, Glo
     GlobalTerminalRecordEntry *v2;
     int v3, v4;
 
-    v0 = ov61_0222DE80();
+    v0 = GlobalTerminalGds_GetResponseData();
     v1 = (GlobalTerminalRecordList *)(v0->unk_04);
 
     v4 = v1->unk_00;
@@ -369,7 +369,7 @@ int GlobalTerminalGds_HandleRecordAlt(VsRecorderViewerTransferContext *param0, G
 
 int GlobalTerminalGds_GetRecordAlt(VsRecorderViewerTransferContext *param0, GlobalTerminalRecordAlt **param1)
 {
-    GlobalTerminalGdsResponse *v0 = ov61_0222DE80();
+    GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
     GlobalTerminalRecordAltResult *v1 = (GlobalTerminalRecordAltResult *)(v0->unk_04);
 
     *param1 = &v1->unk_0C;
