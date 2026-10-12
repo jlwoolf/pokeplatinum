@@ -13,16 +13,16 @@
 #include "screen_fade.h"
 
 typedef struct {
-    WiFiLobbyMinigameBalloonContext *unk_00;
-    WiFiLobbyMinigameIntroScreen *unk_04;
-    WiFiLobbyMinigameResultsScreen *unk_08;
+    WiFiLobbyMinigameBalloonContext *context;
+    WiFiLobbyMinigameIntroScreen *introScreen;
+    WiFiLobbyMinigameResultsScreen *resultsScreen;
 } WiFiLobbyMinigameBalloonScreens;
 
 int WiFiLobbyMinigameBalloon_ScreensInit(ApplicationManager *appMan, int *param1)
 {
     WiFiLobbyMinigameBalloonScreens *v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyMinigameBalloonScreens), HEAP_ID_110);
     MI_CpuClear8(v0, sizeof(WiFiLobbyMinigameBalloonScreens));
-    v0->unk_00 = ApplicationManager_Args(appMan);
+    v0->context = ApplicationManager_Args(appMan);
 
     return 1;
 }
@@ -31,31 +31,31 @@ int WiFiLobbyMinigameBalloon_ScreensMain(ApplicationManager *appMan, int *param1
 {
     WiFiLobbyMinigameBalloonScreens *v0 = ApplicationManager_Data(appMan);
 
-    if (v0->unk_00->disconnected == 1) {
-        switch (v0->unk_00->disconnectState) {
+    if (v0->context->disconnected == 1) {
+        switch (v0->context->disconnectState) {
         case 0:
             if (IsScreenFadeDone() == TRUE) {
                 FinishScreenFade();
             }
 
             SetColorBrightness(COLOR_BLACK);
-            v0->unk_00->disconnectState++;
+            v0->context->disconnectState++;
             break;
         case 1:
-            if (WiFiLobbyMinigame_HandleDisconnect(&v0->unk_00->unk_00) == 1) {
-                v0->unk_00->disconnectState++;
+            if (WiFiLobbyMinigame_HandleDisconnect(&v0->context->playerContext) == 1) {
+                v0->context->disconnectState++;
             }
             break;
         default:
         case 2:
-            if (v0->unk_04 != NULL) {
-                WiFiLobbyMinigame_FreeIntroScreen(v0->unk_04);
-                v0->unk_04 = NULL;
+            if (v0->introScreen != NULL) {
+                WiFiLobbyMinigame_FreeIntroScreen(v0->introScreen);
+                v0->introScreen = NULL;
             }
 
-            if (v0->unk_08 != NULL) {
-                WiFiLobbyMinigame_FreeResultsScreen(v0->unk_08);
-                v0->unk_08 = NULL;
+            if (v0->resultsScreen != NULL) {
+                WiFiLobbyMinigame_FreeResultsScreen(v0->resultsScreen);
+                v0->resultsScreen = NULL;
             }
 
             return 1;
@@ -66,33 +66,33 @@ int WiFiLobbyMinigameBalloon_ScreensMain(ApplicationManager *appMan, int *param1
 
     switch (*param1) {
     case 0:
-        if (v0->unk_00->screenState == 0) {
+        if (v0->context->screenState == 0) {
             *param1 = 1;
         } else {
             *param1 = 3;
         }
         break;
     case 1:
-        v0->unk_04 = WiFiLobbyMinigame_CreateIntroScreen2(&v0->unk_00->unk_00, HEAP_ID_110);
+        v0->introScreen = WiFiLobbyMinigame_CreateIntroScreen2(&v0->context->playerContext, HEAP_ID_110);
         (*param1)++;
         break;
     case 2:
-        if (WiFiLobbyMinigame_IntroScreenIsDone(v0->unk_04) == 1) {
-            v0->unk_00->balloonLevel = WiFiLobbyMinigame_IntroScreenGetResult(v0->unk_04);
-            WiFiLobbyMinigame_FreeIntroScreen(v0->unk_04);
-            v0->unk_04 = NULL;
+        if (WiFiLobbyMinigame_IntroScreenIsDone(v0->introScreen) == 1) {
+            v0->context->balloonLevel = WiFiLobbyMinigame_IntroScreenGetResult(v0->introScreen);
+            WiFiLobbyMinigame_FreeIntroScreen(v0->introScreen);
+            v0->introScreen = NULL;
             (*param1) = 5;
         }
         break;
     case 3:
-        v0->unk_08 = WiFiLobbyMinigame_CreateResultsScreen2(&v0->unk_00->unk_00, &v0->unk_00->unk_10, HEAP_ID_110);
+        v0->resultsScreen = WiFiLobbyMinigame_CreateResultsScreen2(&v0->context->playerContext, &v0->context->ranking, HEAP_ID_110);
         (*param1)++;
         break;
     case 4:
-        if (WiFiLobbyMinigame_ResultsScreenIsDone(v0->unk_08) == 1) {
-            v0->unk_00->unk_38 = WiFiLobbyMinigame_ResultsScreenGetResult(v0->unk_08);
-            WiFiLobbyMinigame_FreeResultsScreen(v0->unk_08);
-            v0->unk_08 = NULL;
+        if (WiFiLobbyMinigame_ResultsScreenIsDone(v0->resultsScreen) == 1) {
+            v0->context->results = WiFiLobbyMinigame_ResultsScreenGetResult(v0->resultsScreen);
+            WiFiLobbyMinigame_FreeResultsScreen(v0->resultsScreen);
+            v0->resultsScreen = NULL;
             (*param1) = 5;
         }
 

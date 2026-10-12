@@ -4,7 +4,7 @@
 #include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_opponent_balloon.h"
 
 typedef struct {
-    WiFiLobbyMinigameBalloonOpponentBalloon unk_00[3];
+    WiFiLobbyMinigameBalloonOpponentBalloon balloons[3];
 } WiFiLobbyMinigameBalloonOpponentBalloons;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_OPPONENT_BALLOONS_H

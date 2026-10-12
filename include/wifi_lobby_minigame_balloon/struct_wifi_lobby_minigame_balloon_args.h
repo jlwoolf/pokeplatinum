@@ -6,10 +6,10 @@
 #include "savedata.h"
 
 typedef struct {
-    WiFiPlazaLobbyMinigameParticipants unk_00; // WiFi lobby minigame connection data.
+    WiFiPlazaLobbyMinigameParticipants participants; // WiFi lobby minigame connection data.
     SaveData *saveData;
-    u8 unk_38; // Whether voice chat is enabled.
-    u8 unk_39; // Whether the minigame was launched from the WiFi lobby.
+    u8 voiceChatEnabled; // Whether voice chat is enabled.
+    u8 fromLobby; // Whether the minigame was launched from the WiFi lobby.
     u8 padding[2];
 } WiFiLobbyMinigameBalloonArgs;
 

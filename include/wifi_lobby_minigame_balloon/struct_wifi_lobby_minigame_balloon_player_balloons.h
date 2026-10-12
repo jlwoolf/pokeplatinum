@@ -4,15 +4,15 @@
 #include "wifi_lobby_minigame_balloon/struct_wifi_lobby_minigame_balloon_player_balloon.h"
 
 typedef struct {
-    WiFiLobbyMinigameBalloonPlayerBalloon unk_00[3];
-    fx32 unk_E4;
-    fx32 unk_E8;
-    u32 unk_EC;
-    u8 unk_F0;
-    u8 unk_F1;
-    u8 unk_F2;
-    u8 unk_F3;
-    u8 unk_F4;
+    WiFiLobbyMinigameBalloonPlayerBalloon balloons[3];
+    fx32 angle;
+    fx32 angleStep;
+    u32 frameCounter;
+    u8 slot;
+    u8 idle;
+    u8 pauseTimer;
+    u8 rotationStep;
+    u8 speedStage;
     u8 padding_F5[3];
 } WiFiLobbyMinigameBalloonPlayerBalloons;
 

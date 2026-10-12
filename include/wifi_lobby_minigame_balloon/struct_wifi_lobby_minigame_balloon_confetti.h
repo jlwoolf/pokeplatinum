@@ -4,12 +4,12 @@
 #include "sprite_system.h"
 
 typedef struct {
-    ManagedSprite *unk_00;
-    fx32 unk_04;
-    fx32 unk_08;
-    fx32 unk_0C;
-    fx32 unk_10;
-    s16 unk_14;
+    ManagedSprite *sprite;
+    fx32 radius;
+    fx32 radiusVelocity;
+    fx32 angle;
+    fx32 angleVelocity;
+    s16 lifetime;
     u8 padding_16[2];
 } WiFiLobbyMinigameBalloonConfetti;
 

@@ -508,8 +508,8 @@ static WiFiLobbyMinigameBalloonArgs *WiFiMenu_LaunchWobbuffetMinigame(FieldSyste
         v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBalloonArgs));
         MI_CpuClear8(v0, sizeof(WiFiLobbyMinigameBalloonArgs));
 
-        v0->unk_38 = param2;
-        v0->unk_39 = 0;
+        v0->voiceChatEnabled = param2;
+        v0->fromLobby = 0;
         v0->saveData = fieldSystem->saveData;
 
         Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);

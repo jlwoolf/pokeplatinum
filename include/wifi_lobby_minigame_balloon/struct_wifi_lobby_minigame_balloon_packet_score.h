@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PACKET_SCORE_H
 
 typedef struct {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
+    u16 balloonLevel;
+    u8 syncState;
+    u8 syncId;
 } WiFiLobbyMinigameBalloonPacketScore;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_PACKET_SCORE_H

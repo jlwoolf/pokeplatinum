@@ -6,15 +6,15 @@
 #include "sprite_system.h"
 
 typedef struct {
-    BOOL unk_00;
-    s16 unk_04;
-    s16 unk_06;
-    s32 unk_08;
-    s16 unk_0C;
-    u8 unk_0E;
+    BOOL active;
+    s16 netId;
+    s16 balloonLevel;
+    s32 score;
+    s16 delay;
+    u8 popType;
     u8 padding_0F[1];
-    ManagedSprite *unk_10;
-    const WiFiLobbyMinigameBalloonSpawn *unk_14;
+    ManagedSprite *sprite;
+    const WiFiLobbyMinigameBalloonSpawn *spawn;
 } WiFiLobbyMinigameBalloonPopEffect;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_POP_EFFECT_H

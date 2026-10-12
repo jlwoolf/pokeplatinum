@@ -4,16 +4,16 @@
 #include "sprite_system.h"
 
 typedef struct {
-    ManagedSprite *unk_00;
-    ManagedSprite *unk_04;
-    fx32 unk_08;
-    fx32 unk_0C;
-    s16 unk_10;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
-    u8 unk_15;
-    s16 unk_16;
+    ManagedSprite *balloonSprite;
+    ManagedSprite *shadowSprite;
+    fx32 x;
+    fx32 y;
+    s16 targetY;
+    u8 balloonLevel;
+    u8 state;
+    u8 timer;
+    u8 active;
+    s16 delay;
 } WiFiLobbyMinigameBalloonOpponentBalloon;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_OPPONENT_BALLOON_H

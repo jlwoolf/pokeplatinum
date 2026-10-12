@@ -6,18 +6,18 @@
 #include "sprite_system.h"
 
 typedef struct {
-    ManagedSprite *unk_00;
-    WiFiLobbyMinigameBalloonTextOAM unk_04[6][2];
-    WiFiLobbyMinigameBalloonTextOAM unk_F4;
-    WiFiLobbyMinigameBalloonTextOAM unk_108[6];
-    u8 unk_180[6];
-    u8 unk_186[6];
-    u8 unk_18C[6];
-    u8 unk_192[6];
-    s8 unk_198[6];
-    s8 unk_19E;
-    u8 unk_19F;
-    u8 unk_1A0;
+    ManagedSprite *sprite;
+    WiFiLobbyMinigameBalloonTextOAM digitReel[6][2];
+    WiFiLobbyMinigameBalloonTextOAM labelText;
+    WiFiLobbyMinigameBalloonTextOAM scoreDigits[6];
+    u8 currentDigit[6];
+    u8 targetDigit[6];
+    u8 newDigits[6];
+    u8 digitState[6];
+    s8 digitDelay[6];
+    s8 rollPause;
+    u8 settledCount;
+    u8 rollState;
     u8 padding_1A1[3];
 } WiFiLobbyMinigameBalloonScoreDisplay;
 

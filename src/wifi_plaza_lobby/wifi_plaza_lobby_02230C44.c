@@ -670,18 +670,18 @@ static void WiFiPlazaLobby_AppManager_InitMinigameBalloon(WiFiPlazaLobbyAppManag
     memset(param1->unk_00, 0, sizeof(WiFiLobbyMinigameBalloonArgs));
 
     v0 = param1->unk_00;
-    v0->unk_38 = 0;
-    v0->unk_39 = 1;
+    v0->voiceChatEnabled = 0;
+    v0->fromLobby = 1;
     v0->saveData = param0->saveData;
 
-    WiFiPlazaLobby_AppManager_InitParticipants(&v0->unk_00, heapID);
+    WiFiPlazaLobby_AppManager_InitParticipants(&v0->participants, heapID);
 }
 
 static void WiFiPlazaLobby_AppManager_FreeMinigameBalloon(WiFiPlazaLobbySubAppSlot *param0)
 {
     WiFiLobbyMinigameBalloonArgs *v0 = param0->unk_00;
 
-    WiFiPlazaLobby_AppManager_FreeParticipants(&v0->unk_00);
+    WiFiPlazaLobby_AppManager_FreeParticipants(&v0->participants);
     Heap_Free(param0->unk_00);
 }
 
@@ -703,7 +703,7 @@ static void WiFiPlazaLobby_AppManager_LaunchMinigameBalloon(WiFiPlazaLobbyAppMan
         WiFiLobbyMinigameBalloonArgs *v1;
 
         v1 = param1->unk_00;
-        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->unk_00, param0->unk_3C, param0->heapID);
+        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->participants, param0->unk_3C, param0->heapID);
     }
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v0);
@@ -719,8 +719,8 @@ static int WiFiPlazaLobby_AppManager_UpdateMinigameBalloon(WiFiPlazaLobbyAppMana
 
         v0 = param1->unk_00;
 
-        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->unk_3C, v0->unk_00.unk_1C);
-        WiFiPlazaLobby_State_SetAppearanceRank(param0->unk_3C, v0->unk_00.unk_00);
+        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->unk_3C, v0->participants.unk_1C);
+        WiFiPlazaLobby_State_SetAppearanceRank(param0->unk_3C, v0->participants.unk_00);
     }
 
     WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);

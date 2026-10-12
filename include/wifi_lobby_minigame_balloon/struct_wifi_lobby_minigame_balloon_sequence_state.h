@@ -2,12 +2,12 @@
 #define POKEPLATINUM_STRUCT_WIFI_LOBBY_MINIGAME_BALLOON_SEQUENCE_STATE_H
 
 typedef struct {
-    int unk_00;
+    int sequenceIndex;
     u8 padding_04[8];
-    int unk_0C;
+    int step;
     int unk_10;
-    int unk_14;
-    u8 unk_18;
+    int delay;
+    u8 syncId;
     u8 padding_19[3];
 } WiFiLobbyMinigameBalloonSequenceState;
 
