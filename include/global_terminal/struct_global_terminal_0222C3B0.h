@@ -4,13 +4,13 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    SysTask *unk_00;
-    BOOL unk_04;
-    u16 unk_08[4][16];
-    u16 unk_88[21][16];
-    s16 unk_328;
-    s8 unk_32A;
-    u8 unk_32B;
+    SysTask *task;
+    BOOL active;
+    u16 sourcePalettes[4][16];
+    u16 blendTable[21][16];
+    s16 blendIndex;
+    s8 blendDirection;
+    u8 toggle;
 } GlobalTerminalPaletteBlend;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222C3B0_H

@@ -20,7 +20,7 @@ static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0);
 
 static inline BOOL VsRecorderViewerTransfer_IsActive(VsRecorderState *param0)
 {
-    return param0->unk_14.unk_54.unk_3B8;
+    return param0->unk_14.unk_54.active;
 }
 
 VsRecorderViewerTransferContext *VsRecorderViewerTransfer_GetTransfer(VsRecorderState *param0)

@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B960_H
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    u8 unk_04[0];
+    u16 requestId;
+    u16 status;
+    u8 data[0];
 } GlobalTerminalGdsResponse;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222B960_H

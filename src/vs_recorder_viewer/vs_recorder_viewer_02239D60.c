@@ -1788,7 +1788,7 @@ static void VsRecorderViewerBox_InitProfileBoxStrings(VsRecorderState *param0)
         VsRecorderViewerList_CheckNameChars(param0, v1->unk_2E0C[v0][1]);
 
         v1->unk_2E0C[v0][0] = String_Init(30, HEAP_ID_102);
-        String_CopyChars(v1->unk_2E0C[v0][0], v1->unk_38C[v0]->unk_80.unk_00);
+        String_CopyChars(v1->unk_2E0C[v0][0], v1->unk_38C[v0]->boxData.unk_00);
     }
 }
 
@@ -1921,7 +1921,7 @@ static BOOL VsRecorderViewerBox_SelectProfileBox(VsRecorderState *param0)
         break;
     case 2: {
         VsRecorderViewerList_SetDrawSuspended(param0, 1);
-        v0->unk_04 = v0->unk_38C[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80;
+        v0->unk_04 = v0->unk_38C[param0->unk_14.unk_48C.unk_38.unk_00]->boxData;
         VsRecorderViewerBox_SetCursorToFirstOccupiedSlot(v0);
         VsRecorderViewerMenu_LoadBgPanelAlt(param0, 2);
         VsRecorderViewerBox_CreateStatusWindows(param0);

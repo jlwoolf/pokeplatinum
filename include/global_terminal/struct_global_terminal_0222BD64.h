@@ -4,7 +4,7 @@
 #include "vs_recorder_viewer/struct_vs_recorder_viewer_0223DF10.h"
 
 typedef struct {
-    VsRecorderViewerRankingsPlayTime unk_00;
+    VsRecorderViewerRankingsPlayTime playTime;
 } GlobalTerminalPlayTimeResult;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BD64_H

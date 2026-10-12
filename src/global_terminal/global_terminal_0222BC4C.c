@@ -36,9 +36,9 @@ int GlobalTerminalGds_HandleProfilePhoto(VsRecorderViewerTransferContext *param0
     GlobalTerminalProfilePhotoResult *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalProfilePhotoResult *)(param1->unk_04);
+        v0 = (GlobalTerminalProfilePhotoResult *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -62,9 +62,9 @@ int GlobalTerminalGds_HandleProfile(VsRecorderViewerTransferContext *param0, Glo
     GlobalTerminalProfilePhotoList *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalProfilePhotoList *)(param1->unk_04);
+        v0 = (GlobalTerminalProfilePhotoList *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -87,17 +87,17 @@ int GlobalTerminalGds_GetProfilePhotoList(VsRecorderViewerTransferContext *param
     int v3, v4;
 
     v0 = GlobalTerminalGds_GetResponseData();
-    v1 = (GlobalTerminalProfilePhotoList *)(v0->unk_04);
-    v4 = v1->unk_00;
+    v1 = (GlobalTerminalProfilePhotoList *)(v0->data);
+    v4 = v1->count;
 
     if (v4 > param2) {
         v4 = param2;
     }
 
-    v2 = (GlobalTerminalProfilePhotoEntry *)(v1->unk_04);
+    v2 = (GlobalTerminalProfilePhotoEntry *)(v1->entries);
 
     for (v3 = 0; v3 < v4; v3++) {
-        param1[v3] = &v2[v3].unk_0C;
+        param1[v3] = &v2[v3].photo;
     }
 
     for (; v3 < param2; v3++) {
@@ -112,9 +112,9 @@ int GlobalTerminalGds_HandleProfileBox(VsRecorderViewerTransferContext *param0, 
     GlobalTerminalProfileBoxResult *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalProfileBoxResult *)(param1->unk_04);
+        v0 = (GlobalTerminalProfileBoxResult *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -140,9 +140,9 @@ int GlobalTerminalGds_HandleBox(VsRecorderViewerTransferContext *param0, GlobalT
     GlobalTerminalBoxList *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalBoxList *)(param1->unk_04);
+        v0 = (GlobalTerminalBoxList *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -165,19 +165,19 @@ int GlobalTerminalGds_GetBoxList(VsRecorderViewerTransferContext *param0, Global
     int v3, v4;
 
     v0 = GlobalTerminalGds_GetResponseData();
-    v1 = (GlobalTerminalBoxList *)(v0->unk_04);
+    v1 = (GlobalTerminalBoxList *)(v0->data);
 
-    v4 = v1->unk_00;
+    v4 = v1->count;
 
     if (v4 > param2) {
         v4 = param2;
         GF_ASSERT(FALSE);
     }
 
-    v2 = (GlobalTerminalBoxEntry *)(v1->unk_04);
+    v2 = (GlobalTerminalBoxEntry *)(v1->entries);
 
     for (v3 = 0; v3 < v4; v3++) {
-        param1[v3] = &v2[v3].unk_10;
+        param1[v3] = &v2[v3].box;
     }
 
     for (; v3 < param2; v3++) {
@@ -192,9 +192,9 @@ int GlobalTerminalGds_HandlePlayTime(VsRecorderViewerTransferContext *param0, Gl
     GlobalTerminalPlayTimeResult *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalPlayTimeResult *)(param1->unk_04);
+        v0 = (GlobalTerminalPlayTimeResult *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -210,9 +210,9 @@ int GlobalTerminalGds_HandlePlayTime(VsRecorderViewerTransferContext *param0, Gl
 void GlobalTerminalGds_GetPlayTime(VsRecorderViewerTransferContext *param0, VsRecorderViewerRankingsPlayTime **param1)
 {
     GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
-    GlobalTerminalPlayTimeResult *v1 = (GlobalTerminalPlayTimeResult *)(v0->unk_04);
+    GlobalTerminalPlayTimeResult *v1 = (GlobalTerminalPlayTimeResult *)(v0->data);
 
-    *param1 = &v1->unk_00;
+    *param1 = &v1->playTime;
 }
 
 int GlobalTerminalGds_HandlePlayTimeProfile(VsRecorderViewerTransferContext *param0, GlobalTerminalGdsResponse *param1)
@@ -220,9 +220,9 @@ int GlobalTerminalGds_HandlePlayTimeProfile(VsRecorderViewerTransferContext *par
     GlobalTerminalPlayTimeProfile *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalPlayTimeProfile *)(param1->unk_04);
+        v0 = (GlobalTerminalPlayTimeProfile *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -244,10 +244,10 @@ int GlobalTerminalGds_HandlePlayTimeProfile(VsRecorderViewerTransferContext *par
 void GlobalTerminalGds_GetPlayTimeProfile(VsRecorderViewerTransferContext *param0, GlobalTerminalPlayTimeData **param1, GlobalTerminalPlayTimeDataAlt **param2)
 {
     GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
-    GlobalTerminalPlayTimeProfile *v1 = (GlobalTerminalPlayTimeProfile *)(v0->unk_04);
+    GlobalTerminalPlayTimeProfile *v1 = (GlobalTerminalPlayTimeProfile *)(v0->data);
 
-    *param1 = &v1->unk_00;
-    *param2 = &v1->unk_558;
+    *param1 = &v1->data;
+    *param2 = &v1->dataAlt;
 }
 
 int GlobalTerminalGds_HandleBattleRecording(VsRecorderViewerTransferContext *param0, GlobalTerminalGdsResponse *param1)
@@ -255,9 +255,9 @@ int GlobalTerminalGds_HandleBattleRecording(VsRecorderViewerTransferContext *par
     GlobalTerminalBattleRecordingResult *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalBattleRecordingResult *)(param1->unk_04);
+        v0 = (GlobalTerminalBattleRecordingResult *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -283,9 +283,9 @@ int GlobalTerminalGds_HandleBattleRecording(VsRecorderViewerTransferContext *par
 u64 GlobalTerminalGds_GetBattleRecording(VsRecorderViewerTransferContext *param0)
 {
     GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
-    GlobalTerminalBattleRecordingResult *v1 = (GlobalTerminalBattleRecordingResult *)(v0->unk_04);
+    GlobalTerminalBattleRecordingResult *v1 = (GlobalTerminalBattleRecordingResult *)(v0->data);
 
-    return v1->unk_00;
+    return v1->recordingID;
 }
 
 int GlobalTerminalGds_HandleRecord(VsRecorderViewerTransferContext *param0, GlobalTerminalGdsResponse *param1)
@@ -293,9 +293,9 @@ int GlobalTerminalGds_HandleRecord(VsRecorderViewerTransferContext *param0, Glob
     GlobalTerminalRecordList *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalRecordList *)(param1->unk_04);
+        v0 = (GlobalTerminalRecordList *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -318,23 +318,23 @@ int GlobalTerminalGds_GetRecordList(VsRecorderViewerTransferContext *param0, Glo
     int v3, v4;
 
     v0 = GlobalTerminalGds_GetResponseData();
-    v1 = (GlobalTerminalRecordList *)(v0->unk_04);
+    v1 = (GlobalTerminalRecordList *)(v0->data);
 
-    v4 = v1->unk_00;
+    v4 = v1->count;
 
     if (v4 > param2) {
         v4 = param2;
         GF_ASSERT(FALSE);
     }
 
-    v2 = (GlobalTerminalRecordEntry *)(v1->unk_04);
+    v2 = (GlobalTerminalRecordEntry *)(v1->entries);
 
     for (v3 = 0; v3 < v4; v3++) {
-        param1[v3] = &v2[v3].unk_0C;
+        param1[v3] = &v2[v3].record;
 
-        if (v2[v3].unk_04 != param1[v3]->unk_80.unk_58) {
-            param1[v3]->unk_80.unk_58 = v2[v3].unk_04;
-            param1[v3]->unk_80.unk_60.unk_00 = SaveData_CalculateChecksum(param0->saveData, &param1[v3]->unk_80, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v2[v3].unk_04));
+        if (v2[v3].recordingID != param1[v3]->data.recordingID) {
+            param1[v3]->data.recordingID = v2[v3].recordingID;
+            param1[v3]->data.checksum.unk_00 = SaveData_CalculateChecksum(param0->saveData, &param1[v3]->data, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v2[v3].recordingID));
         }
     }
 
@@ -350,9 +350,9 @@ int GlobalTerminalGds_HandleRecordAlt(VsRecorderViewerTransferContext *param0, G
     GlobalTerminalRecordAltResult *v0;
     int v1 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
-        v0 = (GlobalTerminalRecordAltResult *)(param1->unk_04);
+        v0 = (GlobalTerminalRecordAltResult *)(param1->data);
         v1 = 1;
         break;
     case 1:
@@ -370,23 +370,23 @@ int GlobalTerminalGds_HandleRecordAlt(VsRecorderViewerTransferContext *param0, G
 int GlobalTerminalGds_GetRecordAlt(VsRecorderViewerTransferContext *param0, GlobalTerminalRecordAlt **param1)
 {
     GlobalTerminalGdsResponse *v0 = GlobalTerminalGds_GetResponseData();
-    GlobalTerminalRecordAltResult *v1 = (GlobalTerminalRecordAltResult *)(v0->unk_04);
+    GlobalTerminalRecordAltResult *v1 = (GlobalTerminalRecordAltResult *)(v0->data);
 
-    *param1 = &v1->unk_0C;
+    *param1 = &v1->record;
 
-    if (v1->unk_04 != v1->unk_0C.unk_80.unk_58) {
-        v1->unk_0C.unk_80.unk_58 = v1->unk_04;
-        (*param1)->unk_80.unk_60.unk_00 = SaveData_CalculateChecksum(param0->saveData, &(*param1)->unk_80, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v1->unk_04));
+    if (v1->recordingID != v1->record.data.recordingID) {
+        v1->record.data.recordingID = v1->recordingID;
+        (*param1)->data.checksum.unk_00 = SaveData_CalculateChecksum(param0->saveData, &(*param1)->data, sizeof(GlobalTerminalRecordAltData) - (sizeof(VsRecorderViewerBoxChecksum)) - sizeof(v1->recordingID));
     }
 
-    return v1->unk_04;
+    return v1->recordingID;
 }
 
 int GlobalTerminalGds_HandleRecordAlt2(VsRecorderViewerTransferContext *param0, GlobalTerminalGdsResponse *param1)
 {
     int v0 = 0;
 
-    switch (param1->unk_02) {
+    switch (param1->status) {
     case 0:
         v0 = 1;
         break;

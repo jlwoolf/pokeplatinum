@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BED8_SUB2_SUB2_H
 
 typedef struct {
-    u8 unk_00[4][1024];
+    u8 unused_00[4][1024];
 } GlobalTerminalRecordAltExtra2;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BED8_SUB2_SUB2_H

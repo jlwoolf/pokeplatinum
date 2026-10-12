@@ -9,7 +9,7 @@ typedef struct {
     u16 species;
     u8 isEgg : 1;
     u8 form : 7;
-    u8 unk_07;
+    u8 unused_07;
 } GlobalTerminalProfileSummary;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222AFCC_H

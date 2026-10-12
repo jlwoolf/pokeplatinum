@@ -954,27 +954,27 @@ void DressUpPhoto_Serialize(const DressUpPhoto *photo, GlobalTerminalDressUpPhot
 
     photoData->integrity = photo->integrity;
 
-    photoData->unk_04.personality = photo->photoMon.personality;
-    photoData->unk_04.otID = photo->photoMon.otID;
-    photoData->unk_04.species = photo->photoMon.species;
+    photoData->photoMon.personality = photo->photoMon.personality;
+    photoData->photoMon.otID = photo->photoMon.otID;
+    photoData->photoMon.species = photo->photoMon.species;
 
     for (i = 0; i < TRAINER_NAME_LEN + 1; i++) {
-        photoData->unk_04.trainerName[i] = photo->photoMon.trainerName[i];
+        photoData->photoMon.trainerName[i] = photo->photoMon.trainerName[i];
     }
 
-    photoData->unk_04.priority = photo->photoMon.priority;
-    photoData->unk_04.xPos = photo->photoMon.xPos;
-    photoData->unk_04.yPos = photo->photoMon.yPos;
-    photoData->unk_04.form = photo->photoMon.form;
+    photoData->photoMon.priority = photo->photoMon.priority;
+    photoData->photoMon.xPos = photo->photoMon.xPos;
+    photoData->photoMon.yPos = photo->photoMon.yPos;
+    photoData->photoMon.form = photo->photoMon.form;
 
-    photoData->unk_24 = photo->accessoryFlags;
+    photoData->accessoryFlags = photo->accessoryFlags;
     photoData->title = photo->title;
 
     for (i = 0; i < PHOTO_ACCESSORY_COUNT; i++) {
-        photoData->unk_30[i] = *((GlobalTerminalPhotoAccessory *)(&photo->accessories[i]));
+        photoData->accessories[i] = *((GlobalTerminalPhotoAccessory *)(&photo->accessories[i]));
     }
 
-    photoData->unk_58 = photo->backdrop;
+    photoData->backdrop = photo->backdrop;
     photoData->language = photo->language;
 }
 
@@ -990,27 +990,27 @@ void DressUpPhoto_Deserialize(const GlobalTerminalDressUpPhoto *photoData, Dress
 
     photo->integrity = photoData->integrity;
 
-    photo->photoMon.personality = photoData->unk_04.personality;
-    photo->photoMon.otID = photoData->unk_04.otID;
-    photo->photoMon.species = photoData->unk_04.species;
+    photo->photoMon.personality = photoData->photoMon.personality;
+    photo->photoMon.otID = photoData->photoMon.otID;
+    photo->photoMon.species = photoData->photoMon.species;
 
     for (i = 0; i < TRAINER_NAME_LEN + 1; i++) {
-        photo->photoMon.trainerName[i] = photoData->unk_04.trainerName[i];
+        photo->photoMon.trainerName[i] = photoData->photoMon.trainerName[i];
     }
 
-    photo->photoMon.priority = photoData->unk_04.priority;
-    photo->photoMon.xPos = photoData->unk_04.xPos;
-    photo->photoMon.yPos = photoData->unk_04.yPos;
-    photo->photoMon.form = photoData->unk_04.form;
+    photo->photoMon.priority = photoData->photoMon.priority;
+    photo->photoMon.xPos = photoData->photoMon.xPos;
+    photo->photoMon.yPos = photoData->photoMon.yPos;
+    photo->photoMon.form = photoData->photoMon.form;
 
-    photo->accessoryFlags = photoData->unk_24;
+    photo->accessoryFlags = photoData->accessoryFlags;
     photo->title = *((EasyChatSentence *)(&photoData->title));
 
     for (i = 0; i < PHOTO_ACCESSORY_COUNT; i++) {
-        photo->accessories[i] = *((PhotoAccessory *)(&photoData->unk_30[i]));
+        photo->accessories[i] = *((PhotoAccessory *)(&photoData->accessories[i]));
     }
 
-    photo->backdrop = photoData->unk_58;
+    photo->backdrop = photoData->backdrop;
     photo->language = photoData->language;
 
     for (i = 0; i < MON_NAME_LEN + 1; i++) {

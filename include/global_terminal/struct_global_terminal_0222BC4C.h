@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BC4C_H
 
 typedef struct {
-    u64 unk_00;
+    u64 unused_00;
 } GlobalTerminalProfilePhotoResult;
 
 #endif // POKEPLATINUM_STRUCT_GLOBAL_TERMINAL_0222BC4C_H

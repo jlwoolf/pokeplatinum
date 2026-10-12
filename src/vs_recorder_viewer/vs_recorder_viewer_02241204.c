@@ -341,7 +341,7 @@ static void VsRecorderViewerRecord_CreateBoxSprites(VsRecorderState *param0)
             continue;
         }
 
-        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v11 + v0]->unk_80)) {
+        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v11 + v0]->data)) {
             v7 = 1;
         } else {
             v7 = 0;
@@ -357,29 +357,29 @@ static void VsRecorderViewerRecord_CreateBoxSprites(VsRecorderState *param0)
             }
 
             for (v12 = 0; v12 < 3; v12++) {
-                v8 = param0->unk_8B4.unk_1D58[v11 + v0]->unk_80.unk_00[v4[v7][v12]];
+                v8 = param0->unk_8B4.unk_1D58[v11 + v0]->data.species[v4[v7][v12]];
                 if (v8 == 0) {
                     continue;
                 }
 
                 v5[v14] = v8;
-                v6[v14] = param0->unk_8B4.unk_1D58[v11 + v0]->unk_80.unk_18[v4[v7][v12]];
+                v6[v14] = param0->unk_8B4.unk_1D58[v11 + v0]->data.forms[v4[v7][v12]];
                 v14++;
             }
 
-            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v11 + v0]->unk_80)) {
+            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v11 + v0]->data)) {
                 v14 = 3;
             }
 
             for (v12 = 3; v12 < 6; v12++) {
-                v8 = param0->unk_8B4.unk_1D58[v11 + v0]->unk_80.unk_00[v4[v7][v12]];
+                v8 = param0->unk_8B4.unk_1D58[v11 + v0]->data.species[v4[v7][v12]];
 
                 if (v8 == 0) {
                     continue;
                 }
 
                 v5[v14] = v8;
-                v6[v14] = param0->unk_8B4.unk_1D58[v11 + v0]->unk_80.unk_18[v4[v7][v12]];
+                v6[v14] = param0->unk_8B4.unk_1D58[v11 + v0]->data.forms[v4[v7][v12]];
                 v14++;
             }
         }
@@ -494,7 +494,7 @@ static void VsRecorderViewerRecord_ScrollBoxList(VsRecorderState *param0)
         int v12[6] = { 0, 0, 0, 0, 0, 0 };
         int v13 = 0;
 
-        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->unk_80)) {
+        if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->data)) {
             v13 = 1;
         }
 
@@ -508,30 +508,30 @@ static void VsRecorderViewerRecord_ScrollBoxList(VsRecorderState *param0)
             }
 
             for (v14 = 0; v14 < 3; v14++) {
-                v6 = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_00[v10[v13][v14]];
+                v6 = param0->unk_8B4.unk_1D58[v9]->data.species[v10[v13][v14]];
 
                 if (v6 == 0) {
                     continue;
                 }
 
                 v11[v16] = v6;
-                v12[v16] = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_18[v10[v13][v14]];
+                v12[v16] = param0->unk_8B4.unk_1D58[v9]->data.forms[v10[v13][v14]];
                 v16++;
             }
 
-            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->unk_80)) {
+            if (VsRecorderViewerList_IsSummaryResultSpecial((BattleRecordingSummary *)&param0->unk_8B4.unk_1D58[v9]->data)) {
                 v16 = 3;
             }
 
             for (v14 = 3; v14 < 6; v14++) {
-                v6 = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_00[v10[v13][v14]];
+                v6 = param0->unk_8B4.unk_1D58[v9]->data.species[v10[v13][v14]];
 
                 if (v6 == 0) {
                     continue;
                 }
 
                 v11[v16] = v6;
-                v12[v16] = param0->unk_8B4.unk_1D58[v9]->unk_80.unk_18[v10[v13][v14]];
+                v12[v16] = param0->unk_8B4.unk_1D58[v9]->data.forms[v10[v13][v14]];
                 v16++;
             }
         }
@@ -2291,7 +2291,7 @@ static BOOL VsRecorderViewerRecord_UploadId(VsRecorderState *param0)
         param0->unk_08++;
         break;
     case 3:
-        if (GlobalTerminalTransfer_UploadId(VsRecorderViewerTransfer_GetTransfer(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80.unk_58) == 1) {
+        if (GlobalTerminalTransfer_UploadId(VsRecorderViewerTransfer_GetTransfer(param0), param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->data.recordingID) == 1) {
             param0->unk_08++;
         }
         break;
@@ -2795,10 +2795,10 @@ static void VsRecorderViewerRecord_LoadRecordProfile(VsRecorderState *param0)
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
     v0->unk_80.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    GlobalTerminal_DeserializePlayerProfile(&v0->unk_4BC->unk_00, v0->unk_80.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&v0->unk_4BC->profile, v0->unk_80.unk_00);
     v0->unk_10C.unk_00 = v0->unk_80.unk_00;
     v0->unk_10C.unk_04 = BattleRecording_NewSummary(HEAP_ID_102);
-    MI_CpuCopy8(&v0->unk_4BC->unk_80, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
+    MI_CpuCopy8(&v0->unk_4BC->data, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
 static void VsRecorderViewerRecord_LoadBoxRecordProfile(VsRecorderState *param0)
@@ -2806,10 +2806,10 @@ static void VsRecorderViewerRecord_LoadBoxRecordProfile(VsRecorderState *param0)
     VsRecorderViewerRecordContext *v0 = param0->unk_860;
 
     v0->unk_80.unk_00 = PlayerProfile_New(HEAP_ID_102);
-    GlobalTerminal_DeserializePlayerProfile(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_00, v0->unk_80.unk_00);
+    GlobalTerminal_DeserializePlayerProfile(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->profile, v0->unk_80.unk_00);
     v0->unk_10C.unk_00 = v0->unk_80.unk_00;
     v0->unk_10C.unk_04 = BattleRecording_NewSummary(HEAP_ID_102);
-    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->unk_80, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
+    MI_CpuCopy8(&param0->unk_8B4.unk_1D58[param0->unk_14.unk_48C.unk_38.unk_00]->data, v0->unk_10C.unk_04, sizeof(GlobalTerminalRecordAltData));
 }
 
 static void VsRecorderViewerRecord_FreeRecordProfile(VsRecorderState *param0)
@@ -4562,7 +4562,7 @@ void VsRecorderViewerRecord_LoadRecordAlt(void *param0, const VsRecorderViewerTr
     } else {
         GlobalTerminalGds_GetRecordAlt(VsRecorderViewerTransfer_GetTransfer(v0), &v0->unk_8B4.unk_00);
         VsRecorderViewerList_StoreBattleRecording(v0);
-        v0->unk_8B4.unk_1D54 = v0->unk_8B4.unk_00->unk_80.unk_27;
+        v0->unk_8B4.unk_1D54 = v0->unk_8B4.unk_00->data.isSaved;
     }
 }
 

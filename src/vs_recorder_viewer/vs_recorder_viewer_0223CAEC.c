@@ -157,7 +157,7 @@ static void VsRecorderViewerRankings_InitRankingList(VsRecorderState *a0)
         r4->unk_748 = NULL;
     } else {
         r4->unk_B0C = sVsRecorderViewerRankingsListConfigAlt;
-        r4->unk_748 = MessageLoader_GetNewString(a0->unk_14.unk_38, r4->unk_714->unk_00[r4->unk_0C].unk_00 + 0x5e);
+        r4->unk_748 = MessageLoader_GetNewString(a0->unk_14.unk_38, r4->unk_714->entries[r4->unk_0C].rankingID + 0x5e);
     }
     r4->unk_B0C.unk_04 = r4->unk_20;
     r4->unk_B0C.unk_00 = r4->unk_74C[r4->unk_0C];
@@ -184,12 +184,12 @@ static void VsRecorderViewerRankings_PopulateEntries(VsRecorderState *param0)
         for (v1 = 0; v1 < 16; v1++) {
             if (v0->unk_1C == 0) {
                 v0->unk_74C[v0->unk_0C][v1].unk_00 = 10000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_718->unk_00[v0->unk_0C].unk_04[v1], 4);
+                v0->unk_74C[v0->unk_0C][v1].unk_04 = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_718->entries[v0->unk_0C].appearance0[v1], 4);
                 v0->unk_74C[v0->unk_0C][v1].unk_08 = v1;
             } else {
                 v0->unk_74C[v0->unk_0C][v1].unk_00 = 20000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_714->unk_00[v0->unk_0C].unk_04[v1], 4);
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->unk_00[v0->unk_0C].unk_14[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_04 = VsRecorderViewerList_GetAppearanceFileIndex(v0->unk_714->entries[v0->unk_0C].appearance0[v1], 4);
+                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->entries[v0->unk_0C].values0[v1];
 
                 if (v0->unk_74C[v0->unk_0C][v1].unk_08 >= 9999999999999999999) {
                     v0->unk_74C[v0->unk_0C][v1].unk_08 = 9999999999999999999;
@@ -201,12 +201,12 @@ static void VsRecorderViewerRankings_PopulateEntries(VsRecorderState *param0)
         for (v1 = 0; v1 < 12; v1++) {
             if (v0->unk_1C == 0) {
                 v0->unk_74C[v0->unk_0C][v1].unk_00 = 30000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_718->unk_00[v0->unk_0C].unk_14[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_718->entries[v0->unk_0C].appearance1[v1];
                 v0->unk_74C[v0->unk_0C][v1].unk_08 = v1;
             } else {
                 v0->unk_74C[v0->unk_0C][v1].unk_00 = 40000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_714->unk_00[v0->unk_0C].unk_94[v1];
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->unk_00[v0->unk_0C].unk_A0[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_714->entries[v0->unk_0C].appearance1[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->entries[v0->unk_0C].values1[v1];
 
                 if (v0->unk_74C[v0->unk_0C][v1].unk_08 >= 9999999999999999999) {
                     v0->unk_74C[v0->unk_0C][v1].unk_08 = 9999999999999999999;
@@ -218,12 +218,12 @@ static void VsRecorderViewerRankings_PopulateEntries(VsRecorderState *param0)
         for (v1 = 0; v1 < 20; v1++) {
             if (v0->unk_1C == 0) {
                 v0->unk_74C[v0->unk_0C][v1].unk_00 = 50000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_718->unk_00[v0->unk_0C].unk_20[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_718->entries[v0->unk_0C].appearance2[v1];
                 v0->unk_74C[v0->unk_0C][v1].unk_08 = v1;
             } else {
                 v0->unk_74C[v0->unk_0C][v1].unk_00 = 60000;
-                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_714->unk_00[v0->unk_0C].unk_100[v1];
-                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->unk_00[v0->unk_0C].unk_128[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_04 = v0->unk_714->entries[v0->unk_0C].appearance2[v1];
+                v0->unk_74C[v0->unk_0C][v1].unk_08 = v0->unk_714->entries[v0->unk_0C].values2[v1];
 
                 if (v0->unk_74C[v0->unk_0C][v1].unk_08 >= 9999999999999999999) {
                     v0->unk_74C[v0->unk_0C][v1].unk_08 = 9999999999999999999;
@@ -450,8 +450,8 @@ static void VsRecorderViewerRankings_DrawPlayerProfileHeader(VsRecorderState *a0
     StringTemplate *r6 = VsRecorderViewerList_NewStringTemplate(0x66);
     Window_FillTilemap(&r4->unk_24[0], 0);
     r7 = (r4->unk_1C == 0)
-        ? MessageLoader_GetNewString(r5->unk_14.unk_38, r4->unk_718->unk_00[r4->unk_0C].unk_00 - 1)
-        : MessageLoader_GetNewString(r5->unk_14.unk_38, r4->unk_714->unk_00[r4->unk_0C].unk_00 - 1);
+        ? MessageLoader_GetNewString(r5->unk_14.unk_38, r4->unk_718->entries[r4->unk_0C].rankingID - 1)
+        : MessageLoader_GetNewString(r5->unk_14.unk_38, r4->unk_714->entries[r4->unk_0C].rankingID - 1);
     Text_AddPrinterWithParamsAndColor(&r4->unk_24[0], 0, r7, 0, 0, 0xff, 0x000f0d00, 0);
     Window_ScheduleCopyToVRAM(&r4->unk_24[0]);
     String_Free(r7);
@@ -744,11 +744,11 @@ static BOOL VsRecorderViewerRankings_UploadPlayTime(VsRecorderState *param0)
             BOOL v2 = 0;
 
             if (v0->unk_1C == 0) {
-                if ((v0->unk_718->unk_00[0].unk_00 == 0) || (v0->unk_718->unk_00[1].unk_00 == 0) || (v0->unk_718->unk_00[2].unk_00 == 0)) {
+                if ((v0->unk_718->entries[0].rankingID == 0) || (v0->unk_718->entries[1].rankingID == 0) || (v0->unk_718->entries[2].rankingID == 0)) {
                     v2 = 1;
                 }
             } else {
-                if ((v0->unk_714->unk_00[0].unk_00 == 0) || (v0->unk_714->unk_00[1].unk_00 == 0) || (v0->unk_714->unk_00[2].unk_00 == 0)) {
+                if ((v0->unk_714->entries[0].rankingID == 0) || (v0->unk_714->entries[1].rankingID == 0) || (v0->unk_714->entries[2].rankingID == 0)) {
                     v2 = 1;
                 }
             }

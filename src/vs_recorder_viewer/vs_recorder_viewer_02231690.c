@@ -890,7 +890,7 @@ void VsRecorderViewerList_InitRecordWindow(VsRecorderViewerListWindow *param0, V
             v6 = MessageLoader_GetNewString(param1->unk_14.unk_34, 99);
 
             String_FormatInt(v5, (v0 + 1), 2, 1, 1);
-            String_CopyChars(v4, param1->unk_8B4.unk_1D58[v0]->unk_00.unk_00);
+            String_CopyChars(v4, param1->unk_8B4.unk_1D58[v0]->profile.name);
             VsRecorderViewerList_CheckNameChars(param1, v4);
 
             v7 = Font_CalcStringWidth(FONT_SYSTEM, v5, 0);
@@ -1303,7 +1303,7 @@ int VsRecorderViewerList_UpdateSpeciesWindow(VsRecorderViewerListWindow *param0,
             v9 = MessageLoader_GetNewString(param1->unk_14.unk_34, 99);
 
             String_FormatInt(v8, (v5 + v4 + 1), 2, 1, 1);
-            String_CopyChars(v7, param1->unk_8B4.unk_1D58[v5 + v4]->unk_00.unk_00);
+            String_CopyChars(v7, param1->unk_8B4.unk_1D58[v5 + v4]->profile.name);
             VsRecorderViewerList_CheckNameChars(param1, v7);
 
             v10 = Font_CalcStringWidth(FONT_SYSTEM, v8, 0);
@@ -1706,9 +1706,9 @@ void VsRecorderViewerList_StoreBattleRecording(VsRecorderState *param0)
     BattleRecording_New(param0->saveData, HEAP_ID_119, &v0);
 
     {
-        PlayerProfile *v1 = (PlayerProfile *)(&param0->unk_8B4.unk_00->unk_00);
-        BattleRecordingSummary *v2 = (BattleRecordingSummary *)(&param0->unk_8B4.unk_00->unk_80);
-        BattleRecordingData *v3 = (BattleRecordingData *)(&param0->unk_8B4.unk_00->unk_E4);
+        PlayerProfile *v1 = (PlayerProfile *)(&param0->unk_8B4.unk_00->profile);
+        BattleRecordingSummary *v2 = (BattleRecordingSummary *)(&param0->unk_8B4.unk_00->data);
+        BattleRecordingData *v3 = (BattleRecordingData *)(&param0->unk_8B4.unk_00->extra);
         BattleRecording_Store(v1, v2, v3, NULL, param0->saveData);
     }
 }
@@ -1798,7 +1798,7 @@ void VsRecorderViewerList_LoadRecordList(void *param0, const VsRecorderViewerTra
             for (v2 = 0; v2 < v1->unk_3900; v2++) {
                 GF_ASSERT(v0->unk_8B4.unk_1D58[v2] != NULL);
                 MI_CpuCopy8(v0->unk_8B4.unk_1D58[v2], &v0->unk_8B4.unk_1DD0[v2], sizeof(GlobalTerminalRecord));
-                v0->unk_8B4.unk_3904[v2] = v0->unk_8B4.unk_1D58[v2]->unk_80.unk_27;
+                v0->unk_8B4.unk_3904[v2] = v0->unk_8B4.unk_1D58[v2]->data.isSaved;
             }
         }
     }
