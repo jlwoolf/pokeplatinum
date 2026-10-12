@@ -232,8 +232,8 @@ static void contest_competition_02247B00(ContestPacketQueue *param0, void *param
         MI_CpuClear8(&v5, sizeof(PhotoSpriteConfig));
 
         v5.heapID = HEAP_ID_22;
-        v5.unk_04 = 128;
-        v5.unk_08 = (96 - 32) + 80 / 2;
+        v5.xPos = 128;
+        v5.yPos = (96 - 32) + 80 / 2;
         v0->photoSprites[v1->contestantID].x = 128;
         v0->photoSprites[v1->contestantID].y = (96 - 32) + 80 / 2;
         v0->photoSprites[v1->contestantID].photoSprite = PhotoSprite_CreateForContestNoBackdrop(&v5, v0->contest->data.photos[v1->contestantID]);
@@ -902,8 +902,8 @@ static void contest_competition_02248860(SysTask *param0, void *param1)
             MI_CpuClear8(&v1, sizeof(PhotoSpriteConfig));
 
             v1.heapID = HEAP_ID_22;
-            v1.unk_04 = 128;
-            v1.unk_08 = (96 - 32) + v2;
+            v1.xPos = 128;
+            v1.yPos = (96 - 32) + v2;
             v0->movement.competition->photoSprites[v0->movement.contestantID].photoSprite = PhotoSprite_CreateForContestNoBackdrop(&v1, v0->movement.competition->contest->data.photos[v0->movement.contestantID]);
 
             PhotoSprite_SetTransformEnabled(v0->movement.competition->photoSprites[v0->movement.contestantID].photoSprite, 0);

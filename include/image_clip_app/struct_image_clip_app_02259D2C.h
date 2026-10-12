@@ -10,12 +10,12 @@
 #include "touch_screen_actions.h"
 
 typedef struct {
-    ImageClipUi unk_00[4];
-    ImageClipUiTextButton unk_40;
-    BOOL unk_60;
-    FontOAMManager *unk_64;
-    TouchScreenActions *unk_68;
-    TouchScreenHitTable unk_6C[5];
+    ImageClipUi buttons[4];
+    ImageClipUiTextButton textButton;
+    BOOL textEnabled;
+    FontOAMManager *fontManager;
+    TouchScreenActions *touchActions;
+    TouchScreenHitTable hitTables[5];
 } ImageClipUiMenu;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02259D2C_H

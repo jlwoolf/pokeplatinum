@@ -35,13 +35,13 @@
 
 typedef struct {
     const DressUpPhoto *photo;
-    const ContestPhoto *unk_04;
-    u32 unk_08;
-    u32 unk_0C;
-    PhotoSprite *unk_10;
-    ImageClipGraphics unk_14;
-    Sprite *unk_1FC;
-    Window *unk_200;
+    const ContestPhoto *contestPhoto;
+    u32 contestType;
+    u32 isContest;
+    PhotoSprite *photoSprite;
+    ImageClipGraphics graphics;
+    Sprite *sprite;
+    Window *window;
 } DressUpPhotoViewer;
 
 static void DressUpPhotoViewer_VBlank(void *param0);
@@ -74,29 +74,29 @@ int DressUpPhotoViewer_Init(ApplicationManager *appMan, int *param1)
     if (v1->unk_08 == 0) {
         v0->photo = ImageClips_GetDressUpPhoto(v1->imageClips, v1->unk_04);
     } else {
-        v0->unk_04 = ImageClips_GetContestPhoto(v1->imageClips, v1->unk_04);
+        v0->contestPhoto = ImageClips_GetContestPhoto(v1->imageClips, v1->unk_04);
     }
 
-    v0->unk_08 = v1->unk_04;
-    v0->unk_0C = v1->unk_08;
+    v0->contestType = v1->unk_04;
+    v0->isContest = v1->unk_08;
 
     ImageClipGraphics_Init();
     gSystem.whichScreenIs3D = DS_SCREEN_MAIN;
     GXLayers_SwapDisplay();
-    ImageClipGraphics_InitNarc(&v0->unk_14, 14);
+    ImageClipGraphics_InitNarc(&v0->graphics, 14);
 
     {
         PhotoSpriteConfig v2;
 
-        v2.unk_00 = v0->unk_14.unk_40;
-        v2.unk_04 = 72;
-        v2.unk_08 = 16;
+        v2.bgConfig = v0->graphics.bgConfig;
+        v2.xPos = 72;
+        v2.yPos = 16;
         v2.heapID = HEAP_ID_14;
 
-        if (v0->unk_0C == 0) {
-            v0->unk_10 = PhotoSprite_CreateForDressUp(&v2, v0->photo);
+        if (v0->isContest == 0) {
+            v0->photoSprite = PhotoSprite_CreateForDressUp(&v2, v0->photo);
         } else {
-            v0->unk_10 = PhotoSprite_CreateForContest(&v2, v0->unk_04);
+            v0->photoSprite = PhotoSprite_CreateForContest(&v2, v0->contestPhoto);
         }
     }
 
@@ -116,11 +116,11 @@ int DressUpPhotoViewer_Main(ApplicationManager *appMan, int *param1)
     {
         G3_ResetG3X();
         NNS_G2dSetupSoftwareSpriteCamera();
-        PhotoSprite_Update(v0->unk_10);
+        PhotoSprite_Update(v0->photoSprite);
         G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
     }
 
-    ImageClipGraphics_UpdateSprites(&v0->unk_14);
+    ImageClipGraphics_UpdateSprites(&v0->graphics);
 
     switch (*param1) {
     case 0:
@@ -158,10 +158,10 @@ int DressUpPhotoViewer_Exit(ApplicationManager *appMan, int *param1)
 {
     DressUpPhotoViewer *v0 = ApplicationManager_Data(appMan);
 
-    PhotoSprite_Free(v0->unk_10);
+    PhotoSprite_Free(v0->photoSprite);
     DressUpPhotoViewer_FreeSprites(v0);
     DressUpPhotoViewer_FreeWindow(v0);
-    ImageClipGraphics_FreeNarc(&v0->unk_14);
+    ImageClipGraphics_FreeNarc(&v0->graphics);
     ImageClipGraphics_Free();
 
     SetVBlankCallback(NULL, NULL);
@@ -177,8 +177,8 @@ static void DressUpPhotoViewer_VBlank(void *param0)
 {
     DressUpPhotoViewer *v0 = param0;
 
-    PhotoSprite_UpdateGraphics(v0->unk_10);
-    ImageClipGraphics_Flush(&v0->unk_14);
+    PhotoSprite_UpdateGraphics(v0->photoSprite);
+    ImageClipGraphics_Flush(&v0->graphics);
 }
 
 static void DressUpPhotoViewer_LoadBackground(DressUpPhotoViewer *param0)
@@ -188,10 +188,10 @@ static void DressUpPhotoViewer_LoadBackground(DressUpPhotoViewer *param0)
     int v2;
     int v3;
 
-    Graphics_LoadPaletteFromOpenNARC(param0->unk_14.unk_5C, 126, 0, 3 * 32, 64, HEAP_ID_14);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(param0->unk_14.unk_5C, 125, param0->unk_14.unk_40, 1, 0, 0, 0, HEAP_ID_14);
+    Graphics_LoadPaletteFromOpenNARC(param0->graphics.narc, 126, 0, 3 * 32, 64, HEAP_ID_14);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(param0->graphics.narc, 125, param0->graphics.bgConfig, 1, 0, 0, 0, HEAP_ID_14);
 
-    if (param0->unk_0C == 0) {
+    if (param0->isContest == 0) {
         v2 = 128;
         v3 = 3 + 1;
     } else {
@@ -199,72 +199,72 @@ static void DressUpPhotoViewer_LoadBackground(DressUpPhotoViewer *param0)
         v3 = 3;
     }
 
-    v0 = Graphics_GetScrnDataFromOpenNARC(param0->unk_14.unk_5C, v2, 0, &v1, HEAP_ID_14);
+    v0 = Graphics_GetScrnDataFromOpenNARC(param0->graphics.narc, v2, 0, &v1, HEAP_ID_14);
 
-    Bg_LoadToTilemapRect(param0->unk_14.unk_40, 1, v1->rawData, 0, 0, v1->screenWidth / 8, v1->screenHeight / 8);
-    Bg_ChangeTilemapRectPalette(param0->unk_14.unk_40, 1, 0, 0, v1->screenWidth / 8, v1->screenHeight / 8, v3);
+    Bg_LoadToTilemapRect(param0->graphics.bgConfig, 1, v1->rawData, 0, 0, v1->screenWidth / 8, v1->screenHeight / 8);
+    Bg_ChangeTilemapRectPalette(param0->graphics.bgConfig, 1, 0, 0, v1->screenWidth / 8, v1->screenHeight / 8, v3);
     Heap_Free(v0);
-    Bg_ScheduleTilemapTransfer(param0->unk_14.unk_40, 1);
+    Bg_ScheduleTilemapTransfer(param0->graphics.bgConfig, 1);
 }
 
 static void DressUpPhotoViewer_LoadFrame(DressUpPhotoViewer *param0)
 {
     Graphics_LoadPalette(NARC_INDEX_GRAPHIC__POKETCH, 12, 4, 0, 32, HEAP_ID_14);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_GRAPHIC__POKETCH, 11, param0->unk_14.unk_40, 4, 0, 0, 1, HEAP_ID_14);
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_GRAPHIC__POKETCH, 10, param0->unk_14.unk_40, 4, 0, 0, 1, HEAP_ID_14);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_GRAPHIC__POKETCH, 11, param0->graphics.bgConfig, 4, 0, 0, 1, HEAP_ID_14);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_GRAPHIC__POKETCH, 10, param0->graphics.bgConfig, 4, 0, 0, 1, HEAP_ID_14);
 }
 
 static void DressUpPhotoViewer_LoadSprites(DressUpPhotoViewer *param0)
 {
-    ImageClipGraphics_LoadTiles(&param0->unk_14, param0->unk_14.unk_5C, 233, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 1000);
-    ImageClipGraphics_LoadPalette(&param0->unk_14, param0->unk_14.unk_5C, 234, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 6, 1000);
-    ImageClipGraphics_LoadCell(&param0->unk_14, param0->unk_14.unk_5C, 232, 0, 1000);
-    ImageClipGraphics_LoadAnim(&param0->unk_14, param0->unk_14.unk_5C, 231, 0, 1000);
+    ImageClipGraphics_LoadTiles(&param0->graphics, param0->graphics.narc, 233, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 1000);
+    ImageClipGraphics_LoadPalette(&param0->graphics, param0->graphics.narc, 234, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 6, 1000);
+    ImageClipGraphics_LoadCell(&param0->graphics, param0->graphics.narc, 232, 0, 1000);
+    ImageClipGraphics_LoadAnim(&param0->graphics, param0->graphics.narc, 231, 0, 1000);
 
-    param0->unk_1FC = ImageClipGraphics_AddSprite(&param0->unk_14, 1000, 0, 144, 100, NNS_G2D_VRAM_TYPE_2DMAIN);
+    param0->sprite = ImageClipGraphics_AddSprite(&param0->graphics, 1000, 0, 144, 100, NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    Sprite_SetExplicitPriority(param0->unk_1FC, 1);
+    Sprite_SetExplicitPriority(param0->sprite, 1);
 }
 
 static void DressUpPhotoViewer_FreeSprites(DressUpPhotoViewer *param0)
 {
-    ImageClipGraphics_RemoveTiles(&param0->unk_14, 1000);
-    ImageClipGraphics_RemovePalette(&param0->unk_14, 1000);
-    ImageClipGraphics_RemoveCell(&param0->unk_14, 1000);
-    ImageClipGraphics_RemoveAnim(&param0->unk_14, 1000);
-    Sprite_Delete(param0->unk_1FC);
+    ImageClipGraphics_RemoveTiles(&param0->graphics, 1000);
+    ImageClipGraphics_RemovePalette(&param0->graphics, 1000);
+    ImageClipGraphics_RemoveCell(&param0->graphics, 1000);
+    ImageClipGraphics_RemoveAnim(&param0->graphics, 1000);
+    Sprite_Delete(param0->sprite);
 }
 
 static void DressUpPhotoViewer_CreateWindow(DressUpPhotoViewer *param0)
 {
-    param0->unk_200 = Window_New(HEAP_ID_14, 1);
+    param0->window = Window_New(HEAP_ID_14, 1);
 
-    Window_Add(param0->unk_14.unk_40, param0->unk_200, 3, 0, 18, 32, 6, 5, 1);
+    Window_Add(param0->graphics.bgConfig, param0->window, 3, 0, 18, 32, 6, 5, 1);
     Font_LoadTextPalette(PAL_LOAD_MAIN_BG, PLTT_OFFSET(5), HEAP_ID_14);
     Bg_SetPriority(BG_LAYER_MAIN_3, 0);
     Bg_SetPriority(BG_LAYER_MAIN_0, 2);
     Bg_SetPriority(BG_LAYER_MAIN_1, 1);
-    Bg_SetOffset(param0->unk_14.unk_40, 3, 3, 0);
+    Bg_SetOffset(param0->graphics.bgConfig, 3, 3, 0);
 }
 
 static void DressUpPhotoViewer_FreeWindow(DressUpPhotoViewer *param0)
 {
-    Window_ClearAndCopyToVRAM(param0->unk_200);
-    Window_Remove(param0->unk_200);
-    Windows_Delete(param0->unk_200, 1);
+    Window_ClearAndCopyToVRAM(param0->window);
+    Window_Remove(param0->window);
+    Windows_Delete(param0->window, 1);
 }
 
 static void DressUpPhotoViewer_DrawText(DressUpPhotoViewer *param0)
 {
-    Window_FillTilemap(param0->unk_200, 0);
+    Window_FillTilemap(param0->window, 0);
 
-    if (param0->unk_0C == 0) {
+    if (param0->isContest == 0) {
         DressUpPhotoViewer_DrawDressUpText(param0);
     } else {
         DressUpPhotoViewer_DrawContestText(param0);
     }
 
-    Window_CopyToVRAM(param0->unk_200);
+    Window_CopyToVRAM(param0->window);
 }
 
 static void DressUpPhotoViewer_DrawDressUpText(DressUpPhotoViewer *param0)
@@ -280,11 +280,11 @@ static void DressUpPhotoViewer_DrawDressUpText(DressUpPhotoViewer *param0)
     GF_ASSERT(v8);
     v5 = StringTemplate_Default(HEAP_ID_13);
 
-    Sprite_SetAnim(param0->unk_1FC, 5);
+    Sprite_SetAnim(param0->sprite, 5);
     v0.x = 48 << FX32_SHIFT;
     v0.y = 144 << FX32_SHIFT;
     v0.z = 0;
-    Sprite_SetPosition(param0->unk_1FC, &v0);
+    Sprite_SetPosition(param0->sprite, &v0);
 
     v7 = String_Init(12, HEAP_ID_13);
     DressUpPhoto_SetTrainerName(param0->photo, v7);
@@ -293,7 +293,7 @@ static void DressUpPhotoViewer_DrawDressUpText(DressUpPhotoViewer *param0)
     v1 = 128 - (v3 / 2);
     v2 = 7;
 
-    Text_AddPrinterWithParamsAndColor(param0->unk_200, FONT_SYSTEM, v7, v1, v2, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
+    Text_AddPrinterWithParamsAndColor(param0->window, FONT_SYSTEM, v7, v1, v2, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
     String_Free(v7);
 
     word = DressUpPhoto_GetTitleWord(param0->photo);
@@ -307,7 +307,7 @@ static void DressUpPhotoViewer_DrawDressUpText(DressUpPhotoViewer *param0)
     v1 = 128 - (v3 / 2);
     v2 = 27;
 
-    Text_AddPrinterWithParamsAndColor(param0->unk_200, FONT_SYSTEM, v7, v1, v2, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
+    Text_AddPrinterWithParamsAndColor(param0->window, FONT_SYSTEM, v7, v1, v2, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
     String_Free(v7);
     String_Free(v6);
     MessageLoader_Free(v8);
@@ -327,21 +327,21 @@ static void DressUpPhotoViewer_DrawContestText(DressUpPhotoViewer *param0)
     int v8, v9;
     int v10;
 
-    Sprite_SetAnim(param0->unk_1FC, param0->unk_08);
+    Sprite_SetAnim(param0->sprite, param0->contestType);
 
-    contestRank = ContestPhoto_GetContestRank(param0->unk_04);
+    contestRank = ContestPhoto_GetContestRank(param0->contestPhoto);
     v1 = StringTemplate_Default(HEAP_ID_13);
     v2 = String_Init(200, HEAP_ID_13);
 
-    StringTemplate_SetContestTypeName(v1, 0, Contest_GetContestTypeMessageID(param0->unk_08));
+    StringTemplate_SetContestTypeName(v1, 0, Contest_GetContestTypeMessageID(param0->contestType));
     StringTemplate_SetContestRankName(v1, 1, Contest_GetRankMessageID(contestRank));
 
-    v4 = ContestPhoto_GetTrainerGender(param0->unk_04);
-    ContestPhoto_GetTrainerName(param0->unk_04, v2);
+    v4 = ContestPhoto_GetTrainerGender(param0->contestPhoto);
+    ContestPhoto_GetTrainerName(param0->contestPhoto, v2);
     StringTemplate_SetString(v1, 3, v2, v4, 1, GAME_LANGUAGE);
 
     v5 = Pokemon_New(HEAP_ID_13);
-    ContestPhoto_CopyToPokemon(param0->unk_04, v5);
+    ContestPhoto_CopyToPokemon(param0->contestPhoto, v5);
     v6 = Pokemon_GetBoxPokemon(v5);
     StringTemplate_SetNickname(v1, 4, v6);
     Heap_Free(v5);
@@ -355,7 +355,7 @@ static void DressUpPhotoViewer_DrawContestText(DressUpPhotoViewer *param0)
     v10 = Font_CalcStringWidth(FONT_SYSTEM, v2, 0);
     v8 = 128 - (v10 / 2);
     v9 = 7;
-    Text_AddPrinterWithParamsAndColor(param0->unk_200, FONT_SYSTEM, v2, v8, v9, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
+    Text_AddPrinterWithParamsAndColor(param0->window, FONT_SYSTEM, v2, v8, v9, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
 
     v3 = MessageLoader_GetNewString(v7, 44);
     StringTemplate_Format(v1, v2, v3);
@@ -363,7 +363,7 @@ static void DressUpPhotoViewer_DrawContestText(DressUpPhotoViewer *param0)
     v10 = Font_CalcStringWidth(FONT_SYSTEM, v2, 0);
     v8 = 128 - (v10 / 2);
     v9 = 27;
-    Text_AddPrinterWithParamsAndColor(param0->unk_200, FONT_SYSTEM, v2, v8, v9, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
+    Text_AddPrinterWithParamsAndColor(param0->window, FONT_SYSTEM, v2, v8, v9, TEXT_SPEED_INSTANT, TEXT_COLOR(1, 2, 0), NULL);
 
     String_Free(v2);
     MessageLoader_Free(v7);

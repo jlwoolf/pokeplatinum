@@ -12,23 +12,23 @@ void PhotoRendererBg_Init(PhotoRendererBg *param0, const PhotoRenderer *param1, 
 {
     PhotoRendererBgTemplate v0;
 
-    param0->unk_00 = param1;
+    param0->renderer = param1;
 
-    v0.unk_00 = &param1->unk_2C.unk_1C;
-    v0.unk_04 = (param1->unk_2C.unk_48) * 4 + 134 + 3;
-    v0.unk_08 = 16;
-    v0.unk_0C = param2;
+    v0.bg = &param1->context.bg;
+    v0.firstFrameIndex = (param1->context.backdropIndex) * 4 + 134 + 3;
+    v0.frameDuration = 16;
+    v0.heapID = param2;
 
-    ImageClipBg_InitBackgroundAnimation(&param0->unk_04, &v0);
+    ImageClipBg_InitBackgroundAnimation(&param0->animation, &v0);
 }
 
 void PhotoRendererBg_Update(PhotoRendererBg *param0)
 {
-    ImageClipBg_UpdateBackgroundAnimation(&param0->unk_04, 1);
+    ImageClipBg_UpdateBackgroundAnimation(&param0->animation, 1);
 }
 
 void PhotoRendererBg_Free(PhotoRendererBg *param0)
 {
-    ImageClipBg_StopBackgroundAnimation(&param0->unk_04);
+    ImageClipBg_StopBackgroundAnimation(&param0->animation);
     memset(param0, 0, sizeof(PhotoRendererBg));
 }

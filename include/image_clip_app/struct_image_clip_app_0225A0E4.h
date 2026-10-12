@@ -13,27 +13,27 @@
 #include "sprite_util.h"
 
 typedef struct {
-    SoftwareSpriteManager *unk_00;
-    SoftwareSpriteChars **unk_04;
-    int unk_08;
-    int unk_0C;
-    SoftwareSpritePalette **unk_10;
-    int unk_14;
-    int unk_18;
-    BOOL unk_1C;
-    PokemonSpriteManager *unk_20;
-    NNSGfdTexKey unk_24;
-    NNSGfdPlttKey unk_28;
-    BOOL unk_2C;
-    u8 *unk_30;
-    ResourceCollection *unk_34;
-    NNSG2dCharacterData **unk_38;
-    int unk_3C;
-    BgConfig *unk_40;
-    SpriteList *unk_44;
-    SpriteResourceCollection *unk_48[4];
-    G2dRenderer unk_58;
-    NARC *unk_5C;
+    SoftwareSpriteManager *softSpriteManager;
+    SoftwareSpriteChars **chars;
+    int charsCapacity;
+    int charsCount;
+    SoftwareSpritePalette **palettes;
+    int palettesCapacity;
+    int palettesCount;
+    BOOL drawSoftwareSprites;
+    PokemonSpriteManager *pokemonSpriteManager;
+    NNSGfdTexKey texKey;
+    NNSGfdPlttKey plttKey;
+    BOOL drawPokemonSprites;
+    u8 *extraResource;
+    ResourceCollection *characterCollection;
+    NNSG2dCharacterData **characterData;
+    int characterCount;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    SpriteResourceCollection *spriteResourceCollections[4];
+    G2dRenderer renderer;
+    NARC *narc;
 } ImageClipGraphics;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225A0E4_H

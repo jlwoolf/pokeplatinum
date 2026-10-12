@@ -54,16 +54,16 @@ void ImageClipUi_Init(ImageClipUi *param0, ImageClipUiTemplate *param1)
     GF_ASSERT(param0);
     GF_ASSERT(param1);
 
-    param0->unk_00 = SpriteList_AddAffine(param1->unk_00);
-    GF_ASSERT(param0->unk_00);
+    param0->sprite = SpriteList_AddAffine(param1->spriteTemplate);
+    GF_ASSERT(param0->sprite);
 
-    param0->unk_04 = param1->unk_0C;
-    param0->unk_08 = param1->unk_08;
+    param0->buttonId = param1->buttonId;
+    param0->callbackParam = param1->callbackParam;
 
-    if (param1->unk_04) {
-        param0->unk_0C = param1->unk_04;
+    if (param1->callback) {
+        param0->callback = param1->callback;
     } else {
-        param0->unk_0C = ImageClipUi_NoOpCallback;
+        param0->callback = ImageClipUi_NoOpCallback;
     }
 }
 
@@ -71,41 +71,41 @@ void ImageClipUi_InitTextButton(ImageClipUiTextButton *param0, ImageClipUiTextBu
 {
     FontOAMTemplate v0;
 
-    ImageClipUi_Init(&param0->unk_00, &param1->unk_00);
+    ImageClipUi_Init(&param0->ui, &param1->uiTemplate);
 
-    v0.unk_00 = param1->unk_14;
-    v0.unk_04 = param1->unk_10;
-    v0.unk_08 = param1->unk_00.unk_00->list;
-    v0.unk_0C = param1->unk_18;
-    v0.unk_10 = param0->unk_00.unk_00;
-    v0.unk_14 = param1->unk_24;
-    v0.unk_18 = param1->unk_1C;
-    v0.unk_1C = param1->unk_20;
+    v0.unk_00 = param1->fontManager;
+    v0.unk_04 = param1->window;
+    v0.unk_08 = param1->uiTemplate.spriteTemplate->list;
+    v0.unk_0C = param1->paletteProxy;
+    v0.unk_10 = param0->ui.sprite;
+    v0.unk_14 = param1->charOffset;
+    v0.unk_18 = param1->x;
+    v0.unk_1C = param1->y;
     v0.unk_20 = 0;
     v0.unk_24 = 0;
-    v0.unk_28 = param1->unk_00.unk_00->vramType;
-    v0.heapID = param1->unk_00.unk_00->heapID;
+    v0.unk_28 = param1->uiTemplate.spriteTemplate->vramType;
+    v0.heapID = param1->uiTemplate.spriteTemplate->heapID;
 
-    param0->unk_10 = FontOAM_New(&v0);
+    param0->fontOAM = FontOAM_New(&v0);
 }
 
 void ImageClipUi_Free(ImageClipUi *param0)
 {
-    Sprite_Delete(param0->unk_00);
+    Sprite_Delete(param0->sprite);
     memset(param0, 0, sizeof(ImageClipUi));
 }
 
 void ImageClipUi_FreeTextButton(ImageClipUiTextButton *param0)
 {
-    ImageClipUi_Free(&param0->unk_00);
-    FontOAM_Free(param0->unk_10);
+    ImageClipUi_Free(&param0->ui);
+    FontOAM_Free(param0->fontOAM);
     memset(param0, 0, sizeof(ImageClipUiTextButton));
 }
 
 void ImageClipUi_InvokeCallback(ImageClipUi *param0, int param1)
 {
-    if (param1 == param0->unk_04) {
-        param0->unk_0C(param0, param0->unk_08);
+    if (param1 == param0->buttonId) {
+        param0->callback(param0, param0->callbackParam);
     }
 }
 
@@ -115,7 +115,7 @@ void ImageClipUi_UpdateSelection(ImageClipUiMenu *param0, int param1, int param2
     ImageClipUi *v1;
 
     for (v0 = 2; v0 <= 3; v0++) {
-        v1 = param0->unk_00 + v0;
+        v1 = param0->buttons + v0;
 
         if (v0 != param1) {
             ImageClipUi_SetButtonIdle(v1);
@@ -137,9 +137,9 @@ void ImageClipUi_SetCallback(ImageClipUi *param0, ImageClipUiCallback param1, vo
 {
     GF_ASSERT(param0);
 
-    param0->unk_04 = param3;
-    param0->unk_08 = param2;
-    param0->unk_0C = param1;
+    param0->buttonId = param3;
+    param0->callbackParam = param2;
+    param0->callback = param1;
 }
 
 static void ImageClipUi_NoOpCallback(ImageClipUi *param0, void *param1)
@@ -149,55 +149,55 @@ static void ImageClipUi_NoOpCallback(ImageClipUi *param0, void *param1)
 
 void ImageClipUi_SetButtonHeld(ImageClipUi *param0)
 {
-    Sprite_SetAnimFrame(param0->unk_00, 2);
+    Sprite_SetAnimFrame(param0->sprite, 2);
 }
 
 void ImageClipUi_SetButtonIdle(ImageClipUi *param0)
 {
-    Sprite_SetAnimFrame(param0->unk_00, 0);
+    Sprite_SetAnimFrame(param0->sprite, 0);
 }
 
 void ImageClipUi_SetButtonPressed(ImageClipUi *param0)
 {
-    Sprite_SetAnimFrame(param0->unk_00, 1);
+    Sprite_SetAnimFrame(param0->sprite, 1);
 }
 
 void ImageClipUi_InitMenu(ImageClipUiMenu *param0, ImageClipGraphics *param1)
 {
     Window *v0;
 
-    param0->unk_64 = FontOAMManager_New(1, HEAP_ID_13);
+    param0->fontManager = FontOAMManager_New(1, HEAP_ID_13);
 
     ImageClipUi_LoadButtonGraphics(param1);
 
-    ImageClipUi_AddButton(&param0->unk_00[0], 0, param1, 48, 144, 40, 32);
-    ImageClipUi_SetHitRect(param0->unk_6C, 0, 48, 144 + 8, 40, 32 - 8);
+    ImageClipUi_AddButton(&param0->buttons[0], 0, param1, 48, 144, 40, 32);
+    ImageClipUi_SetHitRect(param0->hitTables, 0, 48, 144 + 8, 40, 32 - 8);
 
-    ImageClipUi_AddButton(&param0->unk_00[1], 1, param1, 8, 144, 40, 32);
-    ImageClipUi_SetHitRect(param0->unk_6C, 1, 8, 144 + 8, 40, 32 - 8);
+    ImageClipUi_AddButton(&param0->buttons[1], 1, param1, 8, 144, 40, 32);
+    ImageClipUi_SetHitRect(param0->hitTables, 1, 8, 144 + 8, 40, 32 - 8);
 
-    ImageClipUi_AddButton(&param0->unk_00[2], 2, param1, 96, 144, 40, 42);
-    ImageClipUi_SetHitRect(param0->unk_6C, 2, 96, 144 + 12, 40, 42 - 8);
+    ImageClipUi_AddButton(&param0->buttons[2], 2, param1, 96, 144, 40, 42);
+    ImageClipUi_SetHitRect(param0->hitTables, 2, 96, 144 + 12, 40, 42 - 8);
 
-    ImageClipUi_AddButton(&param0->unk_00[3], 3, param1, 136, 144, 40, 42);
-    ImageClipUi_SetHitRect(param0->unk_6C, 3, 136, 144 + 12, 40, 42 - 8);
+    ImageClipUi_AddButton(&param0->buttons[3], 3, param1, 136, 144, 40, 42);
+    ImageClipUi_SetHitRect(param0->hitTables, 3, 136, 144 + 12, 40, 42 - 8);
 
     Font_InitManager(FONT_SUBSCREEN, HEAP_ID_14);
 
     v0 = ImageClipUi_CreateMessageWindow(param1, 26, 385, 0, 72 / 8, 42 / 8);
 
-    ImageClipUi_AddTextButton(&param0->unk_40, 4, param1, param0->unk_64, v0, 184, 144, 72, 42);
-    ImageClipUi_SetHitRect(param0->unk_6C, 4, 184, 144 + 12, 72, 42 - 8);
+    ImageClipUi_AddTextButton(&param0->textButton, 4, param1, param0->fontManager, v0, 184, 144, 72, 42);
+    ImageClipUi_SetHitRect(param0->hitTables, 4, 184, 144 + 12, 72, 42 - 8);
 
     ImageClipUi_DeleteWindow(v0);
     Font_Free(FONT_SUBSCREEN);
 
-    param0->unk_60 = 1;
+    param0->textEnabled = 1;
 
     ImageClipUi_UnloadButtonGraphics(param1);
-    ImageClipUi_SetButtonHeld(&param0->unk_00[2]);
+    ImageClipUi_SetButtonHeld(&param0->buttons[2]);
 
-    param0->unk_68 = TouchScreenActions_RegisterHandler(param0->unk_6C, 5, ImageClipUi_OnTouch, param0, HEAP_ID_13);
+    param0->touchActions = TouchScreenActions_RegisterHandler(param0->hitTables, 5, ImageClipUi_OnTouch, param0, HEAP_ID_13);
 }
 
 void ImageClipUi_FreeMenu(ImageClipUiMenu *param0, ImageClipGraphics *param1)
@@ -214,27 +214,27 @@ void ImageClipUi_FreeMenu(ImageClipUiMenu *param0, ImageClipGraphics *param1)
     PlttTransfer_ResetTask(1);
 
     for (v0 = 0; v0 < 4; v0++) {
-        ImageClipUi_Free(&param0->unk_00[v0]);
+        ImageClipUi_Free(&param0->buttons[v0]);
     }
 
-    CharTransfer_ClearRange(&param0->unk_40.unk_14);
-    ImageClipUi_FreeTextButton(&param0->unk_40);
-    FontOAMManager_Free(param0->unk_64);
-    TouchScreenActions_Free(param0->unk_68);
+    CharTransfer_ClearRange(&param0->textButton.charAllocation);
+    ImageClipUi_FreeTextButton(&param0->textButton);
+    FontOAMManager_Free(param0->fontManager);
+    TouchScreenActions_Free(param0->touchActions);
 
-    param0->unk_68 = NULL;
+    param0->touchActions = NULL;
 }
 
 void ImageClipUi_HandleTouch(ImageClipUiMenu *param0)
 {
-    GF_ASSERT(param0->unk_68);
-    TouchScreenActions_HandleAction(param0->unk_68);
+    GF_ASSERT(param0->touchActions);
+    TouchScreenActions_HandleAction(param0->touchActions);
 }
 
 void ImageClipUi_ResetSelection(ImageClipUiMenu *param0)
 {
-    ImageClipUi_ApplyButtonState(&param0->unk_40.unk_00, 3);
-    ImageClipUi_ApplyTextButtonState(&param0->unk_40, 3);
+    ImageClipUi_ApplyButtonState(&param0->textButton.ui, 3);
+    ImageClipUi_ApplyTextButtonState(&param0->textButton, 3);
     ImageClipUi_UpdateSelection(param0, 2, 3);
 }
 
@@ -243,10 +243,10 @@ void ImageClipUi_MoveMenu(ImageClipUiMenu *param0, int param1, int param2)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        ImageClipUi_MoveButton(param0->unk_00 + v0, param1, param2);
+        ImageClipUi_MoveButton(param0->buttons + v0, param1, param2);
     }
 
-    ImageClipUi_MoveTextButton(&param0->unk_40, param1, param2);
+    ImageClipUi_MoveTextButton(&param0->textButton, param1, param2);
 }
 
 void ImageClipUi_SetElementCallback(ImageClipUiMenu *param0, int param1, ImageClipUiCallback param2, void *param3, int param4)
@@ -255,10 +255,10 @@ void ImageClipUi_SetElementCallback(ImageClipUiMenu *param0, int param1, ImageCl
 
     if (param1 < 4) {
         ImageClipUi_SetCallback(
-            &param0->unk_00[param1], param2, param3, param4);
+            &param0->buttons[param1], param2, param3, param4);
     } else {
         ImageClipUi_SetCallback(
-            &param0->unk_40.unk_00, param2, param3, param4);
+            &param0->textButton.ui, param2, param3, param4);
     }
 }
 
@@ -268,26 +268,26 @@ static void ImageClipUi_OnTouch(u32 param0, enum TouchScreenButtonState param1, 
 
     switch (param0) {
     case 0:
-        ImageClipUi_ApplyButtonState(&v0->unk_00[0], param1);
-        ImageClipUi_PlayPressedSound(&v0->unk_00[0], 1665, 0, param1);
-        ImageClipUi_InvokeCallback(&v0->unk_00[0], param1);
+        ImageClipUi_ApplyButtonState(&v0->buttons[0], param1);
+        ImageClipUi_PlayPressedSound(&v0->buttons[0], 1665, 0, param1);
+        ImageClipUi_InvokeCallback(&v0->buttons[0], param1);
         break;
     case 1:
-        ImageClipUi_ApplyButtonState(&v0->unk_00[1], param1);
-        ImageClipUi_PlayPressedSound(&v0->unk_00[1], 1665, 0, param1);
-        ImageClipUi_InvokeCallback(&v0->unk_00[1], param1);
+        ImageClipUi_ApplyButtonState(&v0->buttons[1], param1);
+        ImageClipUi_PlayPressedSound(&v0->buttons[1], 1665, 0, param1);
+        ImageClipUi_InvokeCallback(&v0->buttons[1], param1);
         break;
     case 2:
     case 3:
         ImageClipUi_UpdateSelection(v0, param0, param1);
-        ImageClipUi_InvokeCallback(&v0->unk_00[param0], param1);
+        ImageClipUi_InvokeCallback(&v0->buttons[param0], param1);
         break;
     case 4:
-        if (v0->unk_60 == 1) {
-            ImageClipUi_ApplyButtonState(&v0->unk_40.unk_00, param1);
-            ImageClipUi_ApplyTextButtonState(&v0->unk_40, param1);
-            ImageClipUi_PlayPressedSound(&v0->unk_40.unk_00, 1506, 0, param1);
-            ImageClipUi_InvokeCallback(&v0->unk_40.unk_00, param1);
+        if (v0->textEnabled == 1) {
+            ImageClipUi_ApplyButtonState(&v0->textButton.ui, param1);
+            ImageClipUi_ApplyTextButtonState(&v0->textButton, param1);
+            ImageClipUi_PlayPressedSound(&v0->textButton.ui, 1506, 0, param1);
+            ImageClipUi_InvokeCallback(&v0->textButton.ui, param1);
         }
         break;
     default:
@@ -302,9 +302,9 @@ static void ImageClipUi_AddButton(ImageClipUi *param0, int param1, ImageClipGrap
     SpriteResourcesHeader v1;
     AffineSpriteListTemplate v2;
 
-    SpriteResourcesHeader_Init(&v1, param1, 0, param1, param1, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, param2->unk_48[0], param2->unk_48[1], param2->unk_48[2], param2->unk_48[3], NULL, NULL);
+    SpriteResourcesHeader_Init(&v1, param1, 0, param1, param1, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, param2->spriteResourceCollections[0], param2->spriteResourceCollections[1], param2->spriteResourceCollections[2], param2->spriteResourceCollections[3], NULL, NULL);
 
-    v2.list = param2->unk_44;
+    v2.list = param2->spriteList;
     v2.resourceData = &v1;
     v2.position.x = param3 << 12;
     v2.position.y = param4 << 12;
@@ -313,10 +313,10 @@ static void ImageClipUi_AddButton(ImageClipUi *param0, int param1, ImageClipGrap
     v2.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v2.heapID = HEAP_ID_14;
 
-    v0.unk_00 = &v2;
-    v0.unk_04 = NULL;
-    v0.unk_08 = NULL;
-    v0.unk_0C = 1;
+    v0.spriteTemplate = &v2;
+    v0.callback = NULL;
+    v0.callbackParam = NULL;
+    v0.buttonId = 1;
 
     ImageClipUi_Init(param0, &v0);
 }
@@ -328,9 +328,9 @@ static void ImageClipUi_AddTextButton(ImageClipUiTextButton *param0, int param1,
     AffineSpriteListTemplate v2;
     SpriteResource *v3;
 
-    SpriteResourcesHeader_Init(&v1, param1, 0, param1, param1, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, param2->unk_48[0], param2->unk_48[1], param2->unk_48[2], param2->unk_48[3], NULL, NULL);
+    SpriteResourcesHeader_Init(&v1, param1, 0, param1, param1, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, param2->spriteResourceCollections[0], param2->spriteResourceCollections[1], param2->spriteResourceCollections[2], param2->spriteResourceCollections[3], NULL, NULL);
 
-    v2.list = param2->unk_44;
+    v2.list = param2->spriteList;
     v2.resourceData = &v1;
     v2.position.x = param5 << 12;
     v2.position.y = param6 << 12;
@@ -339,21 +339,21 @@ static void ImageClipUi_AddTextButton(ImageClipUiTextButton *param0, int param1,
     v2.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     v2.heapID = HEAP_ID_14;
 
-    v0.unk_00.unk_00 = &v2;
-    v0.unk_00.unk_04 = NULL;
-    v0.unk_00.unk_08 = NULL;
-    v0.unk_00.unk_0C = 1;
-    v0.unk_14 = param3;
-    v0.unk_10 = param4;
-    v0.unk_1C = 0;
-    v0.unk_20 = 19;
+    v0.uiTemplate.spriteTemplate = &v2;
+    v0.uiTemplate.callback = NULL;
+    v0.uiTemplate.callbackParam = NULL;
+    v0.uiTemplate.buttonId = 1;
+    v0.fontManager = param3;
+    v0.window = param4;
+    v0.x = 0;
+    v0.y = 19;
 
-    v3 = SpriteResourceCollection_Find(param2->unk_48[1], 1);
-    v0.unk_18 = SpriteTransfer_GetPaletteProxy(v3, NULL);
+    v3 = SpriteResourceCollection_Find(param2->spriteResourceCollections[1], 1);
+    v0.paletteProxy = SpriteTransfer_GetPaletteProxy(v3, NULL);
 
-    GF_ASSERT(CharTransfer_AllocRange(FontOAM_GetWindowSize(param4, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_13), 1, NNS_G2D_VRAM_TYPE_2DMAIN, &param0->unk_14));
+    GF_ASSERT(CharTransfer_AllocRange(FontOAM_GetWindowSize(param4, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_13), 1, NNS_G2D_VRAM_TYPE_2DMAIN, &param0->charAllocation));
 
-    v0.unk_24 = param0->unk_14.offset;
+    v0.charOffset = param0->charAllocation.offset;
 
     ImageClipUi_InitTextButton(param0, &v0);
 }
@@ -371,13 +371,13 @@ static void ImageClipUi_LoadButtonGraphics(ImageClipGraphics *param0)
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        ImageClipGraphics_LoadTiles(param0, param0->unk_5C, (v0) * 3 + 105 + 2, 0, NNS_G2D_VRAM_TYPE_2DMAIN, v0);
-        ImageClipGraphics_LoadCell(param0, param0->unk_5C, (v0) * 3 + 105 + 1, 0, v0);
-        ImageClipGraphics_LoadAnim(param0, param0->unk_5C, (v0) * 3 + 105 + 0, 0, v0);
+        ImageClipGraphics_LoadTiles(param0, param0->narc, (v0) * 3 + 105 + 2, 0, NNS_G2D_VRAM_TYPE_2DMAIN, v0);
+        ImageClipGraphics_LoadCell(param0, param0->narc, (v0) * 3 + 105 + 1, 0, v0);
+        ImageClipGraphics_LoadAnim(param0, param0->narc, (v0) * 3 + 105 + 0, 0, v0);
     }
 
-    ImageClipGraphics_LoadPalette(param0, param0->unk_5C, 104, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 3, 0);
-    ImageClipGraphics_LoadPalette(param0, param0->unk_5C, 120, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 2, 1);
+    ImageClipGraphics_LoadPalette(param0, param0->narc, 104, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 3, 0);
+    ImageClipGraphics_LoadPalette(param0, param0->narc, 120, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 2, 1);
 }
 
 static void ImageClipUi_UnloadButtonGraphics(ImageClipGraphics *param0)
@@ -406,16 +406,16 @@ static void ImageClipUi_ApplyButtonState(ImageClipUi *param0, int param1)
 static void ImageClipUi_ApplyTextButtonState(ImageClipUiTextButton *param0, int param1)
 {
     if (param1 == 0) {
-        FontOAM_SetXY(param0->unk_10, 0, 15);
-        FontOAM_SetExplicitPalette(param0->unk_10, 4);
+        FontOAM_SetXY(param0->fontOAM, 0, 15);
+        FontOAM_SetExplicitPalette(param0->fontOAM, 4);
     } else {
         if (param1 == 1) {
-            FontOAM_SetXY(param0->unk_10, 0, 19);
+            FontOAM_SetXY(param0->fontOAM, 0, 19);
         }
 
         if (param1 == 3) {
-            FontOAM_SetXY(param0->unk_10, 0, 19);
-            FontOAM_SetExplicitPalette(param0->unk_10, 3);
+            FontOAM_SetXY(param0->fontOAM, 0, 19);
+            FontOAM_SetExplicitPalette(param0->fontOAM, 3);
         }
     }
 }
@@ -439,7 +439,7 @@ static Window *ImageClipUi_CreateMessageWindow(ImageClipGraphics *param0, enum N
 
     v2 = Window_New(HEAP_ID_14, 1);
     Window_Init(v2);
-    Window_AddToTopLeftCorner(param0->unk_40, v2, param4, param5, 0, 0);
+    Window_AddToTopLeftCorner(param0->bgConfig, v2, param4, param5, 0, 0);
 
     {
         u32 v3 = Font_CalcCenterAlignment(FONT_SUBSCREEN, v1, 0, param4 * 8);
@@ -462,15 +462,15 @@ static void ImageClipUi_MoveButton(ImageClipUi *param0, int param1, int param2)
     const VecFx32 *v0;
     VecFx32 v1;
 
-    v0 = Sprite_GetPosition(param0->unk_00);
+    v0 = Sprite_GetPosition(param0->sprite);
     v1 = *v0;
     v1.x += param1 << FX32_SHIFT;
     v1.y += param2 << FX32_SHIFT;
-    Sprite_SetPosition(param0->unk_00, &v1);
+    Sprite_SetPosition(param0->sprite, &v1);
 }
 
 static void ImageClipUi_MoveTextButton(ImageClipUiTextButton *param0, int param1, int param2)
 {
-    ImageClipUi_MoveButton(&param0->unk_00, param1, param2);
-    FontOAM_UpdatePosition(param0->unk_10);
+    ImageClipUi_MoveButton(&param0->ui, param1, param2);
+    FontOAM_UpdatePosition(param0->fontOAM);
 }

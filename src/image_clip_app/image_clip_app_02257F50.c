@@ -24,24 +24,24 @@
 #include "touch_screen.h"
 
 typedef struct {
-    ImageClipSpriteResource *unk_00;
-    int unk_04;
-    int unk_08;
+    ImageClipSpriteResource *item;
+    int remainingFrames;
+    int speed;
 } PhotoAccessoryRendererTransition;
 
 typedef struct {
-    PhotoAccessoryRenderer *unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    BOOL unk_14;
-    int unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    PhotoAccessoryRendererTransition *unk_28;
-    int unk_2C;
+    PhotoAccessoryRenderer *renderer;
+    int fromGroup;
+    int fromIndex;
+    int toGroup;
+    int toIndex;
+    BOOL doneFlag;
+    int stepTimer;
+    int state;
+    int fromRemaining;
+    int toRemaining;
+    PhotoAccessoryRendererTransition *transitions;
+    int transitionCount;
 } PhotoAccessoryRendererScrollTask;
 
 static void PhotoAccessoryRenderer_InitGroups(PhotoAccessoryRenderer *param0, PhotoAccessoryRendererResources *param1);
@@ -65,14 +65,14 @@ static int PhotoAccessoryRenderer_DivideRoundUp(int param0, int param1);
 
 void PhotoAccessoryRenderer_Init(PhotoAccessoryRenderer *param0, PhotoAccessoryRendererResources *param1)
 {
-    param0->unk_44.unk_00 = param1->unk_00;
-    param0->unk_44.unk_04 = param1->unk_04;
-    param0->unk_44.unk_08 = param1->unk_08;
-    param0->unk_44.unk_0C = param1->unk_0C;
-    param0->unk_44.unk_10 = param1->unk_10;
-    param0->unk_44.unk_14 = param1->unk_14;
-    param0->unk_00.unk_08 = param1->unk_18;
-    param0->unk_00.unk_04 = param1->unk_28;
+    param0->context.softSpriteManager = param1->softSpriteManager;
+    param0->context.chars = param1->chars;
+    param0->context.palettes = param1->palettes;
+    param0->context.extraResource = param1->extraResource;
+    param0->context.bgConfig = param1->bgConfig;
+    param0->context.spriteManager = param1->spriteManager;
+    param0->groups.resourceList = param1->resourceList;
+    param0->groups.fashionCase = param1->fashionCase;
 
     PhotoAccessoryRenderer_LoadBackground(param0, 0);
     PhotoAccessoryRenderer_InitGroups(param0, param1);
@@ -85,7 +85,7 @@ void PhotoAccessoryRenderer_Free(PhotoAccessoryRenderer *param0)
     PhotoAccessoryRenderer_ClearItems(param0);
 
     for (v0 = 0; v0 < (3 + 1); v0++) {
-        PhotoAccessoryRenderer_FreeGroup(&param0->unk_00.unk_0C[v0]);
+        PhotoAccessoryRenderer_FreeGroup(&param0->groups.groups[v0]);
     }
 
     memset(param0, 0, sizeof(PhotoAccessoryRenderer));
@@ -167,54 +167,54 @@ void PhotoAccessoryRenderer_AddItem(PhotoAccessoryRenderer *param0, int param1, 
     int v6, v7;
     int v8, v9;
 
-    v0.unk_00 = param0->unk_44.unk_14;
-    v0.unk_18 = param2;
-    v0.unk_04 = param0->unk_44.unk_00;
-    v0.unk_10 = 0;
-    v0.unk_14 = 0;
+    v0.spriteManager = param0->context.spriteManager;
+    v0.resourceIndex = param2;
+    v0.softSpriteManager = param0->context.softSpriteManager;
+    v0.xPos = 0;
+    v0.yPos = 0;
 
     switch (param1) {
     case 0:
         v4 = param2;
         v5 = 0;
-        v0.unk_1C = param0->unk_44.unk_0C[param2];
+        v0.paletteSlot = param0->context.extraResource[param2];
         break;
     case 1:
         v4 = param2 + 100;
         v5 = param2 + 1;
-        v0.unk_1C = 0;
+        v0.paletteSlot = 0;
         break;
     case 2:
         v4 = param2 + 100;
         v5 = param2 + 1;
-        v0.unk_1C = 0;
+        v0.paletteSlot = 0;
         break;
     default:
         GF_ASSERT(FALSE);
         break;
     }
 
-    v0.unk_08 = param0->unk_44.unk_04[v4];
-    v0.unk_0C = param0->unk_44.unk_08[v5];
+    v0.chars = param0->context.chars[v4];
+    v0.palette = param0->context.palettes[v5];
 
-    GF_ASSERT(v0.unk_08);
-    GF_ASSERT(v0.unk_0C);
+    GF_ASSERT(v0.chars);
+    GF_ASSERT(v0.palette);
 
-    v3 = PhotoAccessoryRenderer_GetGroupIndex(param1, param2, param0->unk_00.unk_04);
+    v3 = PhotoAccessoryRenderer_GetGroupIndex(param1, param2, param0->groups.fashionCase);
     v1 = ImageClipSprite_Add(&v0);
-    v2 = ImageClipResourceList_Alloc(param0->unk_00.unk_08, v1, param1);
+    v2 = ImageClipResourceList_Alloc(param0->groups.resourceList, v1, param1);
 
-    ImageClipResourceList_InsertAfter(v2, param0->unk_00.unk_0C[param1].unk_00[v3].unk_0C);
+    ImageClipResourceList_InsertAfter(v2, param0->groups.groups[param1].items[v3].prev);
     ImageClipSpriteResource_GetSize(v2, &v8, &v9);
-    PhotoAccessoryRenderer_GetItemPosition(param1, param2, &v6, &v7, v8, v9, param0->unk_00.unk_04);
+    PhotoAccessoryRenderer_GetItemPosition(param1, param2, &v6, &v7, v8, v9, param0->groups.fashionCase);
     ImageClipSpriteResource_SetPosition(v2, v6, v7);
     PhotoAccessoryRenderer_UpdateItemEnabled(param0, v1, param1, v3);
 }
 
 void PhotoAccessoryRenderer_InsertItem(PhotoAccessoryRenderer *param0, int param1, int param2, ImageClipSpriteResource *param3)
 {
-    ImageClipResourceList_InsertAfter(param3, param0->unk_00.unk_0C[param1].unk_00 + param2);
-    PhotoAccessoryRenderer_UpdateItemEnabled(param0, param3->unk_00, param1, param2);
+    ImageClipResourceList_InsertAfter(param3, param0->groups.groups[param1].items + param2);
+    PhotoAccessoryRenderer_UpdateItemEnabled(param0, param3->data, param1, param2);
 }
 
 void PhotoAccessoryRenderer_RemoveItem(ImageClipSpriteResource *param0)
@@ -227,8 +227,8 @@ void PhotoAccessoryRenderer_ClearItems(PhotoAccessoryRenderer *param0)
     int v0, v1;
 
     for (v0 = 0; v0 < 3; v0++) {
-        for (v1 = 0; v1 < param0->unk_00.unk_0C[v0].unk_04; v1++) {
-            ImageClipResourceList_RemoveAll(param0->unk_00.unk_0C[v0].unk_00 + v1);
+        for (v1 = 0; v1 < param0->groups.groups[v0].capacity; v1++) {
+            ImageClipResourceList_RemoveAll(param0->groups.groups[v0].items + v1);
         }
     }
 }
@@ -241,26 +241,26 @@ void PhotoAccessoryRenderer_UpdateZOrder(PhotoAccessoryRenderer *param0)
     int v3 = -1;
 
     v1 = PhotoAccessoryRenderer_GetCurrentIcon(param0);
-    v0 = v1->unk_08;
+    v0 = v1->next;
 
     while (v0 != v1) {
-        if ((v0->unk_04 == 0) || (v0->unk_04 == 1) || (v0->unk_04 == 2)) {
-            ImageClipSprite_SetPriority(v0->unk_00, v3);
+        if ((v0->category == 0) || (v0->category == 1) || (v0->category == 2)) {
+            ImageClipSprite_SetPriority(v0->data, v3);
         }
 
         v3--;
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 }
 
 BOOL PhotoAccessoryRenderer_SetSelection(PhotoAccessoryRenderer *param0, int param1, int param2)
 {
-    if (param0->unk_00.unk_3C == 0) {
-        PhotoAccessoryRenderer_StartScrollTask(param0, param0->unk_00.unk_00, param0->unk_00.unk_0C[param0->unk_00.unk_00].unk_08, param1, param2);
+    if (param0->groups.scrolling == 0) {
+        PhotoAccessoryRenderer_StartScrollTask(param0, param0->groups.currentGroup, param0->groups.groups[param0->groups.currentGroup].currentIndex, param1, param2);
 
-        param0->unk_00.unk_00 = param1;
-        param0->unk_00.unk_0C[param1].unk_08 = param2;
+        param0->groups.currentGroup = param1;
+        param0->groups.groups[param1].currentIndex = param2;
 
         PhotoAccessoryRenderer_UpdateZOrder(param0);
 
@@ -281,20 +281,20 @@ BOOL PhotoAccessoryRenderer_ScrollSelection(PhotoAccessoryRenderer *param0, int 
 
     v1 = PhotoAccessoryRenderer_GetIndex(param0, param1);
 
-    for (v3 = 1; v3 < param0->unk_00.unk_0C[param1].unk_04; v3++) {
+    for (v3 = 1; v3 < param0->groups.groups[param1].capacity; v3++) {
         if (param2 == 0) {
-            v4 = (v3 + v1) % param0->unk_00.unk_0C[param1].unk_04;
+            v4 = (v3 + v1) % param0->groups.groups[param1].capacity;
         } else {
             v4 = v1 - v3;
 
             if (v4 < 0) {
-                v4 += param0->unk_00.unk_0C[param1].unk_04;
+                v4 += param0->groups.groups[param1].capacity;
             }
         }
 
         v0 = PhotoAccessoryRenderer_GetIcon(param0, param1, v4);
 
-        if (v0->unk_08 != v0) {
+        if (v0->next != v0) {
             v5 = PhotoAccessoryRenderer_SetSelection(param0, param1, v4);
             return v5;
         }
@@ -307,8 +307,8 @@ void PhotoAccessoryRenderer_SetSelectionImmediate(PhotoAccessoryRenderer *param0
 {
     PhotoAccessoryRenderer_SetCurrentGroupEnabled(param0, 0);
 
-    param0->unk_00.unk_00 = param1;
-    param0->unk_00.unk_0C[param1].unk_08 = param2;
+    param0->groups.currentGroup = param1;
+    param0->groups.groups[param1].currentIndex = param2;
 
     PhotoAccessoryRenderer_SetCurrentGroupEnabled(param0, 1);
     PhotoAccessoryRenderer_UpdateZOrder(param0);
@@ -345,7 +345,7 @@ ImageClipSpriteResource *PhotoAccessoryRenderer_GetTouchedItem(PhotoAccessoryRen
     BOOL v2;
 
     v1 = PhotoAccessoryRenderer_GetCurrentIcon(param0);
-    v0 = v1->unk_08;
+    v0 = v1->next;
 
     while (v0 != v1) {
         v2 = 0;
@@ -356,7 +356,7 @@ ImageClipSpriteResource *PhotoAccessoryRenderer_GetTouchedItem(PhotoAccessoryRen
             return v0;
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 
     return NULL;
@@ -366,22 +366,22 @@ void PhotoAccessoryRenderer_LoadBackground(PhotoAccessoryRenderer *param0, int p
 {
     ImageClipBgTemplate v0;
 
-    v0.unk_00 = param0->unk_44.unk_10;
+    v0.bgConfig = param0->context.bgConfig;
     v0.narcID = NARC_INDEX_GRAPHIC__IMAGECLIP;
-    v0.unk_08 = (param1) * 2 + 129;
-    v0.unk_0C = 133;
-    v0.unk_10 = (param1) * 2 + 129 + 1;
-    v0.unk_14 = 8;
-    v0.unk_18 = 129;
-    v0.unk_1C = 3;
-    v0.unk_20 = 1;
-    v0.unk_24 = 2;
-    v0.unk_28 = 0;
+    v0.charMember = (param1) * 2 + 129;
+    v0.paletteMember = 133;
+    v0.tilemapMember = (param1) * 2 + 129 + 1;
+    v0.destTilemapX = 8;
+    v0.destTilemapY = 129;
+    v0.bgLayer = 3;
+    v0.paletteSize = 1;
+    v0.paletteOffset = 2;
+    v0.charOffset = 0;
     v0.heapID = HEAP_ID_14;
 
-    ImageClipBg_Init(&param0->unk_44.unk_18, &v0);
+    ImageClipBg_Init(&param0->context.bg, &v0);
 
-    param0->unk_00.unk_40 = param1;
+    param0->groups.backdropIndex = param1;
 }
 
 void PhotoAccessoryRenderer_ScrollBackground(PhotoAccessoryRenderer *param0, int param1, int param2, int param3, BOOL *param4)
@@ -389,17 +389,17 @@ void PhotoAccessoryRenderer_ScrollBackground(PhotoAccessoryRenderer *param0, int
     ImageClipBgTemplate v0;
     int v1, v2;
 
-    v0.unk_00 = param0->unk_44.unk_10;
+    v0.bgConfig = param0->context.bgConfig;
     v0.narcID = NARC_INDEX_GRAPHIC__IMAGECLIP;
-    v0.unk_08 = (param1) * 2 + 129;
-    v0.unk_0C = 133;
-    v0.unk_10 = (param1) * 2 + 129 + 1;
-    v0.unk_14 = 8;
-    v0.unk_18 = 129;
-    v0.unk_1C = 3;
-    v0.unk_20 = 1;
-    v0.unk_24 = 2;
-    v0.unk_28 = 0;
+    v0.charMember = (param1) * 2 + 129;
+    v0.paletteMember = 133;
+    v0.tilemapMember = (param1) * 2 + 129 + 1;
+    v0.destTilemapX = 8;
+    v0.destTilemapY = 129;
+    v0.bgLayer = 3;
+    v0.paletteSize = 1;
+    v0.paletteOffset = 2;
+    v0.charOffset = 0;
     v0.heapID = HEAP_ID_14;
 
     if (param2 & 1) {
@@ -414,20 +414,20 @@ void PhotoAccessoryRenderer_ScrollBackground(PhotoAccessoryRenderer *param0, int
         v2 = 0;
     }
 
-    ImageClipBg_StartScroll(&param0->unk_44.unk_18, &v0, v1, v2, param3, param4);
+    ImageClipBg_StartScroll(&param0->context.bg, &v0, v1, v2, param3, param4);
 
-    param0->unk_00.unk_40 = param1;
+    param0->groups.backdropIndex = param1;
 }
 
 void PhotoAccessoryRenderer_FreeBackground(PhotoAccessoryRenderer *param0)
 {
-    ImageClipBg_Free(&param0->unk_44.unk_18);
+    ImageClipBg_Free(&param0->context.bg);
 }
 
 int PhotoAccessoryRenderer_GetGroup(PhotoAccessoryRenderer *param0)
 {
     GF_ASSERT(param0);
-    return param0->unk_00.unk_00;
+    return param0->groups.currentGroup;
 }
 
 int PhotoAccessoryRenderer_GetIndex(PhotoAccessoryRenderer *param0, int param1)
@@ -436,8 +436,8 @@ int PhotoAccessoryRenderer_GetIndex(PhotoAccessoryRenderer *param0, int param1)
 
     GF_ASSERT(param0);
 
-    v0 = param0->unk_00.unk_0C[param1];
-    return v0.unk_08;
+    v0 = param0->groups.groups[param1];
+    return v0.currentIndex;
 }
 
 void PhotoAccessoryRenderer_MoveItem(PhotoAccessoryRenderer *param0, int param1, int param2, int param3, int param4)
@@ -448,7 +448,7 @@ void PhotoAccessoryRenderer_MoveItem(PhotoAccessoryRenderer *param0, int param1,
 
 BOOL PhotoAccessoryRenderer_IsIdle(PhotoAccessoryRenderer *param0)
 {
-    if (param0->unk_00.unk_3C == 0) {
+    if (param0->groups.scrolling == 0) {
         return 1;
     }
 
@@ -457,26 +457,26 @@ BOOL PhotoAccessoryRenderer_IsIdle(PhotoAccessoryRenderer *param0)
 
 static void PhotoAccessoryRenderer_InitGroups(PhotoAccessoryRenderer *param0, PhotoAccessoryRendererResources *param1)
 {
-    PhotoAccessoryRenderer_AllocGroup(&param0->unk_00.unk_0C[0], param1->unk_1C);
+    PhotoAccessoryRenderer_AllocGroup(&param0->groups.groups[0], param1->groupCapacity0);
 
-    param0->unk_00.unk_00 = 0;
+    param0->groups.currentGroup = 0;
 
-    PhotoAccessoryRenderer_SetListEnabled(param0->unk_00.unk_0C[0].unk_00, 1);
-    PhotoAccessoryRenderer_AllocGroup(&param0->unk_00.unk_0C[1], param1->unk_20);
-    PhotoAccessoryRenderer_AllocGroup(&param0->unk_00.unk_0C[2], param1->unk_24);
-    PhotoAccessoryRenderer_AllocGroup(&param0->unk_00.unk_0C[3], 1);
+    PhotoAccessoryRenderer_SetListEnabled(param0->groups.groups[0].items, 1);
+    PhotoAccessoryRenderer_AllocGroup(&param0->groups.groups[1], param1->groupCapacity1);
+    PhotoAccessoryRenderer_AllocGroup(&param0->groups.groups[2], param1->groupCapacity2);
+    PhotoAccessoryRenderer_AllocGroup(&param0->groups.groups[3], 1);
 }
 
 static void PhotoAccessoryRenderer_SetListEnabled(ImageClipSpriteResource *param0, int param1)
 {
-    ImageClipSpriteResource *v0 = param0->unk_08;
+    ImageClipSpriteResource *v0 = param0->next;
 
     while (v0 != (param0)) {
-        if ((v0->unk_04 == 0) || (v0->unk_04 == 1) || (v0->unk_04 == 2)) {
-            ImageClipSprite_SetVisible(v0->unk_00, param1);
+        if ((v0->category == 0) || (v0->category == 1) || (v0->category == 2)) {
+            ImageClipSprite_SetVisible(v0->data, param1);
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 }
 
@@ -496,22 +496,22 @@ static void PhotoAccessoryRenderer_AllocGroup(PhotoAccessoryRendererGroup *param
 {
     int v0;
 
-    param0->unk_00 = Heap_Alloc(HEAP_ID_14, sizeof(ImageClipSpriteResource) * param1);
-    param0->unk_04 = param1;
-    param0->unk_08 = 0;
+    param0->items = Heap_Alloc(HEAP_ID_14, sizeof(ImageClipSpriteResource) * param1);
+    param0->capacity = param1;
+    param0->currentIndex = 0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        param0->unk_00[v0].unk_08 = param0->unk_00 + v0;
-        param0->unk_00[v0].unk_0C = param0->unk_00 + v0;
+    for (v0 = 0; v0 < param0->capacity; v0++) {
+        param0->items[v0].next = param0->items + v0;
+        param0->items[v0].prev = param0->items + v0;
 
-        PhotoAccessoryRenderer_SetListEnabled(param0->unk_00 + v0, 0);
+        PhotoAccessoryRenderer_SetListEnabled(param0->items + v0, 0);
     }
 }
 
 static void PhotoAccessoryRenderer_FreeGroup(PhotoAccessoryRendererGroup *param0)
 {
-    Heap_Free(param0->unk_00);
-    param0->unk_00 = NULL;
+    Heap_Free(param0->items);
+    param0->items = NULL;
     memset(param0, 0, sizeof(PhotoAccessoryRendererGroup));
 }
 
@@ -519,16 +519,16 @@ static ImageClipSpriteResource *PhotoAccessoryRenderer_GetCurrentIcon(PhotoAcces
 {
     PhotoAccessoryRendererGroup v0;
 
-    v0 = param0->unk_00.unk_0C[param0->unk_00.unk_00];
-    return &v0.unk_00[v0.unk_08];
+    v0 = param0->groups.groups[param0->groups.currentGroup];
+    return &v0.items[v0.currentIndex];
 }
 
 static ImageClipSpriteResource *PhotoAccessoryRenderer_GetIcon(PhotoAccessoryRenderer *param0, int param1, int param2)
 {
     PhotoAccessoryRendererGroup v0;
 
-    v0 = param0->unk_00.unk_0C[param1];
-    return &v0.unk_00[param2];
+    v0 = param0->groups.groups[param1];
+    return &v0.items[param2];
 }
 
 static int PhotoAccessoryRenderer_CountGroupIcons(PhotoAccessoryRenderer *param0, int param1, int param2)
@@ -538,11 +538,11 @@ static int PhotoAccessoryRenderer_CountGroupIcons(PhotoAccessoryRenderer *param0
     int v2 = 0;
 
     v0 = PhotoAccessoryRenderer_GetIcon(param0, param1, param2);
-    v1 = v0->unk_08;
+    v1 = v0->next;
 
     while (v1 != v0) {
         v2++;
-        v1 = v1->unk_08;
+        v1 = v1->next;
     }
 
     return v2;
@@ -555,7 +555,7 @@ static ImageClipSpriteResource *PhotoAccessoryRenderer_GetNthIcon(PhotoAccessory
     int v2 = 0;
 
     v0 = PhotoAccessoryRenderer_GetIcon(param0, param1, param2);
-    v1 = v0->unk_08;
+    v1 = v0->next;
 
     while (v1 != v0) {
         if (v2 == param3) {
@@ -563,7 +563,7 @@ static ImageClipSpriteResource *PhotoAccessoryRenderer_GetNthIcon(PhotoAccessory
         }
 
         v2++;
-        v1 = v1->unk_08;
+        v1 = v1->next;
     }
 
     return NULL;
@@ -571,7 +571,7 @@ static ImageClipSpriteResource *PhotoAccessoryRenderer_GetNthIcon(PhotoAccessory
 
 static void PhotoAccessoryRenderer_UpdateItemEnabled(PhotoAccessoryRenderer *param0, ImageClipSprite *param1, int param2, int param3)
 {
-    if ((param0->unk_00.unk_00 != param2) || (param0->unk_00.unk_0C[param2].unk_08 != param3)) {
+    if ((param0->groups.currentGroup != param2) || (param0->groups.groups[param2].currentIndex != param3)) {
         ImageClipSprite_SetVisible(param1, 0);
     } else {
         ImageClipSprite_SetVisible(param1, 1);
@@ -601,21 +601,21 @@ static void PhotoAccessoryRenderer_StartScrollTask(PhotoAccessoryRenderer *param
     SysTask *v0 = SysTask_StartAndAllocateParam(PhotoAccessoryRenderer_ScrollTask, sizeof(PhotoAccessoryRendererScrollTask), 0, 13);
     PhotoAccessoryRendererScrollTask *v1 = SysTask_GetParam(v0);
 
-    v1->unk_00 = param0;
-    v1->unk_04 = param1;
-    v1->unk_08 = param2;
-    v1->unk_0C = param3;
-    v1->unk_10 = param4;
-    v1->unk_1C = 0;
-    v1->unk_20 = PhotoAccessoryRenderer_CountGroupIcons(param0, param1, param2);
-    v1->unk_24 = PhotoAccessoryRenderer_CountGroupIcons(param0, param3, param4);
-    v1->unk_2C = v1->unk_20 + v1->unk_24;
-    v1->unk_28 = Heap_Alloc(HEAP_ID_13, sizeof(PhotoAccessoryRendererTransition) * v1->unk_2C);
+    v1->renderer = param0;
+    v1->fromGroup = param1;
+    v1->fromIndex = param2;
+    v1->toGroup = param3;
+    v1->toIndex = param4;
+    v1->state = 0;
+    v1->fromRemaining = PhotoAccessoryRenderer_CountGroupIcons(param0, param1, param2);
+    v1->toRemaining = PhotoAccessoryRenderer_CountGroupIcons(param0, param3, param4);
+    v1->transitionCount = v1->fromRemaining + v1->toRemaining;
+    v1->transitions = Heap_Alloc(HEAP_ID_13, sizeof(PhotoAccessoryRendererTransition) * v1->transitionCount);
 
-    GF_ASSERT(v1->unk_28);
+    GF_ASSERT(v1->transitions);
 
-    memset(v1->unk_28, 0, sizeof(PhotoAccessoryRendererTransition) * v1->unk_2C);
-    param0->unk_00.unk_3C = 1;
+    memset(v1->transitions, 0, sizeof(PhotoAccessoryRendererTransition) * v1->transitionCount);
+    param0->groups.scrolling = 1;
 }
 
 static void PhotoAccessoryRenderer_ScrollTask(SysTask *param0, void *param1)
@@ -624,67 +624,67 @@ static void PhotoAccessoryRenderer_ScrollTask(SysTask *param0, void *param1)
     int v1;
     int v2;
 
-    switch (v0->unk_1C) {
+    switch (v0->state) {
     case 0:
-        PhotoAccessoryRenderer_MoveItem(v0->unk_00, v0->unk_0C, v0->unk_10, 0, -132);
-        PhotoAccessoryRenderer_SetItemEnabledAt(v0->unk_00, v0->unk_0C, v0->unk_10, 1);
+        PhotoAccessoryRenderer_MoveItem(v0->renderer, v0->toGroup, v0->toIndex, 0, -132);
+        PhotoAccessoryRenderer_SetItemEnabledAt(v0->renderer, v0->toGroup, v0->toIndex, 1);
 
-        v0->unk_14 = 0;
-        v2 = (v0->unk_00->unk_00.unk_40 + 1) % 2;
-        PhotoAccessoryRenderer_ScrollBackground(v0->unk_00, v2, 2, 5, &v0->unk_14);
+        v0->doneFlag = 0;
+        v2 = (v0->renderer->groups.backdropIndex + 1) % 2;
+        PhotoAccessoryRenderer_ScrollBackground(v0->renderer, v2, 2, 5, &v0->doneFlag);
 
-        v0->unk_18 = PhotoAccessoryRenderer_DivideRoundUp(v0->unk_20, 1);
-        v0->unk_1C++;
+        v0->stepTimer = PhotoAccessoryRenderer_DivideRoundUp(v0->fromRemaining, 1);
+        v0->state++;
         break;
     case 1:
-        for (v1 = 0; v1 < v0->unk_18; v1++) {
-            if ((v0->unk_20 - 1) >= 0) {
+        for (v1 = 0; v1 < v0->stepTimer; v1++) {
+            if ((v0->fromRemaining - 1) >= 0) {
                 ImageClipSpriteResource *v3;
 
-                v0->unk_20--;
-                v3 = PhotoAccessoryRenderer_GetNthIcon(v0->unk_00, v0->unk_04, v0->unk_08, v0->unk_20);
-                PhotoAccessoryRenderer_AddTransition(v3, v0->unk_28, v0->unk_2C);
+                v0->fromRemaining--;
+                v3 = PhotoAccessoryRenderer_GetNthIcon(v0->renderer, v0->fromGroup, v0->fromIndex, v0->fromRemaining);
+                PhotoAccessoryRenderer_AddTransition(v3, v0->transitions, v0->transitionCount);
             }
         }
 
-        if (v0->unk_20 == 0) {
-            v0->unk_18 = PhotoAccessoryRenderer_DivideRoundUp(v0->unk_24, 2);
-            v0->unk_1C++;
+        if (v0->fromRemaining == 0) {
+            v0->stepTimer = PhotoAccessoryRenderer_DivideRoundUp(v0->toRemaining, 2);
+            v0->state++;
         }
         break;
     case 2:
-        for (v1 = 0; v1 < v0->unk_18; v1++) {
-            if ((v0->unk_24 - 1) >= 0) {
+        for (v1 = 0; v1 < v0->stepTimer; v1++) {
+            if ((v0->toRemaining - 1) >= 0) {
                 ImageClipSpriteResource *v4;
 
-                v0->unk_24--;
-                v4 = PhotoAccessoryRenderer_GetNthIcon(v0->unk_00, v0->unk_0C, v0->unk_10, v0->unk_24);
+                v0->toRemaining--;
+                v4 = PhotoAccessoryRenderer_GetNthIcon(v0->renderer, v0->toGroup, v0->toIndex, v0->toRemaining);
 
-                PhotoAccessoryRenderer_AddTransition(v4, v0->unk_28, v0->unk_2C);
+                PhotoAccessoryRenderer_AddTransition(v4, v0->transitions, v0->transitionCount);
             }
         }
 
-        if (v0->unk_24 == 0) {
-            v0->unk_1C++;
-            v0->unk_18 = 0;
+        if (v0->toRemaining == 0) {
+            v0->state++;
+            v0->stepTimer = 0;
         }
         break;
     case 3:
-        v0->unk_18++;
+        v0->stepTimer++;
 
-        if (v0->unk_18 > 3) {
-            if (v0->unk_14) {
-                v0->unk_1C++;
+        if (v0->stepTimer > 3) {
+            if (v0->doneFlag) {
+                v0->state++;
             }
         }
         break;
     case 4:
-        PhotoAccessoryRenderer_SetItemEnabledAt(v0->unk_00, v0->unk_04, v0->unk_08, 0);
-        PhotoAccessoryRenderer_MoveItem(v0->unk_00, v0->unk_04, v0->unk_08, 0, -132);
+        PhotoAccessoryRenderer_SetItemEnabledAt(v0->renderer, v0->fromGroup, v0->fromIndex, 0);
+        PhotoAccessoryRenderer_MoveItem(v0->renderer, v0->fromGroup, v0->fromIndex, 0, -132);
 
-        v0->unk_00->unk_00.unk_3C = 0;
+        v0->renderer->groups.scrolling = 0;
 
-        Heap_Free(v0->unk_28);
+        Heap_Free(v0->transitions);
         SysTask_FinishAndFreeParam(param0);
 
         return;
@@ -693,16 +693,16 @@ static void PhotoAccessoryRenderer_ScrollTask(SysTask *param0, void *param1)
         break;
     }
 
-    PhotoAccessoryRenderer_UpdateTransitions(v0->unk_28, v0->unk_2C);
+    PhotoAccessoryRenderer_UpdateTransitions(v0->transitions, v0->transitionCount);
 }
 
 static void PhotoAccessoryRenderer_AddTransition(ImageClipSpriteResource *param0, PhotoAccessoryRendererTransition *param1, int param2)
 {
     PhotoAccessoryRendererTransition *v0 = PhotoAccessoryRenderer_FindTransitionSlot(param1, param2);
 
-    v0->unk_00 = param0;
-    v0->unk_04 = 3;
-    v0->unk_08 = (132 / 3);
+    v0->item = param0;
+    v0->remainingFrames = 3;
+    v0->speed = (132 / 3);
 }
 
 static PhotoAccessoryRendererTransition *PhotoAccessoryRenderer_FindTransitionSlot(PhotoAccessoryRendererTransition *param0, int param1)
@@ -710,7 +710,7 @@ static PhotoAccessoryRendererTransition *PhotoAccessoryRenderer_FindTransitionSl
     int v0;
 
     for (v0 = 0; v0 < param1; v0++) {
-        if (param0[v0].unk_00 == NULL) {
+        if (param0[v0].item == NULL) {
             return param0 + v0;
         }
     }
@@ -723,7 +723,7 @@ static void PhotoAccessoryRenderer_UpdateTransitions(PhotoAccessoryRendererTrans
     int v0;
 
     for (v0 = 0; v0 < param1; v0++) {
-        if (param0[v0].unk_00) {
+        if (param0[v0].item) {
             PhotoAccessoryRenderer_UpdateTransition(param0 + v0);
         }
     }
@@ -733,13 +733,13 @@ static void PhotoAccessoryRenderer_UpdateTransition(PhotoAccessoryRendererTransi
 {
     int v0, v1;
 
-    ImageClipSpriteResource_GetPosition(param0->unk_00, &v0, &v1);
-    v1 += param0->unk_08;
-    ImageClipSpriteResource_SetPosition(param0->unk_00, v0, v1);
+    ImageClipSpriteResource_GetPosition(param0->item, &v0, &v1);
+    v1 += param0->speed;
+    ImageClipSpriteResource_SetPosition(param0->item, v0, v1);
 
-    param0->unk_04--;
+    param0->remainingFrames--;
 
-    if (param0->unk_04 <= 0) {
+    if (param0->remainingFrames <= 0) {
         memset(param0, 0, sizeof(PhotoAccessoryRendererTransition));
     }
 }

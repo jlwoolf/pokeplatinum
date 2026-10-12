@@ -8,9 +8,9 @@
 #include "char_transfer.h"
 
 typedef struct {
-    ImageClipUi unk_00;
-    FontOAM *unk_10;
-    CharTransferAllocation unk_14;
+    ImageClipUi ui;
+    FontOAM *fontOAM;
+    CharTransferAllocation charAllocation;
 } ImageClipUiTextButton;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225A154_H

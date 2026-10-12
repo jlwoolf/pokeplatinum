@@ -6,10 +6,10 @@
 #include "sprite.h"
 
 typedef struct {
-    AffineSpriteListTemplate *unk_00;
-    ImageClipUiCallback unk_04;
-    void *unk_08;
-    int unk_0C;
+    AffineSpriteListTemplate *spriteTemplate;
+    ImageClipUiCallback callback;
+    void *callbackParam;
+    int buttonId;
 } ImageClipUiTemplate;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02259C58_1_H

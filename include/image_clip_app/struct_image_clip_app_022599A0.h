@@ -7,17 +7,17 @@
 #include "bg_window.h"
 
 typedef struct {
-    BgConfig *unk_00;
+    BgConfig *bgConfig;
     enum NarcID narcID;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    int unk_28;
+    int charMember;
+    int paletteMember;
+    int tilemapMember;
+    int destTilemapX;
+    int destTilemapY;
+    int bgLayer;
+    int paletteSize;
+    int paletteOffset;
+    int charOffset;
     enum HeapID heapID;
 } ImageClipBgTemplate;
 

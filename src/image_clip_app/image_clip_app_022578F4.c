@@ -28,27 +28,27 @@ static void PhotoRenderer_GetSpriteOutOfBounds(ImageClipSpriteResource *param0, 
 
 void PhotoRenderer_Init(PhotoRenderer *param0, PhotoRendererTemplate *param1)
 {
-    param0->unk_2C.unk_00 = param1->unk_00;
-    param0->unk_2C.unk_04 = param1->unk_04;
-    param0->unk_2C.unk_08 = param1->unk_08;
-    param0->unk_2C.unk_0C = param1->unk_0C;
-    param0->unk_2C.unk_10 = param1->unk_10;
-    param0->unk_2C.unk_14 = param1->unk_14;
-    param0->unk_2C.unk_18 = param1->unk_18;
-    param0->unk_2C.unk_48 = 0;
-    param0->unk_00.unk_00 = param1->unk_1C;
-    param0->unk_00.unk_04.unk_08 = &param0->unk_00.unk_04;
-    param0->unk_00.unk_04.unk_0C = &param0->unk_00.unk_04;
-    param0->unk_00.unk_14.unk_08 = &param0->unk_00.unk_14;
-    param0->unk_00.unk_14.unk_0C = &param0->unk_00.unk_14;
-    param0->unk_00.unk_24 = 0;
-    param0->unk_00.unk_28 = param1->unk_20;
+    param0->context.softSpriteManager = param1->softSpriteManager;
+    param0->context.chars = param1->chars;
+    param0->context.palettes = param1->palettes;
+    param0->context.extraResource = param1->extraResource;
+    param0->context.pokemonSpriteManager = param1->pokemonSpriteManager;
+    param0->context.bgConfig = param1->bgConfig;
+    param0->context.spriteManager = param1->spriteManager;
+    param0->context.backdropIndex = 0;
+    param0->resources.resourceList = param1->resourceList;
+    param0->resources.backSprites.next = &param0->resources.backSprites;
+    param0->resources.backSprites.prev = &param0->resources.backSprites;
+    param0->resources.frontSprites.next = &param0->resources.frontSprites;
+    param0->resources.frontSprites.prev = &param0->resources.frontSprites;
+    param0->resources.spriteCount = 0;
+    param0->resources.maxSpriteCount = param1->maxSpriteCount;
 
     {
         ImageClipSpriteResource *v0;
 
-        v0 = ImageClipResourceList_Alloc(param0->unk_00.unk_00, &param0->unk_2C.unk_4C, 3);
-        ImageClipResourceList_InsertAfter(v0, &param0->unk_00.unk_14);
+        v0 = ImageClipResourceList_Alloc(param0->resources.resourceList, &param0->context.pokemonSprite, 3);
+        ImageClipResourceList_InsertAfter(v0, &param0->resources.frontSprites);
     }
 }
 
@@ -61,24 +61,24 @@ void PhotoRenderer_Free(PhotoRenderer *param0)
 
 void PhotoRenderer_SetupPokemonSprite(PhotoRenderer *param0, Pokemon *param1, PokemonSpriteTemplate *param2, int param3, int param4, int param5, int param6)
 {
-    ImageClipPokemonSprite_Init(&param0->unk_2C.unk_4C, param0->unk_2C.unk_10, param1, param2, param6);
-    ImageClipPokemonSprite_SetZ(&param0->unk_2C.unk_4C, param5);
-    ImageClipPokemonSprite_SetPosition(&param0->unk_2C.unk_4C, param3, param4);
+    ImageClipPokemonSprite_Init(&param0->context.pokemonSprite, param0->context.pokemonSpriteManager, param1, param2, param6);
+    ImageClipPokemonSprite_SetZ(&param0->context.pokemonSprite, param5);
+    ImageClipPokemonSprite_SetPosition(&param0->context.pokemonSprite, param3, param4);
 }
 
 void PhotoRenderer_CreatePokemonSprite(PhotoRenderer *param0, Pokemon *param1, PokemonSpriteTemplate *param2, int param3)
 {
-    ImageClipPokemonSprite_Init(&param0->unk_2C.unk_4C, param0->unk_2C.unk_10, param1, param2, param3);
+    ImageClipPokemonSprite_Init(&param0->context.pokemonSprite, param0->context.pokemonSpriteManager, param1, param2, param3);
 }
 
 void PhotoRenderer_CreatePokemonSpriteExact(PhotoRenderer *param0, Pokemon *param1, PokemonSpriteTemplate *param2, int param3)
 {
-    ImageClipPokemonSprite_InitEx(&param0->unk_2C.unk_4C, param0->unk_2C.unk_10, param1, param2, param3, 1);
+    ImageClipPokemonSprite_InitEx(&param0->context.pokemonSprite, param0->context.pokemonSpriteManager, param1, param2, param3, 1);
 }
 
 void PhotoRenderer_AppendSprite(PhotoRenderer *param0, ImageClipSpriteResource *param1)
 {
-    ImageClipResourceList_InsertAfter(param1, param0->unk_00.unk_14.unk_0C);
+    ImageClipResourceList_InsertAfter(param1, param0->resources.frontSprites.prev);
 }
 
 void PhotoRenderer_RemoveSprite(ImageClipSpriteResource *param0)
@@ -88,7 +88,7 @@ void PhotoRenderer_RemoveSprite(ImageClipSpriteResource *param0)
 
 void PhotoRenderer_DeletePokemonSprite(PhotoRenderer *param0)
 {
-    ImageClipPokemonSprite_Free(&param0->unk_2C.unk_4C);
+    ImageClipPokemonSprite_Free(&param0->context.pokemonSprite);
 }
 
 BOOL PhotoRenderer_CreateAccessorySprite(PhotoRenderer *param0, int param1, int param2, int param3, int param4)
@@ -96,15 +96,15 @@ BOOL PhotoRenderer_CreateAccessorySprite(PhotoRenderer *param0, int param1, int 
     ImageClipSpriteConfig v0;
     ImageClipSprite *v1;
 
-    if (param0->unk_00.unk_24 < param0->unk_00.unk_28) {
-        v0.unk_00 = param0->unk_2C.unk_18;
-        v0.unk_04 = param0->unk_2C.unk_00;
-        v0.unk_08 = param0->unk_2C.unk_04[param1];
-        v0.unk_0C = param0->unk_2C.unk_08[0];
-        v0.unk_10 = param2;
-        v0.unk_14 = param3;
-        v0.unk_18 = param1;
-        v0.unk_1C = param0->unk_2C.unk_0C[param1];
+    if (param0->resources.spriteCount < param0->resources.maxSpriteCount) {
+        v0.spriteManager = param0->context.spriteManager;
+        v0.softSpriteManager = param0->context.softSpriteManager;
+        v0.chars = param0->context.chars[param1];
+        v0.palette = param0->context.palettes[0];
+        v0.xPos = param2;
+        v0.yPos = param3;
+        v0.resourceIndex = param1;
+        v0.paletteSlot = param0->context.extraResource[param1];
 
         v1 = ImageClipSprite_Add(&v0);
         ImageClipSprite_SetPriority(v1, param4);
@@ -112,11 +112,11 @@ BOOL PhotoRenderer_CreateAccessorySprite(PhotoRenderer *param0, int param1, int 
         {
             ImageClipSpriteResource *v2;
 
-            v2 = ImageClipResourceList_Alloc(param0->unk_00.unk_00, v1, 0);
-            ImageClipResourceList_InsertAfter(v2, &param0->unk_00.unk_04);
+            v2 = ImageClipResourceList_Alloc(param0->resources.resourceList, v1, 0);
+            ImageClipResourceList_InsertAfter(v2, &param0->resources.backSprites);
         }
 
-        param0->unk_00.unk_24++;
+        param0->resources.spriteCount++;
 
         return 1;
     }
@@ -126,9 +126,9 @@ BOOL PhotoRenderer_CreateAccessorySprite(PhotoRenderer *param0, int param1, int 
 
 BOOL PhotoRenderer_AddSprite(PhotoRenderer *param0, ImageClipSpriteResource *param1, NNSG2dCharacterData **param2)
 {
-    if (param0->unk_00.unk_24 < param0->unk_00.unk_28) {
+    if (param0->resources.spriteCount < param0->resources.maxSpriteCount) {
         PhotoRenderer_ClassifySprite(param0, param1, 1, param2);
-        param0->unk_00.unk_24++;
+        param0->resources.spriteCount++;
 
         return 1;
     }
@@ -140,36 +140,36 @@ void PhotoRenderer_PopSprite(PhotoRenderer *param0, ImageClipSpriteResource *par
 {
     ImageClipResourceList_RemoveNode(param1);
 
-    param0->unk_00.unk_24--;
+    param0->resources.spriteCount--;
 
-    GF_ASSERT(param0->unk_00.unk_24 >= 0);
+    GF_ASSERT(param0->resources.spriteCount >= 0);
 }
 
 void PhotoRenderer_ClearSprites(PhotoRenderer *param0)
 {
-    ImageClipResourceList_RemoveAll(&param0->unk_00.unk_04);
-    ImageClipResourceList_RemoveAll(&param0->unk_00.unk_14);
+    ImageClipResourceList_RemoveAll(&param0->resources.backSprites);
+    ImageClipResourceList_RemoveAll(&param0->resources.frontSprites);
 
-    param0->unk_00.unk_24 = 0;
+    param0->resources.spriteCount = 0;
 }
 
 void PhotoRenderer_MoveSprites(PhotoRenderer *param0, int param1, int param2)
 {
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_04, param1, param2);
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_14, param1, param2);
+    ImageClipSpriteResource_Move(&param0->resources.backSprites, param1, param2);
+    ImageClipSpriteResource_Move(&param0->resources.frontSprites, param1, param2);
 }
 
 void PhotoRenderer_MoveVisibleSprites(PhotoRenderer *param0, int param1, int param2)
 {
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_14, param1, param2);
+    ImageClipSpriteResource_Move(&param0->resources.frontSprites, param1, param2);
 }
 
 void PhotoRenderer_PanSprites(PhotoRenderer *param0, int param1, int param2, int param3, int param4)
 {
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_04, -param1, -param2);
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_04, param3, param4);
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_14, -param1, -param2);
-    ImageClipSpriteResource_Move(&param0->unk_00.unk_14, param3, param4);
+    ImageClipSpriteResource_Move(&param0->resources.backSprites, -param1, -param2);
+    ImageClipSpriteResource_Move(&param0->resources.backSprites, param3, param4);
+    ImageClipSpriteResource_Move(&param0->resources.frontSprites, -param1, -param2);
+    ImageClipSpriteResource_Move(&param0->resources.frontSprites, param3, param4);
 }
 
 void PhotoRenderer_AssignZOrder(PhotoRenderer *param0)
@@ -179,33 +179,33 @@ void PhotoRenderer_AssignZOrder(PhotoRenderer *param0)
 
 void PhotoRenderer_AssignZOrderFrom(PhotoRenderer *param0, int param1)
 {
-    ImageClipSpriteResource *v0 = param0->unk_00.unk_14.unk_08;
+    ImageClipSpriteResource *v0 = param0->resources.frontSprites.next;
 
-    while (v0 != &param0->unk_00.unk_14) {
-        if (v0->unk_04 == 0) {
-            ImageClipSprite_SetPriority(v0->unk_00, param1);
+    while (v0 != &param0->resources.frontSprites) {
+        if (v0->category == 0) {
+            ImageClipSprite_SetPriority(v0->data, param1);
         } else {
-            ImageClipPokemonSprite_SetZ(v0->unk_00, param1);
+            ImageClipPokemonSprite_SetZ(v0->data, param1);
         }
 
         param1--;
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 
     param1 -= 8;
 
-    v0 = param0->unk_00.unk_04.unk_08;
+    v0 = param0->resources.backSprites.next;
 
-    while (v0 != &param0->unk_00.unk_04) {
-        if (v0->unk_04 == 0) {
-            ImageClipSprite_SetPriority(v0->unk_00, param1);
+    while (v0 != &param0->resources.backSprites) {
+        if (v0->category == 0) {
+            ImageClipSprite_SetPriority(v0->data, param1);
         } else {
-            ImageClipPokemonSprite_SetZ(v0->unk_00, param1);
+            ImageClipPokemonSprite_SetZ(v0->data, param1);
         }
 
         param1--;
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 }
 
@@ -214,32 +214,32 @@ void PhotoRenderer_OffsetZ(PhotoRenderer *param0, int param1)
     ImageClipSpriteResource *v0;
     int v1;
 
-    v0 = param0->unk_00.unk_14.unk_08;
+    v0 = param0->resources.frontSprites.next;
 
-    while (v0 != &param0->unk_00.unk_14) {
-        if (v0->unk_04 == 0) {
-            v1 = ImageClipSprite_GetPriority(v0->unk_00);
-            ImageClipSprite_SetPriority(v0->unk_00, v1 + param1);
+    while (v0 != &param0->resources.frontSprites) {
+        if (v0->category == 0) {
+            v1 = ImageClipSprite_GetPriority(v0->data);
+            ImageClipSprite_SetPriority(v0->data, v1 + param1);
         } else {
-            v1 = ImageClipPokemonSprite_GetZ(v0->unk_00);
-            ImageClipPokemonSprite_SetZ(v0->unk_00, v1 + param1);
+            v1 = ImageClipPokemonSprite_GetZ(v0->data);
+            ImageClipPokemonSprite_SetZ(v0->data, v1 + param1);
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 
-    v0 = param0->unk_00.unk_04.unk_08;
+    v0 = param0->resources.backSprites.next;
 
-    while (v0 != &param0->unk_00.unk_04) {
-        if (v0->unk_04 == 0) {
-            v1 = ImageClipSprite_GetPriority(v0->unk_00);
-            ImageClipSprite_SetPriority(v0->unk_00, v1 + param1);
+    while (v0 != &param0->resources.backSprites) {
+        if (v0->category == 0) {
+            v1 = ImageClipSprite_GetPriority(v0->data);
+            ImageClipSprite_SetPriority(v0->data, v1 + param1);
         } else {
-            v1 = ImageClipPokemonSprite_GetZ(v0->unk_00);
-            ImageClipPokemonSprite_SetZ(v0->unk_00, v1 + param1);
+            v1 = ImageClipPokemonSprite_GetZ(v0->data);
+            ImageClipPokemonSprite_SetZ(v0->data, v1 + param1);
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 }
 
@@ -272,28 +272,28 @@ ImageClipSpriteResource *PhotoRenderer_GetTouchedSprite(PhotoRenderer *param0, i
     ImageClipSpriteResource *v0;
     BOOL v1;
 
-    v0 = param0->unk_00.unk_14.unk_08;
+    v0 = param0->resources.frontSprites.next;
 
-    while (v0 != &param0->unk_00.unk_14) {
+    while (v0 != &param0->resources.frontSprites) {
         v1 = ImageClipSpriteResource_IsPixelHit(v0, param1, param2, param3);
 
         if (v1 == 1) {
             return v0;
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 
-    v0 = param0->unk_00.unk_04.unk_08;
+    v0 = param0->resources.backSprites.next;
 
-    while (v0 != &param0->unk_00.unk_04) {
+    while (v0 != &param0->resources.backSprites) {
         v1 = ImageClipSpriteResource_IsPixelHit(v0, param1, param2, param3);
 
         if (v1 == 1) {
             return v0;
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 
     return NULL;
@@ -303,38 +303,38 @@ void PhotoRenderer_LoadBackground(PhotoRenderer *param0, int param1, enum HeapID
 {
     ImageClipBgTemplate v0;
 
-    v0.unk_00 = param0->unk_2C.unk_14;
+    v0.bgConfig = param0->context.bgConfig;
     v0.narcID = NARC_INDEX_GRAPHIC__IMAGECLIP;
-    v0.unk_08 = (param1) * 4 + 134;
-    v0.unk_0C = (param1) * 4 + 134 + 1;
-    v0.unk_10 = (param1) * 4 + 134 + 2;
-    v0.unk_14 = 136;
-    v0.unk_18 = 16;
-    v0.unk_1C = 2;
-    v0.unk_20 = 1;
-    v0.unk_24 = 13;
-    v0.unk_28 = 0;
+    v0.charMember = (param1) * 4 + 134;
+    v0.paletteMember = (param1) * 4 + 134 + 1;
+    v0.tilemapMember = (param1) * 4 + 134 + 2;
+    v0.destTilemapX = 136;
+    v0.destTilemapY = 16;
+    v0.bgLayer = 2;
+    v0.paletteSize = 1;
+    v0.paletteOffset = 13;
+    v0.charOffset = 0;
     v0.heapID = heapID;
 
-    ImageClipBg_Init(&param0->unk_2C.unk_1C, &v0);
+    ImageClipBg_Init(&param0->context.bg, &v0);
 
-    param0->unk_2C.unk_48 = param1;
+    param0->context.backdropIndex = param1;
 }
 
 void PhotoRenderer_FreeBackground(PhotoRenderer *param0)
 {
-    ImageClipBg_Free(&param0->unk_2C.unk_1C);
+    ImageClipBg_Free(&param0->context.bg);
 }
 
 void PhotoRenderer_GetPokemonSpriteCenter(PhotoRenderer *param0, int *param1, int *param2)
 {
-    *param1 = PokemonSprite_GetAttribute(param0->unk_2C.unk_4C.unk_00, MON_SPRITE_X_CENTER);
-    *param2 = PokemonSprite_GetAttribute(param0->unk_2C.unk_4C.unk_00, MON_SPRITE_Y_CENTER);
+    *param1 = PokemonSprite_GetAttribute(param0->context.pokemonSprite.unk_00, MON_SPRITE_X_CENTER);
+    *param2 = PokemonSprite_GetAttribute(param0->context.pokemonSprite.unk_00, MON_SPRITE_Y_CENTER);
 }
 
 int PhotoRenderer_GetSpriteCount(PhotoRenderer *param0)
 {
-    return param0->unk_00.unk_24;
+    return param0->resources.spriteCount;
 }
 
 void PhotoRenderer_GetMaxOutOfBounds(PhotoRenderer *param0, int *param1, int *param2)
@@ -343,11 +343,11 @@ void PhotoRenderer_GetMaxOutOfBounds(PhotoRenderer *param0, int *param1, int *pa
     int v1;
     int v2;
     int v3;
-    ImageClipSpriteResource *v4 = param0->unk_00.unk_14.unk_08;
+    ImageClipSpriteResource *v4 = param0->resources.frontSprites.next;
     v0 = 0;
     v1 = 0;
 
-    while (v4 != &param0->unk_00.unk_14) {
+    while (v4 != &param0->resources.frontSprites) {
         PhotoRenderer_GetSpriteOutOfBounds(v4, &v2, &v3);
 
         if (MATH_ABS(v2) > MATH_ABS(v0)) {
@@ -358,7 +358,7 @@ void PhotoRenderer_GetMaxOutOfBounds(PhotoRenderer *param0, int *param1, int *pa
             v1 = v3;
         }
 
-        v4 = v4->unk_08;
+        v4 = v4->next;
     }
 
     *param1 = v0;
@@ -367,31 +367,31 @@ void PhotoRenderer_GetMaxOutOfBounds(PhotoRenderer *param0, int *param1, int *pa
 
 void PhotoRenderer_SetSpriteDiffuse(PhotoRenderer *param0, GXRgb param1)
 {
-    ImageClipSpriteResource *v0 = param0->unk_00.unk_14.unk_08;
+    ImageClipSpriteResource *v0 = param0->resources.frontSprites.next;
 
-    while (v0 != &param0->unk_00.unk_14) {
-        if (v0->unk_04 == 0) {
-            ImageClipSprite *v1 = v0->unk_00;
+    while (v0 != &param0->resources.frontSprites) {
+        if (v0->category == 0) {
+            ImageClipSprite *v1 = v0->data;
 
-            SoftwareSprite_SetDiffuse(v1->unk_04, param1);
+            SoftwareSprite_SetDiffuse(v1->softSprite, param1);
         } else {
-            ImageClipPokemonSprite *v2 = v0->unk_00;
+            ImageClipPokemonSprite *v2 = v0->data;
 
             PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_R, (param1 >> 10) & 0x1f);
             PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_G, (param1 >> 5) & 0x1f);
             PokemonSprite_SetAttribute(v2->unk_00, MON_SPRITE_DIFFUSE_B, (param1 >> 0) & 0x1f);
         }
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 
-    v0 = param0->unk_00.unk_04.unk_08;
+    v0 = param0->resources.backSprites.next;
 
-    while (v0 != &param0->unk_00.unk_04) {
-        ImageClipSprite *v3 = v0->unk_00;
+    while (v0 != &param0->resources.backSprites) {
+        ImageClipSprite *v3 = v0->data;
 
-        SoftwareSprite_SetDiffuse(v3->unk_04, param1);
-        v0 = v0->unk_08;
+        SoftwareSprite_SetDiffuse(v3->softSprite, param1);
+        v0 = v0->next;
     }
 }
 
@@ -427,20 +427,20 @@ static void PhotoRenderer_ClassifySprite(PhotoRenderer *param0, ImageClipSpriteR
 
     for (v0 = 0; v0 < 16; v0++) {
         VisualCompetition_GetGridPoint(v7, v8, v9, v10, v0, &v11, &v12);
-        v13 |= ImageClipPokemonSprite_IsPixelHit(&param0->unk_2C.unk_4C, v11, v12, v14);
+        v13 |= ImageClipPokemonSprite_IsPixelHit(&param0->context.pokemonSprite, v11, v12, v14);
     }
 
     if (v13) {
         if (param2) {
-            ImageClipResourceList_InsertAfter(param1, &param0->unk_00.unk_14);
+            ImageClipResourceList_InsertAfter(param1, &param0->resources.frontSprites);
         } else {
-            ImageClipResourceList_InsertAfter(param1, param0->unk_00.unk_14.unk_0C);
+            ImageClipResourceList_InsertAfter(param1, param0->resources.frontSprites.prev);
         }
     } else {
         if (param2) {
-            ImageClipResourceList_InsertAfter(param1, &param0->unk_00.unk_04);
+            ImageClipResourceList_InsertAfter(param1, &param0->resources.backSprites);
         } else {
-            ImageClipResourceList_InsertAfter(param1, param0->unk_00.unk_04.unk_0C);
+            ImageClipResourceList_InsertAfter(param1, param0->resources.backSprites.prev);
         }
     }
 }

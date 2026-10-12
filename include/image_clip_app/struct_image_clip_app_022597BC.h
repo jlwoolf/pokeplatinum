@@ -6,17 +6,17 @@
 #include "bg_window.h"
 
 typedef struct {
-    BgConfig *unk_00;
+    BgConfig *bgConfig;
     enum NarcID narcID;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    int unk_28;
+    int secondFrameIndex;
+    int destTileX;
+    int destTileY;
+    int widthTiles;
+    int heightTiles;
+    int bgLayer;
+    int paletteOffset;
+    int paletteSize;
+    int charOffset;
 } ImageClipBg;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_022597BC_H

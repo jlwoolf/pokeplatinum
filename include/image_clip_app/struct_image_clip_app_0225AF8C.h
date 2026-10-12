@@ -6,9 +6,9 @@
 #include "bg_window.h"
 
 typedef struct {
-    BgConfig *unk_00;
-    int unk_04;
-    int unk_08;
+    BgConfig *bgConfig;
+    int xPos;
+    int yPos;
     enum HeapID heapID;
 } PhotoSpriteConfig;
 

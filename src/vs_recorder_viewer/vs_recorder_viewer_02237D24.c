@@ -209,9 +209,9 @@ static BOOL VsRecorderViewerProfile_Init(VsRecorderState *param0)
     Overlay_LoadByID(FS_OVERLAY_ID(image_clip_app), 2);
 
     {
-        v0->unk_218.unk_00 = param0->unk_14.bgConfig;
-        v0->unk_218.unk_04 = (128 - 56);
-        v0->unk_218.unk_08 = (96 - 64 - 16);
+        v0->unk_218.bgConfig = param0->unk_14.bgConfig;
+        v0->unk_218.xPos = (128 - 56);
+        v0->unk_218.yPos = (96 - 64 - 16);
         v0->unk_218.heapID = HEAP_ID_102;
     }
 
