@@ -21,29 +21,29 @@ void contest_competition_02252CEC(int param0, int param1, void *param2, void *pa
     if (v0->activeAppID == 0) {
         VisualCompetition *v2;
         v2 = v0->appContext;
-        v1 = &v2->unk_4F8;
+        v1 = &v2->packetQueue;
     } else if (v0->activeAppID == 1) {
         DanceCompetition *v3;
         v3 = v0->appContext;
-        v1 = &v3->unk_109C;
+        v1 = &v3->packetQueue;
     } else if (v0->activeAppID == 2) {
         ActingCompetition *v4;
         v4 = v0->appContext;
-        v1 = &v4->unk_BF8;
+        v1 = &v4->packetQueue;
     } else if (v0->activeAppID == 3) {
         ContestFinalScoring *v5;
         v5 = v0->appContext;
-        v1 = &v5->unk_85C;
+        v1 = &v5->packetQueue;
     } else {
         GF_ASSERT(FALSE);
         return;
     }
 
     GF_ASSERT(param1 <= 512);
-    GF_ASSERT(v1->unk_A11[param0] == 0);
+    GF_ASSERT(v1->receiveReady[param0] == 0);
 
-    MI_CpuCopy8(param2, v1->unk_210[param0], param1);
-    v1->unk_A11[param0] = 1;
+    MI_CpuCopy8(param2, v1->receiveBuffers[param0], param1);
+    v1->receiveReady[param0] = 1;
 }
 
 void contest_competition_02252D7C(int param0, int param1, void *param2, void *param3)

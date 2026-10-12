@@ -13,27 +13,27 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    Contest *unk_00;
-    SysTask *unk_04;
-    G3DPipelineBuffers *unk_08;
-    ActingCompetitionScene unk_0C;
-    ActingMatchState unk_220;
-    ActingSyncPacket unk_304;
-    ActingPayloadBuffer unk_3E2[4];
-    void *unk_7E4;
-    u16 unk_7E8;
-    u16 unk_7EA;
-    u8 unk_7EC;
-    u32 unk_7F0;
-    u8 unk_7F4[512];
-    u8 unk_9F4[512];
-    u8 unk_BF4;
-    u8 unk_BF5;
-    ContestPacketQueue unk_BF8;
-    ActingCompetitionTask unk_160C;
-    u8 unk_1614;
-    u8 unk_1615;
-    u8 unk_1616[4];
+    Contest *contest;
+    SysTask *task;
+    G3DPipelineBuffers *g3dPipeline;
+    ActingCompetitionScene scene;
+    ActingMatchState matchState;
+    ActingSyncPacket syncPacket;
+    ActingPayloadBuffer payloadBuffers[4];
+    void *moveMenu;
+    u16 unused_7E8;
+    u16 handlerIndex;
+    u8 initialized;
+    u32 unused_7F0;
+    u8 unused_7F4[512];
+    u8 unused_9F4[512];
+    u8 unused_BF4;
+    u8 unused_BF5;
+    ContestPacketQueue packetQueue;
+    ActingCompetitionTask competitionTask;
+    u8 initialized2;
+    u8 unused_1615;
+    u8 contestantReady[4];
 } ActingCompetition;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_COMPETITION_H

@@ -7,11 +7,11 @@
 #include "pokemon.h"
 
 typedef struct {
-    BallCapsuleConfig unk_00;
-    BallCapsuleSealEffect *unk_0C;
+    BallCapsuleConfig config;
+    BallCapsuleSealEffect *sealEffect;
     Pokemon *mon;
     u8 state;
-    u8 unk_15;
+    u8 done;
 } VisualBallCapsule;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_BALL_CAPSULE_H

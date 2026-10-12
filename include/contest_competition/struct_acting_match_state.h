@@ -6,16 +6,16 @@
 #include "contest_competition/struct_acting_turn_state.h"
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01[4];
-    u8 unk_05;
+    u8 turn;
+    u8 contestantOrder[4];
+    u8 contestantCount;
     u16 moveIDs[CONTEST_NUM_PARTICIPANTS];
-    u8 unk_0E[CONTEST_NUM_PARTICIPANTS];
-    s16 unk_12[CONTEST_NUM_PARTICIPANTS];
-    s16 unk_1A[4];
-    s8 unk_22[3];
-    u16 unk_26[4];
-    ActingTurnState unk_30;
+    u8 contestantIDs[CONTEST_NUM_PARTICIPANTS];
+    s16 scores[CONTEST_NUM_PARTICIPANTS];
+    s16 turnScores[4];
+    s8 appealHistory[3];
+    u16 previousMoveIDs[4];
+    ActingTurnState turnState;
 } ActingMatchState;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_MATCH_STATE_H

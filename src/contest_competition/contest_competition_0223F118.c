@@ -159,25 +159,25 @@ void contest_competition_0223F1E8(enum HeapID heapID, BgConfig *param1, SpriteMa
     FontOAM_SetXY(v4, param10, param11);
     Window_Remove(&v1);
 
-    param4->unk_00 = v4;
-    param4->unk_04 = v2;
-    param4->unk_10 = v5;
+    param4->fontOAM = v4;
+    param4->charTransfer = v2;
+    param4->width = v5;
 }
 
 void contest_competition_0223F2E4(ContestTextLabel *param0)
 {
-    FontOAM_Free(param0->unk_00);
-    CharTransfer_ClearRange(&param0->unk_04);
+    FontOAM_Free(param0->fontOAM);
+    CharTransfer_ClearRange(&param0->charTransfer);
 }
 
 void contest_competition_0223F2F8(ContestTextLabel *param0, int param1, int param2, int param3)
 {
     if (param3 == 1) {
-        param1 -= param0->unk_10 / 2;
+        param1 -= param0->width / 2;
     }
 
     param2 += 0 - 8;
-    FontOAM_SetXY(param0->unk_00, param1, param2);
+    FontOAM_SetXY(param0->fontOAM, param1, param2);
 }
 
 String *Contest_GetJudgeName(u32 judgeNameMessageID, enum HeapID heapID)
@@ -359,15 +359,15 @@ void contest_competition_0223F630(ContestSpriteGroup *param0, SpriteSystem *para
     v1.bgPriority = param9;
 
     for (v0 = 0; v0 < 6; v0++) {
-        param0->unk_00[v0] = SpriteSystem_NewSprite(param1, param2, &v1);
+        param0->sprites[v0] = SpriteSystem_NewSprite(param1, param2, &v1);
 
-        ManagedSprite_SetPositionXY(param0->unk_00[v0], Unk_contest_competition_022531CC[v0].unk_00, Unk_contest_competition_022531CC[v0].unk_02);
-        ManagedSprite_SetAnim(param0->unk_00[v0], Unk_contest_competition_022531CC[v0].unk_06);
-        ManagedSprite_SetAffineOverwriteMode(param0->unk_00[v0], AFFINE_OVERWRITE_MODE_NORMAL);
-        Sprite_TickFrame(param0->unk_00[v0]->sprite);
+        ManagedSprite_SetPositionXY(param0->sprites[v0], Unk_contest_competition_022531CC[v0].unk_00, Unk_contest_competition_022531CC[v0].unk_02);
+        ManagedSprite_SetAnim(param0->sprites[v0], Unk_contest_competition_022531CC[v0].unk_06);
+        ManagedSprite_SetAffineOverwriteMode(param0->sprites[v0], AFFINE_OVERWRITE_MODE_NORMAL);
+        Sprite_TickFrame(param0->sprites[v0]->sprite);
     }
 
-    param0->unk_18 = SysTask_Start(contest_competition_0223F6E8, param0, param10);
+    param0->task = SysTask_Start(contest_competition_0223F6E8, param0, param10);
 }
 
 void contest_competition_0223F6C4(ContestSpriteGroup *param0)
@@ -375,11 +375,11 @@ void contest_competition_0223F6C4(ContestSpriteGroup *param0)
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        Sprite_DeleteAndFreeResources(param0->unk_00[v0]);
+        Sprite_DeleteAndFreeResources(param0->sprites[v0]);
     }
 
-    SysTask_Done(param0->unk_18);
-    param0->unk_18 = NULL;
+    SysTask_Done(param0->task);
+    param0->task = NULL;
 }
 
 static void contest_competition_0223F6E8(SysTask *param0, void *param1)
@@ -388,7 +388,7 @@ static void contest_competition_0223F6E8(SysTask *param0, void *param1)
     int v1;
 
     for (v1 = 0; v1 < 6; v1++) {
-        ManagedSprite_OffsetAffineZRotation(v0->unk_00[v1], Unk_contest_competition_022531CC[v1].unk_04);
+        ManagedSprite_OffsetAffineZRotation(v0->sprites[v1], Unk_contest_competition_022531CC[v1].unk_04);
     }
 }
 
@@ -397,20 +397,20 @@ ContestPaletteFadeTask *contest_competition_0223F70C(enum HeapID heapID, Palette
     ContestPaletteFadeTask *v0 = Heap_Alloc(heapID, sizeof(ContestPaletteFadeTask));
     MI_CpuClear8(v0, sizeof(ContestPaletteFadeTask));
 
-    v0->unk_04 = param1;
-    v0->unk_0C = param2;
-    v0->unk_10 = param3;
-    v0->unk_12 = param4;
-    v0->unk_00 = SysTask_Start(contest_competition_0223F774, v0, param5);
+    v0->paletteData = param1;
+    v0->durations = param2;
+    v0->stepCount = param3;
+    v0->repeatCount = param4;
+    v0->task = SysTask_Start(contest_competition_0223F774, v0, param5);
 
     return v0;
 }
 
 void contest_competition_0223F744(ContestPaletteFadeTask *param0)
 {
-    GF_ASSERT(param0->unk_00 != NULL);
+    GF_ASSERT(param0->task != NULL);
 
-    SysTask_Done(param0->unk_00);
+    SysTask_Done(param0->task);
     Heap_Free(param0);
 }
 
@@ -431,24 +431,24 @@ static void contest_competition_0223F774(SysTask *param0, void *param1)
         return;
     }
 
-    v0->unk_08++;
+    v0->timer++;
 
-    if (v0->unk_08 > v0->unk_0C[v0->unk_11]) {
+    if (v0->timer > v0->durations[v0->currentStep]) {
         BrightnessController_StartTransition(6, 0, 4, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD), BRIGHTNESS_MAIN_SCREEN);
         Sound_PlayEffect(SEQ_SE_DP_KATI_sseq_1);
 
-        v0->unk_08 = 0;
-        v0->unk_11++;
+        v0->timer = 0;
+        v0->currentStep++;
 
-        if (v0->unk_11 >= v0->unk_10) {
-            if (v0->unk_12 == 0) {
+        if (v0->currentStep >= v0->stepCount) {
+            if (v0->repeatCount == 0) {
                 contest_competition_0223F744(v0);
                 return;
-            } else if (v0->unk_12 != 0xff) {
-                v0->unk_12--;
+            } else if (v0->repeatCount != 0xff) {
+                v0->repeatCount--;
             }
 
-            v0->unk_11 = 0;
+            v0->currentStep = 0;
         }
     }
 }

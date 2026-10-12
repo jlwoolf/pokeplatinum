@@ -639,7 +639,7 @@ void *contest_competition_0223F88C(Contest *param0, ActingCompetitionScene *para
         PaletteData *v6;
         int v7;
 
-        v6 = v0->unk_04->unk_50;
+        v6 = v0->unk_04->paletteData;
 
         for (v7 = 0; v7 < 2; v7++) {
             v0->unk_34[v7] = Heap_Alloc(HEAP_ID_21, 0x200);
@@ -660,7 +660,7 @@ void contest_competition_0223F960(ActingMoveMenu *param0)
 
     contest_competition_022404B0(param0);
     FontOAMManager_Free(param0->unk_3C);
-    contest_competition_02252B20(param0->unk_04->unk_1C, 33021, 33009, 33016, 33016);
+    contest_competition_02252B20(param0->unk_04->spriteManager, 33021, 33009, 33016, 33016);
     contest_competition_02252BCC(param0->unk_2FC);
 
     for (v0 = 0; v0 < 5; v0++) {
@@ -685,9 +685,9 @@ void contest_competition_0223F9C4(ActingMoveMenu *param0, int param1, int param2
 
     param0->unk_0C = param3;
 
-    v3 = param0->unk_04->unk_24;
-    v4 = param0->unk_04->unk_18;
-    v5 = param0->unk_04->unk_1C;
+    v3 = param0->unk_04->bgConfig;
+    v4 = param0->unk_04->spriteSystem;
+    v5 = param0->unk_04->spriteManager;
 
     if (param0->unk_2C8 == -1) {
         param2 = 1;
@@ -705,7 +705,7 @@ void contest_competition_0223F9C4(ActingMoveMenu *param0, int param1, int param2
     }
 
     if (1) {
-        PaletteData_LoadBuffer(param0->unk_04->unk_50, param0->unk_34[v0->unk_02], PLTTBUF_SUB_BG, 0, PALETTE_SIZE_BYTES * 16);
+        PaletteData_LoadBuffer(param0->unk_04->paletteData, param0->unk_34[v0->unk_02], PLTTBUF_SUB_BG, 0, PALETTE_SIZE_BYTES * 16);
     }
 
     for (v2 = 0; v2 < 4; v2++) {
@@ -796,8 +796,8 @@ BOOL contest_competition_0223FBC0(ActingMoveMenu *param0)
 static void contest_competition_0223FBD4(ActingMoveMenu *param0, int param1, int param2)
 {
     String *contestRankString, *contestTypeString;
-    u32 contestRankMessageID = Contest_GetContestRankTitleMessageID(param0->unk_04->unk_00->contestRank, param0->unk_04->unk_00->competitionType, param0->unk_00->isLinkContest);
-    u32 contestTypeMessageID = Contest_GetFullContestTypeMessageID(param0->unk_04->unk_00->contestType, param0->unk_04->unk_00->competitionType);
+    u32 contestRankMessageID = Contest_GetContestRankTitleMessageID(param0->unk_04->contestData->contestRank, param0->unk_04->contestData->competitionType, param0->unk_00->isLinkContest);
+    u32 contestTypeMessageID = Contest_GetFullContestTypeMessageID(param0->unk_04->contestData->contestType, param0->unk_04->contestData->competitionType);
     contestRankString = MessageLoader_GetNewString(param0->unk_04->contestTextMessageLoader, contestRankMessageID);
     contestTypeString = MessageLoader_GetNewString(param0->unk_04->contestTextMessageLoader, contestTypeMessageID);
 
@@ -806,7 +806,7 @@ static void contest_competition_0223FBD4(ActingMoveMenu *param0, int param1, int
 
     String_Free(contestRankString);
     String_Free(contestTypeString);
-    PaletteData_LoadBufferFromFile(param0->unk_04->unk_50, NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 38, HEAP_ID_21, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(2), PLTT_DEST(param0->unk_04->unk_00->contestType));
+    PaletteData_LoadBufferFromFile(param0->unk_04->paletteData, NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 38, HEAP_ID_21, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(2), PLTT_DEST(param0->unk_04->contestData->contestType));
 }
 
 static void contest_competition_0223FCAC(ActingMoveMenu *param0, int param1, int param2)
@@ -821,7 +821,7 @@ static void contest_competition_0223FCAC(ActingMoveMenu *param0, int param1, int
     param0->unk_2C9 = 0xff;
 
     for (i = 0; i < LEARNED_MOVES_MAX; i++) {
-        moveList[i] = Pokemon_GetValue(param0->unk_04->unk_00->contestMons[param0->unk_04->unk_00->playerContestantID], MON_DATA_MOVE1 + i, NULL);
+        moveList[i] = Pokemon_GetValue(param0->unk_04->contestData->contestMons[param0->unk_04->contestData->playerContestantID], MON_DATA_MOVE1 + i, NULL);
 
         if (moveList[i] != MOVE_NONE) {
             moveContestEffects[i] = v8->moveContestEffect[i];
@@ -852,8 +852,8 @@ static void contest_competition_0223FCAC(ActingMoveMenu *param0, int param1, int
     }
 
     for (i = 0; i < LEARNED_MOVES_MAX; i++) {
-        if (moveList[i] != MOVE_NONE && contest_competition_02243A98(param0->unk_08, param0->unk_04->unk_00->playerContestantID, moveList[i]) == 0) {
-            PaletteData_LoadBuffer(param0->unk_04->unk_50, &param0->unk_34[1][0x8 * 16], PLTTBUF_SUB_BG, PLTT_DEST(4 + i), PALETTE_SIZE_BYTES);
+        if (moveList[i] != MOVE_NONE && contest_competition_02243A98(param0->unk_08, param0->unk_04->contestData->playerContestantID, moveList[i]) == 0) {
+            PaletteData_LoadBuffer(param0->unk_04->paletteData, &param0->unk_34[1][0x8 * 16], PLTTBUF_SUB_BG, PLTT_DEST(4 + i), PALETTE_SIZE_BYTES);
 
             GF_ASSERT(param0->unk_2C9 == 0xff);
             param0->unk_2C9 = i;
@@ -877,7 +877,7 @@ static void contest_competition_0223FCAC(ActingMoveMenu *param0, int param1, int
 
         for (v12 = 0; v12 < v11; v12++) {
             GF_ASSERT(param0->unk_12C[i][v12] == NULL);
-            param0->unk_12C[i][v12] = contest_competition_0224136C(param0->unk_04->unk_18, param0->unk_04->unk_1C, Unk_contest_competition_02253334[i][0] + 8 * v12, Unk_contest_competition_02253334[i][1], v10);
+            param0->unk_12C[i][v12] = contest_competition_0224136C(param0->unk_04->spriteSystem, param0->unk_04->spriteManager, Unk_contest_competition_02253334[i][0] + 8 * v12, Unk_contest_competition_02253334[i][1], v10);
         }
     }
 }
@@ -888,7 +888,7 @@ static void contest_competition_0223FF38(ActingMoveMenu *param0, int param1, int
     BgConfig *v1;
     String *message;
     ActingMoveMenuMoves *v3 = &param0->unk_18C;
-    v1 = param0->unk_04->unk_24;
+    v1 = param0->unk_04->bgConfig;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
         contest_competition_02240138(param0, &param0->unk_40[0 + v0], NULL, FONT_SUBSCREEN, TEXT_COLOR(1, 9, 0xa), 0, 33008, Unk_contest_competition_0225325C[v0][0], Unk_contest_competition_0225325C[v0][1], 1, &v3->unk_F0[v0]);
@@ -899,7 +899,7 @@ static void contest_competition_0223FF38(ActingMoveMenu *param0, int param1, int
     contest_competition_02240138(param0, &param0->unk_40[0 + v0], message, FONT_SUBSCREEN, TEXT_COLOR(1, 9, 0xa), 0, 33008, 128, 0x14 * 8 + 4, 1, NULL);
     String_Free(message);
 
-    param0->unk_128 = contest_competition_022412C0(param0->unk_04->unk_18, param0->unk_04->unk_1C, param0->unk_04->unk_00->bonusJudgeIndex);
+    param0->unk_128 = contest_competition_022412C0(param0->unk_04->spriteSystem, param0->unk_04->spriteManager, param0->unk_04->contestData->bonusJudgeIndex);
 }
 
 static int contest_competition_0223FFF4(ActingMoveMenu *param0, int moveSlot, int param2)
@@ -919,7 +919,7 @@ static int contest_competition_0223FFF4(ActingMoveMenu *param0, int moveSlot, in
     case 1:
     case 2:
     case 3:
-        moveID = Pokemon_GetValue(param0->unk_04->unk_00->contestMons[param0->unk_04->unk_00->playerContestantID], MON_DATA_MOVE1 + moveSlot, NULL);
+        moveID = Pokemon_GetValue(param0->unk_04->contestData->contestMons[param0->unk_04->contestData->playerContestantID], MON_DATA_MOVE1 + moveSlot, NULL);
 
         if (moveID == MOVE_NONE || param0->unk_2C9 == moveSlot) {
             return 0xffffffff;
@@ -964,7 +964,7 @@ static int contest_competition_02240094(ActingMoveMenu *param0, int param1, int 
         break;
     }
 
-    v1 = (param1 == param0->unk_04->unk_00->bonusJudgeIndex) ? 1 : 0;
+    v1 = (param1 == param0->unk_04->contestData->bonusJudgeIndex) ? 1 : 0;
 
     contest_competition_02240930(param0, param2);
     contest_competition_022404CC(contest_competition_0224051C, param0);
@@ -995,8 +995,8 @@ static void contest_competition_02240138(ActingMoveMenu *param0, ActingMoveMenuL
 
     GF_ASSERT(param1->unk_00 == NULL);
 
-    v5 = param0->unk_04->unk_24;
-    v6 = param0->unk_04->unk_1C;
+    v5 = param0->unk_04->bgConfig;
+    v6 = param0->unk_04->spriteManager;
 
     if (param10 == NULL) {
         contest_competition_02240C60(string, font, &v7, &v8);
@@ -1092,8 +1092,8 @@ static void contest_competition_022402E8(ActingMoveMenu *param0, u16 param1[])
     SpriteTemplate v3;
     int v4;
 
-    v1 = param0->unk_04->unk_18;
-    v2 = param0->unk_04->unk_1C;
+    v1 = param0->unk_04->spriteSystem;
+    v2 = param0->unk_04->spriteManager;
     v3 = Unk_contest_competition_02253354;
 
     for (i = 0; i < LEARNED_MOVES_MAX; i++) {
@@ -1115,8 +1115,8 @@ static void contest_competition_022402E8(ActingMoveMenu *param0, u16 param1[])
 static void contest_competition_02240388(ActingMoveMenu *param0)
 {
     int v0;
-    SpriteSystem *v1 = param0->unk_04->unk_18;
-    SpriteManager *v2 = param0->unk_04->unk_1C;
+    SpriteSystem *v1 = param0->unk_04->spriteSystem;
+    SpriteManager *v2 = param0->unk_04->spriteManager;
 
     for (v0 = 0; v0 < 4; v0++) {
         if (param0->unk_118[v0] != NULL) {
@@ -1134,7 +1134,7 @@ static void contest_competition_022403B0(ActingMoveMenu *param0, const s16 *para
     u16 *v5, *v6;
     int v7;
 
-    v2 = param0->unk_04->unk_24;
+    v2 = param0->unk_04->bgConfig;
     v3 = Bg_GetTilemapBuffer(v2, 4);
     v5 = param0->unk_20[param3];
     v7 = param1[param4];
@@ -1162,10 +1162,10 @@ static void contest_competition_02240424(ActingMoveMenu *param0, int moveContest
     };
 
     if (moveContestType != -1) {
-        PaletteData_LoadBuffer(param0->unk_04->unk_50, v0[moveContestType], PLTTBUF_SUB_BG, PLTT_DEST(4 + moveSlot), PALETTE_SIZE_BYTES);
+        PaletteData_LoadBuffer(param0->unk_04->paletteData, v0[moveContestType], PLTTBUF_SUB_BG, PLTT_DEST(4 + moveSlot), PALETTE_SIZE_BYTES);
     } else {
         contest_competition_022403B0(param0, &Unk_contest_competition_02253248[moveSlot], &Unk_contest_competition_02253408[moveSlot], 2, 0);
-        PaletteData_LoadBuffer(param0->unk_04->unk_50, &param0->unk_34[1][0x8 * 16], PLTTBUF_SUB_BG, PLTT_DEST(4 + moveSlot), PALETTE_SIZE_BYTES);
+        PaletteData_LoadBuffer(param0->unk_04->paletteData, &param0->unk_34[1][0x8 * 16], PLTTBUF_SUB_BG, PLTT_DEST(4 + moveSlot), PALETTE_SIZE_BYTES);
     }
 }
 
@@ -1206,7 +1206,7 @@ static void contest_competition_0224051C(SysTask *param0, void *param1)
     int v2, v3;
     int v4;
 
-    v1 = v0->unk_04->unk_24;
+    v1 = v0->unk_04->bgConfig;
 
     switch (v0->unk_2CC.unk_00) {
     case 0:
@@ -1267,10 +1267,10 @@ static void contest_competition_02240658(SysTask *param0, void *param1)
     u16 learnedMoves[LEARNED_MOVES_MAX];
     int v10, v11;
 
-    v1 = v0->unk_04->unk_24;
+    v1 = v0->unk_04->bgConfig;
 
     for (v10 = 0; v10 < LEARNED_MOVES_MAX; v10++) {
-        learnedMoves[v10] = Pokemon_GetValue(v0->unk_04->unk_00->contestMons[v0->unk_04->unk_00->playerContestantID], MON_DATA_MOVE1 + v10, NULL);
+        learnedMoves[v10] = Pokemon_GetValue(v0->unk_04->contestData->contestMons[v0->unk_04->contestData->playerContestantID], MON_DATA_MOVE1 + v10, NULL);
     }
 
     switch (v0->unk_2CC.unk_04_val1.unk_14) {
@@ -1424,7 +1424,7 @@ static void contest_competition_02240950(SysTask *param0, void *param1)
     int v3, v4;
 
     v1 = &v0->unk_2EC;
-    v2 = v0->unk_04->unk_50;
+    v2 = v0->unk_04->paletteData;
     v4 = 0;
 
     switch (v1->unk_08) {
@@ -1515,14 +1515,14 @@ void contest_competition_02240A80(ActingMoveMenu *param0, u16 moves[])
     }
 
     for (v1 = 0; v1 < (1 + 2); v1++) {
-        judgeName = Contest_GetJudgeName(param0->unk_04->unk_00->judges[v1].judgeNameMessageID, HEAP_ID_21);
+        judgeName = Contest_GetJudgeName(param0->unk_04->contestData->judges[v1].judgeNameMessageID, HEAP_ID_21);
         contest_competition_02240BF4(param0, judgeName, FONT_SUBSCREEN, &v0->unk_F0[v1], TEXT_COLOR(1, 9, 0xa));
         String_Free(judgeName);
     }
 
     {
-        contest_competition_02252AB0(param0->unk_04->unk_18, param0->unk_04->unk_1C, param0->unk_04->unk_50, 33021, 33009, 33016, 33016);
-        param0->unk_2FC = contest_competition_02252B48(param0->unk_04->unk_18, param0->unk_04->unk_1C, HEAP_ID_21, 33021, 33009, 33016, 33016, 5, 0);
+        contest_competition_02252AB0(param0->unk_04->spriteSystem, param0->unk_04->spriteManager, param0->unk_04->paletteData, 33021, 33009, 33016, 33016);
+        param0->unk_2FC = contest_competition_02252B48(param0->unk_04->spriteSystem, param0->unk_04->spriteManager, HEAP_ID_21, 33021, 33009, 33016, 33016, 5, 0);
     }
 }
 
@@ -1540,7 +1540,7 @@ static void contest_competition_02240BF4(ActingMoveMenu *param0, const String *p
     }
 
     Window_Init(&param3->unk_00);
-    Window_AddToTopLeftCorner(param0->unk_04->unk_24, &param3->unk_00, v1, 16 / 8, 0, 0);
+    Window_AddToTopLeftCorner(param0->unk_04->bgConfig, &param3->unk_00, v1, 16 / 8, 0, 0);
     Text_AddPrinterWithParamsColorAndSpacing(&param3->unk_00, param2, param1, 0, 0, TEXT_SPEED_NO_TRANSFER, param4, 0, 0, NULL);
 }
 
@@ -1601,7 +1601,7 @@ static int contest_competition_02240D04(ActingMoveMenu *param0, int param1)
     v2 = &Unk_contest_competition_02253558[param0->unk_2C8];
 
     for (v4 = 0; v4 < LEARNED_MOVES_MAX; v4++) {
-        v7[v4] = Pokemon_GetValue(param0->unk_04->unk_00->contestMons[param0->unk_04->unk_00->playerContestantID], MON_DATA_MOVE1 + v4, NULL);
+        v7[v4] = Pokemon_GetValue(param0->unk_04->contestData->contestMons[param0->unk_04->contestData->playerContestantID], MON_DATA_MOVE1 + v4, NULL);
     }
 
     if (param1 == 1) {
@@ -1840,7 +1840,7 @@ static void contest_competition_022411E4(SysTask *param0, void *param1)
 {
     ActingMoveMenu *v0 = param1;
 
-    Bg_LoadTiles(v0->unk_04->unk_24, 4, v0->unk_2C4->pRawData, 0x6000, 0);
+    Bg_LoadTiles(v0->unk_04->bgConfig, 4, v0->unk_2C4->pRawData, 0x6000, 0);
     Heap_Free(v0->unk_2C0);
 
     v0->unk_2C0 = NULL;

@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_DANCE_PAYLOAD_BUFFER_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01[255];
+    u8 size;
+    u8 data[255];
 } DancePayloadBuffer;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_PAYLOAD_BUFFER_H

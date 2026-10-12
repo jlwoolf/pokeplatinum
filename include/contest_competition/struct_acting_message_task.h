@@ -6,12 +6,12 @@
 #include "contest_competition/struct_acting_competition.h"
 
 typedef struct {
-    ActingCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    u8 unk_0C;
-    u16 unk_0E;
-    u8 unk_10;
-    ActingMessageParams unk_12;
+    ActingCompetition *competition;
+    ContestPacketHeader header;
+    u8 state;
+    u16 messageID;
+    u8 timer;
+    ActingMessageParams messageParams;
     u8 actingMessagesID;
 } ActingMessageTask;
 

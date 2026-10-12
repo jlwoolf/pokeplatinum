@@ -17,35 +17,35 @@
 #include "string_template.h"
 
 typedef struct {
-    ContestData *unk_00;
-    PokemonSpriteManager *unk_04;
-    PokemonSprite *unk_08[CONTEST_NUM_PARTICIPANTS];
-    SpriteSystem *unk_18;
-    SpriteManager *unk_1C;
-    BattleAnimSystem *unk_20;
-    BgConfig *unk_24;
-    Window unk_28[1];
+    ContestData *contestData;
+    PokemonSpriteManager *pokemonSpriteManager;
+    PokemonSprite *pokemonSprites[CONTEST_NUM_PARTICIPANTS];
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    BattleAnimSystem *battleAnimSystem;
+    BgConfig *bgConfig;
+    Window windows[1];
     MessageLoader *contestTextMessageLoader;
     MessageLoader *contestOpponentNames;
     MessageLoader *contestEffectMessages;
     MessageLoader *contestActingCompetitionMessages;
-    StringTemplate *unk_48;
-    String *unk_4C;
-    PaletteData *unk_50;
-    FontOAMManager *unk_54;
+    StringTemplate *stringTemplate;
+    String *string;
+    PaletteData *paletteData;
+    FontOAMManager *fontOAMManager;
     PokemonSpriteData pokemonSpriteDataArray[CONTEST_NUM_PARTICIPANTS];
     PokemonSpriteData pokemonSpriteData;
-    ManagedSprite *unk_A8[3];
-    ManagedSprite *unk_B4[3];
-    ManagedSprite *unk_C0;
-    ManagedSprite *unk_C4[4][6];
-    ManagedSprite *unk_124[3][5];
-    ManagedSprite *unk_160[4];
-    ManagedSprite *unk_170[3];
-    ManagedSprite *unk_17C;
-    ContestTextLabel unk_180[CONTEST_NUM_PARTICIPANTS];
-    ContestTextLabel unk_1C8[CONTEST_NUM_PARTICIPANTS];
-    u8 unk_210;
+    ManagedSprite *scoreGaugeSprites[3];
+    ManagedSprite *judgeSprites[3];
+    ManagedSprite *cursorSprite;
+    ManagedSprite *moveIconSprites[4][6];
+    ManagedSprite *moveEffectSprites[3][5];
+    ManagedSprite *contestantSprites[4];
+    ManagedSprite *judgeFaceSprites[3];
+    ManagedSprite *voltageGaugeSprite;
+    ContestTextLabel trainerNameLabels[CONTEST_NUM_PARTICIPANTS];
+    ContestTextLabel contestantNameLabels[CONTEST_NUM_PARTICIPANTS];
+    u8 printerID;
 } ActingCompetitionScene;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_COMPETITION_SCENE_H

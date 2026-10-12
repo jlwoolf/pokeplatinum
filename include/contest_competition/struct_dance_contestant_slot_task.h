@@ -7,12 +7,12 @@
 struct DanceCompetition_t;
 
 typedef struct {
-    SysTask *unk_00;
-    ManagedSprite *unk_04;
-    struct DanceCompetition_t *unk_08;
-    u8 unk_0C;
-    u8 unk_0D;
-    s8 unk_0E;
+    SysTask *task;
+    ManagedSprite *sprite;
+    struct DanceCompetition_t *competition;
+    u8 state;
+    u8 contestantID;
+    s8 unused_0E;
 } DanceContestantSlotTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_CONTESTANT_SLOT_TASK_H

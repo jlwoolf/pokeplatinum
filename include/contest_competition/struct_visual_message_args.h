@@ -3,9 +3,9 @@
 
 typedef struct {
     u8 contestantID;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
+    u8 moveID;
+    u8 unused_02;
+    u8 unused_03;
 } VisualMessageArgs;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_MESSAGE_ARGS_H

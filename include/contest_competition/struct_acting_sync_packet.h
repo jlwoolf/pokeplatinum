@@ -7,13 +7,13 @@
 
 typedef struct {
     u8 contestantID;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04[3][4];
-    ActingTurnState unk_10;
-    ActingPerformanceMessages unk_C6;
-    ActingPerformanceOrder unk_D6_val1;
+    u8 contestantCount;
+    u8 judgeContestantID;
+    u8 isSameJudge;
+    u8 judgeOrder[3][4];
+    ActingTurnState turnState;
+    ActingPerformanceMessages messages;
+    ActingPerformanceOrder performanceOrder;
 } ActingSyncPacket;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_SYNC_PACKET_H

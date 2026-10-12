@@ -6,19 +6,19 @@
 #include "contest_competition/struct_contest_packet_queue.h"
 
 typedef struct {
-    VisualCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
-    u8 unk_15;
-    s16 unk_16;
-    s16 unk_18;
-    u8 unk_1A;
-    u8 unk_1B;
+    VisualCompetition *competition;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    u8 state;
+    u8 contestantID;
+    u8 threshold1;
+    u8 timer;
+    u8 threshold2;
+    u8 param;
+    s16 prevX;
+    s16 prevY;
+    u8 judgingState;
+    u8 flag;
 } VisualPhotoJudgingTask;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_PHOTO_JUDGING_TASK_H

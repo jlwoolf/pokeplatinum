@@ -398,7 +398,7 @@ void contest_competition_022413E4(ActingCompetition *param0, int param1, int par
     u16 *v0;
     int v1, v2;
 
-    v0 = Bg_GetTilemapBuffer(param0->unk_0C.unk_24, 2);
+    v0 = Bg_GetTilemapBuffer(param0->scene.bgConfig, 2);
     v0 = &v0[32 * (param1 * 6) + 0];
 
     for (v2 = 0; v2 < 6; v2++) {
@@ -413,10 +413,10 @@ void contest_competition_02241428(ActingCompetition *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        contest_competition_022413E4(param0, v0, Unk_contest_competition_022536B4[param0->unk_220.unk_01[v0]]);
+        contest_competition_022413E4(param0, v0, Unk_contest_competition_022536B4[param0->matchState.contestantOrder[v0]]);
     }
 
-    Bg_ScheduleTilemapTransfer(param0->unk_0C.unk_24, 2);
+    Bg_ScheduleTilemapTransfer(param0->scene.bgConfig, 2);
 }
 
 ActingContestantColorTask *contest_competition_0224145C(ActingCompetition *param0, int param1)
@@ -424,71 +424,71 @@ ActingContestantColorTask *contest_competition_0224145C(ActingCompetition *param
     ActingContestantColorTask *v0 = Heap_Alloc(HEAP_ID_21, sizeof(ActingContestantColorTask));
     MI_CpuClear8(v0, sizeof(ActingContestantColorTask));
 
-    v0->unk_00 = param0->unk_0C.unk_50;
-    v0->unk_0A = param1;
-    v0->unk_04 = SysTask_Start(contest_competition_022414C0, v0, (40000 + 100));
+    v0->paletteData = param0->scene.paletteData;
+    v0->contestantID = param1;
+    v0->task = SysTask_Start(contest_competition_022414C0, v0, (40000 + 100));
 
     return v0;
 }
 
 void contest_competition_02241494(ActingContestantColorTask *param0)
 {
-    GF_ASSERT(param0->unk_0B == 0);
+    GF_ASSERT(param0->colorState == 0);
 
-    SysTask_Done(param0->unk_04);
+    SysTask_Done(param0->task);
     Heap_Free(param0);
 }
 
 void contest_competition_022414B0(ActingContestantColorTask *param0)
 {
-    param0->unk_0B = 1;
-    param0->unk_08 = (10 << 8);
+    param0->colorState = 1;
+    param0->targetColor = (10 << 8);
 }
 
 BOOL contest_competition_022414BC(ActingContestantColorTask *param0)
 {
-    return param0->unk_0B;
+    return param0->colorState;
 }
 
 static void contest_competition_022414C0(SysTask *param0, void *param1)
 {
     ActingContestantColorTask *v0 = param1;
 
-    if (v0->unk_0B == 0) {
+    if (v0->colorState == 0) {
         return;
     }
 
-    PaletteData_Blend(v0->unk_00, PLTTBUF_MAIN_BG, Unk_contest_competition_022536B4[v0->unk_0A] * 16 + 1, 4, v0->unk_08 >> 8, 0x7fff);
+    PaletteData_Blend(v0->paletteData, PLTTBUF_MAIN_BG, Unk_contest_competition_022536B4[v0->contestantID] * 16 + 1, 4, v0->targetColor >> 8, 0x7fff);
 
-    if (v0->unk_08 == 0) {
-        v0->unk_0B = 0;
+    if (v0->targetColor == 0) {
+        v0->colorState = 0;
         return;
     }
 
-    v0->unk_08 -= 0x280;
+    v0->targetColor -= 0x280;
 
-    if (v0->unk_08 < 0) {
-        v0->unk_08 = 0;
+    if (v0->targetColor < 0) {
+        v0->targetColor = 0;
     }
 }
 
 void contest_competition_02241524(ActingCompetitionScene *param0, int contestantID)
 {
-    PokemonSprite_Delete(param0->unk_08[contestantID]);
+    PokemonSprite_Delete(param0->pokemonSprites[contestantID]);
 
     GF_ASSERT(param0->pokemonSpriteDataArray[contestantID].tiles != NULL);
     MI_CpuClear8(param0->pokemonSpriteDataArray[contestantID].tiles, (32 * 10 * 10));
 
-    param0->unk_08[contestantID] = Contest_CreateMonSprite(param0->unk_04, contestantID, param0->unk_00->contestMons[contestantID], 0, &param0->pokemonSpriteDataArray[contestantID], HEAP_ID_21, (256 - 40) - 32 * contestantID, (104 + 8) - 32 * contestantID, -0x200);
+    param0->pokemonSprites[contestantID] = Contest_CreateMonSprite(param0->pokemonSpriteManager, contestantID, param0->contestData->contestMons[contestantID], 0, &param0->pokemonSpriteDataArray[contestantID], HEAP_ID_21, (256 - 40) - 32 * contestantID, (104 + 8) - 32 * contestantID, -0x200);
 
-    PokemonSprite_SetAttribute(param0->unk_08[contestantID], MON_SPRITE_HIDE, 1);
-    PokemonSprite_SetAttribute(param0->unk_08[contestantID], MON_SPRITE_HIDE_2, 1);
+    PokemonSprite_SetAttribute(param0->pokemonSprites[contestantID], MON_SPRITE_HIDE, 1);
+    PokemonSprite_SetAttribute(param0->pokemonSprites[contestantID], MON_SPRITE_HIDE_2, 1);
 
-    u32 species = Pokemon_GetValue(param0->unk_00->contestMons[contestantID], MON_DATA_SPECIES, NULL);
-    u32 form = Pokemon_GetValue(param0->unk_00->contestMons[contestantID], MON_DATA_FORM, NULL);
+    u32 species = Pokemon_GetValue(param0->contestData->contestMons[contestantID], MON_DATA_SPECIES, NULL);
+    u32 form = Pokemon_GetValue(param0->contestData->contestMons[contestantID], MON_DATA_FORM, NULL);
 
     if (IsFormSymmetrical(species, form) == TRUE) {
-        PokemonSprite_SetAttribute(param0->unk_08[contestantID], MON_SPRITE_FLIP_H, 1);
+        PokemonSprite_SetAttribute(param0->pokemonSprites[contestantID], MON_SPRITE_FLIP_H, 1);
     }
 }
 
@@ -498,16 +498,16 @@ void contest_competition_022415E4(ActingCompetitionScene *param0)
         GF_ASSERT(param0->pokemonSpriteDataArray[i].tiles == NULL);
 
         param0->pokemonSpriteDataArray[i].tiles = Heap_Alloc(HEAP_ID_21, (32 * 10 * 10));
-        param0->unk_08[i] = Contest_CreateMonSprite(param0->unk_04, i, param0->unk_00->contestMons[i], 0, &param0->pokemonSpriteDataArray[i], HEAP_ID_21, (256 - 40) - 32 * i, (104 + 8) - 32 * i, -0x200);
+        param0->pokemonSprites[i] = Contest_CreateMonSprite(param0->pokemonSpriteManager, i, param0->contestData->contestMons[i], 0, &param0->pokemonSpriteDataArray[i], HEAP_ID_21, (256 - 40) - 32 * i, (104 + 8) - 32 * i, -0x200);
 
-        PokemonSprite_SetAttribute(param0->unk_08[i], MON_SPRITE_HIDE, 1);
-        PokemonSprite_SetAttribute(param0->unk_08[i], MON_SPRITE_HIDE_2, 1);
+        PokemonSprite_SetAttribute(param0->pokemonSprites[i], MON_SPRITE_HIDE, 1);
+        PokemonSprite_SetAttribute(param0->pokemonSprites[i], MON_SPRITE_HIDE_2, 1);
 
-        u32 species = Pokemon_GetValue(param0->unk_00->contestMons[i], MON_DATA_SPECIES, NULL);
-        u32 form = Pokemon_GetValue(param0->unk_00->contestMons[i], MON_DATA_FORM, NULL);
+        u32 species = Pokemon_GetValue(param0->contestData->contestMons[i], MON_DATA_SPECIES, NULL);
+        u32 form = Pokemon_GetValue(param0->contestData->contestMons[i], MON_DATA_FORM, NULL);
 
         if (IsFormSymmetrical(species, form) == TRUE) {
-            PokemonSprite_SetAttribute(param0->unk_08[i], MON_SPRITE_FLIP_H, 1);
+            PokemonSprite_SetAttribute(param0->pokemonSprites[i], MON_SPRITE_FLIP_H, 1);
         }
     }
 
@@ -523,7 +523,7 @@ void contest_competition_022415E4(ActingCompetitionScene *param0)
 void contest_competition_022416E4(ActingCompetitionScene *param0)
 {
     for (int contestantID = 0; contestantID < CONTEST_NUM_PARTICIPANTS; contestantID++) {
-        PokemonSprite_Delete(param0->unk_08[contestantID]);
+        PokemonSprite_Delete(param0->pokemonSprites[contestantID]);
         Heap_Free(param0->pokemonSpriteDataArray[contestantID].tiles);
         param0->pokemonSpriteDataArray[contestantID].tiles = NULL;
     }
@@ -635,11 +635,11 @@ void contest_competition_02241928(ActingCompetitionScene *param0, Contest *param
 {
     int v0;
 
-    contest_competition_02241854(param0->unk_50, param0->unk_18, param0->unk_1C, param2);
+    contest_competition_02241854(param0->paletteData, param0->spriteSystem, param0->spriteManager, param2);
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        param0->unk_B4[v0] = contest_competition_022418A4(param0->unk_18, param0->unk_1C, v0);
-        param0->unk_A8[v0] = contest_competition_02241720(param0->unk_50, param0->unk_18, param0->unk_1C, &param1->data.judges[v0], v0, param2);
+        param0->judgeSprites[v0] = contest_competition_022418A4(param0->spriteSystem, param0->spriteManager, v0);
+        param0->scoreGaugeSprites[v0] = contest_competition_02241720(param0->paletteData, param0->spriteSystem, param0->spriteManager, &param1->data.judges[v0], v0, param2);
     }
 }
 
@@ -648,11 +648,11 @@ void contest_competition_0224197C(ActingCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < (1 + 2); v0++) {
-        contest_competition_02241814(param0->unk_1C, param0->unk_A8[v0], v0);
-        contest_competition_02241900(param0->unk_B4[v0]);
+        contest_competition_02241814(param0->spriteManager, param0->scoreGaugeSprites[v0], v0);
+        contest_competition_02241900(param0->judgeSprites[v0]);
     }
 
-    contest_competition_02241908(param0->unk_1C);
+    contest_competition_02241908(param0->spriteManager);
 }
 
 void contest_competition_022419AC(PaletteData *param0, SpriteSystem *param1, SpriteManager *param2, NARC *param3)
@@ -679,29 +679,29 @@ void contest_competition_02241A24(ActingCompetitionScene *param0)
     SpriteTemplate v1;
 
     v1 = Unk_contest_competition_022537B8;
-    v0 = SpriteSystem_NewSprite(param0->unk_18, param0->unk_1C, &v1);
+    v0 = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &v1);
 
     ManagedSprite_SetDrawFlag(v0, 0);
     Sprite_TickFrame(v0->sprite);
 
-    param0->unk_17C = v0;
+    param0->voltageGaugeSprite = v0;
 }
 
 void contest_competition_02241A64(ActingCompetitionScene *param0)
 {
-    GF_ASSERT(param0->unk_17C != NULL);
+    GF_ASSERT(param0->voltageGaugeSprite != NULL);
 
-    Sprite_DeleteAndFreeResources(param0->unk_17C);
-    param0->unk_17C = NULL;
+    Sprite_DeleteAndFreeResources(param0->voltageGaugeSprite);
+    param0->voltageGaugeSprite = NULL;
 }
 
 void contest_competition_02241A8C(ActingCompetitionScene *param0, int param1, int param2)
 {
-    GF_ASSERT(param0->unk_17C != NULL);
+    GF_ASSERT(param0->voltageGaugeSprite != NULL);
 
-    ManagedSprite_SetPositionXY(param0->unk_17C, Unk_contest_competition_022536E4[param1].unk_00, Unk_contest_competition_022536E4[param1].unk_02);
-    ManagedSprite_SetAnim(param0->unk_17C, param2);
-    ManagedSprite_SetDrawFlag(param0->unk_17C, 1);
+    ManagedSprite_SetPositionXY(param0->voltageGaugeSprite, Unk_contest_competition_022536E4[param1].unk_00, Unk_contest_competition_022536E4[param1].unk_02);
+    ManagedSprite_SetAnim(param0->voltageGaugeSprite, param2);
+    ManagedSprite_SetDrawFlag(param0->voltageGaugeSprite, 1);
 
     switch (param2) {
     case 0:
@@ -721,8 +721,8 @@ void contest_competition_02241A8C(ActingCompetitionScene *param0, int param1, in
 
 void contest_competition_02241B1C(ActingCompetitionScene *param0)
 {
-    GF_ASSERT(param0->unk_17C != NULL);
-    ManagedSprite_SetDrawFlag(param0->unk_17C, 0);
+    GF_ASSERT(param0->voltageGaugeSprite != NULL);
+    ManagedSprite_SetDrawFlag(param0->voltageGaugeSprite, 0);
 }
 
 void contest_competition_02241B3C(ActingCompetition *param0, int param1, int param2, u8 *param3)
@@ -736,7 +736,7 @@ void contest_competition_02241B3C(ActingCompetition *param0, int param1, int par
     v0->unk_00 = param0;
     v0->unk_08 = param1;
 
-    ManagedSprite_GetPositionXY(param0->unk_0C.unk_A8[param1], &v0->unk_0C, &v0->unk_0E);
+    ManagedSprite_GetPositionXY(param0->scene.scoreGaugeSprites[param1], &v0->unk_0C, &v0->unk_0E);
 
     switch (param2) {
     case 0:
@@ -811,7 +811,7 @@ static void contest_competition_02241C2C(SysTask *param0, void *param1)
         return;
     }
 
-    ManagedSprite_SetPositionXY(v0->unk_00->unk_0C.unk_A8[v0->unk_08], v0->unk_10 / 0x100, v0->unk_14 / 0x100);
+    ManagedSprite_SetPositionXY(v0->unk_00->scene.scoreGaugeSprites[v0->unk_08], v0->unk_10 / 0x100, v0->unk_14 / 0x100);
 }
 
 static void contest_competition_02241CF0(SysTask *param0, void *param1)
@@ -839,7 +839,7 @@ static void contest_competition_02241CF0(SysTask *param0, void *param1)
             }
         }
 
-        ManagedSprite_SetPositionXY(v0->unk_00->unk_0C.unk_A8[v0->unk_08], v0->unk_10 / 0x100, v0->unk_14 / 0x100);
+        ManagedSprite_SetPositionXY(v0->unk_00->scene.scoreGaugeSprites[v0->unk_08], v0->unk_10 / 0x100, v0->unk_14 / 0x100);
         break;
     default:
         *(v0->unk_04) = 1;
@@ -851,26 +851,26 @@ static void contest_competition_02241CF0(SysTask *param0, void *param1)
 
 void contest_competition_02241D94(ActingCompetitionScene *param0, int param1, NARC *param2)
 {
-    GF_ASSERT(param0->unk_C0 == NULL);
+    GF_ASSERT(param0->cursorSprite == NULL);
 
-    SpriteSystem_LoadCharResObjFromOpenNarc(param0->unk_18, param0->unk_1C, param2, 20, TRUE, NNS_G2D_VRAM_TYPE_2DMAIN, 33005);
-    SpriteSystem_LoadCellResObjFromOpenNarc(param0->unk_18, param0->unk_1C, param2, 19, TRUE, 33005);
-    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->unk_18, param0->unk_1C, param2, 18, TRUE, 33005);
+    SpriteSystem_LoadCharResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param2, 20, TRUE, NNS_G2D_VRAM_TYPE_2DMAIN, 33005);
+    SpriteSystem_LoadCellResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param2, 19, TRUE, 33005);
+    SpriteSystem_LoadAnimResObjFromOpenNarc(param0->spriteSystem, param0->spriteManager, param2, 18, TRUE, 33005);
 
-    param0->unk_C0 = SpriteSystem_NewSprite(param0->unk_18, param0->unk_1C, &Unk_contest_competition_02253854);
+    param0->cursorSprite = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &Unk_contest_competition_02253854);
 
-    Sprite_TickFrame(param0->unk_C0->sprite);
-    ManagedSprite_SetPositionXY(param0->unk_C0, (8 * 12) + (4 * 8) * param1, (7 * 8));
+    Sprite_TickFrame(param0->cursorSprite->sprite);
+    ManagedSprite_SetPositionXY(param0->cursorSprite, (8 * 12) + (4 * 8) * param1, (7 * 8));
 }
 
 void contest_competition_02241E24(ActingCompetitionScene *param0)
 {
-    SpriteManager_UnloadCharObjById(param0->unk_1C, 33005);
-    SpriteManager_UnloadCellObjById(param0->unk_1C, 33005);
-    SpriteManager_UnloadAnimObjById(param0->unk_1C, 33005);
-    Sprite_DeleteAndFreeResources(param0->unk_C0);
+    SpriteManager_UnloadCharObjById(param0->spriteManager, 33005);
+    SpriteManager_UnloadCellObjById(param0->spriteManager, 33005);
+    SpriteManager_UnloadAnimObjById(param0->spriteManager, 33005);
+    Sprite_DeleteAndFreeResources(param0->cursorSprite);
 
-    param0->unk_C0 = NULL;
+    param0->cursorSprite = NULL;
 }
 
 void contest_competition_02241E58(SpriteSystem *param0, SpriteManager *param1, NARC *param2)
@@ -889,9 +889,9 @@ void contest_competition_02241EA4(SpriteManager *param0)
 
 static inline void inline_contest_competition_02241EC4(ActingCompetitionScene *param0, int param1, int param2)
 {
-    if (param0->unk_C4[param1][param2] != NULL) {
-        Sprite_DeleteAndFreeResources(param0->unk_C4[param1][param2]);
-        param0->unk_C4[param1][param2] = NULL;
+    if (param0->moveIconSprites[param1][param2] != NULL) {
+        Sprite_DeleteAndFreeResources(param0->moveIconSprites[param1][param2]);
+        param0->moveIconSprites[param1][param2] = NULL;
     }
 }
 
@@ -941,13 +941,13 @@ void contest_competition_02241F34(ActingCompetitionScene *param0, int param1, in
         v2 = v1 % 6;
         v3 = v1 / 6;
 
-        if (param0->unk_C4[param1][v2] == NULL) {
-            param0->unk_C4[param1][v2] = contest_competition_02241F08(param0->unk_18, param0->unk_1C, Unk_contest_competition_0225370C[param2][0] + v2 * 8, Unk_contest_competition_0225370C[param2][1]);
-            ManagedSprite_SetAnim(param0->unk_C4[param1][v2], v3);
-            contest_competition_02242048(param0->unk_C4[param1][v2]);
-        } else if (ManagedSprite_GetActiveAnim(param0->unk_C4[param1][v2]) < v3) {
-            ManagedSprite_SetAnim(param0->unk_C4[param1][v2], v3);
-            contest_competition_02242048(param0->unk_C4[param1][v2]);
+        if (param0->moveIconSprites[param1][v2] == NULL) {
+            param0->moveIconSprites[param1][v2] = contest_competition_02241F08(param0->spriteSystem, param0->spriteManager, Unk_contest_competition_0225370C[param2][0] + v2 * 8, Unk_contest_competition_0225370C[param2][1]);
+            ManagedSprite_SetAnim(param0->moveIconSprites[param1][v2], v3);
+            contest_competition_02242048(param0->moveIconSprites[param1][v2]);
+        } else if (ManagedSprite_GetActiveAnim(param0->moveIconSprites[param1][v2]) < v3) {
+            ManagedSprite_SetAnim(param0->moveIconSprites[param1][v2], v3);
+            contest_competition_02242048(param0->moveIconSprites[param1][v2]);
         }
     }
 
@@ -1030,8 +1030,8 @@ void contest_competition_022421E0(SpriteManager *param0)
 
 static inline void inline_contest_competition_0224221C(ActingCompetitionScene *param0, int param1, int param2)
 {
-    Sprite_DeleteAndFreeResources(param0->unk_124[param1][param2]);
-    param0->unk_124[param1][param2] = NULL;
+    Sprite_DeleteAndFreeResources(param0->moveEffectSprites[param1][param2]);
+    param0->moveEffectSprites[param1][param2] = NULL;
 }
 
 static void contest_competition_0224221C(ActingCompetitionScene *param0, int param1)
@@ -1039,7 +1039,7 @@ static void contest_competition_0224221C(ActingCompetitionScene *param0, int par
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        if (param0->unk_124[param1][v0] != NULL) {
+        if (param0->moveEffectSprites[param1][v0] != NULL) {
             inline_contest_competition_0224221C(param0, param1, v0);
         }
     }
@@ -1145,8 +1145,8 @@ BOOL contest_competition_022424A8(ActingCompetitionScene *param0, int param1)
     int v0;
 
     for (v0 = 0; v0 < 5; v0++) {
-        if (param0->unk_124[param1][v0] != NULL) {
-            if (ManagedSprite_GetDrawFlag(param0->unk_124[param1][v0]) == 0) {
+        if (param0->moveEffectSprites[param1][v0] != NULL) {
+            if (ManagedSprite_GetDrawFlag(param0->moveEffectSprites[param1][v0]) == 0) {
                 return 0;
             }
         }
@@ -1164,16 +1164,16 @@ void contest_competition_022424D4(ActingCompetitionScene *param0, int param1, in
     GF_ASSERT(v0 <= 5);
 
     for (v1 = 0; v1 < v0; v1++) {
-        if (param0->unk_124[param1][v1] == NULL) {
-            param0->unk_124[param1][v1] = contest_competition_02242260(param0->unk_18, param0->unk_1C, Unk_contest_competition_022536D8[param1][0] + v1 * 5, Unk_contest_competition_022536D8[param1][1]);
-            ManagedSprite_SetDrawFlag(param0->unk_124[param1][v1], 0);
+        if (param0->moveEffectSprites[param1][v1] == NULL) {
+            param0->moveEffectSprites[param1][v1] = contest_competition_02242260(param0->spriteSystem, param0->spriteManager, Unk_contest_competition_022536D8[param1][0] + v1 * 5, Unk_contest_competition_022536D8[param1][1]);
+            ManagedSprite_SetDrawFlag(param0->moveEffectSprites[param1][v1], 0);
 
             v2 = Heap_Alloc(HEAP_ID_21, sizeof(ScoreHeartMoveTask));
             MI_CpuClear8(v2, sizeof(ScoreHeartMoveTask));
 
             v2->unk_00 = param0;
-            v2->unk_08 = param0->unk_124[param1][v1];
-            v2->unk_04 = contest_competition_0224228C(param0->unk_18, param0->unk_1C, Unk_contest_competition_022536E4[param1].unk_00, Unk_contest_competition_022536E4[param1].unk_02);
+            v2->unk_08 = param0->moveEffectSprites[param1][v1];
+            v2->unk_04 = contest_competition_0224228C(param0->spriteSystem, param0->spriteManager, Unk_contest_competition_022536E4[param1].unk_00, Unk_contest_competition_022536E4[param1].unk_02);
             v2->unk_10 = Unk_contest_competition_022536E4[param1].unk_00 << 8;
             v2->unk_14 = Unk_contest_competition_022536E4[param1].unk_02 << 8;
             v2->unk_2C = Unk_contest_competition_022536D8[param1][0] + v1 * 5;
@@ -1186,7 +1186,7 @@ void contest_competition_022424D4(ActingCompetitionScene *param0, int param1, in
     }
 
     for (; v1 < 5; v1++) {
-        if (param0->unk_124[param1][v1] != NULL) {
+        if (param0->moveEffectSprites[param1][v1] != NULL) {
             inline_contest_competition_0224221C(param0, param1, v1);
         }
     }
@@ -1207,21 +1207,21 @@ static void contest_competition_0224262C(ActingCompetition *param0, GXOamMode pa
 
     for (v0 = 0; v0 < 4; v0++) {
         for (v1 = 0; v1 < 6; v1++) {
-            if (param0->unk_0C.unk_C4[v0][v1] != NULL) {
-                ManagedSprite_SetExplicitOamMode(param0->unk_0C.unk_C4[v0][v1], param1);
-                ManagedSprite_SetDrawFlag(param0->unk_0C.unk_C4[v0][v1], v2);
+            if (param0->scene.moveIconSprites[v0][v1] != NULL) {
+                ManagedSprite_SetExplicitOamMode(param0->scene.moveIconSprites[v0][v1], param1);
+                ManagedSprite_SetDrawFlag(param0->scene.moveIconSprites[v0][v1], v2);
             }
         }
 
-        if (param0->unk_0C.unk_160[v0] != NULL) {
-            ManagedSprite_SetExplicitOamMode(param0->unk_0C.unk_160[v0], param1);
-            ManagedSprite_SetDrawFlag(param0->unk_0C.unk_160[v0], v2);
+        if (param0->scene.contestantSprites[v0] != NULL) {
+            ManagedSprite_SetExplicitOamMode(param0->scene.contestantSprites[v0], param1);
+            ManagedSprite_SetDrawFlag(param0->scene.contestantSprites[v0], v2);
         }
 
-        FontOAM_SetExplicitOAMMode(param0->unk_0C.unk_180[v0].unk_00, param1);
-        FontOAM_SetExplicitOAMMode(param0->unk_0C.unk_1C8[v0].unk_00, param1);
-        FontOAM_SetDrawFlag(param0->unk_0C.unk_180[v0].unk_00, v3);
-        FontOAM_SetDrawFlag(param0->unk_0C.unk_1C8[v0].unk_00, v3);
+        FontOAM_SetExplicitOAMMode(param0->scene.trainerNameLabels[v0].fontOAM, param1);
+        FontOAM_SetExplicitOAMMode(param0->scene.contestantNameLabels[v0].fontOAM, param1);
+        FontOAM_SetDrawFlag(param0->scene.trainerNameLabels[v0].fontOAM, v3);
+        FontOAM_SetDrawFlag(param0->scene.contestantNameLabels[v0].fontOAM, v3);
     }
 }
 
@@ -1354,120 +1354,120 @@ static void contest_competition_0224290C(ActingCompetition *param0, int param1, 
     case 0:
         break;
     case 1:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param0->unk_304.contestantID]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param0->syncPacket.contestantID]));
         break;
     case 2:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 3:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
         break;
     case 4:
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 0, param2->moveID);
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 0, param2->moveID);
         break;
     case 5:
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 0, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 0, param2->messageValue, 1, 0, 1);
         break;
     case 6:
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 0, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 0, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
         break;
     case 7:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
         break;
     case 8:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 1, param2->moveID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 1, param2->moveID);
         break;
     case 9:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 1, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 1, param2->messageValue, 1, 0, 1);
         break;
     case 10:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 1, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 1, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
         break;
     case 11:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 12:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 1, param2->moveID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 1, param2->moveID);
         break;
     case 13:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 1, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 1, param2->messageValue, 1, 0, 1);
         break;
     case 14:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 15:
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 0, param2->moveID);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 0, param2->moveID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 16:
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 0, param2->moveID);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 0, param2->moveID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
         break;
     case 17:
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 0, param2->moveID);
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 1, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 0, param2->moveID);
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 1, param2->messageValue, 1, 0, 1);
         break;
     case 18:
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 0, param2->moveID);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 0, param2->moveID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 19:
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 0, param2->unk_04, 1, 0, 1);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 0, param2->messageValue, 1, 0, 1);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 20:
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 0, param2->unk_04, 1, 0, 1);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 0, param2->messageValue, 1, 0, 1);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
         break;
     case 21:
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 0, param2->unk_04, 1, 0, 1);
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 1, param2->moveID);
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 0, param2->messageValue, 1, 0, 1);
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 1, param2->moveID);
         break;
     case 22:
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 0, param2->unk_04, 1, 0, 1);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 0, param2->messageValue, 1, 0, 1);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 23:
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 0, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 0, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
         break;
     case 24:
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 0, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_01]));
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 0, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->moveSlot]));
         break;
     case 25:
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 0, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 1, param2->moveID);
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 0, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 1, param2->moveID);
         break;
     case 26:
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 0, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
-        StringTemplate_SetNumber(param0->unk_0C.unk_48, 1, param2->unk_04, 1, 0, 1);
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 0, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetNumber(param0->scene.stringTemplate, 1, param2->messageValue, 1, 0, 1);
         break;
     case 27:
-        StringTemplate_SetNickname(param0->unk_0C.unk_48, 0, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[param2->unk_00]));
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 1, param0->unk_0C.unk_00->judges[param2->judgeID].judgeNameMessageID);
-        StringTemplate_SetMoveName(param0->unk_0C.unk_48, 2, param2->moveID);
+        StringTemplate_SetNickname(param0->scene.stringTemplate, 0, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[param2->contestantID]));
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 1, param0->scene.contestData->judges[param2->judgeID].judgeNameMessageID);
+        StringTemplate_SetMoveName(param0->scene.stringTemplate, 2, param2->moveID);
         break;
     case 28: {
         const ActingPerformanceOrder *v0 = param3;
         int v1;
 
-        StringTemplate_SetContestJudgeName(param0->unk_0C.unk_48, 0, param0->unk_0C.unk_00->judges[v0->unk_00].judgeNameMessageID);
+        StringTemplate_SetContestJudgeName(param0->scene.stringTemplate, 0, param0->scene.contestData->judges[v0->contestantID].judgeNameMessageID);
 
         for (v1 = 0; v1 < 4; v1++) {
-            if (v0->unk_01[v1] == 4) {
+            if (v0->order[v1] == 4) {
                 break;
             }
 
-            StringTemplate_SetNickname(param0->unk_0C.unk_48, 1 + v1, Pokemon_GetBoxPokemon(param0->unk_0C.unk_00->contestMons[v0->unk_01[v1]]));
+            StringTemplate_SetNickname(param0->scene.stringTemplate, 1 + v1, Pokemon_GetBoxPokemon(param0->scene.contestData->contestMons[v0->order[v1]]));
         }
     } break;
     default:
@@ -1478,8 +1478,8 @@ static void contest_competition_0224290C(ActingCompetition *param0, int param1, 
 
 void contest_competition_02242DA8(ActingCompetition *param0)
 {
-    Window_FillTilemap(&param0->unk_0C.unk_28[0], 0xff);
-    Window_CopyToVRAM(&param0->unk_0C.unk_28[0]);
+    Window_FillTilemap(&param0->scene.windows[0], 0xff);
+    Window_CopyToVRAM(&param0->scene.windows[0]);
 }
 
 static void contest_competition_02242DC0(ActingCompetition *param0, MessageLoader *messageLoader, u32 messageID, int param3, const ActingMessageParams *param4, const void *param5, BOOL useInstantText)
@@ -1490,8 +1490,8 @@ static void contest_competition_02242DC0(ActingCompetition *param0, MessageLoade
     if (useInstantText == TRUE) {
         textDelay = TEXT_SPEED_INSTANT;
     } else {
-        if (param0->unk_00->isLinkContest == FALSE) {
-            textDelay = Options_TextFrameDelay(param0->unk_00->options);
+        if (param0->contest->isLinkContest == FALSE) {
+            textDelay = Options_TextFrameDelay(param0->contest->options);
         } else {
             textDelay = TEXT_SPEED_FAST;
         }
@@ -1500,17 +1500,17 @@ static void contest_competition_02242DC0(ActingCompetition *param0, MessageLoade
     v0 = MessageLoader_GetNewString(messageLoader, messageID);
     contest_competition_0224290C(param0, param3, param4, param5);
 
-    StringTemplate_Format(param0->unk_0C.unk_48, param0->unk_0C.unk_4C, v0);
-    Window_FillTilemap(&param0->unk_0C.unk_28[0], 0xff);
+    StringTemplate_Format(param0->scene.stringTemplate, param0->scene.string, v0);
+    Window_FillTilemap(&param0->scene.windows[0], 0xff);
 
-    param0->unk_0C.unk_210 = Text_AddPrinterWithParams(&param0->unk_0C.unk_28[0], FONT_MESSAGE, param0->unk_0C.unk_4C, 0, 0, textDelay, NULL);
+    param0->scene.printerID = Text_AddPrinterWithParams(&param0->scene.windows[0], FONT_MESSAGE, param0->scene.string, 0, 0, textDelay, NULL);
 
     if (textDelay == TEXT_SPEED_INSTANT) {
-        param0->unk_0C.unk_210 = 0xff;
-        Window_CopyToVRAM(&param0->unk_0C.unk_28[0]);
+        param0->scene.printerID = 0xff;
+        Window_CopyToVRAM(&param0->scene.windows[0]);
     }
 
-    if (Bg_GetXOffset(param0->unk_0C.unk_24, 1) == 0) {
+    if (Bg_GetXOffset(param0->scene.bgConfig, 1) == 0) {
         (void)0;
     }
 
@@ -1525,7 +1525,7 @@ void contest_competition_02242E5C(ActingCompetition *param0, enum ActingCompetit
     u32 v1 = sActingCompetitionMessages[actingMessagesID].unk_02;
     u32 useInstantText = sActingCompetitionMessages[actingMessagesID].useInstantText;
 
-    contest_competition_02242DC0(param0, param0->unk_0C.contestTextMessageLoader, messageID, v1, param2, param3, useInstantText);
+    contest_competition_02242DC0(param0, param0->scene.contestTextMessageLoader, messageID, v1, param2, param3, useInstantText);
 }
 
 void contest_competition_02242E9C(ActingCompetition *param0, int contestMoveEffect, int param2, const ActingMessageParams *param3, const void *param4)
@@ -1533,16 +1533,16 @@ void contest_competition_02242E9C(ActingCompetition *param0, int contestMoveEffe
     u32 messageID, v1;
 
     Contest_LoadContestEffectMessage(contestMoveEffect, param2, &messageID, &v1);
-    contest_competition_02242DC0(param0, param0->unk_0C.contestActingCompetitionMessages, messageID, v1, param3, param4, FALSE);
+    contest_competition_02242DC0(param0, param0->scene.contestActingCompetitionMessages, messageID, v1, param3, param4, FALSE);
 }
 
 int contest_competition_02242ECC(ActingCompetition *param0)
 {
-    if (param0->unk_0C.unk_210 == 0xff) {
+    if (param0->scene.printerID == 0xff) {
         return 0;
     }
 
-    return Text_IsPrinterActive(param0->unk_0C.unk_210);
+    return Text_IsPrinterActive(param0->scene.printerID);
 }
 
 void contest_competition_02242EE4(ActingCompetition *param0, int contestantID)
@@ -1551,16 +1551,16 @@ void contest_competition_02242EE4(ActingCompetition *param0, int contestantID)
 
     String *monName = String_Init(12, HEAP_ID_21);
 
-    Pokemon_GetValue(param0->unk_0C.unk_00->contestMons[contestantID], MON_DATA_NICKNAME_STRING, monName);
+    Pokemon_GetValue(param0->scene.contestData->contestMons[contestantID], MON_DATA_NICKNAME_STRING, monName);
 
-    if (contestantID == param0->unk_00->data.playerContestantID) {
+    if (contestantID == param0->contest->data.playerContestantID) {
         color = TEXT_COLOR(1, 2, 0);
     } else {
         color = TEXT_COLOR(5, 6, 0);
     }
 
-    contest_competition_0223F1E8(HEAP_ID_21, param0->unk_0C.unk_24, param0->unk_0C.unk_1C, param0->unk_0C.unk_54, &param0->unk_0C.unk_1C8[contestantID], monName, FONT_SYSTEM, color, 0, 33005, 0, 0, 0, 0, 15);
-    contest_competition_0223F1E8(HEAP_ID_21, param0->unk_0C.unk_24, param0->unk_0C.unk_1C, param0->unk_0C.unk_54, &param0->unk_0C.unk_180[contestantID], param0->unk_00->data.trainerNames[contestantID], FONT_SYSTEM, color, 0, 33005, 0, 0, 0, 0, 15);
+    contest_competition_0223F1E8(HEAP_ID_21, param0->scene.bgConfig, param0->scene.spriteManager, param0->scene.fontOAMManager, &param0->scene.contestantNameLabels[contestantID], monName, FONT_SYSTEM, color, 0, 33005, 0, 0, 0, 0, 15);
+    contest_competition_0223F1E8(HEAP_ID_21, param0->scene.bgConfig, param0->scene.spriteManager, param0->scene.fontOAMManager, &param0->scene.trainerNameLabels[contestantID], param0->contest->data.trainerNames[contestantID], FONT_SYSTEM, color, 0, 33005, 0, 0, 0, 0, 15);
 
     String_Free(monName);
 }
@@ -1581,8 +1581,8 @@ void contest_competition_02242FC0(ActingCompetition *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        contest_competition_0223F2E4(&param0->unk_0C.unk_1C8[v0]);
-        contest_competition_0223F2E4(&param0->unk_0C.unk_180[v0]);
+        contest_competition_0223F2E4(&param0->scene.contestantNameLabels[v0]);
+        contest_competition_0223F2E4(&param0->scene.trainerNameLabels[v0]);
     }
 }
 
@@ -1591,9 +1591,9 @@ void contest_competition_02242FE8(ActingCompetition *param0)
     int v0, v1;
 
     for (v0 = 0; v0 < 4; v0++) {
-        v1 = param0->unk_220.unk_01[v0];
-        contest_competition_0223F2F8(&param0->unk_0C.unk_1C8[v1], 1, 12 + 48 * v0, 0);
-        contest_competition_0223F2F8(&param0->unk_0C.unk_180[v1], 1, (12 + 16) + 48 * v0, 0);
+        v1 = param0->matchState.contestantOrder[v0];
+        contest_competition_0223F2F8(&param0->scene.contestantNameLabels[v1], 1, 12 + 48 * v0, 0);
+        contest_competition_0223F2F8(&param0->scene.trainerNameLabels[v1], 1, (12 + 16) + 48 * v0, 0);
     }
 }
 
@@ -1613,13 +1613,13 @@ void contest_competition_0224308C(SpriteManager *param0)
 
 void contest_competition_022430AC(ActingCompetitionScene *param0, int param1, int param2)
 {
-    if (param0->unk_160[param1] == NULL) {
-        param0->unk_160[param1] = SpriteSystem_NewSprite(param0->unk_18, param0->unk_1C, &Unk_contest_competition_02253750);
+    if (param0->contestantSprites[param1] == NULL) {
+        param0->contestantSprites[param1] = SpriteSystem_NewSprite(param0->spriteSystem, param0->spriteManager, &Unk_contest_competition_02253750);
     }
 
-    ManagedSprite_SetAnim(param0->unk_160[param1], param2);
-    ManagedSprite_SetPositionXY(param0->unk_160[param1], (8 * 8), (5 * 8 + 2) + param1 * (6 * 8));
-    Sprite_TickFrame(param0->unk_160[param1]->sprite);
+    ManagedSprite_SetAnim(param0->contestantSprites[param1], param2);
+    ManagedSprite_SetPositionXY(param0->contestantSprites[param1], (8 * 8), (5 * 8 + 2) + param1 * (6 * 8));
+    Sprite_TickFrame(param0->contestantSprites[param1]->sprite);
 }
 
 void contest_competition_022430F8(ActingCompetitionScene *param0)
@@ -1627,9 +1627,9 @@ void contest_competition_022430F8(ActingCompetitionScene *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_160[v0] != NULL) {
-            Sprite_DeleteAndFreeResources(param0->unk_160[v0]);
-            param0->unk_160[v0] = NULL;
+        if (param0->contestantSprites[v0] != NULL) {
+            Sprite_DeleteAndFreeResources(param0->contestantSprites[v0]);
+            param0->contestantSprites[v0] = NULL;
         }
     }
 }
@@ -1638,16 +1638,16 @@ void contest_competition_02243120(ActingCompetition *param0, ActingMessageParams
 {
     MI_CpuClear8(param1, sizeof(ActingMessageParams));
 
-    param1->unk_00 = contestantID;
-    param1->moveID = param0->unk_220.moveIDs[contestantID];
-    param1->judgeID = param0->unk_220.unk_0E[contestantID];
+    param1->contestantID = contestantID;
+    param1->moveID = param0->matchState.moveIDs[contestantID];
+    param1->judgeID = param0->matchState.contestantIDs[contestantID];
 }
 
 u32 contest_competition_0224314C(int param0, int param1, ActingMessageParams *param2)
 {
     int actingMessagesID;
 
-    param2->unk_00 = param0;
+    param2->contestantID = param0;
 
     if (param1 <= 0) {
         actingMessagesID = ACTING_COMPETITION_MESSAGE_MON_DIDNT_STAND_OUT;
@@ -1726,7 +1726,7 @@ static void contest_competition_022431E8(SysTask *param0, void *param1)
             v1 = 2;
         }
 
-        Graphics_LoadTilemapToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, v1, v0->unk_00->unk_0C.unk_24, 3, 0, 0, 1, HEAP_ID_21);
+        Graphics_LoadTilemapToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, v1, v0->unk_00->scene.bgConfig, 3, 0, 0, 1, HEAP_ID_21);
     }
 
         v0->unk_08++;
@@ -1761,7 +1761,7 @@ static void contest_competition_022431E8(SysTask *param0, void *param1)
                     v0->unk_0F = v2;
                 }
 
-                PaletteData_Blend(v0->unk_00->unk_0C.unk_50, PLTTBUF_MAIN_BG, (0 * 16 + 1), 2, v0->unk_0F, 0x237e);
+                PaletteData_Blend(v0->unk_00->scene.paletteData, PLTTBUF_MAIN_BG, (0 * 16 + 1), 2, v0->unk_0F, 0x237e);
             }
         }
         break;
@@ -1774,7 +1774,7 @@ static void contest_competition_022431E8(SysTask *param0, void *param1)
                     v0->unk_0F = 0;
                 }
 
-                PaletteData_Blend(v0->unk_00->unk_0C.unk_50, PLTTBUF_MAIN_BG, (0 * 16 + 1), 2, v0->unk_0F, 0x237e);
+                PaletteData_Blend(v0->unk_00->scene.paletteData, PLTTBUF_MAIN_BG, (0 * 16 + 1), 2, v0->unk_0F, 0x237e);
                 break;
             }
         }
@@ -1803,12 +1803,12 @@ void contest_competition_0224331C(ActingCompetition *param0, int param1, int par
     v9 = 0;
 
     for (v7 = 0; v7 < 6; v7++) {
-        if (param0->unk_0C.unk_C4[param1][v7] == NULL) {
+        if (param0->scene.moveIconSprites[param1][v7] == NULL) {
             continue;
         }
 
         if (*param3 == 0) {
-            ManagedSprite_GetPositionXY(param0->unk_0C.unk_C4[param1][v7], &v3, &v4);
+            ManagedSprite_GetPositionXY(param0->scene.moveIconSprites[param1][v7], &v3, &v4);
             v8 = App_Distance(
                      MATH_IAbs(v3 - v1), MATH_IAbs(v4 - v2))
                 * 0x100;
@@ -1827,7 +1827,7 @@ void contest_competition_0224331C(ActingCompetition *param0, int param1, int par
         MI_CpuClear8(v0, sizeof(ActingJudgeGaugeTask));
 
         v0->unk_04 = param4;
-        v0->unk_08 = param0->unk_0C.unk_C4[param1][v7];
+        v0->unk_08 = param0->scene.moveIconSprites[param1][v7];
         v0->unk_10 = v8;
         v0->unk_1E = v9;
         v0->unk_14 = 0x800;
@@ -1837,7 +1837,7 @@ void contest_competition_0224331C(ActingCompetition *param0, int param1, int par
         v0->unk_23 = v3;
         v0->unk_24 = v4;
 
-        ManagedSprite_GetPositionXY(param0->unk_0C.unk_C4[param1][v7], &v5, &v6);
+        ManagedSprite_GetPositionXY(param0->scene.moveIconSprites[param1][v7], &v5, &v6);
 
         v0->unk_1C = (MATH_IAbs(v3 - v5) << 8) / (3 * (*param3));
         v0->unk_18 = v5 << 8;
@@ -1906,16 +1906,16 @@ ActingVoltageGaugeTask *contest_competition_0224365C(ActingCompetition *param0, 
     ActingVoltageGaugeTask *v0 = Heap_Alloc(HEAP_ID_21, sizeof(ActingVoltageGaugeTask));
     MI_CpuClear8(v0, sizeof(ActingVoltageGaugeTask));
 
-    v0->unk_00 = param0;
-    v0->unk_08 = param1;
-    v0->unk_04 = SysTask_Start(contest_competition_022436A4, v0, 40000);
+    v0->competition = param0;
+    v0->state = param1;
+    v0->task = SysTask_Start(contest_competition_022436A4, v0, 40000);
 
     return v0;
 }
 
 void contest_competition_02243690(ActingVoltageGaugeTask *param0)
 {
-    SysTask_Done(param0->unk_04);
+    SysTask_Done(param0->task);
     Heap_Free(param0);
 }
 
@@ -1925,11 +1925,11 @@ static void contest_competition_022436A4(SysTask *param0, void *param1)
     int v1;
 
     for (v1 = 0; v1 < 5; v1++) {
-        if (v0->unk_00->unk_0C.unk_124[v0->unk_08][v1] == NULL) {
+        if (v0->competition->scene.moveEffectSprites[v0->state][v1] == NULL) {
             continue;
         }
 
-        ManagedSprite_TickFrame(v0->unk_00->unk_0C.unk_124[v0->unk_08][v1]);
+        ManagedSprite_TickFrame(v0->competition->scene.moveEffectSprites[v0->state][v1]);
     }
 }
 
@@ -1945,7 +1945,7 @@ void contest_competition_022436D0(ActingCompetition *param0, int param1, int par
     v3 = (6 * 8) / 2 + param2 * (6 * 8);
 
     for (v1 = 0; v1 < 5; v1++) {
-        if (param0->unk_0C.unk_124[param3][v1] == NULL) {
+        if (param0->scene.moveEffectSprites[param3][v1] == NULL) {
             continue;
         }
 
@@ -1953,7 +1953,7 @@ void contest_competition_022436D0(ActingCompetition *param0, int param1, int par
         MI_CpuClear8(v0, sizeof(ActingScoreGaugeTask));
 
         v0->unk_00 = param0;
-        v0->unk_04 = param0->unk_0C.unk_124[param3][v1];
+        v0->unk_04 = param0->scene.moveEffectSprites[param3][v1];
         v0->unk_08 = param4;
         v0->unk_0F = v2;
         v0->unk_10 = v3;
@@ -2093,7 +2093,7 @@ void contest_competition_022439C8(Contest *param0, int contestantID, enum Move m
     case MOVE_RAZOR_WIND:
     case MOVE_SKULL_BASH:
     case MOVE_SKY_ATTACK:
-        param3->unk_06 = TRUE;
+        param3->isContestant = TRUE;
         break;
     case MOVE_RETURN:
         param3->friendship = 255;
@@ -2108,9 +2108,9 @@ void contest_competition_022439C8(Contest *param0, int contestantID, enum Move m
         type2 = Pokemon_GetValue(param0->data.contestMons[contestantID], MON_DATA_TYPE_2, NULL);
 
         if (type1 == TYPE_GHOST || type2 == TYPE_GHOST) {
-            param3->unk_07 = 1;
+            param3->hasFriendship = 1;
         } else {
-            param3->unk_07 = 0;
+            param3->hasFriendship = 0;
         }
     } break;
     case MOVE_MIRROR_MOVE:
@@ -2120,11 +2120,11 @@ void contest_competition_022439C8(Contest *param0, int contestantID, enum Move m
         param3->actingAnimationMoveID = MOVE_TRI_ATTACK;
         break;
     case MOVE_BRICK_BREAK:
-        param3->unk_07 = 1;
+        param3->hasFriendship = 1;
         break;
     case MOVE_SHADOW_FORCE:
-        param3->unk_06 = TRUE;
-        param3->unk_00 = (0x40 | 0x80 | 0x40000 | 0x20000000);
+        param3->isContestant = TRUE;
+        param3->flags = (0x40 | 0x80 | 0x40000 | 0x20000000);
         break;
     }
 }
@@ -2135,7 +2135,7 @@ BOOL contest_competition_02243A98(ActingMatchState *param0, int contestantID, in
         return FALSE;
     }
 
-    if ((moveID == param0->unk_26[contestantID]) && (param0->unk_30.unk_A0[contestantID].moveID != moveID)) {
+    if ((moveID == param0->previousMoveIDs[contestantID]) && (param0->turnState.previousMoves[contestantID].moveID != moveID)) {
         return FALSE;
     }
 

@@ -6,11 +6,11 @@
 struct DanceCompetition_t;
 
 typedef struct {
-    struct DanceCompetition_t *unk_00;
-    SysTask *unk_04;
-    u16 unk_08;
-    u8 unk_0A;
-    u8 unk_0B;
+    struct DanceCompetition_t *competition;
+    SysTask *task;
+    u16 beat;
+    u8 state;
+    u8 flag;
 } DanceBeatTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_BEAT_TASK_H

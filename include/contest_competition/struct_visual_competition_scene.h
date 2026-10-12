@@ -15,22 +15,22 @@
 #include "string_template.h"
 
 typedef struct {
-    ContestData *unk_00;
-    PokemonSpriteManager *unk_04;
-    PokemonSprite *unk_08[4];
-    PokemonSprite *unk_18;
-    SpriteSystem *unk_1C;
-    SpriteManager *unk_20;
-    BgConfig *unk_24;
-    Window unk_28[1];
+    ContestData *contestData;
+    PokemonSpriteManager *pokemonSpriteManager;
+    PokemonSprite *pokemonSprites[4];
+    PokemonSprite *trainerSprite;
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    BgConfig *bgConfig;
+    Window windows[1];
     MessageLoader *visualCompetitionMessages;
-    StringTemplate *unk_3C;
-    String *unk_40;
-    PaletteData *unk_44;
+    StringTemplate *stringTemplate;
+    String *string;
+    PaletteData *paletteData;
     PokemonSpriteData pokemonSpriteDataArray[4];
-    ManagedSprite *unk_88[8];
-    ContestSpriteGroup unk_A8;
-    u8 unk_C4;
+    ManagedSprite *sprites[8];
+    ContestSpriteGroup spriteGroup;
+    u8 printerID;
 } VisualCompetitionScene;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_COMPETITION_SCENE_H

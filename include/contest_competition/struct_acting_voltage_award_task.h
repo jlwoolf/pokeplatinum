@@ -7,16 +7,16 @@
 #include "contest_competition/struct_acting_sync_packet.h"
 
 typedef struct {
-    ActingCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    u8 unk_0C;
-    s8 unk_0D;
-    s8 unk_0E;
-    ActingSyncPacket unk_10;
-    s16 unk_EE;
-    u8 unk_F0;
-    u8 unk_F1;
-    ActingVoltageGaugeTask *unk_F4;
+    ActingCompetition *competition;
+    ContestPacketHeader header;
+    u8 state;
+    s8 timer;
+    s8 unused_0E;
+    ActingSyncPacket syncPacket;
+    s16 voltage;
+    u8 orderIndex;
+    u8 animationDone;
+    ActingVoltageGaugeTask *voltageGaugeTask;
 } ActingVoltageAwardTask;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_VOLTAGE_AWARD_TASK_H

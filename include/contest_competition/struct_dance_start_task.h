@@ -6,14 +6,14 @@
 #include "contest_competition/struct_contest_packet_queue.h"
 
 typedef struct {
-    DanceCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    u8 unk_10;
-    s8 unk_11;
-    u8 unk_12;
-    s8 unk_13;
-    s8 unk_14;
+    DanceCompetition *competition;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    u8 state;
+    s8 row;
+    u8 column;
+    s8 stepDelay;
+    s8 holdDelay;
 } DanceStartTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_START_TASK_H

@@ -7,10 +7,10 @@
 struct DanceCompetition_t;
 
 typedef struct {
-    SysTask *unk_00;
-    ManagedSprite *unk_04;
-    struct DanceCompetition_t *unk_08;
-    u8 unk_0C;
+    SysTask *task;
+    ManagedSprite *sprite;
+    struct DanceCompetition_t *competition;
+    u8 state;
 } DanceComboTask;
 
 #endif // POKEPLATINUM_STRUCT_DANCE_COMBO_TASK_H

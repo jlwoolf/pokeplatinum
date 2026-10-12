@@ -146,51 +146,51 @@ int ContestFinalScoring_Init(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(ContestFinalScoring), HEAP_ID_24);
     MI_CpuClear8(v0, sizeof(ContestFinalScoring));
 
-    v0->unk_0C = contest_competition_0223F140(HEAP_ID_24);
-    v0->unk_00 = ApplicationManager_Args(appMan);
-    v0->unk_00->appContext = v0;
-    v0->unk_00->activeAppID = 3;
-    v0->unk_10.unk_00 = &v0->unk_00->data;
+    v0->g3dPipeline = contest_competition_0223F140(HEAP_ID_24);
+    v0->contest = ApplicationManager_Args(appMan);
+    v0->contest->appContext = v0;
+    v0->contest->activeAppID = 3;
+    v0->scene.contestData = &v0->contest->data;
 
     contest_competition_0224FE1C(v0);
 
-    v0->unk_127B = 0;
-    v0->unk_10.unk_C0 = PaletteData_New(HEAP_ID_24);
+    v0->enableHBlank = 0;
+    v0->scene.paletteData = PaletteData_New(HEAP_ID_24);
 
-    PaletteData_SetAutoTransparent(v0->unk_10.unk_C0, TRUE);
-    PaletteData_AllocBuffer(v0->unk_10.unk_C0, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_24);
-    PaletteData_AllocBuffer(v0->unk_10.unk_C0, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_24);
-    PaletteData_AllocBuffer(v0->unk_10.unk_C0, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 14, HEAP_ID_24);
-    PaletteData_AllocBuffer(v0->unk_10.unk_C0, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_24);
+    PaletteData_SetAutoTransparent(v0->scene.paletteData, TRUE);
+    PaletteData_AllocBuffer(v0->scene.paletteData, PLTTBUF_MAIN_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_24);
+    PaletteData_AllocBuffer(v0->scene.paletteData, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES * 16, HEAP_ID_24);
+    PaletteData_AllocBuffer(v0->scene.paletteData, PLTTBUF_MAIN_OBJ, PALETTE_SIZE_BYTES * 14, HEAP_ID_24);
+    PaletteData_AllocBuffer(v0->scene.paletteData, PLTTBUF_SUB_OBJ, PALETTE_SIZE_BYTES * 16, HEAP_ID_24);
 
-    v0->unk_10.unk_20 = BgConfig_New(HEAP_ID_24);
+    v0->scene.bgConfig = BgConfig_New(HEAP_ID_24);
 
     VramTransfer_New(64, HEAP_ID_24);
     SetAutorepeat(4, 8);
 
-    contest_competition_0224FB34(v0->unk_10.unk_20);
+    contest_competition_0224FB34(v0->scene.bgConfig);
 
     EnableTouchPad();
     InitializeTouchPad(4);
     Font_InitManager(FONT_SUBSCREEN, HEAP_ID_24);
 
-    v0->unk_10.unk_18 = SpriteSystem_Alloc(HEAP_ID_24);
+    v0->scene.spriteSystem = SpriteSystem_Alloc(HEAP_ID_24);
 
-    SpriteSystem_Init(v0->unk_10.unk_18, &Unk_contest_competition_02254B0C, &Unk_contest_competition_02254AC4, 16 + 16);
+    SpriteSystem_Init(v0->scene.spriteSystem, &Unk_contest_competition_02254B0C, &Unk_contest_competition_02254AC4, 16 + 16);
     ReserveVramForWirelessIconChars(NNS_G2D_VRAM_TYPE_2DMAIN, GX_OBJVRAMMODE_CHAR_1D_64K);
     ReserveSlotsForWirelessIconPalette(NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    v0->unk_10.unk_1C = SpriteManager_New(v0->unk_10.unk_18);
-    SpriteSystem_InitSprites(v0->unk_10.unk_18, v0->unk_10.unk_1C, 64 + 64);
-    SpriteSystem_InitManagerWithCapacities(v0->unk_10.unk_18, v0->unk_10.unk_1C, &Unk_contest_competition_02254AD8);
-    v0->unk_10.unk_04 = PokemonSpriteManager_New(HEAP_ID_24);
+    v0->scene.spriteManager = SpriteManager_New(v0->scene.spriteSystem);
+    SpriteSystem_InitSprites(v0->scene.spriteSystem, v0->scene.spriteManager, 64 + 64);
+    SpriteSystem_InitManagerWithCapacities(v0->scene.spriteSystem, v0->scene.spriteManager, &Unk_contest_competition_02254AD8);
+    v0->scene.pokemonSpriteManager = PokemonSpriteManager_New(HEAP_ID_24);
 
     contest_competition_0224FDDC();
 
-    v0->unk_10.contestResultsMessages = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_CONTEST_RESULTS, HEAP_ID_24);
-    v0->unk_10.contestResultsTemplate = StringTemplate_Default(HEAP_ID_24);
-    v0->unk_10.unk_BC = String_Init(2 * 160, HEAP_ID_24);
-    v0->unk_10.unk_C4 = FontOAMManager_New(10, HEAP_ID_24);
+    v0->scene.contestResultsMessages = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_CONTEST_RESULTS, HEAP_ID_24);
+    v0->scene.contestResultsTemplate = StringTemplate_Default(HEAP_ID_24);
+    v0->scene.string = String_Init(2 * 160, HEAP_ID_24);
+    v0->scene.fontOAMManager = FontOAMManager_New(10, HEAP_ID_24);
 
     contest_competition_0224FE60(v0);
     contest_competition_0224FE70(v0);
@@ -202,17 +202,17 @@ int ContestFinalScoring_Init(ApplicationManager *appMan, int *param1)
     NetworkIcon_Init();
     StartScreenFade(FADE_MAIN_THEN_SUB, FADE_TYPE_UNK_33, FADE_TYPE_UNK_33, COLOR_BLACK, 6, 1, HEAP_ID_24);
 
-    v0->unk_04 = SysTask_Start(contest_competition_0224FAFC, v0, 80000);
-    v0->unk_850 = 1;
+    v0->task = SysTask_Start(contest_competition_0224FAFC, v0, 80000);
+    v0->drawSprites = 1;
 
     GXLayers_TurnBothDispOn();
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 1);
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_CONTEST, CONTEST_DRESSING_ROOM_sseq, 1);
-    SetLockTextWithAutoScroll(v0->unk_00->isLinkContest);
+    SetLockTextWithAutoScroll(v0->contest->isLinkContest);
     SetVBlankCallback(contest_competition_0224FA24, v0);
 
-    v0->unk_08 = SysTask_ExecuteOnVBlank(contest_competition_0224FAE4, v0, 10);
+    v0->vBlankTask = SysTask_ExecuteOnVBlank(contest_competition_0224FAE4, v0, 10);
     Sound_PlayEffect(SEQ_SE_DP_CON_007_sseq);
 
     return 1;
@@ -223,41 +223,41 @@ int ContestFinalScoring_Main(ApplicationManager *appMan, int *param1)
     ContestFinalScoring *v0 = ApplicationManager_Data(appMan);
     int v1;
 
-    Contest_GetRNGNext(v0->unk_00);
+    Contest_GetRNGNext(v0->contest);
 
     switch (*param1) {
     case 0:
         if (IsScreenFadeDone() == TRUE) {
             SetHBlankCallback(contest_competition_0224FAAC, v0);
-            v0->unk_848 = contest_competition_0223F70C(HEAP_ID_24, v0->unk_10.unk_C0, Unk_contest_competition_02254AB4, NELEMS(Unk_contest_competition_02254AB4), 0xff, 50000 + 5000);
+            v0->paletteFadeTask = contest_competition_0223F70C(HEAP_ID_24, v0->scene.paletteData, Unk_contest_competition_02254AB4, NELEMS(Unk_contest_competition_02254AB4), 0xff, 50000 + 5000);
             *param1 = 1;
         }
         break;
     case 1:
-        if (Contest_IsPlayerLeader(v0->unk_00) == TRUE) {
-            v1 = Unk_contest_competition_02254B54[v0->unk_84E](v0, &v0->unk_1270);
+        if (Contest_IsPlayerLeader(v0->contest) == TRUE) {
+            v1 = Unk_contest_competition_02254B54[v0->handlerIndex](v0, &v0->scoringTask);
 
             if ((v1 == 1) || (v1 == 2)) {
                 if (v1 == 1) {
-                    v0->unk_84E++;
+                    v0->handlerIndex++;
                 } else {
-                    v0->unk_84E = v0->unk_1270.unk_02;
+                    v0->handlerIndex = v0->scoringTask.nextState;
                 }
 
-                MI_CpuClear8(&v0->unk_1270, sizeof(ContestFinalScoringTask));
+                MI_CpuClear8(&v0->scoringTask, sizeof(ContestFinalScoringTask));
             } else if (v1 == 3) {
                 *param1 = 2;
-                MI_CpuClear8(&v0->unk_1270, sizeof(ContestFinalScoringTask));
+                MI_CpuClear8(&v0->scoringTask, sizeof(ContestFinalScoringTask));
                 break;
             }
         }
 
-        contest_competition_0224F35C(&v0->unk_85C);
-        contest_competition_0224F3D8(&v0->unk_85C, v0);
+        contest_competition_0224F35C(&v0->packetQueue);
+        contest_competition_0224F3D8(&v0->packetQueue, v0);
 
-        if (v0->unk_1278 == 1) {
+        if (v0->scoringDone == 1) {
             *param1 = 2;
-            MI_CpuClear8(&v0->unk_1270, sizeof(ContestFinalScoringTask));
+            MI_CpuClear8(&v0->scoringTask, sizeof(ContestFinalScoringTask));
         }
         break;
     case 2:
@@ -283,41 +283,41 @@ int ContestFinalScoring_Exit(ApplicationManager *appMan, int *param1)
     contest_competition_0224FEC8(v0);
 
     for (v1 = 0; v1 < 9; v1++) {
-        Window_Remove(&v0->unk_10.unk_24[v1]);
+        Window_Remove(&v0->scene.windows[v1]);
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
-    Bg_FreeTilemapBuffer(v0->unk_10.unk_20, 1);
-    Bg_FreeTilemapBuffer(v0->unk_10.unk_20, 2);
-    Bg_FreeTilemapBuffer(v0->unk_10.unk_20, 3);
+    Bg_FreeTilemapBuffer(v0->scene.bgConfig, 1);
+    Bg_FreeTilemapBuffer(v0->scene.bgConfig, 2);
+    Bg_FreeTilemapBuffer(v0->scene.bgConfig, 3);
     Bg_ToggleLayer(BG_LAYER_SUB_0, 0);
-    Bg_FreeTilemapBuffer(v0->unk_10.unk_20, 4);
-    SpriteSystem_FreeResourcesAndManager(v0->unk_10.unk_18, v0->unk_10.unk_1C);
-    SpriteSystem_Free(v0->unk_10.unk_18);
+    Bg_FreeTilemapBuffer(v0->scene.bgConfig, 4);
+    SpriteSystem_FreeResourcesAndManager(v0->scene.spriteSystem, v0->scene.spriteManager);
+    SpriteSystem_Free(v0->scene.spriteSystem);
     VramTransfer_Free();
 
-    contest_competition_022507C4(&v0->unk_10);
+    contest_competition_022507C4(&v0->scene);
 
-    PokemonSpriteManager_Free(v0->unk_10.unk_04);
-    FontOAMManager_Free(v0->unk_10.unk_C4);
+    PokemonSpriteManager_Free(v0->scene.pokemonSpriteManager);
+    FontOAMManager_Free(v0->scene.fontOAMManager);
     Font_Free(FONT_SUBSCREEN);
 
-    PaletteData_FreeBuffer(v0->unk_10.unk_C0, PLTTBUF_MAIN_BG);
-    PaletteData_FreeBuffer(v0->unk_10.unk_C0, PLTTBUF_SUB_BG);
-    PaletteData_FreeBuffer(v0->unk_10.unk_C0, PLTTBUF_MAIN_OBJ);
-    PaletteData_FreeBuffer(v0->unk_10.unk_C0, PLTTBUF_SUB_OBJ);
-    PaletteData_Free(v0->unk_10.unk_C0);
+    PaletteData_FreeBuffer(v0->scene.paletteData, PLTTBUF_MAIN_BG);
+    PaletteData_FreeBuffer(v0->scene.paletteData, PLTTBUF_SUB_BG);
+    PaletteData_FreeBuffer(v0->scene.paletteData, PLTTBUF_MAIN_OBJ);
+    PaletteData_FreeBuffer(v0->scene.paletteData, PLTTBUF_SUB_OBJ);
+    PaletteData_Free(v0->scene.paletteData);
 
-    String_Free(v0->unk_10.unk_BC);
-    StringTemplate_Free(v0->unk_10.contestResultsTemplate);
-    MessageLoader_Free(v0->unk_10.contestResultsMessages);
+    String_Free(v0->scene.string);
+    StringTemplate_Free(v0->scene.contestResultsTemplate);
+    MessageLoader_Free(v0->scene.contestResultsMessages);
 
-    Heap_Free(v0->unk_10.unk_20);
-    SysTask_Done(v0->unk_04);
-    SysTask_Done(v0->unk_08);
+    Heap_Free(v0->scene.bgConfig);
+    SysTask_Done(v0->task);
+    SysTask_Done(v0->vBlankTask);
 
-    contest_competition_0223F1E0(v0->unk_0C);
+    contest_competition_0223F1E0(v0->g3dPipeline);
 
     DisableTouchPad();
     ApplicationManager_FreeData(appMan);
@@ -349,15 +349,15 @@ static void contest_competition_0224FA24(void *param0)
     ContestFinalScoring *v0 = param0;
 
     {
-        G2_SetWnd0Position(v0->unk_851, v0->unk_852, v0->unk_853, v0->unk_854);
-        G2_SetWnd1Position(v0->unk_855, v0->unk_856, v0->unk_857, v0->unk_858);
+        G2_SetWnd0Position(v0->window0Left, v0->window0Top, v0->window0Right, v0->window0Bottom);
+        G2_SetWnd1Position(v0->window1Left, v0->window1Top, v0->window1Right, v0->window1Bottom);
     }
 
-    PokemonSpriteManager_UpdateCharAndPltt(v0->unk_10.unk_04);
+    PokemonSpriteManager_UpdateCharAndPltt(v0->scene.pokemonSpriteManager);
     VramTransfer_Process();
     SpriteSystem_TransferOam();
-    PaletteData_CommitFadedBuffers(v0->unk_10.unk_C0);
-    Bg_RunScheduledUpdates(v0->unk_10.unk_20);
+    PaletteData_CommitFadedBuffers(v0->scene.paletteData);
+    Bg_RunScheduledUpdates(v0->scene.bgConfig);
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
@@ -367,7 +367,7 @@ static void contest_competition_0224FAAC(void *param0)
     ContestFinalScoring *v0 = param0;
     s32 v1;
 
-    if (v0->unk_127B == 1) {
+    if (v0->enableHBlank == 1) {
         v1 = GX_GetVCount();
 
         if ((v1 >= (0x13 - 1) * 8) && (v1 <= (0x13 - 0) * 8)) {
@@ -382,7 +382,7 @@ static void contest_competition_0224FAE4(SysTask *param0, void *param1)
 {
     ContestFinalScoring *v0 = param1;
 
-    if (v0->unk_127B == 1) {
+    if (v0->enableHBlank == 1) {
         Bg_SetPriority(BG_LAYER_MAIN_1, 2);
     }
 }
@@ -391,15 +391,15 @@ static void contest_competition_0224FAFC(SysTask *param0, void *param1)
 {
     ContestFinalScoring *v0 = param1;
 
-    if (v0->unk_850 == 1) {
-        PokemonSpriteManager_DrawSprites(v0->unk_10.unk_04);
+    if (v0->drawSprites == 1) {
+        PokemonSpriteManager_DrawSprites(v0->scene.pokemonSpriteManager);
         ParticleHelper_DrawParticleSystems();
-        SpriteSystem_DrawSprites(v0->unk_10.unk_1C);
+        SpriteSystem_DrawSprites(v0->scene.spriteManager);
         SpriteSystem_UpdateTransfer();
         G3_SwapBuffers(GX_SORTMODE_MANUAL, GX_BUFFERMODE_Z);
     }
 
-    CommManager_Dummy_02038A1C(24, v0->unk_10.unk_20);
+    CommManager_Dummy_02038A1C(24, v0->scene.bgConfig);
 }
 
 static void contest_competition_0224FB34(BgConfig *param0)
@@ -529,15 +529,15 @@ static void contest_competition_0224FB34(BgConfig *param0)
 
 static void contest_competition_0224FCA0(ContestFinalScoring *param0)
 {
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[0], 1, 0x2, 0x13, 27, 4, 13, (18 + 12) + 1);
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[1], 1, 6, 1 + 4 * 0, 8, 3, 13, ((18 + 12) + 1) + (27 * 4));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[2], 1, 6, 1 + 4 * 1, 8, 3, 13, (((18 + 12) + 1) + (27 * 4)) + (8 * 3));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[3], 1, 6, 1 + 4 * 2, 8, 3, 13, ((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[4], 1, 6, 1 + 4 * 3, 8, 3, 13, (((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[5], 1, 0x10, 1 + 4 * 0, 8, 3, 13, ((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[6], 1, 0x10, 1 + 4 * 1, 8, 3, 13, (((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[7], 1, 0x10, 1 + 4 * 2, 8, 3, 13, ((((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
-    Window_Add(param0->unk_10.unk_20, &param0->unk_10.unk_24[8], 1, 0x10, 1 + 4 * 3, 8, 3, 13, (((((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[0], 1, 0x2, 0x13, 27, 4, 13, (18 + 12) + 1);
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[1], 1, 6, 1 + 4 * 0, 8, 3, 13, ((18 + 12) + 1) + (27 * 4));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[2], 1, 6, 1 + 4 * 1, 8, 3, 13, (((18 + 12) + 1) + (27 * 4)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[3], 1, 6, 1 + 4 * 2, 8, 3, 13, ((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[4], 1, 6, 1 + 4 * 3, 8, 3, 13, (((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[5], 1, 0x10, 1 + 4 * 0, 8, 3, 13, ((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[6], 1, 0x10, 1 + 4 * 1, 8, 3, 13, (((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[7], 1, 0x10, 1 + 4 * 2, 8, 3, 13, ((((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
+    Window_Add(param0->scene.bgConfig, &param0->scene.windows[8], 1, 0x10, 1 + 4 * 3, 8, 3, 13, (((((((((18 + 12) + 1) + (27 * 4)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3)) + (8 * 3));
 }
 
 static void contest_competition_0224FDDC(void)
@@ -562,10 +562,10 @@ static void contest_competition_0224FE1C(ContestFinalScoring *param0)
 {
     int v0;
 
-    GF_ASSERT(param0->unk_00 != NULL);
+    GF_ASSERT(param0->contest != NULL);
 
     for (v0 = 0; v0 < 4; v0++) {
-        param0->unk_39A.unk_30[v0] = 4 - 1 - v0;
+        param0->scores.placementOrder[v0] = 4 - 1 - v0;
     }
 
     contest_competition_02251D6C(param0);
@@ -603,9 +603,9 @@ static void contest_competition_0224FE68(ContestFinalScoring *param0)
 
 static void contest_competition_0224FE70(ContestFinalScoring *param0)
 {
-    Graphics_LoadTilesToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 19, param0->unk_10.unk_20, 4, 0, 0, 1, HEAP_ID_24);
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 20, param0->unk_10.unk_20, 4, 0, 0, 1, HEAP_ID_24);
-    PaletteData_LoadBufferFromFileStart(param0->unk_10.unk_C0, NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 34, HEAP_ID_24, PLTTBUF_SUB_BG, 0, 0);
+    Graphics_LoadTilesToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 19, param0->scene.bgConfig, 4, 0, 0, 1, HEAP_ID_24);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 20, param0->scene.bgConfig, 4, 0, 0, 1, HEAP_ID_24);
+    PaletteData_LoadBufferFromFileStart(param0->scene.paletteData, NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 34, HEAP_ID_24, PLTTBUF_SUB_BG, 0, 0);
 }
 
 static void contest_competition_0224FEC8(ContestFinalScoring *param0)
@@ -617,47 +617,47 @@ static int contest_competition_0224FECC(ContestFinalScoring *param0, ContestFina
 {
     int v0;
 
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
         contest_competition_02251A1C(param0);
 
         int contestantID;
 
         for (contestantID = 0; contestantID < CONTEST_NUM_PARTICIPANTS; contestantID++) {
-            if (param0->unk_00->data.results[contestantID].contestPlacement == 0) {
+            if (param0->contest->data.results[contestantID].contestPlacement == 0) {
                 break;
             }
         }
 
         GF_ASSERT(contestantID != CONTEST_NUM_PARTICIPANTS);
 
-        param0->unk_434.winningContestantID = contestantID;
+        param0->results.winningContestantID = contestantID;
 
         for (v0 = 0; v0 < 4; v0++) {
-            param0->unk_434.unk_03[v0] = param0->unk_39A.unk_35[v0];
+            param0->results.placements[v0] = param0->scores.finalPlacements[v0];
         }
 
         for (v0 = 0; v0 < 4; v0++) {
-            param0->unk_39A.unk_00[v0] = param0->unk_00->data.results[v0];
+            param0->scores.results[v0] = param0->contest->data.results[v0];
         }
 
-        param1->unk_00++;
+        param1->state++;
     case 1:
-        if (param0->unk_00->gameCodeMismatchCount > 0) {
-            if (param1->unk_04 < 120) {
-                param1->unk_04++;
+        if (param0->contest->gameCodeMismatchCount > 0) {
+            if (param1->timer < 120) {
+                param1->timer++;
                 break;
             }
         }
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 1, &param0->unk_39A) == 1) {
-            param1->unk_04 = 0;
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 1, &param0->scores) == 1) {
+            param1->timer = 0;
+            param1->state++;
         }
         break;
     case 2:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     default:
@@ -669,21 +669,21 @@ static int contest_competition_0224FECC(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_02250000(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 0;
-        param0->unk_434.unk_10 = 0;
-        param0->unk_434.unk_08.contestantID = param0->unk_39A.unk_30[0];
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_JUDGING_COMPLETED;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 0;
+        param0->results.showCategories = 0;
+        param0->results.messageArgs.contestantID = param0->scores.placementOrder[0];
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_JUDGING_COMPLETED;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     default:
@@ -695,15 +695,15 @@ static int contest_competition_02250000(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_02250084(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 6, &param0->unk_39A) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 6, &param0->scores) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     default:
@@ -715,27 +715,27 @@ static int contest_competition_02250084(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_022500E8(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 1;
-        param0->unk_434.unk_10 = 1;
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_INDIVIDUAL_CATEGORIES;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 1;
+        param0->results.showCategories = 1;
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_INDIVIDUAL_CATEGORIES;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 2:
-        param1->unk_04++;
+        param1->timer++;
 
-        if (param1->unk_04 > 60) {
-            param1->unk_00++;
+        if (param1->timer > 60) {
+            param1->state++;
         }
         break;
     default:
@@ -747,9 +747,9 @@ static int contest_competition_022500E8(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_02250178(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        switch (param0->unk_00->data.competitionType) {
+        switch (param0->contest->data.competitionType) {
         case CONTEST_COMPETITION_LINK_OR_OFFICIAL:
         case CONTEST_COMPETITION_UNK1:
         case CONTEST_COMPETITION_UNK0:
@@ -760,37 +760,37 @@ static int contest_competition_02250178(ContestFinalScoring *param0, ContestFina
             return 1;
         }
 
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 1;
-        param0->unk_434.unk_10 = 1;
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_VISUAL_COMPETITION_RESULTS;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 1;
+        param0->results.showCategories = 1;
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_VISUAL_COMPETITION_RESULTS;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 2:
-        param0->unk_434.unk_07 = 0;
+        param0->results.competitionType = 0;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 9, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 9, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 3:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 4:
-        param1->unk_04++;
+        param1->timer++;
 
-        if (param1->unk_04 > 60) {
-            param1->unk_00++;
+        if (param1->timer > 60) {
+            param1->state++;
         }
         break;
     default:
@@ -802,9 +802,9 @@ static int contest_competition_02250178(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_02250284(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        switch (param0->unk_00->data.competitionType) {
+        switch (param0->contest->data.competitionType) {
         case CONTEST_COMPETITION_LINK_OR_OFFICIAL:
         case CONTEST_COMPETITION_UNK1:
         case CONTEST_COMPETITION_PRACTICE_DANCE:
@@ -814,39 +814,39 @@ static int contest_competition_02250284(ContestFinalScoring *param0, ContestFina
             return 1;
         }
 
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 1;
-        param0->unk_434.unk_10 = 1;
-        param0->unk_434.unk_08.contestantID = param0->unk_39A.unk_30[0];
-        param0->unk_434.unk_08.contestantEntryNum = Contest_ContestantIDToContestantEntryNum(param0->unk_39A.unk_30[0]) + 1;
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_DANCE_COMPETITION_RESULTS;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 1;
+        param0->results.showCategories = 1;
+        param0->results.messageArgs.contestantID = param0->scores.placementOrder[0];
+        param0->results.messageArgs.contestantEntryNum = Contest_ContestantIDToContestantEntryNum(param0->scores.placementOrder[0]) + 1;
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_DANCE_COMPETITION_RESULTS;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 2:
-        param0->unk_434.unk_07 = 1;
+        param0->results.competitionType = 1;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 9, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 9, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 3:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 4:
-        param1->unk_04++;
+        param1->timer++;
 
-        if (param1->unk_04 > 90) {
-            param1->unk_00++;
+        if (param1->timer > 90) {
+            param1->state++;
         }
         break;
     default:
@@ -858,9 +858,9 @@ static int contest_competition_02250284(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_022503B0(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        switch (param0->unk_00->data.competitionType) {
+        switch (param0->contest->data.competitionType) {
         case CONTEST_COMPETITION_LINK_OR_OFFICIAL:
         case CONTEST_COMPETITION_UNK0:
         case CONTEST_COMPETITION_PRACTICE_ACTING:
@@ -870,39 +870,39 @@ static int contest_competition_022503B0(ContestFinalScoring *param0, ContestFina
             return 1;
         }
 
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 1;
-        param0->unk_434.unk_10 = 1;
-        param0->unk_434.unk_08.contestantID = param0->unk_39A.unk_30[0];
-        param0->unk_434.unk_08.contestantEntryNum = Contest_ContestantIDToContestantEntryNum(param0->unk_39A.unk_30[0]) + 1;
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_ACTING_COMPETITION_RESULTS;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 1;
+        param0->results.showCategories = 1;
+        param0->results.messageArgs.contestantID = param0->scores.placementOrder[0];
+        param0->results.messageArgs.contestantEntryNum = Contest_ContestantIDToContestantEntryNum(param0->scores.placementOrder[0]) + 1;
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_ACTING_COMPETITION_RESULTS;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 2:
-        param0->unk_434.unk_07 = 2;
+        param0->results.competitionType = 2;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 9, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 9, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 3:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 4:
-        param1->unk_04++;
+        param1->timer++;
 
-        if (param1->unk_04 > 15) {
-            param1->unk_00++;
+        if (param1->timer > 15) {
+            param1->state++;
         }
         break;
     default:
@@ -914,15 +914,15 @@ static int contest_competition_022503B0(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_022504E4(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 7, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 7, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     default:
@@ -934,32 +934,32 @@ static int contest_competition_022504E4(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_02250548(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 1;
-        param0->unk_434.unk_10 = 1;
-        param0->unk_434.unk_08.contestantID = param0->unk_434.winningContestantID;
-        param0->unk_434.unk_08.contestantEntryNum = Contest_ContestantIDToContestantEntryNum(param0->unk_434.winningContestantID) + 1;
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_WINNER_IS;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 1;
+        param0->results.showCategories = 1;
+        param0->results.messageArgs.contestantID = param0->results.winningContestantID;
+        param0->results.messageArgs.contestantEntryNum = Contest_ContestantIDToContestantEntryNum(param0->results.winningContestantID) + 1;
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_WINNER_IS;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 2:
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 8, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 8, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 3:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     default:
@@ -970,21 +970,21 @@ static int contest_competition_02250548(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_0225062C(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        param0->unk_434.unk_0F = 0;
-        param0->unk_434.unk_11 = 0;
-        param0->unk_434.unk_10 = 0;
-        param0->unk_434.unk_08.contestantID = param0->unk_39A.unk_30[0];
-        param0->unk_434.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_NONE;
+        param0->results.messageState = 0;
+        param0->results.categoryState = 0;
+        param0->results.showCategories = 0;
+        param0->results.messageArgs.contestantID = param0->scores.placementOrder[0];
+        param0->results.announcerMessagesID = CONTEST_ANNOUNCER_MESSAGE_NONE;
 
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 5, &param0->unk_434) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 5, &param0->results) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     default:
@@ -996,24 +996,24 @@ static int contest_competition_0225062C(ContestFinalScoring *param0, ContestFina
 
 static int contest_competition_022506AC(ContestFinalScoring *param0, ContestFinalScoringTask *param1)
 {
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0:
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 10, NULL) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 10, NULL) == 1) {
+            param1->state++;
         }
         break;
     case 1:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
+            param1->state++;
         }
         break;
     case 2:
-        if (contest_competition_0224F30C(&param0->unk_85C, param0, 4, NULL) == 1) {
-            param1->unk_00++;
+        if (contest_competition_0224F30C(&param0->packetQueue, param0, 4, NULL) == 1) {
+            param1->state++;
         }
         break;
     default:
-        if (contest_competition_0224F4B8(&param0->unk_85C, param0->unk_00->data.connectionCount, param0->unk_00->data.playerContestantID, param0->unk_00->data.leaderContestantID) == 1) {
+        if (contest_competition_0224F4B8(&param0->packetQueue, param0->contest->data.connectionCount, param0->contest->data.playerContestantID, param0->contest->data.leaderContestantID) == 1) {
             return 3;
         }
 

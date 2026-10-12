@@ -17,27 +17,27 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    ContestData *unk_00;
-    PokemonSpriteManager *unk_04;
-    PokemonSprite *unk_08[CONTEST_NUM_PARTICIPANTS];
-    SpriteSystem *unk_18;
-    SpriteManager *unk_1C;
-    BgConfig *unk_20;
-    Window unk_24[9];
+    ContestData *contestData;
+    PokemonSpriteManager *pokemonSpriteManager;
+    PokemonSprite *pokemonSprites[CONTEST_NUM_PARTICIPANTS];
+    SpriteSystem *spriteSystem;
+    SpriteManager *spriteManager;
+    BgConfig *bgConfig;
+    Window windows[9];
     MessageLoader *contestResultsMessages;
     StringTemplate *contestResultsTemplate;
-    String *unk_BC;
-    PaletteData *unk_C0;
-    FontOAMManager *unk_C4;
+    String *string;
+    PaletteData *paletteData;
+    FontOAMManager *fontOAMManager;
     PokemonSpriteData pokemonSpriteDataArray[4];
-    ContestSpriteGroup unk_108;
-    SysTask *unk_124;
-    ManagedSprite *unk_128[CONTEST_NUM_PARTICIPANTS];
-    ManagedSprite *unk_138[4];
-    ManagedSprite *unk_148[4][12];
-    ManagedSprite *unk_208[4][12];
-    ManagedSprite *unk_2C8[4][12];
-    u8 unk_388;
+    ContestSpriteGroup spriteGroup;
+    SysTask *task;
+    ManagedSprite *iconSprites[CONTEST_NUM_PARTICIPANTS];
+    ManagedSprite *rankSprites[4];
+    ManagedSprite *placementSprites[4][12];
+    ManagedSprite *categorySprites[4][12];
+    ManagedSprite *scoreSprites[4][12];
+    u8 printerID;
 } ContestFinalScoringScene;
 
 #endif // POKEPLATINUM_STRUCT_CONTEST_FINAL_SCORING_SCENE_H

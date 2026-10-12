@@ -5,11 +5,11 @@
 #include "contest_competition/struct_visual_competition.h"
 
 typedef struct {
-    VisualCompetition *unk_00;
+    VisualCompetition *competition;
     BallRotation *ballRotation;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0A;
+    u8 state;
+    u8 done;
+    u8 counter;
 } VisualBallRotation;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_BALL_ROTATION_H

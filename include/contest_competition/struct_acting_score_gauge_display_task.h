@@ -7,15 +7,15 @@
 #include "contest_competition/struct_contest_packet_queue.h"
 
 typedef struct {
-    ActingCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    ActingContestantColorTask *unk_10[4];
-    u8 unk_20;
-    u8 unk_21;
-    u8 unk_22;
-    u8 unk_23[4];
-    u8 unk_27;
+    ActingCompetition *competition;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    ActingContestantColorTask *colorTasks[4];
+    u8 state;
+    u8 contestantCount;
+    u8 unused_22;
+    u8 contestantIDs[4];
+    u8 animationDone;
 } ActingScoreGaugeDisplayTask;
 
 #endif // POKEPLATINUM_STRUCT_ACTING_SCORE_GAUGE_DISPLAY_TASK_H

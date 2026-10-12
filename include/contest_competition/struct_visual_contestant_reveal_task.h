@@ -7,16 +7,16 @@
 #include "contest_competition/struct_contest_packet_queue.h"
 
 typedef struct {
-    VisualCompetition *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    VisualMessageArgs unk_13;
-    u8 unk_17;
-    u8 unk_18;
-    u8 unk_19;
+    VisualCompetition *competition;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    u8 state;
+    u8 contestantID;
+    u8 timer;
+    VisualMessageArgs messageArgs;
+    u8 messageID;
+    u8 delay;
+    u8 flag;
 } VisualContestantRevealTask;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_CONTESTANT_REVEAL_TASK_H

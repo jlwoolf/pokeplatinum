@@ -6,14 +6,14 @@
 #include "contest_competition/struct_contest_final_scoring.h"
 
 typedef struct {
-    ContestFinalScoring *unk_00;
-    ContestPacketHeader unk_04;
-    ContestPacketQueue *unk_0C;
-    u8 unk_10;
-    s8 unk_11;
-    u8 unk_12;
-    s8 unk_13;
-    s8 unk_14;
+    ContestFinalScoring *finalScoring;
+    ContestPacketHeader header;
+    ContestPacketQueue *packetQueue;
+    u8 state;
+    s8 row;
+    u8 column;
+    s8 stepDelay;
+    s8 holdDelay;
 } FinalScoringStartTask;
 
 #endif // POKEPLATINUM_STRUCT_FINAL_SCORING_START_TASK_H

@@ -148,13 +148,13 @@ void contest_competition_02247A48(VisualCompetition *param0)
 {
     ContestPacketQueueConfig v0;
 
-    v0.unk_00 = Unk_contest_competition_02254488;
-    v0.unk_04 = NELEMS(Unk_contest_competition_02254488);
-    v0.playerContestantID = param0->unk_00->data.playerContestantID;
-    v0.unk_08 = param0->unk_00->data.leaderContestantID;
-    v0.isLinkContest = param0->unk_00->isLinkContest;
+    v0.handlers = Unk_contest_competition_02254488;
+    v0.handlerCount = NELEMS(Unk_contest_competition_02254488);
+    v0.playerContestantID = param0->contest->data.playerContestantID;
+    v0.selfContestantID = param0->contest->data.leaderContestantID;
+    v0.isLinkContest = param0->contest->isLinkContest;
 
-    contest_competition_0224F18C(&param0->unk_4F8, &v0);
+    contest_competition_0224F18C(&param0->packetQueue, &v0);
 }
 
 static int contest_competition_02247A88(ContestPacketQueue *param0, void *param1, int param2, void *param3)
@@ -187,9 +187,9 @@ static void contest_competition_02247AC4(ContestPacketQueue *param0, void *param
 {
     VisualCompetition *v0 = param1;
 
-    v0->unk_F14 = 1;
+    v0->initialized = 1;
 
-    if (Contest_IsPlayerLeader(v0->unk_00) == FALSE) {
+    if (Contest_IsPlayerLeader(v0->contest) == FALSE) {
         contest_competition_0224F26C(param0, param2, NULL, 0);
     }
 }
@@ -212,19 +212,19 @@ static void contest_competition_02247B00(ContestPacketQueue *param0, void *param
     v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoDropTask));
     MI_CpuClear8(v2, sizeof(VisualPhotoDropTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->contestantID = v1->contestantID;
 
     for (v4 = 0; v4 < 4; v4++) {
-        if (v2->unk_00->unk_F18[v4].unk_00 != NULL) {
-            PhotoSprite_Free(v2->unk_00->unk_F18[v4].unk_00);
-            v2->unk_00->unk_F18[v4].unk_00 = NULL;
+        if (v2->competition->photoSprites[v4].photoSprite != NULL) {
+            PhotoSprite_Free(v2->competition->photoSprites[v4].photoSprite);
+            v2->competition->photoSprites[v4].photoSprite = NULL;
         }
     }
 
-    v3 = Pokemon_DPSpriteYOffset(v0->unk_0C.unk_00->contestMons[v1->unk_00], 2);
+    v3 = Pokemon_DPSpriteYOffset(v0->scene.contestData->contestMons[v1->contestantID], 2);
 
     {
         PhotoSpriteConfig v5;
@@ -234,11 +234,11 @@ static void contest_competition_02247B00(ContestPacketQueue *param0, void *param
         v5.heapID = HEAP_ID_22;
         v5.unk_04 = 128;
         v5.unk_08 = (96 - 32) + 80 / 2;
-        v0->unk_F18[v1->unk_00].unk_04 = 128;
-        v0->unk_F18[v1->unk_00].unk_08 = (96 - 32) + 80 / 2;
-        v0->unk_F18[v1->unk_00].unk_00 = PhotoSprite_CreateForContestNoBackdrop(&v5, v0->unk_00->data.photos[v1->unk_00]);
+        v0->photoSprites[v1->contestantID].x = 128;
+        v0->photoSprites[v1->contestantID].y = (96 - 32) + 80 / 2;
+        v0->photoSprites[v1->contestantID].photoSprite = PhotoSprite_CreateForContestNoBackdrop(&v5, v0->contest->data.photos[v1->contestantID]);
 
-        PhotoSprite_SetTransformEnabled(v0->unk_F18[v1->unk_00].unk_00, 0);
+        PhotoSprite_SetTransformEnabled(v0->photoSprites[v1->contestantID].photoSprite, 0);
     }
 
     {
@@ -247,13 +247,13 @@ static void contest_competition_02247B00(ContestPacketQueue *param0, void *param
         G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG0, -16);
         GX_SetVisibleWnd(GX_WNDMASK_W0);
 
-        v0->unk_F58 = 0;
-        v0->unk_F59 = 0;
-        v0->unk_F5A = 255;
-        v0->unk_F5B = (Unk_contest_competition_02254468[0] + 4) * 8;
+        v0->window0Left = 0;
+        v0->window0Top = 0;
+        v0->window0Right = 255;
+        v0->window0Bottom = (Unk_contest_competition_02254468[0] + 4) * 8;
     }
 
-    Graphics_LoadTilemapToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 21, v0->unk_0C.unk_24, 2, 0, 0, 1, HEAP_ID_22);
+    Graphics_LoadTilemapToBgLayer(NARC_INDEX_CONTEST__GRAPHIC__CONTEST_BG, 21, v0->scene.bgConfig, 2, 0, 0, 1, HEAP_ID_22);
     SysTask_Start(contest_competition_02247C5C, v2, 30000);
 }
 
@@ -262,37 +262,37 @@ static void contest_competition_02247C5C(SysTask *param0, void *param1)
     VisualPhotoRevealTask *v0 = param1;
     int v1;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        v0->unk_10++;
+        v0->state++;
         break;
     case 1:
         G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
-        v1 = Pokemon_DPSpriteYOffset(v0->unk_00->unk_0C.unk_00->contestMons[v0->unk_11], 2);
-        PhotoSprite_MoveToWithOffset(v0->unk_00->unk_F18[v0->unk_11].unk_00, v0->unk_00->unk_F18[v0->unk_11].unk_04, v0->unk_00->unk_F18[v0->unk_11].unk_08, v1);
-        PhotoSprite_SetTransformEnabled(v0->unk_00->unk_F18[v0->unk_11].unk_00, 1);
-        v0->unk_10++;
+        v1 = Pokemon_DPSpriteYOffset(v0->competition->scene.contestData->contestMons[v0->contestantID], 2);
+        PhotoSprite_MoveToWithOffset(v0->competition->photoSprites[v0->contestantID].photoSprite, v0->competition->photoSprites[v0->contestantID].x, v0->competition->photoSprites[v0->contestantID].y, v1);
+        PhotoSprite_SetTransformEnabled(v0->competition->photoSprites[v0->contestantID].photoSprite, 1);
+        v0->state++;
         break;
     case 2:
-        v0->unk_10++;
+        v0->state++;
         break;
     case 3:
         G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
-        PaletteData_BlendMulti(v0->unk_00->unk_0C.unk_44, PLTTBUF_MAIN_BG, 0x1fff, 0, 0x0);
-        PaletteData_BlendMulti(v0->unk_00->unk_0C.unk_44, PLTTBUF_MAIN_OBJ, 0x3fff, 0, 0x0);
+        PaletteData_BlendMulti(v0->competition->scene.paletteData, PLTTBUF_MAIN_BG, 0x1fff, 0, 0x0);
+        PaletteData_BlendMulti(v0->competition->scene.paletteData, PLTTBUF_MAIN_OBJ, 0x3fff, 0, 0x0);
         Sound_PlayEffect(SEQ_SE_DP_CON_019_sseq);
-        v0->unk_10++;
+        v0->state++;
         break;
     case 4:
-        v0->unk_12++;
+        v0->timer++;
 
-        if (v0->unk_12 > 10) {
-            v0->unk_12 = 0;
-            v0->unk_10++;
+        if (v0->timer > 10) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -313,10 +313,10 @@ static void contest_competition_02247D7C(ContestPacketQueue *param0, void *param
     VisualPhotoDropTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoDropTask));
     MI_CpuClear8(v2, sizeof(VisualPhotoDropTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->contestantID = v1->contestantID;
 
     SysTask_Start(contest_competition_02247DC8, v2, 30000);
 }
@@ -326,26 +326,26 @@ static void contest_competition_02247DC8(SysTask *param0, void *param1)
     VisualPhotoDropTask *v0 = param1;
     int v1;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        v0->unk_14 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_08[v0->unk_11], MON_SPRITE_X_CENTER) << 8;
-        v0->unk_18 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_08[v0->unk_11], MON_SPRITE_Y_CENTER) << 8;
-        v0->unk_10++;
+        v0->x = PokemonSprite_GetAttribute(v0->competition->scene.pokemonSprites[v0->contestantID], MON_SPRITE_X_CENTER) << 8;
+        v0->y = PokemonSprite_GetAttribute(v0->competition->scene.pokemonSprites[v0->contestantID], MON_SPRITE_Y_CENTER) << 8;
+        v0->state++;
         break;
     case 1:
-        v1 = Pokemon_DPSpriteYOffset(v0->unk_00->unk_0C.unk_00->contestMons[v0->unk_11], 2);
-        v0->unk_18 += 0x100;
+        v1 = Pokemon_DPSpriteYOffset(v0->competition->scene.contestData->contestMons[v0->contestantID], 2);
+        v0->y += 0x100;
 
-        if (v0->unk_18 >= ((96 - 32) << 8)) {
-            v0->unk_18 = (96 - 32) << 8;
-            v0->unk_10++;
+        if (v0->y >= ((96 - 32) << 8)) {
+            v0->y = (96 - 32) << 8;
+            v0->state++;
         }
 
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_08[v0->unk_11], MON_SPRITE_X_CENTER, v0->unk_14 >> 8);
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_08[v0->unk_11], MON_SPRITE_Y_CENTER, v0->unk_18 >> 8);
+        PokemonSprite_SetAttribute(v0->competition->scene.pokemonSprites[v0->contestantID], MON_SPRITE_X_CENTER, v0->x >> 8);
+        PokemonSprite_SetAttribute(v0->competition->scene.pokemonSprites[v0->contestantID], MON_SPRITE_Y_CENTER, v0->y >> 8);
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -366,11 +366,11 @@ static void contest_competition_02247E8C(ContestPacketQueue *param0, void *param
     VisualPhotoJudgingTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoJudgingTask));
     MI_CpuClear8(v2, sizeof(VisualPhotoJudgingTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_12 = v1->unk_01;
-    v2->unk_1A = 0;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->threshold1 = v1->visualRank;
+    v2->judgingState = 0;
 
     SysTask_Start(contest_competition_02247F8C, v2, 30000);
 }
@@ -382,11 +382,11 @@ static void contest_competition_02247EDC(ContestPacketQueue *param0, void *param
     VisualPhotoJudgingTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoJudgingTask));
     MI_CpuClear8(v2, sizeof(VisualPhotoJudgingTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_12 = v1->unk_02;
-    v2->unk_1A = 1;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->threshold1 = v1->danceRank;
+    v2->judgingState = 1;
 
     SysTask_Start(contest_competition_02247F8C, v2, 30000);
 }
@@ -398,14 +398,14 @@ static void contest_competition_02247F2C(ContestPacketQueue *param0, void *param
     VisualPhotoJudgingTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoJudgingTask));
     MI_CpuClear8(v2, sizeof(VisualPhotoJudgingTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_12 = v1->unk_01 + v1->unk_02;
-    v2->unk_14 = v1->unk_01;
-    v2->unk_15 = v1->unk_02;
-    v2->unk_1A = 0;
-    v2->unk_1B = 1;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->threshold1 = v1->visualRank + v1->danceRank;
+    v2->threshold2 = v1->visualRank;
+    v2->param = v1->danceRank;
+    v2->judgingState = 0;
+    v2->flag = 1;
 
     SysTask_Start(contest_competition_02247F8C, v2, 30000);
 }
@@ -415,51 +415,51 @@ static void contest_competition_02247F8C(SysTask *param0, void *param1)
     VisualPhotoJudgingTask *v0 = param1;
     int v1;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
         Sound_PlayEffect(SEQ_SE_DP_CON_007_sseq);
-        v0->unk_11 = 15;
-        v0->unk_10++;
+        v0->contestantID = 15;
+        v0->state++;
     case 1:
-        if (v0->unk_13 >= v0->unk_12) {
-            v0->unk_11 = 0;
+        if (v0->timer >= v0->threshold1) {
+            v0->contestantID = 0;
             Sound_PlayEffect(SEQ_SE_DP_CON_007_sseq);
-            v0->unk_10++;
+            v0->state++;
             break;
-        } else if (v0->unk_1B == 1) {
-            if (v0->unk_13 >= v0->unk_14) {
-                v0->unk_1A = 1;
+        } else if (v0->flag == 1) {
+            if (v0->timer >= v0->threshold2) {
+                v0->judgingState = 1;
             }
         }
 
-        if (v0->unk_11 > 0) {
-            v0->unk_11--;
+        if (v0->contestantID > 0) {
+            v0->contestantID--;
             break;
         }
 
-        v0->unk_11 = 3;
+        v0->contestantID = 3;
 
         {
             s16 v2, v3, v4, v5;
 
-            v4 = Contest_GetRNGNext(v0->unk_00->unk_00) % ((256 - 32 - 32) / 2);
-            v5 = Contest_GetRNGNext(v0->unk_00->unk_00) % ((192 - 32 - 32) / 2);
+            v4 = Contest_GetRNGNext(v0->competition->contest) % ((256 - 32 - 32) / 2);
+            v5 = Contest_GetRNGNext(v0->competition->contest) % ((192 - 32 - 32) / 2);
 
-            if (Contest_GetRNGNext(v0->unk_00->unk_00) & 1) {
+            if (Contest_GetRNGNext(v0->competition->contest) & 1) {
                 v2 = 128 + v4;
             } else {
                 v2 = 128 - v4;
             }
 
-            if (Contest_GetRNGNext(v0->unk_00->unk_00) & 1) {
+            if (Contest_GetRNGNext(v0->competition->contest) & 1) {
                 v3 = 96 + v5;
             } else {
                 v3 = 96 - v5;
             }
 
-            if (v0->unk_13 > 0) {
-                if ((((v0->unk_16 < 128) && (v2 < 128)) || ((v0->unk_16 > 128) && (v2 > 128))) && (((v0->unk_18 < 96) && (v3 < 96)) || ((v0->unk_18 > 96) && (v3 > 96)))) {
-                    if (Contest_GetRNGNext(v0->unk_00->unk_00) & 1) {
+            if (v0->timer > 0) {
+                if ((((v0->prevX < 128) && (v2 < 128)) || ((v0->prevX > 128) && (v2 > 128))) && (((v0->prevY < 96) && (v3 < 96)) || ((v0->prevY > 96) && (v3 > 96)))) {
+                    if (Contest_GetRNGNext(v0->competition->contest) & 1) {
                         if (v2 < 128) {
                             v2 = 128 + v4;
                         } else {
@@ -475,27 +475,27 @@ static void contest_competition_02247F8C(SysTask *param0, void *param1)
                 }
             }
 
-            if (v0->unk_13 & 1) {
-                contest_competition_022477B8(v0->unk_00, v2, v3, 180 << FX32_SHIFT, v0->unk_1A);
+            if (v0->timer & 1) {
+                contest_competition_022477B8(v0->competition, v2, v3, 180 << FX32_SHIFT, v0->judgingState);
             } else {
-                contest_competition_022477B8(v0->unk_00, v2, v3, 0, v0->unk_1A);
+                contest_competition_022477B8(v0->competition, v2, v3, 0, v0->judgingState);
             }
 
-            v0->unk_16 = v2;
-            v0->unk_18 = v3;
+            v0->prevX = v2;
+            v0->prevY = v3;
         }
-        v0->unk_13++;
+        v0->timer++;
         break;
     case 2:
-        v0->unk_11++;
+        v0->contestantID++;
 
-        if (v0->unk_11 > 30) {
-            v0->unk_11 = 0;
-            v0->unk_10++;
+        if (v0->contestantID > 30) {
+            v0->contestantID = 0;
+            v0->state++;
         }
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -516,10 +516,10 @@ static void contest_competition_0224814C(ContestPacketQueue *param0, void *param
     VisualPhotoExitTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualPhotoExitTask));
     MI_CpuClear8(v2, sizeof(VisualPhotoExitTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->contestantID = v1->contestantID;
 
     SysTask_Start(contest_competition_02248198, v2, 30000);
 }
@@ -527,27 +527,27 @@ static void contest_competition_0224814C(ContestPacketQueue *param0, void *param
 static void contest_competition_02248198(SysTask *param0, void *param1)
 {
     VisualPhotoExitTask *v0 = param1;
-    int monYOffset = Pokemon_DPSpriteYOffset(v0->unk_00->unk_0C.unk_00->contestMons[v0->unk_11], 2);
+    int monYOffset = Pokemon_DPSpriteYOffset(v0->competition->scene.contestData->contestMons[v0->contestantID], 2);
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        v0->unk_14 = v0->unk_00->unk_F18[v0->unk_11].unk_04 << 8;
-        v0->unk_18 = v0->unk_00->unk_F18[v0->unk_11].unk_08 << 8;
-        v0->unk_10++;
+        v0->x = v0->competition->photoSprites[v0->contestantID].x << 8;
+        v0->y = v0->competition->photoSprites[v0->contestantID].y << 8;
+        v0->state++;
         break;
     case 1:
-        v0->unk_14 += 0x300;
+        v0->x += 0x300;
 
-        if (v0->unk_14 >= (300 << 8)) {
-            v0->unk_10++;
+        if (v0->x >= (300 << 8)) {
+            v0->state++;
         }
 
-        PhotoSprite_MoveToWithOffset(v0->unk_00->unk_F18[v0->unk_11].unk_00, v0->unk_14 >> 8, v0->unk_18 >> 8, monYOffset);
+        PhotoSprite_MoveToWithOffset(v0->competition->photoSprites[v0->contestantID].photoSprite, v0->x >> 8, v0->y >> 8, monYOffset);
         break;
     default:
-        PhotoSprite_Free(v0->unk_00->unk_F18[v0->unk_11].unk_00);
-        v0->unk_00->unk_F18[v0->unk_11].unk_00 = NULL;
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        PhotoSprite_Free(v0->competition->photoSprites[v0->contestantID].photoSprite);
+        v0->competition->photoSprites[v0->contestantID].photoSprite = NULL;
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -567,9 +567,9 @@ static void contest_competition_0224826C(ContestPacketQueue *param0, void *param
     VisualBallCapsuleTask *v1 = Heap_Alloc(HEAP_ID_22, sizeof(VisualBallCapsuleTask));
     MI_CpuClear8(v1, sizeof(VisualBallCapsuleTask));
 
-    v1->unk_00 = v0;
-    v1->unk_04 = *param2;
-    v1->unk_0C = param0;
+    v1->competition = v0;
+    v1->header = *param2;
+    v1->packetQueue = param0;
 
     SysTask_Start(contest_competition_022482B0, v1, 30000);
 }
@@ -581,31 +581,31 @@ static void contest_competition_022482B0(SysTask *param0, void *param1)
     switch (v0->state) {
     case 0:
 
-        if (v0->unk_14 > 0) {
-            v0->unk_14--;
+        if (v0->holdDelay > 0) {
+            v0->holdDelay--;
             break;
         }
 
-        if (v0->unk_13 > 0) {
-            v0->unk_13--;
+        if (v0->stepDelay > 0) {
+            v0->stepDelay--;
             break;
         }
 
-        v0->unk_13 = 1;
+        v0->stepDelay = 1;
 
         {
             u16 *v1, *v2;
             int v3, v4, v5, v6, v7;
 
-            v1 = Bg_GetTilemapBuffer(v0->unk_00->unk_0C.unk_24, 2);
+            v1 = Bg_GetTilemapBuffer(v0->competition->scene.bgConfig, 2);
 
             for (v4 = 0; v4 < 4; v4++) {
-                if (Unk_contest_competition_02254468[v0->unk_11] + v4 < 0) {
+                if (Unk_contest_competition_02254468[v0->row] + v4 < 0) {
                     continue;
                 }
 
-                v2 = &v1[32 * (Unk_contest_competition_02254468[v0->unk_11] + v4)];
-                v7 = Unk_contest_competition_02254470[v0->unk_12] + 32 * v4;
+                v2 = &v1[32 * (Unk_contest_competition_02254468[v0->row] + v4)];
+                v7 = Unk_contest_competition_02254470[v0->column] + 32 * v4;
                 v5 = 0;
 
                 for (v6 = 0; v6 < 32 / 8; v6++) {
@@ -619,8 +619,8 @@ static void contest_competition_022482B0(SysTask *param0, void *param1)
             }
 
             {
-                if ((v0->unk_11 > 0) && (v0->unk_12 == 0)) {
-                    v2 = &v1[32 * Unk_contest_competition_02254468[v0->unk_11 - 1]];
+                if ((v0->row > 0) && (v0->column == 0)) {
+                    v2 = &v1[32 * Unk_contest_competition_02254468[v0->row - 1]];
 
                     for (v6 = 0; v6 < 32; v6++) {
                         v2[v6] &= 0xfc00;
@@ -628,23 +628,23 @@ static void contest_competition_022482B0(SysTask *param0, void *param1)
                 }
             }
 
-            Bg_ScheduleTilemapTransfer(v0->unk_00->unk_0C.unk_24, 2);
+            Bg_ScheduleTilemapTransfer(v0->competition->scene.bgConfig, 2);
         }
 
-        v0->unk_12++;
+        v0->column++;
 
-        if (v0->unk_12 >= NELEMS(Unk_contest_competition_02254470)) {
-            v0->unk_12 = 0;
-            v0->unk_11++;
-            v0->unk_14 = 0;
+        if (v0->column >= NELEMS(Unk_contest_competition_02254470)) {
+            v0->column = 0;
+            v0->row++;
+            v0->holdDelay = 0;
 
-            if (v0->unk_11 >= NELEMS(Unk_contest_competition_02254468)) {
+            if (v0->row >= NELEMS(Unk_contest_competition_02254468)) {
                 v0->state++;
             }
         }
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -664,9 +664,9 @@ static void contest_competition_02248420(ContestPacketQueue *param0, void *param
     VisualBallSealTask *v1 = Heap_Alloc(HEAP_ID_22, sizeof(VisualBallSealTask));
     MI_CpuClear8(v1, sizeof(VisualBallSealTask));
 
-    v1->unk_00 = v0;
-    v1->unk_04 = *param2;
-    v1->unk_0C = param0;
+    v1->competition = v0;
+    v1->header = *param2;
+    v1->packetQueue = param0;
 
     SysTask_Start(contest_competition_02248464, v1, 30000);
 }
@@ -678,34 +678,34 @@ static void contest_competition_02248464(SysTask *param0, void *param1)
     switch (v0->state) {
     case 0:
 
-        if (v0->unk_14 > 0) {
-            v0->unk_14--;
+        if (v0->holdDelay > 0) {
+            v0->holdDelay--;
             break;
         }
 
-        if (v0->unk_13 > 0) {
-            v0->unk_13--;
+        if (v0->stepDelay > 0) {
+            v0->stepDelay--;
             break;
         }
 
-        v0->unk_13 = 1;
+        v0->stepDelay = 1;
 
         {
             u16 *v1, *v2;
             int v3, v4, v5, v6, v7;
             int v8;
 
-            v1 = Bg_GetTilemapBuffer(v0->unk_00->unk_0C.unk_24, 2);
+            v1 = Bg_GetTilemapBuffer(v0->competition->scene.bgConfig, 2);
 
             for (v4 = 0; v4 < 4; v4++) {
-                v8 = Unk_contest_competition_02254468[NELEMS(Unk_contest_competition_02254468) - 1 - v0->unk_11];
+                v8 = Unk_contest_competition_02254468[NELEMS(Unk_contest_competition_02254468) - 1 - v0->row];
 
                 if (v8 + v4 < 0) {
                     continue;
                 }
 
                 v2 = &v1[32 * (v8 + v4)];
-                v7 = Unk_contest_competition_02254470[NELEMS(Unk_contest_competition_02254470) - 1 - v0->unk_12] + 32 * v4;
+                v7 = Unk_contest_competition_02254470[NELEMS(Unk_contest_competition_02254470) - 1 - v0->column] + 32 * v4;
                 v5 = 0;
 
                 for (v6 = 0; v6 < 32 / 8; v6++) {
@@ -719,8 +719,8 @@ static void contest_competition_02248464(SysTask *param0, void *param1)
             }
 
             {
-                if ((v0->unk_11 > 0) && (v0->unk_12 == 0)) {
-                    v8 = Unk_contest_competition_02254468[NELEMS(Unk_contest_competition_02254468) - 1 - v0->unk_11 + 1];
+                if ((v0->row > 0) && (v0->column == 0)) {
+                    v8 = Unk_contest_competition_02254468[NELEMS(Unk_contest_competition_02254468) - 1 - v0->row + 1];
                     v8 += 4 - 1;
                     v2 = &v1[v8 * 32];
 
@@ -731,24 +731,24 @@ static void contest_competition_02248464(SysTask *param0, void *param1)
                 }
             }
 
-            Bg_ScheduleTilemapTransfer(v0->unk_00->unk_0C.unk_24, 2);
+            Bg_ScheduleTilemapTransfer(v0->competition->scene.bgConfig, 2);
         }
 
-        v0->unk_12++;
+        v0->column++;
 
-        if (v0->unk_12 >= NELEMS(Unk_contest_competition_02254470)) {
-            v0->unk_12 = 0;
-            v0->unk_11++;
-            v0->unk_14 = 0;
+        if (v0->column >= NELEMS(Unk_contest_competition_02254470)) {
+            v0->column = 0;
+            v0->row++;
+            v0->holdDelay = 0;
 
-            if (v0->unk_11 >= NELEMS(Unk_contest_competition_02254468)) {
+            if (v0->row >= NELEMS(Unk_contest_competition_02254468)) {
                 v0->state++;
             }
         }
 
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -769,10 +769,10 @@ static void contest_competition_022485FC(ContestPacketQueue *param0, void *param
     VisualBallThrowTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualBallThrowTask));
     MI_CpuClear8(v2, sizeof(VisualBallThrowTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->unused_11 = v1->contestantID;
 
     SysTask_Start(contest_competition_02248648, v2, 30000);
 }
@@ -783,23 +783,23 @@ static void contest_competition_02248648(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        contest_competition_022478D0(v0->unk_00, v0->unk_11);
-        v0->unk_14 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER) * 0x100;
-        v0->unk_18 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER) * 0x100;
+        contest_competition_022478D0(v0->competition, v0->unused_11);
+        v0->x = PokemonSprite_GetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER) * 0x100;
+        v0->y = PokemonSprite_GetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER) * 0x100;
         v0->state++;
     case 1:
-        v0->unk_14 -= 0x400;
+        v0->x -= 0x400;
 
-        if (v0->unk_14 <= (230 * 0x100)) {
-            v0->unk_14 = 230 * 0x100;
+        if (v0->x <= (230 * 0x100)) {
+            v0->x = 230 * 0x100;
             v0->state++;
         }
 
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER, v0->unk_14 / 0x100);
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER, v0->unk_18 / 0x100);
+        PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER, v0->x / 0x100);
+        PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER, v0->y / 0x100);
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -820,10 +820,10 @@ static void contest_competition_022486F8(ContestPacketQueue *param0, void *param
     VisualBallThrowTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualBallThrowTask));
     MI_CpuClear8(v2, sizeof(VisualBallThrowTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->unused_11 = v1->contestantID;
 
     SysTask_Start(contest_competition_02248744, v2, 30000);
 }
@@ -834,24 +834,24 @@ static void contest_competition_02248744(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        GF_ASSERT(v0->unk_00->unk_0C.unk_18 != NULL);
-        v0->unk_14 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER) * 0x100;
-        v0->unk_18 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER) * 0x100;
+        GF_ASSERT(v0->competition->scene.trainerSprite != NULL);
+        v0->x = PokemonSprite_GetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER) * 0x100;
+        v0->y = PokemonSprite_GetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER) * 0x100;
         v0->state++;
     case 1:
-        v0->unk_14 += 0x400;
+        v0->x += 0x400;
 
-        if (v0->unk_14 >= (320 * 0x100)) {
-            v0->unk_14 = 320 * 0x100;
+        if (v0->x >= (320 * 0x100)) {
+            v0->x = 320 * 0x100;
             v0->state++;
         }
 
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER, v0->unk_14 / 0x100);
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER, v0->unk_18 / 0x100);
+        PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER, v0->x / 0x100);
+        PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER, v0->y / 0x100);
         break;
     default:
-        contest_competition_02247918(v0->unk_00);
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_02247918(v0->competition);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -872,15 +872,15 @@ static void contest_competition_022487FC(ContestPacketQueue *param0, void *param
     VisualBallCapsuleShowTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualBallCapsuleShowTask));
     MI_CpuClear8(v2, sizeof(VisualBallCapsuleShowTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
-    v2->unk_2C.unk_00 = v0;
-    v2->unk_38.unk_00 = v0;
-    v2->unk_38.contestantID = v1->unk_00;
-    v2->unk_48.unk_00 = v0;
-    v2->unk_14.mon = v0->unk_0C.unk_00->contestMons[v1->unk_00];
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->contestantID = v1->contestantID;
+    v2->rotation.competition = v0;
+    v2->movement.competition = v0;
+    v2->movement.contestantID = v1->contestantID;
+    v2->appeal.competition = v0;
+    v2->capsule.mon = v0->scene.contestData->contestMons[v1->contestantID];
 
     SysTask_Start(contest_competition_02248860, v2, 30000);
 }
@@ -891,41 +891,41 @@ static void contest_competition_02248860(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        SysTask_Start(contest_competition_02248A24, &v0->unk_2C, (30000 + 10));
-        SysTask_Start(contest_competition_02248BE0, &v0->unk_48, (30000 + 10));
+        SysTask_Start(contest_competition_02248A24, &v0->rotation, (30000 + 10));
+        SysTask_Start(contest_competition_02248BE0, &v0->appeal, (30000 + 10));
 
         {
             PhotoSpriteConfig v1;
             int v2;
 
-            v2 = Pokemon_DPSpriteYOffset(v0->unk_38.unk_00->unk_0C.unk_00->contestMons[v0->unk_38.contestantID], 2);
+            v2 = Pokemon_DPSpriteYOffset(v0->movement.competition->scene.contestData->contestMons[v0->movement.contestantID], 2);
             MI_CpuClear8(&v1, sizeof(PhotoSpriteConfig));
 
             v1.heapID = HEAP_ID_22;
             v1.unk_04 = 128;
             v1.unk_08 = (96 - 32) + v2;
-            v0->unk_38.unk_00->unk_F18[v0->unk_38.contestantID].unk_00 = PhotoSprite_CreateForContestNoBackdrop(&v1, v0->unk_38.unk_00->unk_00->data.photos[v0->unk_38.contestantID]);
+            v0->movement.competition->photoSprites[v0->movement.contestantID].photoSprite = PhotoSprite_CreateForContestNoBackdrop(&v1, v0->movement.competition->contest->data.photos[v0->movement.contestantID]);
 
-            PhotoSprite_SetTransformEnabled(v0->unk_38.unk_00->unk_F18[v0->unk_38.contestantID].unk_00, 0);
+            PhotoSprite_SetTransformEnabled(v0->movement.competition->photoSprites[v0->movement.contestantID].photoSprite, 0);
         }
 
         v0->state++;
         break;
     case 1:
-        if (v0->unk_2C.unk_09 == 1) {
-            SysTask_Start(contest_competition_022489C8, &v0->unk_14, (30000 + 10));
-            SysTask_Start(contest_competition_02248AA4, &v0->unk_38, (30000 + 10));
+        if (v0->rotation.done == 1) {
+            SysTask_Start(contest_competition_022489C8, &v0->capsule, (30000 + 10));
+            SysTask_Start(contest_competition_02248AA4, &v0->movement, (30000 + 10));
             v0->state++;
         }
         break;
     case 2:
-        if ((v0->unk_14.unk_15 == 1) && (v0->unk_38.unk_0D == 1) && (v0->unk_48.unk_0D == 1)) {
+        if ((v0->capsule.done == 1) && (v0->movement.done == 1) && (v0->appeal.done == 1)) {
             Sound_PlayEffect(SEQ_SE_DP_CON_007_sseq);
             v0->state++;
         }
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(param1);
         SysTask_Done(param0);
         return;
@@ -944,21 +944,21 @@ static void contest_competition_022489C8(SysTask *param0, void *param1)
 
     switch (v0->state) {
     case 0:
-        v0->unk_00.battlerType = 0;
-        v0->unk_00.mon = v0->mon;
-        v0->unk_0C = BallCapsuleSealEffect_New(HEAP_ID_22, &v0->unk_00);
-        BallCapsuleSealEffect_Start(v0->unk_0C);
-        BallCapsuleSealEffect_Play(v0->unk_0C, Contest_SetEmitterPos);
+        v0->config.battlerType = 0;
+        v0->config.mon = v0->mon;
+        v0->sealEffect = BallCapsuleSealEffect_New(HEAP_ID_22, &v0->config);
+        BallCapsuleSealEffect_Start(v0->sealEffect);
+        BallCapsuleSealEffect_Play(v0->sealEffect, Contest_SetEmitterPos);
         v0->state++;
         break;
     case 1:
-        if (BallCapsuleSealEffect_IsActive(v0->unk_0C) == 0) {
-            BallCapsuleSealEffect_Free(v0->unk_0C);
+        if (BallCapsuleSealEffect_IsActive(v0->sealEffect) == 0) {
+            BallCapsuleSealEffect_Free(v0->sealEffect);
             v0->state++;
         }
         break;
     default:
-        v0->unk_15 = 1;
+        v0->done = 1;
         SysTask_Done(param0);
         return;
     }
@@ -968,13 +968,13 @@ static void contest_competition_02248A24(SysTask *param0, void *param1)
 {
     VisualBallRotation *v0 = param1;
 
-    switch (v0->unk_08) {
+    switch (v0->state) {
     case 0:
-        v0->unk_0A++;
+        v0->counter++;
 
-        if (v0->unk_0A >= 1) {
-            v0->unk_0A = 0;
-            v0->unk_08++;
+        if (v0->counter >= 1) {
+            v0->counter = 0;
+            v0->state++;
         }
         break;
     case 1: {
@@ -984,13 +984,13 @@ static void contest_competition_02248A24(SysTask *param0, void *param1)
         v1.heapID = HEAP_ID_22;
         v1.mode = 0;
         v1.target = 0;
-        v1.cellActorSys = v0->unk_00->unk_0C.unk_1C;
-        v1.paletteSys = v0->unk_00->unk_0C.unk_44;
+        v1.cellActorSys = v0->competition->scene.spriteSystem;
+        v1.paletteSys = v0->competition->scene.paletteData;
         v1.bgPrio = 1;
 
         v0->ballRotation = BallRotation_New(&v1);
     }
-        v0->unk_08++;
+        v0->state++;
         break;
     case 2:
         if (BallRotation_IsActive(v0->ballRotation) == 1) {
@@ -998,7 +998,7 @@ static void contest_competition_02248A24(SysTask *param0, void *param1)
         }
     default:
         BallRotation_Free(v0->ballRotation);
-        v0->unk_09 = 1;
+        v0->done = 1;
         SysTask_Done(param0);
         return;
     }
@@ -1009,40 +1009,40 @@ static void contest_competition_02248AA4(SysTask *param0, void *param1)
     VisualBallMovement *v0 = param1;
     s32 v1;
 
-    v1 = Pokemon_DPSpriteYOffset(v0->unk_00->unk_0C.unk_00->contestMons[v0->contestantID], 2);
+    v1 = Pokemon_DPSpriteYOffset(v0->competition->scene.contestData->contestMons[v0->contestantID], 2);
 
-    switch (v0->unk_0C) {
+    switch (v0->state) {
     case 0: {
-        v0->unk_04 = 0;
-        v0->unk_08 = 0;
-        PhotoSprite_SetScale(v0->unk_00->unk_F18[v0->contestantID].unk_00, 0, 0, FX32_ONE);
+        v0->scaleX = 0;
+        v0->scaleY = 0;
+        PhotoSprite_SetScale(v0->competition->photoSprites[v0->contestantID].photoSprite, 0, 0, FX32_ONE);
 
-        v0->unk_00->unk_F18[v0->contestantID].unk_04 = 128;
-        v0->unk_00->unk_F18[v0->contestantID].unk_08 = (96 - 32) + 80 / 2;
-        PhotoSprite_SetTransformEnabled(v0->unk_00->unk_F18[v0->contestantID].unk_00, 1);
+        v0->competition->photoSprites[v0->contestantID].x = 128;
+        v0->competition->photoSprites[v0->contestantID].y = (96 - 32) + 80 / 2;
+        PhotoSprite_SetTransformEnabled(v0->competition->photoSprites[v0->contestantID].photoSprite, 1);
     }
-        v0->unk_0C++;
+        v0->state++;
     case 1:
-        v0->unk_04 += (FX32_ONE / (0x100 / 0x20));
-        v0->unk_08 += (FX32_ONE / (0x100 / 0x20));
+        v0->scaleX += (FX32_ONE / (0x100 / 0x20));
+        v0->scaleY += (FX32_ONE / (0x100 / 0x20));
 
-        if (v0->unk_04 >= FX32_ONE) {
-            v0->unk_04 = FX32_ONE;
-            v0->unk_08 = FX32_ONE;
+        if (v0->scaleX >= FX32_ONE) {
+            v0->scaleX = FX32_ONE;
+            v0->scaleY = FX32_ONE;
         }
 
-        PhotoSprite_SetScale(v0->unk_00->unk_F18[v0->contestantID].unk_00, v0->unk_04, v0->unk_08, FX32_ONE);
-        PhotoSprite_MoveToWithOffset(v0->unk_00->unk_F18[v0->contestantID].unk_00, v0->unk_00->unk_F18[v0->contestantID].unk_04, v0->unk_00->unk_F18[v0->contestantID].unk_08, v1);
+        PhotoSprite_SetScale(v0->competition->photoSprites[v0->contestantID].photoSprite, v0->scaleX, v0->scaleY, FX32_ONE);
+        PhotoSprite_MoveToWithOffset(v0->competition->photoSprites[v0->contestantID].photoSprite, v0->competition->photoSprites[v0->contestantID].x, v0->competition->photoSprites[v0->contestantID].y, v1);
 
-        if (v0->unk_04 >= FX32_ONE) {
-            s32 species = Pokemon_GetValue(v0->unk_00->unk_0C.unk_00->contestMons[v0->contestantID], MON_DATA_SPECIES, NULL);
-            s32 form = Pokemon_GetValue(v0->unk_00->unk_0C.unk_00->contestMons[v0->contestantID], MON_DATA_FORM, NULL);
-            PlayCryWithParams(v0->unk_00->unk_00->chatotCry[v0->contestantID], POKECRY_NORMAL, species, form, 0, 127, NULL, HEAP_ID_22);
-            v0->unk_0C++;
+        if (v0->scaleX >= FX32_ONE) {
+            s32 species = Pokemon_GetValue(v0->competition->scene.contestData->contestMons[v0->contestantID], MON_DATA_SPECIES, NULL);
+            s32 form = Pokemon_GetValue(v0->competition->scene.contestData->contestMons[v0->contestantID], MON_DATA_FORM, NULL);
+            PlayCryWithParams(v0->competition->contest->chatotCry[v0->contestantID], POKECRY_NORMAL, species, form, 0, 127, NULL, HEAP_ID_22);
+            v0->state++;
         }
         break;
     default:
-        v0->unk_0D = 1;
+        v0->done = 1;
         SysTask_Done(param0);
         return;
     }
@@ -1052,58 +1052,58 @@ static void contest_competition_02248BE0(SysTask *param0, void *param1)
 {
     VisualBallAppeal *v0 = param1;
 
-    switch (v0->unk_0C) {
+    switch (v0->state) {
     case 0:
-        GF_ASSERT(v0->unk_00->unk_0C.unk_18 != NULL);
+        GF_ASSERT(v0->competition->scene.trainerSprite != NULL);
 
-        v0->unk_0F++;
+        v0->timer++;
 
-        if (v0->unk_0F > 1) {
-            v0->unk_0F = 0;
-            v0->unk_0C++;
+        if (v0->timer > 1) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     case 1:
-        v0->unk_04 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER) * 0x100;
-        v0->unk_08 = PokemonSprite_GetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER) * 0x100;
-        v0->unk_0C++;
+        v0->x = PokemonSprite_GetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER) * 0x100;
+        v0->y = PokemonSprite_GetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER) * 0x100;
+        v0->state++;
     case 2:
-        if (v0->unk_0E & 1) {
-            PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER, v0->unk_04 / 0x100);
-            PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER, v0->unk_08 / 0x100);
+        if (v0->counter & 1) {
+            PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER, v0->x / 0x100);
+            PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER, v0->y / 0x100);
         } else {
-            PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER, v0->unk_04 / 0x100);
-            PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER, v0->unk_08 / 0x100 - 3);
+            PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER, v0->x / 0x100);
+            PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER, v0->y / 0x100 - 3);
         }
 
-        v0->unk_0E++;
+        v0->counter++;
 
-        if (v0->unk_0E >= 3) {
-            v0->unk_0C++;
+        if (v0->counter >= 3) {
+            v0->state++;
         }
         break;
     case 3:
-        v0->unk_0F++;
+        v0->timer++;
 
-        if (v0->unk_0F >= 7) {
-            v0->unk_0F = 0;
-            v0->unk_0C++;
+        if (v0->timer >= 7) {
+            v0->timer = 0;
+            v0->state++;
         }
         break;
     case 4:
-        v0->unk_04 += 0x400;
+        v0->x += 0x400;
 
-        if (v0->unk_04 >= (320 * 0x100)) {
-            v0->unk_04 = 320 * 0x100;
-            v0->unk_0C++;
+        if (v0->x >= (320 * 0x100)) {
+            v0->x = 320 * 0x100;
+            v0->state++;
         }
 
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_X_CENTER, v0->unk_04 / 0x100);
-        PokemonSprite_SetAttribute(v0->unk_00->unk_0C.unk_18, MON_SPRITE_Y_CENTER, v0->unk_08 / 0x100);
+        PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_X_CENTER, v0->x / 0x100);
+        PokemonSprite_SetAttribute(v0->competition->scene.trainerSprite, MON_SPRITE_Y_CENTER, v0->y / 0x100);
         break;
     default:
-        contest_competition_02247918(v0->unk_00);
-        v0->unk_0D = 1;
+        contest_competition_02247918(v0->competition);
+        v0->done = 1;
         SysTask_Done(param0);
         return;
     }
@@ -1123,14 +1123,14 @@ static void contest_competition_02248D3C(ContestPacketQueue *param0, void *param
     VisualContestantRevealTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualContestantRevealTask));
     MI_CpuClear8(v2, sizeof(VisualContestantRevealTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
-    v2->unk_11 = v1->unk_00;
-    v2->unk_13 = v1->unk_03;
-    v2->unk_17 = v1->unk_07;
-    v2->unk_19 = v1->unk_09;
-    v2->unk_18 = v1->unk_08;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
+    v2->contestantID = v1->contestantID;
+    v2->messageArgs = v1->messageArgs;
+    v2->messageID = v1->state;
+    v2->flag = v1->messageArg2;
+    v2->delay = v1->messageArg1;
 
     SysTask_Start(contest_competition_02248DA4, v2, 30000);
 }
@@ -1139,35 +1139,35 @@ static void contest_competition_02248DA4(SysTask *param0, void *param1)
 {
     VisualContestantRevealTask *v0 = param1;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_17 != 0) {
-            Window_DrawMessageBoxWithScrollCursor(&v0->unk_00->unk_0C.unk_28[0], 1, 1, 14);
-            Bg_ScheduleTilemapTransfer(v0->unk_00->unk_0C.unk_24, 1);
-            contest_competition_02247A08(v0->unk_00, v0->unk_17, &v0->unk_13);
-            v0->unk_10++;
+        if (v0->messageID != 0) {
+            Window_DrawMessageBoxWithScrollCursor(&v0->competition->scene.windows[0], 1, 1, 14);
+            Bg_ScheduleTilemapTransfer(v0->competition->scene.bgConfig, 1);
+            contest_competition_02247A08(v0->competition, v0->messageID, &v0->messageArgs);
+            v0->state++;
         } else {
-            v0->unk_10 = 100;
+            v0->state = 100;
         }
         break;
     case 1:
-        if (contest_competition_02247A3C(v0->unk_00) == 0) {
-            v0->unk_10++;
+        if (contest_competition_02247A3C(v0->competition) == 0) {
+            v0->state++;
         }
         break;
     case 2:
-        v0->unk_12++;
+        v0->timer++;
 
-        if (v0->unk_19 == 1) {
-            v0->unk_10++;
-        } else if (v0->unk_12 >= v0->unk_18) {
-            Window_EraseMessageBox(&v0->unk_00->unk_0C.unk_28[0], 1);
-            Bg_ScheduleTilemapTransfer(v0->unk_00->unk_0C.unk_24, 1);
-            v0->unk_10++;
+        if (v0->flag == 1) {
+            v0->state++;
+        } else if (v0->timer >= v0->delay) {
+            Window_EraseMessageBox(&v0->competition->scene.windows[0], 1);
+            Bg_ScheduleTilemapTransfer(v0->competition->scene.bgConfig, 1);
+            v0->state++;
         }
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -1190,13 +1190,13 @@ static void contest_competition_02248E6C(ContestPacketQueue *param0, void *param
     v1 = Heap_Alloc(HEAP_ID_22, sizeof(VisualContestantScoreTask));
     MI_CpuClear8(v1, sizeof(VisualContestantScoreTask));
 
-    v1->unk_00 = v0;
-    v1->unk_04 = *param2;
-    v1->unk_0C = param0;
-    v1->unk_11 = v2->unk_0A;
-    v1->unk_12 = v2->unk_0B;
-    v1->unk_13 = v2->unk_0C;
-    v1->unk_14 = v1->unk_14;
+    v1->competition = v0;
+    v1->header = *param2;
+    v1->packetQueue = param0;
+    v1->x = v2->x;
+    v1->y = v2->y;
+    v1->z = v2->z;
+    v1->score = v1->score;
 
     SysTask_Start(contest_competition_02248EC4, v1, 30000);
 }
@@ -1206,32 +1206,32 @@ static void contest_competition_02248EC4(SysTask *param0, void *param1)
     VisualContestantScoreTask *v0 = param1;
     int v1;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_00->unk_00->isLinkContest == TRUE) {
+        if (v0->competition->contest->isLinkContest == TRUE) {
             G2_SetWnd1InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 0);
             G2_SetWndOutsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
             GX_SetVisibleWnd(GX_WNDMASK_W1);
 
-            v0->unk_00->unk_F5C = 256 - 16;
-            v0->unk_00->unk_F5D = 0;
-            v0->unk_00->unk_F5E = 255;
-            v0->unk_00->unk_F5F = 16;
+            v0->competition->window1Left = 256 - 16;
+            v0->competition->window1Top = 0;
+            v0->competition->window1Right = 255;
+            v0->competition->window1Bottom = 16;
         }
 
-        BrightnessController_StartTransition(v0->unk_13, v0->unk_12, v0->unk_11, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD) ^ GX_BLEND_PLANEMASK_BG1, BRIGHTNESS_MAIN_SCREEN);
+        BrightnessController_StartTransition(v0->z, v0->y, v0->x, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD) ^ GX_BLEND_PLANEMASK_BG1, BRIGHTNESS_MAIN_SCREEN);
 
-        v0->unk_10++;
+        v0->state++;
         break;
     case 1:
         if (BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN) == TRUE) {
-            PaletteData_FillBufferRange(v0->unk_00->unk_0C.unk_44, PLTTBUF_MAIN_BG, PLTTSEL_FADED, 0x0, 0, (13 * 16));
-            PaletteData_FillBufferRange(v0->unk_00->unk_0C.unk_44, PLTTBUF_MAIN_OBJ, PLTTSEL_FADED, 0x0, 0, ((16 - 2) * 16));
-            v0->unk_10++;
+            PaletteData_FillBufferRange(v0->competition->scene.paletteData, PLTTBUF_MAIN_BG, PLTTSEL_FADED, 0x0, 0, (13 * 16));
+            PaletteData_FillBufferRange(v0->competition->scene.paletteData, PLTTBUF_MAIN_OBJ, PLTTSEL_FADED, 0x0, 0, ((16 - 2) * 16));
+            v0->state++;
         }
         break;
     default:
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -1251,9 +1251,9 @@ static void contest_competition_02248FD0(ContestPacketQueue *param0, void *param
     VisualContestantResultTask *v1 = Heap_Alloc(HEAP_ID_22, sizeof(VisualContestantResultTask));
     MI_CpuClear8(v1, sizeof(VisualContestantResultTask));
 
-    v1->unk_00 = v0;
-    v1->unk_04 = *param2;
-    v1->unk_0C = param0;
+    v1->competition = v0;
+    v1->header = *param2;
+    v1->packetQueue = param0;
 
     SysTask_Start(contest_competition_02249014, v1, 30000);
 }
@@ -1263,57 +1263,57 @@ static void contest_competition_02249014(SysTask *param0, void *param1)
     VisualContestantResultTask *v0 = param1;
     int v1;
 
-    v0->unk_18++;
+    v0->timer++;
 
-    if (v0->unk_18 == 30) {
+    if (v0->timer == 30) {
         v1 = 0;
-        v0->unk_13 = 30;
-        v0->unk_15 = 1;
+        v0->stepDelay = 30;
+        v0->flag = 1;
     }
 
-    if (v0->unk_00->unk_00->isLinkContest == FALSE && v0->unk_18 < 30 && (JOY_NEW(PAD_BUTTON_A) || gSystem.touchPressed)) {
-        v0->unk_18 = 30;
+    if (v0->competition->contest->isLinkContest == FALSE && v0->timer < 30 && (JOY_NEW(PAD_BUTTON_A) || gSystem.touchPressed)) {
+        v0->timer = 30;
         v1 = 0;
-        v0->unk_13 = 0;
-        v0->unk_15 = 1;
-    } else if (v0->unk_18 > 30) {
+        v0->stepDelay = 0;
+        v0->flag = 1;
+    } else if (v0->timer > 30) {
         v1 = 0;
     } else {
         v1 = 1;
     }
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_14 > 0) {
-            v0->unk_14--;
+        if (v0->holdDelay > 0) {
+            v0->holdDelay--;
             break;
         }
 
-        if (v0->unk_13 > 0) {
-            v0->unk_13--;
+        if (v0->stepDelay > 0) {
+            v0->stepDelay--;
             break;
         }
 
-        v0->unk_13 = v1;
+        v0->stepDelay = v1;
 
-        if (v0->unk_15 == 1) {
+        if (v0->flag == 1) {
             Sound_PlayEffect(SEQ_SE_DP_CON_020_sseq);
-            v0->unk_15 = 0;
+            v0->flag = 0;
         }
 
         {
             u16 *v2, *v3;
             int v4, v5, v6, v7, v8;
 
-            v2 = Bg_GetTilemapBuffer(v0->unk_00->unk_0C.unk_24, 2);
+            v2 = Bg_GetTilemapBuffer(v0->competition->scene.bgConfig, 2);
 
             for (v5 = 0; v5 < 4; v5++) {
-                if (Unk_contest_competition_02254468[v0->unk_11] + v5 < 0) {
+                if (Unk_contest_competition_02254468[v0->row] + v5 < 0) {
                     continue;
                 }
 
-                v3 = &v2[32 * (Unk_contest_competition_02254468[v0->unk_11] + v5)];
-                v8 = Unk_contest_competition_02254470[v0->unk_12] + 32 * v5;
+                v3 = &v2[32 * (Unk_contest_competition_02254468[v0->row] + v5)];
+                v8 = Unk_contest_competition_02254470[v0->column] + 32 * v5;
                 v6 = 0;
 
                 for (v7 = 0; v7 < 32 / 8; v7++) {
@@ -1327,8 +1327,8 @@ static void contest_competition_02249014(SysTask *param0, void *param1)
             }
 
             {
-                if ((v0->unk_11 > 0) && (v0->unk_12 == 0)) {
-                    v3 = &v2[32 * Unk_contest_competition_02254468[v0->unk_11 - 1]];
+                if ((v0->row > 0) && (v0->column == 0)) {
+                    v3 = &v2[32 * Unk_contest_competition_02254468[v0->row - 1]];
 
                     for (v7 = 0; v7 < 32; v7++) {
                         v3[v7] &= 0xfc00;
@@ -1336,27 +1336,27 @@ static void contest_competition_02249014(SysTask *param0, void *param1)
                 }
             }
 
-            Bg_ScheduleTilemapTransfer(v0->unk_00->unk_0C.unk_24, 2);
+            Bg_ScheduleTilemapTransfer(v0->competition->scene.bgConfig, 2);
         }
 
         {
-            v0->unk_00->unk_F5B = (Unk_contest_competition_02254468[v0->unk_11] + 4) * 8 - (v0->unk_12 * (4 * 8) / NELEMS(Unk_contest_competition_02254470));
+            v0->competition->window0Bottom = (Unk_contest_competition_02254468[v0->row] + 4) * 8 - (v0->column * (4 * 8) / NELEMS(Unk_contest_competition_02254470));
 
-            if (v0->unk_00->unk_F5B == 0) {
+            if (v0->competition->window0Bottom == 0) {
                 G2_BlendNone();
                 GX_SetVisibleWnd(GX_WNDMASK_NONE);
             }
         }
 
-        v0->unk_12++;
+        v0->column++;
 
-        if (v0->unk_12 >= NELEMS(Unk_contest_competition_02254470)) {
-            v0->unk_12 = 0;
-            v0->unk_11++;
-            v0->unk_14 = 0;
+        if (v0->column >= NELEMS(Unk_contest_competition_02254470)) {
+            v0->column = 0;
+            v0->row++;
+            v0->holdDelay = 0;
 
-            if (v0->unk_11 >= NELEMS(Unk_contest_competition_02254468)) {
-                v0->unk_10++;
+            if (v0->row >= NELEMS(Unk_contest_competition_02254468)) {
+                v0->state++;
             }
         }
         break;
@@ -1364,7 +1364,7 @@ static void contest_competition_02249014(SysTask *param0, void *param1)
         G2_BlendNone();
         GX_SetVisibleWnd(GX_WNDMASK_NONE);
 
-        contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
         Heap_Free(v0);
         SysTask_Done(param0);
         return;
@@ -1385,11 +1385,11 @@ static void contest_competition_02249260(ContestPacketQueue *param0, void *param
     VisualContestantDoneTask *v2 = Heap_Alloc(HEAP_ID_22, sizeof(VisualContestantDoneTask));
     MI_CpuClear8(v2, sizeof(VisualContestantDoneTask));
 
-    v2->unk_00 = v0;
-    v2->unk_04 = *param2;
-    v2->unk_0C = param0;
+    v2->competition = v0;
+    v2->header = *param2;
+    v2->packetQueue = param0;
 
-    Sound_PlayEffect(v1->unk_10);
+    Sound_PlayEffect(v1->score);
     SysTask_Start(contest_competition_022492AC, v2, 30000);
 }
 
@@ -1397,11 +1397,11 @@ static void contest_competition_022492AC(SysTask *param0, void *param1)
 {
     VisualContestantDoneTask *v0 = param1;
 
-    switch (v0->unk_10) {
+    switch (v0->state) {
     case 0:
     default:
-        if (v0->unk_00->unk_4F7 == 0) {
-            contest_competition_0224F26C(v0->unk_0C, &v0->unk_04, NULL, 0);
+        if (v0->competition->counter == 0) {
+            contest_competition_0224F26C(v0->packetQueue, &v0->header, NULL, 0);
             Heap_Free(v0);
             SysTask_Done(param0);
             return;

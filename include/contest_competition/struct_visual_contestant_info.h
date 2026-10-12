@@ -4,18 +4,18 @@
 #include "contest_competition/struct_visual_message_args.h"
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    VisualMessageArgs unk_03;
-    u8 unk_07;
-    u8 unk_08;
-    u8 unk_09;
-    s8 unk_0A;
-    s8 unk_0B;
-    s8 unk_0C;
-    u16 unk_0E;
-    u16 unk_10;
+    u8 contestantID;
+    u8 visualRank;
+    u8 danceRank;
+    VisualMessageArgs messageArgs;
+    u8 state;
+    u8 messageArg1;
+    u8 messageArg2;
+    s8 x;
+    s8 y;
+    s8 z;
+    u16 timer;
+    u16 score;
 } VisualContestantInfo;
 
 #endif // POKEPLATINUM_STRUCT_VISUAL_CONTESTANT_INFO_H
