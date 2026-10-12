@@ -6,13 +6,13 @@
 #include "software_sprite.h"
 
 typedef struct {
-    SoftwareSpriteChars *unk_00[6];
-    SoftwareSpritePalette *unk_18[8];
-    SoftwareSprite *unk_38[8];
-    PoffinCookingScaleAnim unk_58;
-    int unk_6C;
-    int unk_70;
-    int unk_74;
+    SoftwareSpriteChars *chars[6];
+    SoftwareSpritePalette *palettes[8];
+    SoftwareSprite *sprites[8];
+    PoffinCookingScaleAnim scaleAnim;
+    int scaleState;
+    int scaleDirection;
+    int active;
 } PoffinCookingBurstEffect;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_BURST_EFFECT_H

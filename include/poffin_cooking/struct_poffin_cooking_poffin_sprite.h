@@ -4,8 +4,8 @@
 #include "poffin_sprite.h"
 
 typedef struct {
-    PoffinSpriteManager *unk_00;
-    PoffinSprite *unk_04;
+    PoffinSpriteManager *spriteManager;
+    PoffinSprite *sprite;
 } PoffinCookingPoffinSprite;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_POFFIN_SPRITE_H

@@ -8,14 +8,14 @@
 #include "poffin_cooking/struct_poffin_cooking_synchro_state.h"
 
 typedef struct {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    PoffinCookingCpuInput unk_0C;
-    PoffinCookingStirState unk_1C;
-    PoffinCookingStirStats unk_30;
-    PoffinCookingStirLevel unk_4C;
-    PoffinCookingSynchroState unk_58;
+    u32 frameCount;
+    u32 poffinValue;
+    u32 poffinLevel;
+    PoffinCookingCpuInput cpuInput;
+    PoffinCookingStirState stirState;
+    PoffinCookingStirStats stirStats;
+    PoffinCookingStirLevel stirLevel;
+    PoffinCookingSynchroState synchroState;
 } PoffinCookingSimulation;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_SIMULATION_H

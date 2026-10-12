@@ -43,23 +43,23 @@ void poffin_cooking_0223C958(PoffinCookingApp *param0)
     NARC *v0 = NARC_ctor(NARC_INDEX_GRAPHIC__NUTMIXER, param0->heapID);
 
     poffin_cooking_0223CE9C(param0);
-    poffin_cooking_0223CC30(&(param0->unk_20), param0->heapID);
+    poffin_cooking_0223CC30(&(param0->bgConfig), param0->heapID);
     poffin_cooking_0223CD64(param0);
     poffin_cooking_0223CCF8(param0);
     poffin_cooking_0223CD28(param0);
 
     poffin_cooking_0223CDD0(param0, v0);
-    poffin_cooking_0223DEE0(&param0->unk_5B0, param0->unk_20, param0->heapID, v0);
-    poffin_cooking_0223E720(&param0->unk_6A0, param0->unk_20, param0->heapID, v0);
-    poffin_cooking_0223E368(&param0->unk_608, param0->unk_320, param0->heapID, v0);
-    poffin_cooking_0223E28C(&param0->unk_5E4, &param0->unk_2C, param0->unk_1CC, param0->heapID, 0, 0);
+    poffin_cooking_0223DEE0(&param0->playerListDisplay, param0->bgConfig, param0->heapID, v0);
+    poffin_cooking_0223E720(&param0->messageBox, param0->bgConfig, param0->heapID, v0);
+    poffin_cooking_0223E368(&param0->burstEffect, param0->softwareSpriteManager, param0->heapID, v0);
+    poffin_cooking_0223E28C(&param0->reactionSprite, &param0->spriteManager, param0->spriteSets, param0->heapID, 0, 0);
 
-    poffin_cooking_0223E28C(&param0->unk_5FC, &param0->unk_2C, param0->unk_1CC, param0->heapID, 0, 2);
-    poffin_cooking_0223E28C(&param0->unk_5F0, &param0->unk_2C, param0->unk_1CC, param0->heapID, 5, 0);
-    poffin_cooking_0223E5DC(&param0->unk_680, &param0->unk_2C, param0->unk_1CC, param0->heapID);
-    poffin_cooking_0223ED6C(&param0->unk_6D8, &param0->unk_2C, param0->unk_1CC, param0->heapID);
-    poffin_cooking_0223F2C4(&param0->unk_AEC, &param0->unk_2C, param0->heapID, v0);
-    poffin_cooking_0223F4CC(&param0->unk_B6C, &param0->unk_2C, param0->unk_1CC, param0->heapID);
+    poffin_cooking_0223E28C(&param0->reactionSprite3, &param0->spriteManager, param0->spriteSets, param0->heapID, 0, 2);
+    poffin_cooking_0223E28C(&param0->reactionSprite2, &param0->spriteManager, param0->spriteSets, param0->heapID, 5, 0);
+    poffin_cooking_0223E5DC(&param0->playerCursor, &param0->spriteManager, param0->spriteSets, param0->heapID);
+    poffin_cooking_0223ED6C(&param0->particleManager, &param0->spriteManager, param0->spriteSets, param0->heapID);
+    poffin_cooking_0223F2C4(&param0->arrowManager, &param0->spriteManager, param0->heapID, v0);
+    poffin_cooking_0223F4CC(&param0->sparkleManager, &param0->spriteManager, param0->spriteSets, param0->heapID);
 
     poffin_cooking_0223CF2C(param0);
 
@@ -71,19 +71,19 @@ void poffin_cooking_0223C958(PoffinCookingApp *param0)
 
 void poffin_cooking_0223CAA4(PoffinCookingApp *param0)
 {
-    poffin_cooking_0223E760(&param0->unk_6A0);
-    poffin_cooking_0223DF10(&param0->unk_5B0);
-    poffin_cooking_0223E438(&param0->unk_608);
+    poffin_cooking_0223E760(&param0->messageBox);
+    poffin_cooking_0223DF10(&param0->playerListDisplay);
+    poffin_cooking_0223E438(&param0->burstEffect);
     poffin_cooking_0223CE7C(param0);
-    poffin_cooking_0223E2C8(&param0->unk_5E4);
-    poffin_cooking_0223E2C8(&param0->unk_5F0);
-    poffin_cooking_0223E2C8(&param0->unk_5FC);
-    poffin_cooking_0223E63C(&param0->unk_680);
-    poffin_cooking_0223ED78(&param0->unk_6D8);
-    poffin_cooking_0223F348(&param0->unk_AEC);
-    poffin_cooking_0223F510(&param0->unk_B6C);
+    poffin_cooking_0223E2C8(&param0->reactionSprite);
+    poffin_cooking_0223E2C8(&param0->reactionSprite2);
+    poffin_cooking_0223E2C8(&param0->reactionSprite3);
+    poffin_cooking_0223E63C(&param0->playerCursor);
+    poffin_cooking_0223ED78(&param0->particleManager);
+    poffin_cooking_0223F348(&param0->arrowManager);
+    poffin_cooking_0223F510(&param0->sparkleManager);
 
-    poffin_cooking_0223CCCC(&(param0->unk_20));
+    poffin_cooking_0223CCCC(&(param0->bgConfig));
     poffin_cooking_0223CD1C(param0);
     poffin_cooking_0223CDC0(param0);
     poffin_cooking_0223CD54(param0);
@@ -96,14 +96,14 @@ void poffin_cooking_0223CAA4(PoffinCookingApp *param0)
 
 int poffin_cooking_0223CB5C(PoffinCookingApp *param0, int *param1)
 {
-    poffin_cooking_0223DB4C(&param0->unk_3C0, &param0->unk_1494.unk_6C, &param0->unk_2C, param0->unk_1CC, param0->heapID);
-    return param0->unk_0C + 1;
+    poffin_cooking_0223DB4C(&param0->poffinAnim, &param0->session.receivedBerryPacket, &param0->spriteManager, param0->spriteSets, param0->heapID);
+    return param0->state + 1;
 }
 
 int poffin_cooking_0223CB8C(PoffinCookingApp *param0, int *param1)
 {
-    poffin_cooking_0223DC1C(&param0->unk_3C0, &param0->unk_2C);
-    return param0->unk_0C + 1;
+    poffin_cooking_0223DC1C(&param0->poffinAnim, &param0->spriteManager);
+    return param0->state + 1;
 }
 
 void poffin_cooking_0223CBA4(PoffinCookingApp *param0)
@@ -116,17 +116,17 @@ void poffin_cooking_0223CBA4(PoffinCookingApp *param0)
         NNS_G3dGeFlushBuffer();
         NNS_G2dSetupSoftwareSpriteCamera();
 
-        if (param0->unk_320) {
-            SoftwareSpriteManager_DrawVisible(param0->unk_320);
+        if (param0->softwareSpriteManager) {
+            SoftwareSpriteManager_DrawVisible(param0->softwareSpriteManager);
         }
     }
 
     NNS_G3dGePopMtx(1);
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
 
-    if (param0->unk_31C) {
-        if (param0->unk_2C.unk_00) {
-            SpriteList_Update(param0->unk_2C.unk_00);
+    if (param0->updateSpriteList) {
+        if (param0->spriteManager.spriteList) {
+            SpriteList_Update(param0->spriteManager.spriteList);
         }
     }
 }
@@ -135,8 +135,8 @@ void poffin_cooking_0223CBFC(PoffinCookingApp *param0)
 {
     RenderOam_Transfer();
 
-    if (param0->unk_20) {
-        Bg_RunScheduledUpdates(param0->unk_20);
+    if (param0->bgConfig) {
+        Bg_RunScheduledUpdates(param0->bgConfig);
     }
 }
 
@@ -261,14 +261,14 @@ static void poffin_cooking_0223CCCC(BgConfig **param0)
 
 static void poffin_cooking_0223CCF8(PoffinCookingApp *param0)
 {
-    poffin_cooking_0223D754(&param0->unk_2C, 72, 16, param0->heapID);
+    poffin_cooking_0223D754(&param0->spriteManager, 72, 16, param0->heapID);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
 static void poffin_cooking_0223CD1C(PoffinCookingApp *param0)
 {
-    poffin_cooking_0223D784(&param0->unk_2C);
+    poffin_cooking_0223D784(&param0->spriteManager);
 }
 
 static void poffin_cooking_0223CD28(PoffinCookingApp *param0)
@@ -281,12 +281,12 @@ static void poffin_cooking_0223CD28(PoffinCookingApp *param0)
     };
 
     v0.heapID = param0->heapID;
-    param0->unk_320 = SoftwareSpriteManager_New(&v0);
+    param0->softwareSpriteManager = SoftwareSpriteManager_New(&v0);
 }
 
 static void poffin_cooking_0223CD54(PoffinCookingApp *param0)
 {
-    SoftwareSpriteManager_Free(param0->unk_320);
+    SoftwareSpriteManager_Free(param0->softwareSpriteManager);
 }
 
 static void poffin_cooking_0223CD64(PoffinCookingApp *param0)
@@ -332,9 +332,9 @@ static void poffin_cooking_0223CDD0(PoffinCookingApp *param0, NARC *param1)
 
     for (v0 = 0; v0 < 6; v0++) {
         if ((v0 > 0) && (v1[v0] == 8)) {
-            poffin_cooking_0223D894(&param0->unk_2C, &param0->unk_1CC[v0], param1, param0->unk_1CC[0].unk_00[1], 14 + (3 * v0), 13 + (3 * v0), 12 + (3 * v0), 2000 + v0, param0->heapID);
+            poffin_cooking_0223D894(&param0->spriteManager, &param0->spriteSets[v0], param1, param0->spriteSets[0].resources[1], 14 + (3 * v0), 13 + (3 * v0), 12 + (3 * v0), 2000 + v0, param0->heapID);
         } else {
-            poffin_cooking_0223D7A8(&param0->unk_2C, &param0->unk_1CC[v0], param1, v1[v0], 2, 14 + (3 * v0), 13 + (3 * v0), 12 + (3 * v0), 2000 + v0, param0->heapID);
+            poffin_cooking_0223D7A8(&param0->spriteManager, &param0->spriteSets[v0], param1, v1[v0], 2, 14 + (3 * v0), 13 + (3 * v0), 12 + (3 * v0), 2000 + v0, param0->heapID);
         }
     }
 }
@@ -344,7 +344,7 @@ static void poffin_cooking_0223CE7C(PoffinCookingApp *param0)
     int v0;
 
     for (v0 = 0; v0 < 6; v0++) {
-        poffin_cooking_0223D95C(&param0->unk_2C, &param0->unk_1CC[v0]);
+        poffin_cooking_0223D95C(&param0->spriteManager, &param0->spriteSets[v0]);
     }
 }
 
@@ -376,27 +376,27 @@ static void poffin_cooking_0223CF2C(PoffinCookingApp *param0)
 {
     int v0;
 
-    param0->unk_15E0.unk_00 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_POFFIN_MAKING, param0->heapID);
-    param0->unk_15E0.unk_04 = StringTemplate_New(4, 64, param0->heapID);
-    param0->unk_15E0.unk_08 = String_Init(64, param0->heapID);
-    param0->unk_15E0.unk_0C = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 0);
-    param0->unk_15E0.unk_10 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 1);
-    param0->unk_15E0.unk_14 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 2);
-    param0->unk_15E0.unk_18 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 20);
-    param0->unk_15E0.unk_1C = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 21);
-    param0->unk_15E0.unk_20 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 22);
-    param0->unk_15E0.unk_24 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 23);
-    param0->unk_15E0.unk_28 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 24);
-    param0->unk_15E0.unk_2C = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 25);
-    param0->unk_15E0.unk_30 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 8);
-    param0->unk_15E0.unk_34 = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 9);
+    param0->messages.messageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_POFFIN_MAKING, param0->heapID);
+    param0->messages.stringTemplate = StringTemplate_New(4, 64, param0->heapID);
+    param0->messages.formattedString = String_Init(64, param0->heapID);
+    param0->messages.string00 = MessageLoader_GetNewString(param0->messages.messageLoader, 0);
+    param0->messages.string01 = MessageLoader_GetNewString(param0->messages.messageLoader, 1);
+    param0->messages.string02 = MessageLoader_GetNewString(param0->messages.messageLoader, 2);
+    param0->messages.string20 = MessageLoader_GetNewString(param0->messages.messageLoader, 20);
+    param0->messages.string21 = MessageLoader_GetNewString(param0->messages.messageLoader, 21);
+    param0->messages.string22 = MessageLoader_GetNewString(param0->messages.messageLoader, 22);
+    param0->messages.string23 = MessageLoader_GetNewString(param0->messages.messageLoader, 23);
+    param0->messages.string24 = MessageLoader_GetNewString(param0->messages.messageLoader, 24);
+    param0->messages.string25 = MessageLoader_GetNewString(param0->messages.messageLoader, 25);
+    param0->messages.string08 = MessageLoader_GetNewString(param0->messages.messageLoader, 8);
+    param0->messages.string09 = MessageLoader_GetNewString(param0->messages.messageLoader, 9);
 
     for (v0 = 0; v0 < 5; v0++) {
-        param0->unk_15E0.unk_38[v0] = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 3 + v0);
+        param0->messages.strings03[v0] = MessageLoader_GetNewString(param0->messages.messageLoader, 3 + v0);
     }
 
     for (v0 = 0; v0 < 10; v0++) {
-        param0->unk_15E0.unk_4C[v0] = MessageLoader_GetNewString(param0->unk_15E0.unk_00, 10 + v0);
+        param0->messages.strings10[v0] = MessageLoader_GetNewString(param0->messages.messageLoader, 10 + v0);
     }
 }
 
@@ -404,27 +404,27 @@ static void poffin_cooking_0223D068(PoffinCookingApp *param0)
 {
     int v0;
 
-    String_Free(param0->unk_15E0.unk_34);
-    String_Free(param0->unk_15E0.unk_30);
-    String_Free(param0->unk_15E0.unk_20);
-    String_Free(param0->unk_15E0.unk_1C);
-    String_Free(param0->unk_15E0.unk_18);
-    String_Free(param0->unk_15E0.unk_14);
-    String_Free(param0->unk_15E0.unk_10);
-    String_Free(param0->unk_15E0.unk_0C);
-    String_Free(param0->unk_15E0.unk_24);
-    String_Free(param0->unk_15E0.unk_28);
-    String_Free(param0->unk_15E0.unk_2C);
+    String_Free(param0->messages.string09);
+    String_Free(param0->messages.string08);
+    String_Free(param0->messages.string22);
+    String_Free(param0->messages.string21);
+    String_Free(param0->messages.string20);
+    String_Free(param0->messages.string02);
+    String_Free(param0->messages.string01);
+    String_Free(param0->messages.string00);
+    String_Free(param0->messages.string23);
+    String_Free(param0->messages.string24);
+    String_Free(param0->messages.string25);
 
     for (v0 = 0; v0 < 5; v0++) {
-        String_Free(param0->unk_15E0.unk_38[v0]);
+        String_Free(param0->messages.strings03[v0]);
     }
 
     for (v0 = 0; v0 < 10; v0++) {
-        String_Free(param0->unk_15E0.unk_4C[v0]);
+        String_Free(param0->messages.strings10[v0]);
     }
 
-    String_Free(param0->unk_15E0.unk_08);
-    StringTemplate_Free(param0->unk_15E0.unk_04);
-    MessageLoader_Free(param0->unk_15E0.unk_00);
+    String_Free(param0->messages.formattedString);
+    StringTemplate_Free(param0->messages.stringTemplate);
+    MessageLoader_Free(param0->messages.messageLoader);
 }

@@ -9,19 +9,19 @@
 #include "bg_window.h"
 
 typedef struct {
-    int unk_00;
-    BgConfig *unk_04;
-    Window *unk_08;
-    Window *unk_0C;
-    int unk_10;
-    int unk_14;
-    PoffinCookingMessages *unk_18;
-    PoffinCookingSession *unk_1C;
-    void *unk_20;
-    NNSG2dScreenData *unk_24;
-    void *unk_28;
-    NNSG2dScreenData *unk_2C;
-    BOOL unk_30;
+    int heapID;
+    BgConfig *bgConfig;
+    Window *messageWindow;
+    Window *nameWindow;
+    int frameType;
+    int playerCount;
+    PoffinCookingMessages *messages;
+    PoffinCookingSession *session;
+    void *screenData;
+    NNSG2dScreenData *screenDataHeader;
+    void *nameScreenData;
+    NNSG2dScreenData *nameScreenDataHeader;
+    BOOL loaded;
 } PoffinCookingPlayerListDisplay;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_PLAYER_LIST_DISPLAY_H

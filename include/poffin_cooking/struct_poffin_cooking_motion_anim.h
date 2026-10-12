@@ -2,12 +2,12 @@
 #define POKEPLATINUM_STRUCT_POFFIN_COOKING_MOTION_ANIM_H
 
 typedef struct {
-    fx32 unk_00;
-    fx32 unk_04;
-    fx32 unk_08;
-    fx32 unk_0C;
-    int unk_10;
-    int unk_14;
+    fx32 current;
+    fx32 start;
+    fx32 velocity;
+    fx32 acceleration;
+    int elapsed;
+    int duration;
 } PoffinCookingMotionAnim;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_MOTION_ANIM_H

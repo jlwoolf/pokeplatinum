@@ -4,9 +4,9 @@
 #include "sprite.h"
 
 typedef struct {
-    BOOL unk_00;
-    BOOL unk_04;
-    Sprite *unk_08;
+    BOOL active;
+    BOOL unused_04;
+    Sprite *sprite;
 } PoffinCookingReactionSprite;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_REACTION_SPRITE_H

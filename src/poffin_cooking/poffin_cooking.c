@@ -46,8 +46,8 @@
 typedef int (*UnkFuncPtr_poffin_cooking_0224024C)(PoffinBerrySelectionData *, PoffinCookingApp *, int *);
 
 typedef struct {
-    UnkFuncPtr_poffin_cooking_0224024C unk_00;
-    int unk_04;
+    UnkFuncPtr_poffin_cooking_0224024C func;
+    int commDelay;
 } PoffinCookingStateEntry;
 
 int PoffinCooking_Init(ApplicationManager *appMan, int *param1);
@@ -116,7 +116,7 @@ int PoffinCooking_Init(ApplicationManager *appMan, int *param1)
 
     VramTransfer_New(16, v1->heapID);
 
-    v1->unk_1490 = v0->isInGroup == TRUE;
+    v1->isMultiplayer = v0->isInGroup == TRUE;
 
     poffin_cooking_0223D150(v1, v0->ctx->trainerInfo);
 
@@ -124,9 +124,9 @@ int PoffinCooking_Init(ApplicationManager *appMan, int *param1)
         CommSys_SetRecvLimitEnabled(1);
     }
 
-    v1->unk_24 = Options_Frame(v0->ctx->options);
-    v1->unk_28 = Options_TextFrameDelay(v0->ctx->options);
-    v1->unk_31C = 1;
+    v1->frameType = Options_Frame(v0->ctx->options);
+    v1->textFrameDelay = Options_TextFrameDelay(v0->ctx->options);
+    v1->updateSpriteList = 1;
 
     SetVBlankCallback(poffin_cooking_0223B5A0, v0);
     DisableHBlank();
@@ -142,28 +142,28 @@ int PoffinCooking_Main(ApplicationManager *appMan, int *param1)
     PoffinCookingApp *v3 = (PoffinCookingApp *)ApplicationManager_Data(appMan);
     const PoffinCookingStateEntry *v4;
 
-    v0 = v3->unk_0C;
+    v0 = v3->state;
     v4 = &(Unk_poffin_cooking_0224024C[v0]);
 
     switch (*param1) {
     case 0:
-        if (v4->unk_00 == NULL) {
+        if (v4->func == NULL) {
             break;
         }
 
-        v1 = v4->unk_04;
-        v3->unk_0C = (v4->unk_00)(v2, v3, &v3->unk_10);
+        v1 = v4->commDelay;
+        v3->state = (v4->func)(v2, v3, &v3->step);
 
-        if (v3->unk_19) {
-            v3->unk_0C = v3->unk_1A;
-            v3->unk_19 = 0;
+        if (v3->forceStateChange) {
+            v3->state = v3->forcedState;
+            v3->forceStateChange = 0;
         }
 
-        if (v0 == v3->unk_0C) {
+        if (v0 == v3->state) {
             break;
         }
 
-        v3->unk_10 = 0;
+        v3->step = 0;
 
         if (!v2->isInGroup) {
             break;
@@ -173,27 +173,27 @@ int PoffinCooking_Main(ApplicationManager *appMan, int *param1)
             break;
         }
 
-        v3->unk_08 = v1;
+        v3->syncTimer = v1;
         *param1 = 1;
         break;
     case 1:
-        CommTiming_StartSync(v3->unk_08);
+        CommTiming_StartSync(v3->syncTimer);
         *param1 = 2;
         break;
     case 2:
-        if (!CommTiming_IsSyncState(v3->unk_08)) {
+        if (!CommTiming_IsSyncState(v3->syncTimer)) {
             break;
         }
 
         *param1 = 0;
-        v3->unk_08 = 0;
+        v3->syncTimer = 0;
         break;
     }
 
     poffin_cooking_0223CBA4(v3);
-    CommManager_Dummy_02038A1C(v3->heapID, v3->unk_20);
+    CommManager_Dummy_02038A1C(v3->heapID, v3->bgConfig);
 
-    if (v3->unk_04) {
+    if (v3->finished) {
         return 1;
     } else {
         return 0;
@@ -230,19 +230,19 @@ int PoffinCooking_Exit(ApplicationManager *appMan, int *param1)
 
 void poffin_cooking_0223B774(PoffinCookingApp *param0, int param1)
 {
-    param0->unk_18 = param1;
-    param0->unk_14 = 1;
+    param0->nextState = param1;
+    param0->pendingStateChange = 1;
 }
 
 void poffin_cooking_0223B77C(PoffinCookingApp *param0, int param1)
 {
-    param0->unk_1A = param1;
-    param0->unk_19 = 1;
+    param0->forcedState = param1;
+    param0->forceStateChange = 1;
 }
 
 void poffin_cooking_0223B784(PoffinCookingApp *param0)
 {
-    param0->unk_04 = 1;
+    param0->finished = 1;
 }
 
 static int poffin_cooking_0223B78C(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
@@ -252,34 +252,34 @@ static int poffin_cooking_0223B78C(PoffinBerrySelectionData *param0, PoffinCooki
 
         poffin_cooking_0223C82C(param0, param1);
 
-        if (poffin_cooking_0223D570(param1->unk_148C) == 0) {
-            poffin_cooking_0223FDB0(&param1->unk_34C);
+        if (poffin_cooking_0223D570(param1->comm) == 0) {
+            poffin_cooking_0223FDB0(&param1->simulation);
         }
 
-        poffin_cooking_0223DEA0(&param1->unk_5B0, param1->unk_1488, &param1->unk_15E0, &param1->unk_1494, param1->unk_24, param1->heapID);
-        poffin_cooking_0223E340(&param1->unk_608);
-        poffin_cooking_0223E6D4(&param1->unk_6A0, param1->unk_1488, &param1->unk_15E0, &param1->unk_1494, param1->unk_24, param1->heapID);
-        poffin_cooking_0223E244(&param1->unk_5E4);
-        poffin_cooking_0223E244(&param1->unk_5F0);
-        poffin_cooking_0223E244(&param1->unk_5FC);
-        poffin_cooking_0223E5A4(&param1->unk_680, &param1->unk_1494, param1->unk_1488, param1->unk_148C);
-        poffin_cooking_0223ED3C(&param1->unk_6D8);
-        poffin_cooking_0223F29C(&param1->unk_AEC);
-        poffin_cooking_0223F494(&param1->unk_B6C, param1->unk_1488);
-        poffin_cooking_0223F820(&param1->unk_334);
+        poffin_cooking_0223DEA0(&param1->playerListDisplay, param1->playerCount, &param1->messages, &param1->session, param1->frameType, param1->heapID);
+        poffin_cooking_0223E340(&param1->burstEffect);
+        poffin_cooking_0223E6D4(&param1->messageBox, param1->playerCount, &param1->messages, &param1->session, param1->frameType, param1->heapID);
+        poffin_cooking_0223E244(&param1->reactionSprite);
+        poffin_cooking_0223E244(&param1->reactionSprite2);
+        poffin_cooking_0223E244(&param1->reactionSprite3);
+        poffin_cooking_0223E5A4(&param1->playerCursor, &param1->session, param1->playerCount, param1->comm);
+        poffin_cooking_0223ED3C(&param1->particleManager);
+        poffin_cooking_0223F29C(&param1->arrowManager);
+        poffin_cooking_0223F494(&param1->sparkleManager, param1->playerCount);
+        poffin_cooking_0223F820(&param1->touchTracker);
         poffin_cooking_0223C958(param1);
 
         NetworkIcon_Init();
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
 
-        if (param1->unk_1488 > 1) {
-            poffin_cooking_0223DF84(&param1->unk_5B0);
+        if (param1->playerCount > 1) {
+            poffin_cooking_0223DF84(&param1->playerListDisplay);
         }
 
-        poffin_cooking_0223E484(&param1->unk_608, 3, 1);
-        poffin_cooking_0223E484(&param1->unk_608, 4, 1);
-        poffin_cooking_0223E484(&param1->unk_608, 5, 1);
-        poffin_cooking_0223E484(&param1->unk_608, 6, 1);
+        poffin_cooking_0223E484(&param1->burstEffect, 3, 1);
+        poffin_cooking_0223E484(&param1->burstEffect, 4, 1);
+        poffin_cooking_0223E484(&param1->burstEffect, 5, 1);
+        poffin_cooking_0223E484(&param1->burstEffect, 6, 1);
         (*param2)++;
         break;
     case 1:
@@ -288,37 +288,37 @@ static int poffin_cooking_0223B78C(PoffinBerrySelectionData *param0, PoffinCooki
         break;
     case 2:
         if (IsScreenFadeDone()) {
-            return param1->unk_0C + 1;
+            return param1->state + 1;
         }
         break;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223B920(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
 {
     BOOL v0;
 
-    if (poffin_cooking_0223D570(param1->unk_148C) == 0) {
-        v0 = poffin_cooking_0223D508(22, NULL, 0, param1->unk_148C);
+    if (poffin_cooking_0223D570(param1->comm) == 0) {
+        v0 = poffin_cooking_0223D508(22, NULL, 0, param1->comm);
 
         if (v0 == 0) {
-            return param1->unk_0C;
+            return param1->state;
         }
     }
 
-    return param1->unk_0C + 1;
+    return param1->state + 1;
 }
 
 static int poffin_cooking_0223B950(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
 {
-    if (param1->unk_14) {
-        param1->unk_0C = param1->unk_18;
-        param1->unk_14 = 0;
+    if (param1->pendingStateChange) {
+        param1->state = param1->nextState;
+        param1->pendingStateChange = 0;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223B964(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
@@ -327,28 +327,28 @@ static int poffin_cooking_0223B964(PoffinBerrySelectionData *param0, PoffinCooki
 
     switch (*param2) {
     case 0:
-        poffin_cooking_0223DB18(&param1->unk_3C0, param1->unk_1488);
+        poffin_cooking_0223DB18(&param1->poffinAnim, param1->playerCount);
         (*param2)++;
         break;
     case 1:
-        param1->unk_1494.unk_00.unk_00 = param0->item;
+        param1->session.localBerry.itemID = param0->item;
         {
             int v1;
 
             for (v1 = 0; v1 < 5; v1++) {
-                param1->unk_165C[v1] = 2;
+                param1->syncCounters[v1] = 2;
             }
 
-            param1->unk_1666 = 2;
+            param1->syncCounter = 2;
         }
         (*param2)++;
         break;
 
     case 2:
-        v0 = poffin_cooking_0223D508(25, &param1->unk_1494.unk_00, poffin_cooking_0223D4B8(), param1->unk_148C);
+        v0 = poffin_cooking_0223D508(25, &param1->session.localBerry, poffin_cooking_0223D4B8(), param1->comm);
 
         if (v0 == 1) {
-            return param1->unk_0C + 1;
+            return param1->state + 1;
         }
         break;
     default:
@@ -356,7 +356,7 @@ static int poffin_cooking_0223B964(PoffinBerrySelectionData *param0, PoffinCooki
         break;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223B9EC(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
@@ -367,136 +367,136 @@ static int poffin_cooking_0223B9EC(PoffinBerrySelectionData *param0, PoffinCooki
 
     switch (*param2) {
     case 0:
-        poffin_cooking_0223F790(&param1->unk_1480, param1->heapID, param1->unk_20);
+        poffin_cooking_0223F790(&param1->yesNoMenu, param1->heapID, param1->bgConfig);
         (*param2)++;
         break;
     case 1:
-        poffin_cooking_0223DC68(&param1->unk_3C0);
+        poffin_cooking_0223DC68(&param1->poffinAnim);
         (*param2)++;
         break;
     case 2:
-        v0 = poffin_cooking_0223DD30(&param1->unk_3C0);
+        v0 = poffin_cooking_0223DD30(&param1->poffinAnim);
 
         if (v0 == 1) {
             (*param2)++;
-            poffin_cooking_0223DF70(&param1->unk_5B0);
-            param1->unk_1C = 24;
+            poffin_cooking_0223DF70(&param1->playerListDisplay);
+            param1->timer = 24;
         } else if (v0 != 0) {
-            v1 = param1->unk_1494.unk_130[v0 - 2];
-            poffin_cooking_0223DF30(&param1->unk_5B0, param1->unk_1494.unk_6C.unk_00[v1].unk_00);
+            v1 = param1->session.playerNetIDs[v0 - 2];
+            poffin_cooking_0223DF30(&param1->playerListDisplay, param1->session.receivedBerryPacket.berries[v1].itemID);
         }
         break;
     case 3:
-        if (param1->unk_1C > 0) {
-            param1->unk_1C--;
+        if (param1->timer > 0) {
+            param1->timer--;
             break;
         }
 
-        poffin_cooking_0223E2FC(&param1->unk_5FC);
+        poffin_cooking_0223E2FC(&param1->reactionSprite3);
         (*param2)++;
         break;
     case 4:
-        if (poffin_cooking_0223E32C(&param1->unk_5FC) == 0) {
+        if (poffin_cooking_0223E32C(&param1->reactionSprite3) == 0) {
             break;
         }
 
-        poffin_cooking_0223DFAC(&param1->unk_5B0);
-        poffin_cooking_0223E2E4(&param1->unk_5E4);
+        poffin_cooking_0223DFAC(&param1->playerListDisplay);
+        poffin_cooking_0223E2E4(&param1->reactionSprite);
         (*param2)++;
         break;
     case 5:
-        v2 = poffin_cooking_0223E32C(&param1->unk_5E4);
+        v2 = poffin_cooking_0223E32C(&param1->reactionSprite);
         {
-            int v3 = Sprite_GetAnimFrame(param1->unk_5E4.unk_08);
+            int v3 = Sprite_GetAnimFrame(param1->reactionSprite.sprite);
 
-            if (param1->unk_3BC != (v3 + 1) / 3) {
+            if (param1->lastReactionFrame != (v3 + 1) / 3) {
                 if (v3 < 10) {
                     Sound_PlayEffect(SEQ_SE_DP_NM10_sseq);
                 } else {
                     Sound_PlayEffect(SEQ_SE_DP_NM10_2_sseq);
                 }
 
-                param1->unk_3BC = (v3 + 1) / 3;
+                param1->lastReactionFrame = (v3 + 1) / 3;
             }
         }
 
         if (v2) {
-            poffin_cooking_0223E69C(&param1->unk_680, 1);
-            poffin_cooking_0223E500(&param1->unk_608);
+            poffin_cooking_0223E69C(&param1->playerCursor, 1);
+            poffin_cooking_0223E500(&param1->burstEffect);
 
-            return param1->unk_0C + 1;
+            return param1->state + 1;
         }
         break;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223BB40(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
 {
     BOOL v0;
 
-    poffin_cooking_0223F83C(&param1->unk_334);
-    poffin_cooking_0223F88C(&param1->unk_1494.unk_04.unk_00, &param1->unk_334);
+    poffin_cooking_0223F83C(&param1->touchTracker);
+    poffin_cooking_0223F88C(&param1->session.localParticipant.touchInput, &param1->touchTracker);
 
-    if (poffin_cooking_0223D570(param1->unk_148C) == 0) {
-        v0 = poffin_cooking_0223FDD8(&param1->unk_34C, &param1->unk_1494, param1->unk_1488);
+    if (poffin_cooking_0223D570(param1->comm) == 0) {
+        v0 = poffin_cooking_0223FDD8(&param1->simulation, &param1->session, param1->playerCount);
 
         if (v0 == 1) {
-            v0 = poffin_cooking_0223D508(23, NULL, 0, param1->unk_148C);
-            return param1->unk_0C;
+            v0 = poffin_cooking_0223D508(23, NULL, 0, param1->comm);
+            return param1->state;
         } else {
-            poffin_cooking_0223FFA0(&param1->unk_34C);
+            poffin_cooking_0223FFA0(&param1->simulation);
 
-            if (param1->unk_15DC == 0) {
-                poffin_cooking_0223FE50(&param1->unk_34C, &param1->unk_1494, param1->unk_1488);
-                param1->unk_15DC = 1;
+            if (param1->participantDataSent == 0) {
+                poffin_cooking_0223FE50(&param1->simulation, &param1->session, param1->playerCount);
+                param1->participantDataSent = 1;
             } else {
-                poffin_cooking_0223FEC0(&param1->unk_34C, &param1->unk_1494, param1->unk_1488);
+                poffin_cooking_0223FEC0(&param1->simulation, &param1->session, param1->playerCount);
             }
         }
     }
 
     if (param0->unk_26) {
-        param1->unk_1658++;
+        param1->touchSendTimer++;
 
-        if ((param1->unk_1658 % 2) == 0) {
-            param1->unk_1658 = 0;
+        if ((param1->touchSendTimer % 2) == 0) {
+            param1->touchSendTimer = 0;
 
-            if (poffin_cooking_0223D570(param1->unk_148C) == 0) {
+            if (poffin_cooking_0223D570(param1->comm) == 0) {
                 {
                     BOOL v1 = 1;
                     int v2;
 
                     for (v2 = 1; v2 < (7 + 1); v2++) {
                         if (CommSys_IsPlayerConnected(v2)) {
-                            if (param1->unk_165C[v2] == 0) {
+                            if (param1->syncCounters[v2] == 0) {
                                 v1 = 0;
                             }
                         }
                     }
 
                     if (v1) {
-                        v0 = poffin_cooking_0223D508(26, &param1->unk_1494.unk_04, poffin_cooking_0223D4BC(), param1->unk_148C);
-                        param1->unk_15DC = 0;
+                        v0 = poffin_cooking_0223D508(26, &param1->session.localParticipant, poffin_cooking_0223D4BC(), param1->comm);
+                        param1->participantDataSent = 0;
 
                         for (v2 = 1; v2 < (7 + 1); v2++) {
                             if (CommSys_IsPlayerConnected(v2)) {
-                                param1->unk_165C[v2]--;
+                                param1->syncCounters[v2]--;
                             }
                         }
                     }
                 }
             } else {
-                if (param1->unk_1666) {
-                    v0 = poffin_cooking_0223D508(32, &param1->unk_1494.unk_04.unk_00, poffin_cooking_0223D4C8(), param1->unk_148C);
-                    param1->unk_1666--;
+                if (param1->syncCounter) {
+                    v0 = poffin_cooking_0223D508(32, &param1->session.localParticipant.touchInput, poffin_cooking_0223D4C8(), param1->comm);
+                    param1->syncCounter--;
                 }
             }
         }
     } else {
-        v0 = poffin_cooking_0223D508(26, &param1->unk_1494.unk_04, poffin_cooking_0223D4BC(), param1->unk_148C);
-        param1->unk_15DC = 0;
+        v0 = poffin_cooking_0223D508(26, &param1->session.localParticipant, poffin_cooking_0223D4BC(), param1->comm);
+        param1->participantDataSent = 0;
     }
 
     if (v0 == 0) {
@@ -504,11 +504,11 @@ static int poffin_cooking_0223BB40(PoffinBerrySelectionData *param0, PoffinCooki
     }
 
     poffin_cooking_0223C3E8(param1);
-    poffin_cooking_0223EDA4(&param1->unk_6D8, &param1->unk_1494);
-    poffin_cooking_0223F378(&param1->unk_AEC);
-    poffin_cooking_0223F52C(&param1->unk_B6C);
+    poffin_cooking_0223EDA4(&param1->particleManager, &param1->session);
+    poffin_cooking_0223F378(&param1->arrowManager);
+    poffin_cooking_0223F52C(&param1->sparkleManager);
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
@@ -516,16 +516,16 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
     Poffin *v0;
     BOOL v1;
 
-    poffin_cooking_0223EDA4(&param1->unk_6D8, &param1->unk_1494);
+    poffin_cooking_0223EDA4(&param1->particleManager, &param1->session);
 
     switch (*param2) {
     case 0:
-        poffin_cooking_0223E994(&param1->unk_6A0);
-        poffin_cooking_0223F3D0(&param1->unk_AEC, 0);
-        poffin_cooking_0223F3D0(&param1->unk_AEC, 1);
-        poffin_cooking_0223F3D0(&param1->unk_AEC, 2);
-        poffin_cooking_0223F3D0(&param1->unk_AEC, 3);
-        poffin_cooking_0223E2E4(&param1->unk_5F0);
+        poffin_cooking_0223E994(&param1->messageBox);
+        poffin_cooking_0223F3D0(&param1->arrowManager, 0);
+        poffin_cooking_0223F3D0(&param1->arrowManager, 1);
+        poffin_cooking_0223F3D0(&param1->arrowManager, 2);
+        poffin_cooking_0223F3D0(&param1->arrowManager, 3);
+        poffin_cooking_0223E2E4(&param1->reactionSprite2);
 
         Sound_StopEffect(1722, 0);
         Sound_StopEffect(1723, 0);
@@ -533,13 +533,13 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
         Sound_StopEffect(1729, 0);
         Sound_PlayEffect(SEQ_SE_DP_NM13_sseq);
 
-        poffin_cooking_0223E484(&param1->unk_608, 0, 0);
-        poffin_cooking_0223E484(&param1->unk_608, 1, 0);
-        poffin_cooking_0223E484(&param1->unk_608, 2, 0);
+        poffin_cooking_0223E484(&param1->burstEffect, 0, 0);
+        poffin_cooking_0223E484(&param1->burstEffect, 1, 0);
+        poffin_cooking_0223E484(&param1->burstEffect, 2, 0);
         (*param2)++;
         break;
     case 1:
-        if (poffin_cooking_0223E32C(&param1->unk_5F0) == 0) {
+        if (poffin_cooking_0223E32C(&param1->reactionSprite2) == 0) {
             break;
         }
 
@@ -557,7 +557,7 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
     case 3: {
         GameRecords *v2 = SaveData_GetGameRecords(param0->ctx->saveData);
 
-        if (param1->unk_1490 == 0) {
+        if (param1->isMultiplayer == 0) {
             GameRecords_IncrementTrainerScore(v2, TRAINER_SCORE_EVENT_UNK_12);
             GameRecords_IncrementRecordValue(v2, RECORD_UNK_052);
         } else {
@@ -566,15 +566,15 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
         }
     }
 
-        if (param1->unk_1490 != 0) {
+        if (param1->isMultiplayer != 0) {
             WiFiList *v3 = SaveData_GetWiFiList(param0->ctx->saveData);
             int v4;
             int v5, v6;
             int v7;
             DWCFriendData *v8;
 
-            for (v4 = 0; v4 < param1->unk_1488; v4++) {
-                v5 = param1->unk_1494.unk_130[v4];
+            for (v4 = 0; v4 < param1->playerCount; v4++) {
+                v5 = param1->session.playerNetIDs[v4];
                 v8 = CommInfo_DWCFriendData(v5);
                 v6 = WiFiFriend_FindSlot(param0->ctx->saveData, v8, &v7);
 
@@ -592,10 +592,10 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
         (*param2)++;
         break;
     case 4:
-        if (poffin_cooking_0223D570(param1->unk_148C) == 0) {
+        if (poffin_cooking_0223D570(param1->comm) == 0) {
             v0 = Poffin_New(param1->heapID);
-            poffin_cooking_0223FFD4(&param1->unk_34C, v0, &param1->unk_1494, param1->unk_1488, param1->heapID);
-            v1 = poffin_cooking_0223D508(28, v0, Poffin_SizeOf(), param1->unk_148C);
+            poffin_cooking_0223FFD4(&param1->simulation, v0, &param1->session, param1->playerCount, param1->heapID);
+            v1 = poffin_cooking_0223D508(28, v0, Poffin_SizeOf(), param1->comm);
             Heap_Free(v0);
 
             if (v1 == 1) {
@@ -606,9 +606,9 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
         }
         break;
     case 5:
-        if (poffin_cooking_0223D570(param1->unk_148C) == 0) {
-            poffin_cooking_022401AC(&param1->unk_34C, &param1->unk_1494, param1->unk_1488);
-            v1 = poffin_cooking_0223D508(27, &param1->unk_1494.unk_20, poffin_cooking_0223D4C0(), param1->unk_148C);
+        if (poffin_cooking_0223D570(param1->comm) == 0) {
+            poffin_cooking_022401AC(&param1->simulation, &param1->session, param1->playerCount);
+            v1 = poffin_cooking_0223D508(27, &param1->session.result, poffin_cooking_0223D4C0(), param1->comm);
 
             if (v1 == 1) {
                 (*param2)++;
@@ -618,13 +618,13 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
         }
         break;
     case 6:
-        return param1->unk_0C + 1;
+        return param1->state + 1;
     default:
         GF_ASSERT(FALSE);
         break;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223BF74(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
@@ -635,90 +635,90 @@ static int poffin_cooking_0223BF74(PoffinBerrySelectionData *param0, PoffinCooki
 
     switch (*param2) {
     case 0:
-        poffin_cooking_0223EC4C(&param1->unk_6A0, 0);
+        poffin_cooking_0223EC4C(&param1->messageBox, 0);
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 0);
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
         GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG2, 1);
 
-        param1->unk_31C = 0;
+        param1->updateSpriteList = 0;
 
-        poffin_cooking_0223F730(&param1->unk_1478, 128, 144, param1->unk_1494.unk_58.unk_0C, param1->heapID);
+        poffin_cooking_0223F730(&param1->poffinSprite, 128, 144, param1->session.receivedResult.poffinSpecies, param1->heapID);
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, param1->heapID);
         (*param2)++;
         break;
     case 1:
         if (IsScreenFadeDone()) {
             (*param2)++;
-            param1->unk_1C = (30 * 1);
+            param1->timer = (30 * 1);
         }
         break;
     case 2:
-        param1->unk_1C--;
+        param1->timer--;
 
-        if (param1->unk_1C < 0) {
-            poffin_cooking_0223EC4C(&param1->unk_6A0, 1);
+        if (param1->timer < 0) {
+            poffin_cooking_0223EC4C(&param1->messageBox, 1);
             Sound_PlayEffect(SEQ_SE_DP_NM14_sseq);
             (*param2)++;
-            param1->unk_1C = (30 * 1);
+            param1->timer = (30 * 1);
         }
         break;
     case 3:
-        param1->unk_1C--;
+        param1->timer--;
 
-        if (param1->unk_1C < 0) {
-            poffin_cooking_0223EC4C(&param1->unk_6A0, 2);
-            poffin_cooking_0223F784(&param1->unk_1478);
+        if (param1->timer < 0) {
+            poffin_cooking_0223EC4C(&param1->messageBox, 2);
+            poffin_cooking_0223F784(&param1->poffinSprite);
             Sound_PlayEffect(SEQ_SE_DP_NM14_sseq);
             (*param2)++;
-            param1->unk_1C = (30 * 20);
+            param1->timer = (30 * 20);
         }
         break;
     case 4:
-        param1->unk_1C--;
+        param1->timer--;
 
-        if ((param1->unk_1C < 0) || (gSystem.touchPressed) || (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B))) {
+        if ((param1->timer < 0) || (gSystem.touchPressed) || (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B))) {
             (*param2)++;
             break;
         }
 
-        poffin_cooking_0223F784(&param1->unk_1478);
+        poffin_cooking_0223F784(&param1->poffinSprite);
         break;
     case 5:
-        poffin_cooking_0223F770(&param1->unk_1478);
-        poffin_cooking_0223EC70(&param1->unk_6A0);
-        poffin_cooking_0223C8B0(param0, param1->unk_1494.unk_100, param1->unk_1488);
-        poffin_cooking_0223EC8C(&param1->unk_6A0, 0);
-        param1->unk_1C = (30 * 5);
+        poffin_cooking_0223F770(&param1->poffinSprite);
+        poffin_cooking_0223EC70(&param1->messageBox);
+        poffin_cooking_0223C8B0(param0, param1->session.poffin, param1->playerCount);
+        poffin_cooking_0223EC8C(&param1->messageBox, 0);
+        param1->timer = (30 * 5);
         (*param2)++;
         break;
     case 6:
-        param1->unk_1C--;
+        param1->timer--;
 
-        if ((gSystem.touchPressed) || (param1->unk_1C < 0) || (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B))) {
+        if ((gSystem.touchPressed) || (param1->timer < 0) || (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B))) {
             (*param2)++;
         }
         break;
     case 7:
-        poffin_cooking_0223EC8C(&param1->unk_6A0, 1);
-        poffin_cooking_0223F7B0(&param1->unk_1480);
+        poffin_cooking_0223EC8C(&param1->messageBox, 1);
+        poffin_cooking_0223F7B0(&param1->yesNoMenu);
         (*param2)++;
         break;
     case 8:
-        v0 = poffin_cooking_0223F7DC(&param1->unk_1480);
+        v0 = poffin_cooking_0223F7DC(&param1->yesNoMenu);
 
         if (v0 == YES_NO_TOUCH_MENU_YES || v0 == YES_NO_TOUCH_MENU_NO) {
             if (v0 == YES_NO_TOUCH_MENU_YES) {
                 if (PoffinCase_CountFilledSlots(param0->ctx->poffinCase) >= MAX_POFFINS) {
-                    poffin_cooking_0223EC8C(&param1->unk_6A0, 2);
+                    poffin_cooking_0223EC8C(&param1->messageBox, 2);
                     (*param2) = 10;
-                    param1->unk_1C = (30 * 5);
+                    param1->timer = (30 * 5);
                     break;
                 }
 
                 if (Bag_HasItemsInPocket(param0->ctx->bag, POCKET_BERRIES) == FALSE) {
-                    poffin_cooking_0223EC8C(&param1->unk_6A0, 5);
+                    poffin_cooking_0223EC8C(&param1->messageBox, 5);
                     (*param2) = 10;
-                    param1->unk_1C = (30 * 5);
+                    param1->timer = (30 * 5);
                     break;
                 }
 
@@ -727,37 +727,37 @@ static int poffin_cooking_0223BF74(PoffinBerrySelectionData *param0, PoffinCooki
                 (*param2) = 11;
             }
 
-            if (param1->unk_1488 > 1) {
-                poffin_cooking_0223EC8C(&param1->unk_6A0, 6);
-                poffin_cooking_0223E9BC(&param1->unk_6A0);
+            if (param1->playerCount > 1) {
+                poffin_cooking_0223EC8C(&param1->messageBox, 6);
+                poffin_cooking_0223E9BC(&param1->messageBox);
             }
         }
         break;
     case 9:
-        param1->unk_3B4 = 1;
-        v1 = poffin_cooking_0223D508(30, &param1->unk_3B4, poffin_cooking_0223D4B0(), param1->unk_148C);
+        param1->leaveRequest = 1;
+        v1 = poffin_cooking_0223D508(30, &param1->leaveRequest, poffin_cooking_0223D4B0(), param1->comm);
 
         if (v1 == 1) {
-            return param1->unk_0C + 1;
+            return param1->state + 1;
         }
         break;
     case 10:
-        param1->unk_1C--;
+        param1->timer--;
 
-        if ((gSystem.touchPressed) || (param1->unk_1C < 0) || (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B))) {
-            if (param1->unk_1488 > 1) {
-                poffin_cooking_0223EC8C(&param1->unk_6A0, 6);
-                poffin_cooking_0223E9BC(&param1->unk_6A0);
+        if ((gSystem.touchPressed) || (param1->timer < 0) || (gSystem.pressedKeys & (PAD_BUTTON_A | PAD_BUTTON_B))) {
+            if (param1->playerCount > 1) {
+                poffin_cooking_0223EC8C(&param1->messageBox, 6);
+                poffin_cooking_0223E9BC(&param1->messageBox);
             }
             (*param2) = 11;
         }
         break;
     case 11:
-        param1->unk_3B4 = 0;
-        v1 = poffin_cooking_0223D508(30, &param1->unk_3B4, poffin_cooking_0223D4B0(), param1->unk_148C);
+        param1->leaveRequest = 0;
+        v1 = poffin_cooking_0223D508(30, &param1->leaveRequest, poffin_cooking_0223D4B0(), param1->comm);
 
         if (v1 == 1) {
-            return param1->unk_0C + 1;
+            return param1->state + 1;
         }
         break;
     default:
@@ -765,7 +765,7 @@ static int poffin_cooking_0223BF74(PoffinBerrySelectionData *param0, PoffinCooki
         break;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223C24C(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
@@ -777,34 +777,34 @@ static int poffin_cooking_0223C258(PoffinBerrySelectionData *param0, PoffinCooki
 {
     switch (*param2) {
     case 0:
-        if (param1->unk_1494.unk_145 == 1) {
-            poffin_cooking_0223EC8C(&param1->unk_6A0, 3);
+        if (param1->session.leaveResult == 1) {
+            poffin_cooking_0223EC8C(&param1->messageBox, 3);
             param0->unk_20 = TRUE;
         } else {
             param0->unk_20 = FALSE;
 
-            if (param1->unk_1488 <= 1) {
+            if (param1->playerCount <= 1) {
                 (*param2) = 2;
                 break;
             } else {
-                poffin_cooking_0223EC8C(&param1->unk_6A0, 4);
+                poffin_cooking_0223EC8C(&param1->messageBox, 4);
             }
 
             void *journalEntryOnlineEvent;
 
-            if (param1->unk_1490 == 1) {
+            if (param1->isMultiplayer == 1) {
                 journalEntryOnlineEvent = JournalEntry_CreateEventMadePoffins(param1->heapID);
                 JournalEntry_SaveData(param0->ctx->journalEntry, journalEntryOnlineEvent, JOURNAL_ONLINE_EVENT);
             }
         }
 
-        param1->unk_1C = (30 * 2);
+        param1->timer = (30 * 2);
         (*param2)++;
         break;
     case 1:
-        param1->unk_1C--;
+        param1->timer--;
 
-        if (param1->unk_1C < 0) {
+        if (param1->timer < 0) {
             (*param2)++;
         }
         break;
@@ -821,51 +821,51 @@ static int poffin_cooking_0223C258(PoffinBerrySelectionData *param0, PoffinCooki
         poffin_cooking_0223CB8C(param1, param2);
         poffin_cooking_0223CAA4(param1);
 
-        return param1->unk_0C + 1;
+        return param1->state + 1;
     }
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static int poffin_cooking_0223C344(PoffinBerrySelectionData *param0, PoffinCookingApp *param1, int *param2)
 {
-    poffin_cooking_0223DB30(&param1->unk_3C0);
-    poffin_cooking_0223DEC4(&param1->unk_5B0);
-    poffin_cooking_0223E260(&param1->unk_5E4);
-    poffin_cooking_0223E260(&param1->unk_5F0);
-    poffin_cooking_0223E260(&param1->unk_5FC);
-    poffin_cooking_0223E34C(&param1->unk_608);
-    poffin_cooking_0223E5C0(&param1->unk_680);
-    poffin_cooking_0223E6F8(&param1->unk_6A0);
-    poffin_cooking_0223ED4C(&param1->unk_6D8);
-    poffin_cooking_0223F2A8(&param1->unk_AEC);
-    poffin_cooking_0223F4AC(&param1->unk_B6C);
-    poffin_cooking_0223F7A4(&param1->unk_1480);
+    poffin_cooking_0223DB30(&param1->poffinAnim);
+    poffin_cooking_0223DEC4(&param1->playerListDisplay);
+    poffin_cooking_0223E260(&param1->reactionSprite);
+    poffin_cooking_0223E260(&param1->reactionSprite2);
+    poffin_cooking_0223E260(&param1->reactionSprite3);
+    poffin_cooking_0223E34C(&param1->burstEffect);
+    poffin_cooking_0223E5C0(&param1->playerCursor);
+    poffin_cooking_0223E6F8(&param1->messageBox);
+    poffin_cooking_0223ED4C(&param1->particleManager);
+    poffin_cooking_0223F2A8(&param1->arrowManager);
+    poffin_cooking_0223F4AC(&param1->sparkleManager);
+    poffin_cooking_0223F7A4(&param1->yesNoMenu);
     poffin_cooking_0223C87C(param0, param1);
     poffin_cooking_0223B784(param1);
 
-    return param1->unk_0C;
+    return param1->state;
 }
 
 static void poffin_cooking_0223C3E8(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
     fx32 v1;
 
-    if (v0->unk_0C == 0) {
-        param0->unk_1654 += v0->unk_0A;
+    if (v0->direction == 0) {
+        param0->stirRotation += v0->stirSpeed;
     } else {
-        param0->unk_1654 -= v0->unk_0A;
+        param0->stirRotation -= v0->stirSpeed;
     }
 
-    poffin_cooking_0223E4A4(&param0->unk_608, param0->unk_1654);
+    poffin_cooking_0223E4A4(&param0->burstEffect, param0->stirRotation);
     poffin_cooking_0223C90C(param0);
 
-    v1 = poffin_cooking_0223FB68(v0->unk_0A, v0->unk_0D);
+    v1 = poffin_cooking_0223FB68(v0->stirSpeed, v0->stirLevel);
 
-    poffin_cooking_0223E4C0(&param0->unk_608, v1);
-    poffin_cooking_0223E51C(&param0->unk_608, v0->unk_0D);
-    poffin_cooking_0223E658(&param0->unk_680);
+    poffin_cooking_0223E4C0(&param0->burstEffect, v1);
+    poffin_cooking_0223E51C(&param0->burstEffect, v0->stirLevel);
+    poffin_cooking_0223E658(&param0->playerCursor);
     poffin_cooking_0223C480(param0);
     poffin_cooking_0223C758(param0);
     poffin_cooking_0223C558(param0);
@@ -874,59 +874,59 @@ static void poffin_cooking_0223C3E8(PoffinCookingApp *param0)
     poffin_cooking_0223C7FC(param0);
 
     {
-        v0->unk_13 = 0;
-        v0->unk_12 = 0;
-        v0->unk_0F = 0;
-        v0->unk_0E = 0;
+        v0->perfectStir = 0;
+        v0->stirChain = 0;
+        v0->sparkleTrigger = 0;
+        v0->releaseFlag = 0;
     }
 }
 
 static void poffin_cooking_0223C480(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
     static const u8 v1[3][7] = {
         { 1, 1, 0, 1, 0, 0, 5 },
         { 0, 1, 1, 0, 1, 0, 6 },
         { 0, 0, 1, 0, 0, 1, 8 },
     };
 
-    poffin_cooking_0223E484(&param0->unk_608, 5, v1[v0->unk_0D][0]);
-    poffin_cooking_0223E484(&param0->unk_608, 6, v1[v0->unk_0D][1]);
-    poffin_cooking_0223E484(&param0->unk_608, 7, v1[v0->unk_0D][2]);
-    poffin_cooking_0223E484(&param0->unk_608, 0, v1[v0->unk_0D][3]);
-    poffin_cooking_0223E484(&param0->unk_608, 1, v1[v0->unk_0D][4]);
-    poffin_cooking_0223E484(&param0->unk_608, 2, v1[v0->unk_0D][5]);
+    poffin_cooking_0223E484(&param0->burstEffect, 5, v1[v0->stirLevel][0]);
+    poffin_cooking_0223E484(&param0->burstEffect, 6, v1[v0->stirLevel][1]);
+    poffin_cooking_0223E484(&param0->burstEffect, 7, v1[v0->stirLevel][2]);
+    poffin_cooking_0223E484(&param0->burstEffect, 0, v1[v0->stirLevel][3]);
+    poffin_cooking_0223E484(&param0->burstEffect, 1, v1[v0->stirLevel][4]);
+    poffin_cooking_0223E484(&param0->burstEffect, 2, v1[v0->stirLevel][5]);
 
-    if (v1[v0->unk_0D][6] != 8) {
-        if (v0->unk_10 > 0) {
-            poffin_cooking_0223E4E0(&param0->unk_608, v1[v0->unk_0D][6], v0->unk_10);
+    if (v1[v0->stirLevel][6] != 8) {
+        if (v0->alpha > 0) {
+            poffin_cooking_0223E4E0(&param0->burstEffect, v1[v0->stirLevel][6], v0->alpha);
         } else {
-            poffin_cooking_0223E484(&param0->unk_608, v1[v0->unk_0D][6], 0);
+            poffin_cooking_0223E484(&param0->burstEffect, v1[v0->stirLevel][6], 0);
         }
     }
 }
 
 static void poffin_cooking_0223C558(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
 
-    if ((v0->unk_11 == v0->unk_0C) || (v0->unk_0A == 0) || (param0->unk_324 != 0)) {
-        poffin_cooking_0223F3D0(&param0->unk_AEC, 1);
-        poffin_cooking_0223F3D0(&param0->unk_AEC, 3);
-        param0->unk_328 = 0;
+    if ((v0->arrowSide == v0->direction) || (v0->stirSpeed == 0) || (param0->arrowAnimState != 0)) {
+        poffin_cooking_0223F3D0(&param0->arrowManager, 1);
+        poffin_cooking_0223F3D0(&param0->arrowManager, 3);
+        param0->arrowFacing = 0;
     } else {
-        if (v0->unk_11 == 0) {
-            if (param0->unk_328 != 1) {
-                poffin_cooking_0223F3A0(&param0->unk_AEC, 1);
-                param0->unk_328 = 1;
-                poffin_cooking_0223F3D0(&param0->unk_AEC, 3);
+        if (v0->arrowSide == 0) {
+            if (param0->arrowFacing != 1) {
+                poffin_cooking_0223F3A0(&param0->arrowManager, 1);
+                param0->arrowFacing = 1;
+                poffin_cooking_0223F3D0(&param0->arrowManager, 3);
                 Sound_PlayEffect(SEQ_SE_DP_NM12_2_sseq);
             }
         } else {
-            if (param0->unk_328 != 2) {
-                poffin_cooking_0223F3A0(&param0->unk_AEC, 3);
-                param0->unk_328 = 2;
-                poffin_cooking_0223F3D0(&param0->unk_AEC, 1);
+            if (param0->arrowFacing != 2) {
+                poffin_cooking_0223F3A0(&param0->arrowManager, 3);
+                param0->arrowFacing = 2;
+                poffin_cooking_0223F3D0(&param0->arrowManager, 1);
                 Sound_PlayEffect(SEQ_SE_DP_NM12_2_sseq);
             }
         }
@@ -935,7 +935,7 @@ static void poffin_cooking_0223C558(PoffinCookingApp *param0)
 
 static void poffin_cooking_0223C600(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
     static const u8 v1[3] = {
         1, 3, 0
     };
@@ -943,34 +943,34 @@ static void poffin_cooking_0223C600(PoffinCookingApp *param0)
         0, 2, 4
     };
 
-    if ((param0->unk_328 != 0) || (param0->unk_324 != 0)) {
-        poffin_cooking_0223E994(&param0->unk_6A0);
-        param0->unk_330 = 0;
-        param0->unk_32C = 0;
+    if ((param0->arrowFacing != 0) || (param0->arrowAnimState != 0)) {
+        poffin_cooking_0223E994(&param0->messageBox);
+        param0->extraStirMessageShown = 0;
+        param0->stirMessageShown = 0;
     } else {
-        if (param0->unk_330 == 0) {
-            if (v0->unk_13) {
-                poffin_cooking_0223E994(&param0->unk_6A0);
-                poffin_cooking_0223E908(&param0->unk_6A0, v1[v0->unk_0D]);
-                param0->unk_330 = 1;
-                param0->unk_32C = 0;
+        if (param0->extraStirMessageShown == 0) {
+            if (v0->perfectStir) {
+                poffin_cooking_0223E994(&param0->messageBox);
+                poffin_cooking_0223E908(&param0->messageBox, v1[v0->stirLevel]);
+                param0->extraStirMessageShown = 1;
+                param0->stirMessageShown = 0;
             }
         } else {
-            if (poffin_cooking_0223E984(&param0->unk_6A0)) {
-                param0->unk_330 = 0;
+            if (poffin_cooking_0223E984(&param0->messageBox)) {
+                param0->extraStirMessageShown = 0;
             }
         }
 
-        if (param0->unk_32C == 0) {
-            if (v0->unk_12) {
-                poffin_cooking_0223E994(&param0->unk_6A0);
-                poffin_cooking_0223E908(&param0->unk_6A0, v2[v0->unk_0D]);
-                param0->unk_32C = 1;
-                param0->unk_330 = 0;
+        if (param0->stirMessageShown == 0) {
+            if (v0->stirChain) {
+                poffin_cooking_0223E994(&param0->messageBox);
+                poffin_cooking_0223E908(&param0->messageBox, v2[v0->stirLevel]);
+                param0->stirMessageShown = 1;
+                param0->extraStirMessageShown = 0;
             }
         } else {
-            if (poffin_cooking_0223E984(&param0->unk_6A0)) {
-                param0->unk_32C = 0;
+            if (poffin_cooking_0223E984(&param0->messageBox)) {
+                param0->stirMessageShown = 0;
             }
         }
     }
@@ -978,7 +978,7 @@ static void poffin_cooking_0223C600(PoffinCookingApp *param0)
 
 static void poffin_cooking_0223C6D4(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
     static const u32 v1[3] = {
         1714, 1720, 1720
     };
@@ -986,65 +986,65 @@ static void poffin_cooking_0223C6D4(PoffinCookingApp *param0)
         1715, 1715, 1723
     };
 
-    if (v0->unk_13) {
-        poffin_cooking_0223EDDC(&param0->unk_6D8, v0->unk_0D, 2);
-        Sound_PlayEffect(v1[v0->unk_0D]);
+    if (v0->perfectStir) {
+        poffin_cooking_0223EDDC(&param0->particleManager, v0->stirLevel, 2);
+        Sound_PlayEffect(v1[v0->stirLevel]);
     }
 
-    if (v0->unk_12 == 1) {
-        poffin_cooking_0223EDDC(&param0->unk_6D8, v0->unk_0D, 1);
-        Sound_PlayEffect(v2[v0->unk_0D]);
-    } else if (v0->unk_12 == 2) {
-        poffin_cooking_0223EDDC(&param0->unk_6D8, v0->unk_0D, 0);
+    if (v0->stirChain == 1) {
+        poffin_cooking_0223EDDC(&param0->particleManager, v0->stirLevel, 1);
+        Sound_PlayEffect(v2[v0->stirLevel]);
+    } else if (v0->stirChain == 2) {
+        poffin_cooking_0223EDDC(&param0->particleManager, v0->stirLevel, 0);
     }
 
-    if (poffin_cooking_0223FB50(v0->unk_0A, v0->unk_0D) == 0) {
-        poffin_cooking_0223EFCC(&param0->unk_6D8);
+    if (poffin_cooking_0223FB50(v0->stirSpeed, v0->stirLevel) == 0) {
+        poffin_cooking_0223EFCC(&param0->particleManager);
     }
 }
 
 static void poffin_cooking_0223C758(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
     BOOL v1;
 
-    if (v0->unk_0E) {
-        if (v0->unk_11 == 0) {
-            poffin_cooking_0223F3A0(&param0->unk_AEC, 0);
-            poffin_cooking_0223F3D0(&param0->unk_AEC, 2);
+    if (v0->releaseFlag) {
+        if (v0->arrowSide == 0) {
+            poffin_cooking_0223F3A0(&param0->arrowManager, 0);
+            poffin_cooking_0223F3D0(&param0->arrowManager, 2);
             Sound_PlayEffect(SEQ_SE_DP_NM12_2_sseq);
-            param0->unk_324 = 1;
+            param0->arrowAnimState = 1;
         } else {
-            poffin_cooking_0223F3A0(&param0->unk_AEC, 2);
-            poffin_cooking_0223F3D0(&param0->unk_AEC, 0);
+            poffin_cooking_0223F3A0(&param0->arrowManager, 2);
+            poffin_cooking_0223F3D0(&param0->arrowManager, 0);
             Sound_PlayEffect(SEQ_SE_DP_NM12_2_sseq);
-            param0->unk_324 = 2;
+            param0->arrowAnimState = 2;
         }
     }
 
-    if (param0->unk_324 == 1) {
-        v1 = poffin_cooking_0223F3F0(&param0->unk_AEC, 0);
+    if (param0->arrowAnimState == 1) {
+        v1 = poffin_cooking_0223F3F0(&param0->arrowManager, 0);
 
         if (v1 == 1) {
-            param0->unk_324 = 0;
+            param0->arrowAnimState = 0;
         }
-    } else if (param0->unk_324 == 2) {
-        v1 = poffin_cooking_0223F3F0(&param0->unk_AEC, 2);
+    } else if (param0->arrowAnimState == 2) {
+        v1 = poffin_cooking_0223F3F0(&param0->arrowManager, 2);
 
         if (v1 == 1) {
-            param0->unk_324 = 0;
+            param0->arrowAnimState = 0;
         }
     }
 }
 
 static void poffin_cooking_0223C7FC(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
-    int v1 = param0->unk_1494.unk_04.unk_00.unk_00;
-    int v2 = param0->unk_1494.unk_04.unk_00.unk_01;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
+    int v1 = param0->session.localParticipant.touchInput.x;
+    int v2 = param0->session.localParticipant.touchInput.y;
 
-    if (v0->unk_0F == 1) {
-        poffin_cooking_0223F544(&param0->unk_B6C, v1, v2);
+    if (v0->sparkleTrigger == 1) {
+        poffin_cooking_0223F544(&param0->sparkleManager, v1, v2);
         Sound_PlayEffect(SEQ_SE_DP_NM11_sseq);
     }
 }
@@ -1053,12 +1053,12 @@ static void poffin_cooking_0223C82C(PoffinBerrySelectionData *param0, PoffinCook
 {
     int v0;
 
-    param1->unk_1494.unk_100 = Poffin_New(param1->heapID);
-    param1->unk_1494.unk_144 = poffin_cooking_0223D570(param1->unk_148C);
+    param1->session.poffin = Poffin_New(param1->heapID);
+    param1->session.localPlayerIndex = poffin_cooking_0223D570(param1->comm);
 
     for (v0 = 0; v0 < 4; v0++) {
-        param1->unk_1494.unk_90[v0].unk_00.unk_00 = 128;
-        param1->unk_1494.unk_90[v0].unk_00.unk_01 = 96;
+        param1->session.participants[v0].touchInput.x = 128;
+        param1->session.participants[v0].touchInput.y = 96;
     }
 
     if (param0->unk_26) {
@@ -1068,10 +1068,10 @@ static void poffin_cooking_0223C82C(PoffinBerrySelectionData *param0, PoffinCook
 
 static void poffin_cooking_0223C87C(PoffinBerrySelectionData *param0, PoffinCookingApp *param1)
 {
-    GF_ASSERT(param1->unk_1494.unk_100);
+    GF_ASSERT(param1->session.poffin);
 
-    Heap_Free(param1->unk_1494.unk_100);
-    param1->unk_1494.unk_100 = NULL;
+    Heap_Free(param1->session.poffin);
+    param1->session.poffin = NULL;
 
     if (param0->unk_26) {
         CommSys_SetSendInterval(0);
@@ -1105,16 +1105,16 @@ static BOOL poffin_cooking_0223C8B0(PoffinBerrySelectionData *param0, Poffin *pa
 
 static void poffin_cooking_0223C90C(PoffinCookingApp *param0)
 {
-    PoffinCookingBlendState *v0 = &param0->unk_1494.unk_90[0].unk_08;
+    PoffinCookingBlendState *v0 = &param0->session.participants[0].blendState;
     static const u32 v1[3] = {
         1713,
         1718,
         1722,
     };
 
-    if (((v0->unk_0C == 0) && (param0->unk_3B8 > v0->unk_08)) || ((v0->unk_0C == 1) && (param0->unk_3B8 < v0->unk_08))) {
-        Sound_PlayEffect(v1[v0->unk_0D]);
+    if (((v0->direction == 0) && (param0->lastStirAngle > v0->angle)) || ((v0->direction == 1) && (param0->lastStirAngle < v0->angle))) {
+        Sound_PlayEffect(v1[v0->stirLevel]);
     }
 
-    param0->unk_3B8 = v0->unk_08;
+    param0->lastStirAngle = v0->angle;
 }

@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_POFFIN_COOKING_STIR_LEVEL_H
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
+    int timer;
+    int alpha;
+    int level;
 } PoffinCookingStirLevel;
 
 #endif // POKEPLATINUM_STRUCT_POFFIN_COOKING_STIR_LEVEL_H
