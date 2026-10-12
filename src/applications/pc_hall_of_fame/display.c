@@ -56,23 +56,23 @@ typedef struct PCHallOfFameApp {
     u8 unk_200[3200];
 } PCHallOfFameApp;
 
-static void ov87_021D11AC(void *param0);
+static void PCHallOfFame_VBlankCallback(void *param0);
 static BOOL PCHallOfFame_Open(PCHallOfFameApp *pcHallOfFameApp, int *state);
 static BOOL PCHallOfFame_Close(PCHallOfFameApp *pcHallOfFameApp, int *state);
 static BOOL PCHallOfFame_HighlightCurrentPokemon(PCHallOfFameApp *pcHallOfFameApp, int *state);
 static BOOL PCHallOfFame_DrawNewEntry(PCHallOfFameApp *pcHallOfFameApp, int *state);
 static BOOL PCHallOfFame_LoadCurrentTextState(PCHallOfFameApp *pcHallOfFameApp, int *state);
-static void ov87_021D139C(PCHallOfFameApp *pcHallOfFameApp);
-static void ov87_021D14B8(PCHallOfFameApp *pcHallOfFameApp);
-static u32 ov87_021D14D4(PCHallOfFameApp *pcHallOfFameApp, u32 param1);
+static void PCHallOfFame_InitGraphics(PCHallOfFameApp *pcHallOfFameApp);
+static void PCHallOfFame_FreeGraphics(PCHallOfFameApp *pcHallOfFameApp);
+static u32 PCHallOfFame_AddWindows(PCHallOfFameApp *pcHallOfFameApp, u32 param1);
 static void PCHallOfFame_RemoveWindows(PCHallOfFameApp *pcHallOfFameApp);
 static void PCHallOfFame_PrintAllText(PCHallOfFameApp *pcHallOfFameApp);
 static void PCHallOfFame_ClearScreen(PCHallOfFameApp *pcHallOfFameApp);
 static void PCHallOfFame_PrintEntryTitleText(PCHallOfFameApp *pcHallOfFameApp);
 static void PCHallOfFame_PrintCurrentTextState(PCHallOfFameApp *pcHallOfFameApp);
-static void ov87_021D1818(PCHallOfFameApp *pcHallOfFameApp);
-static void ov87_021D186C(PCHallOfFameApp *pcHallOfFameApp);
-static void ov87_021D18A0(PCHallOfFameApp *pcHallOfFameApp, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank);
+static void PCHallOfFame_InitSprites(PCHallOfFameApp *pcHallOfFameApp);
+static void PCHallOfFame_FreeSprites(PCHallOfFameApp *pcHallOfFameApp);
+static void PCHallOfFame_CreateSprites(PCHallOfFameApp *pcHallOfFameApp, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank);
 static void PCHallOfFame_DrawAllPokemon(PCHallOfFameApp *pcHallOfFameApp);
 static void PCHallOfFame_SetAllDrawFlagsFalse(PCHallOfFameApp *pcHallOfFameApp);
 
@@ -105,7 +105,7 @@ PCHallOfFameApp *PCHallOfFame_InitApp(PCHallOfFameMan *pcHallOfFameMan, const PC
         pcHallOfFameApp->unk_1F8 = String_Init(256, HEAP_ID_PC_HALL_OF_FAME);
         pcHallOfFameApp->mon = Pokemon_New(HEAP_ID_PC_HALL_OF_FAME);
 
-        SetVBlankCallback(ov87_021D11AC, pcHallOfFameApp);
+        SetVBlankCallback(PCHallOfFame_VBlankCallback, pcHallOfFameApp);
     }
 
     return pcHallOfFameApp;
@@ -129,7 +129,7 @@ void PCHallOfFame_FreeApp(PCHallOfFameApp *pcHallOfFameApp)
     }
 }
 
-static void ov87_021D11AC(void *param0)
+static void PCHallOfFame_VBlankCallback(void *param0)
 {
     PCHallOfFameApp *pcHallOfFameApp = param0;
 
@@ -155,8 +155,8 @@ static BOOL PCHallOfFame_Open(PCHallOfFameApp *pcHallOfFameApp, int *state)
 {
     switch (*state) {
     case 0:
-        ov87_021D139C(pcHallOfFameApp);
-        ov87_021D1818(pcHallOfFameApp);
+        PCHallOfFame_InitGraphics(pcHallOfFameApp);
+        PCHallOfFame_InitSprites(pcHallOfFameApp);
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_PC_HALL_OF_FAME);
         (*state)++;
         break;
@@ -181,8 +181,8 @@ static BOOL PCHallOfFame_Close(PCHallOfFameApp *pcHallOfFameApp, int *state)
         break;
     case 1:
         if (IsScreenFadeDone()) {
-            ov87_021D186C(pcHallOfFameApp);
-            ov87_021D14B8(pcHallOfFameApp);
+            PCHallOfFame_FreeSprites(pcHallOfFameApp);
+            PCHallOfFame_FreeGraphics(pcHallOfFameApp);
             return TRUE;
         }
         break;
@@ -246,7 +246,7 @@ static BOOL PCHallOfFame_LoadCurrentTextState(PCHallOfFameApp *pcHallOfFameApp, 
     return TRUE;
 }
 
-static void ov87_021D139C(PCHallOfFameApp *pcHallOfFameApp)
+static void PCHallOfFame_InitGraphics(PCHallOfFameApp *pcHallOfFameApp)
 {
     static const GXBanks v0 = {
         GX_VRAM_BG_128_B,
@@ -308,7 +308,7 @@ static void ov87_021D139C(PCHallOfFameApp *pcHallOfFameApp)
     Bg_FillTilesRange(pcHallOfFameApp->bgConfig, 1, 0x0, 1, 0);
     Bg_FillTilemapRect(pcHallOfFameApp->bgConfig, 1, 0x0, 0, 0, 32, 32, 0);
 
-    v4 = ov87_021D14D4(pcHallOfFameApp, 1);
+    v4 = PCHallOfFame_AddWindows(pcHallOfFameApp, 1);
 
     PCHallOfFame_PrintAllText(pcHallOfFameApp);
     LoadStandardWindowGraphics(pcHallOfFameApp->bgConfig, BG_LAYER_MAIN_1, v4, 2, 0, HEAP_ID_PC_HALL_OF_FAME);
@@ -320,14 +320,14 @@ static void ov87_021D139C(PCHallOfFameApp *pcHallOfFameApp)
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
-static void ov87_021D14B8(PCHallOfFameApp *pcHallOfFameApp)
+static void PCHallOfFame_FreeGraphics(PCHallOfFameApp *pcHallOfFameApp)
 {
     Bg_FreeTilemapBuffer(pcHallOfFameApp->bgConfig, BG_LAYER_MAIN_1);
     Bg_FreeTilemapBuffer(pcHallOfFameApp->bgConfig, BG_LAYER_MAIN_2);
     PCHallOfFame_RemoveWindows(pcHallOfFameApp);
 }
 
-static u32 ov87_021D14D4(PCHallOfFameApp *pcHallOfFameApp, u32 param1)
+static u32 PCHallOfFame_AddWindows(PCHallOfFameApp *pcHallOfFameApp, u32 param1)
 {
     Window_Add(pcHallOfFameApp->bgConfig, &(pcHallOfFameApp->windows[0]), BG_LAYER_MAIN_1, 1, 1, 30, 2, 0, param1);
 
@@ -436,7 +436,7 @@ static void PCHallOfFame_PrintCurrentTextState(PCHallOfFameApp *pcHallOfFameApp)
     Window_LoadTiles(window);
 }
 
-static void ov87_021D1818(PCHallOfFameApp *pcHallOfFameApp)
+static void PCHallOfFame_InitSprites(PCHallOfFameApp *pcHallOfFameApp)
 {
     NNSG2dCellDataBank *cellBank;
     NNSG2dAnimBankData *animBank;
@@ -447,11 +447,11 @@ static void ov87_021D1818(PCHallOfFameApp *pcHallOfFameApp)
 
     MI_CpuClearFast(pcHallOfFameApp->unk_200, sizeof(pcHallOfFameApp->unk_200));
 
-    ov87_021D18A0(pcHallOfFameApp, cellBank, animBank);
+    PCHallOfFame_CreateSprites(pcHallOfFameApp, cellBank, animBank);
     PCHallOfFame_DrawAllPokemon(pcHallOfFameApp);
 }
 
-static void ov87_021D186C(PCHallOfFameApp *pcHallOfFameApp)
+static void PCHallOfFame_FreeSprites(PCHallOfFameApp *pcHallOfFameApp)
 {
     int i;
 
@@ -465,7 +465,7 @@ static void ov87_021D186C(PCHallOfFameApp *pcHallOfFameApp)
     Heap_Free(pcHallOfFameApp->animBank);
 }
 
-static void ov87_021D18A0(PCHallOfFameApp *pcHallOfFameApp, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank)
+static void PCHallOfFame_CreateSprites(PCHallOfFameApp *pcHallOfFameApp, NNSG2dCellDataBank *cellBank, NNSG2dAnimBankData *animBank)
 {
     static const struct {
         int x;
