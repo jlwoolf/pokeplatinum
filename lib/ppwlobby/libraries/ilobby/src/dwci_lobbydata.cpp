@@ -1,6 +1,6 @@
 #include "ilobby/dwci_lobbydata.h"
 
-UnkClass_ov66_02243B64::UnkClass_ov66_02243B64(const PPWString &param0, const PPWString &param1, DWC_LOBBY_CHANNEL_PREFIX param2, s32 param3, const PPWString &param4, const PPWString &param5, const PPWString &param6, const DWCi_LobbyGlobalCallbacks *param7)
+DWCi_LobbyManager::DWCi_LobbyManager(const PPWString &param0, const PPWString &param1, DWC_LOBBY_CHANNEL_PREFIX param2, s32 param3, const PPWString &param4, const PPWString &param5, const PPWString &param6, const DWCi_LobbyGlobalCallbacks *param7)
     : unk_00(NULL)
     , unk_04(DWCi_LOBBY_STATE_NOTINITIALIZED)
     , unk_08(param3)
@@ -20,7 +20,7 @@ UnkClass_ov66_02243B64::UnkClass_ov66_02243B64(const PPWString &param0, const PP
     , unk_90()
     , unk_9C()
 {
-    const char *const Unk_ov66_02258CB4[] = {
+    const char *const sChannelTypeNames[] = {
         "R",
         "D",
         "D1",
@@ -35,27 +35,27 @@ UnkClass_ov66_02243B64::UnkClass_ov66_02243B64(const PPWString &param0, const PP
         "T"
     };
 
-    unk_48 = PPWString(Unk_ov66_02258CAC) + DWCi_LOBBY_CHANNEL_NAME_SEPARATOR
+    unk_48 = PPWString(sChannelPrefix) + DWCi_LOBBY_CHANNEL_NAME_SEPARATOR
         + unk_30 + DWCi_LOBBY_CHANNEL_NAME_SEPARATOR
-        + PPWString(Unk_ov66_02258CB4[param2]) + DWCi_LOBBY_CHANNEL_NAME_SEPARATOR;
+        + PPWString(sChannelTypeNames[param2]) + DWCi_LOBBY_CHANNEL_NAME_SEPARATOR;
 }
 
-UnkClass_ov66_02243B64::~UnkClass_ov66_02243B64()
+DWCi_LobbyManager::~DWCi_LobbyManager()
 {
     return;
 }
 
-PPWString UnkClass_ov66_02243B64::ov66_022467C4(const PPWString &param0) const
+PPWString DWCi_LobbyManager::MakeFullChannelName(const PPWString &param0) const
 {
     return unk_48 + param0;
 }
 
-PPWString UnkClass_ov66_02243B64::ov66_022467D4(const PPWString &param0) const
+PPWString DWCi_LobbyManager::StripChannelPrefix(const PPWString &param0) const
 {
     return param0.substr(unk_48.length());
 }
 
-std::vector<char *, PPW_Allocator<char *> > UnkClass_ov66_02243B64::ov66_0224680C(int param0, const char **param1) const
+std::vector<char *, PPW_Allocator<char *> > DWCi_LobbyManager::StripChannelList(int param0, const char **param1) const
 {
     std::vector<char *, PPW_Allocator<char *> > v0;
 
@@ -66,14 +66,14 @@ std::vector<char *, PPW_Allocator<char *> > UnkClass_ov66_02243B64::ov66_0224680
     return v0;
 }
 
-PPWString UnkClass_ov66_02243B64::ov66_022468DC(s32 param0)
+PPWString DWCi_LobbyManager::MakeNickName(s32 param0)
 {
-    return ov66_02236A38<PPWString>(DWCi_MAX_CHAT_NICK_SIZE, _T("N_%d_%u"), param0, (u32)current_time() % 1000);
+    return PPW_FormatStringTrunc<PPWString>(DWCi_MAX_CHAT_NICK_SIZE, _T("N_%d_%u"), param0, (u32)current_time() % 1000);
 }
 
-s32 UnkClass_ov66_02243B64::ov66_02246928(const PPWString &param0)
+s32 DWCi_LobbyManager::ParsePidFromNick(const PPWString &param0)
 {
-    std::vector<PPWString, PPW_Allocator<PPWString> > v0(ov66_02242F08<PPWString>(param0, "_"));
+    std::vector<PPWString, PPW_Allocator<PPWString> > v0(PPW_SplitStringAnyOf<PPWString>(param0, "_"));
     if (v0.size() < 2) {
         return DWC_LOBBY_INVALID_USER_ID;
     }
@@ -85,31 +85,31 @@ s32 UnkClass_ov66_02243B64::ov66_02246928(const PPWString &param0)
     return v1;
 }
 
-BOOL UnkClass_ov66_02243B64::ov66_022469C8(const PPWString param0, const DWCi_LobbyChannelCallbacks &param1, s32 param2)
+BOOL DWCi_LobbyManager::AddChannel(const PPWString param0, const DWCi_LobbyChannelCallbacks &param1, s32 param2)
 {
-    std::pair<UnkClass_ov66_02243B64_UnkMap1::iterator, bool> v0;
-    v0 = unk_80.insert(std::make_pair(param0, UnkClass_ov66_02243B64_SubStruct0(param1, param2)));
+    std::pair<ChannelInfoMap::iterator, bool> v0;
+    v0 = unk_80.insert(std::make_pair(param0, ChannelInfo(param1, param2)));
     return (BOOL)v0.second;
 }
 
-const DWCi_LobbyChannelCallbacks *UnkClass_ov66_02243B64::ov66_02246B38(const PPWString &param0) const
+const DWCi_LobbyChannelCallbacks *DWCi_LobbyManager::FindChannel(const PPWString &param0) const
 {
-    UnkClass_ov66_02243B64_UnkMap1::const_iterator v0 = unk_80.find(param0);
+    ChannelInfoMap::const_iterator v0 = unk_80.find(param0);
     if (v0 == unk_80.end()) {
         return NULL;
     }
     return &v0->second.unk_14;
 }
 
-s32 UnkClass_ov66_02243B64::ov66_02246C2C(const PPWString &param0, const PPWString &param1)
+s32 DWCi_LobbyManager::AddUserToChannel(const PPWString &param0, const PPWString &param1)
 {
-    s32 v0 = ov66_02246928(param0);
+    s32 v0 = ParsePidFromNick(param0);
 
     if (v0 == DWC_LOBBY_INVALID_USER_ID) {
         return DWC_LOBBY_INVALID_USER_ID;
     }
 
-    UnkClass_ov66_02243B64_UnkMap1::iterator v1 = unk_80.find(param1);
+    ChannelInfoMap::iterator v1 = unk_80.find(param1);
     if (v1 == unk_80.end()) {
         return DWC_LOBBY_INVALID_USER_ID;
     }
@@ -119,16 +119,16 @@ s32 UnkClass_ov66_02243B64::ov66_02246C2C(const PPWString &param0, const PPWStri
     return v0;
 }
 
-std::vector<s32, PPW_Allocator<s32> > UnkClass_ov66_02243B64::ov66_02246DF0(int param0, const char **param1, const PPWString &param2)
+std::vector<s32, PPW_Allocator<s32> > DWCi_LobbyManager::AddUsersToChannel(int param0, const char **param1, const PPWString &param2)
 {
     std::vector<s32, PPW_Allocator<s32> > v0;
     v0.reserve((std::size_t)param0);
     for (int i = 0; i < param0; i++) {
-        if (ov66_02246928(param1[i]) == UnkClass_ov66_02243B64_InlineFunc4() && ov66_02243B64() != param1[i]) {
+        if (ParsePidFromNick(param1[i]) == GetPid() && GetNickName() != param1[i]) {
             continue;
         }
 
-        s32 v2 = ov66_02246C2C(param1[i], param2);
+        s32 v2 = AddUserToChannel(param1[i], param2);
         if (v2 != DWC_LOBBY_INVALID_USER_ID) {
             v0.push_back(v2);
         }
@@ -137,9 +137,9 @@ std::vector<s32, PPW_Allocator<s32> > UnkClass_ov66_02243B64::ov66_02246DF0(int 
     return v0;
 }
 
-BOOL UnkClass_ov66_02243B64::ov66_02246F78(s32 param0)
+BOOL DWCi_LobbyManager::RemoveUserIfAbsent(s32 param0)
 {
-    UnkClass_ov66_02243B64_UnkMap1::const_iterator v0 = std::find_if(unk_80.begin(), unk_80.end(), UnkClass_ov66_02243B64_UnaryFunc(param0));
+    ChannelInfoMap::const_iterator v0 = std::find_if(unk_80.begin(), unk_80.end(), ChannelContainsUser(param0));
     if (v0 == unk_80.end()) {
         unk_70.erase(param0);
         return TRUE;
@@ -147,15 +147,15 @@ BOOL UnkClass_ov66_02243B64::ov66_02246F78(s32 param0)
     return FALSE;
 }
 
-BOOL UnkClass_ov66_02243B64::ov66_0224717C(const PPWString &param0, const PPWString &param1)
+BOOL DWCi_LobbyManager::RemoveUserFromChannel(const PPWString &param0, const PPWString &param1)
 {
-    s32 v0 = ov66_02246928(param0);
+    s32 v0 = ParsePidFromNick(param0);
 
     if (v0 == DWC_LOBBY_INVALID_USER_ID) {
         return FALSE;
     }
 
-    UnkClass_ov66_02243B64_UnkMap1::iterator v1 = unk_80.find(param1);
+    ChannelInfoMap::iterator v1 = unk_80.find(param1);
     if (v1 == unk_80.end()) {
         return FALSE;
     }
@@ -164,13 +164,13 @@ BOOL UnkClass_ov66_02243B64::ov66_0224717C(const PPWString &param0, const PPWStr
         return FALSE;
     }
 
-    ov66_02246F78(v0);
+    RemoveUserIfAbsent(v0);
     return TRUE;
 }
 
-BOOL UnkClass_ov66_02243B64::ov66_02247258(const PPWString &param0)
+BOOL DWCi_LobbyManager::RemoveChannel(const PPWString &param0)
 {
-    UnkClass_ov66_02243B64_UnkMap1::iterator v0 = unk_80.find(param0);
+    ChannelInfoMap::iterator v0 = unk_80.find(param0);
     if (v0 == unk_80.end()) {
         return FALSE;
     }
@@ -180,19 +180,19 @@ BOOL UnkClass_ov66_02243B64::ov66_02247258(const PPWString &param0)
 
     unk_80.erase(param0);
 
-    std::for_each(v1.begin(), v1.end(), std::bind1st(std::mem_fun(&UnkClass_ov66_02243B64::ov66_02246F78), this));
+    std::for_each(v1.begin(), v1.end(), std::bind1st(std::mem_fun(&DWCi_LobbyManager::RemoveUserIfAbsent), this));
     return TRUE;
 }
 
-s32 UnkClass_ov66_02243B64::ov66_022474F4(const PPWString &param0) const
+s32 DWCi_LobbyManager::FindPidByNick(const PPWString &param0) const
 {
-    s32 v0 = ov66_02246928(param0);
+    s32 v0 = ParsePidFromNick(param0);
 
     if (v0 == DWC_LOBBY_INVALID_USER_ID) {
         return DWC_LOBBY_INVALID_USER_ID;
     }
 
-    UnkClass_ov66_02243B64_UnkMap0::const_iterator v1 = unk_70.find(v0);
+    UserNickMap::const_iterator v1 = unk_70.find(v0);
     if (v1 == unk_70.end()) {
         return DWC_LOBBY_INVALID_USER_ID;
     }
@@ -204,21 +204,21 @@ s32 UnkClass_ov66_02243B64::ov66_022474F4(const PPWString &param0) const
     return v0;
 }
 
-PPWString UnkClass_ov66_02243B64::ov66_02247578(s32 param0) const
+PPWString DWCi_LobbyManager::FindNickByPid(s32 param0) const
 {
-    UnkClass_ov66_02243B64_UnkMap0::const_iterator v0 = unk_70.find(param0);
+    UserNickMap::const_iterator v0 = unk_70.find(param0);
     if (v0 == unk_70.end()) {
         return "";
     }
     return v0->second;
 }
 
-s32 UnkClass_ov66_02243B64::ov66_022475DC(const PPWString &param0, const PPWString &param1)
+s32 DWCi_LobbyManager::ChangeNick(const PPWString &param0, const PPWString &param1)
 {
-    s32 v0 = ov66_022474F4(param0);
+    s32 v0 = FindPidByNick(param0);
     unk_70.erase(v0);
 
-    std::pair<UnkClass_ov66_02243B64_UnkMap0::iterator, bool> v1;
+    std::pair<UserNickMap::iterator, bool> v1;
     v1 = unk_70.insert(std::make_pair(v0, param1));
     if (!v1.second) {
         return DWC_LOBBY_INVALID_USER_ID;
@@ -227,18 +227,18 @@ s32 UnkClass_ov66_02243B64::ov66_022475DC(const PPWString &param0, const PPWStri
     return v0;
 }
 
-BOOL UnkClass_ov66_02243B64::ov66_02247690(const PPWString &param0) const
+BOOL DWCi_LobbyManager::IsChannelJoined(const PPWString &param0) const
 {
-    UnkClass_ov66_02243B64_UnkMap1::const_iterator v0 = unk_80.find(param0);
+    ChannelInfoMap::const_iterator v0 = unk_80.find(param0);
     if (v0 == unk_80.end()) {
         return FALSE;
     }
     return v0->second.unk_00;
 }
 
-BOOL UnkClass_ov66_02243B64::ov66_022476C8(const PPWString &param0)
+BOOL DWCi_LobbyManager::SetChannelJoined(const PPWString &param0)
 {
-    UnkClass_ov66_02243B64_UnkMap1::iterator v0 = unk_80.find(param0);
+    ChannelInfoMap::iterator v0 = unk_80.find(param0);
     if (v0 == unk_80.end()) {
         return FALSE;
     }
@@ -246,9 +246,9 @@ BOOL UnkClass_ov66_02243B64::ov66_022476C8(const PPWString &param0)
     return TRUE;
 }
 
-s32 UnkClass_ov66_02243B64::ov66_02247704(const PPWString &param0)
+s32 DWCi_LobbyManager::GetChannelLimit(const PPWString &param0)
 {
-    UnkClass_ov66_02243B64_UnkMap1::iterator v0 = unk_80.find(param0);
+    ChannelInfoMap::iterator v0 = unk_80.find(param0);
     if (v0 == unk_80.end()) {
         return -1;
     }

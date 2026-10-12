@@ -3,11 +3,11 @@
 #include <lobby/dwci_lobby.h>
 
 #include "ilobby/dwci_lobbybase.h"
-#include "ilobby/ov66_022364B0.h"
-#include "ppwlobby/ov66_0225B6C4.h"
+#include "ilobby/dwci_lobby_util.h"
+#include "ppwlobby/ppw_lobby_impl.h"
 #include "ppwlobby/ppw_parser.h"
 
-UnkClass_ov66_0223CA1C::UnkClass_ov66_0223CA1C()
+PPW_LobbyInnerInfo::PPW_LobbyInnerInfo()
     : unk_00(0)
     , unk_04(FALSE)
     , unk_08()
@@ -24,7 +24,7 @@ UnkClass_ov66_0223CA1C::UnkClass_ov66_0223CA1C()
 {
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223CA80(PPW_LobbySchedule *param0, u32 &param1) const
+BOOL PPW_LobbyInnerInfo::GetSchedule(PPW_LobbySchedule *param0, u32 &param1) const
 {
     u32 v0 = sizeof(PPW_LobbySchedule) + sizeof(PPW_LobbyScheduleRecord) * (unk_2C.size() - 1);
 
@@ -41,23 +41,23 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223CA80(PPW_LobbySchedule *param0, u32 &param
     param0->season = unk_29;
     param0->scheduleRecordNum = unk_2C.size();
     if (param0->scheduleRecordNum != 0) {
-        MI_CpuCopy8(ov66_022364B0(unk_2C), param0->scheduleRecords, sizeof(PPW_LobbyScheduleRecord) * unk_2C.size());
+        MI_CpuCopy8(PPW_GetVectorData(unk_2C), param0->scheduleRecords, sizeof(PPW_LobbyScheduleRecord) * unk_2C.size());
     }
     return TRUE;
 }
 
-std::vector<u8, PPW_Allocator<u8> > UnkClass_ov66_0223CA1C::ov66_0223CB2C() const
+std::vector<u8, PPW_Allocator<u8> > PPW_LobbyInnerInfo::SerializeSchedule() const
 {
     u32 v0 = 0;
-    ov66_0223CA80(NULL, v0);
+    GetSchedule(NULL, v0);
     std::vector<u8, PPW_Allocator<u8> > v1(v0);
-    ov66_0223CA80((PPW_LobbySchedule *)ov66_022364B0(v1), v0);
+    GetSchedule((PPW_LobbySchedule *)PPW_GetVectorData(v1), v0);
     return v1;
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223CB84(const u8 *param0, u32 param1)
+BOOL PPW_LobbyInnerInfo::SetSchedule(const u8 *param0, u32 param1)
 {
-    if (!ov66_0223EB80(param0, param1)) {
+    if (!ValidateSchedule(param0, param1)) {
         return FALSE;
     }
 
@@ -67,13 +67,13 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223CB84(const u8 *param0, u32 param1)
     unk_1C = v0->lockTime;
     unk_20 = v0->random;
     unk_2C.assign(v0->scheduleRecords, v0->scheduleRecords + v0->scheduleRecordNum);
-    std::stable_sort(unk_2C.begin(), unk_2C.end(), UnkClass_ov66_0223CA1C_SubStruct2());
+    std::stable_sort(unk_2C.begin(), unk_2C.end(), ScheduleRecordLess());
 
     unk_38.assign(unk_2C.begin(), unk_2C.end());
     return TRUE;
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223EB80(const u8 *param0, u32 param1)
+BOOL PPW_LobbyInnerInfo::ValidateSchedule(const u8 *param0, u32 param1)
 {
     if (param1 < sizeof(PPW_LobbySchedule) - sizeof(PPW_LobbyScheduleRecord)) {
         return FALSE;
@@ -87,9 +87,9 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223EB80(const u8 *param0, u32 param1)
     return TRUE;
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223EBAC(const u8 *param0, u32 param1)
+BOOL PPW_LobbyInnerInfo::SetVip(const u8 *param0, u32 param1)
 {
-    ov66_0223ED8C(param0, param1);
+    ValidateVip(param0, param1);
 
     u32 v0 = param1 / sizeof(PPW_LobbyVipRecord);
 
@@ -98,7 +98,7 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223EBAC(const u8 *param0, u32 param1)
     return TRUE;
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223ED8C(const u8 *param0, u32 param1)
+BOOL PPW_LobbyInnerInfo::ValidateVip(const u8 *param0, u32 param1)
 {
     if (param1 % sizeof(PPW_LobbyVipRecord) != 0) {
         return FALSE;
@@ -112,7 +112,7 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223ED8C(const u8 *param0, u32 param1)
     return TRUE;
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223EDE4(PPW_LobbyQuestionnaire *param0)
+BOOL PPW_LobbyInnerInfo::GetQuestionnaire(PPW_LobbyQuestionnaire *param0)
 {
     if (!unk_334) {
         return FALSE;
@@ -122,13 +122,13 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223EDE4(PPW_LobbyQuestionnaire *param0)
     return TRUE;
 }
 
-void UnkClass_ov66_0223CA1C::ov66_0223EE0C(const PPW_LobbyQuestionnaire *param0)
+void PPW_LobbyInnerInfo::SetQuestionnaire(const PPW_LobbyQuestionnaire *param0)
 {
     MI_CpuCopy8(param0, &unk_5C, sizeof(PPW_LobbyQuestionnaire));
     unk_334 = TRUE;
 }
 
-void UnkClass_ov66_0223CA1C::ov66_0223EE30()
+void PPW_LobbyInnerInfo::Update()
 {
     switch (unk_00) {
     case 0:
@@ -137,13 +137,13 @@ void UnkClass_ov66_0223CA1C::ov66_0223EE30()
     case 3:
         break;
     case 4:
-        if (ov66_0223F00C()) {
-            DWCi_LobbySetChannelMode(ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc22().ov66_02235FC8().c_str(), &Unk_ov66_02258C8C);
+        if (ShouldProgressSchedule()) {
+            DWCi_LobbySetChannelMode(PPW_LobbyGetImpl()->GetMainChannel().GetName().c_str(), &PPW_LOBBY_CHANNEL_MODE_MAIN_LOCK);
 
-            UnkStruct_ov66_0223EE30 v0;
-            ov66_02237170(PPW_LOBBY_INVALID_USER_ID, PPW_LOBBY_CHANNEL_KIND_MAIN, 1, UnkClass_ov66_02241184::UnkEnum_ov66_02241184_0, 0, (u8 *)&v0, sizeof(UnkStruct_ov66_0223EE30));
+            PPW_LobbyEmptyMessage v0;
+            PPW_LobbySendMessage(PPW_LOBBY_INVALID_USER_ID, PPW_LOBBY_CHANNEL_KIND_MAIN, 1, PPW_MessageParser::PPW_LOBBY_MESSAGE_KIND_SYSTEM, 0, (u8 *)&v0, sizeof(PPW_LobbyEmptyMessage));
 
-            ov66_0223F0D0();
+            ProgressSchedule();
         }
         break;
     case 5:
@@ -151,9 +151,9 @@ void UnkClass_ov66_0223CA1C::ov66_0223EE30()
             break;
         }
         PPW_LobbyScheduleRecord &v1 = unk_38.front();
-        s64 v2 = inline_ov66_0223EE30();
+        s64 v2 = PPW_GetCurrentTimeSeconds();
         while (v1.time <= v2 - unk_10) {
-            ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc2().lobbyScheduleProgressCallback(v1.event);
+            PPW_LobbyGetImpl()->GetCallbacks().lobbyScheduleProgressCallback(v1.event);
             unk_38.pop_front();
             if (unk_38.empty()) {
                 break;
@@ -166,9 +166,9 @@ void UnkClass_ov66_0223CA1C::ov66_0223EE30()
     }
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223F00C() const
+BOOL PPW_LobbyInnerInfo::ShouldProgressSchedule() const
 {
-    if (unk_00 == 5 || ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc0() != 8) {
+    if (unk_00 == 5 || PPW_LobbyGetImpl()->GetState() != 8) {
         return FALSE;
     }
 
@@ -180,25 +180,25 @@ BOOL UnkClass_ov66_0223CA1C::ov66_0223F00C() const
         return TRUE;
     }
 
-    if (ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc26().ov66_02241ED0()) {
+    if (PPW_LobbyGetImpl()->GetPlayers().IsFull()) {
         return TRUE;
     }
 
-    if (inline_ov66_0223EE30() > unk_08.unk_00 + unk_1C) {
+    if (PPW_GetCurrentTimeSeconds() > unk_08.unk_00 + unk_1C) {
         return TRUE;
     }
 
     return FALSE;
 }
 
-BOOL UnkClass_ov66_0223CA1C::ov66_0223F0D0()
+BOOL PPW_LobbyInnerInfo::ProgressSchedule()
 {
-    if (unk_00 != 5 && ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc0() == 8) {
-        unk_10 = inline_ov66_0223EE30();
+    if (unk_00 != 5 && PPW_LobbyGetImpl()->GetState() == 8) {
+        unk_10 = PPW_GetCurrentTimeSeconds();
         unk_00 = 5;
         unk_18 = FALSE;
 
-        ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc2().lobbyScheduleProgressCallback(PPW_LOBBY_TIME_EVENT_LOCK);
+        PPW_LobbyGetImpl()->GetCallbacks().lobbyScheduleProgressCallback(PPW_LOBBY_TIME_EVENT_LOCK);
         return TRUE;
     }
 

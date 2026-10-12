@@ -1,5 +1,5 @@
-#ifndef ILOBBY_OV66_022364B0_H
-#define ILOBBY_OV66_022364B0_H
+#ifndef ILOBBY_DWCI_LOBBY_UTIL_H
+#define ILOBBY_DWCI_LOBBY_UTIL_H
 
 #include <algorithm>
 #include <dwc.h>
@@ -18,7 +18,7 @@ class PPW_StaticAssert<true> {};
 #define PPW_STATIC_ASSERT(exp) PPW_StaticAssert<(exp)>()
 
 template <class T, class AllocatorT>
-T *ov66_022364B0(const std::vector<T, AllocatorT> &param0)
+T *PPW_GetVectorData(const std::vector<T, AllocatorT> &param0)
 {
     if (param0.empty()) {
         return NULL;
@@ -28,7 +28,7 @@ T *ov66_022364B0(const std::vector<T, AllocatorT> &param0)
 }
 
 template <class T>
-s32 ov66_0224154C(T param0, T param1, std::size_t param2)
+s32 PPW_StrniCmp(T param0, T param1, std::size_t param2)
 {
     typedef typename T::value_type (*ValueTypeFunc)(typename T::value_type);
 
@@ -37,12 +37,12 @@ s32 ov66_0224154C(T param0, T param1, std::size_t param2)
     return param0.compare(0, param2, param1);
 }
 
-inline s32 inline_ov66_0224154C(const char *param0, const char *param1, std::size_t param2)
+inline s32 PPW_StrniCmpCStr(const char *param0, const char *param1, std::size_t param2)
 {
-    return ov66_0224154C(PPWString(param0), PPWString(param1), param2);
+    return PPW_StrniCmp(PPWString(param0), PPWString(param1), param2);
 }
 
-inline s64 inline_ov66_0223EE30()
+inline s64 PPW_GetCurrentTimeSeconds()
 {
     RTCDate v0;
     RTCTime v1;
@@ -51,7 +51,7 @@ inline s64 inline_ov66_0223EE30()
 }
 
 template <typename T>
-T ov66_02237ADC(const char *param0, ...)
+T PPW_FormatStringAlloc(const char *param0, ...)
 {
     va_list v0;
     std::vector<char, typename T::allocator_type> v1;
@@ -61,30 +61,30 @@ T ov66_02237ADC(const char *param0, ...)
     int v2 = OS_VSNPrintf(NULL, 0, param0, v0) + 1;
 
     v1.resize((std::size_t)v2);
-    OS_VSNPrintf(ov66_022364B0(v1), (std::size_t)v2, param0, v0);
+    OS_VSNPrintf(PPW_GetVectorData(v1), (std::size_t)v2, param0, v0);
 
     v1[(std::size_t)v2 - 1] = '\0';
 
     va_end(v0);
 
-    return T(ov66_022364B0(v1));
+    return T(PPW_GetVectorData(v1));
 }
 
 template <class T>
-T ov66_02236A38(std::size_t param0, const char *param1, ...)
+T PPW_FormatStringTrunc(std::size_t param0, const char *param1, ...)
 {
     va_list v0;
     std::vector<char, typename T::allocator_type> v1(param0);
 
     va_start(v0, param1);
-    OS_VSNPrintf(ov66_022364B0(v1), param0, param1, v0);
+    OS_VSNPrintf(PPW_GetVectorData(v1), param0, param1, v0);
     va_end(v0);
 
-    return T(ov66_022364B0(v1));
+    return T(PPW_GetVectorData(v1));
 }
 
 template <class T>
-std::vector<T, PPW_Allocator<T> > ov66_02242F08(const T &param0, const T &param1, std::size_t param2 = 0)
+std::vector<T, PPW_Allocator<T> > PPW_SplitStringAnyOf(const T &param0, const T &param1, std::size_t param2 = 0)
 {
     std::vector<T, PPW_Allocator<T> > v0;
     std::size_t v1;
@@ -105,7 +105,7 @@ std::vector<T, PPW_Allocator<T> > ov66_02242F08(const T &param0, const T &param1
 }
 
 template <class T>
-std::vector<T, PPW_Allocator<T> > ov66_0223A3B0(const T &param0, const T &param1, std::size_t param2 = 0)
+std::vector<T, PPW_Allocator<T> > PPW_SplitString(const T &param0, const T &param1, std::size_t param2 = 0)
 {
     std::vector<T, PPW_Allocator<T> > v0;
     std::size_t v1;
@@ -126,7 +126,7 @@ std::vector<T, PPW_Allocator<T> > ov66_0223A3B0(const T &param0, const T &param1
 }
 
 template <class T, class Allocator>
-BOOL ov66_02237EF8(const char *param0, std::vector<T, Allocator> &param1)
+BOOL PPW_Base64DecodeToVector(const char *param0, std::vector<T, Allocator> &param1)
 {
     PPW_STATIC_ASSERT(sizeof(T) == 1);
 
@@ -135,7 +135,7 @@ BOOL ov66_02237EF8(const char *param0, std::vector<T, Allocator> &param1)
     if (v0 == 0) {
         return TRUE;
     }
-    int v1 = DWC_Base64Decode(param0, strlen(param0), (char *)ov66_022364B0(param1), param1.size());
+    int v1 = DWC_Base64Decode(param0, strlen(param0), (char *)PPW_GetVectorData(param1), param1.size());
     if (v1 == -1) {
         return FALSE;
     }
@@ -143,4 +143,4 @@ BOOL ov66_02237EF8(const char *param0, std::vector<T, Allocator> &param1)
     return TRUE;
 }
 
-#endif // ILOBBY_OV66_022364B0_H
+#endif // ILOBBY_DWCI_LOBBY_UTIL_H

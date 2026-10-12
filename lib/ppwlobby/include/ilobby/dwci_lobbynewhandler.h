@@ -3,7 +3,7 @@
 
 #include "ilobby/dwci_lobbydata.h"
 
-BOOL ov66_02246368(UnkClass_ov66_02243B64 *param0);
-void ov66_022463D8();
+BOOL DWCi_LobbySetupNewHandler(DWCi_LobbyManager *param0);
+void DWCi_LobbyShutdownNewHandler();
 
 #endif // ILOBBY_LOBBYNEWHANDLER_H

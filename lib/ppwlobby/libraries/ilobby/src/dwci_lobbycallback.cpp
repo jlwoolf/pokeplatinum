@@ -1,9 +1,9 @@
 #include "ilobby/dwci_lobbycallback.h"
 
-BOOL UnkClass_ov66_0224640C::ov66_0224640C(u32 param0)
+BOOL DWCi_LobbyCallbackList::Remove(u32 param0)
 {
-    UnkClass_ov66_02243C74 v0(param0, NULL);
-    UnkClass_ov66_0224640C_UnkSet::iterator v1 = unk_00.find(&v0);
+    DWCi_LobbyCallback v0(param0, NULL);
+    CallbackSet::iterator v1 = unk_00.find(&v0);
     if (v1 == unk_00.end()) {
         return FALSE;
     }
@@ -13,9 +13,9 @@ BOOL UnkClass_ov66_0224640C::ov66_0224640C(u32 param0)
     return TRUE;
 }
 
-void UnkClass_ov66_0224640C::ov66_0224649C()
+void DWCi_LobbyCallbackList::Clear()
 {
-    for (UnkClass_ov66_0224640C_UnkSet::iterator v0 = unk_00.begin(); v0 != unk_00.end();) {
+    for (CallbackSet::iterator v0 = unk_00.begin(); v0 != unk_00.end();) {
         delete *v0;
         unk_00.erase(v0++);
     }

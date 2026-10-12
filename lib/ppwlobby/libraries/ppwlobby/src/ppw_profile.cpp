@@ -3,11 +3,11 @@
 #include <lobby/dwci_lobby.h>
 
 #include "ilobby/dwci_lobbybase.h"
-#include "ilobby/ov66_022364B0.h"
-#include "ppwlobby/ov66_0225B6C4.h"
+#include "ilobby/dwci_lobby_util.h"
+#include "ppwlobby/ppw_lobby_impl.h"
 #include "ppwlobby/ppw_parser.h"
 
-void UnkClass_ov66_02241BD8::ov66_02241BD8()
+void PPW_PlayerProfile::Update()
 {
     switch (unk_24) {
     case 0:
@@ -16,7 +16,7 @@ void UnkClass_ov66_02241BD8::ov66_02241BD8()
             break;
         }
     case 1:
-        if (unk_00.UnkClass_ov66_02241BD8_SubClass_InlineFunc4().unk_0C) {
+        if (unk_00.Get().unk_0C) {
             unk_24 = 2;
         }
         break;
@@ -31,10 +31,10 @@ void UnkClass_ov66_02241BD8::ov66_02241BD8()
     }
 }
 
-BOOL UnkClass_ov66_02241C44::ov66_02241C44(int param0)
+BOOL PPW_PlayerManager::AddPlayer(int param0)
 {
-    std::pair<UnkClass_ov66_02241BD8_Set::iterator, bool> v0;
-    UnkClass_ov66_02241BD8 *v1 = new UnkClass_ov66_02241BD8(param0);
+    std::pair<PlayerSet::iterator, bool> v0;
+    PPW_PlayerProfile *v1 = new PPW_PlayerProfile(param0);
 
     v0 = unk_00.insert(v1);
     if (!v0.second) {
@@ -45,10 +45,10 @@ BOOL UnkClass_ov66_02241C44::ov66_02241C44(int param0)
     return TRUE;
 }
 
-BOOL UnkClass_ov66_02241C44::ov66_02241D40(int param0)
+BOOL PPW_PlayerManager::RemovePlayer(int param0)
 {
-    for (UnkClass_ov66_02241BD8_Set::iterator v0 = unk_00.begin(); v0 != unk_00.end(); v0++) {
-        if ((*v0)->UnkClass_ov66_02241BD8_InlineFunc12() == param0) {
+    for (PlayerSet::iterator v0 = unk_00.begin(); v0 != unk_00.end(); v0++) {
+        if ((*v0)->GetPid() == param0) {
             delete *v0;
             unk_00.erase(v0);
             return TRUE;
@@ -57,70 +57,70 @@ BOOL UnkClass_ov66_02241C44::ov66_02241D40(int param0)
     return FALSE;
 }
 
-UnkClass_ov66_02241BD8 *UnkClass_ov66_02241C44::ov66_02241DCC(int param0)
+PPW_PlayerProfile *PPW_PlayerManager::FindPlayer(int param0)
 {
-    if (param0 == unk_0C.UnkClass_ov66_02241BD8_InlineFunc12()) {
+    if (param0 == unk_0C.GetPid()) {
         return &unk_0C;
     }
-    UnkClass_ov66_02241BD8_Set::const_iterator v0 = std::find_if(unk_00.begin(), unk_00.end(), UnkClass_ov66_02241BD8::UnkClass_ov66_02241BD8_UnaryFunc(param0));
+    PlayerSet::const_iterator v0 = std::find_if(unk_00.begin(), unk_00.end(), PPW_PlayerProfile::PidMatcher(param0));
     return v0 == unk_00.end() ? NULL : *v0;
 }
 
-void UnkClass_ov66_02241C44::ov66_02241E54()
+void PPW_PlayerManager::ClearPlayers()
 {
-    for (UnkClass_ov66_02241BD8_Set::iterator v0 = unk_00.begin(); v0 != unk_00.end();) {
+    for (PlayerSet::iterator v0 = unk_00.begin(); v0 != unk_00.end();) {
         delete *v0;
         unk_00.erase(v0++);
     }
 }
 
-BOOL UnkClass_ov66_02241C44::ov66_02241ED0() const
+BOOL PPW_PlayerManager::IsFull() const
 {
-    return unk_00.size() + 1 == PPW_LOBBY_MAX_PLAYER_NUM_MAIN && ov66_02241F2C().size() + 1 == PPW_LOBBY_MAX_PLAYER_NUM_MAIN;
+    return unk_00.size() + 1 == PPW_LOBBY_MAX_PLAYER_NUM_MAIN && GetConnectedPids().size() + 1 == PPW_LOBBY_MAX_PLAYER_NUM_MAIN;
 }
 
-std::vector<s32, PPW_Allocator<s32> > UnkClass_ov66_02241C44::ov66_02241F2C() const
+std::vector<s32, PPW_Allocator<s32> > PPW_PlayerManager::GetConnectedPids() const
 {
     std::vector<s32, PPW_Allocator<s32> > v0;
     v0.reserve(unk_00.size());
-    for (UnkClass_ov66_02241BD8_Set::const_iterator v1 = unk_00.begin(); v1 != unk_00.end(); v1++) {
-        if ((*v1)->UnkClass_ov66_02241BD8_InlineFunc10()) {
-            v0.push_back((*v1)->UnkClass_ov66_02241BD8_InlineFunc12());
+    for (PlayerSet::const_iterator v1 = unk_00.begin(); v1 != unk_00.end(); v1++) {
+        if ((*v1)->IsUpdated()) {
+            v0.push_back((*v1)->GetPid());
         }
     }
     return v0;
 }
 
-void UnkClass_ov66_02241C44::ov66_02242008(s32 param0, const u8 *param1, u32 param2)
+void PPW_PlayerManager::SetMyProfile(s32 param0, const u8 *param1, u32 param2)
 {
-    unk_0C = UnkClass_ov66_02241BD8(param0);
-    unk_0C.UnkClass_ov66_02241BD8_InlineFunc5(UnkClass_ov66_02241BD8::UnkClass_ov66_02241BD8_SubStruct1());
-    unk_0C.UnkClass_ov66_02241BD8_InlineFunc0(param1, param2, FALSE);
-    unk_0C.UnkClass_ov66_02241BD8_InlineFunc9();
+    unk_0C = PPW_PlayerProfile(param0);
+    unk_0C.SetSystemData(PPW_PlayerProfile::SystemData());
+    unk_0C.SetUserData(param1, param2, FALSE);
+    unk_0C.SetUpdated();
 }
 
-BOOL UnkClass_ov66_02241C44::ov66_022423B0() const
+BOOL PPW_PlayerManager::AllPlayersComplete() const
 {
-    UnkClass_ov66_02241BD8_Set::const_iterator v0 = std::find_if(unk_00.begin(), unk_00.end(), std::not1(std::mem_fun(&UnkClass_ov66_02241BD8::ov66_0224239C)));
+    PlayerSet::const_iterator v0 = std::find_if(unk_00.begin(), unk_00.end(), std::not1(std::mem_fun(&PPW_PlayerProfile::IsComplete)));
     return v0 == unk_00.end();
 }
 
-void UnkClass_ov66_02241C44::ov66_02242460()
+void PPW_PlayerManager::UpdatePlayers()
 {
-    for (UnkClass_ov66_02241BD8_Set::iterator v0 = unk_00.begin(); v0 != unk_00.end(); v0++) {
-        (*v0)->ov66_02241BD8();
-        switch ((*v0)->UnkClass_ov66_02241BD8_InlineFunc11()) {
+    for (PlayerSet::iterator v0 = unk_00.begin(); v0 != unk_00.end(); v0++) {
+        (*v0)->Update();
+        switch ((*v0)->GetState()) {
         case 0:
         case 1:
             break;
         case 2: {
-            const UnkClass_ov66_02241BD8::UnkClass_ov66_02241BD8_SubStruct1 &v1 = (*v0)->UnkClass_ov66_02241BD8_InlineFunc7();
-            const UnkClass_ov66_02241BD8::UnkClass_ov66_02241BD8_SubStruct2 &v2 = (*v0)->UnkClass_ov66_02241BD8_InlineFunc3();
+            const PPW_PlayerProfile::SystemData &v1 = (*v0)->TakeSystemData();
+            const PPW_PlayerProfile::UserData &v2 = (*v0)->TakeUserData();
 
-            PPW_LobbySystemProfile v3 = v1.UnkClass_ov66_02241BD8_SubStruct1_InlineFunc0();
+            PPW_LobbySystemProfile v3 = v1.ToSystemProfile();
 
-            ov66_02234FC4()->UnkClass_ov66_0225B6C4_InlineFunc2().lobbyPlayerConnectedCallback((*v0)->UnkClass_ov66_02241BD8_InlineFunc12(), &v3, ov66_022364B0(v2.unk_00), v2.unk_00.size());
-            (*v0)->UnkClass_ov66_02241BD8_InlineFunc9();
+            PPW_LobbyGetImpl()->GetCallbacks().lobbyPlayerConnectedCallback((*v0)->GetPid(), &v3, PPW_GetVectorData(v2.unk_00), v2.unk_00.size());
+            (*v0)->SetUpdated();
             break;
         }
         case 3:

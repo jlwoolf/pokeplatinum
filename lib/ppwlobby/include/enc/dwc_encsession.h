@@ -9,12 +9,12 @@ extern "C" {
 
 typedef BOOL (*UnkCallback)(char *, int);
 
-enum UnkEnum_ov66_02258338 {
-    UnkEnum_ov66_02258338_0 = 0,
-    UnkEnum_ov66_02258338_1
+enum DWCi_EncServerKind {
+    DWCi_ENC_SERVER_KIND_RELEASE = 0,
+    DWCi_ENC_SERVER_KIND_DEBUG
 };
 
-void DWCi_EncSessionInitialize(enum UnkEnum_ov66_02258338 param0, const char *param1);
+void DWCi_EncSessionInitialize(enum DWCi_EncServerKind param0, const char *param1);
 int DWCi_EncSessionProcess(void);
 void DWCi_EncSessionShutdown(void);
 char *DWCi_EncSessionGetResponse(u32 *param0);

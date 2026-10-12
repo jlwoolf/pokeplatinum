@@ -4,46 +4,46 @@
 
 #include "ilobby/dwci_lobbydata.h"
 
-static UnkClass_ov66_02243B64 *Unk_ov66_0225B6E8 = NULL;
-static void *Unk_ov66_0225B6EC = NULL;
+static DWCi_LobbyManager *sNewHandlerLobby = NULL;
+static void *sNewHandlerBuffer = NULL;
 
-static void ov66_022462DC()
+static void OnAllocFailureDisconnect()
 {
-    chatDisconnect(Unk_ov66_0225B6E8->UnkClass_ov66_02243B64_InlineFunc0());
-    UnkClass_ov66_0225B6E4::UnkClass_ov66_0225B6E4_InlineFunc0(0);
+    chatDisconnect(sNewHandlerLobby->GetChatSession());
+    DWCi_LobbyObject::ExchangeAllocFailureCallback(0);
 }
 
-static void ov66_02246308()
+static void OnAllocFailure()
 {
-    if (Unk_ov66_0225B6EC) {
-        DWC_Free(DWC_ALLOCTYPE_AUTH, Unk_ov66_0225B6EC, 0);
-        Unk_ov66_0225B6EC = NULL;
+    if (sNewHandlerBuffer) {
+        DWC_Free(DWC_ALLOCTYPE_AUTH, sNewHandlerBuffer, 0);
+        sNewHandlerBuffer = NULL;
     }
-    Unk_ov66_0225B6E8->UnkClass_ov66_02243B64_InlineFunc13(DWCi_LOBBY_ERROR_ALLOC);
-    UnkClass_ov66_0225B6E4::UnkClass_ov66_0225B6E4_InlineFunc0(ov66_022462DC);
+    sNewHandlerLobby->SetError(DWCi_LOBBY_ERROR_ALLOC);
+    DWCi_LobbyObject::ExchangeAllocFailureCallback(OnAllocFailureDisconnect);
 }
 
-BOOL ov66_02246368(UnkClass_ov66_02243B64 *param0)
+BOOL DWCi_LobbySetupNewHandler(DWCi_LobbyManager *param0)
 {
-    Unk_ov66_0225B6E8 = param0;
-    if (Unk_ov66_0225B6EC) {
-        DWC_Free(DWC_ALLOCTYPE_AUTH, Unk_ov66_0225B6EC, 0);
-        Unk_ov66_0225B6EC = NULL;
+    sNewHandlerLobby = param0;
+    if (sNewHandlerBuffer) {
+        DWC_Free(DWC_ALLOCTYPE_AUTH, sNewHandlerBuffer, 0);
+        sNewHandlerBuffer = NULL;
     }
 
-    Unk_ov66_0225B6EC = DWC_Alloc(DWC_ALLOCTYPE_AUTH, 1024);
-    if (!Unk_ov66_0225B6EC) {
+    sNewHandlerBuffer = DWC_Alloc(DWC_ALLOCTYPE_AUTH, 1024);
+    if (!sNewHandlerBuffer) {
         return FALSE;
     }
 
-    UnkClass_ov66_0225B6E4::UnkClass_ov66_0225B6E4_InlineFunc0(ov66_02246308);
+    DWCi_LobbyObject::ExchangeAllocFailureCallback(OnAllocFailure);
     return TRUE;
 }
 
-void ov66_022463D8()
+void DWCi_LobbyShutdownNewHandler()
 {
-    if (Unk_ov66_0225B6EC) {
-        DWC_Free(DWC_ALLOCTYPE_AUTH, Unk_ov66_0225B6EC, 0);
-        Unk_ov66_0225B6EC = NULL;
+    if (sNewHandlerBuffer) {
+        DWC_Free(DWC_ALLOCTYPE_AUTH, sNewHandlerBuffer, 0);
+        sNewHandlerBuffer = NULL;
     }
 }

@@ -1,8 +1,8 @@
 #include "ppwlobby/ppw_parser.h"
 
-BOOL UnkClass_ov66_02241184::ov66_02241184(const PPWString &param0, UnkClass_ov66_02241184_SubStruct &param1)
+BOOL PPW_MessageParser::Parse(const PPWString &param0, ParsedMessage &param1)
 {
-    std::vector<PPWString, PPW_Allocator<PPWString> > v0 = ov66_0223A3B0<PPWString>(param0, "  ", 2);
+    std::vector<PPWString, PPW_Allocator<PPWString> > v0 = PPW_SplitString<PPWString>(param0, "  ", 2);
 
     if (v0.size() != 2) {
         return FALSE;
@@ -17,7 +17,7 @@ BOOL UnkClass_ov66_02241184::ov66_02241184(const PPWString &param0, UnkClass_ov6
     }
 
     {
-        std::vector<PPWString, PPW_Allocator<PPWString> > v1 = ov66_0223A3B0<PPWString>(v0[0], " ");
+        std::vector<PPWString, PPW_Allocator<PPWString> > v1 = PPW_SplitString<PPWString>(v0[0], " ");
         if (v1.size() < 6) {
             return FALSE;
         }
@@ -25,13 +25,13 @@ BOOL UnkClass_ov66_02241184::ov66_02241184(const PPWString &param0, UnkClass_ov6
         char *v2;
         param1.unk_00 = strtoul(v1[0].c_str(), &v2, 16);
         param1.unk_04 = strtoul(v1[1].c_str(), &v2, 16);
-        param1.unk_08 = inline_ov66_0224154C(v1[2].c_str(), "B", 1) == 0 ? 1 : 0;
-        param1.unk_0C = inline_ov66_0224154C(v1[3].c_str(), "S", 1) == 0 ? UnkEnum_ov66_02241184_0 : UnkEnum_ov66_02241184_1;
+        param1.unk_08 = PPW_StrniCmpCStr(v1[2].c_str(), "B", 1) == 0 ? 1 : 0;
+        param1.unk_0C = PPW_StrniCmpCStr(v1[3].c_str(), "S", 1) == 0 ? PPW_LOBBY_MESSAGE_KIND_SYSTEM : PPW_LOBBY_MESSAGE_KIND_USER;
         param1.unk_10 = strtol(v1[4].c_str(), &v2, 16);
     }
 
     if (param1.unk_08 == 1) {
-        if (!ov66_02237EF8(v0[1].c_str(), param1.unk_18)) {
+        if (!PPW_Base64DecodeToVector(v0[1].c_str(), param1.unk_18)) {
             return FALSE;
         }
     } else {
@@ -42,7 +42,7 @@ BOOL UnkClass_ov66_02241184::ov66_02241184(const PPWString &param0, UnkClass_ov6
     return TRUE;
 }
 
-BOOL UnkClass_ov66_02241184::ov66_022416DC(int param0, UnkClass_ov66_02241184::UnkEnum_ov66_02241184 param1, s32 param2, const char *param3, std::size_t param4, PPWString &param5)
+BOOL PPW_MessageParser::Build(int param0, PPW_MessageParser::MessageKind param1, s32 param2, const char *param3, std::size_t param4, PPWString &param5)
 {
     if (param0 == 0 && param4 > PPW_LOBBY_MAX_STRING_SIZE) {
         return FALSE;
@@ -53,9 +53,9 @@ BOOL UnkClass_ov66_02241184::ov66_022416DC(int param0, UnkClass_ov66_02241184::U
 
     param5 = "";
 
-    param5 += ov66_02236A38<PPWString>(3, "%x", 0);
+    param5 += PPW_FormatStringTrunc<PPWString>(3, "%x", 0);
     param5 += " ";
-    param5 += ov66_02236A38<PPWString>(2, "%x", 6);
+    param5 += PPW_FormatStringTrunc<PPWString>(2, "%x", 6);
     param5 += " ";
 
     switch (param0) {
@@ -72,10 +72,10 @@ BOOL UnkClass_ov66_02241184::ov66_022416DC(int param0, UnkClass_ov66_02241184::U
     param5 += " ";
 
     switch (param1) {
-    case UnkClass_ov66_02241184::UnkEnum_ov66_02241184_1:
+    case PPW_MessageParser::PPW_LOBBY_MESSAGE_KIND_USER:
         param5 += "A";
         break;
-    case UnkClass_ov66_02241184::UnkEnum_ov66_02241184_0:
+    case PPW_MessageParser::PPW_LOBBY_MESSAGE_KIND_SYSTEM:
         param5 += "S";
         break;
     default:
@@ -84,7 +84,7 @@ BOOL UnkClass_ov66_02241184::ov66_022416DC(int param0, UnkClass_ov66_02241184::U
 
     param5 += " ";
 
-    param5 += ov66_02236A38<PPWString>(8, "%x", param2);
+    param5 += PPW_FormatStringTrunc<PPWString>(8, "%x", param2);
     param5 += " ";
 
     param5 += "_";
@@ -93,7 +93,7 @@ BOOL UnkClass_ov66_02241184::ov66_022416DC(int param0, UnkClass_ov66_02241184::U
 
     switch (param0) {
     case 0:
-        param5 += ov66_02236A38<PPWString>(param4, "%s", param3);
+        param5 += PPW_FormatStringTrunc<PPWString>(param4, "%s", param3);
         break;
     case 1: {
         char v0[PPW_LOBBY_MAX_STRING_SIZE + 1];
