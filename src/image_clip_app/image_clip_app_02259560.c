@@ -13,19 +13,19 @@
 
 void ImageClipSpriteResource_SetZ(ImageClipSpriteResource *param0, int param1)
 {
-    if (param0->unk_04 < 3) {
-        ImageClipSprite *v0 = param0->unk_00;
+    if (param0->category < 3) {
+        ImageClipSprite *v0 = param0->data;
         ImageClipSprite_SetPriority(v0, param1);
     } else {
-        ImageClipPokemonSprite *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->data;
         ImageClipPokemonSprite_SetZ(v1, param1);
     }
 }
 
 BOOL ImageClipSpriteResource_IsHit(ImageClipSpriteResource *param0, int param1, int param2)
 {
-    if (param0->unk_04 < 3) {
-        ImageClipSprite *v0 = param0->unk_00;
+    if (param0->category < 3) {
+        ImageClipSprite *v0 = param0->data;
 
         if (param1 == 0xffffffff) {
             return ImageClipSprite_IsTouched(v0);
@@ -35,7 +35,7 @@ BOOL ImageClipSpriteResource_IsHit(ImageClipSpriteResource *param0, int param1, 
     }
 
     {
-        ImageClipPokemonSprite *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->data;
 
         if (param1 == 0xffffffff) {
             return ImageClipPokemonSprite_IsScreenTouched(v1);
@@ -49,31 +49,31 @@ BOOL ImageClipSpriteResource_IsPixelHit(ImageClipSpriteResource *param0, int *pa
 {
     NNSG2dCharacterData *v0;
 
-    if (param0->unk_04 == 0) {
-        ImageClipSprite *v1 = param0->unk_00;
+    if (param0->category == 0) {
+        ImageClipSprite *v1 = param0->data;
 
-        v0 = param3[v1->unk_00];
+        v0 = param3[v1->resourceIndex];
         return ImageClipSprite_HitTest(v1, param1, param2, v0);
     }
 
-    if (param0->unk_04 == 1) {
-        ImageClipSprite *v2 = param0->unk_00;
-        int v3 = v2->unk_00 + 100;
+    if (param0->category == 1) {
+        ImageClipSprite *v2 = param0->data;
+        int v3 = v2->resourceIndex + 100;
 
         v0 = param3[v3];
         return ImageClipSprite_HitTest(v2, param1, param2, v0);
     }
 
-    if (param0->unk_04 == 2) {
-        ImageClipSprite *v4 = param0->unk_00;
-        int v5 = v4->unk_00 + 100;
+    if (param0->category == 2) {
+        ImageClipSprite *v4 = param0->data;
+        int v5 = v4->resourceIndex + 100;
 
         v0 = param3[v5];
         return ImageClipSprite_HitTest(v4, param1, param2, v0);
     }
 
     {
-        ImageClipPokemonSprite *v6 = param0->unk_00;
+        ImageClipPokemonSprite *v6 = param0->data;
 
         v0 = param3[(100 + 18)];
         return ImageClipPokemonSprite_IsTouchedByTouch(v6, param1, param2, v0);
@@ -82,12 +82,12 @@ BOOL ImageClipSpriteResource_IsPixelHit(ImageClipSpriteResource *param0, int *pa
 
 void ImageClipSpriteResource_SetPosition(ImageClipSpriteResource *param0, int param1, int param2)
 {
-    if (param0->unk_04 < 3) {
-        ImageClipSprite *v0 = param0->unk_00;
+    if (param0->category < 3) {
+        ImageClipSprite *v0 = param0->data;
 
         ImageClipSprite_SetPosition(v0, param1, param2);
     } else {
-        ImageClipPokemonSprite *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->data;
         int v2, v3;
 
         ImageClipPokemonSprite_GetSize(v1, &v2, &v3);
@@ -101,11 +101,11 @@ void ImageClipSpriteResource_SetPosition(ImageClipSpriteResource *param0, int pa
 
 void ImageClipSpriteResource_GetPosition(ImageClipSpriteResource *param0, int *param1, int *param2)
 {
-    if (param0->unk_04 < 3) {
-        ImageClipSprite *v0 = param0->unk_00;
+    if (param0->category < 3) {
+        ImageClipSprite *v0 = param0->data;
         ImageClipSprite_GetPosition(v0, param1, param2);
     } else {
-        ImageClipPokemonSprite *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->data;
         int v2, v3;
 
         ImageClipPokemonSprite_GetCenter(v1, param1, param2);
@@ -120,32 +120,32 @@ void ImageClipSpriteResource_GetPosition(ImageClipSpriteResource *param0, int *p
 
 void ImageClipSpriteResource_GetSize(ImageClipSpriteResource *param0, int *param1, int *param2)
 {
-    if (param0->unk_04 < 3) {
-        ImageClipSprite *v0 = param0->unk_00;
+    if (param0->category < 3) {
+        ImageClipSprite *v0 = param0->data;
         ImageClipSprite_GetDimensions(v0, param1, param2);
     } else {
-        ImageClipPokemonSprite *v1 = param0->unk_00;
+        ImageClipPokemonSprite *v1 = param0->data;
         ImageClipPokemonSprite_GetSize(v1, param1, param2);
     }
 }
 
 void ImageClipSpriteResource_GetBounds(ImageClipSpriteResource *param0, int *param1, int *param2, int *param3, int *param4)
 {
-    if (param0->unk_04 < 3) {
-        ImageClipSprite *v0 = param0->unk_00;
+    if (param0->category < 3) {
+        ImageClipSprite *v0 = param0->data;
         ImageClipSprite_GetDimensionOffset(v0, param1, param3);
         *param2 = *param1;
         *param4 = *param3;
     } else {
         ImageClipPixelBounds v1;
-        ImageClipPokemonSprite *v2 = param0->unk_00;
+        ImageClipPokemonSprite *v2 = param0->data;
 
         ImageClipPokemonSprite_GetPixelBounds(v2, &v1);
 
-        *param1 = v1.unk_00;
-        *param2 = v1.unk_01;
-        *param3 = v1.unk_02;
-        *param4 = v1.unk_03;
+        *param1 = v1.left;
+        *param2 = v1.right;
+        *param3 = v1.top;
+        *param4 = v1.bottom;
     }
 }
 
@@ -154,7 +154,7 @@ void ImageClipSpriteResource_Move(ImageClipSpriteResource *param0, int param1, i
     ImageClipSpriteResource *v0;
     int v1, v2;
 
-    v0 = param0->unk_08;
+    v0 = param0->next;
 
     while (v0 != param0) {
         ImageClipSpriteResource_GetPosition(v0, &v1, &v2);
@@ -164,7 +164,7 @@ void ImageClipSpriteResource_Move(ImageClipSpriteResource *param0, int param1, i
 
         ImageClipSpriteResource_SetPosition(v0, v1, v2);
 
-        v0 = v0->unk_08;
+        v0 = v0->next;
     }
 }
 

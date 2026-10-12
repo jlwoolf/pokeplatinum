@@ -20,27 +20,27 @@ static void ImageClipSprite_BuildHitTable(ImageClipSprite *param0, TouchScreenHi
 ImageClipSpriteManager *ImageClipSprite_New(int param0, enum HeapID heapID)
 {
     ImageClipSpriteManager *v0 = Heap_Alloc(heapID, sizeof(ImageClipSpriteManager));
-    v0->unk_00 = Heap_Alloc(heapID, sizeof(ImageClipSprite) * param0);
-    memset(v0->unk_00, 0, sizeof(ImageClipSprite) * param0);
-    v0->unk_04 = param0;
+    v0->sprites = Heap_Alloc(heapID, sizeof(ImageClipSprite) * param0);
+    memset(v0->sprites, 0, sizeof(ImageClipSprite) * param0);
+    v0->count = param0;
 
     return v0;
 }
 
 void ImageClipSprite_Free(ImageClipSpriteManager *param0)
 {
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->sprites);
     Heap_Free(param0);
     param0 = NULL;
 }
 
 ImageClipSprite *ImageClipSprite_Add(ImageClipSpriteConfig *param0)
 {
-    ImageClipSprite *v0 = ImageClipSprite_FindFreeSlot(param0->unk_00);
+    ImageClipSprite *v0 = ImageClipSprite_FindFreeSlot(param0->spriteManager);
     GF_ASSERT(v0);
 
-    v0->unk_00 = param0->unk_18;
-    v0->unk_04 = ImageClipSprite_LoadSoftwareSprite(param0);
+    v0->resourceIndex = param0->resourceIndex;
+    v0->softSprite = ImageClipSprite_LoadSoftwareSprite(param0);
 
     return v0;
 }
@@ -97,14 +97,14 @@ BOOL ImageClipSprite_ContainsTouch(ImageClipSprite *param0, int param1, int para
 
 void ImageClipSprite_SetPosition(ImageClipSprite *param0, s16 param1, s16 param2)
 {
-    SoftwareSprite_SetPosition(param0->unk_04, param1, param2);
+    SoftwareSprite_SetPosition(param0->softSprite, param1, param2);
 }
 
 void ImageClipSprite_GetPosition(ImageClipSprite *param0, int *param1, int *param2)
 {
     NNSG2dSVec2 v0;
 
-    v0 = SoftwareSprite_GetPosition(param0->unk_04);
+    v0 = SoftwareSprite_GetPosition(param0->softSprite);
     *param1 = v0.x;
     *param2 = v0.y;
 }
@@ -113,24 +113,24 @@ void ImageClipSprite_GetDimensions(ImageClipSprite *param0, int *param1, int *pa
 {
     NNSG2dSVec2 v0;
 
-    v0 = SoftwareSprite_GetDimensions(param0->unk_04);
+    v0 = SoftwareSprite_GetDimensions(param0->softSprite);
     *param1 = v0.x;
     *param2 = v0.y;
 }
 
 void ImageClipSprite_SetVisible(ImageClipSprite *param0, BOOL param1)
 {
-    SoftwareSprite_SetVisible(param0->unk_04, param1);
+    SoftwareSprite_SetVisible(param0->softSprite, param1);
 }
 
 void ImageClipSprite_SetPriority(ImageClipSprite *param0, int param1)
 {
-    SoftwareSprite_SetPriority(param0->unk_04, param1);
+    SoftwareSprite_SetPriority(param0->softSprite, param1);
 }
 
 int ImageClipSprite_GetPriority(ImageClipSprite *param0)
 {
-    return SoftwareSprite_GetPriority(param0->unk_04);
+    return SoftwareSprite_GetPriority(param0->softSprite);
 }
 
 void ImageClipSprite_GetDimensionOffset(ImageClipSprite *param0, int *param1, int *param2)
@@ -168,9 +168,9 @@ static ImageClipSprite *ImageClipSprite_FindFreeSlot(ImageClipSpriteManager *par
 {
     int v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        if (param0->unk_00[v0].unk_04 == NULL) {
-            return param0->unk_00 + v0;
+    for (v0 = 0; v0 < param0->count; v0++) {
+        if (param0->sprites[v0].softSprite == NULL) {
+            return param0->sprites + v0;
         }
     }
 
@@ -181,23 +181,23 @@ static SoftwareSprite *ImageClipSprite_LoadSoftwareSprite(ImageClipSpriteConfig 
 {
     SoftwareSpriteTemplate v0;
 
-    v0.softSpriteMan = param0->unk_04;
-    v0.chars = param0->unk_08;
-    v0.palette = param0->unk_0C;
-    v0.xPos = param0->unk_10;
-    v0.yPos = param0->unk_14;
+    v0.softSpriteMan = param0->softSpriteManager;
+    v0.chars = param0->chars;
+    v0.palette = param0->palette;
+    v0.xPos = param0->xPos;
+    v0.yPos = param0->yPos;
     v0.rotation = 0;
     v0.alpha = 31;
     v0.priority = 0;
-    v0.paletteSlot = param0->unk_1C;
+    v0.paletteSlot = param0->paletteSlot;
 
     return SoftwareSprite_Load(&v0);
 }
 
 static void ImageClipSprite_BuildHitTable(ImageClipSprite *param0, TouchScreenHitTable *hitTable)
 {
-    NNSG2dSVec2 v0 = SoftwareSprite_GetPosition(param0->unk_04);
-    NNSG2dSVec2 v1 = SoftwareSprite_GetDimensions(param0->unk_04);
+    NNSG2dSVec2 v0 = SoftwareSprite_GetPosition(param0->softSprite);
+    NNSG2dSVec2 v1 = SoftwareSprite_GetDimensions(param0->softSprite);
 
     hitTable->rect.top = v0.y;
     hitTable->rect.bottom = v0.y + v1.y;

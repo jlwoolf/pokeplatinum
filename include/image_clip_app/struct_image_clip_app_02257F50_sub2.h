@@ -8,14 +8,14 @@
 #include "software_sprite.h"
 
 typedef struct {
-    SoftwareSpriteManager *unk_00;
-    SoftwareSpriteChars **unk_04;
-    SoftwareSpritePalette **unk_08;
-    u8 *unk_0C;
-    BgConfig *unk_10;
-    ImageClipSpriteManager *unk_14;
-    ImageClipBg unk_18;
-    ImageClipSpriteManager *unk_44;
+    SoftwareSpriteManager *softSpriteManager;
+    SoftwareSpriteChars **chars;
+    SoftwareSpritePalette **palettes;
+    u8 *extraResource;
+    BgConfig *bgConfig;
+    ImageClipSpriteManager *spriteManager;
+    ImageClipBg bg;
+    ImageClipSpriteManager *unused_44;
 } PhotoAccessoryRendererContext;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02257F50_SUB2_H

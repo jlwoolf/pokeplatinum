@@ -10,16 +10,16 @@
 #include "sprite_resource.h"
 
 typedef struct {
-    BgConfig *unk_00;
-    SpriteList *unk_04;
-    SpriteResourceCollection **unk_08;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    SpriteResourceCollection **spriteResources;
     const Options *options;
-    int unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    ContestScoringCommState *unk_20;
-    NARC *unk_24;
+    int iconCount;
+    int textBankID;
+    int messageNumber;
+    int initialScore;
+    ContestScoringCommState *commState;
+    NARC *narc;
 } ContestScoreDisplayTemplate;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02256BAC_H

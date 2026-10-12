@@ -10,13 +10,13 @@
 #include "bg_window.h"
 
 typedef struct {
-    ImageClipUiTemplate unk_00;
-    const Window *unk_10;
-    const FontOAMManager *unk_14;
-    const NNSG2dImagePaletteProxy *unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
+    ImageClipUiTemplate uiTemplate;
+    const Window *window;
+    const FontOAMManager *fontManager;
+    const NNSG2dImagePaletteProxy *paletteProxy;
+    int x;
+    int y;
+    int charOffset;
 } ImageClipUiTextButtonTemplate;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02259C9C_H

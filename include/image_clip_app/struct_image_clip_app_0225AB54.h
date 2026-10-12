@@ -11,16 +11,16 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    SpriteResource *unk_00[4];
-    Sprite *unk_10[2];
-    Window *unk_18;
-    int unk_1C;
-    int unk_20;
-    SysTask *unk_24;
-    SysTask *unk_28;
-    ContestScoringCommState *unk_2C;
-    ContestScoreDisplayScoreAnimation unk_30;
-    BOOL unk_90;
+    SpriteResource *resources[4];
+    Sprite *sprites[2];
+    Window *window;
+    int score;
+    int scoreTimer;
+    SysTask *scoreTask;
+    SysTask *animationTask;
+    ContestScoringCommState *commState;
+    ContestScoreDisplayScoreAnimation animation;
+    BOOL paletteChanged;
 } ContestScoreDisplayScore;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225AB54_H

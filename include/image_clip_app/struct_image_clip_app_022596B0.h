@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_022596B0_H
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
+    u8 left;
+    u8 right;
+    u8 top;
+    u8 bottom;
 } ImageClipPixelBounds;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_022596B0_H

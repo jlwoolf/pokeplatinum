@@ -5,8 +5,8 @@
 #include "image_clip_app/struct_image_clip_app_02259820.h"
 
 typedef struct {
-    const PhotoRenderer *unk_00;
-    ImageClipBgAnimation unk_04;
+    const PhotoRenderer *renderer;
+    ImageClipBgAnimation animation;
 } PhotoRendererBg;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225AF68_H

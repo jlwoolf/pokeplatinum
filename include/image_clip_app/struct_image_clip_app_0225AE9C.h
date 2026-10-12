@@ -8,12 +8,12 @@
 #include "sprite.h"
 
 typedef struct {
-    BOOL unk_00;
-    Sprite *unk_04[2];
-    VecFx32 unk_0C[2];
-    ContestScoreDisplayTween unk_24;
-    ContestScoreDisplayTween unk_38;
-    ContestScoreDisplayTween unk_4C;
+    BOOL active;
+    Sprite *sprites[2];
+    VecFx32 positions[2];
+    ContestScoreDisplayTween scaleTween;
+    ContestScoreDisplayTween xTween;
+    ContestScoreDisplayTween yTween;
 } ContestScoreDisplayScoreAnimation;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225AE9C_H

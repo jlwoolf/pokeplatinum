@@ -355,11 +355,11 @@ void contest_competition_0224A134(DanceCompetition *param0)
         v3 = param0->scoreState.judgeVotes[i];
         v2 = Pokemon_DPSpriteYOffset(param0->contest->data.contestMons[v3], 2);
 
-        v1.unk_04 = Unk_contest_competition_022546F4[i][0];
-        v1.unk_08 = Unk_contest_competition_022546F4[i][1] + v2;
+        v1.xPos = Unk_contest_competition_022546F4[i][0];
+        v1.yPos = Unk_contest_competition_022546F4[i][1] + v2;
 
-        param0->scene.photoSprites[v3].x = v1.unk_04;
-        param0->scene.photoSprites[v3].y = v1.unk_08;
+        param0->scene.photoSprites[v3].x = v1.xPos;
+        param0->scene.photoSprites[v3].y = v1.yPos;
         param0->scene.photoSprites[v3].z = Unk_contest_competition_022546F4[i][2];
         param0->scene.photoSprites[v3].photoSprite = PhotoSprite_CreateForContestNoBackdrop(&v1, param0->contest->data.photos[v3]);
 

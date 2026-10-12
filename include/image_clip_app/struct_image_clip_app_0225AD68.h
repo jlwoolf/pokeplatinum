@@ -2,11 +2,11 @@
 #define POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225AD68_H
 
 typedef struct {
-    fx32 unk_00;
-    fx32 unk_04;
-    fx32 unk_08;
-    int unk_0C;
-    int unk_10;
+    fx32 current;
+    fx32 start;
+    fx32 range;
+    int elapsed;
+    int duration;
 } ContestScoreDisplayTween;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_0225AD68_H

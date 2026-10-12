@@ -533,8 +533,8 @@ void DressUpPhoto_SetPhotoMonFromSprite(DressUpPhoto *photo, Pokemon *mon, Image
 
 void DressUpPhoto_AddAccessory(DressUpPhoto *photo, const ImageClipSprite *sprite, int slot)
 {
-    NNSG2dSVec2 position = SoftwareSprite_GetPosition(sprite->unk_04);
-    int priority = SoftwareSprite_GetPriority(sprite->unk_04);
+    NNSG2dSVec2 position = SoftwareSprite_GetPosition(sprite->softSprite);
+    int priority = SoftwareSprite_GetPriority(sprite->softSprite);
 
     GF_ASSERT(slot < PHOTO_ACCESSORY_COUNT);
     GF_ASSERT(position.x < 256);
@@ -543,7 +543,7 @@ void DressUpPhoto_AddAccessory(DressUpPhoto *photo, const ImageClipSprite *sprit
     GF_ASSERT(!(photo->accessoryFlags & (1 << slot)));
     GF_ASSERT(DressUpPhoto_IsValid(photo));
 
-    PhotoAccessory_SetData(&photo->accessories[slot], sprite->unk_00, position.x, position.y, priority);
+    PhotoAccessory_SetData(&photo->accessories[slot], sprite->resourceIndex, position.x, position.y, priority);
 
     photo->accessoryFlags |= 1 << slot;
 }
@@ -663,8 +663,8 @@ void ContestPhoto_SetPhotoMonFromSprite(ContestPhoto *photo, Pokemon *mon, Image
 
 void ContestPhoto_AddAccessory(ContestPhoto *photo, const ImageClipSprite *sprite, int slot)
 {
-    NNSG2dSVec2 position = SoftwareSprite_GetPosition(sprite->unk_04);
-    int priority = SoftwareSprite_GetPriority(sprite->unk_04);
+    NNSG2dSVec2 position = SoftwareSprite_GetPosition(sprite->softSprite);
+    int priority = SoftwareSprite_GetPriority(sprite->softSprite);
 
     GF_ASSERT(slot < 20);
     GF_ASSERT(position.x < 256);
@@ -673,7 +673,7 @@ void ContestPhoto_AddAccessory(ContestPhoto *photo, const ImageClipSprite *sprit
     GF_ASSERT(!(photo->accessoryFlags & (1 << slot)));
     GF_ASSERT(ContestPhoto_IsValid(photo));
 
-    PhotoAccessory_SetData(&photo->accessories[slot], sprite->unk_00, position.x, position.y, priority);
+    PhotoAccessory_SetData(&photo->accessories[slot], sprite->resourceIndex, position.x, position.y, priority);
 
     photo->accessoryFlags |= 1 << slot;
 }

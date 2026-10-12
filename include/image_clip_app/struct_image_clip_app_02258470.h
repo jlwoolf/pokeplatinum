@@ -9,17 +9,17 @@
 #include "software_sprite.h"
 
 typedef struct {
-    SoftwareSpriteManager *unk_00;
-    SoftwareSpriteChars **unk_04;
-    SoftwareSpritePalette **unk_08;
-    u8 *unk_0C;
-    BgConfig *unk_10;
-    ImageClipSpriteManager *unk_14;
-    ImageClipResourceList *unk_18;
-    int unk_1C;
-    int unk_20;
-    int unk_24;
-    FashionCaseCounts *unk_28;
+    SoftwareSpriteManager *softSpriteManager;
+    SoftwareSpriteChars **chars;
+    SoftwareSpritePalette **palettes;
+    u8 *extraResource;
+    BgConfig *bgConfig;
+    ImageClipSpriteManager *spriteManager;
+    ImageClipResourceList *resourceList;
+    int groupCapacity0;
+    int groupCapacity1;
+    int groupCapacity2;
+    FashionCaseCounts *fashionCase;
 } PhotoAccessoryRendererResources;
 
 #endif // POKEPLATINUM_STRUCT_IMAGE_CLIP_APP_02258470_H

@@ -69,10 +69,10 @@ void ImageClipPokemonSprite_InitEx(ImageClipPokemonSprite *param0, PokemonSprite
         if (param5 == 0) {
             ImageClipPokemonSprite_ComputePixelBounds(v5->pRawData, v5->W * 8, v5->H * 8, &param0->unk_08);
         } else {
-            param0->unk_08.unk_00 = ImageClipPokemonSprite_GetFirstOpaqueColumn(v5->pRawData, v5->W * 8);
-            param0->unk_08.unk_01 = param0->unk_08.unk_00;
-            param0->unk_08.unk_03 = v3;
-            param0->unk_08.unk_02 = v3;
+            param0->unk_08.left = ImageClipPokemonSprite_GetFirstOpaqueColumn(v5->pRawData, v5->W * 8);
+            param0->unk_08.right = param0->unk_08.left;
+            param0->unk_08.bottom = v3;
+            param0->unk_08.top = v3;
         }
 
         Heap_Free(v4);
@@ -227,10 +227,10 @@ static void ImageClipPokemonSprite_ComputePixelBounds(char *param0, int param1, 
     int v3;
     u8 v4;
 
-    param3->unk_00 = 80 / 2;
-    param3->unk_01 = 80 / 2;
-    param3->unk_02 = 80 / 2;
-    param3->unk_03 = 80 / 2;
+    param3->left = 80 / 2;
+    param3->right = 80 / 2;
+    param3->top = 80 / 2;
+    param3->bottom = 80 / 2;
 
     for (v0 = 0; v0 < 80; v0++) {
         for (v1 = 0; v1 < 80; v1++) {
@@ -239,20 +239,20 @@ static void ImageClipPokemonSprite_ComputePixelBounds(char *param0, int param1, 
             v4 = 0xf << (4 * v3);
 
             if ((param0[v2] & v4) != 0) {
-                if (param3->unk_00 > v0) {
-                    param3->unk_00 = v0;
+                if (param3->left > v0) {
+                    param3->left = v0;
                 }
 
-                if (param3->unk_01 > 80 - v0) {
-                    param3->unk_01 = 80 - v0;
+                if (param3->right > 80 - v0) {
+                    param3->right = 80 - v0;
                 }
 
-                if (param3->unk_02 > v1) {
-                    param3->unk_02 = v1;
+                if (param3->top > v1) {
+                    param3->top = v1;
                 }
 
-                if (param3->unk_03 > 80 - v1) {
-                    param3->unk_03 = 80 - v1;
+                if (param3->bottom > 80 - v1) {
+                    param3->bottom = 80 - v1;
                 }
             }
         }
