@@ -1,5 +1,5 @@
-#ifndef POKEPLATINUM_STRUCT_OV20_021D4E8C_H
-#define POKEPLATINUM_STRUCT_OV20_021D4E8C_H
+#ifndef POKEPLATINUM_STRUCT_EASY_CHAT_SCROLL_ANIMATION_H
+#define POKEPLATINUM_STRUCT_EASY_CHAT_SCROLL_ANIMATION_H
 
 #include "bg_window.h"
 #include "sys_task_manager.h"
@@ -14,6 +14,6 @@ typedef struct {
     u16 unk_18;
     u16 unk_1A;
     SysTask *unk_1C;
-} UnkStruct_ov20_021D4E8C;
+} EasyChatScrollAnimation;
 
-#endif // POKEPLATINUM_STRUCT_OV20_021D4E8C_H
+#endif // POKEPLATINUM_STRUCT_EASY_CHAT_SCROLL_ANIMATION_H
