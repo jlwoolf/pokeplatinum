@@ -9,16 +9,16 @@
 #include "sys_task.h"
 #include "sys_task_manager.h"
 
-typedef struct UnkStruct_contest_competition_02252B48_t {
+typedef struct ContestGameSpriteGroup_t {
     ManagedSprite *unk_00[5];
     SysTask *unk_14;
-} UnkStruct_contest_competition_02252B48;
+} ContestGameSpriteGroup;
 
 static void contest_competition_02252CB8(SysTask *param0, void *param1);
 void contest_competition_02252AB0(SpriteSystem *param0, SpriteManager *param1, PaletteData *param2, u32 param3, u32 param4, u32 param5, u32 param6);
 void contest_competition_02252B20(SpriteManager *param0, u32 param1, u32 param2, u32 param3, u32 param4);
-void contest_competition_02252BCC(UnkStruct_contest_competition_02252B48 *param0);
-void contest_competition_02252C9C(UnkStruct_contest_competition_02252B48 *param0);
+void contest_competition_02252BCC(ContestGameSpriteGroup *param0);
+void contest_competition_02252C9C(ContestGameSpriteGroup *param0);
 
 static const SpriteTemplate Unk_contest_competition_02254D9C = {
     0x0,
@@ -49,9 +49,9 @@ void contest_competition_02252B20(SpriteManager *param0, u32 param1, u32 param2,
     SpriteManager_UnloadAnimObjById(param0, param4);
 }
 
-UnkStruct_contest_competition_02252B48 *contest_competition_02252B48(SpriteSystem *param0, SpriteManager *param1, enum HeapID heapID, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
+ContestGameSpriteGroup *contest_competition_02252B48(SpriteSystem *param0, SpriteManager *param1, enum HeapID heapID, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
 {
-    UnkStruct_contest_competition_02252B48 *v0;
+    ContestGameSpriteGroup *v0;
     SpriteTemplate v1;
     int v2;
 
@@ -63,8 +63,8 @@ UnkStruct_contest_competition_02252B48 *contest_competition_02252B48(SpriteSyste
     v1.priority = param7;
     v1.bgPriority = param8;
 
-    v0 = Heap_Alloc(heapID, sizeof(UnkStruct_contest_competition_02252B48));
-    MI_CpuClear8(v0, sizeof(UnkStruct_contest_competition_02252B48));
+    v0 = Heap_Alloc(heapID, sizeof(ContestGameSpriteGroup));
+    MI_CpuClear8(v0, sizeof(ContestGameSpriteGroup));
 
     for (v2 = 0; v2 < 5; v2++) {
         v0->unk_00[v2] = SpriteSystem_NewSprite(param0, param1, &v1);
@@ -75,7 +75,7 @@ UnkStruct_contest_competition_02252B48 *contest_competition_02252B48(SpriteSyste
     return v0;
 }
 
-void contest_competition_02252BCC(UnkStruct_contest_competition_02252B48 *param0)
+void contest_competition_02252BCC(ContestGameSpriteGroup *param0)
 {
     int v0;
 
@@ -87,7 +87,7 @@ void contest_competition_02252BCC(UnkStruct_contest_competition_02252B48 *param0
     Heap_Free(param0);
 }
 
-void contest_competition_02252BF0(UnkStruct_contest_competition_02252B48 *param0, int touchScreenRectLeft1, int touchScreenRectTop1, int touchScreenRectRight1, int touchScreenRectTop2, int touchScreenRectLeft2, int touchScreenRectBottom1, int touchScreenRectRight2, int touchScreenRectBottom2, fx32 param9)
+void contest_competition_02252BF0(ContestGameSpriteGroup *param0, int touchScreenRectLeft1, int touchScreenRectTop1, int touchScreenRectRight1, int touchScreenRectTop2, int touchScreenRectLeft2, int touchScreenRectBottom1, int touchScreenRectRight2, int touchScreenRectBottom2, fx32 param9)
 {
     int v0;
 
@@ -106,12 +106,12 @@ void contest_competition_02252BF0(UnkStruct_contest_competition_02252B48 *param0
     }
 }
 
-void contest_competition_02252C78(UnkStruct_contest_competition_02252B48 *param0, int touchScreenRectLeft, int touchScreenRectRight, int touchScreenRectTop, int touchScreenRectBottom, fx32 param5)
+void contest_competition_02252C78(ContestGameSpriteGroup *param0, int touchScreenRectLeft, int touchScreenRectRight, int touchScreenRectTop, int touchScreenRectBottom, fx32 param5)
 {
     contest_competition_02252BF0(param0, touchScreenRectLeft, touchScreenRectTop, touchScreenRectRight, touchScreenRectTop, touchScreenRectLeft, touchScreenRectBottom, touchScreenRectRight, touchScreenRectBottom, param5);
 }
 
-void contest_competition_02252C9C(UnkStruct_contest_competition_02252B48 *param0)
+void contest_competition_02252C9C(ContestGameSpriteGroup *param0)
 {
     for (int i = 0; i < 5; i++) {
         ManagedSprite_SetDrawFlag(param0->unk_00[i], FALSE);
@@ -120,7 +120,7 @@ void contest_competition_02252C9C(UnkStruct_contest_competition_02252B48 *param0
 
 static void contest_competition_02252CB8(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_02252B48 *v0 = param1;
+    ContestGameSpriteGroup *v0 = param1;
     int v1;
 
     if (ManagedSprite_GetDrawFlag(v0->unk_00[0]) == 0) {

@@ -12,9 +12,9 @@
 #include "struct_defs/struct_020127E8.h"
 
 #include "contest_competition/contest_competition_02252A70.h"
-#include "contest_competition/struct_contest_competition_0223F2E4.h"
-#include "contest_competition/struct_contest_competition_0223F6E8.h"
-#include "contest_competition/struct_contest_competition_0223F744.h"
+#include "contest_competition/struct_contest_text_label.h"
+#include "contest_competition/struct_contest_sprite_group.h"
+#include "contest_competition/struct_contest_palette_fade_task.h"
 
 #include "bg_window.h"
 #include "brightness_controller.h"
@@ -103,7 +103,7 @@ void contest_competition_0223F1E0(G3DPipelineBuffers *param0)
     G3DPipelineBuffers_Free(param0);
 }
 
-void contest_competition_0223F1E8(enum HeapID heapID, BgConfig *param1, SpriteManager *param2, FontOAMManager *param3, UnkStruct_contest_competition_0223F2E4 *param4, const String *message, enum Font param6, TextColor param7, int param8, int param9, int param10, int param11, int param12, int param13, int param14)
+void contest_competition_0223F1E8(enum HeapID heapID, BgConfig *param1, SpriteManager *param2, FontOAMManager *param3, ContestTextLabel *param4, const String *message, enum Font param6, TextColor param7, int param8, int param9, int param10, int param11, int param12, int param13, int param14)
 {
     UnkStruct_020127E8 v0;
     Window v1;
@@ -164,13 +164,13 @@ void contest_competition_0223F1E8(enum HeapID heapID, BgConfig *param1, SpriteMa
     param4->unk_10 = v5;
 }
 
-void contest_competition_0223F2E4(UnkStruct_contest_competition_0223F2E4 *param0)
+void contest_competition_0223F2E4(ContestTextLabel *param0)
 {
     FontOAM_Free(param0->unk_00);
     CharTransfer_ClearRange(&param0->unk_04);
 }
 
-void contest_competition_0223F2F8(UnkStruct_contest_competition_0223F2E4 *param0, int param1, int param2, int param3)
+void contest_competition_0223F2F8(ContestTextLabel *param0, int param1, int param2, int param3)
 {
     if (param3 == 1) {
         param1 -= param0->unk_10 / 2;
@@ -341,7 +341,7 @@ void contest_competition_0223F5E8(SpriteManager *param0, int param1, int param2,
     }
 }
 
-void contest_competition_0223F630(UnkStruct_contest_competition_0223F6E8 *param0, SpriteSystem *param1, SpriteManager *param2, int param3, int param4, int param5, int param6, int param7, int param8, int param9, u32 param10)
+void contest_competition_0223F630(ContestSpriteGroup *param0, SpriteSystem *param1, SpriteManager *param2, int param3, int param4, int param5, int param6, int param7, int param8, int param9, u32 param10)
 {
     int v0;
     SpriteTemplate v1;
@@ -370,7 +370,7 @@ void contest_competition_0223F630(UnkStruct_contest_competition_0223F6E8 *param0
     param0->unk_18 = SysTask_Start(contest_competition_0223F6E8, param0, param10);
 }
 
-void contest_competition_0223F6C4(UnkStruct_contest_competition_0223F6E8 *param0)
+void contest_competition_0223F6C4(ContestSpriteGroup *param0)
 {
     int v0;
 
@@ -384,7 +384,7 @@ void contest_competition_0223F6C4(UnkStruct_contest_competition_0223F6E8 *param0
 
 static void contest_competition_0223F6E8(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_0223F6E8 *v0 = param1;
+    ContestSpriteGroup *v0 = param1;
     int v1;
 
     for (v1 = 0; v1 < 6; v1++) {
@@ -392,10 +392,10 @@ static void contest_competition_0223F6E8(SysTask *param0, void *param1)
     }
 }
 
-UnkStruct_contest_competition_0223F744 *contest_competition_0223F70C(enum HeapID heapID, PaletteData *param1, const u16 *param2, int param3, int param4, u32 param5)
+ContestPaletteFadeTask *contest_competition_0223F70C(enum HeapID heapID, PaletteData *param1, const u16 *param2, int param3, int param4, u32 param5)
 {
-    UnkStruct_contest_competition_0223F744 *v0 = Heap_Alloc(heapID, sizeof(UnkStruct_contest_competition_0223F744));
-    MI_CpuClear8(v0, sizeof(UnkStruct_contest_competition_0223F744));
+    ContestPaletteFadeTask *v0 = Heap_Alloc(heapID, sizeof(ContestPaletteFadeTask));
+    MI_CpuClear8(v0, sizeof(ContestPaletteFadeTask));
 
     v0->unk_04 = param1;
     v0->unk_0C = param2;
@@ -406,7 +406,7 @@ UnkStruct_contest_competition_0223F744 *contest_competition_0223F70C(enum HeapID
     return v0;
 }
 
-void contest_competition_0223F744(UnkStruct_contest_competition_0223F744 *param0)
+void contest_competition_0223F744(ContestPaletteFadeTask *param0)
 {
     GF_ASSERT(param0->unk_00 != NULL);
 
@@ -425,7 +425,7 @@ BOOL contest_competition_0223F760(void)
 
 static void contest_competition_0223F774(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_0223F744 *v0 = param1;
+    ContestPaletteFadeTask *v0 = param1;
 
     if (BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN) == FALSE) {
         return;

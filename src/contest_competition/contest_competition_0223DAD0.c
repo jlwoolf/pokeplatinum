@@ -10,12 +10,12 @@
 #include "contest_competition/contest_competition_0224CFB8.h"
 #include "contest_competition/contest_competition_0224F18C.h"
 #include "contest_competition/contest_competition_02250744.h"
-#include "contest_competition/struct_contest_competition_0223E838.h"
-#include "contest_competition/struct_contest_competition_0223F03C.h"
-#include "contest_competition/struct_contest_competition_0224CD84.h"
-#include "contest_competition/struct_contest_competition_0224DF54.h"
-#include "contest_competition/struct_contest_competition_02252FC4.h"
-#include "contest_competition/struct_contest_competition_02253084.h"
+#include "contest_competition/struct_dance_competition_task.h"
+#include "contest_competition/struct_dance_move_command.h"
+#include "contest_competition/struct_dance_saved_data.h"
+#include "contest_competition/struct_dance_competition.h"
+#include "contest_competition/struct_dance_message_config.h"
+#include "contest_competition/struct_dance_move_definition.h"
 #include "image_clip_app/image_clip_app_0225AF8C.h"
 
 #include "bg_window.h"
@@ -59,37 +59,37 @@ FS_EXTERN_OVERLAY(image_clip_app);
 static void contest_competition_0223E09C(void *param0);
 static void contest_competition_0223E1FC(SysTask *param0, void *param1);
 static void contest_competition_0223E250(BgConfig *param0);
-static void contest_competition_0223E380(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E458(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E4B0(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1);
-static void contest_competition_0223E588(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E60C(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1);
-static void contest_competition_0223E678(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E67C(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1);
-static void contest_competition_0223E76C(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E770(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1);
-static void contest_competition_0223E774(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E778(UnkStruct_contest_competition_0224DF54 *param0);
-static void contest_competition_0223E7E0(UnkStruct_contest_competition_0224DF54 *param0);
-static int contest_competition_0223E838(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223E8AC(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223E954(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223EE54(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223EEB8(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223F03C(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223E9A4(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223EBB0(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223EC20(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223EC74(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223ECC8(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223ED1C(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static int contest_competition_0223ED9C(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1);
-static BOOL contest_competition_0223E3CC(UnkStruct_contest_competition_0224DF54 *param0, int *param1, int *param2);
+static void contest_competition_0223E380(DanceCompetition *param0);
+static void contest_competition_0223E458(DanceCompetition *param0);
+static void contest_competition_0223E4B0(DanceCompetition *param0, NARC *param1);
+static void contest_competition_0223E588(DanceCompetition *param0);
+static void contest_competition_0223E60C(DanceCompetition *param0, NARC *param1);
+static void contest_competition_0223E678(DanceCompetition *param0);
+static void contest_competition_0223E67C(DanceCompetition *param0, NARC *param1);
+static void contest_competition_0223E76C(DanceCompetition *param0);
+static void contest_competition_0223E770(DanceCompetition *param0, NARC *param1);
+static void contest_competition_0223E774(DanceCompetition *param0);
+static void contest_competition_0223E778(DanceCompetition *param0);
+static void contest_competition_0223E7E0(DanceCompetition *param0);
+static int contest_competition_0223E838(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223E8AC(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223E954(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223EE54(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223EEB8(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223F03C(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223E9A4(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223EBB0(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223EC20(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223EC74(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223ECC8(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223ED1C(DanceCompetition *param0, DanceCompetitionTask *param1);
+static int contest_competition_0223ED9C(DanceCompetition *param0, DanceCompetitionTask *param1);
+static BOOL contest_competition_0223E3CC(DanceCompetition *param0, int *param1, int *param2);
 static void contest_competition_0223E450(void);
 static u32 contest_competition_0223E800(u32 param0, BOOL param1);
 static u32 contest_competition_0223E81C(u32 param0, BOOL param1);
 
-static const UnkStruct_contest_competition_02253084 Unk_contest_competition_02253084[] = {
+static const DanceMoveDefinition Unk_contest_competition_02253084[] = {
     {
         0x499,
         0x78,
@@ -165,12 +165,12 @@ static const struct {
     { 0x2, 0x1, 0x3, 0x1, 0x4, 0x0, 0x5, 0x0, 0x6, 0x0 }
 };
 
-static const UnkStruct_contest_competition_02252FC4 Unk_contest_competition_02252FC4[] = {
+static const DanceMessageConfig Unk_contest_competition_02252FC4[] = {
     { 0xE, 0x10, 0x20 },
     { 0xF, 0xC, 0x1E }
 };
 
-static int (*const Unk_contest_competition_02253050[])(UnkStruct_contest_competition_0224DF54 *, UnkStruct_contest_competition_0223E838 *) = {
+static int (*const Unk_contest_competition_02253050[])(DanceCompetition *, DanceCompetitionTask *) = {
     contest_competition_0223E838,
     contest_competition_0223E8AC,
     contest_competition_0223E954,
@@ -216,7 +216,7 @@ static const SpriteResourceCapacities Unk_contest_competition_02252FF0 = {
 
 int DanceCompetition_Init(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_contest_competition_0224DF54 *v0;
+    DanceCompetition *v0;
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
@@ -231,8 +231,8 @@ int DanceCompetition_Init(ApplicationManager *appMan, int *param1)
     G2S_BlendNone();
 
     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_23, 0xa0000);
-    v0 = ApplicationManager_NewData(appMan, sizeof(UnkStruct_contest_competition_0224DF54), HEAP_ID_23);
-    MI_CpuClear8(v0, sizeof(UnkStruct_contest_competition_0224DF54));
+    v0 = ApplicationManager_NewData(appMan, sizeof(DanceCompetition), HEAP_ID_23);
+    MI_CpuClear8(v0, sizeof(DanceCompetition));
 
     v0->unk_10 = contest_competition_0223F140(HEAP_ID_23);
     v0->unk_00 = ApplicationManager_Args(appMan);
@@ -330,7 +330,7 @@ int DanceCompetition_Init(ApplicationManager *appMan, int *param1)
 
 int DanceCompetition_Main(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_contest_competition_0224DF54 *v0 = ApplicationManager_Data(appMan);
+    DanceCompetition *v0 = ApplicationManager_Data(appMan);
     int v1;
 
     Contest_GetRNGNext(v0->unk_00);
@@ -352,10 +352,10 @@ int DanceCompetition_Main(ApplicationManager *appMan, int *param1)
                     v0->unk_1096 = v0->unk_1B1C.unk_02;
                 }
 
-                MI_CpuClear8(&v0->unk_1B1C, sizeof(UnkStruct_contest_competition_0223E838));
+                MI_CpuClear8(&v0->unk_1B1C, sizeof(DanceCompetitionTask));
             } else if ((v1 == 3) && (v0->unk_1B24 == 1)) {
                 *param1 = 2;
-                MI_CpuClear8(&v0->unk_1B1C, sizeof(UnkStruct_contest_competition_0223E838));
+                MI_CpuClear8(&v0->unk_1B1C, sizeof(DanceCompetitionTask));
                 StartScreenFade(FADE_SUB_THEN_MAIN, FADE_TYPE_UNK_30, FADE_TYPE_UNK_30, COLOR_BLACK, 6, 1, HEAP_ID_23);
                 break;
             }
@@ -366,7 +366,7 @@ int DanceCompetition_Main(ApplicationManager *appMan, int *param1)
 
         if ((v0->unk_1B24 == 1) && (contest_competition_0224F3D0(&v0->unk_109C) == 0) && (Contest_IsPlayerLeader(v0->unk_00) == FALSE)) {
             *param1 = 2;
-            MI_CpuClear8(&v0->unk_1B1C, sizeof(UnkStruct_contest_competition_0223E838));
+            MI_CpuClear8(&v0->unk_1B1C, sizeof(DanceCompetitionTask));
             StartScreenFade(FADE_SUB_THEN_MAIN, FADE_TYPE_UNK_30, FADE_TYPE_UNK_30, COLOR_BLACK, 6, 1, HEAP_ID_23);
         }
         break;
@@ -384,7 +384,7 @@ int DanceCompetition_Main(ApplicationManager *appMan, int *param1)
 
 int DanceCompetition_Exit(ApplicationManager *appMan, int *param1)
 {
-    UnkStruct_contest_competition_0224DF54 *v0 = ApplicationManager_Data(appMan);
+    DanceCompetition *v0 = ApplicationManager_Data(appMan);
     int v1;
 
     GF_ASSERT(ParticleSystem_GetActiveEmitterCount(v0->unk_0C) == 0);
@@ -453,7 +453,7 @@ int DanceCompetition_Exit(ApplicationManager *appMan, int *param1)
 
 static void contest_competition_0223E09C(void *param0)
 {
-    UnkStruct_contest_competition_0224DF54 *v0 = param0;
+    DanceCompetition *v0 = param0;
 
     if (v0->unk_1078) {
         u32 v1, v2;
@@ -498,10 +498,10 @@ static void contest_competition_0223E09C(void *param0)
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
 }
 
-static void contest_competition_0223E18C(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E18C(DanceCompetition *param0)
 {
     u16 *v0;
-    UnkStruct_contest_competition_0224CD84 *v1;
+    DanceSavedData *v1;
     s32 v2;
 
     v1 = &param0->unk_1050;
@@ -534,7 +534,7 @@ static void contest_competition_0223E18C(UnkStruct_contest_competition_0224DF54 
 
 static void contest_competition_0223E1FC(SysTask *param0, void *param1)
 {
-    UnkStruct_contest_competition_0224DF54 *v0 = param1;
+    DanceCompetition *v0 = param1;
 
     contest_competition_0223E18C(v0);
 
@@ -665,13 +665,13 @@ static void contest_competition_0223E250(BgConfig *param0)
     }
 }
 
-static void contest_competition_0223E380(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E380(DanceCompetition *param0)
 {
     Window_Add(param0->unk_14.unk_60, &param0->unk_14.unk_64[0], 1, 0x2, 0x13, 27, 4, 13, (18 + 12) + 1);
     Window_Add(param0->unk_14.unk_60, &param0->unk_14.unk_64[1], 1, 0x2, 0xb, 27, 2, 13, (18 + 12) + 1);
 }
 
-static BOOL contest_competition_0223E3CC(UnkStruct_contest_competition_0224DF54 *param0, int *param1, int *param2)
+static BOOL contest_competition_0223E3CC(DanceCompetition *param0, int *param1, int *param2)
 {
     if ((param0->unk_00->isLinkContest == TRUE) && (param0->unk_00->gameCodeMismatchCount > 0)) {
         param0->unk_1B26 = 1;
@@ -695,7 +695,7 @@ static void contest_competition_0223E450(void)
     ParticleSystem_ZeroAll();
 }
 
-static void contest_competition_0223E458(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E458(DanceCompetition *param0)
 {
     int i;
 
@@ -713,7 +713,7 @@ static void contest_competition_0223E458(UnkStruct_contest_competition_0224DF54 
     }
 }
 
-static void contest_competition_0223E4B0(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1)
+static void contest_competition_0223E4B0(DanceCompetition *param0, NARC *param1)
 {
     SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->unk_14.unk_90, 2, param0->unk_14.unk_58, param0->unk_14.unk_5C, param1, 6, 0, 8, NNS_G2D_VRAM_TYPE_2DMAIN, 33001);
 
@@ -735,7 +735,7 @@ static void contest_competition_0223E4B0(UnkStruct_contest_competition_0224DF54 
     contest_competition_0224B01C(param0);
 }
 
-static void contest_competition_0223E588(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E588(DanceCompetition *param0)
 {
     contest_competition_0224A210(param0->unk_14.unk_5C);
     contest_competition_0224A428(param0->unk_14.unk_5C);
@@ -758,7 +758,7 @@ static void contest_competition_0223E588(UnkStruct_contest_competition_0224DF54 
     SpriteManager_UnloadPlttObjById(param0->unk_14.unk_5C, 33001);
 }
 
-static void contest_competition_0223E60C(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1)
+static void contest_competition_0223E60C(DanceCompetition *param0, NARC *param1)
 {
     SpriteSystem_LoadPaletteBuffer(param0->unk_14.unk_90, 3, param0->unk_14.unk_58, param0->unk_14.unk_5C, 46, 6, 0, 2, NNS_G2D_VRAM_TYPE_2DSUB, 33002);
     SpriteSystem_LoadPaletteBuffer(param0->unk_14.unk_90, 3, param0->unk_14.unk_58, param0->unk_14.unk_5C, 46, 9, 0, 1, NNS_G2D_VRAM_TYPE_2DSUB, 33003);
@@ -766,12 +766,12 @@ static void contest_competition_0223E60C(UnkStruct_contest_competition_0224DF54 
     contest_competition_022493C4(param0->unk_1074);
 }
 
-static void contest_competition_0223E678(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E678(DanceCompetition *param0)
 {
     return;
 }
 
-static void contest_competition_0223E67C(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1)
+static void contest_competition_0223E67C(DanceCompetition *param0, NARC *param1)
 {
     int v0;
 
@@ -802,22 +802,22 @@ static void contest_competition_0223E67C(UnkStruct_contest_competition_0224DF54 
     }
 }
 
-static void contest_competition_0223E76C(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E76C(DanceCompetition *param0)
 {
     return;
 }
 
-static void contest_competition_0223E770(UnkStruct_contest_competition_0224DF54 *param0, NARC *param1)
+static void contest_competition_0223E770(DanceCompetition *param0, NARC *param1)
 {
     return;
 }
 
-static void contest_competition_0223E774(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E774(DanceCompetition *param0)
 {
     return;
 }
 
-static void contest_competition_0223E778(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E778(DanceCompetition *param0)
 {
     void *v0;
     Camera *camera;
@@ -835,7 +835,7 @@ static void contest_competition_0223E778(UnkStruct_contest_competition_0224DF54 
     ParticleSystem_SetResource(param0->unk_0C, v2, (1 << 1) | (1 << 3), 1);
 }
 
-static void contest_competition_0223E7E0(UnkStruct_contest_competition_0224DF54 *param0)
+static void contest_competition_0223E7E0(DanceCompetition *param0)
 {
     void *v0 = ParticleSystem_GetHeapStart(param0->unk_0C);
     ParticleSystem_Free(param0->unk_0C);
@@ -868,7 +868,7 @@ static u32 contest_competition_0223E81C(u32 param0, BOOL param1)
     return v1;
 }
 
-static int contest_competition_0223E838(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223E838(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     int v0;
 
@@ -896,7 +896,7 @@ static int contest_competition_0223E838(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223E8AC(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223E8AC(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -927,7 +927,7 @@ static int contest_competition_0223E8AC(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223E954(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223E954(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -945,7 +945,7 @@ static int contest_competition_0223E954(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223E9A4(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223E9A4(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     int v0, v1;
     u64 v2;
@@ -1003,7 +1003,7 @@ static int contest_competition_0223E9A4(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223EBB0(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223EBB0(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     int contestantID;
 
@@ -1028,7 +1028,7 @@ static int contest_competition_0223EBB0(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223EC20(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223EC20(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -1046,7 +1046,7 @@ static int contest_competition_0223EC20(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223EC74(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223EC74(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -1064,7 +1064,7 @@ static int contest_competition_0223EC74(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223ECC8(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223ECC8(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -1082,7 +1082,7 @@ static int contest_competition_0223ECC8(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223ED1C(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223ED1C(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -1108,7 +1108,7 @@ static int contest_competition_0223ED1C(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223ED9C(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223ED9C(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     int v0;
 
@@ -1152,7 +1152,7 @@ static int contest_competition_0223ED9C(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223EE54(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223EE54(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     switch (param1->unk_00) {
     case 0:
@@ -1172,7 +1172,7 @@ static int contest_competition_0223EE54(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223EEB8(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223EEB8(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
     int v0, v1;
 
@@ -1248,9 +1248,9 @@ static int contest_competition_0223EEB8(UnkStruct_contest_competition_0224DF54 *
     return 0;
 }
 
-static int contest_competition_0223F03C(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0223E838 *param1)
+static int contest_competition_0223F03C(DanceCompetition *param0, DanceCompetitionTask *param1)
 {
-    UnkStruct_contest_competition_0223F03C v0;
+    DanceMoveCommand v0;
     int v1;
 
     switch (param1->unk_00) {

@@ -3,16 +3,16 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "contest_competition/struct_contest_competition_02243C28.h"
-#include "contest_competition/struct_contest_competition_02243C80.h"
-#include "contest_competition/struct_contest_competition_0224F30C.h"
-#include "contest_competition/struct_contest_competition_0224F3D8.h"
+#include "contest_competition/struct_contest_packet_queue_config.h"
+#include "contest_competition/struct_contest_packet_header.h"
+#include "contest_competition/struct_contest_packet_queue.h"
+#include "contest_competition/struct_contest_packet_payloads.h"
 
 #include "communication_system.h"
 
-void contest_competition_0224F18C(UnkStruct_contest_competition_0224F30C *param0, const UnkStruct_contest_competition_02243C28 *param1)
+void contest_competition_0224F18C(ContestPacketQueue *param0, const ContestPacketQueueConfig *param1)
 {
-    MI_CpuClear8(param0, sizeof(UnkStruct_contest_competition_0224F30C));
+    MI_CpuClear8(param0, sizeof(ContestPacketQueue));
 
     param0->unk_00 = param1->unk_00;
     param0->unk_04 = param1->unk_04;
@@ -21,7 +21,7 @@ void contest_competition_0224F18C(UnkStruct_contest_competition_0224F30C *param0
     param0->unk_08 = param1->unk_08;
 }
 
-static int contest_competition_0224F1B4(UnkStruct_contest_competition_0224F30C *param0)
+static int contest_competition_0224F1B4(ContestPacketQueue *param0)
 {
     int v0;
 
@@ -36,16 +36,16 @@ static int contest_competition_0224F1B4(UnkStruct_contest_competition_0224F30C *
     return 0;
 }
 
-static void contest_competition_0224F1E0(UnkStruct_contest_competition_0224F30C *param0, int param1)
+static void contest_competition_0224F1E0(ContestPacketQueue *param0, int param1)
 {
     param0->unk_0C &= 0xffffffff ^ (1 << param1);
 }
 
-int contest_competition_0224F1F8(UnkStruct_contest_competition_0224F30C *param0, u8 param1, u16 param2, void *param3, int param4)
+int contest_competition_0224F1F8(ContestPacketQueue *param0, u8 param1, u16 param2, void *param3, int param4)
 {
-    UnkStruct_contest_competition_02243C80 v0;
+    ContestPacketHeader v0;
 
-    GF_ASSERT(sizeof(UnkStruct_contest_competition_02243C80) + param4 <= 512);
+    GF_ASSERT(sizeof(ContestPacketHeader) + param4 <= 512);
 
     MI_CpuClear8(param0->unk_10, 512);
 
@@ -53,10 +53,10 @@ int contest_competition_0224F1F8(UnkStruct_contest_competition_0224F30C *param0,
     v0.unk_02 = param2;
     v0.unk_05 = contest_competition_0224F1B4(param0);
     v0.unk_06 = 0;
-    v0.unk_00 = param4 + sizeof(UnkStruct_contest_competition_02243C80);
+    v0.unk_00 = param4 + sizeof(ContestPacketHeader);
 
-    MI_CpuCopy32(&v0, param0->unk_10, sizeof(UnkStruct_contest_competition_02243C80));
-    MI_CpuCopy8(param3, &param0->unk_10[sizeof(UnkStruct_contest_competition_02243C80)], param4);
+    MI_CpuCopy32(&v0, param0->unk_10, sizeof(ContestPacketHeader));
+    MI_CpuCopy8(param3, &param0->unk_10[sizeof(ContestPacketHeader)], param4);
 
     param0->unk_A15 = 0;
     param0->unk_A10 = 1;
@@ -64,35 +64,35 @@ int contest_competition_0224F1F8(UnkStruct_contest_competition_0224F30C *param0,
     return v0.unk_05;
 }
 
-void contest_competition_0224F26C(UnkStruct_contest_competition_0224F30C *param0, const UnkStruct_contest_competition_02243C80 *param1, void *param2, int param3)
+void contest_competition_0224F26C(ContestPacketQueue *param0, const ContestPacketHeader *param1, void *param2, int param3)
 {
-    UnkStruct_contest_competition_02243C80 v0;
+    ContestPacketHeader v0;
 
-    GF_ASSERT(sizeof(UnkStruct_contest_competition_02243C80) + param3 <= 512);
+    GF_ASSERT(sizeof(ContestPacketHeader) + param3 <= 512);
 
     MI_CpuClear8(param0->unk_10, 512);
 
     v0 = *param1;
     v0.unk_04 = 0xfe;
     v0.unk_06 = 1;
-    v0.unk_00 = param3 + sizeof(UnkStruct_contest_competition_02243C80);
+    v0.unk_00 = param3 + sizeof(ContestPacketHeader);
 
-    MI_CpuCopy32(&v0, param0->unk_10, sizeof(UnkStruct_contest_competition_02243C80));
+    MI_CpuCopy32(&v0, param0->unk_10, sizeof(ContestPacketHeader));
 
     if (param2 != NULL) {
-        MI_CpuCopy8(param2, &param0->unk_10[sizeof(UnkStruct_contest_competition_02243C80)], param3);
+        MI_CpuCopy8(param2, &param0->unk_10[sizeof(ContestPacketHeader)], param3);
     }
 
     param0->unk_A10 = 1;
 }
 
-static void contest_competition_0224F2DC(UnkStruct_contest_competition_0224F30C *param0, int param1, UnkStruct_contest_competition_02243C80 **param2, void **param3)
+static void contest_competition_0224F2DC(ContestPacketQueue *param0, int param1, ContestPacketHeader **param2, void **param3)
 {
     *param2 = (void *)param0->unk_210[param1];
-    *param3 = &param0->unk_210[param1][sizeof(UnkStruct_contest_competition_02243C80)];
+    *param3 = &param0->unk_210[param1][sizeof(ContestPacketHeader)];
 }
 
-static BOOL contest_competition_0224F2F8(UnkStruct_contest_competition_0224F30C *param0)
+static BOOL contest_competition_0224F2F8(ContestPacketQueue *param0)
 {
     if (param0->unk_A10 == 1) {
         return 0;
@@ -105,7 +105,7 @@ static BOOL contest_competition_0224F2F8(UnkStruct_contest_competition_0224F30C 
     return 1;
 }
 
-int contest_competition_0224F30C(UnkStruct_contest_competition_0224F30C *param0, void *param1, int param2, void *param3)
+int contest_competition_0224F30C(ContestPacketQueue *param0, void *param1, int param2, void *param3)
 {
     if (contest_competition_0224F2F8(param0) == 0) {
         return 0;
@@ -125,7 +125,7 @@ static BOOL contest_competition_0224F344(int param0, int param1, int param2)
     return 0;
 }
 
-BOOL contest_competition_0224F35C(UnkStruct_contest_competition_0224F30C *param0)
+BOOL contest_competition_0224F35C(ContestPacketQueue *param0)
 {
     if (param0->unk_A10 == 0) {
         return 0;
@@ -139,7 +139,7 @@ BOOL contest_competition_0224F35C(UnkStruct_contest_competition_0224F30C *param0
         param0->unk_A10 = 0;
         return 1;
     } else {
-        UnkStruct_contest_competition_02243C80 *v0;
+        ContestPacketHeader *v0;
 
         v0 = (void *)param0->unk_10;
 
@@ -152,19 +152,19 @@ BOOL contest_competition_0224F35C(UnkStruct_contest_competition_0224F30C *param0
     return 0;
 }
 
-BOOL contest_competition_0224F3D0(UnkStruct_contest_competition_0224F30C *param0)
+BOOL contest_competition_0224F3D0(ContestPacketQueue *param0)
 {
     return param0->unk_A10;
 }
 
-int contest_competition_0224F3D8(UnkStruct_contest_competition_0224F30C *param0, void *param1)
+int contest_competition_0224F3D8(ContestPacketQueue *param0, void *param1)
 {
-    UnkStruct_contest_competition_02243C80 *v0;
+    ContestPacketHeader *v0;
     void *v1;
-    UnkStruct_contest_competition_0224F3D8 v2;
+    ContestPacketPayloads v2;
     int v3;
 
-    MI_CpuClear8(&v2, sizeof(UnkStruct_contest_competition_0224F3D8));
+    MI_CpuClear8(&v2, sizeof(ContestPacketPayloads));
 
     if (1) {
         for (v3 = 0; v3 < 4; v3++) {
@@ -200,7 +200,7 @@ int contest_competition_0224F3D8(UnkStruct_contest_competition_0224F30C *param0,
     return 0;
 }
 
-BOOL contest_competition_0224F4B8(UnkStruct_contest_competition_0224F30C *param0, int connectionCount, int playerContestantID, int param3)
+BOOL contest_competition_0224F4B8(ContestPacketQueue *param0, int connectionCount, int playerContestantID, int param3)
 {
     if (playerContestantID != param3) {
         return 1;

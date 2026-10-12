@@ -8,19 +8,19 @@
 
 #include "contest_competition/contest_competition_0223DAD0.h"
 #include "contest_competition/contest_competition_0224CFB8.h"
-#include "contest_competition/struct_contest_competition_0224D69C.h"
-#include "contest_competition/struct_contest_competition_0224DF54.h"
-#include "contest_competition/struct_contest_competition_0224E958.h"
-#include "contest_competition/struct_contest_competition_0224EDE0.h"
-#include "contest_competition/struct_contest_competition_02253084.h"
+#include "contest_competition/struct_dance_contestant_task.h"
+#include "contest_competition/struct_dance_competition.h"
+#include "contest_competition/struct_dance_performance_result.h"
+#include "contest_competition/struct_dance_packet.h"
+#include "contest_competition/struct_dance_move_definition.h"
 
 #include "contest.h"
 
 static int contest_competition_0224EBE0(int contestRank, int param1);
 static int contest_competition_0224EC24(int contestRank, int contestType, int param2, int param3, int param4, int param5, int param6);
 static int contest_competition_0224ECC4(int contestRank, int contestType, int param2, int param3, int param4, int param5, int param6, int param7);
-static void contest_competition_0224EDE0(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0224E958 *param1, u32 param2, u32 param3, u32 param4, const UnkStruct_contest_competition_02253084 *param5, UnkStruct_contest_competition_0224D69C *param6);
-static void contest_competition_0224EE90(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0224E958 *param1, u32 param2, u32 param3, u32 param4, const UnkStruct_contest_competition_02253084 *param5, UnkStruct_contest_competition_0224D69C *param6);
+static void contest_competition_0224EDE0(DanceCompetition *param0, DancePerformanceResult *param1, u32 param2, u32 param3, u32 param4, const DanceMoveDefinition *param5, DanceContestantTask *param6);
+static void contest_competition_0224EE90(DanceCompetition *param0, DancePerformanceResult *param1, u32 param2, u32 param3, u32 param4, const DanceMoveDefinition *param5, DanceContestantTask *param6);
 
 __attribute__((aligned(4))) static const s8 Unk_contest_competition_02254A80[] = {
     0x1,
@@ -36,9 +36,9 @@ __attribute__((aligned(4))) static const u8 Unk_contest_competition_02254A84[] =
     0x0
 };
 
-void contest_competition_0224E930(UnkStruct_contest_competition_0224E958 *param0, int contestantID, int param2, u32 param3, int param4)
+void contest_competition_0224E930(DancePerformanceResult *param0, int contestantID, int param2, u32 param3, int param4)
 {
-    MI_CpuClear8(param0, sizeof(UnkStruct_contest_competition_0224E958));
+    MI_CpuClear8(param0, sizeof(DancePerformanceResult));
 
     param0->unk_37 = contestantID;
     param0->unk_38 = param2;
@@ -46,7 +46,7 @@ void contest_competition_0224E930(UnkStruct_contest_competition_0224E958 *param0
     param0->unk_39 = param4;
 }
 
-void contest_competition_0224E958(UnkStruct_contest_competition_0224E958 *param0)
+void contest_competition_0224E958(DancePerformanceResult *param0)
 {
     u32 v0;
     int v1, v2, v3;
@@ -56,7 +56,7 @@ void contest_competition_0224E958(UnkStruct_contest_competition_0224E958 *param0
     v2 = param0->unk_38;
     v3 = param0->unk_39;
 
-    MI_CpuClear8(param0, sizeof(UnkStruct_contest_competition_0224E958));
+    MI_CpuClear8(param0, sizeof(DancePerformanceResult));
 
     param0->unk_30 = v0;
     param0->unk_37 = v1;
@@ -64,7 +64,7 @@ void contest_competition_0224E958(UnkStruct_contest_competition_0224E958 *param0
     param0->unk_39 = v3;
 }
 
-void contest_competition_0224E990(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0224E958 *param1, u32 param2, u32 param3)
+void contest_competition_0224E990(DanceCompetition *param0, DancePerformanceResult *param1, u32 param2, u32 param3)
 {
     int v0, v1, v2, v3, v4;
     u8 v5[(16 * 2) / 2];
@@ -319,7 +319,7 @@ static int contest_competition_0224ECC4(int contestRank, int contestType, int pa
     return v0;
 }
 
-void contest_competition_0224ED8C(int param0, UnkStruct_contest_competition_0224DF54 *param1, UnkStruct_contest_competition_0224E958 *param2, u32 param3, u32 param4, u32 param5, const UnkStruct_contest_competition_02253084 *param6, UnkStruct_contest_competition_0224D69C *param7)
+void contest_competition_0224ED8C(int param0, DanceCompetition *param1, DancePerformanceResult *param2, u32 param3, u32 param4, u32 param5, const DanceMoveDefinition *param6, DanceContestantTask *param7)
 {
     if ((param2->unk_38 == 0) && (param0 == 0)) {
         contest_competition_0224EDE0(param1, param2, param3, param4, param5, param6, param7);
@@ -328,9 +328,9 @@ void contest_competition_0224ED8C(int param0, UnkStruct_contest_competition_0224
     }
 }
 
-static void contest_competition_0224EDE0(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0224E958 *param1, u32 param2, u32 param3, u32 param4, const UnkStruct_contest_competition_02253084 *param5, UnkStruct_contest_competition_0224D69C *param6)
+static void contest_competition_0224EDE0(DanceCompetition *param0, DancePerformanceResult *param1, u32 param2, u32 param3, u32 param4, const DanceMoveDefinition *param5, DanceContestantTask *param6)
 {
-    UnkStruct_contest_competition_0224EDE0 v0;
+    DancePacket v0;
     u32 v1 = param4 / 2;
 
     if ((param1->unk_38 != 0) || (param1->unk_36 >= param5->unk_05)) {
@@ -366,10 +366,10 @@ static void contest_competition_0224EDE0(UnkStruct_contest_competition_0224DF54 
     }
 }
 
-static void contest_competition_0224EE90(UnkStruct_contest_competition_0224DF54 *param0, UnkStruct_contest_competition_0224E958 *param1, u32 param2, u32 param3, u32 param4, const UnkStruct_contest_competition_02253084 *param5, UnkStruct_contest_competition_0224D69C *param6)
+static void contest_competition_0224EE90(DanceCompetition *param0, DancePerformanceResult *param1, u32 param2, u32 param3, u32 param4, const DanceMoveDefinition *param5, DanceContestantTask *param6)
 {
-    UnkStruct_contest_competition_0224EDE0 v0;
-    UnkStruct_contest_competition_0224EDE0 *v1;
+    DancePacket v0;
+    DancePacket *v1;
     u32 v2, v3;
 
     v2 = param4 / 2;

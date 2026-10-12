@@ -10,7 +10,7 @@
 
 #include "field_events/contest_comm_tasks.h"
 #include "contest_competition/contest_competition_02252CEC.h"
-#include "contest_competition/struct_contest_competition_0224EDE0.h"
+#include "contest_competition/struct_dance_packet.h"
 
 #include "communication_system.h"
 #include "contest.h"
@@ -77,7 +77,7 @@ static u8 *ContestComm_GetRecvBuffer(int netId, void *commState, int size)
 
 static int ContestComm_DancePacketSize(void)
 {
-    return sizeof(UnkStruct_contest_competition_0224EDE0);
+    return sizeof(DancePacket);
 }
 
 static int ContestComm_ScoringPacketSize(void)

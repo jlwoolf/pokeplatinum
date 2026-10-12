@@ -1,0 +1,9 @@
+#ifndef POKEPLATINUM_STRUCT_ACTING_MOVE_CHOICE_H
+#define POKEPLATINUM_STRUCT_ACTING_MOVE_CHOICE_H
+
+typedef struct {
+    u16 unk_00;
+    u16 unk_02;
+} ActingMoveChoice;
+
+#endif // POKEPLATINUM_STRUCT_ACTING_MOVE_CHOICE_H
