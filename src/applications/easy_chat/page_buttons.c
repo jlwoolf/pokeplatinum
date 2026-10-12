@@ -1,4 +1,4 @@
-#include "applications/easy_chat/ov20_021D4728.h"
+#include "applications/easy_chat/page_buttons.h"
 
 #include <nitro.h>
 #include <string.h>
@@ -6,8 +6,8 @@
 #include "constants/heap.h"
 
 #include "applications/easy_chat/main.h"
-#include "applications/easy_chat/ov20_021D2098.h"
-#include "applications/easy_chat/struct_ov20_021D2128_decl.h"
+#include "applications/easy_chat/word_list_screen.h"
+#include "applications/easy_chat/struct_easy_chat_word_list_screen_decl.h"
 
 #include "bg_window.h"
 #include "easy_chat_word_list.h"
@@ -27,23 +27,23 @@ typedef struct {
     NNSG2dCellDataBank *unk_04;
     void *unk_08;
     NNSG2dAnimBankData *unk_0C;
-} UnkStruct_ov20_021D4B2C;
+} EasyChatPageButtonsResources;
 
-typedef struct UnkStruct_ov20_021D4AD4_t {
-    UnkStruct_ov20_021D2128 *unk_00;
+typedef struct EasyChatPageButtons_t {
+    EasyChatWordListScreen *unk_00;
     const EasyChatApp *unk_04;
     const EasyChatWordList *unk_08;
     BgConfig *unk_0C;
     SpriteList *unk_10;
     Sprite *unk_14;
     Sprite *unk_18;
-    UnkStruct_ov20_021D4B2C unk_1C;
+    EasyChatPageButtonsResources unk_1C;
     u16 unk_2C[8][77];
     SysTask *unk_4FC;
-} UnkStruct_ov20_021D4AD4;
+} EasyChatPageButtons;
 
 typedef struct {
-    UnkStruct_ov20_021D4AD4 *unk_00;
+    EasyChatPageButtons *unk_00;
     int unk_04;
     u16 unk_08;
     u16 unk_0A;
@@ -53,27 +53,27 @@ typedef struct {
     u16 unk_12;
     u16 unk_14;
     u16 unk_16;
-} UnkStruct_ov20_021D4BA4;
+} EasyChatPageButtonsTransition;
 
-static void ov20_021D4874(UnkStruct_ov20_021D4AD4 *param0, NARC *param1);
-static void ov20_021D48C4(UnkStruct_ov20_021D4AD4 *param0, NARC *param1);
-static void ov20_021D498C(Window *param0, BgConfig *param1, const String *param2, int param3);
-static void ov20_021D4A24(UnkStruct_ov20_021D4AD4 *param0, NARC *param1);
-static void ov20_021D4AD4(UnkStruct_ov20_021D4AD4 *param0);
-static void ov20_021D4AF8(UnkStruct_ov20_021D4B2C *param0, NARC *param1, u32 param2, u32 param3);
-static void ov20_021D4B2C(UnkStruct_ov20_021D4B2C *param0);
-static void ov20_021D4C40(SysTask *param0, void *param1);
-static Sprite *ov20_021D4B40(UnkStruct_ov20_021D4AD4 *param0, NNSG2dImageProxy *param1, NNSG2dImagePaletteProxy *param2, UnkStruct_ov20_021D4B2C *param3, int param4, int param5, int param6, int param7);
+static void EasyChatPageButtons_LoadScreenData(EasyChatPageButtons *param0, NARC *param1);
+static void EasyChatPageButtons_LoadLabels(EasyChatPageButtons *param0, NARC *param1);
+static void EasyChatPageButtons_PrintLabel(Window *param0, BgConfig *param1, const String *param2, int param3);
+static void EasyChatPageButtons_CreateSprites(EasyChatPageButtons *param0, NARC *param1);
+static void EasyChatPageButtons_DeleteSprites(EasyChatPageButtons *param0);
+static void EasyChatPageButtons_LoadSpriteResources(EasyChatPageButtonsResources *param0, NARC *param1, u32 param2, u32 param3);
+static void EasyChatPageButtons_FreeSpriteResources(EasyChatPageButtonsResources *param0);
+static void EasyChatPageButtons_TransitionTask(SysTask *param0, void *param1);
+static Sprite *EasyChatPageButtons_AddSprite(EasyChatPageButtons *param0, NNSG2dImageProxy *param1, NNSG2dImagePaletteProxy *param2, EasyChatPageButtonsResources *param3, int param4, int param5, int param6, int param7);
 
-UnkStruct_ov20_021D4AD4 *ov20_021D4728(UnkStruct_ov20_021D2128 *param0, const EasyChatApp *param1, const EasyChatWordList *param2)
+EasyChatPageButtons *EasyChatPageButtons_New(EasyChatWordListScreen *param0, const EasyChatApp *param1, const EasyChatWordList *param2)
 {
-    UnkStruct_ov20_021D4AD4 *v0 = Heap_Alloc(HEAP_ID_35, sizeof(UnkStruct_ov20_021D4AD4));
+    EasyChatPageButtons *v0 = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatPageButtons));
 
     v0->unk_00 = param0;
     v0->unk_04 = param1;
     v0->unk_08 = param2;
-    v0->unk_0C = ov20_021D2E04(param0);
-    v0->unk_10 = ov20_021D2E08(param0);
+    v0->unk_0C = EasyChatWordListScreen_GetBgConfig(param0);
+    v0->unk_10 = EasyChatWordListScreen_GetSpriteList(param0);
     v0->unk_14 = NULL;
     v0->unk_18 = NULL;
     v0->unk_4FC = NULL;
@@ -81,19 +81,19 @@ UnkStruct_ov20_021D4AD4 *ov20_021D4728(UnkStruct_ov20_021D2128 *param0, const Ea
     return v0;
 }
 
-void ov20_021D4764(UnkStruct_ov20_021D4AD4 *param0)
+void EasyChatPageButtons_Free(EasyChatPageButtons *param0)
 {
-    ov20_021D4AD4(param0);
+    EasyChatPageButtons_DeleteSprites(param0);
     Heap_Free(param0);
 }
 
-void ov20_021D4774(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
+void EasyChatPageButtons_LoadGraphics(EasyChatPageButtons *param0, NARC *param1)
 {
     Graphics_LoadPaletteFromOpenNARC(param1, 21, 4, 0, 0x40, HEAP_ID_35);
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 11, param0->unk_0C, 4, 0, 0, 1, HEAP_ID_35);
 
-    ov20_021D4874(param0, param1);
-    ov20_021D48C4(param0, param1);
+    EasyChatPageButtons_LoadScreenData(param0, param1);
+    EasyChatPageButtons_LoadLabels(param0, param1);
 
     if (EasyChat_GetMode(param0->unk_04) == 0) {
         Bg_CopyToTilemapRect(param0->unk_0C, 4, 3, 3, 11, 7, param0->unk_2C[3], 0, 0, 11, 7);
@@ -103,11 +103,11 @@ void ov20_021D4774(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
         Bg_CopyToTilemapRect(param0->unk_0C, 4, 3, 14, 11, 7, param0->unk_2C[7], 0, 0, 11, 7);
     }
 
-    ov20_021D4A24(param0, param1);
+    EasyChatPageButtons_CreateSprites(param0, param1);
     Bg_CopyTilemapBufferToVRAM(param0->unk_0C, 4);
 }
 
-static void ov20_021D4874(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
+static void EasyChatPageButtons_LoadScreenData(EasyChatPageButtons *param0, NARC *param1)
 {
     static const u16 v0[] = {
         12,
@@ -134,7 +134,7 @@ static void ov20_021D4874(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
     }
 }
 
-static void ov20_021D48C4(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
+static void EasyChatPageButtons_LoadLabels(EasyChatPageButtons *param0, NARC *param1)
 {
     String *v0, *v1;
     void *v2;
@@ -153,9 +153,9 @@ static void ov20_021D48C4(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
         v4.height = 57;
         v4.colorMode = 0;
         v4.pixels = v3->pRawData;
-        ov20_021D498C(&v4, param0->unk_0C, v0, 0);
+        EasyChatPageButtons_PrintLabel(&v4, param0->unk_0C, v0, 0);
         v4.pixels = (u8 *)(v3->pRawData) + (11 * 7 * 4 * 0x20);
-        ov20_021D498C(&v4, param0->unk_0C, v1, 0);
+        EasyChatPageButtons_PrintLabel(&v4, param0->unk_0C, v1, 0);
         DC_FlushRange(v3->pRawData, v3->szByte);
         Bg_LoadTiles(param0->unk_0C, 4, v3->pRawData, v3->szByte, 0);
         Heap_Free(v2);
@@ -166,14 +166,14 @@ static void ov20_021D48C4(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
     Font_Free(FONT_SUBSCREEN);
 }
 
-static const s16 Unk_ov20_021D52EC[] = {
+static const s16 sEasyChatPageButtons_LabelYOffsets[] = {
     22,
     (22 + 56 * 1) - 1,
     (22 + 56 * 2) - 2,
     (22 + 56 * 3) - 1,
 };
 
-static void ov20_021D498C(Window *param0, BgConfig *param1, const String *param2, int param3)
+static void EasyChatPageButtons_PrintLabel(Window *param0, BgConfig *param1, const String *param2, int param3)
 {
     int v0, v1, v2, v3;
     u32 v4;
@@ -186,8 +186,8 @@ static void ov20_021D498C(Window *param0, BgConfig *param1, const String *param2
     for (v1 = 0; v1 < v4; v1++) {
         String_CopyLineNum(v5, param2, v1);
         v2 = Font_CalcCenterAlignment(2, v5, 0, 88);
-        for (v0 = 0; v0 < NELEMS(Unk_ov20_021D52EC); v0++) {
-            v3 = Unk_ov20_021D52EC[v0] + param3;
+        for (v0 = 0; v0 < NELEMS(sEasyChatPageButtons_LabelYOffsets); v0++) {
+            v3 = sEasyChatPageButtons_LabelYOffsets[v0] + param3;
             Text_AddPrinterWithParamsAndColor(param0, FONT_SUBSCREEN, v5, v2, v3, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 3), NULL);
         }
         param3 += 16;
@@ -195,7 +195,7 @@ static void ov20_021D498C(Window *param0, BgConfig *param1, const String *param2
     String_Free(v5);
 }
 
-static void ov20_021D4A24(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
+static void EasyChatPageButtons_CreateSprites(EasyChatPageButtons *param0, NARC *param1)
 {
     NNSG2dImagePaletteProxy v0;
     NNSG2dImageProxy v1;
@@ -206,18 +206,18 @@ static void ov20_021D4A24(UnkStruct_ov20_021D4AD4 *param0, NARC *param1)
     Graphics_LoadPartialPaletteFromOpenNARC(param1, 25, NNS_G2D_VRAM_TYPE_2DSUB, 0, 35, &v0);
     Graphics_LoadImageMappingFromOpenNARC(param1, 24, 1, 0, 0, NNS_G2D_VRAM_TYPE_2DSUB, 0, 35, &v1);
 
-    ov20_021D4AF8(&(param0->unk_1C), param1, 22, 23);
+    EasyChatPageButtons_LoadSpriteResources(&(param0->unk_1C), param1, 22, 23);
 
-    param0->unk_14 = ov20_021D4B40(param0, &v1, &v0, &param0->unk_1C, 192, 56, 0, 0);
+    param0->unk_14 = EasyChatPageButtons_AddSprite(param0, &v1, &v0, &param0->unk_1C, 192, 56, 0, 0);
     Sprite_SetAnim(param0->unk_14, 0);
     Sprite_SetDrawFlag(param0->unk_14, FALSE);
 
-    param0->unk_18 = ov20_021D4B40(param0, &v1, &v0, &param0->unk_1C, 192, 136, 0, 0);
+    param0->unk_18 = EasyChatPageButtons_AddSprite(param0, &v1, &v0, &param0->unk_1C, 192, 136, 0, 0);
     Sprite_SetAnim(param0->unk_18, 2);
     Sprite_SetDrawFlag(param0->unk_18, FALSE);
 }
 
-static void ov20_021D4AD4(UnkStruct_ov20_021D4AD4 *param0)
+static void EasyChatPageButtons_DeleteSprites(EasyChatPageButtons *param0)
 {
     if (param0->unk_14) {
         Sprite_Delete(param0->unk_14);
@@ -227,22 +227,22 @@ static void ov20_021D4AD4(UnkStruct_ov20_021D4AD4 *param0)
         Sprite_Delete(param0->unk_18);
     }
 
-    ov20_021D4B2C(&param0->unk_1C);
+    EasyChatPageButtons_FreeSpriteResources(&param0->unk_1C);
 }
 
-static void ov20_021D4AF8(UnkStruct_ov20_021D4B2C *param0, NARC *param1, u32 param2, u32 param3)
+static void EasyChatPageButtons_LoadSpriteResources(EasyChatPageButtonsResources *param0, NARC *param1, u32 param2, u32 param3)
 {
     param0->unk_00 = Graphics_GetCellBankFromOpenNARC(param1, param2, 1, &(param0->unk_04), HEAP_ID_35);
     param0->unk_08 = Graphics_GetAnimBankFromOpenNARC(param1, param3, 1, &(param0->unk_0C), HEAP_ID_35);
 }
 
-static void ov20_021D4B2C(UnkStruct_ov20_021D4B2C *param0)
+static void EasyChatPageButtons_FreeSpriteResources(EasyChatPageButtonsResources *param0)
 {
     Heap_Free(param0->unk_00);
     Heap_Free(param0->unk_08);
 }
 
-static Sprite *ov20_021D4B40(UnkStruct_ov20_021D4AD4 *param0, NNSG2dImageProxy *param1, NNSG2dImagePaletteProxy *param2, UnkStruct_ov20_021D4B2C *param3, int param4, int param5, int param6, int param7)
+static Sprite *EasyChatPageButtons_AddSprite(EasyChatPageButtons *param0, NNSG2dImageProxy *param1, NNSG2dImagePaletteProxy *param2, EasyChatPageButtonsResources *param3, int param4, int param5, int param6, int param7)
 {
     SpriteResourcesHeader v0;
     SpriteListTemplate v1;
@@ -277,9 +277,9 @@ static Sprite *ov20_021D4B40(UnkStruct_ov20_021D4AD4 *param0, NNSG2dImageProxy *
     return v2;
 }
 
-void ov20_021D4BA4(UnkStruct_ov20_021D4AD4 *param0)
+void EasyChatPageButtons_StartTransition(EasyChatPageButtons *param0)
 {
-    UnkStruct_ov20_021D4BA4 *v0 = Heap_Alloc(HEAP_ID_35, sizeof(UnkStruct_ov20_021D4BA4));
+    EasyChatPageButtonsTransition *v0 = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatPageButtonsTransition));
 
     if (v0) {
         static const struct {
@@ -307,20 +307,20 @@ void ov20_021D4BA4(UnkStruct_ov20_021D4AD4 *param0)
         v0->unk_14 = v1[v2].unk_0A;
         v0->unk_16 = v1[v2].unk_0C;
 
-        param0->unk_4FC = SysTask_Start(ov20_021D4C40, v0, 1);
+        param0->unk_4FC = SysTask_Start(EasyChatPageButtons_TransitionTask, v0, 1);
     } else {
         param0->unk_4FC = NULL;
     }
 }
 
-BOOL ov20_021D4C2C(UnkStruct_ov20_021D4AD4 *param0)
+BOOL EasyChatPageButtons_IsTransitionDone(EasyChatPageButtons *param0)
 {
     return param0->unk_4FC == NULL;
 }
 
-static void ov20_021D4C40(SysTask *param0, void *param1)
+static void EasyChatPageButtons_TransitionTask(SysTask *param0, void *param1)
 {
-    UnkStruct_ov20_021D4BA4 *v0 = param1;
+    EasyChatPageButtonsTransition *v0 = param1;
 
     switch (v0->unk_04) {
     case 0:
@@ -355,18 +355,18 @@ static void ov20_021D4C40(SysTask *param0, void *param1)
     }
 }
 
-void ov20_021D4DBC(UnkStruct_ov20_021D4AD4 *param0, BOOL param1)
+void EasyChatPageButtons_SetVisible(EasyChatPageButtons *param0, BOOL param1)
 {
     if (param1) {
-        Sprite_SetDrawFlag(param0->unk_14, ov20_021D204C(param0->unk_04));
-        Sprite_SetDrawFlag(param0->unk_18, ov20_021D2060(param0->unk_04));
+        Sprite_SetDrawFlag(param0->unk_14, EasyChat_IsWordSelectRowBelowFirst(param0->unk_04));
+        Sprite_SetDrawFlag(param0->unk_18, EasyChat_IsWordSelectRowAboveLast(param0->unk_04));
     } else {
         Sprite_SetDrawFlag(param0->unk_14, FALSE);
         Sprite_SetDrawFlag(param0->unk_18, FALSE);
     }
 }
 
-void ov20_021D4DF4(UnkStruct_ov20_021D4AD4 *param0, int param1, int param2)
+void EasyChatPageButtons_SetPressedState(EasyChatPageButtons *param0, int param1, int param2)
 {
     switch (param1) {
     case 0:

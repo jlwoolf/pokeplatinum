@@ -5,11 +5,11 @@
 #include "applications/easy_chat/abc_mode.h"
 #include "applications/easy_chat/defs.h"
 #include "applications/easy_chat/main.h"
-#include "applications/easy_chat/ov20_021D2098.h"
-#include "applications/easy_chat/ov20_021D4E38.h"
-#include "applications/easy_chat/struct_ov20_021D2128_decl.h"
-#include "applications/easy_chat/struct_ov20_021D4E8C.h"
-#include "applications/easy_chat/struct_ov20_021D4FF0.h"
+#include "applications/easy_chat/word_list_screen.h"
+#include "applications/easy_chat/animations.h"
+#include "applications/easy_chat/struct_easy_chat_word_list_screen_decl.h"
+#include "applications/easy_chat/struct_easy_chat_scroll_animation.h"
+#include "applications/easy_chat/struct_easy_chat_blend_animation.h"
 
 #include "bg_window.h"
 #include "easy_chat_word_list.h"
@@ -41,16 +41,16 @@
 static u32 EasyChatCategories_PrintGroups(EasyChatCategoriesContext *ctx, BgConfig *bgConfig, u32 baseTile);
 static u32 EasyChatCategories_PrintABCModeSelection(EasyChatCategoriesContext *ctx, BgConfig *bgConfig, u32 baseTile);
 static u32 EasyChatCategories_PrintCancelText(EasyChatCategoriesContext *ctx, BgConfig *bgConfig, u32 baseTile);
-static void ov20_021D3E0C(EasyChatCategoriesContext *ctx);
+static void EasyChatCategories_CreateCursorSprite(EasyChatCategoriesContext *ctx);
 
-EasyChatCategoriesContext *EasyChatCategoriesContext_New(UnkStruct_ov20_021D2128 *param0, const EasyChatApp *easyChatApp, const EasyChatWordList *param2)
+EasyChatCategoriesContext *EasyChatCategoriesContext_New(EasyChatWordListScreen *param0, const EasyChatApp *easyChatApp, const EasyChatWordList *param2)
 {
     EasyChatCategoriesContext *ctx = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatCategoriesContext));
 
     ctx->unk_00 = param0;
     ctx->easyChatApp = easyChatApp;
     ctx->unk_08 = param2;
-    ctx->bgConfig = ov20_021D2E04(param0);
+    ctx->bgConfig = EasyChatWordListScreen_GetBgConfig(param0);
     ctx->unk_10 = 0;
     ctx->dummy = 0;
     ctx->cursorSprite = NULL;
@@ -69,7 +69,7 @@ void EasyChatCategoriesContext_Free(EasyChatCategoriesContext *ctx)
 
 void EasyChatCategories_DrawInterface(EasyChatCategoriesContext *ctx, NARC *narc)
 {
-    BgConfig *bgConfig = ov20_021D2E04(ctx->unk_00);
+    BgConfig *bgConfig = EasyChatWordListScreen_GetBgConfig(ctx->unk_00);
 
     Graphics_LoadTilemapToBgLayerFromOpenNARC(narc, 2, bgConfig, BG_LAYER_MAIN_1, 0, 0, TRUE, HEAP_ID_35);
 
@@ -81,7 +81,7 @@ void EasyChatCategories_DrawInterface(EasyChatCategoriesContext *ctx, NARC *narc
     EasyChatCategories_PrintCancelText(ctx, bgConfig, baseTile);
     Bg_SetOffset(bgConfig, BG_LAYER_MAIN_1, BG_OFFSET_UPDATE_SET_X, GROUP_MODE_BG_X_OFFSET);
     Bg_SetOffset(bgConfig, BG_LAYER_MAIN_1, BG_OFFSET_UPDATE_SET_Y, 2);
-    ov20_021D3E0C(ctx);
+    EasyChatCategories_CreateCursorSprite(ctx);
 
     G2_SetBlendBrightness(GX_BLEND_PLANEMASK_BG1, -10);
     G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_ALL, TRUE);
@@ -215,17 +215,17 @@ static u32 EasyChatCategories_PrintCancelText(EasyChatCategoriesContext *ctx, Bg
     return baseTile;
 }
 
-static void ov20_021D3E0C(EasyChatCategoriesContext *ctx)
+static void EasyChatCategories_CreateCursorSprite(EasyChatCategoriesContext *ctx)
 {
     SpriteResourcesHeader v0;
 
-    ov20_021D2E0C(ctx->unk_00, &v0, 0, 1);
-    ctx->cursorSprite = ov20_021D2E50(ctx->unk_00, &v0, 48, 54, 2, NNS_G2D_VRAM_TYPE_2DMAIN);
+    EasyChatWordListScreen_SetupSpriteResources(ctx->unk_00, &v0, 0, 1);
+    ctx->cursorSprite = EasyChatWordListScreen_AddSprite(ctx->unk_00, &v0, 48, 54, 2, NNS_G2D_VRAM_TYPE_2DMAIN);
     Sprite_SetAnim(ctx->cursorSprite, 4);
     Sprite_SetDrawFlag(ctx->cursorSprite, FALSE);
 }
 
-void ov20_021D3E48(EasyChatCategoriesContext *ctx, BOOL param1)
+void EasyChatCategories_SetCursorVisible(EasyChatCategoriesContext *ctx, BOOL param1)
 {
     Sprite_SetDrawFlag(ctx->cursorSprite, param1);
 
@@ -273,73 +273,73 @@ void EasyChatCategories_DrawCursor(EasyChatCategoriesContext *ctx, u32 selectedI
     Sprite_SetAnim(ctx->cursorSprite, animID);
 }
 
-void ov20_021D3EF8(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_StartShowAnimation(EasyChatCategoriesContext *ctx)
 {
     ctx->unk_14 = 0;
-    ov20_021D4FB0(&(ctx->unk_1C), GX_BLEND_PLANEMASK_BG1, -10, 0, 16);
+    EasyChatBlendAnimation_StartBrightness(&(ctx->unk_1C), GX_BLEND_PLANEMASK_BG1, -10, 0, 16);
 }
 
-BOOL ov20_021D3F10(EasyChatCategoriesContext *ctx)
+BOOL EasyChatCategories_UpdateShowAnimation(EasyChatCategoriesContext *ctx)
 {
     switch (ctx->unk_14) {
     case 0:
-        if (ov20_021D4FF0(&ctx->unk_1C)) {
-            ov20_021D4E38(&(ctx->unk_3C), ctx->bgConfig, 1, 1, 24, 6);
+        if (EasyChatBlendAnimation_UpdateBrightness(&ctx->unk_1C)) {
+            EasyChatScrollAnimation_Start(&(ctx->unk_3C), ctx->bgConfig, 1, 1, 24, 6);
             ctx->unk_14++;
         }
         break;
     case 1:
-        return ov20_021D4E8C(&(ctx->unk_3C));
+        return EasyChatScrollAnimation_Update(&(ctx->unk_3C));
     }
 
     return 0;
 }
 
-void ov20_021D3F60(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_StartSlideOutAnimation(EasyChatCategoriesContext *ctx)
 {
     ctx->unk_14 = 0;
-    ov20_021D4E38(&(ctx->unk_3C), ctx->bgConfig, 1, 1, -24, 6);
+    EasyChatScrollAnimation_Start(&(ctx->unk_3C), ctx->bgConfig, 1, 1, -24, 6);
 }
 
-BOOL ov20_021D3F84(EasyChatCategoriesContext *ctx)
+BOOL EasyChatCategories_UpdateSlideOutAnimation(EasyChatCategoriesContext *ctx)
 {
     switch (ctx->unk_14) {
     case 0:
-        if (ov20_021D4E8C(&(ctx->unk_3C))) {
-            ov20_021D4FB0(&(ctx->unk_1C), GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
+        if (EasyChatScrollAnimation_Update(&(ctx->unk_3C))) {
+            EasyChatBlendAnimation_StartBrightness(&(ctx->unk_1C), GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
             ctx->unk_14++;
         }
         break;
     case 1:
-        return ov20_021D4FF0(&ctx->unk_1C);
+        return EasyChatBlendAnimation_UpdateBrightness(&ctx->unk_1C);
     }
 
     return 0;
 }
 
-void ov20_021D3FD0(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_ResetVerticalOffset(EasyChatCategoriesContext *ctx)
 {
     Bg_SetOffset(ctx->bgConfig, BG_LAYER_MAIN_1, BG_OFFSET_UPDATE_SET_Y, 2);
 }
 
-void ov20_021D3FE0(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_StartBrightnessRestore(EasyChatCategoriesContext *ctx)
 {
-    ov20_021D4FB0(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
+    EasyChatBlendAnimation_StartBrightness(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
 }
 
-BOOL ov20_021D3FF8(EasyChatCategoriesContext *ctx)
+BOOL EasyChatCategories_UpdateBrightnessRestore(EasyChatCategoriesContext *ctx)
 {
-    return ov20_021D4FF0(&ctx->unk_1C);
+    return EasyChatBlendAnimation_UpdateBrightness(&ctx->unk_1C);
 }
 
-void ov20_021D4004(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_StartSlideInAnimation(EasyChatCategoriesContext *ctx)
 {
-    ov20_021D4F1C(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 124, 0, (6 * 2));
+    EasyChatBlendAnimation_Start(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 124, 0, (6 * 2));
 }
 
-BOOL ov20_021D4020(EasyChatCategoriesContext *ctx)
+BOOL EasyChatCategories_UpdateSlideInAnimation(EasyChatCategoriesContext *ctx)
 {
-    if (ov20_021D4F4C(&ctx->unk_1C)) {
+    if (EasyChatBlendAnimation_Update(&ctx->unk_1C)) {
         Bg_ToggleLayer(BG_LAYER_MAIN_1, FALSE);
         return TRUE;
     }
@@ -347,19 +347,19 @@ BOOL ov20_021D4020(EasyChatCategoriesContext *ctx)
     return FALSE;
 }
 
-void ov20_021D403C(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_StartSlideOutAndDim(EasyChatCategoriesContext *ctx)
 {
     G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 0, 16);
     Bg_ToggleLayer(BG_LAYER_MAIN_1, TRUE);
-    ov20_021D4F1C(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 0, 124, (6 * 2));
+    EasyChatBlendAnimation_Start(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 0, 124, (6 * 2));
 }
 
-BOOL ov20_021D4078(EasyChatCategoriesContext *ctx)
+BOOL EasyChatCategories_UpdateSlideOutAndDim(EasyChatCategoriesContext *ctx)
 {
-    return ov20_021D4F4C(&ctx->unk_1C);
+    return EasyChatBlendAnimation_Update(&ctx->unk_1C);
 }
 
-void ov20_021D4084(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_SetModeOffset(EasyChatCategoriesContext *ctx)
 {
     int val;
 
@@ -372,7 +372,7 @@ void ov20_021D4084(EasyChatCategoriesContext *ctx)
     Bg_SetOffset(ctx->bgConfig, BG_LAYER_MAIN_1, BG_OFFSET_UPDATE_SET_X, val);
 }
 
-void ov20_021D40A8(EasyChatCategoriesContext *ctx)
+void EasyChatCategories_StartModeTransition(EasyChatCategoriesContext *ctx)
 {
     int v0;
 
@@ -382,10 +382,10 @@ void ov20_021D40A8(EasyChatCategoriesContext *ctx)
         v0 = ABC_MODE_BG_X_OFFSET - GROUP_MODE_BG_X_OFFSET;
     }
 
-    ov20_021D4E38(&ctx->unk_3C, ctx->bgConfig, 1, 0, v0, 16);
+    EasyChatScrollAnimation_Start(&ctx->unk_3C, ctx->bgConfig, 1, 0, v0, 16);
 }
 
-BOOL ov20_021D40DC(EasyChatCategoriesContext *ctx)
+BOOL EasyChatCategories_UpdateModeTransition(EasyChatCategoriesContext *ctx)
 {
-    return ov20_021D4E8C(&ctx->unk_3C);
+    return EasyChatScrollAnimation_Update(&ctx->unk_3C);
 }

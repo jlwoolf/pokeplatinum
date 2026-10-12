@@ -2,7 +2,7 @@
 #define POKEPLATINUM_APPLICATIONS_EASY_CHAT_MAIN_H
 
 #include "applications/easy_chat/defs.h"
-#include "applications/easy_chat/struct_ov20_021D2128_decl.h"
+#include "applications/easy_chat/struct_easy_chat_word_list_screen_decl.h"
 
 #include "easy_chat_args.h"
 #include "easy_chat_sentence.h"
@@ -19,7 +19,7 @@ typedef void (*EasyChatTaskFunc)(EasyChatApp *easyChatApp, int *state);
 typedef struct {
     u8 unk_00;
     u8 unk_01;
-} UnkStruct_ov20_021D1F34;
+} EasyChatMenuCursor;
 
 typedef struct {
     u16 unk_00;
@@ -28,20 +28,20 @@ typedef struct {
     u8 unk_06;
     u8 unk_07;
     int unk_08;
-} UnkStruct_ov20_021D18BC;
+} EasyChatWordSelectCursor;
 
 typedef struct {
     s16 unk_00;
     s8 unk_02;
     s8 unk_03;
-} UnkStruct_ov20_021D0F64;
+} EasyChatSentenceState;
 
 typedef struct EasyChatApp {
     EasyChatArgs *args;
     u32 type;
     EasyChatSentence sentence;
     u16 words[MAX_EASY_CHAT_WORDS];
-    UnkStruct_ov20_021D2128 *unk_14;
+    EasyChatWordListScreen *unk_14;
     EasyChatWordList *unk_18;
     int state;
     EasyChatMainFunc mainFunc;
@@ -60,11 +60,11 @@ typedef struct EasyChatApp {
     u16 currentWordSlot;
     u16 categoryCursorPos;
     u16 prevCategoryCursorPos;
-    UnkStruct_ov20_021D18BC unk_54;
-    UnkStruct_ov20_021D0F64 unk_60;
+    EasyChatWordSelectCursor unk_54;
+    EasyChatSentenceState unk_60;
     u8 unk_64;
     u8 mode;
-    UnkStruct_ov20_021D1F34 unk_66;
+    EasyChatMenuCursor unk_66;
 } EasyChatApp;
 
 BOOL EasyChat_Init(ApplicationManager *appMan, int *state);
@@ -73,19 +73,19 @@ BOOL EasyChat_Exit(ApplicationManager *appMan, int *state);
 u32 EasyChat_GetType(const EasyChatApp *easyChatApp);
 u32 EasyChat_GetInstructionBankEntry(const EasyChatApp *easyChatApp);
 u32 EasyChat_GetMode(const EasyChatApp *easyChatApp);
-u32 ov20_021D1F9C(const EasyChatApp *easyChatApp);
+u32 EasyChat_GetSentenceType(const EasyChatApp *easyChatApp);
 u16 EasyChat_GetWordAtSlot(const EasyChatApp *easyChatApp, int param1);
-String *ov20_021D1FC0(const EasyChatApp *easyChatApp, u32 param1);
+String *EasyChat_GetTemplateString(const EasyChatApp *easyChatApp, u32 param1);
 u32 EasyChat_GetCurrentWordSlot(const EasyChatApp *easyChatApp);
-u32 ov20_021D1FD4(const EasyChatApp *easyChatApp);
+u32 EasyChat_GetWordColumn(const EasyChatApp *easyChatApp);
 u32 EasyChat_GetCategoryCursorPos(const EasyChatApp *easyChatApp);
-u32 ov20_021D1FE4(const EasyChatApp *easyChatApp);
-void ov20_021D2008(const EasyChatApp *easyChatApp, u32 param1, String *param2);
-u32 ov20_021D2034(const EasyChatApp *easyChatApp);
-int ov20_021D2040(const EasyChatApp *easyChatApp);
-BOOL ov20_021D204C(const EasyChatApp *easyChatApp);
-BOOL ov20_021D2060(const EasyChatApp *easyChatApp);
+u32 EasyChat_GetCategoryWordCount(const EasyChatApp *easyChatApp);
+void EasyChat_GetWordString(const EasyChatApp *easyChatApp, u32 param1, String *param2);
+u32 EasyChat_GetWordSelectCursorIndex(const EasyChatApp *easyChatApp);
+int EasyChat_GetWordSelectScrollDirection(const EasyChatApp *easyChatApp);
+BOOL EasyChat_IsWordSelectRowBelowFirst(const EasyChatApp *easyChatApp);
+BOOL EasyChat_IsWordSelectRowAboveLast(const EasyChatApp *easyChatApp);
 int EasyChat_GetFrame(const EasyChatApp *easyChatApp);
-u32 ov20_021D208C(const EasyChatApp *easyChatApp);
+u32 EasyChat_GetMenuCursorIndex(const EasyChatApp *easyChatApp);
 
 #endif // POKEPLATINUM_APPLICATIONS_EASY_CHAT_MAIN_H
