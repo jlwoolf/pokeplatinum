@@ -185,18 +185,18 @@ static void PropBlinkContext_Init(int propIndex, int interval, PropBlinkContext 
 static void BaseDecoration_HandlePropBlink(FieldSystem *fieldSystem, PropBlinkContext *ctx);
 static void PropBlinkContext_ShowProp(FieldSystem *fieldSystem, PropBlinkContext *ctx);
 static int PropBlinkContext_GetPropIndex(PropBlinkContext *ctx);
-static void ov23_022562AC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
-static void ov23_022562B8(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
-static void ov23_022562BC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
-static void ov23_022562C8(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
 
-static const FieldEffectTemplate Unk_ov23_02256B88 = {
+static const FieldEffectTemplate sDecorateCursorEffectTemplate = {
     0x0,
     sizeof(DecorateCursor),
-    ov23_022562AC,
-    ov23_022562BC,
-    ov23_022562B8,
-    ov23_022562C8
+    DecorateCursorEffect_Init,
+    DecorateCursorEffect_Free,
+    DecorateCursorEffect_Update,
+    DecorateCursorEffect_Draw
 };
 
 static void BaseDecoration_CreateHeldGood(FieldSystem *fieldSystem, enum Good goodID, BaseDecorationContext *ctx)
@@ -367,7 +367,7 @@ void BaseDecoration_StartDecorationMenuTask(FieldSystem *fieldSystem, FieldTask 
     BaseDecoration_UpdateState(DECORATION_STATE_INIT, ctx);
 
     ctx->fieldSystem = fieldSystem;
-    ctx->unk_50C = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &Unk_ov23_02256B88);
+    ctx->unk_50C = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &sDecorateCursorEffectTemplate);
     ctx->cursor = FieldMap_021D1C2C(ctx->unk_50C);
 
     FieldTask_InitCall(task, BaseDecoration_DecorationMenuTask, ctx);
@@ -1483,24 +1483,24 @@ static int PropBlinkContext_GetPropIndex(PropBlinkContext *ctx)
     return ctx->propIndex;
 }
 
-static void ov23_022562AC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
 {
     DecorateCursor *cursor = (DecorateCursor *)param2;
     DecorateCursor_Init(cursor);
 }
 
-static void ov23_022562B8(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
 {
     return;
 }
 
-static void ov23_022562BC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
 {
     DecorateCursor *cursor = (DecorateCursor *)(param2);
     DecorateCursor_FreeModelFile(cursor);
 }
 
-static void ov23_022562C8(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
 {
     DecorateCursor *cursor = (DecorateCursor *)(param2);
 

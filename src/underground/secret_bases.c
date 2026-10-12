@@ -301,8 +301,8 @@ static void SecretBases_ExitBase(int baseOwnerNetID, int netID, BOOL forceExit);
 static void SecretBases_CreateBase(void);
 static void SecretBases_ClearBaseEntranceProp(int netID);
 static void SecretBases_DrawBaseEntrancesTask(SysTask *unused, void *unused1);
-static void ov23_0224DC08(void);
-static void ov23_0224DC24(void);
+static void SecretBases_PauseComm(void);
+static void SecretBases_ResumeComm(void);
 
 static SecretBasesEnv *secretBasesEnv = NULL;
 
@@ -680,7 +680,7 @@ void SecretBases_ProcessFailedBaseEnter(int unused0, int unused1, void *data, vo
         CommPlayerMan_PauseFieldSystem();
 
         UndergroundTextPrinter_PrintText(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_WallCrumbledCantEnter, TRUE, SecretBases_ResumeFieldSystem);
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
     }
 }
 
@@ -903,7 +903,7 @@ static void SecretBases_EndBaseTransitionPromptTaskFail(SysTask *sysTask, void *
     Heap_Free(ctx);
 
     UndergroundMan_ClearCurrentSysTaskInfo();
-    ov23_0224DC24();
+    SecretBases_ResumeComm();
 }
 
 static void SecretBases_ExitBasePromptTask(SysTask *sysTask, void *data)
@@ -1010,7 +1010,7 @@ static void SecretBases_StartExitBasePromptTask(FieldSystem *fieldSystem, int x,
 {
     BaseTransitionContext *ctx = NULL;
 
-    ov23_0224DC08();
+    SecretBases_PauseComm();
     ctx = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(BaseTransitionContext));
     MI_CpuClear8(ctx, sizeof(BaseTransitionContext));
 
@@ -1253,7 +1253,7 @@ static void SecretBases_StartEnterBasePromptTask(FieldSystem *fieldSystem, int x
     ctx->fieldSystem = fieldSystem;
     ctx->timer = 0;
 
-    ov23_0224DC08();
+    SecretBases_PauseComm();
     ctx->sysTask = SysTask_Start(SecretBases_EnterBasePromptTask, ctx, 100);
     UndergroundMan_SetCurrentSysTask(ctx, ctx->sysTask, SecretBases_EndBaseTransitionPromptTaskFail);
 
@@ -1351,7 +1351,7 @@ void SecretBases_ProcessBaseEnter(int unused0, int unused1, void *data, void *un
         CommSys_SendMessage(56);
         CommPlayer_SendPos(FALSE);
 
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
         return;
     }
 
@@ -1619,7 +1619,7 @@ static BOOL SecretBases_MoveToFromSecretBaseTask(FieldTask *task)
     switch (ctx->state) {
     case MOVE_STATE_INIT:
         SecretBases_SetEntranceGraphicsEnabled(FALSE);
-        ov23_0224DC08();
+        SecretBases_PauseComm();
 
         ctx->initialConnectedCount = CommSys_ConnectedCount();
 
@@ -1754,7 +1754,7 @@ static BOOL SecretBases_MoveToFromSecretBaseTask(FieldTask *task)
             secretBasesEnv->moveStatus = MOVE_STATUS_NONE;
         }
 
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
         SecretBases_SetEntranceGraphicsEnabled(TRUE);
         return TRUE;
     case MOVE_STATE_END_AFTER_TEXT_OR_NEW_LINK:
@@ -1909,7 +1909,7 @@ static void SecretBases_DiggerDrillTask(SysTask *sysTask, void *data)
         Heap_Free(ctx);
 
         UndergroundMan_ClearCurrentSysTaskInfo();
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
     }
 }
 
@@ -2001,12 +2001,12 @@ static void SecretBases_EndDiggerDrillTask(SysTask *sysTask, void *data)
 
     UndergroundMan_ClearCurrentSysTaskInfo();
     CommPlayerMan_ResumeFieldSystem();
-    ov23_0224DC24();
+    SecretBases_ResumeComm();
 }
 
 static void SecretBases_StartDiggerDrillTask(void)
 {
-    ov23_0224DC08();
+    SecretBases_PauseComm();
 
     DiggerDrillContext *ctx = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(DiggerDrillContext));
     MI_CpuClear8(ctx, sizeof(DiggerDrillContext));
@@ -2031,18 +2031,18 @@ void SecretBases_ProcessBaseCreateEvent(int unused0, int unused1, void *data, vo
     if (event->type == BASE_CREATE_EVENT_CANT_DRILL) {
         CommPlayerMan_PauseFieldSystem();
         UndergroundTextPrinter_PrintText(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_CantBeUsedHere, TRUE, SecretBases_ResumeFieldSystem);
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
     } else if (event->type == BASE_CREATE_EVENT_USE_DRILL) {
         SecretBases_StartDiggerDrillTask();
     } else if (event->type == BASE_CREATE_EVENT_CANT_DRILL_IN_BASE) {
         CommPlayerMan_PauseFieldSystem();
         UndergroundTextPrinter_PrintText(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_CantDrillInBase, TRUE, SecretBases_ResumeFieldSystem);
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
     } else if (event->type == BASE_CREATE_EVENT_CANT_ENTER) {
         CommPlayerMan_PauseFieldSystem();
         UndergroundTextPrinter_PrintText(UndergroundMan_GetCommonTextPrinter(), UndergroundCommon_Text_WallCrumbledCantEnter, TRUE, SecretBases_ResumeFieldSystem);
         CommManUnderground_ReopenSecretBase();
-        ov23_0224DC24();
+        SecretBases_ResumeComm();
     } else if (event->type == BASE_CREATE_EVENT_CLOSE_BASE || event->type == BASE_CREATE_EVENT_MOVE_BASE || event->type == BASE_CREATE_EVENT_NEW_BASE) {
         int x = CommPlayer_GetXInFrontOfPlayer(event->netID);
         int z = CommPlayer_GetZInFrontOfPlayer(event->netID);
@@ -2757,7 +2757,7 @@ void SecretBases_SetEntranceGraphicsEnabled(BOOL enabled)
     secretBasesEnv->baseEntranceGraphicsEnabled = enabled;
 }
 
-static void ov23_0224DC08(void)
+static void SecretBases_PauseComm(void)
 {
     WirelessManager_SetPauseClientConnection(TRUE);
     WirelessManager_SetPauseConnection(TRUE);
@@ -2765,7 +2765,7 @@ static void ov23_0224DC08(void)
     CommServerClient_SendGameInfo();
 }
 
-static void ov23_0224DC24(void)
+static void SecretBases_ResumeComm(void)
 {
     WirelessManager_SetPauseClientConnection(FALSE);
     WirelessManager_SetPauseConnection(FALSE);
