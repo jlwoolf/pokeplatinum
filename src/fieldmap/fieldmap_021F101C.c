@@ -7,7 +7,7 @@
 
 #include "field/field_system.h"
 #include "fieldmap/fieldmap_021F007C.h"
-#include "fieldmap/struct_fieldmap_021F0468_decl.h"
+#include "fieldmap/struct_sweet_scent_task_decl.h"
 #include "field_events/hm_cut_in.h"
 
 #include "field_task.h"
@@ -17,19 +17,19 @@
 
 typedef struct {
     SysTask *unk_00;
-    UnkStruct_fieldmap_021F0468 *unk_04;
-} UnkStruct_fieldmap_021F101C;
+    SweetScentTask *unk_04;
+} SweetScentCutInTask;
 
 BOOL FieldMap_021F101C(FieldTask *param0)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
     FieldMoveMon *v1 = FieldTask_GetEnv(param0);
     int *v2 = FieldTask_GetState(param0);
-    UnkStruct_fieldmap_021F101C *v3 = v1->taskData;
+    SweetScentCutInTask *v3 = v1->taskData;
 
     switch (*v2) {
     case 0:
-        v1->taskData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(UnkStruct_fieldmap_021F101C));
+        v1->taskData = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(SweetScentCutInTask));
         (*v2)++;
         break;
     case 1: {

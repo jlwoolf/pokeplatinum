@@ -50,13 +50,13 @@ typedef struct {
     int unk_6C[8];
     int unk_8C;
     int unk_90;
-} UnkStruct_fieldmap_021EAE78;
+} PalPadMenu;
 
-static void FieldMap_021EAE78(UnkStruct_fieldmap_021EAE78 *param0, int param1);
-static void FieldMap_021EAF1C(UnkStruct_fieldmap_021EAE78 *param0);
+static void FieldMap_021EAE78(PalPadMenu *param0, int param1);
+static void FieldMap_021EAF1C(PalPadMenu *param0);
 static void FieldMap_021EAF90(ListMenu *param0, u32 param1, u8 param2);
 
-static BOOL FieldMap_021EA874(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EA874(PalPadMenu *param0)
 {
     int v0, v1 = 0;
     DWCFriendData *v2 = WiFiList_GetFriendData(SaveData_GetWiFiList(param0->saveData), 0);
@@ -75,7 +75,7 @@ static BOOL FieldMap_021EA874(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EA8F0(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EA8F0(PalPadMenu *param0)
 {
     int v0;
     TrainerInfo *v1;
@@ -126,7 +126,7 @@ static const WindowTemplate Unk_FieldMap_021FAF00 = {
     0x21F
 };
 
-static BOOL FieldMap_021EA9BC(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EA9BC(PalPadMenu *param0)
 {
     if (Text_IsPrinterActive(param0->unk_40) == 0) {
         param0->unk_44 = Menu_MakeYesNoChoice(param0->fieldSystem->bgConfig, &Unk_FieldMap_021FAF00, 1024 - (18 + 12) - 9, 11, 4);
@@ -136,7 +136,7 @@ static BOOL FieldMap_021EA9BC(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EA9F8(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EA9F8(PalPadMenu *param0)
 {
     DWCFriendData *v0;
     String *v1;
@@ -166,7 +166,7 @@ static BOOL FieldMap_021EA9F8(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EAA6C(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAA6C(PalPadMenu *param0)
 {
     if (Text_IsPrinterActive(param0->unk_40) == 0) {
         param0->unk_44 = Menu_MakeYesNoChoice(param0->fieldSystem->bgConfig, &Unk_FieldMap_021FAF00, 1024 - (18 + 12) - 9, 11, 4);
@@ -176,7 +176,7 @@ static BOOL FieldMap_021EAA6C(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EAAA8(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAAA8(PalPadMenu *param0)
 {
     TrainerInfo *v0;
     DWCFriendData *v1;
@@ -198,7 +198,7 @@ static BOOL FieldMap_021EAAA8(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EAAEC(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAAEC(PalPadMenu *param0)
 {
     if (Text_IsPrinterActive(param0->unk_40) == 0) {
         param0->unk_44 = Menu_MakeYesNoChoice(param0->fieldSystem->bgConfig, &Unk_FieldMap_021FAF00, 1024 - (18 + 12) - 9, 11, 4);
@@ -208,7 +208,7 @@ static BOOL FieldMap_021EAAEC(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EAB28(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAB28(PalPadMenu *param0)
 {
     TrainerInfo *v0;
     DWCFriendData *v1;
@@ -250,7 +250,7 @@ static const ListMenuTemplate Unk_FieldMap_021FAF08 = {
     NULL
 };
 
-static BOOL FieldMap_021EAB58(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAB58(PalPadMenu *param0)
 {
     WiFiList *v0 = SaveData_GetWiFiList(param0->saveData);
     ListMenuTemplate v1;
@@ -292,7 +292,7 @@ static BOOL FieldMap_021EAB58(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EAC44(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAC44(PalPadMenu *param0)
 {
     TrainerInfo *v0;
     int v1 = ListMenu_ProcessInput(param0->unk_04);
@@ -331,7 +331,7 @@ static BOOL FieldMap_021EAC44(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EACFC(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EACFC(PalPadMenu *param0)
 {
     if (Text_IsPrinterActive(param0->unk_40) == 0) {
         param0->unk_44 = Menu_MakeYesNoChoice(param0->fieldSystem->bgConfig, &Unk_FieldMap_021FAF00, 1024 - (18 + 12) - 9, 11, 4);
@@ -341,7 +341,7 @@ static BOOL FieldMap_021EACFC(UnkStruct_fieldmap_021EAE78 *param0)
     return 0;
 }
 
-static BOOL FieldMap_021EAD38(UnkStruct_fieldmap_021EAE78 *param0)
+static BOOL FieldMap_021EAD38(PalPadMenu *param0)
 {
     WiFiList *v0 = SaveData_GetWiFiList(param0->saveData);
     TrainerInfo *v1;
@@ -368,7 +368,7 @@ static BOOL FieldMap_021EAD38(UnkStruct_fieldmap_021EAE78 *param0)
 
 static BOOL FieldMap_021EADB4(FieldTask *param0)
 {
-    UnkStruct_fieldmap_021EAE78 *v0 = FieldTask_GetEnv(param0);
+    PalPadMenu *v0 = FieldTask_GetEnv(param0);
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
 
     switch (v0->unk_48) {
@@ -422,7 +422,7 @@ static BOOL FieldMap_021EADB4(FieldTask *param0)
     return 0;
 }
 
-static void FieldMap_021EAE78(UnkStruct_fieldmap_021EAE78 *param0, int param1)
+static void FieldMap_021EAE78(PalPadMenu *param0, int param1)
 {
     if (Window_IsInUse(&param0->unk_10)) {
         Window_Remove(&param0->unk_10);
@@ -436,9 +436,9 @@ static void FieldMap_021EAE78(UnkStruct_fieldmap_021EAE78 *param0, int param1)
     param0->unk_40 = FieldMessage_Print(&param0->unk_10, param0->unk_0C, SaveData_GetOptions(param0->fieldSystem->saveData), 1);
 }
 
-static void FieldMap_021EAEE0(UnkStruct_fieldmap_021EAE78 *param0)
+static void FieldMap_021EAEE0(PalPadMenu *param0)
 {
-    MI_CpuClear8(param0, sizeof(UnkStruct_fieldmap_021EAE78));
+    MI_CpuClear8(param0, sizeof(PalPadMenu));
 
     param0->unk_38 = StringTemplate_Default(HEAP_ID_FIELD1);
     param0->unk_3C = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_PAL_PAD, HEAP_ID_FIELD1);
@@ -446,7 +446,7 @@ static void FieldMap_021EAEE0(UnkStruct_fieldmap_021EAE78 *param0)
     param0->unk_08 = String_Init(110, HEAP_ID_FIELD1);
 }
 
-static void FieldMap_021EAF1C(UnkStruct_fieldmap_021EAE78 *param0)
+static void FieldMap_021EAF1C(PalPadMenu *param0)
 {
     MessageLoader_Free(param0->unk_3C);
     StringTemplate_Free(param0->unk_38);
@@ -460,10 +460,10 @@ static void FieldMap_021EAF1C(UnkStruct_fieldmap_021EAE78 *param0)
 
 void FieldMap_021EAF50(FieldSystem *fieldSystem)
 {
-    UnkStruct_fieldmap_021EAE78 *v0;
+    PalPadMenu *v0;
     FieldTask *v1 = fieldSystem->task;
 
-    v0 = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(UnkStruct_fieldmap_021EAE78));
+    v0 = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(PalPadMenu));
     FieldMap_021EAEE0(v0);
 
     v0->fieldSystem = fieldSystem;

@@ -16,7 +16,7 @@
 #include "fieldmap/object_event_gfx_data.h"
 #include "fieldmap/fieldmap_021ECC20.h"
 #include "fieldmap/fieldmap_021ECE40.h"
-#include "fieldmap/struct_fieldmap_021ED0A4.h"
+#include "fieldmap/struct_map_object_draw_manager.h"
 
 #include "berry_patch_graphics.h"
 #include "heap.h"
@@ -44,7 +44,7 @@ typedef struct MapObjectManager {
     int taskBasePriority;
     int unk_10;
     NARC *narc;
-    UnkStruct_fieldmap_021ED0A4 drawManager;
+    MapObjectDrawManager drawManager;
     UnkStruct_02061830_sub1 *unk_120;
     MapObject *mapObj;
     FieldSystem *fieldSystem;
@@ -1113,7 +1113,7 @@ int MapObjectMan_GetTaskBasePriority(const MapObjectManager *mapObjMan)
     return mapObjMan->taskBasePriority;
 }
 
-UnkStruct_fieldmap_021ED0A4 *MapObjectMan_GetDrawManager(const MapObjectManager *mapObjMan)
+MapObjectDrawManager *MapObjectMan_GetDrawManager(const MapObjectManager *mapObjMan)
 {
     return &(((MapObjectManager *)mapObjMan)->drawManager);
 }

@@ -8,7 +8,7 @@
 
 #include "fieldmap/object_event_gfx_data.h"
 #include "fieldmap/fieldmap_021ECE40.h"
-#include "fieldmap/struct_fieldmap_021ED0A4.h"
+#include "fieldmap/struct_map_object_draw_manager.h"
 
 #include "heap.h"
 #include "map_object.h"
@@ -21,7 +21,7 @@ static const ObjectEventGfxRenderDetailsEntry *FieldMap_021ECD10(int param0);
 void FieldMap_021ECC20(MapObjectManager *param0, int param1, int param2, const int *param3, int param4)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021ED0A4 *v2;
+    MapObjectDrawManager *v2;
 
     GF_ASSERT(MapObjectMan_CheckStatus(param0, (1 << 0)) == 0);
 

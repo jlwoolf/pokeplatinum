@@ -14,12 +14,12 @@
 #include "fieldmap/fieldmap_021ECC20.h"
 #include "fieldmap/fieldmap_021F17B8.h"
 #include "fieldmap/resource_heap.h"
-#include "fieldmap/struct_fieldmap_021ED01C.h"
-#include "fieldmap/struct_fieldmap_021ED0A4.h"
-#include "fieldmap/struct_fieldmap_021EDF3C.h"
-#include "fieldmap/struct_fieldmap_021EDFBC.h"
-#include "fieldmap/struct_fieldmap_021EE134.h"
-#include "fieldmap/struct_fieldmap_021EE294.h"
+#include "fieldmap/struct_billboard_anim_state.h"
+#include "fieldmap/struct_map_object_draw_manager.h"
+#include "fieldmap/struct_map_object_draw_task_manager.h"
+#include "fieldmap/struct_map_object_texture_load_task.h"
+#include "fieldmap/struct_map_object_texture_manager.h"
+#include "fieldmap/struct_map_object_billboard_list.h"
 
 #include "berry_patch_graphics.h"
 #include "billboard.h"
@@ -53,111 +53,111 @@ typedef struct {
     OverworldAnimManager *unk_54;
     void *unk_58;
     UnkFuncPtr_fieldmap_021EE454 unk_5C;
-} UnkStruct_fieldmap_021EE698;
+} MapObjectBillboardAnim;
 
 static void FieldMap_021ED094(const MapObject *param0);
-static void FieldMap_021ED0A4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED0F0(UnkStruct_fieldmap_021ED0A4 *param0);
-static BillboardResources *FieldMap_021ED110(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1);
-static void FieldMap_021ED184(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1);
-static void FieldMap_021ED1A4(UnkStruct_fieldmap_021ED0A4 *param0);
+static void FieldMap_021ED0A4(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED0F0(MapObjectDrawManager *param0);
+static BillboardResources *FieldMap_021ED110(MapObjectDrawManager *param0, u32 param1);
+static void FieldMap_021ED184(MapObjectDrawManager *param0, u32 param1);
+static void FieldMap_021ED1A4(MapObjectDrawManager *param0);
 static int FieldMap_021ED1C8(const MapObjectManager *param0, const MapObject *param1, int param2);
-static void FieldMap_021ED224(UnkStruct_fieldmap_021ED0A4 *param0, int param1, int param2, int param3, int param4, int param5, int param6);
-static void FieldMap_021ED2AC(UnkStruct_fieldmap_021ED0A4 *param0);
+static void FieldMap_021ED224(MapObjectDrawManager *param0, int param1, int param2, int param3, int param4, int param5, int param6);
+static void FieldMap_021ED2AC(MapObjectDrawManager *param0);
 static const ObjectEventGfxFileEntry *FieldMap_021ED2D0(int param0, int param1, const ObjectEventGfxFileEntry *param2);
-static int FieldMap_021ED2E8(UnkStruct_fieldmap_021ED0A4 *param0, ResourceHeap *param1, int param2, int param3, const ObjectEventGfxFileEntry *param4);
-static UnkEnum_FieldMap_021ED334 FieldMap_021ED334(UnkStruct_fieldmap_021ED0A4 *param0, int param1, int param2, const ObjectEventGfxFileEntry *param3);
-static UnkEnum_FieldMap_021ED334 FieldMap_021ED390(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static UnkEnum_FieldMap_021ED334 FieldMap_021ED3A4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED3B8(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1);
-static void FieldMap_021ED3DC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED40C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED43C(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1);
-static void FieldMap_021ED460(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED490(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED4C0(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1);
-static void FieldMap_021ED4E4(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1, const int *param2, const int *param3);
+static int FieldMap_021ED2E8(MapObjectDrawManager *param0, ResourceHeap *param1, int param2, int param3, const ObjectEventGfxFileEntry *param4);
+static UnkEnum_FieldMap_021ED334 FieldMap_021ED334(MapObjectDrawManager *param0, int param1, int param2, const ObjectEventGfxFileEntry *param3);
+static UnkEnum_FieldMap_021ED334 FieldMap_021ED390(MapObjectDrawManager *param0, int param1);
+static UnkEnum_FieldMap_021ED334 FieldMap_021ED3A4(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED3B8(MapObjectDrawManager *param0, const int *param1);
+static void FieldMap_021ED3DC(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED40C(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED43C(MapObjectDrawManager *param0, const int *param1);
+static void FieldMap_021ED460(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED490(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED4C0(MapObjectDrawManager *param0, const int *param1);
+static void FieldMap_021ED4E4(MapObjectDrawManager *param0, const int *param1, const int *param2, const int *param3);
 static void FieldMap_021ED504(int *param0, int param1, int param2);
 static int FieldMap_021ED50C(int *param0, int param1, int param2, int param3);
 static int FieldMap_021ED528(int *param0, int param1, int param2);
 static int FieldMap_021ED53C(int *param0, int param1, int param2, int param3);
-static void FieldMap_021ED558(UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021ED56C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED598(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED5B4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED5E8(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED610(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED63C(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1);
-static void FieldMap_021ED694(UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021ED6A8(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED6D4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED6F0(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED74C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED778(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1);
-static void FieldMap_021ED7D0(UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021ED7E4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED810(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED82C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED858(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED88C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED8B8(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1);
-static int FieldMap_021ED924(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED94C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED974(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021ED99C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED9C4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED9DC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021ED9F4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021EDA0C(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
+static void FieldMap_021ED558(MapObjectDrawManager *param0);
+static void FieldMap_021ED56C(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED598(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED5B4(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED5E8(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED610(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED63C(MapObjectManager *param0, MapObjectDrawManager *param1);
+static void FieldMap_021ED694(MapObjectDrawManager *param0);
+static void FieldMap_021ED6A8(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED6D4(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED6F0(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED74C(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED778(MapObjectManager *param0, MapObjectDrawManager *param1);
+static void FieldMap_021ED7D0(MapObjectDrawManager *param0);
+static void FieldMap_021ED7E4(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED810(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED82C(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED858(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED88C(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED8B8(MapObjectManager *param0, MapObjectDrawManager *param1);
+static int FieldMap_021ED924(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED94C(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED974(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021ED99C(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED9C4(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED9DC(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021ED9F4(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021EDA0C(MapObjectDrawManager *param0, int param1);
 static int FieldMap_021EDA54(const MapObjectManager *param0, int param1, const MapObject *param2);
 static int FieldMap_021EDAB4(const MapObjectManager *param0, int param1, const MapObject *param2);
 static int FieldMap_021EDB3C(const MapObjectManager *param0, int param1, const MapObject *param2);
-static int *FieldMap_021EDCB8(UnkStruct_fieldmap_021ED0A4 *param0);
-static int *FieldMap_021EDCBC(UnkStruct_fieldmap_021ED0A4 *param0);
-static int *FieldMap_021EDCC0(UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EDCC4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDCC8(const UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EDCCC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDCD0(const UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EDCD4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDCD8(const UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EDCDC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDCE0(const UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EDCE4(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDCE8(const UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EDCEC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDCF0(const UnkStruct_fieldmap_021ED0A4 *param0);
-static void *FieldMap_021EDCF4(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1, int param2);
+static int *FieldMap_021EDCB8(MapObjectDrawManager *param0);
+static int *FieldMap_021EDCBC(MapObjectDrawManager *param0);
+static int *FieldMap_021EDCC0(MapObjectDrawManager *param0);
+static void FieldMap_021EDCC4(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDCC8(const MapObjectDrawManager *param0);
+static void FieldMap_021EDCCC(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDCD0(const MapObjectDrawManager *param0);
+static void FieldMap_021EDCD4(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDCD8(const MapObjectDrawManager *param0);
+static void FieldMap_021EDCDC(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDCE0(const MapObjectDrawManager *param0);
+static void FieldMap_021EDCE4(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDCE8(const MapObjectDrawManager *param0);
+static void FieldMap_021EDCEC(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDCF0(const MapObjectDrawManager *param0);
+static void *FieldMap_021EDCF4(MapObjectDrawManager *param0, u32 param1, int param2);
 static const ObjectEventGfxModelAnimEntry *FieldMap_021EDD04(int param0);
 static int FieldMap_021EDD2C(int param0);
 static int FieldMap_021EDD38(int param0);
 static const BillboardAnim *FieldMap_021EDD44(int param0);
 static u32 FieldMap_021EDD50(int param0);
-static void FieldMap_021EDDAC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
+static void FieldMap_021EDDAC(MapObjectDrawManager *param0, int param1);
 static void FieldMap_021EDDD4(BillboardList *param0);
 static Billboard *FieldMap_021EDDDC(BillboardList *param0, const BillboardResources *param1, const VecFx32 *param2, u32 param3);
-static void FieldMap_021EDE3C(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1, BillboardResources *param2);
-static UnkStruct_fieldmap_021ED0A4 *FieldMap_021EDEA8(const MapObject *param0);
-static int FieldMap_021EDF3C(UnkStruct_fieldmap_021ED0A4 *param0, int param1, u32 param2, int param3);
-static void FieldMap_021EDFBC(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static int FieldMap_021EDFF0(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
+static void FieldMap_021EDE3C(MapObjectDrawManager *param0, u32 param1, BillboardResources *param2);
+static MapObjectDrawManager *FieldMap_021EDEA8(const MapObject *param0);
+static int FieldMap_021EDF3C(MapObjectDrawManager *param0, int param1, u32 param2, int param3);
+static void FieldMap_021EDFBC(MapObjectDrawManager *param0, int param1);
+static int FieldMap_021EDFF0(MapObjectDrawManager *param0, int param1);
 static void FieldMap_021EE030(SysTask *param0, void *param1);
-static void FieldMap_021EE0E8(UnkStruct_fieldmap_021ED0A4 *param0, int param1, void *param2, int param3);
-static void FieldMap_021EE134(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
-static void FieldMap_021EE170(UnkStruct_fieldmap_021ED0A4 *param0, int param1);
+static void FieldMap_021EE0E8(MapObjectDrawManager *param0, int param1, void *param2, int param3);
+static void FieldMap_021EE134(MapObjectDrawManager *param0, int param1);
+static void FieldMap_021EE170(MapObjectDrawManager *param0, int param1);
 static void FieldMap_021EE1AC(SysTask *param0, void *param1);
 static void FieldMap_021EE1E8(SysTask *param0, void *param1);
-static void FieldMap_021EE228(UnkStruct_fieldmap_021ED0A4 *param0, MapObject *param1, Billboard **param2, int param3);
-static void FieldMap_021EE264(UnkStruct_fieldmap_021ED0A4 *param0, const MapObject *param1);
+static void FieldMap_021EE228(MapObjectDrawManager *param0, MapObject *param1, Billboard **param2, int param3);
+static void FieldMap_021EE264(MapObjectDrawManager *param0, const MapObject *param1);
 static void FieldMap_021EE2C4(SysTask *param0, void *param1);
-static void FieldMap_021EE294(UnkStruct_fieldmap_021ED0A4 *param0);
-static void FieldMap_021EE2D0(UnkStruct_fieldmap_021ED0A4 *param0, UnkStruct_fieldmap_021EE294 *param1);
-static void FieldMap_021EE320(UnkStruct_fieldmap_021ED0A4 *param0, int param1, int param2);
-static void FieldMap_021EE3C4(UnkStruct_fieldmap_021ED0A4 *param0);
+static void FieldMap_021EE294(MapObjectDrawManager *param0);
+static void FieldMap_021EE2D0(MapObjectDrawManager *param0, MapObjectBillboardList *param1);
+static void FieldMap_021EE320(MapObjectDrawManager *param0, int param1, int param2);
+static void FieldMap_021EE3C4(MapObjectDrawManager *param0);
 static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fieldmap_021EE454 param2, void *param3);
 static void FieldMap_021EE698(SysTask *param0, void *param1);
 
-void FieldMap_021ECE40(UnkStruct_fieldmap_021ED0A4 *param0, const MapObjectManager *param1, int param2, int param3, int param4, int param5, const int *param6, int param7)
+void FieldMap_021ECE40(MapObjectDrawManager *param0, const MapObjectManager *param1, int param2, int param3, int param4, int param5, const int *param6, int param7)
 {
     param0->unk_104 = param1;
 
@@ -168,7 +168,7 @@ void FieldMap_021ECE40(UnkStruct_fieldmap_021ED0A4 *param0, const MapObjectManag
     FieldMap_021ED4E4(param0, param6, gPreloadedBillboardModels, gPreloadedBillboardFrameSeqs);
 }
 
-void FieldMap_021ECE94(UnkStruct_fieldmap_021ED0A4 *param0)
+void FieldMap_021ECE94(MapObjectDrawManager *param0)
 {
     FieldMap_021EE3C4(param0);
     FieldMap_021ED0F0(param0);
@@ -179,7 +179,7 @@ void FieldMap_021ECE94(UnkStruct_fieldmap_021ED0A4 *param0)
 int FieldMap_021ECEB4(MapObject *param0, Billboard **param1, int param2)
 {
     int v0;
-    UnkStruct_fieldmap_021ED0A4 *v1;
+    MapObjectDrawManager *v1;
 
     *param1 = NULL;
 
@@ -214,7 +214,7 @@ Billboard *FieldMap_021ECF1C(MapObject *param0, int param1)
     BillboardList *v1;
     Billboard *v2;
     BillboardResources *v3;
-    UnkStruct_fieldmap_021ED0A4 *v4 = FieldMap_021EDEA8(param0);
+    MapObjectDrawManager *v4 = FieldMap_021EDEA8(param0);
     v1 = FieldMap_021EDC8C(v4);
 
     FieldMap_021EDA0C(v4, param1);
@@ -279,14 +279,14 @@ void FieldMap_021ECFD8(const MapObject *param0, Billboard **param1, int param2)
     }
 }
 
-void FieldMap_021ED01C(Billboard *param0, UnkStruct_fieldmap_021ED01C *param1)
+void FieldMap_021ED01C(Billboard *param0, BillboardAnimState *param1)
 {
     param1->unk_00 = Billboard_GetDrawFlag(param0);
     param1->unk_02 = Billboard_GetAnimNum(param0);
     param1->unk_04 = Billboard_GetFrameNum(param0);
 }
 
-void FieldMap_021ED03C(Billboard *param0, UnkStruct_fieldmap_021ED01C *param1)
+void FieldMap_021ED03C(Billboard *param0, BillboardAnimState *param1)
 {
     Billboard_SetDrawFlag(param0, param1->unk_00);
     Billboard_SetAnimNum(param0, param1->unk_02);
@@ -295,7 +295,7 @@ void FieldMap_021ED03C(Billboard *param0, UnkStruct_fieldmap_021ED01C *param1)
 
 void FieldMap_021ED060(MapObject *param0, Billboard **param1, int param2)
 {
-    UnkStruct_fieldmap_021ED0A4 *v0 = FieldMap_021EDEA8(param0);
+    MapObjectDrawManager *v0 = FieldMap_021EDEA8(param0);
 
     if (FieldMap_021ED3A4(v0, param2) == UnkEnum_FieldMap_021ED334_00) {
         *param1 = FieldMap_021ECF1C(param0, param2);
@@ -306,16 +306,16 @@ void FieldMap_021ED060(MapObject *param0, Billboard **param1, int param2)
 
 static void FieldMap_021ED094(const MapObject *param0)
 {
-    UnkStruct_fieldmap_021ED0A4 *v0 = FieldMap_021EDEA8(param0);
+    MapObjectDrawManager *v0 = FieldMap_021EDEA8(param0);
 
     FieldMap_021EE264(v0, param0);
 }
 
-static void FieldMap_021ED0A4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED0A4(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     BillboardResources *v2;
-    UnkStruct_fieldmap_021ED110 *v3;
+    BillboardResourceEntry *v3;
 
     v0 = sizeof(BillboardResources) * param1;
     v2 = Heap_Alloc(HEAP_ID_FIELD1, v0);
@@ -323,7 +323,7 @@ static void FieldMap_021ED0A4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     param0->unk_E4 = v2;
     GF_ASSERT(v2 != NULL);
 
-    v0 = (sizeof(UnkStruct_fieldmap_021ED110)) * param1;
+    v0 = (sizeof(BillboardResourceEntry)) * param1;
     v3 = Heap_Alloc(HEAP_ID_FIELD1, v0);
 
     param0->unk_F4 = v3;
@@ -340,7 +340,7 @@ static void FieldMap_021ED0A4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     } while (param1);
 }
 
-static void FieldMap_021ED0F0(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021ED0F0(MapObjectDrawManager *param0)
 {
     FieldMap_021ED1A4(param0);
 
@@ -348,10 +348,10 @@ static void FieldMap_021ED0F0(UnkStruct_fieldmap_021ED0A4 *param0)
     Heap_FreeExplicit(HEAP_ID_FIELD1, param0->unk_F4);
 }
 
-static BillboardResources *FieldMap_021ED110(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1)
+static BillboardResources *FieldMap_021ED110(MapObjectDrawManager *param0, u32 param1)
 {
     int v0;
-    UnkStruct_fieldmap_021ED110 *v1 = param0->unk_F4;
+    BillboardResourceEntry *v1 = param0->unk_F4;
     v0 = param0->unk_04;
 
     do {
@@ -383,8 +383,8 @@ static BillboardResources *FieldMap_021ED110(UnkStruct_fieldmap_021ED0A4 *param0
 int FieldMap_021ED150(const MapObjectManager *param0, u32 param1, BillboardResources *param2)
 {
     int v0;
-    const UnkStruct_fieldmap_021ED0A4 *v1 = MapObjectMan_GetDrawManager(param0);
-    UnkStruct_fieldmap_021ED110 *v2 = v1->unk_F4;
+    const MapObjectDrawManager *v1 = MapObjectMan_GetDrawManager(param0);
+    BillboardResourceEntry *v2 = v1->unk_F4;
     v0 = v1->unk_04;
 
     do {
@@ -400,10 +400,10 @@ int FieldMap_021ED150(const MapObjectManager *param0, u32 param1, BillboardResou
     return 0;
 }
 
-static void FieldMap_021ED184(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1)
+static void FieldMap_021ED184(MapObjectDrawManager *param0, u32 param1)
 {
     int v0;
-    UnkStruct_fieldmap_021ED110 *v1 = param0->unk_F4;
+    BillboardResourceEntry *v1 = param0->unk_F4;
     v0 = param0->unk_04;
 
     do {
@@ -418,10 +418,10 @@ static void FieldMap_021ED184(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1)
     } while (v0);
 }
 
-static void FieldMap_021ED1A4(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021ED1A4(MapObjectDrawManager *param0)
 {
     int v0;
-    UnkStruct_fieldmap_021ED110 *v1 = param0->unk_F4;
+    BillboardResourceEntry *v1 = param0->unk_F4;
     v0 = param0->unk_04;
 
     do {
@@ -464,7 +464,7 @@ static int FieldMap_021ED1C8(const MapObjectManager *param0, const MapObject *pa
     return 0;
 }
 
-static void FieldMap_021ED224(UnkStruct_fieldmap_021ED0A4 *param0, int param1, int param2, int param3, int param4, int param5, int param6)
+static void FieldMap_021ED224(MapObjectDrawManager *param0, int param1, int param2, int param3, int param4, int param5, int param6)
 {
     {
         param0->unk_F8 = ResourceHeap_New(HEAP_ID_FIELD1, HEAP_ID_64, 0x1000 * param1, param1);
@@ -492,7 +492,7 @@ static void FieldMap_021ED224(UnkStruct_fieldmap_021ED0A4 *param0, int param1, i
     }
 }
 
-static void FieldMap_021ED2AC(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021ED2AC(MapObjectDrawManager *param0)
 {
     ResourceHeap_Free(param0->unk_F8);
     ResourceHeap_Free(param0->unk_FC);
@@ -512,7 +512,7 @@ static const ObjectEventGfxFileEntry *FieldMap_021ED2D0(int param0, int param1, 
     return NULL;
 }
 
-static int FieldMap_021ED2E8(UnkStruct_fieldmap_021ED0A4 *param0, ResourceHeap *param1, int param2, int param3, const ObjectEventGfxFileEntry *param4)
+static int FieldMap_021ED2E8(MapObjectDrawManager *param0, ResourceHeap *param1, int param2, int param3, const ObjectEventGfxFileEntry *param4)
 {
     const ObjectEventGfxFileEntry *v0;
 
@@ -531,7 +531,7 @@ static int FieldMap_021ED2E8(UnkStruct_fieldmap_021ED0A4 *param0, ResourceHeap *
     return 1;
 }
 
-static UnkEnum_FieldMap_021ED334 FieldMap_021ED334(UnkStruct_fieldmap_021ED0A4 *param0, int param1, int param2, const ObjectEventGfxFileEntry *param3)
+static UnkEnum_FieldMap_021ED334 FieldMap_021ED334(MapObjectDrawManager *param0, int param1, int param2, const ObjectEventGfxFileEntry *param3)
 {
     TextureResourceManager *v0 = param0->unk_F0;
 
@@ -559,17 +559,17 @@ static UnkEnum_FieldMap_021ED334 FieldMap_021ED334(UnkStruct_fieldmap_021ED0A4 *
     }
 }
 
-static UnkEnum_FieldMap_021ED334 FieldMap_021ED390(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static UnkEnum_FieldMap_021ED334 FieldMap_021ED390(MapObjectDrawManager *param0, int param1)
 {
     return FieldMap_021ED334(param0, 0, param1, gObjectEventGfxTexturesTable);
 }
 
-static UnkEnum_FieldMap_021ED334 FieldMap_021ED3A4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static UnkEnum_FieldMap_021ED334 FieldMap_021ED3A4(MapObjectDrawManager *param0, int param1)
 {
     return FieldMap_021ED334(param0, 1, param1, gObjectEventGfxTexturesTable);
 }
 
-static void FieldMap_021ED3B8(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1)
+static void FieldMap_021ED3B8(MapObjectDrawManager *param0, const int *param1)
 {
     while ((*param1) != 0xffff) {
         FieldMap_021ED390(param0, *param1);
@@ -577,7 +577,7 @@ static void FieldMap_021ED3B8(UnkStruct_fieldmap_021ED0A4 *param0, const int *pa
     }
 }
 
-static void FieldMap_021ED3DC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED3DC(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDC98(param0);
 
@@ -585,7 +585,7 @@ static void FieldMap_021ED3DC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED56C(param0, param1);
 }
 
-static void FieldMap_021ED40C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED40C(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDC98(param0);
 
@@ -593,7 +593,7 @@ static void FieldMap_021ED40C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED5B4(param0, param1);
 }
 
-static void FieldMap_021ED43C(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1)
+static void FieldMap_021ED43C(MapObjectDrawManager *param0, const int *param1)
 {
     while ((*param1) != 0xffff) {
         FieldMap_021ED3DC(param0, *param1);
@@ -601,7 +601,7 @@ static void FieldMap_021ED43C(UnkStruct_fieldmap_021ED0A4 *param0, const int *pa
     }
 }
 
-static void FieldMap_021ED460(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED460(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDCA0(param0);
 
@@ -609,7 +609,7 @@ static void FieldMap_021ED460(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED6A8(param0, param1);
 }
 
-static void FieldMap_021ED490(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED490(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDCA0(param0);
 
@@ -617,7 +617,7 @@ static void FieldMap_021ED490(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED6F0(param0, param1);
 }
 
-static void FieldMap_021ED4C0(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1)
+static void FieldMap_021ED4C0(MapObjectDrawManager *param0, const int *param1)
 {
     while ((*param1) != 0xffff) {
         FieldMap_021ED460(param0, *param1);
@@ -625,7 +625,7 @@ static void FieldMap_021ED4C0(UnkStruct_fieldmap_021ED0A4 *param0, const int *pa
     }
 }
 
-static void FieldMap_021ED4E4(UnkStruct_fieldmap_021ED0A4 *param0, const int *param1, const int *param2, const int *param3)
+static void FieldMap_021ED4E4(MapObjectDrawManager *param0, const int *param1, const int *param2, const int *param3)
 {
     FieldMap_021ED3B8(param0, param1);
     FieldMap_021ED43C(param0, param2);
@@ -685,13 +685,13 @@ static int FieldMap_021ED53C(int *param0, int param1, int param2, int param3)
     return 0;
 }
 
-static void FieldMap_021ED558(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021ED558(MapObjectDrawManager *param0)
 {
     int *v0 = FieldMap_021EDCBC(param0);
     FieldMap_021ED504(v0, 0xffff, 8);
 }
 
-static void FieldMap_021ED56C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED56C(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     int *v2;
@@ -703,7 +703,7 @@ static void FieldMap_021ED56C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(v1 != 0);
 }
 
-static int FieldMap_021ED598(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED598(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1;
@@ -714,7 +714,7 @@ static int FieldMap_021ED598(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021ED528(v1, param1, v0);
 }
 
-static void FieldMap_021ED5B4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED5B4(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     int *v2 = FieldMap_021EDCBC(param0);
@@ -725,7 +725,7 @@ static void FieldMap_021ED5B4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(v0 != 0);
 }
 
-static int FieldMap_021ED5E8(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED5E8(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1 = FieldMap_021EDCBC(param0);
@@ -735,7 +735,7 @@ static int FieldMap_021ED5E8(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021ED528(v1, param1, v0);
 }
 
-static void FieldMap_021ED610(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED610(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1 = FieldMap_021EDCBC(param0);
@@ -745,7 +745,7 @@ static void FieldMap_021ED610(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED53C(v1, param1, 0xffff, v0);
 }
 
-static void FieldMap_021ED63C(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1)
+static void FieldMap_021ED63C(MapObjectManager *param0, MapObjectDrawManager *param1)
 {
     int v0;
     ResourceCollection *v2 = FieldMap_021EDC98(param1);
@@ -766,13 +766,13 @@ static void FieldMap_021ED63C(MapObjectManager *param0, UnkStruct_fieldmap_021ED
     } while (v0);
 }
 
-static void FieldMap_021ED694(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021ED694(MapObjectDrawManager *param0)
 {
     int *v0 = FieldMap_021EDCC0(param0);
     FieldMap_021ED504(v0, 0xffff, 8);
 }
 
-static void FieldMap_021ED6A8(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED6A8(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     int *v2;
@@ -784,7 +784,7 @@ static void FieldMap_021ED6A8(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(v1 != 0);
 }
 
-static int FieldMap_021ED6D4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED6D4(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1;
@@ -795,7 +795,7 @@ static int FieldMap_021ED6D4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021ED528(v1, param1, v0);
 }
 
-static void FieldMap_021ED6F0(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED6F0(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     int *v2 = FieldMap_021EDCC0(param0);
@@ -806,7 +806,7 @@ static void FieldMap_021ED6F0(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(v0 != 0);
 }
 
-static int FieldMap_021ED724(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED724(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1 = FieldMap_021EDCC0(param0);
@@ -816,7 +816,7 @@ static int FieldMap_021ED724(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021ED528(v1, param1, v0);
 }
 
-static void FieldMap_021ED74C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED74C(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1 = FieldMap_021EDCC0(param0);
@@ -826,7 +826,7 @@ static void FieldMap_021ED74C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED53C(v1, param1, 0xffff, v0);
 }
 
-static void FieldMap_021ED778(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1)
+static void FieldMap_021ED778(MapObjectManager *param0, MapObjectDrawManager *param1)
 {
     int v0;
     ResourceCollection *v2 = FieldMap_021EDCA0(param1);
@@ -847,13 +847,13 @@ static void FieldMap_021ED778(MapObjectManager *param0, UnkStruct_fieldmap_021ED
     } while (v0);
 }
 
-static void FieldMap_021ED7D0(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021ED7D0(MapObjectDrawManager *param0)
 {
     int *v0 = FieldMap_021EDCB8(param0);
     FieldMap_021ED504(v0, 0xffff, 32);
 }
 
-static void FieldMap_021ED7E4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED7E4(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     int *v2;
@@ -864,7 +864,7 @@ static void FieldMap_021ED7E4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(v1 != 0);
 }
 
-static int FieldMap_021ED810(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED810(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1;
@@ -874,7 +874,7 @@ static int FieldMap_021ED810(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021ED528(v1, param1, v0);
 }
 
-static int FieldMap_021ED82C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED82C(MapObjectDrawManager *param0, int param1)
 {
     if (FieldMap_021ED810(param0, param1) == 1) {
         return 1;
@@ -887,7 +887,7 @@ static int FieldMap_021ED82C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021EDFF0(param0, param1);
 }
 
-static void FieldMap_021ED858(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED858(MapObjectDrawManager *param0, int param1)
 {
     int v0, v1;
     int *v2 = FieldMap_021EDCB8(param0);
@@ -898,7 +898,7 @@ static void FieldMap_021ED858(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(v0 != 0);
 }
 
-static void FieldMap_021ED88C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED88C(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1 = FieldMap_021EDCB8(param0);
@@ -908,7 +908,7 @@ static void FieldMap_021ED88C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED53C(v1, param1, 0xffff, v0);
 }
 
-static void FieldMap_021ED8B8(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1)
+static void FieldMap_021ED8B8(MapObjectManager *param0, MapObjectDrawManager *param1)
 {
     int v0, v1;
     TextureResourceManager *v3 = FieldMap_021EDCB0(param1);
@@ -934,7 +934,7 @@ static void FieldMap_021ED8B8(MapObjectManager *param0, UnkStruct_fieldmap_021ED
     } while (v0);
 }
 
-static int FieldMap_021ED924(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED924(MapObjectDrawManager *param0, int param1)
 {
     int v0;
     int *v1 = FieldMap_021EDCB8(param0);
@@ -944,7 +944,7 @@ static int FieldMap_021ED924(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return FieldMap_021ED528(v1, param1, v0);
 }
 
-static int FieldMap_021ED94C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED94C(MapObjectDrawManager *param0, int param1)
 {
     if (FieldMap_021ED810(param0, param1) == 1) {
         return 0;
@@ -957,7 +957,7 @@ static int FieldMap_021ED94C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return 2;
 }
 
-static int FieldMap_021ED974(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED974(MapObjectDrawManager *param0, int param1)
 {
     if (FieldMap_021ED598(param0, param1) == 1) {
         return 0;
@@ -970,7 +970,7 @@ static int FieldMap_021ED974(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return 2;
 }
 
-static int FieldMap_021ED99C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021ED99C(MapObjectDrawManager *param0, int param1)
 {
     if (FieldMap_021ED6D4(param0, param1) == 1) {
         return 0;
@@ -983,7 +983,7 @@ static int FieldMap_021ED99C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     return 2;
 }
 
-static void FieldMap_021ED9C4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED9C4(MapObjectDrawManager *param0, int param1)
 {
     int v0 = FieldMap_021ED82C(param0, param1);
 
@@ -992,21 +992,21 @@ static void FieldMap_021ED9C4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     }
 }
 
-static void FieldMap_021ED9DC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED9DC(MapObjectDrawManager *param0, int param1)
 {
     if (FieldMap_021ED974(param0, param1) == 2) {
         FieldMap_021ED40C(param0, param1);
     }
 }
 
-static void FieldMap_021ED9F4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021ED9F4(MapObjectDrawManager *param0, int param1)
 {
     if (FieldMap_021ED99C(param0, param1) == 2) {
         FieldMap_021ED490(param0, param1);
     }
 }
 
-static void FieldMap_021EDA0C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDA0C(MapObjectDrawManager *param0, int param1)
 {
     int v0 = FieldMap_021EDD2C(param1);
     FieldMap_021ED9DC(param0, v0);
@@ -1016,7 +1016,7 @@ static void FieldMap_021EDA0C(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     FieldMap_021ED9C4(param0, param1);
 }
 
-void FieldMap_021EDA38(MapObjectManager *param0, UnkStruct_fieldmap_021ED0A4 *param1)
+void FieldMap_021EDA38(MapObjectManager *param0, MapObjectDrawManager *param1)
 {
     FieldMap_021ED63C(param0, param1);
     FieldMap_021ED778(param0, param1);
@@ -1126,7 +1126,7 @@ static int FieldMap_021EDB3C(const MapObjectManager *param0, int param1, const M
 void FieldMap_021EDBC4(const MapObjectManager *param0, int param1, MapObject *param2)
 {
     int v0;
-    UnkStruct_fieldmap_021ED0A4 *v1 = MapObjectMan_GetDrawManager(param0);
+    MapObjectDrawManager *v1 = MapObjectMan_GetDrawManager(param0);
 
     v0 = FieldMap_021EDD2C(param1);
 
@@ -1158,117 +1158,117 @@ void FieldMap_021EDBC4(const MapObjectManager *param0, int param1, MapObject *pa
     }
 }
 
-void FieldMap_021EDC84(UnkStruct_fieldmap_021ED0A4 *param0, BillboardList *param1)
+void FieldMap_021EDC84(MapObjectDrawManager *param0, BillboardList *param1)
 {
     param0->unk_E0 = param1;
 }
 
-BillboardList *FieldMap_021EDC8C(UnkStruct_fieldmap_021ED0A4 *param0)
+BillboardList *FieldMap_021EDC8C(MapObjectDrawManager *param0)
 {
     return param0->unk_E0;
 }
 
-void FieldMap_021EDC94(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+void FieldMap_021EDC94(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_04 = param1;
 }
 
-ResourceCollection *FieldMap_021EDC98(const UnkStruct_fieldmap_021ED0A4 *param0)
+ResourceCollection *FieldMap_021EDC98(const MapObjectDrawManager *param0)
 {
     return param0->unk_E8;
 }
 
-ResourceCollection *FieldMap_021EDCA0(const UnkStruct_fieldmap_021ED0A4 *param0)
+ResourceCollection *FieldMap_021EDCA0(const MapObjectDrawManager *param0)
 {
     return param0->unk_EC;
 }
 
-void FieldMap_021EDCA8(UnkStruct_fieldmap_021ED0A4 *param0, TextureResourceManager *param1)
+void FieldMap_021EDCA8(MapObjectDrawManager *param0, TextureResourceManager *param1)
 {
     param0->unk_F0 = param1;
 }
 
-TextureResourceManager *FieldMap_021EDCB0(const UnkStruct_fieldmap_021ED0A4 *param0)
+TextureResourceManager *FieldMap_021EDCB0(const MapObjectDrawManager *param0)
 {
     return param0->unk_F0;
 }
 
-static int *FieldMap_021EDCB8(UnkStruct_fieldmap_021ED0A4 *param0)
+static int *FieldMap_021EDCB8(MapObjectDrawManager *param0)
 {
     return param0->unk_60;
 }
 
-static int *FieldMap_021EDCBC(UnkStruct_fieldmap_021ED0A4 *param0)
+static int *FieldMap_021EDCBC(MapObjectDrawManager *param0)
 {
     return param0->unk_20;
 }
 
-static int *FieldMap_021EDCC0(UnkStruct_fieldmap_021ED0A4 *param0)
+static int *FieldMap_021EDCC0(MapObjectDrawManager *param0)
 {
     return param0->unk_40;
 }
 
-static void FieldMap_021EDCC4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDCC4(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_08 = param1;
 }
 
-static int FieldMap_021EDCC8(const UnkStruct_fieldmap_021ED0A4 *param0)
+static int FieldMap_021EDCC8(const MapObjectDrawManager *param0)
 {
     return param0->unk_08;
 }
 
-static void FieldMap_021EDCCC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDCCC(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_0C = param1;
 }
 
-static int FieldMap_021EDCD0(const UnkStruct_fieldmap_021ED0A4 *param0)
+static int FieldMap_021EDCD0(const MapObjectDrawManager *param0)
 {
     return param0->unk_0C;
 }
 
-static void FieldMap_021EDCD4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDCD4(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_10 = param1;
 }
 
-static int FieldMap_021EDCD8(const UnkStruct_fieldmap_021ED0A4 *param0)
+static int FieldMap_021EDCD8(const MapObjectDrawManager *param0)
 {
     return param0->unk_10;
 }
 
-static void FieldMap_021EDCDC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDCDC(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_14 = param1;
 }
 
-static int FieldMap_021EDCE0(const UnkStruct_fieldmap_021ED0A4 *param0)
+static int FieldMap_021EDCE0(const MapObjectDrawManager *param0)
 {
     return param0->unk_14;
 }
 
-static void FieldMap_021EDCE4(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDCE4(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_18 = param1;
 }
 
-static int FieldMap_021EDCE8(const UnkStruct_fieldmap_021ED0A4 *param0)
+static int FieldMap_021EDCE8(const MapObjectDrawManager *param0)
 {
     return param0->unk_18;
 }
 
-static void FieldMap_021EDCEC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDCEC(MapObjectDrawManager *param0, int param1)
 {
     param0->unk_1C = param1;
 }
 
-static int FieldMap_021EDCF0(const UnkStruct_fieldmap_021ED0A4 *param0)
+static int FieldMap_021EDCF0(const MapObjectDrawManager *param0)
 {
     return param0->unk_1C;
 }
 
-static void *FieldMap_021EDCF4(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1, int param2)
+static void *FieldMap_021EDCF4(MapObjectDrawManager *param0, u32 param1, int param2)
 {
     return FieldMap_021ECD68(param0->unk_104, param1, param2);
 }
@@ -1339,7 +1339,7 @@ int FieldMap_021EDD94(MapObject *param0)
     return 0;
 }
 
-static void FieldMap_021EDDAC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDDAC(MapObjectDrawManager *param0, int param1)
 {
     BillboardListParams v0;
     BillboardList *v1;
@@ -1382,7 +1382,7 @@ static Billboard *FieldMap_021EDDDC(BillboardList *param0, const BillboardResour
     return v2;
 }
 
-static void FieldMap_021EDE3C(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1, BillboardResources *param2)
+static void FieldMap_021EDE3C(MapObjectDrawManager *param0, u32 param1, BillboardResources *param2)
 {
     {
         int v0 = FieldMap_021EDD2C(param1);
@@ -1416,10 +1416,10 @@ static void FieldMap_021EDE3C(UnkStruct_fieldmap_021ED0A4 *param0, u32 param1, B
     }
 }
 
-static UnkStruct_fieldmap_021ED0A4 *FieldMap_021EDEA8(const MapObject *param0)
+static MapObjectDrawManager *FieldMap_021EDEA8(const MapObject *param0)
 {
     const MapObjectManager *v0 = MapObject_MapObjectManager(param0);
-    return (UnkStruct_fieldmap_021ED0A4 *)MapObjectMan_GetDrawManager(v0);
+    return (MapObjectDrawManager *)MapObjectMan_GetDrawManager(v0);
 }
 
 BOOL FieldMap_021EDEB4(MapObject *param0, Billboard *param1)
@@ -1476,13 +1476,13 @@ int FieldMap_021EDF30(int param0)
     return Unk_FieldMap_021FF4E0[param0];
 }
 
-static int FieldMap_021EDF3C(UnkStruct_fieldmap_021ED0A4 *param0, int param1, u32 param2, int param3)
+static int FieldMap_021EDF3C(MapObjectDrawManager *param0, int param1, u32 param2, int param3)
 {
-    UnkStruct_fieldmap_021EDF3C *v0 = param0->unk_100;
+    MapObjectDrawTaskManager *v0 = param0->unk_100;
 
     if ((v0->unk_04 >= v0->unk_02) || (BillboardList_IsRedrawing(param0->unk_E0) == 1)) {
         int v1 = 0;
-        UnkStruct_fieldmap_021EDFBC *v2 = v0->unk_0C;
+        MapObjectTextureLoadTask *v2 = v0->unk_0C;
 
         while (v1 < v0->unk_00) {
             if (v2->unk_0C == NULL) {
@@ -1510,11 +1510,11 @@ static int FieldMap_021EDF3C(UnkStruct_fieldmap_021ED0A4 *param0, int param1, u3
     }
 }
 
-static void FieldMap_021EDFBC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EDFBC(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EDFBC *v2 = v1->unk_0C;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectTextureLoadTask *v2 = v1->unk_0C;
 
     while (v0 < v1->unk_00) {
         if ((v2->unk_04 == param1) && (v2->unk_0C != NULL)) {
@@ -1527,11 +1527,11 @@ static void FieldMap_021EDFBC(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     }
 }
 
-static int FieldMap_021EDFF0(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static int FieldMap_021EDFF0(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EDFBC *v2 = v1->unk_0C;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectTextureLoadTask *v2 = v1->unk_0C;
 
     while (v0 < v1->unk_00) {
         if ((v2->unk_04 == param1) && (v2->unk_0C != NULL)) {
@@ -1552,9 +1552,9 @@ static int FieldMap_021EDFF0(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
 static void FieldMap_021EE030(SysTask *param0, void *param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021ED0A4 *v1 = param1;
-    UnkStruct_fieldmap_021EDF3C *v2 = v1->unk_100;
-    UnkStruct_fieldmap_021EDFBC *v3 = v2->unk_0C;
+    MapObjectDrawManager *v1 = param1;
+    MapObjectDrawTaskManager *v2 = v1->unk_100;
+    MapObjectTextureLoadTask *v3 = v2->unk_0C;
 
     {
         if (BillboardList_IsRedrawing(v1->unk_E0) == 1) {
@@ -1596,7 +1596,7 @@ static void FieldMap_021EE030(SysTask *param0, void *param1)
     v2->unk_04 = 0;
 }
 
-static void FieldMap_021EE0E8(UnkStruct_fieldmap_021ED0A4 *param0, int param1, void *param2, int param3)
+static void FieldMap_021EE0E8(MapObjectDrawManager *param0, int param1, void *param2, int param3)
 {
     TextureResource *v0 = TextureResourceManager_AddTextureAndAllocVRam(param0->unk_F0, param2, param1, 1, HEAP_ID_FIELD1);
 
@@ -1610,11 +1610,11 @@ static void FieldMap_021EE0E8(UnkStruct_fieldmap_021ED0A4 *param0, int param1, v
     }
 }
 
-static void FieldMap_021EE134(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EE134(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EE134 *v2 = v1->unk_10;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectTextureManager *v2 = v1->unk_10;
 
     v1->unk_06 = 1;
 
@@ -1635,11 +1635,11 @@ static void FieldMap_021EE134(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
     GF_ASSERT(FALSE);
 }
 
-static void FieldMap_021EE170(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
+static void FieldMap_021EE170(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EE134 *v2 = v1->unk_10;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectTextureManager *v2 = v1->unk_10;
 
     v1->unk_06 = 1;
 
@@ -1659,8 +1659,8 @@ static void FieldMap_021EE170(UnkStruct_fieldmap_021ED0A4 *param0, int param1)
 
 static void FieldMap_021EE1AC(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021ED0A4 *v0 = param1;
-    UnkStruct_fieldmap_021EDF3C *v1 = v0->unk_100;
+    MapObjectDrawManager *v0 = param1;
+    MapObjectDrawTaskManager *v1 = v0->unk_100;
 
     if (v1->unk_06 == 1) {
         return;
@@ -1668,7 +1668,7 @@ static void FieldMap_021EE1AC(SysTask *param0, void *param1)
 
     {
         int v2 = 0;
-        UnkStruct_fieldmap_021EE134 *v3 = v1->unk_10;
+        MapObjectTextureManager *v3 = v1->unk_10;
 
         while (v2 < v1->unk_00) {
             if ((v3->unk_00 == 0) && (v3->unk_08 != NULL)) {
@@ -1685,9 +1685,9 @@ static void FieldMap_021EE1AC(SysTask *param0, void *param1)
 static void FieldMap_021EE1E8(SysTask *param0, void *param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021ED0A4 *v1 = param1;
-    UnkStruct_fieldmap_021EDF3C *v2 = v1->unk_100;
-    UnkStruct_fieldmap_021EE134 *v3 = v2->unk_10;
+    MapObjectDrawManager *v1 = param1;
+    MapObjectDrawTaskManager *v2 = v1->unk_100;
+    MapObjectTextureManager *v3 = v2->unk_10;
 
     v2->unk_06 = 1;
 
@@ -1705,11 +1705,11 @@ static void FieldMap_021EE1E8(SysTask *param0, void *param1)
     v2->unk_06 = 0;
 }
 
-static void FieldMap_021EE228(UnkStruct_fieldmap_021ED0A4 *param0, MapObject *param1, Billboard **param2, int param3)
+static void FieldMap_021EE228(MapObjectDrawManager *param0, MapObject *param1, Billboard **param2, int param3)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EE294 *v2 = v1->unk_08;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectBillboardList *v2 = v1->unk_08;
 
     while (v0 < v1->unk_00) {
         if (v2->unk_04 == NULL) {
@@ -1729,11 +1729,11 @@ static void FieldMap_021EE228(UnkStruct_fieldmap_021ED0A4 *param0, MapObject *pa
     GF_ASSERT(FALSE);
 }
 
-static void FieldMap_021EE264(UnkStruct_fieldmap_021ED0A4 *param0, const MapObject *param1)
+static void FieldMap_021EE264(MapObjectDrawManager *param0, const MapObject *param1)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EE294 *v2 = v1->unk_08;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectBillboardList *v2 = v1->unk_08;
 
     while (v0 < v1->unk_00) {
         if (v2->unk_04 == param1) {
@@ -1748,11 +1748,11 @@ static void FieldMap_021EE264(UnkStruct_fieldmap_021ED0A4 *param0, const MapObje
     }
 }
 
-static void FieldMap_021EE294(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021EE294(MapObjectDrawManager *param0)
 {
     int v0 = 0;
-    UnkStruct_fieldmap_021EDF3C *v1 = param0->unk_100;
-    UnkStruct_fieldmap_021EE294 *v2 = v1->unk_08;
+    MapObjectDrawTaskManager *v1 = param0->unk_100;
+    MapObjectBillboardList *v2 = v1->unk_08;
 
     while (v0 < v1->unk_00) {
         if (v2->unk_04 != NULL) {
@@ -1766,11 +1766,11 @@ static void FieldMap_021EE294(UnkStruct_fieldmap_021ED0A4 *param0)
 
 static void FieldMap_021EE2C4(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021ED0A4 *v0 = param1;
+    MapObjectDrawManager *v0 = param1;
     FieldMap_021EE294(v0);
 }
 
-static void FieldMap_021EE2D0(UnkStruct_fieldmap_021ED0A4 *param0, UnkStruct_fieldmap_021EE294 *param1)
+static void FieldMap_021EE2D0(MapObjectDrawManager *param0, MapObjectBillboardList *param1)
 {
     if (FieldMap_021ED94C(param0, param1->unk_00) != 2) {
         *(param1->unk_08) = FieldMap_021ECF1C(param1->unk_04, param1->unk_00);
@@ -1789,15 +1789,15 @@ static void FieldMap_021EE2D0(UnkStruct_fieldmap_021ED0A4 *param0, UnkStruct_fie
     }
 }
 
-static void FieldMap_021EE320(UnkStruct_fieldmap_021ED0A4 *param0, int param1, int param2)
+static void FieldMap_021EE320(MapObjectDrawManager *param0, int param1, int param2)
 {
     u32 v0, v1, v2, v3, v4;
-    UnkStruct_fieldmap_021EDF3C *v5;
+    MapObjectDrawTaskManager *v5;
 
-    v4 = (sizeof(UnkStruct_fieldmap_021EE294)) * param1;
-    v3 = (sizeof(UnkStruct_fieldmap_021EDFBC)) * param1;
-    v2 = (sizeof(UnkStruct_fieldmap_021EE134)) * param1;
-    v1 = (sizeof(UnkStruct_fieldmap_021EDF3C)) + v2 + v3 + v4;
+    v4 = (sizeof(MapObjectBillboardList)) * param1;
+    v3 = (sizeof(MapObjectTextureLoadTask)) * param1;
+    v2 = (sizeof(MapObjectTextureManager)) * param1;
+    v1 = (sizeof(MapObjectDrawTaskManager)) + v2 + v3 + v4;
     v5 = Heap_Alloc(HEAP_ID_FIELD1, v1);
 
     GF_ASSERT(v5 != NULL);
@@ -1806,7 +1806,7 @@ static void FieldMap_021EE320(UnkStruct_fieldmap_021ED0A4 *param0, int param1, i
     v5->unk_00 = param1;
     v5->unk_02 = param2;
 
-    v0 = (u32)v5 + (sizeof(UnkStruct_fieldmap_021EDF3C));
+    v0 = (u32)v5 + (sizeof(MapObjectDrawTaskManager));
     v5->unk_08 = (void *)v0;
 
     v0 += v4;
@@ -1824,9 +1824,9 @@ static void FieldMap_021EE320(UnkStruct_fieldmap_021ED0A4 *param0, int param1, i
     v5->unk_24 = SysTask_ExecuteAfterVBlank(FieldMap_021EE1E8, param0, 0xff);
 }
 
-static void FieldMap_021EE3C4(UnkStruct_fieldmap_021ED0A4 *param0)
+static void FieldMap_021EE3C4(MapObjectDrawManager *param0)
 {
-    UnkStruct_fieldmap_021EDF3C *v0 = param0->unk_100;
+    MapObjectDrawTaskManager *v0 = param0->unk_100;
 
     v0->unk_06 = 1;
 
@@ -1861,12 +1861,12 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
     TextureResource *v5;
     Billboard *v6;
     const ObjectEventGfxFileEntry *v7;
-    UnkStruct_fieldmap_021ED0A4 *v8 = FieldMap_021EDEA8(param0);
+    MapObjectDrawManager *v8 = FieldMap_021EDEA8(param0);
     BillboardList *v9 = FieldMap_021EDC8C(v8);
     Billboard *v10 = FieldMap_021EB1A0(param0);
-    UnkStruct_fieldmap_021EE698 *v11 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021EE698));
+    MapObjectBillboardAnim *v11 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(MapObjectBillboardAnim));
 
-    memset(v11, 0, sizeof(UnkStruct_fieldmap_021EE698));
+    memset(v11, 0, sizeof(MapObjectBillboardAnim));
 
     v11->unk_00 = param1;
     v11->unk_50 = param0;
@@ -1991,7 +1991,7 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
 
 static void FieldMap_021EE698(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021EE698 *v0 = param1;
+    MapObjectBillboardAnim *v0 = param1;
     MapObject *v1 = v0->unk_50;
 
     switch (v0->unk_04) {

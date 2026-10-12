@@ -87,10 +87,10 @@ typedef struct BillboardListParams {
     enum HeapID heapID;
 } BillboardListParams;
 
-typedef struct UnkStruct_fieldmap_021ED110 {
+typedef struct BillboardResourceEntry {
     u32 unk_00;
     BillboardResources *unk_04;
-} UnkStruct_fieldmap_021ED110;
+} BillboardResourceEntry;
 
 enum BillboardState {
     BILLBOARD_STATE_INACTIVE = 0,

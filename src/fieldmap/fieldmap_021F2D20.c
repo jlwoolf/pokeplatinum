@@ -13,9 +13,9 @@
 #include "map_object_move.h"
 #include "overworld_anim_manager.h"
 
-typedef struct UnkStruct_fieldmap_021F2D20_t {
+typedef struct FieldEffectRenderer13Context_t {
     FieldEffectManager *unk_00;
-} UnkStruct_fieldmap_021F2D20;
+} FieldEffectRenderer13Context;
 
 typedef struct {
     int unk_00;
@@ -23,7 +23,7 @@ typedef struct {
     int unk_08;
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_10;
-    UnkStruct_fieldmap_021F2D20 *unk_14;
+    FieldEffectRenderer13Context *unk_14;
     MapObject *unk_18;
 } UnkStruct_021F2EA4;
 
@@ -43,7 +43,7 @@ typedef struct {
     int unk_04;
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_0C;
-    UnkStruct_fieldmap_021F2D20 *unk_10;
+    FieldEffectRenderer13Context *unk_10;
 } UnkStruct_021F30C4;
 
 typedef struct {
@@ -58,7 +58,7 @@ typedef struct {
     int unk_04;
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_0C;
-    UnkStruct_fieldmap_021F2D20 *unk_10;
+    FieldEffectRenderer13Context *unk_10;
 } UnkStruct_021F3154;
 
 typedef struct {
@@ -72,8 +72,8 @@ typedef struct {
 
 void include_unk_FieldMap_02200500(void);
 
-static void FieldMap_021F2D4C(UnkStruct_fieldmap_021F2D20 *param0);
-static void FieldMap_021F2E2C(UnkStruct_fieldmap_021F2D20 *param0);
+static void FieldMap_021F2D4C(FieldEffectRenderer13Context *param0);
+static void FieldMap_021F2E2C(FieldEffectRenderer13Context *param0);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_022004EC;
 const BillboardAnim Unk_FieldMap_02200540[];
@@ -83,7 +83,7 @@ const BillboardAnim Unk_FieldMap_02200570[];
 
 void *FieldMap_021F2D20(FieldEffectManager *param0)
 {
-    UnkStruct_fieldmap_021F2D20 *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(UnkStruct_fieldmap_021F2D20)), 0, 0);
+    FieldEffectRenderer13Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer13Context)), 0, 0);
     v0->unk_00 = param0;
 
     FieldMap_021F2D4C(v0);
@@ -92,13 +92,13 @@ void *FieldMap_021F2D20(FieldEffectManager *param0)
 
 void FieldMap_021F2D3C(void *param0)
 {
-    UnkStruct_fieldmap_021F2D20 *v0 = param0;
+    FieldEffectRenderer13Context *v0 = param0;
 
     FieldMap_021F2E2C(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_021F2D4C(UnkStruct_fieldmap_021F2D20 *param0)
+static void FieldMap_021F2D4C(FieldEffectRenderer13Context *param0)
 {
     FieldMap_021DF9E0(param0->unk_00, 0, 83);
     FieldMap_021DF9E0(param0->unk_00, 5, 84);
@@ -119,7 +119,7 @@ static void FieldMap_021F2D4C(UnkStruct_fieldmap_021F2D20 *param0)
     FieldMap_021DF864(param0->unk_00, 7, 5, 5, 6, 0, Unk_FieldMap_02200570);
 }
 
-static void FieldMap_021F2E2C(UnkStruct_fieldmap_021F2D20 *param0)
+static void FieldMap_021F2E2C(FieldEffectRenderer13Context *param0)
 {
     FieldMap_021DFA08(param0->unk_00, 0);
     FieldMap_021DFA08(param0->unk_00, 5);

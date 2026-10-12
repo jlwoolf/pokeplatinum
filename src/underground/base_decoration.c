@@ -11,7 +11,7 @@
 #include "fieldmap/map_prop.h"
 #include "fieldmap/fieldmap_021D1A94.h"
 #include "fieldmap/fieldmap_021EAFA4.h"
-#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
+#include "fieldmap/struct_field_effect_decl.h"
 #include "field_events/struct_field_effect.h"
 #include "underground/decoration_menu.h"
 #include "underground/secret_bases.h"
@@ -90,7 +90,7 @@ typedef struct BaseDecorationContext {
     FieldSystem *fieldSystem;
     DecorationMenu *decorationMenu;
     DecorationGoodsMenu *decorationGoodsMenu;
-    UnkStruct_fieldmap_021D1BEC *unk_50C;
+    FieldEffect *unk_50C;
     u8 padding[8];
     u16 menuListPos;
     u16 goodsMenuListPos;
@@ -185,10 +185,10 @@ static void PropBlinkContext_Init(int propIndex, int interval, PropBlinkContext 
 static void BaseDecoration_HandlePropBlink(FieldSystem *fieldSystem, PropBlinkContext *ctx);
 static void PropBlinkContext_ShowProp(FieldSystem *fieldSystem, PropBlinkContext *ctx);
 static int PropBlinkContext_GetPropIndex(PropBlinkContext *ctx);
-static void DecorateCursorEffect_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
-static void DecorateCursorEffect_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
-static void DecorateCursorEffect_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
-static void DecorateCursorEffect_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2);
+static void DecorateCursorEffect_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2);
 
 static const FieldEffectTemplate sDecorateCursorEffectTemplate = {
     0x0,
@@ -1271,7 +1271,7 @@ static void BaseDecoration_UpdatePropPositionFromTouchInput(FieldSystem *fieldSy
 {
     PositionRect goodPosition;
     VecFx32 propPosition;
-    UnkStruct_fieldmap_021EB0E0 *v6 = fieldSystem->unk_8C;
+    FieldCamera *v6 = fieldSystem->unk_8C;
 
     BaseDecoration_StoreTouchCoordinates(gSystem.touchX, gSystem.touchY, touchInput);
 
@@ -1306,7 +1306,7 @@ static void BaseDecoration_UpdateCursorPositionFromTouchInput(FieldSystem *field
 {
     PositionRect position;
     VecFx32 modelPosition;
-    UnkStruct_fieldmap_021EB0E0 *v4 = fieldSystem->unk_8C;
+    FieldCamera *v4 = fieldSystem->unk_8C;
 
     BaseDecoration_StoreTouchCoordinates(gSystem.touchX, gSystem.touchY, touchInput);
 
@@ -1483,24 +1483,24 @@ static int PropBlinkContext_GetPropIndex(PropBlinkContext *ctx)
     return ctx->propIndex;
 }
 
-static void DecorateCursorEffect_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     DecorateCursor *cursor = (DecorateCursor *)param2;
     DecorateCursor_Init(cursor);
 }
 
-static void DecorateCursorEffect_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     return;
 }
 
-static void DecorateCursorEffect_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     DecorateCursor *cursor = (DecorateCursor *)(param2);
     DecorateCursor_FreeModelFile(cursor);
 }
 
-static void DecorateCursorEffect_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void DecorateCursorEffect_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     DecorateCursor *cursor = (DecorateCursor *)(param2);
 

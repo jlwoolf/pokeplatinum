@@ -19,7 +19,7 @@
 #include "fieldmap/fieldmap_021EB1A0.h"
 #include "fieldmap/fieldmap_021ECE40.h"
 #include "fieldmap/fieldmap_021F2850.h"
-#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
+#include "fieldmap/struct_field_effect_decl.h"
 #include "fieldmap/surf_mount_renderer.h"
 #include "field_events/hm_cut_in.h"
 #include "field_events/hidden_effect.h"
@@ -76,7 +76,7 @@ typedef struct RockClimbTaskEnv {
     MapObject *playerObject;
     OverworldAnimManager *unk_18;
     MonRideTask monRideTask;
-    UnkStruct_fieldmap_021D1BEC *unk_2C;
+    FieldEffect *unk_2C;
 } RockClimbTaskEnv;
 
 typedef struct WaterfallTaskEnv {
@@ -93,7 +93,7 @@ typedef struct WaterfallTaskEnv {
     PlayerAvatar *playerAvatar;
     MapObject *playerObject;
     MonRideTask monRideTask;
-    UnkStruct_fieldmap_021D1BEC *unk_50;
+    FieldEffect *unk_50;
 } WaterfallTaskEnv;
 
 typedef struct {
@@ -103,7 +103,7 @@ typedef struct {
     PlayerAvatar *playerAvatar;
     MapObject *unk_10;
     DistWorldFallingBoulder *unk_14;
-} UnkStruct_fieldmap_021DFF88;
+} FallingBoulderRideTask;
 
 typedef struct {
     int unk_00;
@@ -112,7 +112,7 @@ typedef struct {
     PlayerAvatar *playerAvatar;
     MapObject *unk_10;
     OverworldAnimManager *unk_14;
-} UnkStruct_fieldmap_021E0390;
+} SurfMountTask;
 
 typedef struct StuckInDeepMudTaskEnv {
     int state;
@@ -128,14 +128,14 @@ typedef struct {
     int unk_0C;
     int playerGender;
     SysTask *unk_14;
-} UnkStruct_fieldmap_021E0DE0;
+} MonRideTaskEnv;
 
 typedef struct {
     int unk_00;
     int unk_04;
     FieldSystem *fieldSystem;
     PlayerAvatar *playerAvatar;
-} UnkStruct_fieldmap_021E0FF0;
+} VsSeekerTask;
 
 static int FieldMap_021DFE68(FieldSystem *fieldSystem, PlayerAvatar *playerAvatar, int param2, int param3);
 static int FieldMap_021DFEF4(FieldSystem *fieldSystem, PlayerAvatar *playerAvatar, int param2, int param3);
@@ -541,7 +541,7 @@ static int FieldMap_021DFF1C(FieldSystem *fieldSystem, PlayerAvatar *playerAvata
 
 static void FieldMap_021DFF88(int param0, FieldSystem *fieldSystem, PlayerAvatar *playerAvatar, MapObject *param3)
 {
-    UnkStruct_fieldmap_021DFF88 *v0 = MonRideTaskEnv_New(sizeof(UnkStruct_fieldmap_021DFF88));
+    FallingBoulderRideTask *v0 = MonRideTaskEnv_New(sizeof(FallingBoulderRideTask));
 
     v0->unk_04 = param0;
     v0->fieldSystem = fieldSystem;
@@ -554,7 +554,7 @@ static void FieldMap_021DFF88(int param0, FieldSystem *fieldSystem, PlayerAvatar
 
 static BOOL FieldMap_021DFFBC(FieldTask *param0)
 {
-    UnkStruct_fieldmap_021DFF88 *v0 = FieldTask_GetEnv(param0);
+    FallingBoulderRideTask *v0 = FieldTask_GetEnv(param0);
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->playerAvatar);
     MapObject *v2 = v0->unk_10;
 
@@ -780,7 +780,7 @@ static int FieldMap_021E032C(FieldSystem *fieldSystem, PlayerAvatar *playerAvata
 
 static void FieldMap_021E0390(int param0, FieldSystem *fieldSystem, PlayerAvatar *param2)
 {
-    UnkStruct_fieldmap_021E0390 *v0 = MonRideTaskEnv_New(sizeof(UnkStruct_fieldmap_021E0390));
+    SurfMountTask *v0 = MonRideTaskEnv_New(sizeof(SurfMountTask));
 
     v0->unk_04 = param0;
     v0->fieldSystem = fieldSystem;
@@ -793,7 +793,7 @@ static void FieldMap_021E0390(int param0, FieldSystem *fieldSystem, PlayerAvatar
 
 static BOOL FieldMap_021E03C8(FieldTask *param0)
 {
-    UnkStruct_fieldmap_021E0390 *v0 = FieldTask_GetEnv(param0);
+    SurfMountTask *v0 = FieldTask_GetEnv(param0);
 
     switch (v0->unk_00) {
     case 0:
@@ -1523,7 +1523,7 @@ void FieldMap_021E0DD4(FieldTask *param0)
 
 static void FieldMap_021E0DE0(FieldSystem *fieldSystem)
 {
-    UnkStruct_fieldmap_021E0DE0 *v0 = MonRideTaskEnv_New(sizeof(UnkStruct_fieldmap_021E0DE0));
+    MonRideTaskEnv *v0 = MonRideTaskEnv_New(sizeof(MonRideTaskEnv));
 
     v0->fieldSystem = fieldSystem;
     v0->playerAvatar = fieldSystem->playerAvatar;
@@ -1535,7 +1535,7 @@ static void FieldMap_021E0DE0(FieldSystem *fieldSystem)
 
 static BOOL FieldMap_021E0E10(FieldTask *param0)
 {
-    UnkStruct_fieldmap_021E0DE0 *v0 = FieldTask_GetEnv(param0);
+    MonRideTaskEnv *v0 = FieldTask_GetEnv(param0);
 
     switch (v0->unk_0C) {
     case 0:
@@ -1643,7 +1643,7 @@ static SysTask *FieldMap_021E0F54(FieldSystem *fieldSystem, u32 param1)
     {
         SysTask *v2;
         MapObject *v3 = PlayerAvatar_GetMapObject(playerAvatar);
-        UnkStruct_fieldmap_021E0FF0 *v4 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021E0FF0));
+        VsSeekerTask *v4 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(VsSeekerTask));
 
         v4->unk_00 = 0;
         v4->fieldSystem = fieldSystem;
@@ -1668,7 +1668,7 @@ static void FieldMap_021E0FC0(SysTask *param0)
     }
 
     {
-        UnkStruct_fieldmap_021E0FF0 *v0 = SysTask_GetParam(param0);
+        VsSeekerTask *v0 = SysTask_GetParam(param0);
         PlayerAvatar *playerAvatar = v0->playerAvatar;
         int v2 = Player_GetSpriteFromStateAndGender(PLAYER_AVATAR_WALKING, PlayerAvatar_GetGender(playerAvatar));
 
@@ -1680,7 +1680,7 @@ static void FieldMap_021E0FC0(SysTask *param0)
 
 static void FieldMap_021E0FF0(SysTask *param0, void *param1)
 {
-    UnkStruct_fieldmap_021E0FF0 *v0 = param1;
+    VsSeekerTask *v0 = param1;
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->playerAvatar);
 
     MapObject_CallRendererDraw(v1);

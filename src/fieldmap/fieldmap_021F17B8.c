@@ -19,14 +19,14 @@
 
 typedef struct {
     FieldEffectManager *unk_00;
-} UnkStruct_fieldmap_021F17E4;
+} FieldEffectRenderer01Context;
 
 typedef struct {
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_04;
-    UnkStruct_fieldmap_021F17E4 *unk_08;
+    FieldEffectRenderer01Context *unk_08;
     MapObject *unk_0C;
-} UnkStruct_fieldmap_021F1800;
+} FieldEffectRenderer01Params;
 
 typedef struct {
     int unk_00;
@@ -34,39 +34,39 @@ typedef struct {
     int unk_08;
     int unk_0C;
     int unk_10;
-    UnkStruct_fieldmap_021F1800 unk_14;
+    FieldEffectRenderer01Params unk_14;
     Billboard *unk_24;
     VecFx32 unk_28;
     fx32 unk_34;
-} UnkStruct_fieldmap_021F1A24;
+} FieldEffectRenderer01Anim;
 
 typedef struct {
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_04;
-    UnkStruct_fieldmap_021F17E4 *unk_08;
+    FieldEffectRenderer01Context *unk_08;
     BillboardResources unk_0C;
     const Billboard *unk_34;
-} UnkStruct_fieldmap_021F1BEC;
+} FieldEffectRenderer01AltContext;
 
 typedef struct {
     int unk_00;
-    UnkStruct_fieldmap_021F1BEC unk_04;
+    FieldEffectRenderer01AltContext unk_04;
     Billboard *unk_3C;
     VecFx32 unk_40;
     fx32 unk_4C;
     VecFx32 unk_50;
-} UnkStruct_fieldmap_021F1AD8;
+} FieldEffectRenderer01AltAnim;
 
-static void FieldMap_021F17E4(UnkStruct_fieldmap_021F17E4 *param0);
-static void FieldMap_021F17F4(UnkStruct_fieldmap_021F17E4 *param0);
-static void FieldMap_021F1A24(UnkStruct_fieldmap_021F1A24 *param0, MapObject *param1, VecFx32 *param2);
-static void FieldMap_021F1A8C(OverworldAnimManager *param0, UnkStruct_fieldmap_021F1A24 *param1);
+static void FieldMap_021F17E4(FieldEffectRenderer01Context *param0);
+static void FieldMap_021F17F4(FieldEffectRenderer01Context *param0);
+static void FieldMap_021F1A24(FieldEffectRenderer01Anim *param0, MapObject *param1, VecFx32 *param2);
+static void FieldMap_021F1A8C(OverworldAnimManager *param0, FieldEffectRenderer01Anim *param1);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200338;
 
 void *FieldMap_021F17B8(FieldEffectManager *param0)
 {
-    UnkStruct_fieldmap_021F17E4 *v0 = FieldEffectManager_HeapAllocInit(param0, sizeof(UnkStruct_fieldmap_021F17E4), 0, 0);
+    FieldEffectRenderer01Context *v0 = FieldEffectManager_HeapAllocInit(param0, sizeof(FieldEffectRenderer01Context), 0, 0);
     v0->unk_00 = param0;
 
     FieldMap_021F17E4(v0);
@@ -75,18 +75,18 @@ void *FieldMap_021F17B8(FieldEffectManager *param0)
 
 void FieldMap_021F17D4(void *param0)
 {
-    UnkStruct_fieldmap_021F17E4 *v0 = param0;
+    FieldEffectRenderer01Context *v0 = param0;
 
     FieldMap_021F17F4(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_021F17E4(UnkStruct_fieldmap_021F17E4 *param0)
+static void FieldMap_021F17E4(FieldEffectRenderer01Context *param0)
 {
     FieldMap_021DF9E0(param0->unk_00, 2, 20);
 }
 
-static void FieldMap_021F17F4(UnkStruct_fieldmap_021F17E4 *param0)
+static void FieldMap_021F17F4(FieldEffectRenderer01Context *param0)
 {
     FieldMap_021DFA08(param0->unk_00, 2);
 }
@@ -95,7 +95,7 @@ void FieldMap_021F1800(MapObject *param0, int param1)
 {
     int v0;
     VecFx32 v1;
-    UnkStruct_fieldmap_021F1800 v2;
+    FieldEffectRenderer01Params v2;
     OverworldAnimManager *v3;
 
     v2.fieldSystem = MapObject_FieldSystem(param0);
@@ -112,8 +112,8 @@ void FieldMap_021F1800(MapObject *param0, int param1)
 static int FieldMap_021F184C(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021F1A24 *v1;
-    const UnkStruct_fieldmap_021F1800 *v2;
+    FieldEffectRenderer01Anim *v1;
+    const FieldEffectRenderer01Params *v2;
 
     v1 = param1;
     v2 = OverworldAnimManager_GetUserData(param0);
@@ -146,7 +146,7 @@ static int FieldMap_021F184C(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F18D0(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F1A24 *v0 = param1;
+    FieldEffectRenderer01Anim *v0 = param1;
 
     if (v0->unk_0C == 1) {
         Billboard_Delete(v0->unk_24);
@@ -156,7 +156,7 @@ static void FieldMap_021F18D0(OverworldAnimManager *param0, void *param1)
 static void FieldMap_021F18E0(OverworldAnimManager *param0, void *param1)
 {
     int v0;
-    UnkStruct_fieldmap_021F1A24 *v1 = param1;
+    FieldEffectRenderer01Anim *v1 = param1;
     MapObject *v2 = v1->unk_14.unk_0C;
     v0 = MapObject_GetGraphicsID(v2);
 
@@ -195,7 +195,7 @@ static void FieldMap_021F18E0(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F1978(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F1A24 *v0 = param1;
+    FieldEffectRenderer01Anim *v0 = param1;
     MapObject *v1 = v0->unk_14.unk_0C;
 
     {
@@ -239,14 +239,14 @@ static void FieldMap_021F1978(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200338 = {
-    sizeof(UnkStruct_fieldmap_021F1A24),
+    sizeof(FieldEffectRenderer01Anim),
     FieldMap_021F184C,
     FieldMap_021F18D0,
     FieldMap_021F18E0,
     FieldMap_021F1978
 };
 
-static void FieldMap_021F1A24(UnkStruct_fieldmap_021F1A24 *param0, MapObject *param1, VecFx32 *param2)
+static void FieldMap_021F1A24(FieldEffectRenderer01Anim *param0, MapObject *param1, VecFx32 *param2)
 {
     int v0;
     fx32 v1, v2;
@@ -273,7 +273,7 @@ static void FieldMap_021F1A24(UnkStruct_fieldmap_021F1A24 *param0, MapObject *pa
     }
 }
 
-static void FieldMap_021F1A8C(OverworldAnimManager *param0, UnkStruct_fieldmap_021F1A24 *param1)
+static void FieldMap_021F1A8C(OverworldAnimManager *param0, FieldEffectRenderer01Anim *param1)
 {
     int v0;
     void *v1;
@@ -303,7 +303,7 @@ static void FieldMap_021F1A8C(OverworldAnimManager *param0, UnkStruct_fieldmap_0
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_0220034C;
 
-static void FieldMap_021F1AD8(OverworldAnimManager *param0, UnkStruct_fieldmap_021F1AD8 *param1)
+static void FieldMap_021F1AD8(OverworldAnimManager *param0, FieldEffectRenderer01AltAnim *param1)
 {
     int v0;
     void *v1;
@@ -327,7 +327,7 @@ static void FieldMap_021F1AD8(OverworldAnimManager *param0, UnkStruct_fieldmap_0
     }
 }
 
-static void FieldMap_021F1B4C(UnkStruct_fieldmap_021F1AD8 *param0, VecFx32 *param1)
+static void FieldMap_021F1B4C(FieldEffectRenderer01AltAnim *param0, VecFx32 *param1)
 {
     int v0;
     VecFx32 v1;
@@ -352,7 +352,7 @@ static void FieldMap_021F1B4C(UnkStruct_fieldmap_021F1AD8 *param0, VecFx32 *para
 OverworldAnimManager *FieldMap_021F1BA4(FieldEffectManager *param0, const BillboardResources *param1, const Billboard *param2, const VecFx32 *param3, int param4, int param5)
 {
     OverworldAnimManager *v0;
-    UnkStruct_fieldmap_021F1BEC v1;
+    FieldEffectRenderer01AltContext v1;
 
     v1.fieldSystem = FieldEffectManager_GetFieldSystem(param0);
     v1.unk_04 = param0;
@@ -367,8 +367,8 @@ OverworldAnimManager *FieldMap_021F1BA4(FieldEffectManager *param0, const Billbo
 static int FieldMap_021F1BEC(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021F1AD8 *v1;
-    const UnkStruct_fieldmap_021F1BEC *v2;
+    FieldEffectRenderer01AltAnim *v1;
+    const FieldEffectRenderer01AltContext *v2;
 
     v1 = param1;
     v2 = OverworldAnimManager_GetUserData(param0);
@@ -396,13 +396,13 @@ static int FieldMap_021F1BEC(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F1C54(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F1AD8 *v0 = param1;
+    FieldEffectRenderer01AltAnim *v0 = param1;
     Billboard_Delete(v0->unk_3C);
 }
 
 static void FieldMap_021F1C60(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F1AD8 *v0 = param1;
+    FieldEffectRenderer01AltAnim *v0 = param1;
 
     v0->unk_40.x += v0->unk_4C;
 
@@ -424,7 +424,7 @@ static void FieldMap_021F1C60(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F1CA4(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F1AD8 *v0 = param1;
+    FieldEffectRenderer01AltAnim *v0 = param1;
 
     {
         VecFx32 v1;
@@ -437,7 +437,7 @@ static void FieldMap_021F1CA4(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_0220034C = {
-    sizeof(UnkStruct_fieldmap_021F1A24),
+    sizeof(FieldEffectRenderer01Anim),
     FieldMap_021F1BEC,
     FieldMap_021F1C54,
     FieldMap_021F1C60,

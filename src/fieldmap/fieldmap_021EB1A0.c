@@ -14,7 +14,7 @@
 #include "fieldmap/fieldmap_021ECE40.h"
 #include "fieldmap/fieldmap_021F10E8.h"
 #include "fieldmap/fieldmap_021F23D0.h"
-#include "fieldmap/struct_fieldmap_021ED01C.h"
+#include "fieldmap/struct_billboard_anim_state.h"
 
 #include "billboard.h"
 #include "map_object.h"
@@ -26,8 +26,8 @@ typedef struct {
     s8 unk_02;
     s8 unk_03;
     Billboard *unk_04;
-    UnkStruct_fieldmap_021ED01C unk_08;
-} UnkStruct_fieldmap_021EB2EC;
+    BillboardAnimState unk_08;
+} MapObjectBillboard;
 
 typedef struct {
     s8 unk_00;
@@ -35,8 +35,8 @@ typedef struct {
     s8 unk_02;
     s8 unk_03;
     Billboard *unk_04;
-    UnkStruct_fieldmap_021ED01C unk_08;
-} UnkStruct_fieldmap_021EB7F8;
+    BillboardAnimState unk_08;
+} MagikarpBillboard;
 
 typedef struct {
     s8 unk_00;
@@ -45,28 +45,28 @@ typedef struct {
     u8 unk_03_0 : 1;
     u8 unk_03_1 : 7;
     Billboard *unk_04;
-    UnkStruct_fieldmap_021ED01C unk_08;
-} UnkStruct_fieldmap_021EBA0C;
+    BillboardAnimState unk_08;
+} PlayerBillboard;
 
 typedef struct {
     OverworldAnimManager *unk_00;
-} UnkStruct_fieldmap_021EC760;
+} MapObjectAnimManager;
 
 typedef struct {
     s16 unk_00;
     s8 unk_02;
     s8 unk_03;
     Billboard *unk_04;
-    UnkStruct_fieldmap_021ED01C unk_08;
+    BillboardAnimState unk_08;
     u32 unk_10;
-} UnkStruct_fieldmap_021EC804;
+} DistWorldMespritBillboard;
 
 typedef struct {
     int unk_00;
     fx32 unk_04;
     Billboard *unk_08;
-    UnkStruct_fieldmap_021ED01C unk_0C;
-} UnkStruct_fieldmap_021EC938;
+    BillboardAnimState unk_0C;
+} MapObjectBillboardOffset;
 
 void FieldMap_021EB2EC(MapObject *mapObj);
 void FieldMap_021EB314(MapObject *mapObj);
@@ -74,15 +74,15 @@ void FieldMap_021EB328(MapObject *mapObj);
 void FieldMap_021EB354(MapObject *mapObj);
 void FieldMap_021EB398(MapObject *mapObj);
 void FieldMap_021EB40C(MapObject *mapObj);
-static void FieldMap_021EB478(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EB4AC(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EB4E8(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EB524(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EB560(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EB59C(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EB620(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3);
-static void FieldMap_021EC068(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3);
-static void FieldMap_021EC0E4(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3);
+static void FieldMap_021EB478(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EB4AC(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EB4E8(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EB524(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EB560(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EB59C(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EB620(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3);
+static void FieldMap_021EC068(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3);
+static void FieldMap_021EC0E4(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3);
 void FieldMap_021EC734(MapObject *mapObj);
 void FieldMap_021EC75C(MapObject *mapObj);
 void FieldMap_021EC760(MapObject *mapObj);
@@ -95,10 +95,10 @@ static void FieldMap_021EC69C(Billboard *param0, int param1);
 static void FieldMap_021EC6C0(MapObject *mapObj, Billboard *param1);
 static void FieldMap_021EC374(MapObject *mapObj, Billboard *param1, int param2);
 
-void (*const Unk_FieldMap_021FF3D4[])(MapObject *, Billboard *, UnkStruct_fieldmap_021EB2EC *, int);
-void (*const Unk_FieldMap_021FF420[])(MapObject *, Billboard *, UnkStruct_fieldmap_021EB2EC *, int);
-void (*const Unk_FieldMap_021FF3F8[])(MapObject *, Billboard *, UnkStruct_fieldmap_021EBA0C *, int);
-static void (*const Unk_FieldMap_021FF448[11])(MapObject *, Billboard *, UnkStruct_fieldmap_021EBA0C *, int);
+void (*const Unk_FieldMap_021FF3D4[])(MapObject *, Billboard *, MapObjectBillboard *, int);
+void (*const Unk_FieldMap_021FF420[])(MapObject *, Billboard *, MapObjectBillboard *, int);
+void (*const Unk_FieldMap_021FF3F8[])(MapObject *, Billboard *, PlayerBillboard *, int);
+static void (*const Unk_FieldMap_021FF448[11])(MapObject *, Billboard *, PlayerBillboard *, int);
 
 Billboard *FieldMap_021EB1A0(MapObject *mapObj)
 {
@@ -137,13 +137,13 @@ Billboard *FieldMap_021EB1A0(MapObject *mapObj)
     case OBJ_EVENT_GFX_PLAYER_F_SAVE_HEARTHOME_GYM:
     case OBJ_EVENT_GFX_PLAYER_M_POKETCH_HEARTHOME_GYM:
     case OBJ_EVENT_GFX_PLAYER_F_POKETCH_HEARTHOME_GYM: {
-        UnkStruct_fieldmap_021EBA0C *v1;
+        PlayerBillboard *v1;
 
         v1 = MapObject_GetUnk108(mapObj);
         return v1->unk_04;
     }
     case OBJ_EVENT_GFX_MAGIKARP: {
-        UnkStruct_fieldmap_021EB7F8 *v2;
+        MagikarpBillboard *v2;
 
         v2 = MapObject_GetUnk108(mapObj);
         return v2->unk_04;
@@ -154,7 +154,7 @@ Billboard *FieldMap_021EB1A0(MapObject *mapObj)
         return FieldMap_021ECB80(mapObj);
     }
     case OBJ_EVENT_GFX_DIST_WORLD_B1F_MESPRIT: {
-        UnkStruct_fieldmap_021EC804 *v3;
+        DistWorldMespritBillboard *v3;
 
         v3 = MapObject_GetUnk108(mapObj);
         return v3->unk_04;
@@ -168,7 +168,7 @@ Billboard *FieldMap_021EB1A0(MapObject *mapObj)
         v4 = FieldMap_021ECD04(mapObj);
 
         if (v4->modelType == 1) {
-            UnkStruct_fieldmap_021EB2EC *v5;
+            MapObjectBillboard *v5;
 
             v5 = MapObject_GetUnk108(mapObj);
             return v5->unk_04;
@@ -181,7 +181,7 @@ Billboard *FieldMap_021EB1A0(MapObject *mapObj)
 
 void FieldMap_021EB2EC(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EB2EC *v0 = MapObject_InitUnk108(mapObj, (sizeof(UnkStruct_fieldmap_021EB2EC)));
+    MapObjectBillboard *v0 = MapObject_InitUnk108(mapObj, (sizeof(MapObjectBillboard)));
     v0->unk_02 = -1;
 
     FieldMap_021ECF04(mapObj, &v0->unk_04);
@@ -193,13 +193,13 @@ void FieldMap_021EB2EC(MapObject *mapObj)
 
 void FieldMap_021EB314(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EB2EC *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v0 = MapObject_GetUnk108(mapObj);
     FieldMap_021ECFA4(mapObj, &v0->unk_04);
 }
 
 void FieldMap_021EB328(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EB2EC *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_04 != NULL) {
         FieldMap_021ED01C(v0->unk_04, &v0->unk_08);
@@ -212,7 +212,7 @@ void FieldMap_021EB328(MapObject *mapObj)
 void FieldMap_021EB354(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EB2EC *v1 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v1 = MapObject_GetUnk108(mapObj);
 
     if (FieldMap_021EDD94(mapObj) == 1) {
         return;
@@ -233,7 +233,7 @@ void FieldMap_021EB354(MapObject *mapObj)
 void FieldMap_021EB398(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EB2EC *v2 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -262,7 +262,7 @@ void FieldMap_021EB398(MapObject *mapObj)
 void FieldMap_021EB40C(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EB2EC *v2;
+    MapObjectBillboard *v2;
     Billboard *v3;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -284,7 +284,7 @@ void FieldMap_021EB40C(MapObject *mapObj)
 void FieldMap_021EB438(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EB2EC *v2;
+    MapObjectBillboard *v2;
     Billboard *v3;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -307,7 +307,7 @@ void FieldMap_021EB438(MapObject *mapObj)
     FieldMap_021EC6C0(mapObj, v3);
 }
 
-static void FieldMap_021EB478(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB478(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -321,7 +321,7 @@ static void FieldMap_021EB478(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     Billboard_AdvanceAnim(param1, 0);
 }
 
-static void FieldMap_021EB4AC(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB4AC(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -335,7 +335,7 @@ static void FieldMap_021EB4AC(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EB4E8(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB4E8(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -349,7 +349,7 @@ static void FieldMap_021EB4E8(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EB524(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB524(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -363,7 +363,7 @@ static void FieldMap_021EB524(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EB560(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB560(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -377,7 +377,7 @@ static void FieldMap_021EB560(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EB59C(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB59C(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -412,7 +412,7 @@ static void FieldMap_021EB59C(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EB620(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB620(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -444,7 +444,7 @@ static void FieldMap_021EB620(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EB69C(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB69C(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param3 != param2->unk_02) {
         int v0 = FieldMap_021EDF18(param3);
@@ -481,7 +481,7 @@ static void FieldMap_021EB69C(MapObject *mapObj, Billboard *param1, UnkStruct_fi
 }
 
 static void (*const Unk_FieldMap_021FF3D4[])(
-    MapObject *, Billboard *, UnkStruct_fieldmap_021EB2EC *, int)
+    MapObject *, Billboard *, MapObjectBillboard *, int)
     = {
           FieldMap_021EB478,
           FieldMap_021EB4AC,
@@ -497,7 +497,7 @@ static void (*const Unk_FieldMap_021FF3D4[])(
 void FieldMap_021EB720(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EB2EC *v2 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -524,7 +524,7 @@ void FieldMap_021EB720(MapObject *mapObj)
     FieldMap_021EC6C0(mapObj, v3);
 }
 
-static void FieldMap_021EB794(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB794(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if ((param3 != param2->unk_02) || (param2->unk_03 == 0x9)) {
         int v0 = FieldMap_021EDF18(param3);
@@ -538,7 +538,7 @@ static void FieldMap_021EB794(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     Billboard_AdvanceAnim(param1, 0);
 }
 
-static void FieldMap_021EB7D0(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EB2EC *param2, int param3)
+static void FieldMap_021EB7D0(MapObject *mapObj, Billboard *param1, MapObjectBillboard *param2, int param3)
 {
     if (param2->unk_03 != 0x9) {
         Billboard_SetAnimNum(param1, 4);
@@ -548,7 +548,7 @@ static void FieldMap_021EB7D0(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     Billboard_AdvanceAnim(param1, (FX32_ONE));
 }
 
-static void (*const Unk_FieldMap_021FF420[])(MapObject *, Billboard *, UnkStruct_fieldmap_021EB2EC *, int) = {
+static void (*const Unk_FieldMap_021FF420[])(MapObject *, Billboard *, MapObjectBillboard *, int) = {
     FieldMap_021EB794,
     FieldMap_021EB4AC,
     FieldMap_021EB4AC,
@@ -563,7 +563,7 @@ static void (*const Unk_FieldMap_021FF420[])(MapObject *, Billboard *, UnkStruct
 
 void FieldMap_021EB7F8(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EB7F8 *v0 = MapObject_InitUnk108(mapObj, (sizeof(UnkStruct_fieldmap_021EB7F8)));
+    MagikarpBillboard *v0 = MapObject_InitUnk108(mapObj, (sizeof(MagikarpBillboard)));
 
     v0->unk_00 = -1;
     v0->unk_02 = LCRNG_Next() % 16;
@@ -577,13 +577,13 @@ void FieldMap_021EB7F8(MapObject *mapObj)
 
 void FieldMap_021EB834(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EB7F8 *v0 = MapObject_GetUnk108(mapObj);
+    MagikarpBillboard *v0 = MapObject_GetUnk108(mapObj);
     FieldMap_021ECFA4(mapObj, &v0->unk_04);
 }
 
 void FieldMap_021EB848(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EB7F8 *v0 = MapObject_GetUnk108(mapObj);
+    MagikarpBillboard *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_04 != NULL) {
         FieldMap_021ED01C(v0->unk_04, &v0->unk_08);
@@ -596,7 +596,7 @@ void FieldMap_021EB848(MapObject *mapObj)
 void FieldMap_021EB874(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EB7F8 *v1 = MapObject_GetUnk108(mapObj);
+    MagikarpBillboard *v1 = MapObject_GetUnk108(mapObj);
 
     if (FieldMap_021EDD94(mapObj) == 1) {
         return;
@@ -616,7 +616,7 @@ void FieldMap_021EB874(MapObject *mapObj)
 void FieldMap_021EB8B8(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EB7F8 *v2 = MapObject_GetUnk108(mapObj);
+    MagikarpBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -655,7 +655,7 @@ void FieldMap_021EB8B8(MapObject *mapObj)
 void FieldMap_021EB944(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EB2EC *v2 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -717,7 +717,7 @@ void FieldMap_021EB944(MapObject *mapObj)
 
 void FieldMap_021EBA0C(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EBA0C *v0 = MapObject_InitUnk108(mapObj, (sizeof(UnkStruct_fieldmap_021EBA0C)));
+    PlayerBillboard *v0 = MapObject_InitUnk108(mapObj, (sizeof(PlayerBillboard)));
     v0->unk_00 = -1;
 
     FieldMap_021ECF04(mapObj, &v0->unk_04);
@@ -729,7 +729,7 @@ void FieldMap_021EBA0C(MapObject *mapObj)
 
 void FieldMap_021EBA34(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EBA0C *v0;
+    PlayerBillboard *v0;
     VecFx32 v1 = { 0, 0, 0 };
 
     v0 = MapObject_GetUnk108(mapObj);
@@ -740,7 +740,7 @@ void FieldMap_021EBA34(MapObject *mapObj)
 
 void FieldMap_021EBA60(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EBA0C *v0 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_04 != NULL) {
         FieldMap_021ED01C(v0->unk_04, &v0->unk_08);
@@ -753,7 +753,7 @@ void FieldMap_021EBA60(MapObject *mapObj)
 void FieldMap_021EBA8C(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EBA0C *v1 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v1 = MapObject_GetUnk108(mapObj);
 
     if (FieldMap_021EDD94(mapObj) == 1) {
         return;
@@ -773,7 +773,7 @@ void FieldMap_021EBA8C(MapObject *mapObj)
 void FieldMap_021EBAD0(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EBA0C *v2 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -799,7 +799,7 @@ void FieldMap_021EBAD0(MapObject *mapObj)
     FieldMap_021EC6C0(mapObj, v3);
 }
 
-static void FieldMap_021EBB44(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBB44(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     if (param3 != param2->unk_00) {
         int v0 = FieldMap_021EDF18(param3);
@@ -817,7 +817,7 @@ static void FieldMap_021EBB44(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBBB4(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBBB4(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     int v0;
 
@@ -838,7 +838,7 @@ static void FieldMap_021EBBB4(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBC28(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBC28(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     int v0;
 
@@ -855,7 +855,7 @@ static void FieldMap_021EBC28(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBC7C(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBC7C(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     if (param3 != param2->unk_00) {
         int v0 = FieldMap_021EDF18(param3);
@@ -871,7 +871,7 @@ static void FieldMap_021EBC7C(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBCD0(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBCD0(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     if (param3 != param2->unk_00) {
         int v0 = FieldMap_021EDF18(param3);
@@ -887,7 +887,7 @@ static void FieldMap_021EBCD0(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBD24(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBD24(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     if (param3 != param2->unk_00) {
         int v0 = FieldMap_021EDF18(param3);
@@ -923,7 +923,7 @@ static void FieldMap_021EBD24(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBDC4(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBDC4(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     if (param3 != param2->unk_00) {
         int v0 = FieldMap_021EDF18(param3);
@@ -956,7 +956,7 @@ static void FieldMap_021EBDC4(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBE5C(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBE5C(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     if (param3 != param2->unk_00) {
         int v0 = FieldMap_021EDF18(param3);
@@ -993,7 +993,7 @@ static void FieldMap_021EBE5C(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EBEFC(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBEFC(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     int v0;
 
@@ -1012,7 +1012,7 @@ static void FieldMap_021EBEFC(MapObject *mapObj, Billboard *param1, UnkStruct_fi
 }
 
 static void (*const Unk_FieldMap_021FF3F8[])(
-    MapObject *, Billboard *, UnkStruct_fieldmap_021EBA0C *, int)
+    MapObject *, Billboard *, PlayerBillboard *, int)
     = {
           FieldMap_021EBB44,
           FieldMap_021EBBB4,
@@ -1029,7 +1029,7 @@ static void (*const Unk_FieldMap_021FF3F8[])(
 void FieldMap_021EBF50(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EBA0C *v2 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -1060,7 +1060,7 @@ void FieldMap_021EBF50(MapObject *mapObj)
     FieldMap_021EC6C0(mapObj, v3);
 }
 
-static void FieldMap_021EBFDC(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EBFDC(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     int v0[4] = { 6, 7, 8, 9 };
     int v1 = v0[param3];
@@ -1080,7 +1080,7 @@ static void FieldMap_021EBFDC(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EC068(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EC068(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     int v0 = FieldMap_021EDF30(param3);
 
@@ -1100,7 +1100,7 @@ static void FieldMap_021EC068(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     }
 }
 
-static void FieldMap_021EC0E4(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EC0E4(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     int v0 = FieldMap_021EDF30(param3);
 
@@ -1121,7 +1121,7 @@ static void FieldMap_021EC0E4(MapObject *mapObj, Billboard *param1, UnkStruct_fi
 }
 
 static void (*const Unk_FieldMap_021FF448[11])(
-    MapObject *, Billboard *, UnkStruct_fieldmap_021EBA0C *, int)
+    MapObject *, Billboard *, PlayerBillboard *, int)
     = {
           FieldMap_021EBFDC,
           FieldMap_021EBBB4,
@@ -1136,7 +1136,7 @@ static void (*const Unk_FieldMap_021FF448[11])(
           FieldMap_021EC0E4
       };
 
-void (*const Unk_FieldMap_021FF31C[])(MapObject *, Billboard *, UnkStruct_fieldmap_021EBA0C *, int);
+void (*const Unk_FieldMap_021FF31C[])(MapObject *, Billboard *, PlayerBillboard *, int);
 
 static const int Unk_FieldMap_021FF34C[] = {
     0x0,
@@ -1148,7 +1148,7 @@ static const int Unk_FieldMap_021FF34C[] = {
 void FieldMap_021EC15C(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EBA0C *v2 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -1172,7 +1172,7 @@ void FieldMap_021EC15C(MapObject *mapObj)
     FieldMap_021EC6C0(mapObj, v3);
 }
 
-static void FieldMap_021EC1D8(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EC1D8(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     fx32 v0;
 
@@ -1192,7 +1192,7 @@ static void FieldMap_021EC1D8(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     Billboard_AdvanceAnim(param1, 0);
 }
 
-static void FieldMap_021EC228(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EC228(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     fx32 v0;
 
@@ -1204,7 +1204,7 @@ static void FieldMap_021EC228(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     Billboard_AdvanceAnim(param1, (FX32_ONE));
 }
 
-static void FieldMap_021EC260(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EC260(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     fx32 v0;
 
@@ -1245,7 +1245,7 @@ static void FieldMap_021EC260(MapObject *mapObj, Billboard *param1, UnkStruct_fi
     Billboard_AdvanceAnim(param1, 0);
 }
 
-static void FieldMap_021EC324(MapObject *mapObj, Billboard *param1, UnkStruct_fieldmap_021EBA0C *param2, int param3)
+static void FieldMap_021EC324(MapObject *mapObj, Billboard *param1, PlayerBillboard *param2, int param3)
 {
     fx32 v0;
 
@@ -1296,7 +1296,7 @@ static void FieldMap_021EC374(MapObject *mapObj, Billboard *param1, int param2)
     MapObject_SetSpriteJumpOffset(mapObj, &v0);
 }
 
-static void (*const Unk_FieldMap_021FF31C[])(MapObject *, Billboard *, UnkStruct_fieldmap_021EBA0C *, int) = {
+static void (*const Unk_FieldMap_021FF31C[])(MapObject *, Billboard *, PlayerBillboard *, int) = {
     FieldMap_021EC1D8,
     FieldMap_021EC228,
     FieldMap_021EC260,
@@ -1306,7 +1306,7 @@ static void (*const Unk_FieldMap_021FF31C[])(MapObject *, Billboard *, UnkStruct
 void FieldMap_021EC3F0(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EBA0C *v1 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v1 = MapObject_GetUnk108(mapObj);
     Billboard *v2 = v1->unk_04;
 
     v1 = MapObject_GetUnk108(mapObj);
@@ -1339,7 +1339,7 @@ void FieldMap_021EC3F0(MapObject *mapObj)
 void FieldMap_021EC454(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EBA0C *v1 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v1 = MapObject_GetUnk108(mapObj);
     Billboard *v2 = v1->unk_04;
 
     v1 = MapObject_GetUnk108(mapObj);
@@ -1371,7 +1371,7 @@ void FieldMap_021EC454(MapObject *mapObj)
 void FieldMap_021EC4BC(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EBA0C *v2 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -1415,7 +1415,7 @@ void FieldMap_021EC4BC(MapObject *mapObj)
 void FieldMap_021EC554(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EBA0C *v2 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -1447,7 +1447,7 @@ void FieldMap_021EC554(MapObject *mapObj)
 void FieldMap_021EC5C0(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EBA0C *v2 = MapObject_GetUnk108(mapObj);
+    PlayerBillboard *v2 = MapObject_GetUnk108(mapObj);
     Billboard *v3 = v2->unk_04;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -1559,7 +1559,7 @@ static void FieldMap_021EC700(u32 param0, VecFx32 *param1)
 void FieldMap_021EC734(MapObject *mapObj)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021EC760 *v1 = MapObject_InitUnk108(mapObj, (sizeof(UnkStruct_fieldmap_021EC760)));
+    MapObjectAnimManager *v1 = MapObject_InitUnk108(mapObj, (sizeof(MapObjectAnimManager)));
     FieldMap_021EC700(MapObject_GetEffectiveGraphicsID(mapObj), &v0);
     v1->unk_00 = FieldMap_021F121C(mapObj, &v0);
 }
@@ -1571,7 +1571,7 @@ void FieldMap_021EC75C(MapObject *mapObj)
 
 void FieldMap_021EC760(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC760 *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectAnimManager *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_00 != NULL) {
         FieldEffectManager_FinishAnimManager(v0->unk_00);
@@ -1581,7 +1581,7 @@ void FieldMap_021EC760(MapObject *mapObj)
 
 void FieldMap_021EC778(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC760 *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectAnimManager *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_00 != NULL) {
         FieldEffectManager_FinishAnimManager(v0->unk_00);
@@ -1592,34 +1592,34 @@ void FieldMap_021EC778(MapObject *mapObj)
 void FieldMap_021EC790(MapObject *mapObj)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021EC760 *v1 = MapObject_GetUnk108(mapObj);
+    MapObjectAnimManager *v1 = MapObject_GetUnk108(mapObj);
     FieldMap_021EC700(MapObject_GetEffectiveGraphicsID(mapObj), &v0);
     v1->unk_00 = FieldMap_021F121C(mapObj, &v0);
 }
 
 void FieldMap_021EC7B8(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC760 *v0 = MapObject_InitUnk108(mapObj, (sizeof(UnkStruct_fieldmap_021EC760)));
+    MapObjectAnimManager *v0 = MapObject_InitUnk108(mapObj, (sizeof(MapObjectAnimManager)));
     v0->unk_00 = FieldMap_021F2438(mapObj);
 }
 
 void FieldMap_021EC7D0(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC760 *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectAnimManager *v0 = MapObject_GetUnk108(mapObj);
     GF_ASSERT(v0->unk_00 == NULL);
     v0->unk_00 = FieldMap_021F2438(mapObj);
 }
 
 void FieldMap_021EC7F0(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC760 *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectAnimManager *v0 = MapObject_GetUnk108(mapObj);
     FieldMap_021F247C(v0->unk_00);
     v0->unk_00 = NULL;
 }
 
 static void FieldMap_021EC804(Billboard *param0, void *param1)
 {
-    UnkStruct_fieldmap_021EC804 *v0 = param1;
+    DistWorldMespritBillboard *v0 = param1;
     NNSG3dResMdl *v1 = Billboard_GetModel(param0);
 
     NNS_G3dMdlUseMdlAlpha(v1);
@@ -1628,7 +1628,7 @@ static void FieldMap_021EC804(Billboard *param0, void *param1)
 
 void FieldMap_021EC824(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC804 *v0 = MapObject_InitUnk108(mapObj, sizeof(UnkStruct_fieldmap_021EC804));
+    DistWorldMespritBillboard *v0 = MapObject_InitUnk108(mapObj, sizeof(DistWorldMespritBillboard));
     v0->unk_02 = -1;
 
     FieldMap_021ECF04(mapObj, &v0->unk_04);
@@ -1641,13 +1641,13 @@ void FieldMap_021EC824(MapObject *mapObj)
 
 void FieldMap_021EC858(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC804 *v0 = MapObject_GetUnk108(mapObj);
+    DistWorldMespritBillboard *v0 = MapObject_GetUnk108(mapObj);
     FieldMap_021ECFA4(mapObj, &v0->unk_04);
 }
 
 void FieldMap_021EC86C(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC804 *v0 = MapObject_GetUnk108(mapObj);
+    DistWorldMespritBillboard *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_04 != NULL) {
         FieldMap_021ED01C(v0->unk_04, &v0->unk_08);
@@ -1660,7 +1660,7 @@ void FieldMap_021EC86C(MapObject *mapObj)
 void FieldMap_021EC898(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EB2EC *v1 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboard *v1 = MapObject_GetUnk108(mapObj);
 
     if (FieldMap_021EDD94(mapObj) == 1) {
         return;
@@ -1681,7 +1681,7 @@ void FieldMap_021EC898(MapObject *mapObj)
 void FieldMap_021EC8EC(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EC804 *v2;
+    DistWorldMespritBillboard *v2;
     Billboard *v3;
 
     v2 = MapObject_GetUnk108(mapObj);
@@ -1710,7 +1710,7 @@ void FieldMap_021EC8EC(MapObject *mapObj)
 
 void FieldMap_021EC938(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC938 *v0 = MapObject_InitUnk108(mapObj, (sizeof(UnkStruct_fieldmap_021EC938)));
+    MapObjectBillboardOffset *v0 = MapObject_InitUnk108(mapObj, (sizeof(MapObjectBillboardOffset)));
     FieldMap_021ECF04(mapObj, &v0->unk_08);
 
     if (v0->unk_08 != NULL) {
@@ -1720,13 +1720,13 @@ void FieldMap_021EC938(MapObject *mapObj)
 
 void FieldMap_021EC95C(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC938 *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboardOffset *v0 = MapObject_GetUnk108(mapObj);
     FieldMap_021ECFA4(mapObj, &v0->unk_08);
 }
 
 void FieldMap_021EC970(MapObject *mapObj)
 {
-    UnkStruct_fieldmap_021EC938 *v0 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboardOffset *v0 = MapObject_GetUnk108(mapObj);
 
     if (v0->unk_08 != NULL) {
         FieldMap_021ED01C(v0->unk_08, &v0->unk_0C);
@@ -1739,7 +1739,7 @@ void FieldMap_021EC970(MapObject *mapObj)
 void FieldMap_021EC9A0(MapObject *mapObj)
 {
     int v0;
-    UnkStruct_fieldmap_021EC938 *v1 = MapObject_GetUnk108(mapObj);
+    MapObjectBillboardOffset *v1 = MapObject_GetUnk108(mapObj);
 
     if (FieldMap_021EDD94(mapObj) == 1) {
         return;
@@ -1759,7 +1759,7 @@ void FieldMap_021EC9A0(MapObject *mapObj)
 void FieldMap_021EC9E8(MapObject *mapObj)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021EC938 *v2;
+    MapObjectBillboardOffset *v2;
     Billboard *v3;
 
     v2 = MapObject_GetUnk108(mapObj);

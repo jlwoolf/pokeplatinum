@@ -7,7 +7,7 @@
 #include "field/field_system_sub2_t.h"
 #include "fieldmap/fieldmap_021D1A94.h"
 #include "fieldmap/fieldmap_021D5EB8.h"
-#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
+#include "fieldmap/struct_field_effect_decl.h"
 #include "field_events/struct_field_effect.h"
 #include "field_events/wild_encounters.h"
 
@@ -29,36 +29,36 @@ typedef struct {
     int unk_08;
     int unk_0C;
     int unk_10;
-} UnkStruct_fieldmap_021F02B8;
+} FadeInterpolation;
 
 typedef struct {
-    UnkStruct_fieldmap_021F02B8 unk_00;
+    FadeInterpolation unk_00;
     BOOL unk_14;
-} UnkStruct_fieldmap_021F013C;
+} BgFadeEffect;
 
 typedef struct {
     void *unk_00;
     NNSG2dPaletteData *unk_04;
     u16 unk_08[16];
-    UnkStruct_fieldmap_021F02B8 unk_28;
+    FadeInterpolation unk_28;
     BOOL unk_3C;
-} UnkStruct_fieldmap_021F007C;
+} PaletteFadeEffect;
 
-typedef struct UnkStruct_fieldmap_021F0468_t {
-    UnkStruct_fieldmap_021D1BEC *unk_00;
+typedef struct SweetScentTask_t {
+    FieldEffect *unk_00;
     BOOL unk_04;
     BOOL unk_08;
     u16 unk_0C;
     s16 unk_0E;
-} UnkStruct_fieldmap_021F0468;
+} SweetScentTask;
 
 static void FieldMap_021F0260(BgConfig *param0);
-static void FieldMap_021F02B8(UnkStruct_fieldmap_021F02B8 *param0, int param1, int param2, int param3);
-static BOOL FieldMap_021F02C8(UnkStruct_fieldmap_021F02B8 *param0);
+static void FieldMap_021F02B8(FadeInterpolation *param0, int param1, int param2, int param3);
+static BOOL FieldMap_021F02C8(FadeInterpolation *param0);
 
-static void FieldMap_021F007C(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F007C(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
-    UnkStruct_fieldmap_021F007C *v0 = param2;
+    PaletteFadeEffect *v0 = param2;
 
     v0->unk_00 = Graphics_GetPlttData(NARC_INDEX_DATA__WEATHER_SYS, 55, &v0->unk_04, HEAP_ID_FIELD1);
     v0->unk_3C = 0;
@@ -70,9 +70,9 @@ static void FieldMap_021F007C(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *
     Sound_PlayEffect(SEQ_SE_DP_FW230_sseq);
 }
 
-static void FieldMap_021F00BC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F00BC(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
-    UnkStruct_fieldmap_021F007C *v0 = param2;
+    PaletteFadeEffect *v0 = param2;
 
     v0->unk_00 = Graphics_GetPlttData(NARC_INDEX_DATA__WEATHER_SYS, 55, &v0->unk_04, HEAP_ID_FIELD1);
     v0->unk_3C = 0;
@@ -82,16 +82,16 @@ static void FieldMap_021F00BC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *
     v0->unk_3C = 0;
 }
 
-static void FieldMap_021F00E4(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F00E4(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
-    UnkStruct_fieldmap_021F007C *v0 = param2;
+    PaletteFadeEffect *v0 = param2;
     Heap_Free(v0->unk_00);
 }
 
-static void FieldMap_021F00F0(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F00F0(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     BOOL v0;
-    UnkStruct_fieldmap_021F007C *v1 = param2;
+    PaletteFadeEffect *v1 = param2;
 
     if (v1->unk_3C == 1) {
         return;
@@ -107,9 +107,9 @@ static void FieldMap_021F00F0(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *
     Bg_LoadPalette(BG_LAYER_MAIN_2, v1->unk_08, PALETTE_SIZE_BYTES, PLTT_OFFSET(6));
 }
 
-static void FieldMap_021F013C(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F013C(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
-    UnkStruct_fieldmap_021F013C *v0 = param2;
+    BgFadeEffect *v0 = param2;
 
     FieldMap_021F0260(fieldSystem->bgConfig);
     FieldMap_021F02B8(&v0->unk_00, 0, 10, 19);
@@ -123,9 +123,9 @@ static void FieldMap_021F013C(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *
     Sound_PlayEffect(SEQ_SE_DP_FW230_sseq);
 }
 
-static void FieldMap_021F0188(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F0188(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
-    UnkStruct_fieldmap_021F013C *v0 = param2;
+    BgFadeEffect *v0 = param2;
 
     FieldMap_021F0260(fieldSystem->bgConfig);
     FieldMap_021F02B8(&v0->unk_00, 10, 0, 15);
@@ -135,15 +135,15 @@ static void FieldMap_021F0188(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *
     G2_SetBlendAlpha((GX_PLANEMASK_BG2), GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BD, 10, 16 - 10);
 }
 
-static void FieldMap_021F01BC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F01BC(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     return;
 }
 
-static void FieldMap_021F01C0(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F01C0(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     BOOL v0;
-    UnkStruct_fieldmap_021F013C *v1 = param2;
+    BgFadeEffect *v1 = param2;
 
     if (v1->unk_14 == 1) {
         return;
@@ -158,81 +158,81 @@ static void FieldMap_021F01C0(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *
     G2_ChangeBlendAlpha(v1->unk_00.unk_00, 16 - v1->unk_00.unk_00);
 }
 
-static void FieldMap_021F01EC(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void FieldMap_021F01EC(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     return;
 }
 
-UnkStruct_fieldmap_021D1BEC *FieldMap_021F01F0(FieldSystem *fieldSystem)
+FieldEffect *FieldMap_021F01F0(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
-        sizeof(UnkStruct_fieldmap_021F013C),
+        sizeof(BgFadeEffect),
         FieldMap_021F013C,
         FieldMap_021F01BC,
         FieldMap_021F01C0,
         FieldMap_021F01EC
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-UnkStruct_fieldmap_021D1BEC *FieldMap_021F0204(FieldSystem *fieldSystem)
+FieldEffect *FieldMap_021F0204(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
-        sizeof(UnkStruct_fieldmap_021F013C),
+        sizeof(BgFadeEffect),
         FieldMap_021F0188,
         FieldMap_021F01BC,
         FieldMap_021F01C0,
         FieldMap_021F01EC
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void FieldMap_021F0218(UnkStruct_fieldmap_021D1BEC *param0)
+void FieldMap_021F0218(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
 
-BOOL FieldMap_021F0220(UnkStruct_fieldmap_021D1BEC *param0)
+BOOL FieldMap_021F0220(FieldEffect *param0)
 {
-    UnkStruct_fieldmap_021F013C *v0 = FieldMap_021D1C2C(param0);
+    BgFadeEffect *v0 = FieldMap_021D1C2C(param0);
     return v0->unk_14;
 }
 
-UnkStruct_fieldmap_021D1BEC *FieldMap_021F022C(FieldSystem *fieldSystem)
+FieldEffect *FieldMap_021F022C(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
-        sizeof(UnkStruct_fieldmap_021F007C),
+        sizeof(PaletteFadeEffect),
         FieldMap_021F007C,
         FieldMap_021F00E4,
         FieldMap_021F00F0,
         FieldMap_021F01EC
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-UnkStruct_fieldmap_021D1BEC *FieldMap_021F0240(FieldSystem *fieldSystem)
+FieldEffect *FieldMap_021F0240(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
-        sizeof(UnkStruct_fieldmap_021F007C),
+        sizeof(PaletteFadeEffect),
         FieldMap_021F00BC,
         FieldMap_021F00E4,
         FieldMap_021F00F0,
         FieldMap_021F01EC
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-BOOL FieldMap_021F0254(UnkStruct_fieldmap_021D1BEC *param0)
+BOOL FieldMap_021F0254(FieldEffect *param0)
 {
-    UnkStruct_fieldmap_021F007C *v0 = FieldMap_021D1C2C(param0);
+    PaletteFadeEffect *v0 = FieldMap_021D1C2C(param0);
     return v0->unk_3C;
 }
 
@@ -251,7 +251,7 @@ static void FieldMap_021F0260(BgConfig *param0)
     Bg_FillTilemap(param0, 2, (6 << 12) | 1);
 }
 
-static void FieldMap_021F02B8(UnkStruct_fieldmap_021F02B8 *param0, int param1, int param2, int param3)
+static void FieldMap_021F02B8(FadeInterpolation *param0, int param1, int param2, int param3)
 {
     param0->unk_00 = param1;
     param0->unk_04 = param1;
@@ -260,7 +260,7 @@ static void FieldMap_021F02B8(UnkStruct_fieldmap_021F02B8 *param0, int param1, i
     param0->unk_0C = 0;
 }
 
-static BOOL FieldMap_021F02C8(UnkStruct_fieldmap_021F02B8 *param0)
+static BOOL FieldMap_021F02C8(FadeInterpolation *param0)
 {
     int v0 = param0->unk_08 * param0->unk_0C;
     v0 = v0 / param0->unk_10;
@@ -404,7 +404,7 @@ static BOOL FieldMap_021F0438(FieldSystem *fieldSystem)
     return 1;
 }
 
-static void FieldMap_021F0468(UnkStruct_fieldmap_021F0468 *param0)
+static void FieldMap_021F0468(SweetScentTask *param0)
 {
     if (param0->unk_00) {
         FieldMap_021F0218(param0->unk_00);
@@ -416,13 +416,13 @@ static void FieldMap_021F0468(UnkStruct_fieldmap_021F0468 *param0)
 
 u32 FieldMap_021F0484(void)
 {
-    return sizeof(UnkStruct_fieldmap_021F0468);
+    return sizeof(SweetScentTask);
 }
 
 BOOL FieldMap_021F0488(FieldTask *param0)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
-    UnkStruct_fieldmap_021F0468 *v1 = FieldTask_GetEnv(param0);
+    SweetScentTask *v1 = FieldTask_GetEnv(param0);
     BOOL v2;
 
     switch (v1->unk_0C) {

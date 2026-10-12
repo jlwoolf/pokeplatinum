@@ -4,23 +4,23 @@
 #include "applications/poketch/poketch_system.h"
 #include "fieldmap/hblank_system.h"
 #include "fieldmap/map_name_popup.h"
-#include "fieldmap/struct_fieldmap_021D1A94_decl.h"
-#include "fieldmap/struct_fieldmap_021D5EF8_decl.h"
-#include "fieldmap/struct_fieldmap_021EF4F8_decl.h"
+#include "fieldmap/struct_field_effect_system_decl.h"
+#include "fieldmap/struct_field_map_weather_decl.h"
+#include "fieldmap/struct_poison_effect_decl.h"
 #include "fieldmap/texture_resource_manager.h"
 
 #include "berry_patch_manager.h"
 
 struct FieldSystem_sub2_t {
     BOOL unk_00;
-    UnkStruct_fieldmap_021D1A94 *unk_04;
+    FieldEffectSystem *unk_04;
     MapNamePopUp *mapPopup;
-    UnkStruct_fieldmap_021D5EF8 *unk_0C;
+    FieldMapWeather *unk_0C;
     FieldTextureManager *unk_10;
     PoketchSystem *poketchSys;
     BerryPatchManager *berryPatchManager;
     HBlankSystem *hBlankSystem;
-    UnkStruct_fieldmap_021EF4F8 *unk_20;
+    PoisonEffect *unk_20;
     void *dynamicMapFeaturesData;
 };
 

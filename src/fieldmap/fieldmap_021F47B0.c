@@ -24,7 +24,7 @@ typedef struct {
     FieldEffectManager *unk_04;
     UnkStruct_021F47DC *unk_08;
     const MapObject *unk_0C;
-} UnkStruct_fieldmap_021F4840;
+} FieldEffectRenderer20Params;
 
 typedef struct {
     s8 unk_00;
@@ -34,7 +34,7 @@ typedef struct {
     VecFx32 unk_04;
     VecFx32 unk_10;
     Simple3DRotationAngles unk_1C;
-    UnkStruct_fieldmap_021F4840 unk_24;
+    FieldEffectRenderer20Params unk_24;
     Simple3DRenderObj unk_34;
     Simple3DAnimation *unk_88;
 } UnkStruct_021F487C;
@@ -111,7 +111,7 @@ OverworldAnimManager *FieldMap_021F4840(FieldEffectManager *param0, const MapObj
 {
     int v0;
     OverworldAnimManager *v1;
-    UnkStruct_fieldmap_021F4840 v2;
+    FieldEffectRenderer20Params v2;
 
     v2.unk_00 = param2;
     v2.unk_04 = param0;
@@ -127,7 +127,7 @@ OverworldAnimManager *FieldMap_021F4840(FieldEffectManager *param0, const MapObj
 static int FieldMap_021F487C(OverworldAnimManager *param0, void *param1)
 {
     UnkStruct_021F487C *v0 = param1;
-    const UnkStruct_fieldmap_021F4840 *v1 = OverworldAnimManager_GetUserData(param0);
+    const FieldEffectRenderer20Params *v1 = OverworldAnimManager_GetUserData(param0);
 
     v0->unk_24 = *v1;
     v0->unk_00 = MapObject_GetFacingDir(v1->unk_0C);

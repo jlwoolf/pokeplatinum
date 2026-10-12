@@ -26,7 +26,7 @@
 
 #include "res/field/props/models/prop_models.naix"
 
-typedef struct UnkStruct_fieldmap_021D432C_t {
+typedef struct DoorAnimation_t {
     int unk_00;
     TerrainCollisionHitbox unk_04;
     int unk_14;
@@ -36,39 +36,39 @@ typedef struct UnkStruct_fieldmap_021D432C_t {
     u8 unk_1E;
     BOOL unk_20;
     u16 unk_24;
-} UnkStruct_fieldmap_021D432C;
+} DoorAnimation;
 
-typedef struct UnkStruct_fieldmap_021D4E00_t {
+typedef struct DoorAnimationEnv_t {
     int unk_00;
     u8 unk_04;
     BOOL unk_08;
     u16 unk_0C;
-} UnkStruct_fieldmap_021D4E00;
+} DoorAnimationEnv;
 
 static void FieldMap_021D4798(Camera *camera, u8 *param1);
 static void FieldMap_021D47DC(Camera *camera, u8 *param1);
 static u8 DoorAnimation_GetSoundEffectType(const int doorModelID);
 
-UnkStruct_fieldmap_021D432C *FieldMap_021D431C(void)
+DoorAnimation *FieldMap_021D431C(void)
 {
-    UnkStruct_fieldmap_021D432C *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021D432C));
+    DoorAnimation *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(DoorAnimation));
     v0->unk_00 = 0;
 
     return v0;
 }
 
-void FieldMap_021D432C(UnkStruct_fieldmap_021D432C *param0)
+void FieldMap_021D432C(DoorAnimation *param0)
 {
     Heap_Free(param0);
 }
 
-void FieldMap_021D4334(const int param0, const int param1, UnkStruct_fieldmap_021D432C *param2)
+void FieldMap_021D4334(const int param0, const int param1, DoorAnimation *param2)
 {
     param2->unk_14 = param0;
     param2->unk_18 = param1;
 }
 
-BOOL FieldMap_021D433C(FieldSystem *fieldSystem, UnkStruct_fieldmap_021D432C *param1)
+BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
 {
     MapObject *v0;
 
@@ -227,7 +227,7 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, UnkStruct_fieldmap_021D432C *pa
     return 0;
 }
 
-BOOL FieldMap_021D453C(FieldSystem *fieldSystem, UnkStruct_fieldmap_021D432C *param1)
+BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
 {
     MapObject *v0;
 
@@ -476,7 +476,7 @@ static u8 DoorAnimation_GetSoundEffectType(const int doorModelID)
     return DOOR_SOUND_EFFECT_TYPE_HINGED;
 }
 
-BOOL FieldMap_021D4858(FieldSystem *fieldSystem, UnkStruct_fieldmap_021D432C *param1, const u8 param2)
+BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8 param2)
 {
     MapObject *v0;
 
@@ -593,7 +593,7 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, UnkStruct_fieldmap_021D432C *pa
     return 0;
 }
 
-BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, UnkStruct_fieldmap_021D432C *param1, const u8 param2)
+BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8 param2)
 {
     MapObject *v0;
 
@@ -864,9 +864,9 @@ void FieldMap_021D4D78(const int param0, const int param1, const int param2, Fie
     }
 }
 
-UnkStruct_fieldmap_021D4E00 *FieldMap_021D4E00(void)
+DoorAnimationEnv *FieldMap_021D4E00(void)
 {
-    UnkStruct_fieldmap_021D4E00 *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(UnkStruct_fieldmap_021D4E00));
+    DoorAnimationEnv *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(DoorAnimationEnv));
     v0->unk_00 = 0;
 
     return v0;
@@ -876,7 +876,7 @@ BOOL FieldMap_021D4E10(FieldTask *param0)
 {
     MapObject *v0;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
-    UnkStruct_fieldmap_021D4E00 *v2 = FieldTask_GetEnv(param0);
+    DoorAnimationEnv *v2 = FieldTask_GetEnv(param0);
 
     switch (v2->unk_00) {
     case 0:
@@ -933,7 +933,7 @@ BOOL FieldMap_021D4E10(FieldTask *param0)
 BOOL FieldMap_021D4F14(FieldTask *param0)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
-    UnkStruct_fieldmap_021D4E00 *v1 = FieldTask_GetEnv(param0);
+    DoorAnimationEnv *v1 = FieldTask_GetEnv(param0);
 
     switch (v1->unk_00) {
     case 0: {
@@ -970,7 +970,7 @@ BOOL FieldMap_021D4F14(FieldTask *param0)
 BOOL FieldMap_021D4FA0(FieldTask *param0)
 {
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
-    UnkStruct_fieldmap_021D4E00 *v1 = FieldTask_GetEnv(param0);
+    DoorAnimationEnv *v1 = FieldTask_GetEnv(param0);
 
     switch (v1->unk_00) {
     case 0: {
@@ -1002,7 +1002,7 @@ BOOL FieldMap_021D5020(FieldTask *param0)
 {
     MapObject *v0;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
-    UnkStruct_fieldmap_021D4E00 *v2 = FieldTask_GetEnv(param0);
+    DoorAnimationEnv *v2 = FieldTask_GetEnv(param0);
 
     switch (v2->unk_00) {
     case 0: {
@@ -1081,7 +1081,7 @@ BOOL FieldMap_021D5150(FieldTask *param0)
 {
     MapObject *v0;
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
-    UnkStruct_fieldmap_021D4E00 *v2 = FieldTask_GetEnv(param0);
+    DoorAnimationEnv *v2 = FieldTask_GetEnv(param0);
 
     switch (v2->unk_00) {
     case 0: {

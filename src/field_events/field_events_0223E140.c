@@ -15,7 +15,7 @@
 #include "fieldmap/fieldmap.h"
 #include "fieldmap/motion_blur.h"
 #include "fieldmap/fieldmap_021D1A94.h"
-#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
+#include "fieldmap/struct_field_effect_decl.h"
 #include "field_events/field_effect_funcptr.h"
 #include "field_events/struct_field_effect.h"
 #include "field_events/struct_screen_transition_decl.h"
@@ -618,7 +618,7 @@ void ScreenTransition_StartWithSound(FieldTask *param0)
     FieldTask_InitCall(param0, ScreenTransition_UpdateWithSound, v1);
 }
 
-static void ClimaxSequence_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxSequence_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxSequence *v0 = param2;
 
@@ -628,13 +628,13 @@ static void ClimaxSequence_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem
     v0->unk_00 = 0;
 }
 
-static void ClimaxSequence_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxSequence_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxSequence *v0 = param2;
     ClimaxObject_Free(v0->unk_48);
 }
 
-static void ClimaxSequence_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxSequence_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxSequence *v0 = param2;
     BOOL v1[2];
@@ -729,7 +729,7 @@ static void ClimaxSequence_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSyst
     }
 }
 
-static void ClimaxSequence_Cleanup(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxSequence_Cleanup(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxSequence *v0 = param2;
 
@@ -740,7 +740,7 @@ static void ClimaxSequence_Cleanup(UnkStruct_fieldmap_021D1BEC *param0, FieldSys
     }
 }
 
-UnkStruct_fieldmap_021D1BEC *ClimaxSequence_New(FieldSystem *fieldSystem)
+FieldEffect *ClimaxSequence_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
@@ -750,16 +750,16 @@ UnkStruct_fieldmap_021D1BEC *ClimaxSequence_New(FieldSystem *fieldSystem)
         ClimaxSequence_Update,
         ClimaxSequence_Cleanup
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void ClimaxSequence_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void ClimaxSequence_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
 
-BOOL ClimaxSequence_IsFinished(UnkStruct_fieldmap_021D1BEC *param0)
+BOOL ClimaxSequence_IsFinished(FieldEffect *param0)
 {
     ClimaxSequence *v0 = FieldMap_021D1C2C(param0);
 
@@ -815,7 +815,7 @@ static BOOL ClimaxFade_Update(ClimaxFade *param0)
     return 0;
 }
 
-static void ClimaxObjectEffect_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxObjectEffect_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxObjectEffect *v0 = param2;
     MapObject *v1;
@@ -832,25 +832,25 @@ static void ClimaxObjectEffect_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSy
     ClimaxParticles_SetPosition(v0->unk_00, v2, v3, v4);
 }
 
-static void ClimaxObjectEffect_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxObjectEffect_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxObjectEffect *v0 = param2;
     ClimaxParticles_Delete(v0->unk_00);
 }
 
-static void ClimaxObjectEffect_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxObjectEffect_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxObjectEffect *v0 = param2;
     ClimaxParticles_UpdatePublic(v0->unk_00);
 }
 
-static void ClimaxObjectEffect_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxObjectEffect_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxObjectEffect *v0 = param2;
     ClimaxParticles_DrawPublic(v0->unk_00);
 }
 
-UnkStruct_fieldmap_021D1BEC *ClimaxObjectEffect_New(FieldSystem *fieldSystem)
+FieldEffect *ClimaxObjectEffect_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
@@ -860,16 +860,16 @@ UnkStruct_fieldmap_021D1BEC *ClimaxObjectEffect_New(FieldSystem *fieldSystem)
         ClimaxObjectEffect_Update,
         ClimaxObjectEffect_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void ClimaxObjectEffect_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void ClimaxObjectEffect_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
 
-static void ClimaxScene_InitVariant0(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxScene_InitVariant0(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxScene *v0 = param2;
     VecFx32 v1;
@@ -912,7 +912,7 @@ static void ClimaxScene_InitVariant0(UnkStruct_fieldmap_021D1BEC *param0, FieldS
     ClimaxParticles_SetPositionVariant0(v0->unk_08, v1.x, v1.y, v1.z);
 }
 
-static void ClimaxScene_InitVariant1(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxScene_InitVariant1(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxScene *v0 = param2;
     VecFx32 v1;
@@ -946,7 +946,7 @@ static void ClimaxScene_InitVariant1(UnkStruct_fieldmap_021D1BEC *param0, FieldS
     ClimaxParticles_SetPositionVariant1(v0->unk_08, v1.x, v1.y, v1.z);
 }
 
-static void ClimaxScene_InitVariant2(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxScene_InitVariant2(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxScene *v0 = param2;
     VecFx32 v1;
@@ -980,7 +980,7 @@ static void ClimaxScene_InitVariant2(UnkStruct_fieldmap_021D1BEC *param0, FieldS
     ClimaxParticles_SetPositionVariant2(v0->unk_08, v1.x, v1.y, v1.z);
 }
 
-static void ClimaxScene_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxScene_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxScene *v0 = param2;
 
@@ -988,7 +988,7 @@ static void ClimaxScene_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *f
     ClimaxParticles_Delete2(v0->unk_08);
 }
 
-static void ClimaxScene_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxScene_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxScene *v0 = param2;
 
@@ -996,7 +996,7 @@ static void ClimaxScene_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem 
     ClimaxParticles_Update2(v0->unk_08);
 }
 
-static void ClimaxScene_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxScene_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxScene *v0 = param2;
 
@@ -1004,7 +1004,7 @@ static void ClimaxScene_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *f
     ClimaxParticles_Draw2(v0->unk_08);
 }
 
-UnkStruct_fieldmap_021D1BEC *ClimaxScene_New(FieldSystem *fieldSystem, u32 param1)
+FieldEffect *ClimaxScene_New(FieldSystem *fieldSystem, u32 param1)
 {
     static FieldEffectTemplate v0 = {
         1024,
@@ -1019,7 +1019,7 @@ UnkStruct_fieldmap_021D1BEC *ClimaxScene_New(FieldSystem *fieldSystem, u32 param
         ClimaxScene_InitVariant1,
         ClimaxScene_InitVariant2
     };
-    UnkStruct_fieldmap_021D1BEC *v2;
+    FieldEffect *v2;
 
     v0.unk_08 = v1[param1];
     v2 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
@@ -1058,7 +1058,7 @@ static void ClimaxActor_UnloadModel(ClimaxActor *param0)
     Easy3DAnim_Release(&param0->unk_AC, &param0->unk_C0);
 }
 
-static void ClimaxActor_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxActor_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxActor *v0 = param2;
 
@@ -1081,7 +1081,7 @@ static void ClimaxActor_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *f
     v0->unk_00 = 0;
 }
 
-static void ClimaxActor_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxActor_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxActor *v0 = param2;
     ClimaxActorManager_Free(v0->unk_08);
@@ -1574,7 +1574,7 @@ static BOOL ClimaxActor_UpdateAnimation(ClimaxActor *param0)
     return 0;
 }
 
-static void ClimaxActor_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxActor_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxActor *v0 = param2;
     u32 v1[2];
@@ -1669,33 +1669,33 @@ static void ClimaxActor_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem 
     }
 }
 
-static void ClimaxActor_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void ClimaxActor_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     ClimaxActor *v0 = param2;
     ClimaxActorManager_Draw(v0->unk_08);
 }
 
-UnkStruct_fieldmap_021D1BEC *ClimaxActor_New(FieldSystem *fieldSystem)
+FieldEffect *ClimaxActor_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024, sizeof(ClimaxActor), ClimaxActor_Init, ClimaxActor_Free, ClimaxActor_Update, ClimaxActor_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void ClimaxActor_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void ClimaxActor_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
 
-void ClimaxActor_Finish(UnkStruct_fieldmap_021D1BEC *param0)
+void ClimaxActor_Finish(FieldEffect *param0)
 {
     ClimaxActor *v0 = FieldMap_021D1C2C(param0);
     v0->unk_00 = 3;
 }
 
-u32 ClimaxActor_GetState(UnkStruct_fieldmap_021D1BEC *param0)
+u32 ClimaxActor_GetState(FieldEffect *param0)
 {
     ClimaxActor *v0 = FieldMap_021D1C2C(param0);
 

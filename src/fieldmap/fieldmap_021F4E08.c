@@ -13,15 +13,15 @@ typedef struct {
     FieldEffectManager *unk_00;
     Simple3DModel unk_04[33];
     Simple3DRenderObj unk_298[33];
-} UnkStruct_fieldmap_021F4E38;
+} FieldEffectRenderer03Context;
 
 typedef struct {
     int unk_00;
     int unk_04;
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_0C;
-    UnkStruct_fieldmap_021F4E38 *unk_10;
-} UnkStruct_fieldmap_021F4EAC;
+    FieldEffectRenderer03Context *unk_10;
+} FieldEffectRenderer03Params;
 
 typedef struct {
     NNSG3dRenderObj unk_00;
@@ -31,17 +31,17 @@ typedef struct {
     int unk_60;
     int unk_64;
     int unk_68;
-    UnkStruct_fieldmap_021F4EAC unk_6C;
-} UnkStruct_fieldmap_021F4F18;
+    FieldEffectRenderer03Params unk_6C;
+} FieldEffectRenderer03Anim;
 
-static void FieldMap_LoadFloorTextures(UnkStruct_fieldmap_021F4E38 *param0);
-static void FieldMap_021F4E94(UnkStruct_fieldmap_021F4E38 *param0);
+static void FieldMap_LoadFloorTextures(FieldEffectRenderer03Context *param0);
+static void FieldMap_021F4E94(FieldEffectRenderer03Context *param0);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200A0C;
 
 void *FieldMap_021F4E08(FieldEffectManager *param0)
 {
-    UnkStruct_fieldmap_021F4E38 *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(UnkStruct_fieldmap_021F4E38)), 0, 0);
+    FieldEffectRenderer03Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer03Context)), 0, 0);
     v0->unk_00 = param0;
 
     FieldMap_LoadFloorTextures(v0);
@@ -51,13 +51,13 @@ void *FieldMap_021F4E08(FieldEffectManager *param0)
 
 void FieldMap_021F4E28(void *param0)
 {
-    UnkStruct_fieldmap_021F4E38 *v0 = param0;
+    FieldEffectRenderer03Context *v0 = param0;
 
     FieldMap_021F4E94(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_LoadFloorTextures(UnkStruct_fieldmap_021F4E38 *param0)
+static void FieldMap_LoadFloorTextures(FieldEffectRenderer03Context *param0)
 {
     int i;
 
@@ -70,7 +70,7 @@ static void FieldMap_LoadFloorTextures(UnkStruct_fieldmap_021F4E38 *param0)
     Simple3D_CreateRenderObject(&param0->unk_298[i], &param0->unk_04[i]);
 }
 
-static void FieldMap_021F4E94(UnkStruct_fieldmap_021F4E38 *param0)
+static void FieldMap_021F4E94(FieldEffectRenderer03Context *param0)
 {
     int v0;
 
@@ -83,7 +83,7 @@ OverworldAnimManager *FieldMap_DrawFloorTexture(FieldSystem *fieldSystem, int x,
 {
     FieldEffectManager *v3 = fieldSystem->fieldEffMan;
 
-    UnkStruct_fieldmap_021F4EAC v2;
+    FieldEffectRenderer03Params v2;
     v2.unk_0C = v3;
     v2.unk_10 = FieldEffectManager_GetRendererContext(v3, 3);
     v2.unk_00 = x;
@@ -98,7 +98,7 @@ OverworldAnimManager *FieldMap_DrawFloorTexture(FieldSystem *fieldSystem, int x,
     OverworldAnimManager *v5 = FieldEffectManager_InitAnimManager(v3, &Unk_FieldMap_02200A0C, &v4, 0, &v2, 0xff);
 
     if (v5) {
-        UnkStruct_fieldmap_021F4F18 *v6 = OverworldAnimManager_GetFuncsContext(v5);
+        FieldEffectRenderer03Anim *v6 = OverworldAnimManager_GetFuncsContext(v5);
         v6->unk_54 = textureIdx;
         v6->currentSize = size;
         v6->finalSize = size;
@@ -112,7 +112,7 @@ OverworldAnimManager *FieldMap_DrawGrowingFloorTexture(FieldSystem *fieldSystem,
     OverworldAnimManager *v1 = FieldMap_DrawFloorTexture(fieldSystem, x, z, finalSize, textureIdx);
 
     if (v1) {
-        UnkStruct_fieldmap_021F4F18 *v0 = OverworldAnimManager_GetFuncsContext(v1);
+        FieldEffectRenderer03Anim *v0 = OverworldAnimManager_GetFuncsContext(v1);
         v0->currentSize = 0;
         v0->finalSize = finalSize;
     }
@@ -122,8 +122,8 @@ OverworldAnimManager *FieldMap_DrawGrowingFloorTexture(FieldSystem *fieldSystem,
 
 static int FieldMap_021F4F44(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F4F18 *v0;
-    const UnkStruct_fieldmap_021F4EAC *v1;
+    FieldEffectRenderer03Anim *v0;
+    const FieldEffectRenderer03Params *v1;
     VecFx32 v2;
 
     v0 = param1;
@@ -147,7 +147,7 @@ static void FieldMap_021F4F88(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F4F8C(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F4F18 *v0 = param1;
+    FieldEffectRenderer03Anim *v0 = param1;
 
     if (v0->currentSize < v0->finalSize) {
         v0->currentSize += 0.2;
@@ -156,7 +156,7 @@ static void FieldMap_021F4F8C(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F4FB8(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F4F18 *v0 = param1;
+    FieldEffectRenderer03Anim *v0 = param1;
 
     {
         VecFx32 v1;
@@ -178,7 +178,7 @@ static void FieldMap_021F4FB8(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200A0C = {
-    (sizeof(UnkStruct_fieldmap_021F4F18)),
+    (sizeof(FieldEffectRenderer03Anim)),
     FieldMap_021F4F44,
     FieldMap_021F4F88,
     FieldMap_021F4F8C,

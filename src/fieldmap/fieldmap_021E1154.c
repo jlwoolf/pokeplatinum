@@ -25,7 +25,7 @@ typedef struct {
     FieldSystem *fieldSystem;
     PlayerAvatar *playerAvatar;
     MapObject *unk_14;
-} UnkStruct_fieldmap_021E11B0;
+} SlideMovementTask;
 
 static void FieldMap_021E11B0(FieldSystem *fieldSystem, PlayerAvatar *playerAvatar, int param2);
 static BOOL FieldMap_021E120C(FieldTask *param0);
@@ -56,7 +56,7 @@ int FieldMap_021E1154(FieldSystem *fieldSystem, PlayerAvatar *playerAvatar, int 
 
 static void FieldMap_021E11B0(FieldSystem *fieldSystem, PlayerAvatar *playerAvatar, int param2)
 {
-    UnkStruct_fieldmap_021E11B0 *v0 = FieldMap_021E132C(sizeof(UnkStruct_fieldmap_021E11B0));
+    SlideMovementTask *v0 = FieldMap_021E132C(sizeof(SlideMovementTask));
 
     v0->fieldSystem = fieldSystem;
     v0->playerAvatar = playerAvatar;
@@ -84,7 +84,7 @@ static int FieldMap_021E11E0(int param0)
 
 static BOOL FieldMap_021E120C(FieldTask *param0)
 {
-    UnkStruct_fieldmap_021E11B0 *v0 = FieldTask_GetEnv(param0);
+    SlideMovementTask *v0 = FieldTask_GetEnv(param0);
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->playerAvatar);
     u8 v2 = MapObject_GetCurrTileBehavior(v1);
 

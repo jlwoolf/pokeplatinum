@@ -16,27 +16,27 @@ typedef struct {
     FieldEffectManager *unk_00;
     Simple3DModel unk_04;
     Simple3DAnimation unk_18;
-} UnkStruct_fieldmap_021F2BFC;
+} FieldEffectRenderer12Context;
 
 typedef struct {
     FieldEffectManager *unk_00;
-    UnkStruct_fieldmap_021F2BFC *unk_04;
-} UnkStruct_fieldmap_021F2C38;
+    FieldEffectRenderer12Context *unk_04;
+} FieldEffectRenderer12Params;
 
 typedef struct {
     Simple3DAnimation unk_00;
     Simple3DRenderObj unk_24;
-    UnkStruct_fieldmap_021F2C38 unk_78;
-} UnkStruct_fieldmap_021F2C98;
+    FieldEffectRenderer12Params unk_78;
+} FieldEffectRenderer12Anim;
 
-static void FieldMap_021F2BFC(UnkStruct_fieldmap_021F2BFC *param0);
-static void FieldMap_021F2C24(UnkStruct_fieldmap_021F2BFC *param0);
+static void FieldMap_021F2BFC(FieldEffectRenderer12Context *param0);
+static void FieldMap_021F2C24(FieldEffectRenderer12Context *param0);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_022004D8;
 
 void *FieldMap_021F2BD0(FieldEffectManager *param0)
 {
-    UnkStruct_fieldmap_021F2BFC *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(UnkStruct_fieldmap_021F2BFC)), 0, 0);
+    FieldEffectRenderer12Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer12Context)), 0, 0);
     v0->unk_00 = param0;
 
     FieldMap_021F2BFC(v0);
@@ -45,19 +45,19 @@ void *FieldMap_021F2BD0(FieldEffectManager *param0)
 
 void FieldMap_021F2BEC(void *param0)
 {
-    UnkStruct_fieldmap_021F2BFC *v0 = param0;
+    FieldEffectRenderer12Context *v0 = param0;
 
     FieldMap_021F2C24(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_021F2BFC(UnkStruct_fieldmap_021F2BFC *param0)
+static void FieldMap_021F2BFC(FieldEffectRenderer12Context *param0)
 {
     FieldEffectManager_LoadModel(param0->unk_00, &param0->unk_04, 0, 16, 0);
     FieldEffectManager_LoadAnimation(param0->unk_00, &param0->unk_18, 0, 161, 0);
 }
 
-static void FieldMap_021F2C24(UnkStruct_fieldmap_021F2BFC *param0)
+static void FieldMap_021F2C24(FieldEffectRenderer12Context *param0)
 {
     Simple3D_FreeModel(&param0->unk_04);
     Simple3D_FreeAnimation(&param0->unk_18);
@@ -66,7 +66,7 @@ static void FieldMap_021F2C24(UnkStruct_fieldmap_021F2BFC *param0)
 void FieldMap_021F2C38(MapObject *param0, int param1, int param2, int param3)
 {
     int v0, v1;
-    UnkStruct_fieldmap_021F2C38 v2;
+    FieldEffectRenderer12Params v2;
     VecFx32 v3;
 
     v2.unk_00 = MapObject_GetFieldEffectManager(param0);
@@ -85,8 +85,8 @@ void FieldMap_021F2C38(MapObject *param0, int param1, int param2, int param3)
 
 static int FieldMap_021F2C98(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F2C98 *v0 = param1;
-    const UnkStruct_fieldmap_021F2C38 *v1 = OverworldAnimManager_GetUserData(param0);
+    FieldEffectRenderer12Anim *v0 = param1;
+    const FieldEffectRenderer12Params *v1 = OverworldAnimManager_GetUserData(param0);
 
     v0->unk_78 = *v1;
 
@@ -98,13 +98,13 @@ static int FieldMap_021F2C98(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F2CD0(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F2C98 *v0 = param1;
+    FieldEffectRenderer12Anim *v0 = param1;
     Simple3D_FreeAnimation(&v0->unk_00);
 }
 
 static void FieldMap_021F2CDC(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F2C98 *v0 = param1;
+    FieldEffectRenderer12Anim *v0 = param1;
 
     if (Simple3D_HasAnimationReachedEnd(&v0->unk_00) == 1) {
         FieldEffectManager_FinishAnimManager(param0);
@@ -117,14 +117,14 @@ static void FieldMap_021F2CDC(OverworldAnimManager *param0, void *param1)
 static void FieldMap_021F2D04(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021F2C98 *v1 = param1;
+    FieldEffectRenderer12Anim *v1 = param1;
 
     OverworldAnimManager_GetPosition(param0, &v0);
     Simple3D_DrawRenderObjWithPos(&v1->unk_24, &v0);
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_022004D8 = {
-    sizeof(UnkStruct_fieldmap_021F2C98),
+    sizeof(FieldEffectRenderer12Anim),
     FieldMap_021F2C98,
     FieldMap_021F2CD0,
     FieldMap_021F2CDC,

@@ -15,33 +15,33 @@
 
 typedef struct {
     FieldEffectManager *unk_00;
-} UnkStruct_fieldmap_021F3EA0;
+} FieldEffectRenderer1BContext;
 
 typedef struct {
     FieldSystem *fieldSystem;
     FieldEffectManager *unk_04;
-    UnkStruct_fieldmap_021F3EA0 *unk_08;
+    FieldEffectRenderer1BContext *unk_08;
     MapObject *unk_0C;
-} UnkStruct_fieldmap_021F3F10;
+} FieldEffectRenderer1BParams;
 
 typedef struct {
     int unk_00;
     int unk_04;
     int unk_08;
     int unk_0C;
-    UnkStruct_fieldmap_021F3F10 unk_10;
+    FieldEffectRenderer1BParams unk_10;
     Billboard *unk_20;
-} UnkStruct_fieldmap_021F3FB8;
+} FieldEffectRenderer1BAnim;
 
-static void FieldMap_021F3EA0(UnkStruct_fieldmap_021F3EA0 *param0);
-static void FieldMap_021F3EE8(UnkStruct_fieldmap_021F3EA0 *param0);
+static void FieldMap_021F3EA0(FieldEffectRenderer1BContext *param0);
+static void FieldMap_021F3EE8(FieldEffectRenderer1BContext *param0);
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_0220069C;
 const BillboardAnim Unk_FieldMap_022006B0[];
 
 void *FieldMap_021F3E74(FieldEffectManager *param0)
 {
-    UnkStruct_fieldmap_021F3EA0 *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(UnkStruct_fieldmap_021F3EA0)), 0, 0);
+    FieldEffectRenderer1BContext *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer1BContext)), 0, 0);
     v0->unk_00 = param0;
 
     FieldMap_021F3EA0(v0);
@@ -50,13 +50,13 @@ void *FieldMap_021F3E74(FieldEffectManager *param0)
 
 void FieldMap_021F3E90(void *param0)
 {
-    UnkStruct_fieldmap_021F3EA0 *v0 = param0;
+    FieldEffectRenderer1BContext *v0 = param0;
 
     FieldMap_021F3EE8(v0);
     FieldEffectManager_HeapFree(v0);
 }
 
-static void FieldMap_021F3EA0(UnkStruct_fieldmap_021F3EA0 *param0)
+static void FieldMap_021F3EA0(FieldEffectRenderer1BContext *param0)
 {
     FieldMap_021DF9E0(param0->unk_00, 9, 107);
     FieldMap_021DFA14(param0->unk_00, 9, 180);
@@ -65,7 +65,7 @@ static void FieldMap_021F3EA0(UnkStruct_fieldmap_021F3EA0 *param0)
     FieldMap_021DF864(param0->unk_00, 11, 9, 9, 10, 0, Unk_FieldMap_022006B0);
 }
 
-static void FieldMap_021F3EE8(UnkStruct_fieldmap_021F3EA0 *param0)
+static void FieldMap_021F3EE8(FieldEffectRenderer1BContext *param0)
 {
     FieldMap_021DFA08(param0->unk_00, 9);
     FieldMap_021DFA30(param0->unk_00, 9);
@@ -75,7 +75,7 @@ static void FieldMap_021F3EE8(UnkStruct_fieldmap_021F3EA0 *param0)
 
 void FieldMap_021F3F10(MapObject *param0)
 {
-    UnkStruct_fieldmap_021F3F10 v0;
+    FieldEffectRenderer1BParams v0;
     FieldEffectManager *v1;
     OverworldAnimManager *v2;
     VecFx32 v3;
@@ -98,8 +98,8 @@ void FieldMap_021F3F10(MapObject *param0)
 static int FieldMap_021F3F74(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0;
-    UnkStruct_fieldmap_021F3FB8 *v1;
-    const UnkStruct_fieldmap_021F3F10 *v2;
+    FieldEffectRenderer1BAnim *v1;
+    const FieldEffectRenderer1BParams *v2;
 
     v1 = param1;
     v2 = OverworldAnimManager_GetUserData(param0);
@@ -117,14 +117,14 @@ static int FieldMap_021F3F74(OverworldAnimManager *param0, void *param1)
 
 static void FieldMap_021F3FB8(OverworldAnimManager *param0, void *param1)
 {
-    UnkStruct_fieldmap_021F3FB8 *v0 = param1;
+    FieldEffectRenderer1BAnim *v0 = param1;
     Billboard_Delete(v0->unk_20);
 }
 
 static void FieldMap_021F3FC4(OverworldAnimManager *param0, void *param1)
 {
     int v0;
-    UnkStruct_fieldmap_021F3FB8 *v1 = param1;
+    FieldEffectRenderer1BAnim *v1 = param1;
     MapObject *v2 = v1->unk_10.unk_0C;
 
     switch (v1->unk_00) {
@@ -143,7 +143,7 @@ static void FieldMap_021F3FC4(OverworldAnimManager *param0, void *param1)
 static void FieldMap_021F3FF4(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0, v1;
-    UnkStruct_fieldmap_021F3FB8 *v2 = param1;
+    FieldEffectRenderer1BAnim *v2 = param1;
     MapObject *v3 = v2->unk_10.unk_0C;
 
     OverworldAnimManager_GetPosition(param0, &v0);
@@ -152,7 +152,7 @@ static void FieldMap_021F3FF4(OverworldAnimManager *param0, void *param1)
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_0220069C = {
-    (sizeof(UnkStruct_fieldmap_021F3FB8)),
+    (sizeof(FieldEffectRenderer1BAnim)),
     FieldMap_021F3F74,
     FieldMap_021F3FB8,
     FieldMap_021F3FC4,

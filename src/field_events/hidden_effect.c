@@ -9,7 +9,7 @@
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
 #include "fieldmap/fieldmap_021D1A94.h"
-#include "fieldmap/struct_fieldmap_021D1BEC_decl.h"
+#include "fieldmap/struct_field_effect_decl.h"
 #include "field_events/struct_field_effect.h"
 
 #include "easy3d_object.h"
@@ -193,7 +193,7 @@ static void HiddenEffectModel_Draw(HiddenEffectModel *param0)
     Easy3DObject_Draw(&param0->unk_00);
 }
 
-static void HiddenEffectSingle_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectSingle_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectSingle *v0 = param2;
     int v1;
@@ -213,13 +213,13 @@ static void HiddenEffectSingle_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSy
     v0->unk_EC = 0;
 }
 
-static void HiddenEffectSingle_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectSingle_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectSingle *v0 = param2;
     HiddenEffectModel_Free(&v0->unk_00, &v0->unk_DC);
 }
 
-static void HiddenEffectSingle_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectSingle_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectSingle *v0 = param2;
     int v1;
@@ -241,27 +241,27 @@ static void HiddenEffectSingle_Update(UnkStruct_fieldmap_021D1BEC *param0, Field
     }
 }
 
-static void HiddenEffectSingle_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectSingle_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectSingle *v0 = param2;
     HiddenEffectModel_Draw(&v0->unk_00);
 }
 
-UnkStruct_fieldmap_021D1BEC *HiddenEffectSingle_New(FieldSystem *fieldSystem)
+FieldEffect *HiddenEffectSingle_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024, sizeof(HiddenEffectSingle), HiddenEffectSingle_Init, HiddenEffectSingle_Free, HiddenEffectSingle_Update, HiddenEffectSingle_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void HiddenEffectSingle_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void HiddenEffectSingle_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
 
-BOOL HiddenEffectSingle_IsFinished(UnkStruct_fieldmap_021D1BEC *param0)
+BOOL HiddenEffectSingle_IsFinished(FieldEffect *param0)
 {
     HiddenEffectSingle *v0 = FieldMap_021D1C2C(param0);
 
@@ -272,7 +272,7 @@ BOOL HiddenEffectSingle_IsFinished(UnkStruct_fieldmap_021D1BEC *param0)
     return 0;
 }
 
-static void HiddenEffectDouble_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectDouble_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
     int v1;
@@ -292,7 +292,7 @@ static void HiddenEffectDouble_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSy
     v0->unk_EC = 0;
 }
 
-static void HiddenEffectDoubleAtMapObject_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectDoubleAtMapObject_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
     int v1;
@@ -312,13 +312,13 @@ static void HiddenEffectDoubleAtMapObject_Init(UnkStruct_fieldmap_021D1BEC *para
     v0->unk_EC = 0;
 }
 
-static void HiddenEffectDouble_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectDouble_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
     HiddenEffectModel_Free(&v0->unk_00, &v0->unk_DC);
 }
 
-static void HiddenEffectDouble_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectDouble_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
     int v1;
@@ -340,13 +340,13 @@ static void HiddenEffectDouble_Update(UnkStruct_fieldmap_021D1BEC *param0, Field
     }
 }
 
-static void HiddenEffectDouble_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectDouble_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
     HiddenEffectModel_Draw(&v0->unk_00);
 }
 
-UnkStruct_fieldmap_021D1BEC *HiddenEffectDouble_New(FieldSystem *fieldSystem)
+FieldEffect *HiddenEffectDouble_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
@@ -356,11 +356,11 @@ UnkStruct_fieldmap_021D1BEC *HiddenEffectDouble_New(FieldSystem *fieldSystem)
         HiddenEffectDouble_Update,
         HiddenEffectDouble_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-UnkStruct_fieldmap_021D1BEC *HiddenEffectDoubleAtMapObject_New(FieldSystem *fieldSystem)
+FieldEffect *HiddenEffectDoubleAtMapObject_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
@@ -370,16 +370,16 @@ UnkStruct_fieldmap_021D1BEC *HiddenEffectDoubleAtMapObject_New(FieldSystem *fiel
         HiddenEffectDouble_Update,
         HiddenEffectDouble_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void HiddenEffectDouble_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void HiddenEffectDouble_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
 
-BOOL HiddenEffectDouble_IsFinished(UnkStruct_fieldmap_021D1BEC *param0)
+BOOL HiddenEffectDouble_IsFinished(FieldEffect *param0)
 {
     HiddenEffectDouble *v0 = FieldMap_021D1C2C(param0);
 
@@ -390,7 +390,7 @@ BOOL HiddenEffectDouble_IsFinished(UnkStruct_fieldmap_021D1BEC *param0)
     return 0;
 }
 
-static void HiddenEffectTransition_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectTransition_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectTransition *v0 = param2;
     int v1;
@@ -410,7 +410,7 @@ static void HiddenEffectTransition_Init(UnkStruct_fieldmap_021D1BEC *param0, Fie
     v0->unk_1C8 = 0;
 }
 
-static void HiddenEffectTransition_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectTransition_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectTransition *v0 = param2;
     int v1;
@@ -420,7 +420,7 @@ static void HiddenEffectTransition_Free(UnkStruct_fieldmap_021D1BEC *param0, Fie
     }
 }
 
-static void HiddenEffectTransition_Update(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectTransition_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectTransition *v0 = param2;
     BOOL v1;
@@ -454,7 +454,7 @@ static void HiddenEffectTransition_Update(UnkStruct_fieldmap_021D1BEC *param0, F
     }
 }
 
-static void HiddenEffectTransition_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectTransition_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectTransition *v0 = param2;
     int v1;
@@ -464,7 +464,7 @@ static void HiddenEffectTransition_Draw(UnkStruct_fieldmap_021D1BEC *param0, Fie
     }
 }
 
-UnkStruct_fieldmap_021D1BEC *HiddenEffectTransition_New(FieldSystem *fieldSystem)
+FieldEffect *HiddenEffectTransition_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
@@ -474,11 +474,11 @@ UnkStruct_fieldmap_021D1BEC *HiddenEffectTransition_New(FieldSystem *fieldSystem
         HiddenEffectTransition_Update,
         HiddenEffectTransition_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void HiddenEffectTransition_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void HiddenEffectTransition_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
@@ -592,7 +592,7 @@ static void HiddenEffectParticles_Update(HiddenEffectParticles *param0)
     }
 }
 
-static void HiddenEffectParticles_Init(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectParticles_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectParticles *v0 = param2;
     int v1;
@@ -620,7 +620,7 @@ static void HiddenEffectParticles_Init(UnkStruct_fieldmap_021D1BEC *param0, Fiel
     NARC_dtor(v2);
 }
 
-static void HiddenEffectParticles_Free(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectParticles_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectParticles *v0 = param2;
     int v1;
@@ -636,7 +636,7 @@ static void HiddenEffectParticles_Free(UnkStruct_fieldmap_021D1BEC *param0, Fiel
     }
 }
 
-static void HiddenEffectParticles_TaskUpdate(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectParticles_TaskUpdate(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectParticles *v0 = param2;
 
@@ -656,7 +656,7 @@ static void HiddenEffectParticles_TaskUpdate(UnkStruct_fieldmap_021D1BEC *param0
     }
 }
 
-static void HiddenEffectParticles_Draw(UnkStruct_fieldmap_021D1BEC *param0, FieldSystem *fieldSystem, void *param2)
+static void HiddenEffectParticles_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectParticles *v0 = param2;
     int v1;
@@ -666,7 +666,7 @@ static void HiddenEffectParticles_Draw(UnkStruct_fieldmap_021D1BEC *param0, Fiel
     }
 }
 
-UnkStruct_fieldmap_021D1BEC *HiddenEffectParticles_New(FieldSystem *fieldSystem)
+FieldEffect *HiddenEffectParticles_New(FieldSystem *fieldSystem)
 {
     static const FieldEffectTemplate v0 = {
         1024,
@@ -676,11 +676,11 @@ UnkStruct_fieldmap_021D1BEC *HiddenEffectParticles_New(FieldSystem *fieldSystem)
         HiddenEffectParticles_TaskUpdate,
         HiddenEffectParticles_Draw
     };
-    UnkStruct_fieldmap_021D1BEC *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
+    FieldEffect *v1 = FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &v0);
     return v1;
 }
 
-void HiddenEffectParticles_Delete(UnkStruct_fieldmap_021D1BEC *param0)
+void HiddenEffectParticles_Delete(FieldEffect *param0)
 {
     FieldMap_021D1BEC(param0);
 }
