@@ -617,16 +617,16 @@ Overlay trainer_intro
 	Object main.nef.p/src_trainer_intro_trainer_intro.c.o
 }
 
-Overlay overlay11
+Overlay battle_particles
 {
 	After nintendo_wfc
-	Object main.nef.p/src_overlay011_move_palettes.c.o
-	Object main.nef.p/src_overlay011_particle_helper.c.o
+	Object main.nef.p/src_battle_particles_move_palettes.c.o
+	Object main.nef.p/src_battle_particles_particle_helper.c.o
 }
 
 Overlay battle_anim
 {
-	After overlay11
+	After battle_particles
 	Object main.nef.p/src_battle_anim_battle_anim_system.c.o
 	Object main.nef.p/src_battle_anim_battle_particle_util.c.o
 	Object main.nef.p/src_battle_anim_emitter_callbacks.c.o
@@ -654,7 +654,7 @@ Overlay battle_anim
 
 Overlay battle_sub_menus
 {
-	After overlay11
+	After battle_particles
 	Object main.nef.p/src_battle_sub_menus_battle_party.c.o
 	Object main.nef.p/src_battle_sub_menus_battle_party_text.c.o
 	Object main.nef.p/src_battle_sub_menus_battle_party_sprites.c.o
@@ -669,7 +669,7 @@ Overlay battle_sub_menus
 
 Overlay trainer_ai
 {
-	After overlay11
+	After battle_particles
 	Object main.nef.p/src_battle_trainer_ai_trainer_ai.c.o
 	Object trainer_ai_script.o
 }

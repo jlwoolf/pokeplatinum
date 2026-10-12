@@ -36,7 +36,7 @@
 #include "text.h"
 #include "font_oam.h"
 
-FS_EXTERN_OVERLAY(overlay11);
+FS_EXTERN_OVERLAY(battle_particles);
 FS_EXTERN_OVERLAY(battle_anim);
 FS_EXTERN_OVERLAY(image_clip_app);
 
@@ -73,7 +73,7 @@ static const struct {
 
 static void NitroStaticInit(void)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay11), 2);
+    Overlay_LoadByID(FS_OVERLAY_ID(battle_particles), 2);
     Overlay_LoadByID(FS_OVERLAY_ID(battle_anim), 2);
     Overlay_LoadByID(FS_OVERLAY_ID(image_clip_app), 2);
 }

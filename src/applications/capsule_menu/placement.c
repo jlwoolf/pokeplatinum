@@ -16,12 +16,12 @@
 #include "system.h"
 #include "touch_screen.h"
 
-FS_EXTERN_OVERLAY(overlay11);
+FS_EXTERN_OVERLAY(battle_particles);
 FS_EXTERN_OVERLAY(battle_anim);
 
 static void NitroStaticInit(void)
 {
-    Overlay_LoadByID(FS_OVERLAY_ID(overlay11), 2);
+    Overlay_LoadByID(FS_OVERLAY_ID(battle_particles), 2);
     Overlay_LoadByID(FS_OVERLAY_ID(battle_anim), 2);
 }
 

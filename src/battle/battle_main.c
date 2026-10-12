@@ -31,7 +31,7 @@
 #include "battle/stop_recording_task_data.h"
 #include "battle/terrain.h"
 #include "battle_anim/battle_anim_system.h"
-#include "overlay011/particle_helper.h"
+#include "battle_particles/particle_helper.h"
 #include "trainer_intro/trainer_intro.h"
 
 #include "bag.h"
@@ -91,7 +91,7 @@
 #include "res/text/bank/battle_strings.h"
 
 FS_EXTERN_OVERLAY(trainer_intro);
-FS_EXTERN_OVERLAY(overlay11);
+FS_EXTERN_OVERLAY(battle_particles);
 FS_EXTERN_OVERLAY(battle_anim);
 FS_EXTERN_OVERLAY(battle_sub_menus);
 FS_EXTERN_OVERLAY(trainer_ai);
@@ -242,7 +242,7 @@ BOOL Battle_Main(ApplicationManager *appMan, int *state)
         }
         break;
     case BATTLE_STATE_INIT_GRAPHICS:
-        Overlay_LoadByID(FS_OVERLAY_ID(overlay11), OVERLAY_LOAD_ASYNC);
+        Overlay_LoadByID(FS_OVERLAY_ID(battle_particles), OVERLAY_LOAD_ASYNC);
         Overlay_LoadByID(FS_OVERLAY_ID(battle_anim), OVERLAY_LOAD_ASYNC);
         BattleMain_InitGraphics(appMan);
         *state = BATTLE_STATE_MAIN;
@@ -788,7 +788,7 @@ static void BattleMain_CopyBattleSysToDTOAndFree(ApplicationManager *appMan)
     }
 
     Heap_Free(battleSys);
-    Overlay_UnloadByID(FS_OVERLAY_ID(overlay11));
+    Overlay_UnloadByID(FS_OVERLAY_ID(battle_particles));
     Overlay_UnloadByID(FS_OVERLAY_ID(battle_anim));
 
     if (!CommManager_IsConnectedToWifi()) {
