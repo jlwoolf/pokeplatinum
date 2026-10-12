@@ -1933,7 +1933,7 @@ void contest_competition_0224C2CC(DanceCompetition *param0, u32 param1, const Da
     GF_ASSERT(param1 < NELEMS(Unk_contest_competition_0225470C));
 
     messageID = Unk_contest_competition_0225470C[param1].danceMessageID;
-    v1 = Unk_contest_competition_0225470C[param1].unk_02;
+    v1 = Unk_contest_competition_0225470C[param1].unused_02;
 
     contest_competition_0224C244(param0, param0->scene.danceMessageLoader, messageID, v1, param2);
 }
@@ -2082,7 +2082,7 @@ void contest_competition_0224C5A0(DanceCompetition *param0, u32 param1, const Da
     Bg_ScheduleTilemapTransfer(param0->scene.bgConfig, 1);
 
     u32 messageID = Unk_contest_competition_0225470C[param1].danceMessageID;
-    v1 = Unk_contest_competition_0225470C[param1].unk_02;
+    v1 = Unk_contest_competition_0225470C[param1].unused_02;
     String *message = MessageLoader_GetNewString(param0->scene.danceMessageLoader, messageID);
 
     contest_competition_0224C0C0(param0, v1, param2);

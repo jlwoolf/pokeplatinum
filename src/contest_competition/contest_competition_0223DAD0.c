@@ -955,19 +955,19 @@ static int contest_competition_0223E9A4(DanceCompetition *param0, DanceCompetiti
         contest_competition_0223E3CC(param0, &v0, &v1);
 
         param0->scene.moveDefinitions = &Unk_contest_competition_02253084[v0];
-        param0->scoreState.maxScore = (60 * 30) * 10000 / Unk_contest_competition_02253084[v0].unk_02;
+        param0->scoreState.maxScore = (60 * 30) * 10000 / Unk_contest_competition_02253084[v0].unused_02;
 
         v2 = param0->scoreState.maxScore * contest_competition_0223F0BC(v1, 1);
         v2 = (v2 + 10000 / 2) / 10000;
 
         param0->scoreState.scorePerBeat = v2;
-        param0->scoreState.maxBeats = Unk_contest_competition_02253084[v0].unk_02;
-        param0->scoreState.bonus1 = param0->scoreState.maxScore * Unk_contest_competition_02253084[v0].unk_06;
-        param0->scoreState.bonus2 = param0->scoreState.maxScore * Unk_contest_competition_02253084[v0].unk_07;
+        param0->scoreState.maxBeats = Unk_contest_competition_02253084[v0].unused_02;
+        param0->scoreState.bonus1 = param0->scoreState.maxScore * Unk_contest_competition_02253084[v0].unused_06;
+        param0->scoreState.bonus2 = param0->scoreState.maxScore * Unk_contest_competition_02253084[v0].unused_07;
         param0->scoreState.beatDuration = param0->scoreState.maxScore / 48;
 
-        param0->scoreState.roundCount = Unk_contest_competition_02253084[v0].unk_05;
-        param0->scoreState.difficulty = Unk_contest_competition_02253084[v0].unk_00;
+        param0->scoreState.roundCount = Unk_contest_competition_02253084[v0].beatCount;
+        param0->scoreState.difficulty = Unk_contest_competition_02253084[v0].moveID;
         param0->scoreState.contestRank = v1;
 
         param0->moveState.moveDefinition = *(param0->scene.moveDefinitions);
@@ -1279,15 +1279,15 @@ int contest_competition_0223F0BC(int param0, int param1)
 {
     switch (param1) {
     case 3:
-        return Unk_contest_competition_02252FC4[param0].unk_03 * 8;
+        return Unk_contest_competition_02252FC4[param0].unused_03 * 8;
     case 2:
-        return Unk_contest_competition_02252FC4[param0].unk_03;
+        return Unk_contest_competition_02252FC4[param0].unused_03;
     case 1:
-        return Unk_contest_competition_02252FC4[param0].unk_02;
+        return Unk_contest_competition_02252FC4[param0].unused_02;
     case 4:
-        return Unk_contest_competition_02252FC4[param0].unk_02 * 2;
+        return Unk_contest_competition_02252FC4[param0].unused_02 * 2;
     case 0:
-        return Unk_contest_competition_02252FC4[param0].unk_00;
+        return Unk_contest_competition_02252FC4[param0].messageID;
     }
 
     GF_ASSERT(FALSE);

@@ -635,7 +635,7 @@ static int contest_competition_022469FC(ActingCompetition *param0, ActingTurnSta
     int v0;
 
     for (v0 = param4; v0 < 4; v0++) {
-        param1->performances[param0->matchState.contestantOrder[v0]].unk_28_1 = 1;
+        param1->performances[param0->matchState.contestantOrder[v0]].comboStarted = 1;
     }
 
     contest_competition_02245F14(&param1->performances[param3], param1->performances[param3].contestMoveEffect, 0, 30000, 30000, 30000, 30000);
@@ -757,7 +757,7 @@ static int contest_competition_02246C88(ActingCompetition *param0, ActingTurnSta
     int v0;
 
     for (v0 = param4; v0 < 4; v0++) {
-        param1->performances[param0->matchState.contestantOrder[v0]].unk_28_2 = 1;
+        param1->performances[param0->matchState.contestantOrder[v0]].comboFailed = 1;
     }
 
     contest_competition_02245F14(&param1->performances[param3], param1->performances[param3].contestMoveEffect, 0, 30000, 30000, 30000, 30000);
