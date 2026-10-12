@@ -7,7 +7,7 @@
 
 #include "field/field_system_sub2_t.h"
 #include "overlay005/hblank_system.h"
-#include "overlay006/link_contest_record_display.h"
+#include "field_events/link_contest_record_display.h"
 
 #include "contest.h"
 #include "field_script_context.h"

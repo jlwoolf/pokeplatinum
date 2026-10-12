@@ -9,7 +9,7 @@
 #include "struct_defs/world_exchange.h"
 
 #include "applications/pokemon_summary_screen/main.h"
-#include "overlay006/struct_npc_trade_animation_template.h"
+#include "field_events/struct_npc_trade_animation_template.h"
 #include "global_terminal/struct_global_terminal_0222C3B0.h"
 
 #include "bg_window.h"

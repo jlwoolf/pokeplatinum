@@ -19,7 +19,7 @@
 #include "overlay005/ov5_021F007C.h"
 #include "overlay005/save_info_window.h"
 #include "overlay005/struct_ov5_021F0468_decl.h"
-#include "overlay006/field_warp.h"
+#include "field_events/field_warp.h"
 #include "savedata/save_table.h"
 
 #include "bag.h"

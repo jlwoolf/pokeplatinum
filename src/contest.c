@@ -19,8 +19,8 @@
 #include "struct_defs/visual_competition_app_args.h"
 
 #include "field/field_system.h"
-#include "overlay006/ov6_022489E4.h"
-#include "overlay006/struct_ov6_02248DD8.h"
+#include "field_events/contest_comm_tasks.h"
+#include "field_events/struct_contestant_summary.h"
 #include "contest_competition/contest_competition.h"
 #include "contest_competition/contest_competition_0223CB1C.h"
 #include "contest_competition/contest_competition_0223DAD0.h"
@@ -82,7 +82,7 @@ void Contest_GetVisualCompetitionAppArgs(Contest *contest);
 void Contest_VisualCompetitionAppArgsFree(Contest *contest);
 static void Contest_StartPhotoCommTask(Contest *contest);
 static void Contest_PhotoCommTask(SysTask *param0, void *param1);
-static void Contest_FillContestantSummary(Contest *contest, int contestantID, UnkStruct_ov6_02248DD8 *param2);
+static void Contest_FillContestantSummary(Contest *contest, int contestantID, ContestantSummary *param2);
 static void SysTask_DoContestCameraFlash(SysTask *sysTask, void *contestParam);
 static int CalcMonContestFame(Pokemon *mon, enum PokemonContestType contestType);
 static void Contest_InitNPCContestants(Contest *contest, int isGameCompleted, int isNatDexObtained);
@@ -657,7 +657,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 2:
-        if (ov6_02248A64(contest) == 1) {
+        if (ContestCommTask_SendLeaderElection(contest) == 1) {
             contest->linkState++;
         }
         break;
@@ -678,7 +678,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 6:
-        if (ov6_02248AF0(contest, contest->data.playerContestantID, contest->data.contestMons[PLAYER_CONTESTANT_ID]) == 1) {
+        if (ContestCommTask_SendContestantMon(contest, contest->data.playerContestantID, contest->data.contestMons[PLAYER_CONTESTANT_ID]) == 1) {
             contest->linkState++;
         }
         break;
@@ -700,7 +700,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         break;
     case 10:
         if (contest->data.playerContestantID == contest->data.leaderContestantID) {
-            if (ov6_02248B70(contest, contest->data.contestMons) == 1) {
+            if (ContestCommTask_SendAllContestantMons(contest, contest->data.contestMons) == 1) {
                 contest->linkState++;
             }
         } else {
@@ -724,7 +724,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 14:
-        if (ov6_02248BE8(contest, contest->data.playerContestantID, &contest->data.opponentData[0]) == 1) {
+        if (ContestCommTask_SendOpponentData(contest, contest->data.playerContestantID, &contest->data.opponentData[0]) == 1) {
             contest->linkState++;
         }
         break;
@@ -746,7 +746,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         break;
     case 18:
         if (contest->data.playerContestantID == contest->data.leaderContestantID) {
-            if (ov6_02248BE8(contest, contest->commContestantIndex, &contest->data.opponentData[contest->commContestantIndex]) == 1) {
+            if (ContestCommTask_SendOpponentData(contest, contest->commContestantIndex, &contest->data.opponentData[contest->commContestantIndex]) == 1) {
                 contest->linkState++;
             }
         } else {
@@ -777,7 +777,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 22:
-        if (ov6_02248CE8(contest, contest->data.playerContestantID, contest->data.trainerNames[PLAYER_CONTESTANT_ID]) == 1) {
+        if (ContestCommTask_SendTrainerName(contest, contest->data.playerContestantID, contest->data.trainerNames[PLAYER_CONTESTANT_ID]) == 1) {
             contest->linkState++;
         }
         break;
@@ -810,7 +810,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         break;
     case 26:
         if (contest->data.playerContestantID == contest->data.leaderContestantID) {
-            if (ov6_02248CE8(contest, contest->commContestantIndex, contest->data.trainerNames[contest->commContestantIndex]) == 1) {
+            if (ContestCommTask_SendTrainerName(contest, contest->commContestantIndex, contest->data.trainerNames[contest->commContestantIndex]) == 1) {
                 contest->linkState++;
             }
         } else {
@@ -843,7 +843,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 30:
-        if (ov6_02248D64(contest, contest->data.playerContestantID, NULL) == 1) {
+        if (ContestCommTask_SendChatotCry(contest, contest->data.playerContestantID, NULL) == 1) {
             contest->linkState++;
         }
         break;
@@ -865,7 +865,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         break;
     case 34:
         if (contest->data.playerContestantID == contest->data.leaderContestantID) {
-            if (ov6_02248D64(contest, contest->commContestantIndex, contest->chatotCry[contest->commContestantIndex]) == 1) {
+            if (ContestCommTask_SendChatotCry(contest, contest->commContestantIndex, contest->chatotCry[contest->commContestantIndex]) == 1) {
                 contest->linkState++;
             }
         } else {
@@ -896,11 +896,11 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 38: {
-        UnkStruct_ov6_02248DD8 v3;
+        ContestantSummary v3;
 
         Contest_FillContestantSummary(contest, 0, &v3);
 
-        if (ov6_02248DD8(contest, contest->data.playerContestantID, &v3) == 1) {
+        if (ContestCommTask_SendContestantSummary(contest, contest->data.playerContestantID, &v3) == 1) {
             contest->linkState++;
         }
     } break;
@@ -922,11 +922,11 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         break;
     case 42:
         if (contest->data.playerContestantID == contest->data.leaderContestantID) {
-            UnkStruct_ov6_02248DD8 v4;
+            ContestantSummary v4;
 
             Contest_FillContestantSummary(contest, contest->commContestantIndex, &v4);
 
-            if (ov6_02248DD8(contest, contest->commContestantIndex, &v4) == 1) {
+            if (ContestCommTask_SendContestantSummary(contest, contest->commContestantIndex, &v4) == 1) {
                 contest->linkState++;
             }
         } else {
@@ -957,7 +957,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
         break;
     case 46:
-        if (ov6_02248C68(contest, contest->data.playerContestantID, contest->data.judges) == 1) {
+        if (ContestCommTask_SendJudges(contest, contest->data.playerContestantID, contest->data.judges) == 1) {
             contest->linkState++;
         }
         break;
@@ -1689,7 +1689,7 @@ u16 Contest_GetSeededRNGNext(u32 seed, u32 *destRNGVal)
 
 // Fills the summary sent to the other players with the contestant's gender,
 // camera flash variant, contest fame, and overworld sprite.
-static void Contest_FillContestantSummary(Contest *contest, int contestantID, UnkStruct_ov6_02248DD8 *param2)
+static void Contest_FillContestantSummary(Contest *contest, int contestantID, ContestantSummary *param2)
 {
     param2->trainerGender = contest->data.trainerGenders[contestantID];
     param2->unk_01 = contest->data.cameraFlashVariant[contestantID];

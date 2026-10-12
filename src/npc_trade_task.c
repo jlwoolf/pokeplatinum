@@ -5,8 +5,8 @@
 
 #include "cutscenes/trade_sequence/main.h"
 #include "field/field_system.h"
-#include "overlay006/npc_trade.h"
-#include "overlay006/struct_npc_trade_animation_template.h"
+#include "field_events/npc_trade.h"
+#include "field_events/struct_npc_trade_animation_template.h"
 
 #include "field_task.h"
 #include "field_transition.h"

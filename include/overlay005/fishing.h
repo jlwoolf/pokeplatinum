@@ -2,7 +2,7 @@
 #define POKEPLATINUM_FISHING_H
 
 #include "field/field_system_decl.h"
-#include "overlay006/wild_encounters.h"
+#include "field_events/wild_encounters.h"
 
 #include "field_task.h"
 #include "sys_task_manager.h"

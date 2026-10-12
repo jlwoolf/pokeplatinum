@@ -12,8 +12,8 @@
 #include "struct_decls/tv_broadcast.h"
 
 #include "field/field_system.h"
-#include "overlay006/roamer_after_battle.h"
-#include "overlay006/wild_encounters.h"
+#include "field_events/roamer_after_battle.h"
+#include "field_events/wild_encounters.h"
 #include "savedata/save_table.h"
 
 #include "battle_regulation.h"

@@ -6,7 +6,7 @@
 #include "generated/pokemon_contest_types.h"
 
 #include "battle/pokemon_sprite_data.h"
-#include "overlay006/struct_ov6_02248BE8.h"
+#include "field_events/struct_contest_opponent_data.h"
 
 #include "contest.h"
 #include "pokemon.h"
@@ -16,7 +16,7 @@ BOOL Contest_IsPlayerLeader(Contest *contest);
 void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandomOpponents, enum PokemonContestType contestType, enum PokemonContestRank contestRank, int competitionType, BOOL isGameCompleted, BOOL isNatDexObtained);
 void Contest_SetupNPCPhotos(Contest *contest, enum HeapID heapID);
 void Contest_InitPhotos(Contest *contest);
-void Contest_InitOpponentMon(const UnkStruct_ov6_02248BE8 *opponentData, Pokemon *mon, enum HeapID heapID);
+void Contest_InitOpponentMon(const ContestOpponentData *opponentData, Pokemon *mon, enum HeapID heapID);
 PokemonSprite *Contest_CreateMonSprite(PokemonSpriteManager *spriteManager, int contestantID, Pokemon *mon, int spriteType, PokemonSpriteData *pokemonSpriteData, enum HeapID heapID, int x, int y, int z);
 void Contest_SelectJudges(Contest *contest, enum HeapID heapID, int bonusJudgeIndex, enum PokemonContestType contestType, enum PokemonContestRank contestRank);
 s8 Contest_GetAppealPoints(enum MoveContestEffect contestEffect);

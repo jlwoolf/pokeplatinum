@@ -3,7 +3,7 @@
 #include <nitro.h>
 #include <string.h>
 
-#include "overlay006/struct_npc_trade_animation_template.h"
+#include "field_events/struct_npc_trade_animation_template.h"
 
 #include "bg_window.h"
 #include "character_sprite.h"

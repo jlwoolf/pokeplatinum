@@ -21,8 +21,8 @@
 #include "applications/poketch/poketch_system.h"
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay006/ov6_022465FC.h"
-#include "overlay006/tv_commercials.h"
+#include "field_events/tv_broadcast_schedule.h"
+#include "field_events/tv_commercials.h"
 #include "savedata/save_table.h"
 
 #include "field_script_context.h"
@@ -111,7 +111,7 @@ BOOL ScrCmd_CallTVBroadcast(ScriptContext *ctx)
         u16 filter2 = ScriptContext_GetVar(ctx);
         u16 *segmentDestVar = ScriptContext_GetVarPointer(ctx);
 
-        *segmentDestVar = ov6_022468B0(ctx->fieldSystem, filter1, filter2);
+        *segmentDestVar = TVBroadcast_PickPendingSegment(ctx->fieldSystem, filter1, filter2);
     } break;
     case TV_BROADCAST_CALL_GET_NEXT_SEGMENT_ID: {
         u16 *segmentDestVar = ScriptContext_GetVarPointer(ctx);

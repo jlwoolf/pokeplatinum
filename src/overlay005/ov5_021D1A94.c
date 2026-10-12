@@ -7,7 +7,7 @@
 #include "field/field_system_sub2_t.h"
 #include "overlay005/struct_ov5_021D1A94_decl.h"
 #include "overlay005/struct_ov5_021D1BEC_decl.h"
-#include "overlay006/struct_ov6_0223E6EC.h"
+#include "field_events/struct_field_effect.h"
 
 #include "field_system.h"
 #include "heap.h"
@@ -26,7 +26,7 @@ struct UnkStruct_ov5_021D1BEC_t {
     UnkStruct_ov5_021D1A94 *unk_00;
     SysTask *sysTask1;
     SysTask *sysTask2;
-    const UnkStruct_ov6_0223E6EC *unk_0C;
+    const FieldEffectTemplate *unk_0C;
     void *unk_10;
 };
 
@@ -92,7 +92,7 @@ static void ov5_021D1B48(SysTask *param0, void *param1)
     }
 }
 
-UnkStruct_ov5_021D1BEC *ov5_021D1B6C(UnkStruct_ov5_021D1A94 *param0, const UnkStruct_ov6_0223E6EC *param1)
+UnkStruct_ov5_021D1BEC *ov5_021D1B6C(UnkStruct_ov5_021D1A94 *param0, const FieldEffectTemplate *param1)
 {
     int v0;
     UnkStruct_ov5_021D1BEC *v1;

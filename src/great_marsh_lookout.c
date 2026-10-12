@@ -7,8 +7,8 @@
 
 #include "field/field_system.h"
 #include "field/field_system_sub2_t.h"
-#include "overlay006/great_marsh_binoculars.h"
-#include "overlay006/great_marsh_lookout_sprite.h"
+#include "field_events/great_marsh_binoculars.h"
+#include "field_events/great_marsh_lookout_sprite.h"
 
 #include "field_map_change.h"
 #include "field_map_change_flags.h"
