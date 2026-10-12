@@ -743,18 +743,18 @@ Overlay pc_boxes
 	After main
 	Object main.nef.p/src_applications_pc_boxes_box_app_manager.c.o
 	Object main.nef.p/src_applications_pc_boxes_touch_dial.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021D61B0.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021D79F8.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021D8B54.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DA270.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DA814.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DA92C.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DB2FC.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DB8E4.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DC5F0.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DCF88.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DE3E8.c.o
-	Object main.nef.p/src_applications_pc_boxes_ov19_021DEC04.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_graphics.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_view.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_cursor_sprite.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_mon_sprite_manager.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_button_sprite.c.o
+	Object main.nef.p/src_applications_pc_boxes_pc_mon_preview_panel.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_menu_graphics.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_selection_popup.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_party.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_touch_dial_graphics.c.o
+	Object main.nef.p/src_applications_pc_boxes_box_held_item_icons.c.o
+	Object main.nef.p/src_applications_pc_boxes_pc_compare_screen.c.o
 	Object main.nef.p/src_applications_pc_boxes_box_menu.c.o
 }
 

@@ -7,7 +7,7 @@
 #include "applications/pc_boxes/pc_compare_mon.h"
 #include "applications/pc_boxes/pc_mon_preview.h"
 #include "applications/pc_boxes/pokemon_storage_session.h"
-#include "applications/pc_boxes/struct_ov19_021D61B0_decl.h"
+#include "applications/pc_boxes/box_graphics_decl.h"
 #include "applications/pc_boxes/touch_dial.h"
 #include "applications/pokemon_summary_screen/main.h"
 
@@ -92,7 +92,7 @@ typedef struct ReleaseMon {
 
 typedef struct BoxApplicationManager {
     BoxApplication boxApp;
-    UnkStruct_ov19_021D61B0 *unk_114;
+    BoxGraphics *unk_114;
     PokemonStorageSession *pokemonStorageSession;
     SaveData *saveData;
     PCBoxes *pcBoxes;

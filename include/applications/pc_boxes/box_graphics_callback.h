@@ -1,0 +1,6 @@
+#ifndef POKEPLATINUM_BOX_GRAPHICS_CALLBACK_H
+#define POKEPLATINUM_BOX_GRAPHICS_CALLBACK_H
+
+typedef void (*BoxGraphicsDeferredFreeCallback)(void *);
+
+#endif // POKEPLATINUM_BOX_GRAPHICS_CALLBACK_H

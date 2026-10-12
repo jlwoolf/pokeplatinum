@@ -1,0 +1,6 @@
+#ifndef POKEPLATINUM_BOX_GRAPHICS_DECL_H
+#define POKEPLATINUM_BOX_GRAPHICS_DECL_H
+
+typedef struct BoxGraphics_t BoxGraphics;
+
+#endif // POKEPLATINUM_BOX_GRAPHICS_DECL_H
