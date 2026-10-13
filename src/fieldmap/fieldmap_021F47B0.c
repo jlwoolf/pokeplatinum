@@ -14,36 +14,36 @@
 #include "simple3d.h"
 
 typedef struct {
-    FieldEffectManager *unk_00;
-    Simple3DModel unk_04[9];
-    Simple3DAnimation unk_B8[1];
+    FieldEffectManager *fieldEffectManager;
+    Simple3DModel models[9];
+    Simple3DAnimation anims[1];
 } FieldEffectRenderer20Context;
 
 typedef struct {
-    int unk_00;
-    FieldEffectManager *unk_04;
-    FieldEffectRenderer20Context *unk_08;
-    const MapObject *unk_0C;
+    int distance;
+    FieldEffectManager *fieldEffectManager;
+    FieldEffectRenderer20Context *context;
+    const MapObject *mapObject;
 } FieldEffectRenderer20Params;
 
 typedef struct {
-    s8 unk_00;
-    s8 unk_01;
-    u8 unk_02;
+    s8 direction;
+    s8 distance;
+    u8 visible;
     u8 unk_03;
-    VecFx32 unk_04;
-    VecFx32 unk_10;
-    Simple3DRotationAngles unk_1C;
-    FieldEffectRenderer20Params unk_24;
-    Simple3DRenderObj unk_34;
-    Simple3DAnimation *unk_88;
+    VecFx32 startOffset;
+    VecFx32 endOffset;
+    Simple3DRotationAngles rotationAngles;
+    FieldEffectRenderer20Params params;
+    Simple3DRenderObj renderObj;
+    Simple3DAnimation *anim;
 } FieldEffectRenderer20Anim;
 
 typedef struct {
-    int unk_00;
-    FieldEffectManager *unk_04;
-    FieldEffectRenderer20Context *unk_08;
-    Simple3DRenderObj unk_0C;
+    int distance;
+    FieldEffectManager *fieldEffectManager;
+    FieldEffectRenderer20Context *context;
+    Simple3DRenderObj renderObj;
 } FieldEffectRenderer20Anim2;
 
 static void FieldMap_021F47DC(FieldEffectRenderer20Context *param0);
@@ -65,7 +65,7 @@ static const VecFx32 Unk_FieldMap_022008E0[4][6];
 void *FieldMap_021F47B0(FieldEffectManager *param0)
 {
     FieldEffectRenderer20Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer20Context)), 0, 0);
-    v0->unk_00 = param0;
+    v0->fieldEffectManager = param0;
 
     FieldMap_021F47DC(v0);
     return v0;
@@ -84,13 +84,13 @@ static void FieldMap_021F47DC(FieldEffectRenderer20Context *param0)
     int v0;
 
     for (v0 = 0; v0 < 9; v0++) {
-        FieldEffectManager_LoadModel(param0->unk_00, &param0->unk_04[v0], 0, Unk_FieldMap_0220079C[v0], 0);
+        FieldEffectManager_LoadModel(param0->fieldEffectManager, &param0->models[v0], 0, Unk_FieldMap_0220079C[v0], 0);
     }
 
-    NNS_G3dMdlSetMdlFogEnableFlagAll(param0->unk_04[0].g3DModel, 0);
+    NNS_G3dMdlSetMdlFogEnableFlagAll(param0->models[0].g3DModel, 0);
 
     for (v0 = 0; v0 < 1; v0++) {
-        FieldEffectManager_LoadAnimation(param0->unk_00, &param0->unk_B8[v0], 0, Unk_FieldMap_02200750[v0], 0);
+        FieldEffectManager_LoadAnimation(param0->fieldEffectManager, &param0->anims[v0], 0, Unk_FieldMap_02200750[v0], 0);
     }
 }
 
@@ -99,11 +99,11 @@ static void FieldMap_021F4820(FieldEffectRenderer20Context *param0)
     int v0;
 
     for (v0 = 0; v0 < 9; v0++) {
-        Simple3D_FreeModel(&param0->unk_04[v0]);
+        Simple3D_FreeModel(&param0->models[v0]);
     }
 
     for (v0 = 0; v0 < 1; v0++) {
-        Simple3D_FreeAnimation(&param0->unk_B8[v0]);
+        Simple3D_FreeAnimation(&param0->anims[v0]);
     }
 }
 
@@ -113,10 +113,10 @@ OverworldAnimManager *FieldMap_021F4840(FieldEffectManager *param0, const MapObj
     OverworldAnimManager *v1;
     FieldEffectRenderer20Params v2;
 
-    v2.unk_00 = param2;
-    v2.unk_04 = param0;
-    v2.unk_08 = FieldEffectManager_GetRendererContext(param0, 32);
-    v2.unk_0C = param1;
+    v2.distance = param2;
+    v2.fieldEffectManager = param0;
+    v2.context = FieldEffectManager_GetRendererContext(param0, 32);
+    v2.mapObject = param1;
 
     v0 = MapObject_CalculateTaskPriority(param1, param3);
     v1 = FieldEffectManager_InitAnimManager(param0, &Unk_FieldMap_02200754, NULL, 0, &v2, v0);
@@ -129,13 +129,13 @@ static int FieldMap_021F487C(OverworldAnimManager *param0, void *param1)
     FieldEffectRenderer20Anim *v0 = param1;
     const FieldEffectRenderer20Params *v1 = OverworldAnimManager_GetUserData(param0);
 
-    v0->unk_24 = *v1;
-    v0->unk_00 = MapObject_GetFacingDir(v1->unk_0C);
-    v0->unk_88 = FieldEffectManager_HeapAlloc(v1->unk_04, sizeof(Simple3DAnimation), 0);
+    v0->params = *v1;
+    v0->direction = MapObject_GetFacingDir(v1->mapObject);
+    v0->anim = FieldEffectManager_HeapAlloc(v1->fieldEffectManager, sizeof(Simple3DAnimation), 0);
 
-    Simple3D_CreateRenderObject(&v0->unk_34, &v0->unk_24.unk_08->unk_04[0]);
-    FieldEffectManager_ApplyAnimCopyToModel(v0->unk_24.unk_04, v0->unk_88, &v0->unk_24.unk_08->unk_04[0], &v0->unk_24.unk_08->unk_B8[0], 0);
-    Simple3D_BindAnimToRenderObj(&v0->unk_34, v0->unk_88);
+    Simple3D_CreateRenderObject(&v0->renderObj, &v0->params.context->models[0]);
+    FieldEffectManager_ApplyAnimCopyToModel(v0->params.fieldEffectManager, v0->anim, &v0->params.context->models[0], &v0->params.context->anims[0], 0);
+    Simple3D_BindAnimToRenderObj(&v0->renderObj, v0->anim);
     FieldMap_021F4A24(param0, v0);
 
     return 1;
@@ -145,8 +145,8 @@ static void FieldMap_021F48F0(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer20Anim *v0 = param1;
 
-    Simple3D_FreeAnimObject(v0->unk_88);
-    Heap_Free(v0->unk_88);
+    Simple3D_FreeAnimObject(v0->anim);
+    Heap_Free(v0->anim);
 }
 
 static void FieldMap_021F4908(OverworldAnimManager *param0, void *param1)
@@ -155,31 +155,31 @@ static void FieldMap_021F4908(OverworldAnimManager *param0, void *param1)
     VecFx32 v1, v2;
     const VecFx32 *v3;
     FieldEffectRenderer20Anim *v4 = param1;
-    const MapObject *v5 = v4->unk_24.unk_0C;
+    const MapObject *v5 = v4->params.mapObject;
     int v6 = MapObject_GetFacingDir(v5);
 
     MapObject_GetPosPtr(v5, &v2);
 
-    v0 = FieldMap_021F4AB4(v5, v4->unk_24.unk_00, &v1);
+    v0 = FieldMap_021F4AB4(v5, v4->params.distance, &v1);
 
-    v4->unk_00 = v6;
-    v4->unk_01 = v0;
+    v4->direction = v6;
+    v4->distance = v0;
 
-    if (v4->unk_01 == v4->unk_24.unk_00) {
+    if (v4->distance == v4->params.distance) {
         FieldMap_021F4A24(param0, v4);
     } else {
-        FieldMap_021F4B6C(v4->unk_00, v4->unk_24.unk_00, &v1, &v2, &v4->unk_04, &v4->unk_10);
+        FieldMap_021F4B6C(v4->direction, v4->params.distance, &v1, &v2, &v4->startOffset, &v4->endOffset);
         FieldMap_021F49D0(param0, v4);
     }
 
-    Simple3D_UpdateAnim(v4->unk_88, FX32_ONE, 1);
+    Simple3D_UpdateAnim(v4->anim, FX32_ONE, 1);
 }
 
 static void FieldMap_021F4974(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer20Anim *v0 = param1;
 
-    if (v0->unk_02 == 0) {
+    if (v0->visible == 0) {
         Simple3DRotationAngles v1;
         VecFx32 v2;
 
@@ -189,13 +189,13 @@ static void FieldMap_021F4974(OverworldAnimManager *param0, void *param1)
         v2.y += (FX32_ONE * 16);
         v2.z += (FX32_ONE * 0);
 
-        v1 = v0->unk_1C;
+        v1 = v0->rotationAngles;
 
         FieldMap_021F4A80(&v1.alpha, 0);
         FieldMap_021F4A80(&v1.beta, 0);
         FieldMap_021F4A80(&v1.gamma, 0);
 
-        Simple3D_DrawRenderObjRotationAngles(&v0->unk_34, &v2, &v0->unk_10, &v1);
+        Simple3D_DrawRenderObjRotationAngles(&v0->renderObj, &v2, &v0->endOffset, &v1);
     }
 }
 
@@ -210,14 +210,14 @@ static const OverworldAnimManagerFuncs Unk_FieldMap_02200754 = {
 static void FieldMap_021F49D0(OverworldAnimManager *param0, FieldEffectRenderer20Anim *param1)
 {
     VecFx32 v0;
-    const MapObject *v1 = param1->unk_24.unk_0C;
+    const MapObject *v1 = param1->params.mapObject;
 
-    param1->unk_1C = Unk_FieldMap_0220077C[param1->unk_00];
-    MapObject_GetPosPtr(param1->unk_24.unk_0C, &v0);
+    param1->rotationAngles = Unk_FieldMap_0220077C[param1->direction];
+    MapObject_GetPosPtr(param1->params.mapObject, &v0);
 
-    v0.x += param1->unk_04.x;
-    v0.y += param1->unk_04.y;
-    v0.z += param1->unk_04.z;
+    v0.x += param1->startOffset.x;
+    v0.y += param1->startOffset.y;
+    v0.z += param1->startOffset.z;
 
     OverworldAnimManager_SetPosition(param0, &v0);
 }
@@ -225,10 +225,10 @@ static void FieldMap_021F49D0(OverworldAnimManager *param0, FieldEffectRenderer2
 static void FieldMap_021F4A24(OverworldAnimManager *param0, FieldEffectRenderer20Anim *param1)
 {
     VecFx32 v0;
-    const MapObject *v1 = param1->unk_24.unk_0C;
+    const MapObject *v1 = param1->params.mapObject;
 
-    param1->unk_10 = Unk_FieldMap_022007C0[param1->unk_00][param1->unk_01];
-    param1->unk_04 = Unk_FieldMap_022008E0[param1->unk_00][param1->unk_01];
+    param1->endOffset = Unk_FieldMap_022007C0[param1->direction][param1->distance];
+    param1->startOffset = Unk_FieldMap_022008E0[param1->direction][param1->distance];
 
     FieldMap_021F49D0(param0, param1);
 }
@@ -380,11 +380,11 @@ static int FieldMap_021F4D50(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer20Anim2 *v0 = param1;
 
-    v0->unk_00 = OverworldAnimManager_GetUserInt(param0);
-    v0->unk_04 = (FieldEffectManager *)OverworldAnimManager_GetUserData(param0);
-    v0->unk_08 = FieldEffectManager_GetRendererContext(v0->unk_04, 32);
+    v0->distance = OverworldAnimManager_GetUserInt(param0);
+    v0->fieldEffectManager = (FieldEffectManager *)OverworldAnimManager_GetUserData(param0);
+    v0->context = FieldEffectManager_GetRendererContext(v0->fieldEffectManager, 32);
 
-    Simple3D_CreateRenderObject(&v0->unk_0C, &v0->unk_08->unk_04[1 + v0->unk_00]);
+    Simple3D_CreateRenderObject(&v0->renderObj, &v0->context->models[1 + v0->distance]);
     return 1;
 }
 
@@ -404,7 +404,7 @@ static void FieldMap_021F4D90(OverworldAnimManager *param0, void *param1)
     FieldEffectRenderer20Anim2 *v1 = param1;
 
     OverworldAnimManager_GetPosition(param0, &v0);
-    Simple3D_DrawRenderObjWithPos(&v1->unk_0C, &v0);
+    Simple3D_DrawRenderObjWithPos(&v1->renderObj, &v0);
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_02200768 = {

@@ -10,28 +10,28 @@
 #include "simple3d.h"
 
 typedef struct {
-    FieldEffectManager *unk_00;
-    Simple3DModel unk_04[33];
-    Simple3DRenderObj unk_298[33];
+    FieldEffectManager *fieldEffectManager;
+    Simple3DModel models[33];
+    Simple3DRenderObj renderObjs[33];
 } FieldEffectRenderer03Context;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
+    int x;
+    int z;
     FieldSystem *fieldSystem;
-    FieldEffectManager *unk_0C;
-    FieldEffectRenderer03Context *unk_10;
+    FieldEffectManager *fieldEffectManager;
+    FieldEffectRenderer03Context *context;
 } FieldEffectRenderer03Params;
 
 typedef struct {
     NNSG3dRenderObj unk_00;
-    int unk_54;
+    int textureIdx;
     float currentSize;
     float finalSize;
     int unk_60;
     int unk_64;
     int unk_68;
-    FieldEffectRenderer03Params unk_6C;
+    FieldEffectRenderer03Params params;
 } FieldEffectRenderer03Anim;
 
 static void FieldMap_LoadFloorTextures(FieldEffectRenderer03Context *param0);
@@ -42,7 +42,7 @@ static const OverworldAnimManagerFuncs Unk_FieldMap_02200A0C;
 void *FieldMap_021F4E08(FieldEffectManager *param0)
 {
     FieldEffectRenderer03Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer03Context)), 0, 0);
-    v0->unk_00 = param0;
+    v0->fieldEffectManager = param0;
 
     FieldMap_LoadFloorTextures(v0);
 
@@ -62,12 +62,12 @@ static void FieldMap_LoadFloorTextures(FieldEffectRenderer03Context *param0)
     int i;
 
     for (i = 0; i < FLOOR_TEXTURE_COUNT - 1; i++) {
-        FieldEffectManager_LoadModel(param0->unk_00, &param0->unk_04[i], 0, 26 + i, FALSE);
-        Simple3D_CreateRenderObject(&param0->unk_298[i], &param0->unk_04[i]);
+        FieldEffectManager_LoadModel(param0->fieldEffectManager, &param0->models[i], 0, 26 + i, FALSE);
+        Simple3D_CreateRenderObject(&param0->renderObjs[i], &param0->models[i]);
     }
 
-    FieldEffectManager_LoadModel(param0->unk_00, &param0->unk_04[i], 0, 25, FALSE);
-    Simple3D_CreateRenderObject(&param0->unk_298[i], &param0->unk_04[i]);
+    FieldEffectManager_LoadModel(param0->fieldEffectManager, &param0->models[i], 0, 25, FALSE);
+    Simple3D_CreateRenderObject(&param0->renderObjs[i], &param0->models[i]);
 }
 
 static void FieldMap_021F4E94(FieldEffectRenderer03Context *param0)
@@ -75,7 +75,7 @@ static void FieldMap_021F4E94(FieldEffectRenderer03Context *param0)
     int v0;
 
     for (v0 = 0; v0 < FLOOR_TEXTURE_COUNT; v0++) {
-        Simple3D_FreeModel(&param0->unk_04[v0]);
+        Simple3D_FreeModel(&param0->models[v0]);
     }
 }
 
@@ -84,10 +84,10 @@ OverworldAnimManager *FieldMap_DrawFloorTexture(FieldSystem *fieldSystem, int x,
     FieldEffectManager *v3 = fieldSystem->fieldEffMan;
 
     FieldEffectRenderer03Params v2;
-    v2.unk_0C = v3;
-    v2.unk_10 = FieldEffectManager_GetRendererContext(v3, 3);
-    v2.unk_00 = x;
-    v2.unk_04 = z;
+    v2.fieldEffectManager = v3;
+    v2.context = FieldEffectManager_GetRendererContext(v3, 3);
+    v2.x = x;
+    v2.z = z;
     v2.fieldSystem = fieldSystem;
 
     VecFx32 v4;
@@ -99,7 +99,7 @@ OverworldAnimManager *FieldMap_DrawFloorTexture(FieldSystem *fieldSystem, int x,
 
     if (v5) {
         FieldEffectRenderer03Anim *v6 = OverworldAnimManager_GetFuncsContext(v5);
-        v6->unk_54 = textureIdx;
+        v6->textureIdx = textureIdx;
         v6->currentSize = size;
         v6->finalSize = size;
     }
@@ -129,10 +129,10 @@ static int FieldMap_021F4F44(OverworldAnimManager *param0, void *param1)
     v0 = param1;
     v1 = OverworldAnimManager_GetUserData(param0);
 
-    v0->unk_6C = *v1;
+    v0->params = *v1;
 
-    v2.x = (((v0->unk_6C.unk_00) << 4) * FX32_ONE) + (FX32_ONE * 9);
-    v2.z = (((v0->unk_6C.unk_04) << 4) * FX32_ONE);
+    v2.x = (((v0->params.x) << 4) * FX32_ONE) + (FX32_ONE * 9);
+    v2.z = (((v0->params.z) << 4) * FX32_ONE);
     v2.y = 0;
 
     OverworldAnimManager_SetPosition(param0, &v2);
@@ -162,7 +162,7 @@ static void FieldMap_021F4FB8(OverworldAnimManager *param0, void *param1)
         VecFx32 v1;
         VecFx32 v2 = { FX32_ONE, FX32_ONE, FX32_ONE };
         MtxFx33 v3 = { FX32_ONE, 0, 0, 0, FX32_ONE, 0, 0, 0, FX32_ONE };
-        Simple3DRenderObj *v4 = &v0->unk_6C.unk_10->unk_298[v0->unk_54];
+        Simple3DRenderObj *v4 = &v0->params.context->renderObjs[v0->textureIdx];
 
         OverworldAnimManager_GetPosition(param0, &v1);
 
