@@ -8,10 +8,10 @@
 #include "sprite_util.h"
 
 typedef struct {
-    SpriteList *unk_00;
-    G2dRenderer unk_04;
-    SpriteResourceCollection *unk_190[4];
-    WiFiMenuAppSpriteSet unk_1A0;
+    SpriteList *spriteList;
+    G2dRenderer renderer;
+    SpriteResourceCollection *resourceCollections[4];
+    WiFiMenuAppSpriteSet spriteSet;
 } WiFiMenuAppSpriteManager;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_022358CC_H

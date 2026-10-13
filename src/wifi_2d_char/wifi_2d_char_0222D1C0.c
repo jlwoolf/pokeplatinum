@@ -38,12 +38,12 @@ WiFi2DCharBackground *WiFi2DCharBackground_New(G2dRenderer *param0, BgConfig *pa
 
     v0->unk_00 = param0;
     v0->unk_04 = param1;
-    v0->unk_10 = param2->unk_00;
-    v0->unk_14 = param2->unk_01;
+    v0->unk_10 = param2->screen;
+    v0->unk_14 = param2->bgLayer;
 
     WiFi2DCharBackground_InitBg(v0->unk_04, v0->unk_14, param2);
 
-    v0->unk_08 = Graphics_GetScrnData(param2->narcID, param2->unk_09, param2->unk_0A, &v0->unk_0C, heapID);
+    v0->unk_08 = Graphics_GetScrnData(param2->narcID, param2->tilemapNarcMember, param2->compressed, &v0->unk_0C, heapID);
 
     return v0;
 }
@@ -79,13 +79,13 @@ static void WiFi2DCharBackground_InitBg(BgConfig *param0, int param1, const WiFi
         .screenSize = BG_SCREEN_SIZE_512x256,
     };
 
-    v0.colorMode = param2->unk_02;
-    v0.screenBase = param2->unk_03;
-    v0.charBase = param2->unk_04;
-    v0.bgExtPltt = param2->unk_05;
-    v0.priority = param2->unk_06;
+    v0.colorMode = param2->colorMode;
+    v0.screenBase = param2->screenBase;
+    v0.charBase = param2->charBase;
+    v0.bgExtPltt = param2->bgExtPltt;
+    v0.priority = param2->priority;
     v0.areaOver = 0;
-    v0.mosaic = param2->unk_07;
+    v0.mosaic = param2->mosaic;
 
     Bg_FreeTilemapBuffer(param0, param1);
     Bg_InitFromTemplate(param0, param1, &v0, 0);

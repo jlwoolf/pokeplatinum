@@ -284,16 +284,16 @@ WiFiLobbyMapActor *wifi_lobby_map_0225CB5C(WiFiLobbyMapActorManager *param0, u32
     {
         WiFiMenuAppRect v1;
 
-        v1.unk_00 = (param2) * 16;
-        v1.unk_02 = (param3) * 16;
-        v1.unk_04 = param1;
-        v1.unk_06 = 0;
-        v1.unk_08 = 0;
+        v1.x = (param2) * 16;
+        v1.y = (param3) * 16;
+        v1.objectID = param1;
+        v1.moveState = 0;
+        v1.variant = 0;
 
         if (param0->gender == 0) {
-            v1.unk_0A = 0x0;
+            v1.gfxID = 0x0;
         } else {
-            v1.unk_0A = 0x61;
+            v1.gfxID = 0x61;
         }
 
         v0->object = WiFi2DCharObjectManager_AddObject(param0->objectManager, &v1);
@@ -342,12 +342,12 @@ WiFiLobbyMapActor *wifi_lobby_map_0225CBB8(WiFiLobbyMapActorManager *param0, u32
             v4++;
         } while (v6 == 0);
 
-        v1.unk_00 = (v2) * 16;
-        v1.unk_02 = (v3) * 16;
-        v1.unk_04 = param1;
-        v1.unk_06 = 0;
-        v1.unk_08 = 1;
-        v1.unk_0A = param2;
+        v1.x = (v2) * 16;
+        v1.y = (v3) * 16;
+        v1.objectID = param1;
+        v1.moveState = 0;
+        v1.variant = 1;
+        v1.gfxID = param2;
         v0->object = WiFi2DCharObjectManager_AddObject(param0->objectManager, &v1);
     }
 
@@ -667,12 +667,12 @@ static void wifi_lobby_map_0225D0D8(WiFiLobbyMapActorManager *param0)
             {
                 WiFiMenuAppRect v6;
 
-                v6.unk_00 = (v2) * 16;
-                v6.unk_02 = (v3) * 16;
-                v6.unk_04 = Unk_wifi_lobby_map_0226D508[v0].spriteID;
-                v6.unk_06 = 0;
-                v6.unk_08 = Unk_wifi_lobby_map_0226D508[v0].unk_01;
-                v6.unk_0A = Unk_wifi_lobby_map_0226D508[v0].unk_02;
+                v6.x = (v2) * 16;
+                v6.y = (v3) * 16;
+                v6.objectID = Unk_wifi_lobby_map_0226D508[v0].spriteID;
+                v6.moveState = 0;
+                v6.variant = Unk_wifi_lobby_map_0226D508[v0].unk_01;
+                v6.gfxID = Unk_wifi_lobby_map_0226D508[v0].unk_02;
                 v1->object = WiFi2DCharObjectManager_AddObject(param0->objectManager, &v6);
             }
 

@@ -635,7 +635,7 @@ static void FrontierFacilities_InitObjectSystem(FrontierGraphics *param0, int sc
         int v1;
 
         v0.narcID = FrontierScene_GetParam(sceneID, FR_SCENE_NARC_ID);
-        v0.unk_09 = FrontierScene_GetParam(sceneID, FR_SCENE_TILEMAP_IDX);
+        v0.tilemapNarcMember = FrontierScene_GetParam(sceneID, FR_SCENE_TILEMAP_IDX);
         v1 = FrontierScene_GetParam(sceneID, FR_SCENE_FLAG_1);
 
         if (v1 == 0) {
@@ -643,11 +643,11 @@ static void FrontierFacilities_InitObjectSystem(FrontierGraphics *param0, int sc
         }
 
         if (FrontierScene_GetParam(sceneID, FR_SCENE_SUB_TILEMAP_IDX) != 0xffff) {
-            v0.unk_09 = FrontierScene_GetParam(sceneID, FR_SCENE_SUB_TILEMAP_IDX);
-            v0.unk_01 = 2;
-            v0.unk_03 = (GX_BG_SCRBASE_0x0800);
-            v0.unk_04 = (GX_BG_CHARBASE_0x20000);
-            v0.unk_06 = 1;
+            v0.tilemapNarcMember = FrontierScene_GetParam(sceneID, FR_SCENE_SUB_TILEMAP_IDX);
+            v0.bgLayer = 2;
+            v0.screenBase = (GX_BG_SCRBASE_0x0800);
+            v0.charBase = (GX_BG_CHARBASE_0x20000);
+            v0.priority = 1;
 
             if (v1 == 0) {
                 param0->subBackground = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
@@ -875,12 +875,12 @@ WiFi2DCharObject *FrontierFacilities_AddObject(FrontierGraphics *param0, const F
         v2 = param2;
     }
 
-    v3.unk_00 = param1->x;
-    v3.unk_02 = param1->y;
-    v3.unk_04 = param1->objectID;
-    v3.unk_06 = param1->moveState;
-    v3.unk_08 = param1->variant;
-    v3.unk_0A = param1->gfxID;
+    v3.x = param1->x;
+    v3.y = param1->y;
+    v3.objectID = param1->objectID;
+    v3.moveState = param1->moveState;
+    v3.variant = param1->variant;
+    v3.gfxID = param1->gfxID;
 
     v4 = WiFi2DCharObjectManager_AddObject(param0->objectManager, &v3);
     v5 = WiFi2DCharRenderer_AddObject(param0->objectRenderer, v4, 0, HEAP_ID_94);

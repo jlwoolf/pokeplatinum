@@ -14,21 +14,21 @@
 #include "bg_window.h"
 
 typedef struct WiFiMenuAppBoard_t {
-    BOOL unk_00;
+    BOOL active;
     u32 heapID;
     u32 unk_08;
-    BOOL unk_0C;
-    BgConfig *unk_10;
-    WiFiMenuAppSpriteManager unk_14;
-    WiFiMenuAppActor unk_1F0[48];
-    WiFiMenuAppActor *unk_730;
-    WiFiMenuAppPalette unk_734;
-    WiFi2DCharGrid *unk_748;
-    WiFi2DCharObjectManager *unk_74C;
-    WiFi2DCharRenderer *unk_750;
-    WiFi2DCharViewOffset unk_754;
-    WiFi2DCharBackground *unk_758;
-    WiFi2DCharEventQueue *unk_75C;
+    BOOL busy;
+    BgConfig *bgConfig;
+    WiFiMenuAppSpriteManager spriteManager;
+    WiFiMenuAppActor actors[48];
+    WiFiMenuAppActor *player;
+    WiFiMenuAppPalette palette;
+    WiFi2DCharGrid *grid;
+    WiFi2DCharObjectManager *objectManager;
+    WiFi2DCharRenderer *renderer;
+    WiFi2DCharViewOffset viewOffset;
+    WiFi2DCharBackground *background;
+    WiFi2DCharEventQueue *eventQueue;
 } WiFiMenuAppBoard;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_02235130_H

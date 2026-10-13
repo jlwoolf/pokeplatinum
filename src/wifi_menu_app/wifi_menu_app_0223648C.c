@@ -61,70 +61,70 @@
 FS_EXTERN_OVERLAY(wifi_2d_char);
 
 typedef struct {
-    WFCStatusBuffer *unk_00;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    s32 unk_08;
-    s32 unk_0C;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14[4];
-    u8 unk_18[4];
-    u8 unk_1C[4];
-    u8 unk_20[4];
-    u8 unk_24;
-    u8 unk_25;
-    u8 unk_26;
-    u8 unk_27;
-    u8 unk_28[4];
-    u8 unk_2C;
-    u8 unk_2D;
+    WFCStatusBuffer *statusBuffer;
+    u8 host;
+    u8 state;
+    u8 joiningPlayerID;
+    u8 success;
+    s32 timer;
+    s32 matchmakingTimer;
+    u8 matchmakingActive;
+    u8 voiceChatActive;
+    u8 playerJoined;
+    u8 ownJoinStatus;
+    u8 disconnected[4];
+    u8 disconnectNetIDs[4];
+    u8 prevVoiceChatFlags[4];
+    u8 voiceChatFlags[4];
+    u8 redrawRequested;
+    u8 lastPlayerID;
+    u8 ownFriendSlot;
+    u8 active;
+    u8 newPlayers[4];
+    u8 syncRequested;
+    u8 exitMessageID;
 } WiFiCommAppState;
 
 typedef struct {
-    WiFi2DCharObject *unk_00;
-    WiFi2DCharRenderObject *unk_04;
-    u16 unk_08;
-    s16 unk_0A;
+    WiFi2DCharObject *object;
+    WiFi2DCharRenderObject *renderObject;
+    u16 state;
+    s16 timer;
 } WiFiCommActorRender;
 
 typedef struct {
-    BgConfig *unk_00;
-    StringTemplate *unk_04;
-    MessageLoader *unk_08;
-    String *unk_0C;
-    String *unk_10;
-    u8 unk_14;
-    u8 unk_15;
-    u16 unk_16;
-    SpriteList *unk_18;
-    G2dRenderer unk_1C;
-    SpriteResourceCollection *unk_1A8[4];
-    WiFi2DCharObjectManager *unk_1B8;
-    WiFi2DCharRenderer *unk_1BC;
-    WiFiCommActorRender unk_1C0[4];
-    Window unk_1F0;
-    Window unk_200;
-    Window unk_210;
-    Window unk_220;
-    Window unk_230;
-    Menu *unk_240;
-    void *unk_244;
-    NNSG2dScreenData *unk_248;
-    void *unk_24C;
-    void *unk_250;
-    NNSG2dPaletteData *unk_254;
-    s16 unk_258;
-    s16 unk_25A;
+    BgConfig *bgConfig;
+    StringTemplate *template;
+    MessageLoader *messageLoader;
+    String *formattedString;
+    String *messageString;
+    u8 printerID;
+    u8 messageDelay;
+    u16 textFrameDelay;
+    SpriteList *spriteList;
+    G2dRenderer renderer;
+    SpriteResourceCollection *resourceCollections[4];
+    WiFi2DCharObjectManager *objectManager;
+    WiFi2DCharRenderer *charRenderer;
+    WiFiCommActorRender actorRenders[4];
+    Window messageBoxWindow;
+    Window headerWindow;
+    Window subHeaderWindow;
+    Window playerListWindow;
+    Window joinPromptWindow;
+    Menu *menu;
+    void *screenDataBuffer;
+    NNSG2dScreenData *screenData;
+    void *waitDial;
+    void *paletteBuffer;
+    NNSG2dPaletteData *paletteData;
+    s16 selectionTimer;
+    s16 selectionFrame;
 } WiFiCommAppGraphics;
 
 typedef struct WiFiCommApp_t {
-    WiFiCommAppState unk_00;
-    WiFiCommAppGraphics unk_30;
+    WiFiCommAppState state;
+    WiFiCommAppGraphics graphics;
 } WiFiCommApp;
 
 static void WiFiCommApp_VBlankCallback(void *param0);
@@ -397,15 +397,15 @@ int WiFiCommApp_Init(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiCommApp), HEAP_ID_96);
 
     MI_CpuFill8(v0, 0, sizeof(WiFiCommApp));
-    MI_CpuFill8(v0->unk_00.unk_1C, 1, sizeof(u8) * 4);
-    MI_CpuFill8(v0->unk_00.unk_20, 1, sizeof(u8) * 4);
+    MI_CpuFill8(v0->state.prevVoiceChatFlags, 1, sizeof(u8) * 4);
+    MI_CpuFill8(v0->state.voiceChatFlags, 1, sizeof(u8) * 4);
 
     VramTransfer_New(16, HEAP_ID_96);
 
-    v0->unk_00.unk_00 = CommManager_GetUnk00();
-    v0->unk_00.unk_00->ownStatus.voiceChatEnabled = v0->unk_00.unk_00->ownStatus.voiceChatEnabledBackup;
-    v0->unk_00.unk_04 = WiFiCommApp_IsHost(&v0->unk_00);
-    v0->unk_00.unk_06 = 0xff;
+    v0->state.statusBuffer = CommManager_GetUnk00();
+    v0->state.statusBuffer->ownStatus.voiceChatEnabled = v0->state.statusBuffer->ownStatus.voiceChatEnabledBackup;
+    v0->state.host = WiFiCommApp_IsHost(&v0->state);
+    v0->state.joiningPlayerID = 0xff;
 
     WiFiComm_Init(v0);
 
@@ -415,7 +415,7 @@ int WiFiCommApp_Init(ApplicationManager *appMan, int *param1)
     SetVBlankCallback(WiFiCommApp_VBlankCallback, v0);
     NetworkIcon_Init();
 
-    v0->unk_00.unk_27 = 1;
+    v0->state.active = 1;
 
     return 1;
 }
@@ -437,20 +437,20 @@ int WiFiCommApp_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 2:
-        if (v0->unk_00.unk_27) {
+        if (v0->state.active) {
             WiFiCommApp_CheckForDisconnect(v0, v1, 96);
         }
 
-        if (v0->unk_00.unk_04) {
+        if (v0->state.host) {
             if (CommInfo_IsInitialized() == 1) {
                 WiFiCommApp_BroadcastVoiceChatFlags(v0);
                 CommInfo_ServerSendArray();
                 WiFiCommApp_ResetStalePlayers(v0);
             }
 
-            v2 = sWiFiCommAppHostStateHandlers[v0->unk_00.unk_05](v0, v1, HEAP_ID_96);
+            v2 = sWiFiCommAppHostStateHandlers[v0->state.state](v0, v1, HEAP_ID_96);
         } else {
-            v2 = sWiFiCommAppClientStateHandlers[v0->unk_00.unk_05](v0, v1, HEAP_ID_96);
+            v2 = sWiFiCommAppClientStateHandlers[v0->state.state](v0, v1, HEAP_ID_96);
 
             if (CommInfo_IsInitialized() == 1) {
                 WiFiCommApp_ProcessJoinedPlayers(v0, HEAP_ID_96);
@@ -464,8 +464,8 @@ int WiFiCommApp_Main(ApplicationManager *appMan, int *param1)
         WiFiCommApp_UpdateActors(v0);
 
         if (v2 == 1) {
-            v1->success = v0->unk_00.unk_07;
-            v1->result = v0->unk_00.unk_11;
+            v1->success = v0->state.success;
+            v1->result = v0->state.voiceChatActive;
             (*param1)++;
         }
         break;
@@ -481,8 +481,8 @@ int WiFiCommApp_Main(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    WiFiCommApp_AnimateSelectionPalette(&v0->unk_30);
-    SpriteList_Update(v0->unk_30.unk_18);
+    WiFiCommApp_AnimateSelectionPalette(&v0->graphics);
+    SpriteList_Update(v0->graphics.spriteList);
 
     return 0;
 }
@@ -510,29 +510,29 @@ int WiFiCommApp_Exit(ApplicationManager *appMan, int *param1)
 
 void WiFiCommApp_HandlePlayerStatus(WiFiCommApp *param0, const WiFiCommPlayerStatus *param1)
 {
-    if (param0->unk_00.unk_04 == 0) {
-        if (param1->unk_00 == CommSys_CurNetId()) {
-            switch (param1->unk_04) {
+    if (param0->state.host == 0) {
+        if (param1->netID == CommSys_CurNetId()) {
+            switch (param1->status) {
             case 1:
-                param0->unk_00.unk_13 = 1;
+                param0->state.ownJoinStatus = 1;
                 break;
             case 0:
-                param0->unk_00.unk_13 = 2;
+                param0->state.ownJoinStatus = 2;
                 break;
             case 2:
-                param0->unk_00.unk_13 = 3;
+                param0->state.ownJoinStatus = 3;
                 break;
             }
         } else {
-            switch (param1->unk_04) {
+            switch (param1->status) {
             case 1:
-                param0->unk_00.unk_28[param1->unk_00] = 1;
+                param0->state.newPlayers[param1->netID] = 1;
                 break;
 
             case 0:
             case 2:
                 if (CommInfo_IsInitialized() == 1) {
-                    CommInfo_InitPlayer(param1->unk_00);
+                    CommInfo_InitPlayer(param1->netID);
                 }
                 break;
             }
@@ -542,8 +542,8 @@ void WiFiCommApp_HandlePlayerStatus(WiFiCommApp *param0, const WiFiCommPlayerSta
 
 void WiFiCommApp_RequestSync(WiFiCommApp *param0)
 {
-    if (param0->unk_00.unk_2C == 0) {
-        param0->unk_00.unk_2C = 1;
+    if (param0->state.syncRequested == 0) {
+        param0->state.syncRequested = 1;
 
         CommTiming_StartSync(13);
     }
@@ -551,8 +551,8 @@ void WiFiCommApp_RequestSync(WiFiCommApp *param0)
 
 void WiFiCommApp_HandleVoiceChatFlags(WiFiCommApp *param0, const WiFiCommVoiceChatFlags *param1)
 {
-    if (param0->unk_00.unk_04 != 1) {
-        memcpy(param0->unk_00.unk_20, param1->unk_00, sizeof(u8) * 4);
+    if (param0->state.host != 1) {
+        memcpy(param0->state.voiceChatFlags, param1->flags, sizeof(u8) * 4);
     }
 }
 
@@ -560,7 +560,7 @@ static void WiFiCommApp_VBlankCallback(void *param0)
 {
     WiFiCommApp *v0 = param0;
 
-    Bg_RunScheduledUpdates(v0->unk_30.unk_00);
+    Bg_RunScheduledUpdates(v0->graphics.bgConfig);
     VramTransfer_Process();
     RenderOam_Transfer();
 }
@@ -577,20 +577,20 @@ static BOOL WiFiCommApp_IsHost(const WiFiCommAppState *param0)
 static void WiFiCommApp_InitAllGraphics(WiFiCommApp *param0, const WiFiCommAppArgs *param1, u32 heapID)
 {
     WiFiCommApp_SetGxBanks();
-    WiFiCommApp_InitBackgrounds(&param0->unk_30, heapID);
-    WiFiCommApp_InitWindows(&param0->unk_30, param1, heapID);
-    WiFiCommApp_InitText(&param0->unk_30, param1, heapID);
-    WiFiCommApp_DrawActivityHeader(&param0->unk_30, param1, heapID);
+    WiFiCommApp_InitBackgrounds(&param0->graphics, heapID);
+    WiFiCommApp_InitWindows(&param0->graphics, param1, heapID);
+    WiFiCommApp_InitText(&param0->graphics, param1, heapID);
+    WiFiCommApp_DrawActivityHeader(&param0->graphics, param1, heapID);
     WiFiCommApp_DrawAllPlayerRows(param0, param1, heapID);
-    WiFiCommApp_InitSprites(&param0->unk_30, heapID);
+    WiFiCommApp_InitSprites(&param0->graphics, heapID);
 }
 
 static void WiFiCommApp_FreeAllGraphics(WiFiCommApp *param0, u32 heapID)
 {
-    WiFiCommApp_FreeSprites(&param0->unk_30);
-    WiFiCommApp_FreeText(&param0->unk_30);
-    WiFiCommApp_FreeWindows(&param0->unk_30, heapID);
-    WiFiCommApp_FreeBackgrounds(&param0->unk_30);
+    WiFiCommApp_FreeSprites(&param0->graphics);
+    WiFiCommApp_FreeText(&param0->graphics);
+    WiFiCommApp_FreeWindows(&param0->graphics, heapID);
+    WiFiCommApp_FreeBackgrounds(&param0->graphics);
 }
 
 static void WiFiCommApp_SetGxBanks(void)
@@ -615,7 +615,7 @@ static void WiFiCommApp_InitBackgrounds(WiFiCommAppGraphics *param0, u32 heapID)
 {
     NARC *v0;
 
-    param0->unk_00 = BgConfig_New(heapID);
+    param0->bgConfig = BgConfig_New(heapID);
 
     {
         GraphicsModes v1 = {
@@ -644,9 +644,9 @@ static void WiFiCommApp_InitBackgrounds(WiFiCommAppGraphics *param0, u32 heapID)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_00, BG_LAYER_MAIN_0, &v2, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_0, &v2, 0);
         Bg_ClearTilesRange(BG_LAYER_MAIN_0, 32, 0, heapID);
-        Bg_ClearTilemap(param0->unk_00, BG_LAYER_MAIN_0);
+        Bg_ClearTilemap(param0->bgConfig, BG_LAYER_MAIN_0);
     }
 
     {
@@ -665,9 +665,9 @@ static void WiFiCommApp_InitBackgrounds(WiFiCommAppGraphics *param0, u32 heapID)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_00, BG_LAYER_MAIN_1, &v3, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_1, &v3, 0);
         Bg_ClearTilesRange(BG_LAYER_MAIN_1, 32, 0, heapID);
-        Bg_ClearTilemap(param0->unk_00, BG_LAYER_MAIN_1);
+        Bg_ClearTilemap(param0->bgConfig, BG_LAYER_MAIN_1);
     }
 
     {
@@ -686,9 +686,9 @@ static void WiFiCommApp_InitBackgrounds(WiFiCommAppGraphics *param0, u32 heapID)
             .mosaic = FALSE,
         };
 
-        Bg_InitFromTemplate(param0->unk_00, BG_LAYER_MAIN_2, &v4, 0);
+        Bg_InitFromTemplate(param0->bgConfig, BG_LAYER_MAIN_2, &v4, 0);
         Bg_ClearTilesRange(BG_LAYER_MAIN_2, 32, 0, heapID);
-        Bg_ClearTilemap(param0->unk_00, BG_LAYER_MAIN_2);
+        Bg_ClearTilemap(param0->bgConfig, BG_LAYER_MAIN_2);
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG3, 0);
@@ -702,19 +702,19 @@ static void WiFiCommApp_InitBackgrounds(WiFiCommAppGraphics *param0, u32 heapID)
     v0 = NARC_ctor(NARC_INDEX_DATA__WIFIP2PMATCH, heapID);
 
     Graphics_LoadPaletteFromOpenNARC(v0, 13, 0, 5 * 32, 1 * 32, heapID);
-    Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 12, param0->unk_00, 2, 0 * 32, (24 * 2) * 32, 0, heapID);
+    Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 12, param0->bgConfig, 2, 0 * 32, (24 * 2) * 32, 0, heapID);
 
-    param0->unk_244 = Graphics_GetScrnDataFromOpenNARC(v0, 14, 0, &param0->unk_248, heapID);
+    param0->screenDataBuffer = Graphics_GetScrnDataFromOpenNARC(v0, 14, 0, &param0->screenData, heapID);
 
     {
-        param0->unk_250 = Graphics_GetPlttDataFromOpenNARC(v0, 44, &param0->unk_254, heapID);
+        param0->paletteBuffer = Graphics_GetPlttDataFromOpenNARC(v0, 44, &param0->paletteData, heapID);
 
-        Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 45, param0->unk_00, 0, 0, 0, 0, heapID);
-        Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 46, param0->unk_00, 0, 0, 0, 0, heapID);
+        Graphics_LoadTilesToBgLayerFromOpenNARC(v0, 45, param0->bgConfig, 0, 0, 0, 0, heapID);
+        Graphics_LoadTilemapToBgLayerFromOpenNARC(v0, 46, param0->bgConfig, 0, 0, 0, 0, heapID);
         WiFiCommApp_ApplySelectionPalette(param0, 0);
 
-        param0->unk_258 = 3;
-        param0->unk_25A = 1;
+        param0->selectionTimer = 3;
+        param0->selectionFrame = 1;
     }
 
     NARC_dtor(v0);
@@ -722,12 +722,12 @@ static void WiFiCommApp_InitBackgrounds(WiFiCommAppGraphics *param0, u32 heapID)
 
 static void WiFiCommApp_FreeBackgrounds(WiFiCommAppGraphics *param0)
 {
-    Heap_Free(param0->unk_244);
-    Heap_Free(param0->unk_250);
-    Bg_FreeTilemapBuffer(param0->unk_00, BG_LAYER_MAIN_2);
-    Bg_FreeTilemapBuffer(param0->unk_00, BG_LAYER_MAIN_1);
-    Bg_FreeTilemapBuffer(param0->unk_00, BG_LAYER_MAIN_0);
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->screenDataBuffer);
+    Heap_Free(param0->paletteBuffer);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_2);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_1);
+    Bg_FreeTilemapBuffer(param0->bgConfig, BG_LAYER_MAIN_0);
+    Heap_Free(param0->bgConfig);
 }
 
 static void WiFiCommApp_InitWindows(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, u32 heapID)
@@ -738,59 +738,59 @@ static void WiFiCommApp_InitWindows(WiFiCommAppGraphics *param0, const WiFiCommA
 
     v0 = Options_Frame(SaveData_GetOptions(param1->saveData));
 
-    LoadMessageBoxGraphics(param0->unk_00, BG_LAYER_MAIN_1, 1, 2, v0, heapID);
-    LoadStandardWindowGraphics(param0->unk_00, BG_LAYER_MAIN_1, 1 + (18 + 12), 3, 0, heapID);
-    LoadStandardWindowGraphics(param0->unk_00, BG_LAYER_MAIN_2, 0 + (24 * 2), 4, 0, heapID);
-    Window_Add(param0->unk_00, &param0->unk_1F0, 1, 2, 19, 27, 4, 1, (1 + (18 + 12)) + 9);
-    Window_FillTilemap(&param0->unk_1F0, 15);
-    Window_DrawMessageBoxWithScrollCursor(&param0->unk_1F0, 1, 1, 2);
-    Window_Add(param0->unk_00, &param0->unk_200, 1, 1, 1, 27, 2, 1, ((1 + (18 + 12)) + 9) + (27 * 4));
-    Window_FillTilemap(&param0->unk_200, 15);
-    Window_DrawStandardFrame(&param0->unk_200, 1, 1 + (18 + 12), 3);
-    Window_Add(param0->unk_00, &param0->unk_210, 1, 2, 16, 28, 2, 1, (((1 + (18 + 12)) + 9) + (27 * 4)) + (27 * 2));
-    Window_FillTilemap(&param0->unk_210, 0);
-    Window_Add(param0->unk_00, &param0->unk_220, 1, 1, 5, 20, 8, 1, ((((1 + (18 + 12)) + 9) + (27 * 4)) + (27 * 2)) + (28 * 2));
-    Window_FillTilemap(&param0->unk_220, 15);
-    Window_DrawStandardFrame(&param0->unk_220, 1, 1 + (18 + 12), 3);
-    Window_Add(param0->unk_00, &param0->unk_230, 1, 23, 5, 7, 5, 1, (((((1 + (18 + 12)) + 9) + (27 * 4)) + (27 * 2)) + (28 * 2)) + (20 * 8));
-    Window_FillTilemap(&param0->unk_230, 15);
+    LoadMessageBoxGraphics(param0->bgConfig, BG_LAYER_MAIN_1, 1, 2, v0, heapID);
+    LoadStandardWindowGraphics(param0->bgConfig, BG_LAYER_MAIN_1, 1 + (18 + 12), 3, 0, heapID);
+    LoadStandardWindowGraphics(param0->bgConfig, BG_LAYER_MAIN_2, 0 + (24 * 2), 4, 0, heapID);
+    Window_Add(param0->bgConfig, &param0->messageBoxWindow, 1, 2, 19, 27, 4, 1, (1 + (18 + 12)) + 9);
+    Window_FillTilemap(&param0->messageBoxWindow, 15);
+    Window_DrawMessageBoxWithScrollCursor(&param0->messageBoxWindow, 1, 1, 2);
+    Window_Add(param0->bgConfig, &param0->headerWindow, 1, 1, 1, 27, 2, 1, ((1 + (18 + 12)) + 9) + (27 * 4));
+    Window_FillTilemap(&param0->headerWindow, 15);
+    Window_DrawStandardFrame(&param0->headerWindow, 1, 1 + (18 + 12), 3);
+    Window_Add(param0->bgConfig, &param0->subHeaderWindow, 1, 2, 16, 28, 2, 1, (((1 + (18 + 12)) + 9) + (27 * 4)) + (27 * 2));
+    Window_FillTilemap(&param0->subHeaderWindow, 0);
+    Window_Add(param0->bgConfig, &param0->playerListWindow, 1, 1, 5, 20, 8, 1, ((((1 + (18 + 12)) + 9) + (27 * 4)) + (27 * 2)) + (28 * 2));
+    Window_FillTilemap(&param0->playerListWindow, 15);
+    Window_DrawStandardFrame(&param0->playerListWindow, 1, 1 + (18 + 12), 3);
+    Window_Add(param0->bgConfig, &param0->joinPromptWindow, 1, 23, 5, 7, 5, 1, (((((1 + (18 + 12)) + 9) + (27 * 4)) + (27 * 2)) + (28 * 2)) + (20 * 8));
+    Window_FillTilemap(&param0->joinPromptWindow, 15);
 }
 
 static void WiFiCommApp_FreeWindows(WiFiCommAppGraphics *param0, u32 heapID)
 {
     WiFiCommApp_ClearMessage(param0);
 
-    Window_EraseMessageBox(&param0->unk_1F0, 0);
-    Window_Remove(&param0->unk_1F0);
-    Window_EraseStandardFrame(&param0->unk_200, 0);
-    Window_Remove(&param0->unk_200);
-    Window_Remove(&param0->unk_210);
-    Window_EraseStandardFrame(&param0->unk_220, 0);
-    Window_Remove(&param0->unk_220);
-    Window_EraseStandardFrame(&param0->unk_230, 0);
-    Window_Remove(&param0->unk_230);
+    Window_EraseMessageBox(&param0->messageBoxWindow, 0);
+    Window_Remove(&param0->messageBoxWindow);
+    Window_EraseStandardFrame(&param0->headerWindow, 0);
+    Window_Remove(&param0->headerWindow);
+    Window_Remove(&param0->subHeaderWindow);
+    Window_EraseStandardFrame(&param0->playerListWindow, 0);
+    Window_Remove(&param0->playerListWindow);
+    Window_EraseStandardFrame(&param0->joinPromptWindow, 0);
+    Window_Remove(&param0->joinPromptWindow);
 
-    if (param0->unk_240 != NULL) {
-        Menu_DestroyForExit(param0->unk_240, heapID);
+    if (param0->menu != NULL) {
+        Menu_DestroyForExit(param0->menu, heapID);
     }
 }
 
 static void WiFiCommApp_InitText(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, u32 heapID)
 {
-    param0->unk_04 = StringTemplate_Default(heapID);
-    param0->unk_08 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0674, heapID);
-    param0->unk_0C = String_Init(256, heapID);
-    param0->unk_10 = String_Init(256, heapID);
-    param0->unk_14 = 0xff;
-    param0->unk_16 = Options_TextFrameDelay(SaveData_GetOptions(param1->saveData));
+    param0->template = StringTemplate_Default(heapID);
+    param0->messageLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_UNK_0674, heapID);
+    param0->formattedString = String_Init(256, heapID);
+    param0->messageString = String_Init(256, heapID);
+    param0->printerID = 0xff;
+    param0->textFrameDelay = Options_TextFrameDelay(SaveData_GetOptions(param1->saveData));
 }
 
 static void WiFiCommApp_FreeText(WiFiCommAppGraphics *param0)
 {
-    String_Free(param0->unk_10);
-    String_Free(param0->unk_0C);
-    MessageLoader_Free(param0->unk_08);
-    StringTemplate_Free(param0->unk_04);
+    String_Free(param0->messageString);
+    String_Free(param0->formattedString);
+    MessageLoader_Free(param0->messageLoader);
+    StringTemplate_Free(param0->template);
 }
 
 static void WiFiCommApp_DrawActivityHeader(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, u32 heapID)
@@ -799,25 +799,25 @@ static void WiFiCommApp_DrawActivityHeader(WiFiCommAppGraphics *param0, const Wi
     case 0:
         break;
     case 1:
-        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, WiFiPlazaLobbyActivity_00);
+        StringTemplate_SetPlazaMinigameName(param0->template, 0, WiFiPlazaLobbyActivity_00);
         break;
     case 2:
-        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, WiFiPlazaLobbyActivity_01);
+        StringTemplate_SetPlazaMinigameName(param0->template, 0, WiFiPlazaLobbyActivity_01);
         break;
     case 3:
-        StringTemplate_SetPlazaMinigameName(param0->unk_04, 0, WiFiPlazaLobbyActivity_02);
+        StringTemplate_SetPlazaMinigameName(param0->template, 0, WiFiPlazaLobbyActivity_02);
         break;
     }
 
-    MessageLoader_GetString(param0->unk_08, sWiFiCommAppActivityMessageIds[param1->appType], param0->unk_10);
-    StringTemplate_Format(param0->unk_04, param0->unk_0C, param0->unk_10);
-    Text_AddPrinterWithParamsAndColor(&param0->unk_200, FONT_SYSTEM, param0->unk_0C, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
-    Window_ScheduleCopyToVRAM(&param0->unk_200);
-    Window_ScheduleCopyToVRAM(&param0->unk_220);
-    MessageLoader_GetString(param0->unk_08, 128, param0->unk_0C);
-    Text_AddPrinterWithParamsAndColor(&param0->unk_210, FONT_SYSTEM, param0->unk_0C, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
-    Window_ScheduleCopyToVRAM(&param0->unk_210);
-    Window_ScheduleCopyToVRAM(&param0->unk_1F0);
+    MessageLoader_GetString(param0->messageLoader, sWiFiCommAppActivityMessageIds[param1->appType], param0->messageString);
+    StringTemplate_Format(param0->template, param0->formattedString, param0->messageString);
+    Text_AddPrinterWithParamsAndColor(&param0->headerWindow, FONT_SYSTEM, param0->formattedString, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
+    Window_ScheduleCopyToVRAM(&param0->headerWindow);
+    Window_ScheduleCopyToVRAM(&param0->playerListWindow);
+    MessageLoader_GetString(param0->messageLoader, 128, param0->formattedString);
+    Text_AddPrinterWithParamsAndColor(&param0->subHeaderWindow, FONT_SYSTEM, param0->formattedString, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 0), NULL);
+    Window_ScheduleCopyToVRAM(&param0->subHeaderWindow);
+    Window_ScheduleCopyToVRAM(&param0->messageBoxWindow);
 }
 
 static void WiFiCommApp_InitSprites(WiFiCommAppGraphics *param0, u32 heapID)
@@ -842,27 +842,27 @@ static void WiFiCommApp_InitSprites(WiFiCommAppGraphics *param0, u32 heapID)
     ReserveVramForWirelessIconChars(NNS_G2D_VRAM_TYPE_2DMAIN, GX_OBJVRAMMODE_CHAR_1D_128K);
     ReserveSlotsForWirelessIconPalette(NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    param0->unk_18 = SpriteList_InitRendering(4, &param0->unk_1C, heapID);
+    param0->spriteList = SpriteList_InitRendering(4, &param0->renderer, heapID);
 
     for (v0 = 0; v0 < 4; v0++) {
-        param0->unk_1A8[v0] = SpriteResourceCollection_New(4, v0, heapID);
+        param0->resourceCollections[v0] = SpriteResourceCollection_New(4, v0, heapID);
     }
 
-    param0->unk_1B8 = WiFi2DCharObjectManager_New(4, heapID);
-    param0->unk_1BC = WiFi2DCharRenderer_New(param0->unk_18, NULL, 4, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
+    param0->objectManager = WiFi2DCharObjectManager_New(4, heapID);
+    param0->charRenderer = WiFi2DCharRenderer_New(param0->spriteList, NULL, 4, NNS_G2D_VRAM_TYPE_2DMAIN, heapID);
 }
 
 static void WiFiCommApp_FreeSprites(WiFiCommAppGraphics *param0)
 {
     int v0;
 
-    WiFi2DCharRenderer_Free(param0->unk_1BC);
-    WiFi2DCharObjectManager_Free(param0->unk_1B8);
+    WiFi2DCharRenderer_Free(param0->charRenderer);
+    WiFi2DCharObjectManager_Free(param0->objectManager);
 
-    SpriteList_Delete(param0->unk_18);
+    SpriteList_Delete(param0->spriteList);
 
     for (v0 = 0; v0 < 4; v0++) {
-        SpriteResourceCollection_Delete(param0->unk_1A8[v0]);
+        SpriteResourceCollection_Delete(param0->resourceCollections[v0]);
     }
 
     CharTransfer_Free();
@@ -880,47 +880,47 @@ static void WiFiCommApp_ShowMessageWithDelay(WiFiCommAppGraphics *param0, const 
     String *v0;
     int v1;
 
-    if (param0->unk_14 != 0xff) {
-        if (Text_IsPrinterActive(param0->unk_14) != 0) {
-            Text_RemovePrinter(param0->unk_14);
-            param0->unk_14 = 0xff;
+    if (param0->printerID != 0xff) {
+        if (Text_IsPrinterActive(param0->printerID) != 0) {
+            Text_RemovePrinter(param0->printerID);
+            param0->printerID = 0xff;
         }
     }
 
-    Window_FillTilemap(&param0->unk_1F0, 15);
+    Window_FillTilemap(&param0->messageBoxWindow, 15);
     v0 = String_Init(256, heapID);
 
-    MessageLoader_GetString(param0->unk_08, param2, v0);
-    StringTemplate_Format(param0->unk_04, param0->unk_0C, v0);
+    MessageLoader_GetString(param0->messageLoader, param2, v0);
+    StringTemplate_Format(param0->template, param0->formattedString, v0);
 
-    param0->unk_14 = Text_AddPrinterWithParamsAndColor(&param0->unk_1F0, FONT_MESSAGE, param0->unk_0C, 0, 0, param0->unk_16, TEXT_COLOR(1, 2, 15), NULL);
+    param0->printerID = Text_AddPrinterWithParamsAndColor(&param0->messageBoxWindow, FONT_MESSAGE, param0->formattedString, 0, 0, param0->textFrameDelay, TEXT_COLOR(1, 2, 15), NULL);
 
-    Window_ScheduleCopyToVRAM(&param0->unk_1F0);
+    Window_ScheduleCopyToVRAM(&param0->messageBoxWindow);
     String_Free(v0);
 
     v1 = Options_Frame(SaveData_GetOptions(param1->saveData));
 
-    LoadMessageBoxGraphics(param0->unk_00, BG_LAYER_MAIN_1, 1, 2, v1, heapID);
+    LoadMessageBoxGraphics(param0->bgConfig, BG_LAYER_MAIN_1, 1, 2, v1, heapID);
 
-    param0->unk_15 = param3;
+    param0->messageDelay = param3;
 }
 
 static BOOL WiFiCommApp_IsMessageDone(WiFiCommAppGraphics *param0)
 {
-    if (param0->unk_14 == 0xff) {
-        if (param0->unk_15 > 0) {
-            param0->unk_15--;
+    if (param0->printerID == 0xff) {
+        if (param0->messageDelay > 0) {
+            param0->messageDelay--;
             return 0;
         }
     } else {
-        if (Text_IsPrinterActive(param0->unk_14) == 0) {
-            if (param0->unk_14 != 0xff) {
-                param0->unk_14 = 0xff;
+        if (Text_IsPrinterActive(param0->printerID) == 0) {
+            if (param0->printerID != 0xff) {
+                param0->printerID = 0xff;
             }
         }
     }
 
-    if ((param0->unk_14 == 0xff) && (param0->unk_15 == 0)) {
+    if ((param0->printerID == 0xff) && (param0->messageDelay == 0)) {
         return 1;
     }
 
@@ -929,18 +929,18 @@ static BOOL WiFiCommApp_IsMessageDone(WiFiCommAppGraphics *param0)
 
 static void WiFiCommApp_ClearMessage(WiFiCommAppGraphics *param0)
 {
-    if (param0->unk_14 != 0xff) {
-        if (Text_IsPrinterActive(param0->unk_14) != 0) {
-            Text_RemovePrinter(param0->unk_14);
+    if (param0->printerID != 0xff) {
+        if (Text_IsPrinterActive(param0->printerID) != 0) {
+            Text_RemovePrinter(param0->printerID);
         }
 
-        param0->unk_14 = 0xff;
+        param0->printerID = 0xff;
     }
 
-    Window_FillTilemap(&param0->unk_1F0, 15);
-    Window_ScheduleCopyToVRAM(&param0->unk_1F0);
+    Window_FillTilemap(&param0->messageBoxWindow, 15);
+    Window_ScheduleCopyToVRAM(&param0->messageBoxWindow);
 
-    param0->unk_15 = 0;
+    param0->messageDelay = 0;
 }
 
 static void WiFiCommApp_ShowPlayerJoinPrompt(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, int param2, u32 heapID)
@@ -951,13 +951,13 @@ static void WiFiCommApp_ShowPlayerJoinPrompt(WiFiCommAppGraphics *param0, const 
     WiFiCommApp_SetTemplatePlayerName(param0, param1, param2, 0, heapID);
     WiFiCommApp_SetTemplatePlayerId(param0, param1, param2, 1, heapID);
 
-    MessageLoader_GetString(param0->unk_08, 131, v0);
-    StringTemplate_Format(param0->unk_04, v1, v0);
+    MessageLoader_GetString(param0->messageLoader, 131, v0);
+    StringTemplate_Format(param0->template, v1, v0);
 
-    Window_FillTilemap(&param0->unk_230, 15);
-    Text_AddPrinterWithParamsAndColor(&param0->unk_230, FONT_SYSTEM, v1, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
-    Window_DrawStandardFrame(&param0->unk_230, 1, 1 + (18 + 12), 3);
-    Window_ScheduleCopyToVRAM(&param0->unk_230);
+    Window_FillTilemap(&param0->joinPromptWindow, 15);
+    Text_AddPrinterWithParamsAndColor(&param0->joinPromptWindow, FONT_SYSTEM, v1, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
+    Window_DrawStandardFrame(&param0->joinPromptWindow, 1, 1 + (18 + 12), 3);
+    Window_ScheduleCopyToVRAM(&param0->joinPromptWindow);
 
     String_Free(v0);
     String_Free(v1);
@@ -965,8 +965,8 @@ static void WiFiCommApp_ShowPlayerJoinPrompt(WiFiCommAppGraphics *param0, const 
 
 static void WiFiCommApp_ClearPlayerJoinPrompt(WiFiCommAppGraphics *param0)
 {
-    Window_EraseStandardFrame(&param0->unk_230, 1);
-    Window_ClearAndScheduleCopyToVRAM(&param0->unk_230);
+    Window_EraseStandardFrame(&param0->joinPromptWindow, 1);
+    Window_ClearAndScheduleCopyToVRAM(&param0->joinPromptWindow);
 }
 
 static void WiFiCommApp_DrawAllPlayerRows(WiFiCommApp *param0, const WiFiCommAppArgs *param1, u32 heapID)
@@ -980,12 +980,12 @@ static void WiFiCommApp_DrawAllPlayerRows(WiFiCommApp *param0, const WiFiCommApp
 
     for (v0 = 0; v0 < v1; v0++) {
         if ((v0 == 0) && (CommInfo_HasPlayerData(v0) == 1)) {
-            WiFiCommApp_DrawPlayerRow(param0, &param0->unk_30, param1, v0, heapID);
+            WiFiCommApp_DrawPlayerRow(param0, &param0->graphics, param1, v0, heapID);
         } else {
             if (CommInfo_IsDataRead(v0) == 1) {
-                WiFiCommApp_DrawPlayerRow(param0, &param0->unk_30, param1, v0, heapID);
+                WiFiCommApp_DrawPlayerRow(param0, &param0->graphics, param1, v0, heapID);
             } else {
-                WiFiCommApp_ClearPlayerRow(&param0->unk_30, param1, v0, heapID);
+                WiFiCommApp_ClearPlayerRow(&param0->graphics, param1, v0, heapID);
             }
         }
     }
@@ -1003,20 +1003,20 @@ static void WiFiCommApp_DrawPlayerRow(WiFiCommApp *param0, WiFiCommAppGraphics *
 
     WiFiCommApp_SetTemplatePlayerName(param1, param2, param3, 0, heapID);
 
-    MessageLoader_GetString(param1->unk_08, 129, v0);
-    StringTemplate_Format(param1->unk_04, v1, v0);
-    Window_FillRectWithColor(&param1->unk_220, 15, 0, param3 * (2 * 8), 20 * 8, 2 * 8);
-    Text_AddPrinterWithParamsAndColor(&param1->unk_220, FONT_SYSTEM, v1, 0, param3 * (2 * 8), TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
+    MessageLoader_GetString(param1->messageLoader, 129, v0);
+    StringTemplate_Format(param1->template, v1, v0);
+    Window_FillRectWithColor(&param1->playerListWindow, 15, 0, param3 * (2 * 8), 20 * 8, 2 * 8);
+    Text_AddPrinterWithParamsAndColor(&param1->playerListWindow, FONT_SYSTEM, v1, 0, param3 * (2 * 8), TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
 
     WiFiCommApp_SetTemplatePlayerId(param1, param2, param3, 0, heapID);
 
-    MessageLoader_GetString(param1->unk_08, 130, v0);
-    StringTemplate_Format(param1->unk_04, v1, v0);
-    Text_AddPrinterWithParamsAndColor(&param1->unk_220, FONT_SYSTEM, v1, 72, param3 * (2 * 8), TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
-    Window_ScheduleCopyToVRAM(&param1->unk_220);
+    MessageLoader_GetString(param1->messageLoader, 130, v0);
+    StringTemplate_Format(param1->template, v1, v0);
+    Text_AddPrinterWithParamsAndColor(&param1->playerListWindow, FONT_SYSTEM, v1, 72, param3 * (2 * 8), TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 15), NULL);
+    Window_ScheduleCopyToVRAM(&param1->playerListWindow);
 
     if (param3 == CommSys_CurNetId()) {
-        if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled) {
+        if (param0->state.statusBuffer->ownStatus.voiceChatEnabled) {
             v2 = 2;
         } else {
             v2 = 1;
@@ -1024,32 +1024,32 @@ static void WiFiCommApp_DrawPlayerRow(WiFiCommApp *param0, WiFiCommAppGraphics *
 
         v3 = 0;
     } else {
-        if (param0->unk_00.unk_20[param3]) {
+        if (param0->state.voiceChatFlags[param3]) {
             v2 = 2;
         } else {
             v2 = 1;
         }
     }
 
-    Bg_CopyToTilemapRect(param1->unk_00, 2, 18, 5 + (param3 * 2), 2, 2, param1->unk_248->rawData, v2 * 2, 0, param1->unk_248->screenWidth / 8, param1->unk_248->screenHeight / 8);
-    Bg_ChangeTilemapRectPalette(param1->unk_00, 2, 18, 5 + (param3 * 2), 2, 2, 5);
-    Bg_ScheduleTilemapTransfer(param1->unk_00, 2);
+    Bg_CopyToTilemapRect(param1->bgConfig, 2, 18, 5 + (param3 * 2), 2, 2, param1->screenData->rawData, v2 * 2, 0, param1->screenData->screenWidth / 8, param1->screenData->screenHeight / 8);
+    Bg_ChangeTilemapRectPalette(param1->bgConfig, 2, 18, 5 + (param3 * 2), 2, 2, 5);
+    Bg_ScheduleTilemapTransfer(param1->bgConfig, 2);
     String_Free(v0);
     String_Free(v1);
 }
 
 static void WiFiCommApp_ClearPlayerRow(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, int param2, u32 heapID)
 {
-    Window_FillRectWithColor(&param0->unk_220, 15, 0, param2 * (2 * 8), 20 * 8, 2 * 8);
-    Bg_CopyToTilemapRect(param0->unk_00, 2, 18, 5 + param2 * 2, 2, 2, param0->unk_248->rawData, 0 * 2, 0, param0->unk_248->screenWidth / 8, param0->unk_248->screenHeight / 8);
-    Bg_ScheduleTilemapTransfer(param0->unk_00, 2);
-    Window_ScheduleCopyToVRAM(&param0->unk_220);
+    Window_FillRectWithColor(&param0->playerListWindow, 15, 0, param2 * (2 * 8), 20 * 8, 2 * 8);
+    Bg_CopyToTilemapRect(param0->bgConfig, 2, 18, 5 + param2 * 2, 2, 2, param0->screenData->rawData, 0 * 2, 0, param0->screenData->screenWidth / 8, param0->screenData->screenHeight / 8);
+    Bg_ScheduleTilemapTransfer(param0->bgConfig, 2);
+    Window_ScheduleCopyToVRAM(&param0->playerListWindow);
 }
 
 static void WiFiCommApp_SetTemplatePlayerName(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, int param2, int param3, u32 heapID)
 {
     TrainerInfo *v0 = CommInfo_TrainerInfo(param2);
-    StringTemplate_SetPlayerName(param0->unk_04, param3, v0);
+    StringTemplate_SetPlayerName(param0->template, param3, v0);
 }
 
 static void WiFiCommApp_SetTemplatePlayerId(WiFiCommAppGraphics *param0, const WiFiCommAppArgs *param1, int param2, int param3, u32 heapID)
@@ -1060,17 +1060,17 @@ static void WiFiCommApp_SetTemplatePlayerId(WiFiCommAppGraphics *param0, const W
     v0 = CommInfo_TrainerInfo(param2);
     v1 = TrainerInfo_ID_LowHalf(v0);
 
-    StringTemplate_SetNumber(param0->unk_04, param3, v1, 5, 2, 1);
+    StringTemplate_SetNumber(param0->template, param3, v1, 5, 2, 1);
 }
 
 static void WiFiCommApp_AnimateSelectionPalette(WiFiCommAppGraphics *param0)
 {
-    if (param0->unk_258 <= 0) {
-        WiFiCommApp_ApplySelectionPalette(param0, param0->unk_25A);
-        param0->unk_258 = 3;
-        param0->unk_25A = (param0->unk_25A + 1) % 18;
+    if (param0->selectionTimer <= 0) {
+        WiFiCommApp_ApplySelectionPalette(param0, param0->selectionFrame);
+        param0->selectionTimer = 3;
+        param0->selectionFrame = (param0->selectionFrame + 1) % 18;
     } else {
-        param0->unk_258--;
+        param0->selectionTimer--;
     }
 }
 
@@ -1079,7 +1079,7 @@ static void WiFiCommApp_ApplySelectionPalette(WiFiCommAppGraphics *param0, u32 p
     BOOL v0;
     u16 *v1;
     u32 v2 = sWiFiCommAppPaletteAnimFrames[param1];
-    v1 = param0->unk_254->pRawData;
+    v1 = param0->paletteData->pRawData;
     v0 = VramTransfer_Request(NNS_GFD_DST_2D_BG_PLTT_MAIN, 0 * 32, &v1[v2 * 16], 32);
 
     GF_ASSERT(v0);
@@ -1087,19 +1087,19 @@ static void WiFiCommApp_ApplySelectionPalette(WiFiCommAppGraphics *param0, u32 p
 
 static BOOL WiFiCommApp_ToggleVoiceChat(WiFiCommApp *param0, u32 heapID)
 {
-    param0->unk_00.unk_00->ownStatus.voiceChatEnabledBackup = 1 - param0->unk_00.unk_00->ownStatus.voiceChatEnabledBackup;
-    param0->unk_00.unk_00->ownStatus.voiceChatEnabled = param0->unk_00.unk_00->ownStatus.voiceChatEnabledBackup;
+    param0->state.statusBuffer->ownStatus.voiceChatEnabledBackup = 1 - param0->state.statusBuffer->ownStatus.voiceChatEnabledBackup;
+    param0->state.statusBuffer->ownStatus.voiceChatEnabled = param0->state.statusBuffer->ownStatus.voiceChatEnabledBackup;
 
-    NintendoWFC_SetVoiceChatEnabled(param0->unk_00.unk_00->ownStatus.voiceChatEnabled);
-    NintendoWFC_SetStatusData(&(param0->unk_00.unk_00->ownStatus), sizeof(WFCTrainerInfo));
+    NintendoWFC_SetVoiceChatEnabled(param0->state.statusBuffer->ownStatus.voiceChatEnabled);
+    NintendoWFC_SetStatusData(&(param0->state.statusBuffer->ownStatus), sizeof(WFCTrainerInfo));
 
-    if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+    if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
         WiFiCommApp_EnableVoiceChat(param0);
     } else {
         WiFiCommApp_DisableVoiceChat(param0);
     }
 
-    return param0->unk_00.unk_00->ownStatus.voiceChatEnabledBackup;
+    return param0->state.statusBuffer->ownStatus.voiceChatEnabledBackup;
 }
 
 static void WiFiCommApp_CheckForDisconnect(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 param2)
@@ -1108,8 +1108,8 @@ static void WiFiCommApp_CheckForDisconnect(WiFiCommApp *param0, WiFiCommAppArgs 
     BOOL v1;
     BOOL v2;
 
-    if (param0->unk_00.unk_04) {
-        if ((param0->unk_00.unk_05 == 27) || (param0->unk_00.unk_05 == 28) || (param0->unk_00.unk_05 == 29)) {
+    if (param0->state.host) {
+        if ((param0->state.state == 27) || (param0->state.state == 28) || (param0->state.state == 29)) {
             return;
         }
 
@@ -1119,7 +1119,7 @@ static void WiFiCommApp_CheckForDisconnect(WiFiCommApp *param0, WiFiCommAppArgs 
             }
         }
     } else {
-        if ((param0->unk_00.unk_05 == 15) || (param0->unk_00.unk_05 == 16) || (param0->unk_00.unk_05 == 17) || (param0->unk_00.unk_05 == 7) || (param0->unk_00.unk_05 == 6)) {
+        if ((param0->state.state == 15) || (param0->state.state == 16) || (param0->state.state == 17) || (param0->state.state == 7) || (param0->state.state == 6)) {
             return;
         }
     }
@@ -1134,10 +1134,10 @@ static void WiFiCommApp_CheckForDisconnect(WiFiCommApp *param0, WiFiCommAppArgs 
     }
 
     if ((CommManager_GetMatchmakingState() >= 3) || (CommManager_CheckWifiError()) || CommManager_GetDisconnectedWifi() || (CommSys_IsPlayerConnected(0) == 0) || (WiFiCommApp_HasConnectedPlayers(param0) == 0) || (v1 == 1) || (v2 == 1) || (v0 == 1)) {
-        if (param0->unk_00.unk_04) {
-            param0->unk_00.unk_05 = 27;
+        if (param0->state.host) {
+            param0->state.state = 27;
         } else {
-            param0->unk_00.unk_05 = 15;
+            param0->state.state = 15;
         }
     }
 }
@@ -1145,7 +1145,7 @@ static void WiFiCommApp_CheckForDisconnect(WiFiCommApp *param0, WiFiCommAppArgs 
 static void WiFiCommApp_CheckClientDisconnect(WiFiCommApp *param0)
 {
     if ((CommManager_GetMatchmakingState() > 3) || CommManager_GetDisconnectedWifi() || (CommManager_CheckWifiError())) {
-        param0->unk_00.unk_05 = 15;
+        param0->state.state = 15;
     }
 }
 
@@ -1182,31 +1182,31 @@ static void WiFiCommApp_SetCommStateForActivity(WiFiCommApp *param0, const WiFiC
 {
     switch (param1->appType) {
     case 0:
-        param0->unk_00.unk_00->ownStatus.commState = 18;
+        param0->state.statusBuffer->ownStatus.commState = 18;
         break;
     case 1:
-        param0->unk_00.unk_00->ownStatus.commState = 22;
+        param0->state.statusBuffer->ownStatus.commState = 22;
         break;
     case 2:
-        param0->unk_00.unk_00->ownStatus.commState = 24;
+        param0->state.statusBuffer->ownStatus.commState = 24;
         break;
     case 3:
-        param0->unk_00.unk_00->ownStatus.commState = 26;
+        param0->state.statusBuffer->ownStatus.commState = 26;
         break;
     }
 
-    NintendoWFC_SetStatusData(&(param0->unk_00.unk_00->ownStatus), sizeof(WFCTrainerInfo));
+    NintendoWFC_SetStatusData(&(param0->state.statusBuffer->ownStatus), sizeof(WFCTrainerInfo));
 }
 
 static BOOL WiFiCommApp_StartVoiceChat(WiFiCommApp *param0)
 {
-    if (param0->unk_00.unk_11 == 1) {
+    if (param0->state.voiceChatActive == 1) {
         return 0;
     }
 
     if (WiFiCommApp_HasConnectedPlayers(param0) == 1) {
         NintendoWFC_StartVoiceChat(HEAP_ID_97);
-        param0->unk_00.unk_11 = 1;
+        param0->state.voiceChatActive = 1;
         return 1;
     }
 
@@ -1215,12 +1215,12 @@ static BOOL WiFiCommApp_StartVoiceChat(WiFiCommApp *param0)
 
 static BOOL WiFiCommApp_StopVoiceChat(WiFiCommApp *param0)
 {
-    if (param0->unk_00.unk_11 == 0) {
+    if (param0->state.voiceChatActive == 0) {
         return 0;
     }
 
     NintendoWFC_TerminateVoiceChat();
-    param0->unk_00.unk_11 = 0;
+    param0->state.voiceChatActive = 0;
 
     return 1;
 }
@@ -1241,7 +1241,7 @@ static void WiFiCommApp_DisableVoiceChat(WiFiCommApp *param0)
 
 static int WiFiCommApp_GetConnectedPlayerCount(WiFiCommApp *param0)
 {
-    if (param0->unk_00.unk_04) {
+    if (param0->state.host) {
         return CommInfo_CountReceived();
     } else {
         return CommInfo_CountReceived();
@@ -1274,11 +1274,11 @@ static void WiFiCommApp_ClearNewPlayers(WiFiCommApp *param0)
     WiFiCommPlayerStatus v1;
     BOOL v2;
 
-    v1.unk_04 = 0;
+    v1.status = 0;
 
     for (v0 = 1; v0 < 4; v0++) {
         if (CommInfo_HasNewData(v0) == 1) {
-            v1.unk_00 = v0;
+            v1.netID = v0;
             v2 = CommSys_SendData(22, &v1, sizeof(WiFiCommPlayerStatus));
             GF_ASSERT(v2 == 1);
             CommInfo_InitPlayer(v0);
@@ -1292,11 +1292,11 @@ static void WiFiCommApp_ClearKnownPlayers(WiFiCommApp *param0)
     WiFiCommPlayerStatus v1;
     BOOL v2;
 
-    v1.unk_04 = 0;
+    v1.status = 0;
 
     for (v0 = 1; v0 < 4; v0++) {
         if (CommInfo_HasPlayerData(v0) == 1) {
-            v1.unk_00 = v0;
+            v1.netID = v0;
             v2 = CommSys_SendData(22, &v1, sizeof(WiFiCommPlayerStatus));
             GF_ASSERT(v2 == 1);
             CommInfo_InitPlayer(v0);
@@ -1320,13 +1320,13 @@ static BOOL WiFiCommApp_ProcessDisconnects(WiFiCommApp *param0)
     BOOL v1 = 0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_00.unk_14[v0] == 1) {
-            if (CommInfo_IsDataRead(param0->unk_00.unk_18[v0]) == 1) {
+        if (param0->state.disconnected[v0] == 1) {
+            if (CommInfo_IsDataRead(param0->state.disconnectNetIDs[v0]) == 1) {
                 v1 = 1;
             }
 
-            param0->unk_00.unk_14[v0] = 0;
-            param0->unk_00.unk_18[v0] = 0;
+            param0->state.disconnected[v0] = 0;
+            param0->state.disconnectNetIDs[v0] = 0;
         }
     }
 
@@ -1337,8 +1337,8 @@ static void WiFiCommApp_OnConnectionClosed(u16 param0, void *param1)
 {
     WiFiCommApp *v0 = param1;
 
-    v0->unk_00.unk_14[param0] = 1;
-    v0->unk_00.unk_18[param0] = param0;
+    v0->state.disconnected[param0] = 1;
+    v0->state.disconnectNetIDs[param0] = param0;
 }
 
 static BOOL WiFiCommApp_HasVoiceChatChanged(WiFiCommApp *param0)
@@ -1347,15 +1347,15 @@ static BOOL WiFiCommApp_HasVoiceChatChanged(WiFiCommApp *param0)
     BOOL v1 = 0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_00.unk_1C[v0] != param0->unk_00.unk_20[v0]) {
+        if (param0->state.prevVoiceChatFlags[v0] != param0->state.voiceChatFlags[v0]) {
             v1 = 1;
         }
 
-        param0->unk_00.unk_1C[v0] = param0->unk_00.unk_20[v0];
+        param0->state.prevVoiceChatFlags[v0] = param0->state.voiceChatFlags[v0];
     }
 
-    if (param0->unk_00.unk_24) {
-        param0->unk_00.unk_24 = 0;
+    if (param0->state.redrawRequested) {
+        param0->state.redrawRequested = 0;
         v1 = 1;
     }
 
@@ -1364,7 +1364,7 @@ static BOOL WiFiCommApp_HasVoiceChatChanged(WiFiCommApp *param0)
 
 static void WiFiCommApp_RequestPlayerRedraw(WiFiCommApp *param0)
 {
-    param0->unk_00.unk_24 = 1;
+    param0->state.redrawRequested = 1;
 }
 
 static void WiFiCommApp_AddPlayerActor(WiFiCommApp *param0, u32 param1, u32 heapID)
@@ -1372,7 +1372,7 @@ static void WiFiCommApp_AddPlayerActor(WiFiCommApp *param0, u32 param1, u32 heap
     if (CommInfo_IsDataRead(param1) == 0) {
         CommInfo_MarkDataRead(param1);
 
-        param0->unk_00.unk_25 = param1;
+        param0->state.lastPlayerID = param1;
 
         WiFiCommApp_CreatePlayerActor(param0, param1, heapID);
         WiFiCommApp_RequestPlayerRedraw(param0);
@@ -1384,7 +1384,7 @@ static void WiFiCommApp_CreatePlayerActor(WiFiCommApp *param0, u32 param1, u32 h
     WiFiMenuAppRect v0;
     TrainerInfo *v1;
 
-    if (param0->unk_30.unk_1C0[param1].unk_00 != NULL) {
+    if (param0->graphics.actorRenders[param1].object != NULL) {
         return;
     }
 
@@ -1393,24 +1393,24 @@ static void WiFiCommApp_CreatePlayerActor(WiFiCommApp *param0, u32 param1, u32 h
     if (param1 != CommSys_CurNetId()) {
         v1 = CommInfo_TrainerInfo(param1);
         GF_ASSERT(v1 != NULL);
-        v0.unk_0A = TrainerInfo_Appearance(v1);
+        v0.gfxID = TrainerInfo_Appearance(v1);
     } else {
-        if (param0->unk_00.unk_00->ownStatus.gender == 0) {
-            v0.unk_0A = 0x0;
+        if (param0->state.statusBuffer->ownStatus.gender == 0) {
+            v0.gfxID = 0x0;
         } else {
-            v0.unk_0A = 0x61;
+            v0.gfxID = 0x61;
         }
     }
 
-    param0->unk_30.unk_1C0[param1].unk_00 = WiFi2DCharObjectManager_AddObject(param0->unk_30.unk_1B8, &v0);
+    param0->graphics.actorRenders[param1].object = WiFi2DCharObjectManager_AddObject(param0->graphics.objectManager, &v0);
 
-    if (WiFi2DCharRenderer_IsSpeciesLoaded(param0->unk_30.unk_1BC, v0.unk_0A) == 0) {
-        WiFi2DCharRenderer_LoadSpecies(param0->unk_30.unk_1BC, v0.unk_0A, 2, heapID);
+    if (WiFi2DCharRenderer_IsSpeciesLoaded(param0->graphics.charRenderer, v0.gfxID) == 0) {
+        WiFi2DCharRenderer_LoadSpecies(param0->graphics.charRenderer, v0.gfxID, 2, heapID);
     }
 
-    param0->unk_30.unk_1C0[param1].unk_04 = WiFi2DCharRenderer_AddObject(param0->unk_30.unk_1BC, param0->unk_30.unk_1C0[param1].unk_00, 0, heapID);
-    WiFi2DCharRenderer_SetObjectVisible(param0->unk_30.unk_1C0[param1].unk_04, 0);
-    param0->unk_30.unk_1C0[param1].unk_08++;
+    param0->graphics.actorRenders[param1].renderObject = WiFi2DCharRenderer_AddObject(param0->graphics.charRenderer, param0->graphics.actorRenders[param1].object, 0, heapID);
+    WiFi2DCharRenderer_SetObjectVisible(param0->graphics.actorRenders[param1].renderObject, 0);
+    param0->graphics.actorRenders[param1].state++;
 }
 
 static void WiFiCommApp_UpdateActors(WiFiCommApp *param0)
@@ -1418,17 +1418,17 @@ static void WiFiCommApp_UpdateActors(WiFiCommApp *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        sWiFiCommAppActorRenderFuncs[param0->unk_30.unk_1C0[v0].unk_08](param0, &param0->unk_30.unk_1C0[v0]);
+        sWiFiCommAppActorRenderFuncs[param0->graphics.actorRenders[v0].state](param0, &param0->graphics.actorRenders[v0]);
     }
 
-    WiFi2DCharObjectManager_Update(param0->unk_30.unk_1B8);
-    WiFi2DCharRenderer_UpdateAll(param0->unk_30.unk_1BC);
+    WiFi2DCharObjectManager_Update(param0->graphics.objectManager);
+    WiFi2DCharRenderer_UpdateAll(param0->graphics.charRenderer);
 }
 
 static void WiFiCommApp_FreePlayerActors(WiFiCommApp *param0)
 {
-    WiFi2DCharRenderer_UnloadAllSpecies(param0->unk_30.unk_1BC);
-    memset(param0->unk_30.unk_1C0, 0, sizeof(WiFiCommActorRender) * 4);
+    WiFi2DCharRenderer_UnloadAllSpecies(param0->graphics.charRenderer);
+    memset(param0->graphics.actorRenders, 0, sizeof(WiFiCommActorRender) * 4);
 }
 
 static void WiFiCommApp_SendPlayerResetStatus(WiFiCommApp *param0, u32 param1)
@@ -1436,8 +1436,8 @@ static void WiFiCommApp_SendPlayerResetStatus(WiFiCommApp *param0, u32 param1)
     WiFiCommPlayerStatus v0;
     BOOL v1;
 
-    v0.unk_00 = param1;
-    v0.unk_04 = 2;
+    v0.netID = param1;
+    v0.status = 2;
     v1 = CommSys_SendData(22, &v0, sizeof(WiFiCommPlayerStatus));
 
     GF_ASSERT(v1 == 1);
@@ -1448,7 +1448,7 @@ static void WiFiCommApp_ResetStalePlayers(WiFiCommApp *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_00.unk_25 + 1 < v0) {
+        if (param0->state.lastPlayerID + 1 < v0) {
             if (CommInfo_HasNewData(v0) == 1) {
                 WiFiCommApp_SendPlayerResetStatus(param0, v0);
                 CommInfo_InitPlayer(v0);
@@ -1462,11 +1462,11 @@ static void WiFiCommApp_ProcessJoinedPlayers(WiFiCommApp *param0, u32 heapID)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_00.unk_28[v0] == 1) {
+        if (param0->state.newPlayers[v0] == 1) {
             if (CommInfo_HasPlayerData(v0) == 1) {
                 WiFiCommApp_AddPlayerActor(param0, v0, heapID);
-                param0->unk_00.unk_28[v0] = 0;
-                param0->unk_00.unk_12 = 1;
+                param0->state.newPlayers[v0] = 0;
+                param0->state.playerJoined = 1;
             }
         }
     }
@@ -1474,24 +1474,24 @@ static void WiFiCommApp_ProcessJoinedPlayers(WiFiCommApp *param0, u32 heapID)
 
 static void WiFiCommApp_ShowWaitDial(WiFiCommApp *param0)
 {
-    GF_ASSERT(param0->unk_30.unk_24C == NULL);
-    param0->unk_30.unk_24C = Window_AddWaitDial(&param0->unk_30.unk_1F0, 1);
+    GF_ASSERT(param0->graphics.waitDial == NULL);
+    param0->graphics.waitDial = Window_AddWaitDial(&param0->graphics.messageBoxWindow, 1);
 }
 
 static void WiFiCommApp_HideWaitDial(WiFiCommApp *param0, const WiFiCommAppArgs *param1, u32 heapID)
 {
     int v0;
 
-    if (param0->unk_30.unk_24C == NULL) {
+    if (param0->graphics.waitDial == NULL) {
         return;
     }
 
-    DestroyWaitDial(param0->unk_30.unk_24C);
+    DestroyWaitDial(param0->graphics.waitDial);
 
-    param0->unk_30.unk_24C = NULL;
+    param0->graphics.waitDial = NULL;
     v0 = Options_Frame(SaveData_GetOptions(param1->saveData));
 
-    LoadMessageBoxGraphics(param0->unk_30.unk_00, 1, 1, 2, v0, heapID);
+    LoadMessageBoxGraphics(param0->graphics.bgConfig, 1, 1, 2, v0, heapID);
 }
 
 static void WiFiCommApp_ActorRenderStep0(WiFiCommApp *param0, WiFiCommActorRender *param1)
@@ -1503,25 +1503,25 @@ static void WiFiCommApp_ActorRenderStep1(WiFiCommApp *param0, WiFiCommActorRende
 {
     u32 v0;
 
-    WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 0);
-    WiFi2DCharRenderer_ResetObjectAnim(param1->unk_04);
-    WiFi2DCharRenderer_SetObjectVisible(param1->unk_04, 1);
+    WiFi2DCharRenderer_SetObjectEnabled(param1->renderObject, 0);
+    WiFi2DCharRenderer_ResetObjectAnim(param1->renderObject);
+    WiFi2DCharRenderer_SetObjectVisible(param1->renderObject, 1);
 
-    param1->unk_08 = 2;
-    v0 = WiFi2DCharObject_GetField(param1->unk_00, 6);
-    param1->unk_0A = 16 + sWiFiCommAppActorSpawnOffsets[v0];
+    param1->state = 2;
+    v0 = WiFi2DCharObject_GetField(param1->object, 6);
+    param1->timer = 16 + sWiFiCommAppActorSpawnOffsets[v0];
 }
 
 static void WiFiCommApp_ActorRenderStep2(WiFiCommApp *param0, WiFiCommActorRender *param1)
 {
-    WiFi2DCharRenderer_UpdateObjectAnim(param1->unk_04);
+    WiFi2DCharRenderer_UpdateObjectAnim(param1->renderObject);
 
-    param1->unk_0A--;
+    param1->timer--;
 
-    if (param1->unk_0A <= 0) {
-        WiFi2DCharRenderer_RefreshObject(param1->unk_04);
-        WiFi2DCharRenderer_SetObjectEnabled(param1->unk_04, 1);
-        param1->unk_08 = 3;
+    if (param1->timer <= 0) {
+        WiFi2DCharRenderer_RefreshObject(param1->renderObject);
+        WiFi2DCharRenderer_SetObjectEnabled(param1->renderObject, 1);
+        param1->state = 3;
     }
 }
 
@@ -1553,24 +1553,24 @@ static void WiFiCommApp_BroadcastVoiceChatFlags(WiFiCommApp *param0)
 
     for (v0 = 0; v0 < v1; v0++) {
         if (v0 == 0) {
-            v4 = param0->unk_00.unk_00->ownStatus.voiceChatEnabled;
+            v4 = param0->state.statusBuffer->ownStatus.voiceChatEnabled;
         } else {
             v3 = CommInfo_FindFriendSlotForNetId(v0);
             GF_ASSERT(v3 != 32);
-            v4 = param0->unk_00.unk_00->friendStatuses[v3].voiceChatEnabled;
+            v4 = param0->state.statusBuffer->friendStatuses[v3].voiceChatEnabled;
         }
 
-        if (param0->unk_00.unk_20[v0] != v4) {
+        if (param0->state.voiceChatFlags[v0] != v4) {
             v2 = 1;
         }
 
-        param0->unk_00.unk_20[v0] = v4;
+        param0->state.voiceChatFlags[v0] = v4;
     }
 
     if (v2 == 1) {
         BOOL v6;
 
-        memcpy(v5.unk_00, param0->unk_00.unk_20, sizeof(u8) * 4);
+        memcpy(v5.flags, param0->state.voiceChatFlags, sizeof(u8) * 4);
         CommSys_SendData(24, &v5, sizeof(WiFiCommVoiceChatFlags));
     }
 }
@@ -1598,18 +1598,18 @@ static void WiFiCommApp_RecordJournalWifiClub(WiFiCommAppArgs *param0, u32 heapI
 
 static void WiFiCommApp_StartMatchmakingTimer(WiFiCommApp *param0)
 {
-    param0->unk_00.unk_10 = 1;
-    param0->unk_00.unk_0C = (60 * 30);
+    param0->state.matchmakingActive = 1;
+    param0->state.matchmakingTimer = (60 * 30);
 }
 
 static BOOL WiFiCommApp_IsMatchmakingTimerExpired(WiFiCommApp *param0)
 {
-    if (param0->unk_00.unk_10 == 0) {
+    if (param0->state.matchmakingActive == 0) {
         return 0;
     }
 
-    if (param0->unk_00.unk_0C > 0) {
-        param0->unk_00.unk_0C--;
+    if (param0->state.matchmakingTimer > 0) {
+        param0->state.matchmakingTimer--;
         return 0;
     }
 
@@ -1618,7 +1618,7 @@ static BOOL WiFiCommApp_IsMatchmakingTimerExpired(WiFiCommApp *param0)
 
 static BOOL WiFiCommApp_HostState0(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+    if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
         WiFiCommApp_EnableVoiceChat(param0);
     }
 
@@ -1626,22 +1626,22 @@ static BOOL WiFiCommApp_HostState0(WiFiCommApp *param0, WiFiCommAppArgs *param1,
     CommManager_SetErrorHandling(0, 1);
     WiFiCommApp_CreatePlayerActor(param0, CommSys_CurNetId(), heapID);
 
-    param0->unk_00.unk_05 = 1;
+    param0->state.state = 1;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState1(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 107, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 107, heapID);
 
-    param0->unk_00.unk_05 = 2;
+    param0->state.state = 2;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState2(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
@@ -1655,17 +1655,17 @@ static BOOL WiFiCommApp_HostState2(WiFiCommApp *param0, WiFiCommAppArgs *param1,
         v1 = CommInfo_NewNetworkId();
 
         if (v1 != 0xff) {
-            if (param0->unk_00.unk_06 != 0) {
+            if (param0->state.joiningPlayerID != 0) {
                 if (CommInfo_FindFriendSlotForNetId(v1) == 32) {
-                    v2.unk_00 = v1;
-                    v2.unk_04 = 0;
+                    v2.netID = v1;
+                    v2.status = 0;
 
                     CommInfo_InitPlayer(v1);
 
                     v3 = CommSys_SendData(22, &v2, sizeof(WiFiCommPlayerStatus));
                     GF_ASSERT(v3 == 1);
                 } else {
-                    param0->unk_00.unk_06 = v1;
+                    param0->state.joiningPlayerID = v1;
                 }
             }
         }
@@ -1676,14 +1676,14 @@ static BOOL WiFiCommApp_HostState2(WiFiCommApp *param0, WiFiCommAppArgs *param1,
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
 
             if (WiFiCommApp_HasConnectedPlayers(param0) == 0) {
-                param0->unk_00.unk_05 = 6;
+                param0->state.state = 6;
                 break;
             } else {
                 if (param1->minPlayers <= WiFiCommApp_GetConnectedPlayerCount(param0)) {
-                    param0->unk_00.unk_05 = 8;
+                    param0->state.state = 8;
                     break;
                 } else {
-                    param0->unk_00.unk_05 = 6;
+                    param0->state.state = 6;
                     break;
                 }
             }
@@ -1691,18 +1691,18 @@ static BOOL WiFiCommApp_HostState2(WiFiCommApp *param0, WiFiCommAppArgs *param1,
 
         if (gSystem.pressedKeys & PAD_BUTTON_B) {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            param0->unk_00.unk_05 = 22;
+            param0->state.state = 22;
             break;
         }
 
-        if (param0->unk_00.unk_06 != 0xff) {
+        if (param0->state.joiningPlayerID != 0xff) {
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-            param0->unk_00.unk_05 = 3;
+            param0->state.state = 3;
             break;
         }
 
         if (gSystem.pressedKeys & PAD_BUTTON_X) {
-            param0->unk_00.unk_05 = 30;
+            param0->state.state = 30;
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             break;
         }
@@ -1713,24 +1713,24 @@ static BOOL WiFiCommApp_HostState2(WiFiCommApp *param0, WiFiCommAppArgs *param1,
 
 static BOOL WiFiCommApp_HostState3(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowPlayerJoinPrompt(&param0->unk_30, param1, param0->unk_00.unk_06, heapID);
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 108, heapID);
+    WiFiCommApp_ShowPlayerJoinPrompt(&param0->graphics, param1, param0->state.joiningPlayerID, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 108, heapID);
 
-    param0->unk_00.unk_05 = 4;
+    param0->state.state = 4;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState4(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoice(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
-    param0->unk_00.unk_05 = 5;
+    param0->graphics.menu = Menu_MakeYesNoChoice(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
+    param0->state.state = 5;
 
     return 0;
 }
@@ -1741,40 +1741,40 @@ static BOOL WiFiCommApp_HostState5(WiFiCommApp *param0, WiFiCommAppArgs *param1,
     WiFiCommPlayerStatus v1;
     BOOL v2;
 
-    v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
-        v1.unk_00 = param0->unk_00.unk_06;
+        v1.netID = param0->state.joiningPlayerID;
 
         if (v0 == 0) {
-            v1.unk_04 = 1;
+            v1.status = 1;
 
-            WiFiCommApp_AddPlayerActor(param0, param0->unk_00.unk_06, heapID);
+            WiFiCommApp_AddPlayerActor(param0, param0->state.joiningPlayerID, heapID);
 
-            if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+            if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
                 WiFiCommApp_StopVoiceChat(param0);
                 WiFiCommApp_EnableVoiceChat(param0);
             }
 
             if (param1->requiredPlayers <= WiFiCommApp_GetConnectedPlayerCount(param0)) {
-                param0->unk_00.unk_05 = 8;
+                param0->state.state = 8;
             } else {
-                param0->unk_00.unk_05 = 1;
+                param0->state.state = 1;
             }
         } else {
-            v1.unk_04 = 0;
+            v1.status = 0;
 
-            CommInfo_InitPlayer(param0->unk_00.unk_06);
+            CommInfo_InitPlayer(param0->state.joiningPlayerID);
 
-            param0->unk_00.unk_05 = 1;
+            param0->state.state = 1;
         }
 
         v2 = CommSys_SendData(22, &v1, sizeof(WiFiCommPlayerStatus));
         GF_ASSERT(v2 == 1);
 
-        param0->unk_00.unk_06 = 0xff;
-        WiFiCommApp_ClearPlayerJoinPrompt(&param0->unk_30);
-        param0->unk_30.unk_240 = NULL;
+        param0->state.joiningPlayerID = 0xff;
+        WiFiCommApp_ClearPlayerJoinPrompt(&param0->graphics);
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -1782,62 +1782,62 @@ static BOOL WiFiCommApp_HostState5(WiFiCommApp *param0, WiFiCommAppArgs *param1,
 
 static BOOL WiFiCommApp_HostState6(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 119, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 119, heapID);
 
-    param0->unk_00.unk_05 = 7;
+    param0->state.state = 7;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState7(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_00.unk_05 = 19;
+    param0->state.state = 19;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState8(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 111, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 111, heapID);
 
-    param0->unk_00.unk_05 = 9;
+    param0->state.state = 9;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState9(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoice(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
-    param0->unk_00.unk_05 = 10;
+    param0->graphics.menu = Menu_MakeYesNoChoice(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
+    param0->state.state = 10;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState10(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    int v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    int v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0) {
-            param0->unk_00.unk_05 = 11;
+            param0->state.state = 11;
         } else {
             if (param1->requiredPlayers <= WiFiCommApp_GetConnectedPlayerCount(param0)) {
-                param0->unk_00.unk_05 = 19;
+                param0->state.state = 19;
             } else {
-                param0->unk_00.unk_05 = 1;
+                param0->state.state = 1;
             }
         }
 
-        param0->unk_30.unk_240 = NULL;
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -1845,14 +1845,14 @@ static BOOL WiFiCommApp_HostState10(WiFiCommApp *param0, WiFiCommAppArgs *param1
 
 static BOOL WiFiCommApp_HostState11(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    param0->unk_00.unk_08 = 30;
+    param0->state.timer = 30;
 
     WiFiCommApp_ClearNewPlayers(param0);
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 102, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 102, heapID);
     WiFiCommApp_ShowWaitDial(param0);
     WiFiCommApp_StartMatchmakingTimer(param0);
 
-    param0->unk_00.unk_05 = 12;
+    param0->state.state = 12;
     NintendoWFC_ResetMatchmakingCancelState();
 
     return 0;
@@ -1874,7 +1874,7 @@ static BOOL WiFiCommApp_HostState12(WiFiCommApp *param0, WiFiCommAppArgs *param1
     }
 
     NintendoWFC_SetDisconnectIfAlone(1);
-    param0->unk_00.unk_05 = 13;
+    param0->state.state = 13;
 
     return 0;
 }
@@ -1883,14 +1883,14 @@ static BOOL WiFiCommApp_HostState13(WiFiCommApp *param0, WiFiCommAppArgs *param1
 {
     BOOL v0;
 
-    if (param0->unk_00.unk_08 == 0) {
+    if (param0->state.timer == 0) {
         v0 = CommSys_SendData(23, NULL, 0);
 
         if (v0) {
-            param0->unk_00.unk_05 = 14;
+            param0->state.state = 14;
         }
     } else {
-        param0->unk_00.unk_08--;
+        param0->state.timer--;
     }
 
     return 0;
@@ -1903,7 +1903,7 @@ static BOOL WiFiCommApp_HostState14(WiFiCommApp *param0, WiFiCommAppArgs *param1
         CommTool_ClearReceivedTempDataAllPlayers();
         CommTiming_StartSync(14);
 
-        param0->unk_00.unk_05 = 15;
+        param0->state.state = 15;
     }
 
     return 0;
@@ -1912,13 +1912,13 @@ static BOOL WiFiCommApp_HostState14(WiFiCommApp *param0, WiFiCommAppArgs *param1
 static BOOL WiFiCommApp_HostState15(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
     if (CommTiming_IsSyncState(14)) {
-        u16 v0 = param0->unk_00.unk_00->ownStatus.commState;
+        u16 v0 = param0->state.statusBuffer->ownStatus.commState;
         BOOL v1;
 
         v1 = CommTool_SendTempData(CommSys_CurNetId(), &v0);
 
         if (v1 == 1) {
-            param0->unk_00.unk_05 = 16;
+            param0->state.state = 16;
         }
     }
 
@@ -1942,10 +1942,10 @@ static BOOL WiFiCommApp_HostState16(WiFiCommApp *param0, WiFiCommAppArgs *param1
             v3 = CommTool_GetReceivedTempData(v0);
 
             if (v3 != NULL) {
-                if (v3[0] == param0->unk_00.unk_00->ownStatus.commState) {
+                if (v3[0] == param0->state.statusBuffer->ownStatus.commState) {
                     v4++;
                 } else {
-                    param0->unk_00.unk_05 = 27;
+                    param0->state.state = 27;
                 }
             }
         } else {
@@ -1954,7 +1954,7 @@ static BOOL WiFiCommApp_HostState16(WiFiCommApp *param0, WiFiCommAppArgs *param1
     }
 
     if (v4 == v1) {
-        param0->unk_00.unk_05 = 17;
+        param0->state.state = 17;
     }
 
     return 0;
@@ -1965,7 +1965,7 @@ static BOOL WiFiCommApp_HostState17(WiFiCommApp *param0, WiFiCommAppArgs *param1
     CommManager_SetErrorHandling(1, 1);
     CommTiming_StartSync(18);
 
-    param0->unk_00.unk_05 = 18;
+    param0->state.state = 18;
 
     return 0;
 }
@@ -1973,7 +1973,7 @@ static BOOL WiFiCommApp_HostState17(WiFiCommApp *param0, WiFiCommAppArgs *param1
 static BOOL WiFiCommApp_HostState18(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
     if (CommTiming_IsSyncState(18)) {
-        param0->unk_00.unk_07 = 1;
+        param0->state.success = 1;
 
         WiFiCommApp_RecordJournalWifiClub(param1, heapID);
         WiFiCommApp_HideWaitDial(param0, param1, heapID);
@@ -1986,46 +1986,46 @@ static BOOL WiFiCommApp_HostState18(WiFiCommApp *param0, WiFiCommAppArgs *param1
 
 static BOOL WiFiCommApp_HostState19(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 120, heapID);
-    param0->unk_00.unk_05 = 20;
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 120, heapID);
+    param0->state.state = 20;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState20(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoiceWithCursorAt(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, 1, heapID);
-    param0->unk_00.unk_05 = 21;
+    param0->graphics.menu = Menu_MakeYesNoChoiceWithCursorAt(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, 1, heapID);
+    param0->state.state = 21;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState21(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    int v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    int v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0) {
-            param0->unk_00.unk_05 = 22;
+            param0->state.state = 22;
         } else {
             if (WiFiCommApp_HasConnectedPlayers(param0)) {
                 if (param1->requiredPlayers <= WiFiCommApp_GetConnectedPlayerCount(param0)) {
-                    param0->unk_00.unk_05 = 8;
+                    param0->state.state = 8;
                 } else {
-                    param0->unk_00.unk_05 = 1;
+                    param0->state.state = 1;
                 }
             } else {
-                param0->unk_00.unk_05 = 1;
+                param0->state.state = 1;
             }
         }
 
-        param0->unk_30.unk_240 = NULL;
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -2033,46 +2033,46 @@ static BOOL WiFiCommApp_HostState21(WiFiCommApp *param0, WiFiCommAppArgs *param1
 
 static BOOL WiFiCommApp_HostState22(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 121, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 121, heapID);
 
-    param0->unk_00.unk_05 = 23;
+    param0->state.state = 23;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState23(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoiceWithCursorAt(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, 1, heapID);
-    param0->unk_00.unk_05 = 24;
+    param0->graphics.menu = Menu_MakeYesNoChoiceWithCursorAt(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, 1, heapID);
+    param0->state.state = 24;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState24(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    int v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    int v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0) {
-            param0->unk_00.unk_05 = 25;
+            param0->state.state = 25;
         } else {
             if (WiFiCommApp_HasConnectedPlayers(param0)) {
                 if (param1->requiredPlayers <= WiFiCommApp_GetConnectedPlayerCount(param0)) {
-                    param0->unk_00.unk_05 = 8;
+                    param0->state.state = 8;
                 } else {
-                    param0->unk_00.unk_05 = 1;
+                    param0->state.state = 1;
                 }
             } else {
-                param0->unk_00.unk_05 = 1;
+                param0->state.state = 1;
             }
         }
 
-        param0->unk_30.unk_240 = NULL;
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -2080,29 +2080,29 @@ static BOOL WiFiCommApp_HostState24(WiFiCommApp *param0, WiFiCommAppArgs *param1
 
 static BOOL WiFiCommApp_HostState25(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 122, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 122, heapID);
 
-    param0->unk_00.unk_08 = 30;
-    param0->unk_00.unk_05 = 26;
+    param0->state.timer = 30;
+    param0->state.state = 26;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState26(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_00.unk_08--;
+    param0->state.timer--;
 
-    if (param0->unk_00.unk_08 > 0) {
+    if (param0->state.timer > 0) {
         return 0;
     }
 
-    param0->unk_00.unk_07 = 0;
+    param0->state.success = 0;
 
     CommManager_EndWifiMatch();
     WiFiCommApp_ClearKnownPlayers(param0);
@@ -2114,22 +2114,22 @@ static BOOL WiFiCommApp_HostState26(WiFiCommApp *param0, WiFiCommAppArgs *param1
 
 static BOOL WiFiCommApp_HostState27(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    if (param0->unk_30.unk_240 != NULL) {
-        Menu_DestroyForExit(param0->unk_30.unk_240, heapID);
-        param0->unk_30.unk_240 = NULL;
+    if (param0->graphics.menu != NULL) {
+        Menu_DestroyForExit(param0->graphics.menu, heapID);
+        param0->graphics.menu = NULL;
     }
 
-    WiFiCommApp_ClearPlayerJoinPrompt(&param0->unk_30);
+    WiFiCommApp_ClearPlayerJoinPrompt(&param0->graphics);
     WiFiCommApp_HideWaitDial(param0, param1, heapID);
 
-    param0->unk_00.unk_05 = 28;
+    param0->state.state = 28;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState28(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 118, heapID);
-    param0->unk_00.unk_05 = 29;
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 118, heapID);
+    param0->state.state = 29;
     WiFiCommApp_ClearKnownPlayers(param0);
 
     return 0;
@@ -2137,7 +2137,7 @@ static BOOL WiFiCommApp_HostState28(WiFiCommApp *param0, WiFiCommAppArgs *param1
 
 static BOOL WiFiCommApp_HostState29(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
@@ -2146,7 +2146,7 @@ static BOOL WiFiCommApp_HostState29(WiFiCommApp *param0, WiFiCommAppArgs *param1
     CommManager_EndWifiMatch();
     CommManager_SetState_LoginWifi();
     WiFiCommApp_ClearKnownPlayers(param0);
-    param0->unk_00.unk_07 = 0;
+    param0->state.success = 0;
     CommManager_SetErrorHandling(0, 1);
 
     return 1;
@@ -2156,35 +2156,35 @@ static BOOL WiFiCommApp_HostState30(WiFiCommApp *param0, WiFiCommAppArgs *param1
 {
     u32 v0;
 
-    if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+    if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
         v0 = 125;
     } else {
         v0 = 124;
     }
 
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, v0, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, v0, heapID);
 
-    param0->unk_00.unk_05 = 31;
+    param0->state.state = 31;
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState31(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoice(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
-    param0->unk_00.unk_05 = 32;
+    param0->graphics.menu = Menu_MakeYesNoChoice(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
+    param0->state.state = 32;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_HostState32(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    int v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    int v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0) {
@@ -2193,8 +2193,8 @@ static BOOL WiFiCommApp_HostState32(WiFiCommApp *param0, WiFiCommAppArgs *param1
             WiFiCommApp_RequestPlayerRedraw(param0);
         }
 
-        param0->unk_00.unk_05 = 1;
-        param0->unk_30.unk_240 = NULL;
+        param0->state.state = 1;
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -2204,7 +2204,7 @@ static BOOL WiFiCommApp_ClientState0(WiFiCommApp *param0, WiFiCommAppArgs *param
 {
     CommInfo_SendPlayerInfo();
     CommManager_SetErrorHandling(0, 1);
-    param0->unk_00.unk_05 = 1;
+    param0->state.state = 1;
     return 0;
 }
 
@@ -2213,10 +2213,10 @@ static BOOL WiFiCommApp_ClientState1(WiFiCommApp *param0, WiFiCommAppArgs *param
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
     if (CommSys_IsPlayerConnected(0) == 0) {
-        param0->unk_00.unk_05 = 15;
+        param0->state.state = 15;
     } else {
         if (CommInfo_IsDataRead(0)) {
-            param0->unk_00.unk_05 = 2;
+            param0->state.state = 2;
         }
     }
 
@@ -2226,11 +2226,11 @@ static BOOL WiFiCommApp_ClientState1(WiFiCommApp *param0, WiFiCommAppArgs *param
 static BOOL WiFiCommApp_ClientState2(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
-    WiFiCommApp_SetTemplatePlayerName(&param0->unk_30, param1, 0, 0, heapID);
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 114, heapID);
+    WiFiCommApp_SetTemplatePlayerName(&param0->graphics, param1, 0, 0, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 114, heapID);
     WiFiCommApp_ShowWaitDial(param0);
 
-    param0->unk_00.unk_05 = 3;
+    param0->state.state = 3;
 
     return 0;
 }
@@ -2241,26 +2241,26 @@ static BOOL WiFiCommApp_ClientState3(WiFiCommApp *param0, WiFiCommAppArgs *param
 
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
-    v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    if (param0->unk_00.unk_13 != 0) {
+    if (param0->state.ownJoinStatus != 0) {
         WiFiCommApp_HideWaitDial(param0, param1, heapID);
 
-        switch (param0->unk_00.unk_13) {
+        switch (param0->state.ownJoinStatus) {
         case 1:
-            param0->unk_00.unk_05 = 4;
+            param0->state.state = 4;
             break;
         case 2:
-            param0->unk_00.unk_05 = 6;
-            param0->unk_00.unk_2D = 116;
+            param0->state.state = 6;
+            param0->state.exitMessageID = 116;
             break;
         case 3:
-            param0->unk_00.unk_05 = 6;
-            param0->unk_00.unk_2D = 132;
+            param0->state.state = 6;
+            param0->state.exitMessageID = 132;
 
             break;
         }
@@ -2271,9 +2271,9 @@ static BOOL WiFiCommApp_ClientState3(WiFiCommApp *param0, WiFiCommAppArgs *param
 
 static BOOL WiFiCommApp_ClientState4(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_SetTemplatePlayerName(&param0->unk_30, param1, 0, 0, heapID);
-    WiFiCommApp_ShowMessageWithDelay(&param0->unk_30, param1, 115, 30, heapID);
-    param0->unk_00.unk_05 = 5;
+    WiFiCommApp_SetTemplatePlayerName(&param0->graphics, param1, 0, 0, heapID);
+    WiFiCommApp_ShowMessageWithDelay(&param0->graphics, param1, 115, 30, heapID);
+    param0->state.state = 5;
     WiFiCommApp_AddPlayerActor(param0, CommSys_CurNetId(), HEAP_ID_96);
 
     return 0;
@@ -2285,23 +2285,23 @@ static BOOL WiFiCommApp_ClientState5(WiFiCommApp *param0, WiFiCommAppArgs *param
 
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
-    v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_00.unk_05 = 8;
+    param0->state.state = 8;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_ClientState6(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_SetTemplatePlayerName(&param0->unk_30, param1, 0, 0, heapID);
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, param0->unk_00.unk_2D, heapID);
+    WiFiCommApp_SetTemplatePlayerName(&param0->graphics, param1, 0, 0, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, param0->state.exitMessageID, heapID);
 
-    param0->unk_00.unk_05 = 7;
+    param0->state.state = 7;
 
     CommManager_EndWifiMatch();
     CommManager_SetState_LoginWifi();
@@ -2311,13 +2311,13 @@ static BOOL WiFiCommApp_ClientState6(WiFiCommApp *param0, WiFiCommAppArgs *param
 
 static BOOL WiFiCommApp_ClientState7(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_00.unk_07 = 0;
+    param0->state.success = 0;
     CommManager_SetErrorHandling(0, 1);
 
     return 1;
@@ -2326,12 +2326,12 @@ static BOOL WiFiCommApp_ClientState7(WiFiCommApp *param0, WiFiCommAppArgs *param
 static BOOL WiFiCommApp_ClientState8(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 123, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 123, heapID);
     WiFiCommApp_ShowWaitDial(param0);
 
-    param0->unk_00.unk_05 = 9;
+    param0->state.state = 9;
 
-    if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+    if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
         WiFiCommApp_EnableVoiceChat(param0);
     }
 
@@ -2343,13 +2343,13 @@ static BOOL WiFiCommApp_ClientState9(WiFiCommApp *param0, WiFiCommAppArgs *param
     BOOL v0;
 
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
-    v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_00.unk_05 = 10;
+    param0->state.state = 10;
 
     return 0;
 }
@@ -2358,10 +2358,10 @@ static BOOL WiFiCommApp_ClientState10(WiFiCommApp *param0, WiFiCommAppArgs *para
 {
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
-    if (param0->unk_00.unk_12) {
-        param0->unk_00.unk_12 = 0;
+    if (param0->state.playerJoined) {
+        param0->state.playerJoined = 0;
 
-        if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+        if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
             WiFiCommApp_StopVoiceChat(param0);
             WiFiCommApp_EnableVoiceChat(param0);
         }
@@ -2374,16 +2374,16 @@ static BOOL WiFiCommApp_ClientState10(WiFiCommApp *param0, WiFiCommAppArgs *para
         CommTiming_StartSync(14);
 
         WiFiCommApp_HideWaitDial(param0, param1, heapID);
-        WiFiCommApp_ShowMessage(&param0->unk_30, param1, 102, heapID);
+        WiFiCommApp_ShowMessage(&param0->graphics, param1, 102, heapID);
         WiFiCommApp_StartMatchmakingTimer(param0);
 
-        param0->unk_00.unk_08 = (10 * 30);
+        param0->state.timer = (10 * 30);
         WiFiCommApp_ShowWaitDial(param0);
-        param0->unk_00.unk_05 = 11;
+        param0->state.state = 11;
     } else {
         if (gSystem.pressedKeys & PAD_BUTTON_X) {
             WiFiCommApp_HideWaitDial(param0, param1, heapID);
-            param0->unk_00.unk_05 = 18;
+            param0->state.state = 18;
         }
     }
 
@@ -2395,16 +2395,16 @@ static BOOL WiFiCommApp_ClientState11(WiFiCommApp *param0, WiFiCommAppArgs *para
     int v0;
 
     if (CommTiming_IsSyncState(14)) {
-        u16 v1 = param0->unk_00.unk_00->ownStatus.commState;
+        u16 v1 = param0->state.statusBuffer->ownStatus.commState;
         BOOL v2;
 
         v0 = WiFiCommApp_GetConnectedPlayerCount(param0);
 
         if (CommSys_ConnectedCount() != v0) {
-            param0->unk_00.unk_08--;
+            param0->state.timer--;
 
-            if (param0->unk_00.unk_08 <= 0) {
-                param0->unk_00.unk_05 = 15;
+            if (param0->state.timer <= 0) {
+                param0->state.state = 15;
             }
 
             return 0;
@@ -2413,7 +2413,7 @@ static BOOL WiFiCommApp_ClientState11(WiFiCommApp *param0, WiFiCommAppArgs *para
         v2 = CommTool_SendTempData(CommSys_CurNetId(), &v1);
 
         if (v2 == 1) {
-            param0->unk_00.unk_05 = 12;
+            param0->state.state = 12;
         }
     }
 
@@ -2437,10 +2437,10 @@ static BOOL WiFiCommApp_ClientState12(WiFiCommApp *param0, WiFiCommAppArgs *para
             v3 = CommTool_GetReceivedTempData(v0);
 
             if (v3 != NULL) {
-                if (v3[0] == param0->unk_00.unk_00->ownStatus.commState) {
+                if (v3[0] == param0->state.statusBuffer->ownStatus.commState) {
                     v4++;
                 } else {
-                    param0->unk_00.unk_05 = 15;
+                    param0->state.state = 15;
                 }
             }
         } else {
@@ -2449,7 +2449,7 @@ static BOOL WiFiCommApp_ClientState12(WiFiCommApp *param0, WiFiCommAppArgs *para
     }
 
     if (v4 == v1) {
-        param0->unk_00.unk_05 = 13;
+        param0->state.state = 13;
     }
 
     return 0;
@@ -2460,7 +2460,7 @@ static BOOL WiFiCommApp_ClientState13(WiFiCommApp *param0, WiFiCommAppArgs *para
     CommManager_SetErrorHandling(1, 1);
     CommTiming_StartSync(18);
 
-    param0->unk_00.unk_05 = 14;
+    param0->state.state = 14;
 
     return 0;
 }
@@ -2469,7 +2469,7 @@ static BOOL WiFiCommApp_ClientState14(WiFiCommApp *param0, WiFiCommAppArgs *para
 {
     if (CommTiming_IsSyncState(18)) {
         WiFiCommApp_HideWaitDial(param0, param1, heapID);
-        param0->unk_00.unk_07 = 1;
+        param0->state.success = 1;
         WiFiCommApp_RecordJournalWifiClub(param1, heapID);
 
         return 1;
@@ -2480,31 +2480,31 @@ static BOOL WiFiCommApp_ClientState14(WiFiCommApp *param0, WiFiCommAppArgs *para
 
 static BOOL WiFiCommApp_ClientState15(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    if (param0->unk_30.unk_240 != NULL) {
-        Menu_DestroyForExit(param0->unk_30.unk_240, heapID);
-        param0->unk_30.unk_240 = NULL;
+    if (param0->graphics.menu != NULL) {
+        Menu_DestroyForExit(param0->graphics.menu, heapID);
+        param0->graphics.menu = NULL;
     }
 
-    WiFiCommApp_ClearPlayerJoinPrompt(&param0->unk_30);
+    WiFiCommApp_ClearPlayerJoinPrompt(&param0->graphics);
     WiFiCommApp_HideWaitDial(param0, param1, heapID);
 
-    param0->unk_00.unk_05 = 16;
+    param0->state.state = 16;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_ClientState16(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 118, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 118, heapID);
 
-    param0->unk_00.unk_05 = 17;
+    param0->state.state = 17;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_ClientState17(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
@@ -2513,7 +2513,7 @@ static BOOL WiFiCommApp_ClientState17(WiFiCommApp *param0, WiFiCommAppArgs *para
     CommManager_EndWifiMatch();
     CommManager_SetState_LoginWifi();
 
-    param0->unk_00.unk_07 = 0;
+    param0->state.success = 0;
 
     CommManager_SetErrorHandling(0, 1);
 
@@ -2526,15 +2526,15 @@ static BOOL WiFiCommApp_ClientState18(WiFiCommApp *param0, WiFiCommAppArgs *para
 
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
-    if (param0->unk_00.unk_00->ownStatus.voiceChatEnabled == 1) {
+    if (param0->state.statusBuffer->ownStatus.voiceChatEnabled == 1) {
         v0 = 125;
     } else {
         v0 = 124;
     }
 
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, v0, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, v0, heapID);
 
-    param0->unk_00.unk_05 = 19;
+    param0->state.state = 19;
     return 0;
 }
 
@@ -2545,19 +2545,19 @@ static BOOL WiFiCommApp_ClientState19(WiFiCommApp *param0, WiFiCommAppArgs *para
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
     if (WiFiCommApp_IsTimingSync13Complete(param0) == 1) {
-        param0->unk_00.unk_05 = 10;
-        WiFiCommApp_ClearMessage(&param0->unk_30);
+        param0->state.state = 10;
+        WiFiCommApp_ClearMessage(&param0->graphics);
         return 0;
     }
 
-    v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoice(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
-    param0->unk_00.unk_05 = 20;
+    param0->graphics.menu = Menu_MakeYesNoChoice(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
+    param0->state.state = 20;
 
     return 0;
 }
@@ -2569,14 +2569,14 @@ static BOOL WiFiCommApp_ClientState20(WiFiCommApp *param0, WiFiCommAppArgs *para
     WiFiCommApp_ProcessReceivedPlayerData(param0, heapID);
 
     if (WiFiCommApp_IsTimingSync13Complete(param0) == 1) {
-        param0->unk_00.unk_05 = 10;
-        WiFiCommApp_ClearMessage(&param0->unk_30);
-        Menu_DestroyForExit(param0->unk_30.unk_240, heapID);
-        param0->unk_30.unk_240 = NULL;
+        param0->state.state = 10;
+        WiFiCommApp_ClearMessage(&param0->graphics);
+        Menu_DestroyForExit(param0->graphics.menu, heapID);
+        param0->graphics.menu = NULL;
         return 0;
     }
 
-    v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0) {
@@ -2585,8 +2585,8 @@ static BOOL WiFiCommApp_ClientState20(WiFiCommApp *param0, WiFiCommAppArgs *para
             WiFiCommApp_RequestPlayerRedraw(param0);
         }
 
-        param0->unk_00.unk_05 = 8;
-        param0->unk_30.unk_240 = NULL;
+        param0->state.state = 8;
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -2594,46 +2594,46 @@ static BOOL WiFiCommApp_ClientState20(WiFiCommApp *param0, WiFiCommAppArgs *para
 
 static BOOL WiFiCommApp_ClientState21(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    param0->unk_00.unk_26 = CommInfo_FindFriendSlotForNetId(0);
+    param0->state.ownFriendSlot = CommInfo_FindFriendSlotForNetId(0);
 
-    GF_ASSERT(param0->unk_00.unk_26 != 32);
-    WiFiCommApp_SetTemplatePlayerName(&param0->unk_30, param1, 0, 0, heapID);
+    GF_ASSERT(param0->state.ownFriendSlot != 32);
+    WiFiCommApp_SetTemplatePlayerName(&param0->graphics, param1, 0, 0, heapID);
 
     CommManager_EndWifiMatch();
-    param0->unk_00.unk_27 = 0;
+    param0->state.active = 0;
 
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 132, heapID);
-    param0->unk_00.unk_05 = 22;
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 132, heapID);
+    param0->state.state = 22;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_ClientState22(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    BOOL v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    param0->unk_30.unk_240 = Menu_MakeYesNoChoice(param0->unk_30.unk_00, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
-    param0->unk_00.unk_05 = 23;
+    param0->graphics.menu = Menu_MakeYesNoChoice(param0->graphics.bgConfig, &sWiFiCommAppYesNoWindowTemplate, 0 + (24 * 2), 4, heapID);
+    param0->state.state = 23;
 
     return 0;
 }
 
 static BOOL WiFiCommApp_ClientState23(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    int v0 = Menu_ProcessInputAndHandleExit(param0->unk_30.unk_240, heapID);
+    int v0 = Menu_ProcessInputAndHandleExit(param0->graphics.menu, heapID);
 
     if (v0 != 0xffffffff) {
         if (v0 == 0) {
-            param0->unk_00.unk_05 = 24;
+            param0->state.state = 24;
         } else {
-            param0->unk_00.unk_05 = 29;
+            param0->state.state = 29;
         }
 
-        param0->unk_30.unk_240 = NULL;
+        param0->graphics.menu = NULL;
     }
 
     return 0;
@@ -2641,11 +2641,11 @@ static BOOL WiFiCommApp_ClientState23(WiFiCommApp *param0, WiFiCommAppArgs *para
 
 static BOOL WiFiCommApp_ClientState24(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
-    WiFiCommApp_ShowMessage(&param0->unk_30, param1, 17, heapID);
+    WiFiCommApp_ShowMessage(&param0->graphics, param1, 17, heapID);
     WiFiCommApp_ShowWaitDial(param0);
 
-    param0->unk_00.unk_08 = 90;
-    param0->unk_00.unk_05 = 25;
+    param0->state.timer = 90;
+    param0->state.state = 25;
 
     return 0;
 }
@@ -2654,19 +2654,19 @@ static BOOL WiFiCommApp_ClientState25(WiFiCommApp *param0, WiFiCommAppArgs *para
 {
     BOOL v0;
 
-    if (param0->unk_00.unk_08 > 0) {
-        param0->unk_00.unk_08--;
+    if (param0->state.timer > 0) {
+        param0->state.timer--;
         return 0;
     }
 
-    v0 = WiFiCommApp_IsMessageDone(&param0->unk_30);
+    v0 = WiFiCommApp_IsMessageDone(&param0->graphics);
 
     if (v0 == 0) {
         return 0;
     }
 
-    if (WiFiCommApp_StartWifiActivity(param0->unk_00.unk_26, param1->appType)) {
-        param0->unk_00.unk_05 = 26;
+    if (WiFiCommApp_StartWifiActivity(param0->state.ownFriendSlot, param1->appType)) {
+        param0->state.state = 26;
     }
 
     return 0;
@@ -2680,7 +2680,7 @@ static BOOL WiFiCommApp_ClientState26(WiFiCommApp *param0, WiFiCommAppArgs *para
         CommSys_SetRecvLimitEnabled(0);
         WiFiCommApp_HideWaitDial(param0, param1, heapID);
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, heapID);
-        param0->unk_00.unk_05 = 27;
+        param0->state.state = 27;
     }
 
     return 0;
@@ -2691,13 +2691,13 @@ static BOOL WiFiCommApp_ClientState27(WiFiCommApp *param0, WiFiCommAppArgs *para
     if (IsScreenFadeDone()) {
         CommInfo_Init(param1->saveData, NULL);
 
-        param0->unk_00.unk_27 = 1;
+        param0->state.active = 1;
 
         {
             WiFiCommApp_FreePlayerActors(param0);
             WiFiCommApp_FreeAllGraphics(param0, heapID);
 
-            memset(&param0->unk_30, 0, sizeof(WiFiCommAppGraphics));
+            memset(&param0->graphics, 0, sizeof(WiFiCommAppGraphics));
 
             WiFiCommApp_InstallConnectionCallback(param0);
             WiFiCommApp_InitAllGraphics(param0, param1, heapID);
@@ -2705,24 +2705,24 @@ static BOOL WiFiCommApp_ClientState27(WiFiCommApp *param0, WiFiCommAppArgs *para
         }
 
         {
-            param0->unk_00.unk_12 = 0;
-            param0->unk_00.unk_13 = 0;
+            param0->state.playerJoined = 0;
+            param0->state.ownJoinStatus = 0;
 
-            memset(param0->unk_00.unk_14, 0, sizeof(u8) * 4);
-            memset(param0->unk_00.unk_18, 0, sizeof(u8) * 4);
+            memset(param0->state.disconnected, 0, sizeof(u8) * 4);
+            memset(param0->state.disconnectNetIDs, 0, sizeof(u8) * 4);
 
-            MI_CpuFill8(param0->unk_00.unk_1C, 1, sizeof(u8) * 4);
-            MI_CpuFill8(param0->unk_00.unk_20, 1, sizeof(u8) * 4);
+            MI_CpuFill8(param0->state.prevVoiceChatFlags, 1, sizeof(u8) * 4);
+            MI_CpuFill8(param0->state.voiceChatFlags, 1, sizeof(u8) * 4);
 
-            param0->unk_00.unk_24 = 0;
-            param0->unk_00.unk_26 = 0;
+            param0->state.redrawRequested = 0;
+            param0->state.ownFriendSlot = 0;
 
-            memset(param0->unk_00.unk_28, 0, sizeof(u8) * 4);
+            memset(param0->state.newPlayers, 0, sizeof(u8) * 4);
         }
 
         StartScreenFade(FADE_MAIN_ONLY, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, heapID);
 
-        param0->unk_00.unk_05 = 28;
+        param0->state.state = 28;
     }
 
     return 0;
@@ -2731,7 +2731,7 @@ static BOOL WiFiCommApp_ClientState27(WiFiCommApp *param0, WiFiCommAppArgs *para
 static BOOL WiFiCommApp_ClientState28(WiFiCommApp *param0, WiFiCommAppArgs *param1, u32 heapID)
 {
     if (IsScreenFadeDone()) {
-        param0->unk_00.unk_05 = 0;
+        param0->state.state = 0;
     }
 
     return 0;
@@ -2742,7 +2742,7 @@ static BOOL WiFiCommApp_ClientState29(WiFiCommApp *param0, WiFiCommAppArgs *para
     CommManager_EndWifiMatch();
     CommManager_SetState_LoginWifi();
 
-    param0->unk_00.unk_07 = 0;
+    param0->state.success = 0;
     CommManager_SetErrorHandling(0, 1);
 
     return 1;

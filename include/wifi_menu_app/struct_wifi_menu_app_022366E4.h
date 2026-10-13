@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_WIFI_MENU_APP_022366E4_H
 
 typedef struct {
-    u16 unk_00;
-    u32 unk_04;
+    u16 netID;
+    u32 status;
 } WiFiCommPlayerStatus;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_022366E4_H
