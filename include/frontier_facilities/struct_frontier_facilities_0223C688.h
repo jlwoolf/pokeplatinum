@@ -6,7 +6,7 @@
 // enum ObjectEventGfx value, or 0xFFFF when the slot is empty.
 typedef struct {
     u16 gfxID;
-    u8 unk_02;
+    u8 resourceVariant;
 } FrontierObjectGfx;
 
 #endif // POKEPLATINUM_STRUCT_FRONTIER_FACILITIES_0223C688_H

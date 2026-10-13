@@ -189,7 +189,7 @@ void FrontierFacilities_ReceiveBattleHallData(int netID, int unused, void *param
         return;
     }
 
-    battleHall_dupe->unk_D88 = *param2_dupe;
+    battleHall_dupe->partnersCommValue = *param2_dupe;
 }
 
 BOOL HallCommunication_SendPlayersPokemon(BattleHall *battleHall)
@@ -237,7 +237,7 @@ u8 *HallCommunication_VerifyPacketSize(int index, void *battleHall, int size)
     BattleHall *battleHall_dupe = battleHall;
 
     GF_ASSERT(size <= SNELEMS(battleHall_dupe->commHugeBuffer));
-    return battleHall_dupe->unk_984[index];
+    return battleHall_dupe->commPlayerBuffers[index];
 }
 
 BOOL FrontierFacilities_SendFactoryProgress(BattleFactory *battleFactory)
@@ -279,9 +279,9 @@ void FrontierFacilities_ReceiveFactoryProgress(int netID, int unused1, void *par
         return;
     }
 
-    battleFactory_dupe->unk_580 = param2_dupe[1];
-    battleFactory_dupe->unk_582 = param2_dupe[2];
-    battleFactory_dupe->unk_57E = param2_dupe[3];
+    battleFactory_dupe->partnersTradeCount = param2_dupe[1];
+    battleFactory_dupe->partnersStreak = param2_dupe[2];
+    battleFactory_dupe->partnersRound = param2_dupe[3];
 
     dummy += 4;
     dummy += (7 + 1);
@@ -497,7 +497,7 @@ void FrontierFacilities_ReceiveFactoryRetireDecision(int netID, int unused, void
         return;
     }
 
-    battleFactory_dupe->unk_57C = *param2_dupe;
+    battleFactory_dupe->partnersRetireDecision = *param2_dupe;
 }
 
 BOOL FrontierFacilities_SendFactoryTradeDecision(BattleFactory *battleFactory, u8 param1)
@@ -528,7 +528,7 @@ void FrontierFacilities_ReceiveFactoryTradeDecision(int netID, int unused, void 
         return;
     }
 
-    battleFactory_dupe->unk_57D = *param2_dupe;
+    battleFactory_dupe->partnersTradeDecision = *param2_dupe;
 }
 
 BOOL FrontierFacilities_SendFactoryPlayerMons(BattleFactory *battleFactory)
@@ -657,8 +657,8 @@ void CastleCommunication_ReceivePartnersCP(int netID, int unused1, void *partner
         return;
     }
 
-    battleCastle_dupe->unk_A16 = partnersCP_dupe[1];
-    battleCastle_dupe->unk_A12 = partnersCP_dupe[2];
+    battleCastle_dupe->partnersStreak = partnersCP_dupe[1];
+    battleCastle_dupe->partnersRound = partnersCP_dupe[2];
 
     index += 3;
     index += (7 + 1);
@@ -717,25 +717,25 @@ BOOL FrontierFacilities_SendCastleAppSelection(BattleCastle *battleCastle)
     dummy = 0;
     dataSize = SNELEMS(battleCastle->commBuffer);
 
-    battleCastle->commBuffer[0] = battleCastle->unk_A18;
+    battleCastle->commBuffer[0] = battleCastle->appSelection;
 
     if (CommSys_CurNetId() == 0) {
-        if (battleCastle->unk_A1B == 0) {
-            battleCastle->unk_A1B = battleCastle->unk_A18;
+        if (battleCastle->syncedAppSelection == 0) {
+            battleCastle->syncedAppSelection = battleCastle->appSelection;
         } else {
-            if ((battleCastle->unk_A1B - 6) == 4) {
-                if (battleCastle->unk_A18 != 4) {
-                    battleCastle->unk_A1B = battleCastle->unk_A18;
+            if ((battleCastle->syncedAppSelection - 6) == 4) {
+                if (battleCastle->appSelection != 4) {
+                    battleCastle->syncedAppSelection = battleCastle->appSelection;
                 }
             }
         }
-    } else if (battleCastle->unk_A1B == 4) {
-        if (battleCastle->unk_A18 != 4) {
-            battleCastle->unk_A1B = battleCastle->unk_A18 + 6;
+    } else if (battleCastle->syncedAppSelection == 4) {
+        if (battleCastle->appSelection != 4) {
+            battleCastle->syncedAppSelection = battleCastle->appSelection + 6;
         }
     }
 
-    battleCastle->commBuffer[1] = battleCastle->unk_A1B;
+    battleCastle->commBuffer[1] = battleCastle->syncedAppSelection;
 
     if (CommSys_SendData(44, battleCastle->commBuffer, dataSize) == 1) {
         result = TRUE;
@@ -760,34 +760,34 @@ void FrontierFacilities_ReceiveCastleAppSelection(int netID, int unused, void *p
         return;
     }
 
-    battleCastle_dupe->unk_A19 = param2_dupe[0];
+    battleCastle_dupe->partnersAppSelection = param2_dupe[0];
 
     if (CommSys_CurNetId() == 0) {
-        if (battleCastle_dupe->unk_A1B != 0) {
-            if (battleCastle_dupe->unk_A1B == 4) {
-                if (battleCastle_dupe->unk_A19 != 4) {
-                    battleCastle_dupe->unk_A18 = battleCastle_dupe->unk_A19 + 6;
-                    battleCastle_dupe->unk_A1B = battleCastle_dupe->unk_A19 + 6;
+        if (battleCastle_dupe->syncedAppSelection != 0) {
+            if (battleCastle_dupe->syncedAppSelection == 4) {
+                if (battleCastle_dupe->partnersAppSelection != 4) {
+                    battleCastle_dupe->appSelection = battleCastle_dupe->partnersAppSelection + 6;
+                    battleCastle_dupe->syncedAppSelection = battleCastle_dupe->partnersAppSelection + 6;
                 }
             }
         } else {
-            battleCastle_dupe->unk_A1B = battleCastle_dupe->unk_A19 + 6;
+            battleCastle_dupe->syncedAppSelection = battleCastle_dupe->partnersAppSelection + 6;
 
-            if (battleCastle_dupe->unk_A19 != 4) {
-                *battleCastle_dupe->unk_A20 = 0xEEDD;
+            if (battleCastle_dupe->partnersAppSelection != 4) {
+                *battleCastle_dupe->appResultPtr = 0xEEDD;
             }
         }
     } else {
-        battleCastle_dupe->unk_A1B = param2_dupe[1];
+        battleCastle_dupe->syncedAppSelection = param2_dupe[1];
 
-        if (battleCastle_dupe->unk_A1B != 4) {
-            *battleCastle_dupe->unk_A20 = 0xEEDD;
+        if (battleCastle_dupe->syncedAppSelection != 4) {
+            *battleCastle_dupe->appResultPtr = 0xEEDD;
         }
 
-        if (battleCastle_dupe->unk_A19 == 4) {
-            if (battleCastle_dupe->unk_A18 != 0) {
-                if (battleCastle_dupe->unk_A18 != 4) {
-                    battleCastle_dupe->unk_A1B = battleCastle_dupe->unk_A18 + 6;
+        if (battleCastle_dupe->partnersAppSelection == 4) {
+            if (battleCastle_dupe->appSelection != 0) {
+                if (battleCastle_dupe->appSelection != 4) {
+                    battleCastle_dupe->syncedAppSelection = battleCastle_dupe->appSelection + 6;
                 }
             }
         }
@@ -889,7 +889,7 @@ void FrontierFacilities_ReceiveCastleRetireDecision(int netID, int unused, void 
         return;
     }
 
-    battleCastle_dupe->unk_A10 = *param2_dupe;
+    battleCastle_dupe->partnersRetireDecision = *param2_dupe;
 }
 
 BOOL FrontierCommunication_Unreachable4(BattleCastle *battleCastle, u16 param1)
@@ -919,7 +919,7 @@ void FrontierCommunication_Unreachable5(int netID, int unused, void *param2, voi
         return;
     }
 
-    battleCastle_dupe->unk_A11 = *param2_dupe;
+    battleCastle_dupe->partnersUnusedValue = *param2_dupe;
 }
 
 BOOL CastleCommunication_SendPlayersParty(BattleCastle *battleCastle)
@@ -984,7 +984,7 @@ u8 *CastleCommunication_VerifyPacketSize(int index, void *battleCastle, int size
     BattleCastle *battleCastle_dupe = battleCastle;
 
     GF_ASSERT(size <= SNELEMS(battleCastle_dupe->commHugeBuffer));
-    return battleCastle_dupe->unk_610[index];
+    return battleCastle_dupe->commPlayerBuffers[index];
 }
 
 BOOL FrontierFacilities_SendArcadeProgress(BattleArcade *battleArcade)
@@ -1021,8 +1021,8 @@ void FrontierFacilities_ReceiveArcadeProgress(int netID, int unused1, void *para
         return;
     }
 
-    battleArcade_dupe->unk_A78 = param2_dupe[1];
-    battleArcade_dupe->unk_A76 = param2_dupe[2];
+    battleArcade_dupe->partnersStreak = param2_dupe[1];
+    battleArcade_dupe->partnersRound = param2_dupe[2];
 
     dummy += 3;
 }
@@ -1164,7 +1164,7 @@ void FrontierFacilities_ReceiveArcadeRetireDecision(int netID, int unused, void 
         return;
     }
 
-    battleArcade_dupe->unk_A74 = *param2_dupe;
+    battleArcade_dupe->partnersRetireDecision = *param2_dupe;
 }
 
 BOOL FrontierFacilities_SendArcadeUnusedValue(BattleArcade *battleArcade, u16 param1)
@@ -1194,7 +1194,7 @@ void FrontierFacilities_ReceiveArcadeUnusedValue(int netID, int unused, void *pa
         return;
     }
 
-    battleArcade_dupe->unk_A75 = *param2_dupe;
+    battleArcade_dupe->partnersUnusedValue = *param2_dupe;
 }
 
 BOOL ArcadeCommunication_SendPlayersParty(BattleArcade *battleArcade)
@@ -1259,5 +1259,5 @@ u8 *ArcadeCommunication_VerifyPacketSize(int netID, void *battleArcade, int size
     BattleArcade *battleArcade_dupe = battleArcade;
 
     GF_ASSERT(size <= SNELEMS(battleArcade_dupe->commHugeBuffer));
-    return battleArcade_dupe->unk_674[netID];
+    return battleArcade_dupe->commPlayerBuffers[netID];
 }

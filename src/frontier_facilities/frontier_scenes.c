@@ -33,8 +33,8 @@ typedef struct FrontierScene {
     u16 subTilemapIdx;
     u16 subTilesIdx;
     u16 subPlttIdx;
-    u8 unk_22;
-    u8 unk_23;
+    u8 flag1;
+    u8 flag2;
     u16 unused;
 } FrontierScene;
 
@@ -71,8 +71,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_factory_corridor_floor_NSCR_lz,
         .subTilesIdx = battle_factory_NCGR_lz,
         .subPlttIdx = battle_factory_NCLR,
-        .unk_22 = 0,
-        .unk_23 = 1,
+        .flag1 = 0,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_1] = {
         .bgMode = GX_BGMODE_0,
@@ -89,8 +89,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 0,
-        .unk_23 = 1,
+        .flag1 = 0,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_2] = {
         .bgMode = GX_BGMODE_0,
@@ -107,8 +107,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 0,
-        .unk_23 = 1,
+        .flag1 = 0,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_FACTORY_CORRIDOR] = {
         .bgMode = GX_BGMODE_5,
@@ -125,8 +125,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_factory_corridor_floor_NSCR_lz,
         .subTilesIdx = battle_factory_NCGR_lz,
         .subPlttIdx = battle_factory_NCLR,
-        .unk_22 = 1,
-        .unk_23 = 0,
+        .flag1 = 1,
+        .flag2 = 0,
     },
     [FRONTIER_SCENE_FACTORY_BATTLE_ROOM] = {
         .bgMode = GX_BGMODE_5,
@@ -143,8 +143,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_TOWER_CORRIDOR] = {
         .bgMode = GX_BGMODE_5,
@@ -161,8 +161,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_tower_corridor_fg_NSCR_lz,
         .subTilesIdx = battle_tower_NCGR_lz,
         .subPlttIdx = battle_tower_NCLR,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_TOWER_MULTI_CORRIDOR] = {
         .bgMode = GX_BGMODE_5,
@@ -179,8 +179,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_tower_multi_corridor_fg_NSCR_lz,
         .subTilesIdx = battle_tower_NCGR_lz,
         .subPlttIdx = battle_tower_NCLR,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_TOWER_BATTLE_ROOM] = {
         .bgMode = GX_BGMODE_5,
@@ -197,8 +197,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_TOWER_MULTI_BATTLE_ROOM] = {
         .bgMode = GX_BGMODE_5,
@@ -215,8 +215,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_HALL_CORRIDOR] = {
         .bgMode = GX_BGMODE_5,
@@ -233,8 +233,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_HALL_BATTLE_ROOM] = {
         .bgMode = GX_BGMODE_5,
@@ -251,8 +251,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_hall_battle_room_lights_NSCR_lz,
         .subTilesIdx = battle_hall_battle_room_lights_NCGR_lz,
         .subPlttIdx = battle_hall_battle_room_lights_NCLR,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_CASTLE_CORRIDOR] = {
         .bgMode = GX_BGMODE_5,
@@ -269,8 +269,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_CASTLE_BATTLE_ROOM] = {
         .bgMode = GX_BGMODE_5,
@@ -287,8 +287,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_castle_battle_room_curtains_NSCR_lz,
         .subTilesIdx = battle_castle_battle_room_NCGR_lz,
         .subPlttIdx = battle_castle_battle_room_NCLR,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_13] = {
         .bgMode = GX_BGMODE_5,
@@ -305,8 +305,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_WFC_FACILITY_SELECTOR] = {
         .bgMode = GX_BGMODE_5,
@@ -323,8 +323,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_ARCADE_CORRIDOR] = {
         .bgMode = GX_BGMODE_5,
@@ -341,8 +341,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = -1,
         .subTilesIdx = -1,
         .subPlttIdx = -1,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
     [FRONTIER_SCENE_ARCADE_BATTLE_ROOM] = {
         .bgMode = GX_BGMODE_5,
@@ -359,8 +359,8 @@ static const FrontierScene sFrontierScenes[] = {
         .subTilemapIdx = battle_arcade_screen_lower_ally_hp_NSCR_lz,
         .subTilesIdx = battle_arcade_screen_lower_hp_NCGR_lz,
         .subPlttIdx = battle_arcade_screen_default_NCLR,
-        .unk_22 = 1,
-        .unk_23 = 1,
+        .flag1 = 1,
+        .flag2 = 1,
     },
 };
 
@@ -392,9 +392,9 @@ int FrontierScene_GetParam(enum BattleFrontierScene sceneID, enum FrontierSceneP
     case FR_SCENE_SUB_PLTT_IDX:
         return sFrontierScenes[sceneID].subPlttIdx;
     case FR_SCENE_FLAG_1:
-        return sFrontierScenes[sceneID].unk_22;
+        return sFrontierScenes[sceneID].flag1;
     case FR_SCENE_FLAG_2:
-        return sFrontierScenes[sceneID].unk_23;
+        return sFrontierScenes[sceneID].flag2;
     }
 
     GF_ASSERT(FALSE);

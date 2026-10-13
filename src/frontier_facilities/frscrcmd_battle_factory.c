@@ -313,10 +313,10 @@ BOOL FrontierScrCmd_CallBattleFactoryFunction(FrontierScriptContext *ctx)
         *returnVar = BattleFactory_GetCurrentBattle(battleFactory);
         break;
     case BF_FUNC_UNK_24:
-        *returnVar = battleFactory->unk_57C;
+        *returnVar = battleFactory->partnersRetireDecision;
         break;
     case BF_FUNC_UNK_26:
-        *returnVar = battleFactory->unk_57D;
+        *returnVar = battleFactory->partnersTradeDecision;
         break;
     case BF_FUNC_INIT_COMM_MANAGER:
         FrontierCommCmd_Init(battleFactory);

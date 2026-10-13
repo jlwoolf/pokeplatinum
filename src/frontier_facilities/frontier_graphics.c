@@ -143,7 +143,7 @@ FrontierGraphics *FrontierGraphics_New(BattleFrontier *frontier)
     graphics->sceneID = sceneID;
 
     for (int i = 0; i < 8; i++) {
-        graphics->unk_3C.unk_34[i] = 0xffff;
+        graphics->spriteSlots.loadedResourceIDs[i] = 0xffff;
     }
 
     graphics->g3dPipeline = InitG3DPipeline(HEAP_ID_94);
@@ -173,9 +173,9 @@ FrontierGraphics *FrontierGraphics_New(BattleFrontier *frontier)
 
     FrontierFacilities_InitObjectSystem(graphics, sceneID, playerInfo);
 
-    graphics->unk_94 = SysTask_Start(FrontierFacilities_UpdateObjectManagerTask, graphics, 60000);
-    graphics->unk_98 = SysTask_Start(FrontierFacilities_ProcessMoveQueuesTask, graphics, 61000);
-    graphics->unk_9C = SysTask_Start(FrontierFacilities_MainRenderTask, graphics, 80000);
+    graphics->objectManagerTask = SysTask_Start(FrontierFacilities_UpdateObjectManagerTask, graphics, 60000);
+    graphics->moveQueuesTask = SysTask_Start(FrontierFacilities_ProcessMoveQueuesTask, graphics, 61000);
+    graphics->renderTask = SysTask_Start(FrontierFacilities_MainRenderTask, graphics, 80000);
 
     GXLayers_TurnBothDispOn();
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, TRUE);
@@ -188,7 +188,7 @@ FrontierGraphics *FrontierGraphics_New(BattleFrontier *frontier)
 
     SetVBlankCallback(VBlankCallback, graphics);
     graphics->dummyExecuteOnVBlank = SysTask_ExecuteOnVBlank(DummyExecuteOnVBlank, graphics, 10);
-    FrontierScene_CallSetupFunc(graphics, &graphics->unk_90, graphics->sceneID);
+    FrontierScene_CallSetupFunc(graphics, &graphics->sceneData, graphics->sceneID);
     NetworkIcon_Init();
 
     return graphics;
@@ -197,7 +197,7 @@ FrontierGraphics *FrontierGraphics_New(BattleFrontier *frontier)
 void FrontierGraphics_Free(FrontierGraphics *graphics)
 {
     UNUSED(BattleFrontier_GetFieldData(graphics->frontier));
-    FrontierScene_CallDestroyFunc(graphics, &graphics->unk_90, graphics->sceneID);
+    FrontierScene_CallDestroyFunc(graphics, &graphics->sceneData, graphics->sceneID);
 
     FrontierFacilities_FreeObjectSystem(graphics);
 
@@ -221,9 +221,9 @@ void FrontierGraphics_Free(FrontierGraphics *graphics)
     PaletteData_FreeBuffer(graphics->plttData, PLTTBUF_SUB_OBJ);
     PaletteData_Free(graphics->plttData);
     Heap_Free(graphics->bgConfig);
-    SysTask_Done(graphics->unk_94);
-    SysTask_Done(graphics->unk_98);
-    SysTask_Done(graphics->unk_9C);
+    SysTask_Done(graphics->objectManagerTask);
+    SysTask_Done(graphics->moveQueuesTask);
+    SysTask_Done(graphics->renderTask);
     SysTask_Done(graphics->dummyExecuteOnVBlank);
 
     FreeG3DPipeline(graphics->g3dPipeline);
@@ -264,11 +264,11 @@ void FrontierFacilities_SaveObjectState(FrontierGraphics *param0)
             v1 = BattleFrontier_GetObject(param0->frontier, v0);
 
             if (v1->object != NULL) {
-                v1->params.unk_0A = WiFi2DCharObject_GetField(v1->object, 6);
-                v1->params.unk_02 = WiFi2DCharObject_GetField(v1->object, 5);
-                v1->params.unk_06 = WiFi2DCharObject_GetField(v1->object, 0);
-                v1->params.unk_08 = WiFi2DCharObject_GetField(v1->object, 1);
-                v1->params.unk_0B = WiFi2DCharRenderer_IsObjectVisible(v1->sprite);
+                v1->params.variant = WiFi2DCharObject_GetField(v1->object, 6);
+                v1->params.moveState = WiFi2DCharObject_GetField(v1->object, 5);
+                v1->params.x = WiFi2DCharObject_GetField(v1->object, 0);
+                v1->params.y = WiFi2DCharObject_GetField(v1->object, 1);
+                v1->params.isVisible = WiFi2DCharRenderer_IsObjectVisible(v1->sprite);
             }
         }
     }
@@ -287,7 +287,7 @@ void FrontierFacilities_RestoreObjectState(FrontierGraphics *param0)
 
         for (v0 = 0; v0 < 24; v0++) {
             if (v1[v0].gfxID != 0xffff) {
-                WiFi2DCharRenderer_LoadSpecies(param0->unk_20, v1[v0].gfxID, v1[v0].unk_02, HEAP_ID_94);
+                WiFi2DCharRenderer_LoadSpecies(param0->objectRenderer, v1[v0].gfxID, v1[v0].resourceVariant, HEAP_ID_94);
             }
         }
     }
@@ -299,7 +299,7 @@ void FrontierFacilities_RestoreObjectState(FrontierGraphics *param0)
         for (v0 = 0; v0 < 32; v0++) {
             v2 = BattleFrontier_GetObject(param0->frontier, v0);
 
-            if (v2->params.unk_04 != 0xffff) {
+            if (v2->params.objectID != 0xffff) {
                 FrontierFacilities_CopyObjectParams(v2, &v3);
                 FrontierFacilities_AddObject(param0, &v3, v0);
             }
@@ -328,7 +328,7 @@ static void DummyExecuteOnVBlank(SysTask *task, void *data)
 static void FrontierFacilities_UpdateObjectManagerTask(SysTask *param0, void *param1)
 {
     FrontierGraphics *v0 = param1;
-    WiFi2DCharObjectManager_Update(v0->unk_14);
+    WiFi2DCharObjectManager_Update(v0->objectManager);
 }
 
 static void FrontierFacilities_ProcessMoveQueuesTask(SysTask *param0, void *param1)
@@ -347,21 +347,21 @@ static void FrontierFacilities_MainRenderTask(SysTask *param0, void *param1)
         v1 = BattleFrontier_GetObject(v0->frontier, 32 - 1);
 
         if (v1->object != NULL) {
-            WiFi2DCharViewOffset_SetFromObject(&v0->unk_1C, v1->object);
+            WiFi2DCharViewOffset_SetFromObject(&v0->viewOffset, v1->object);
         }
 
         FrontierFacilities_UpdateBackground(v0);
     }
 
-    WiFi2DCharRenderer_UpdateAll(v0->unk_20);
+    WiFi2DCharRenderer_UpdateAll(v0->objectRenderer);
 
     {
-        u32 v2 = v0->unk_3C.unk_30;
+        u32 v2 = v0->spriteSlots.visibleMask;
         int v3;
 
         for (v3 = 0; v3 < 8; v3++) {
-            if ((v0->unk_3C.unk_00[v3] != NULL) && (v2 & 1)) {
-                ManagedSprite_TickFrame(v0->unk_3C.unk_00[v3]);
+            if ((v0->spriteSlots.sprites[v3] != NULL) && (v2 & 1)) {
+                ManagedSprite_TickFrame(v0->spriteSlots.sprites[v3]);
             }
 
             v2 >>= 1;
@@ -385,12 +385,12 @@ static void FrontierFacilities_UpdateBackground(FrontierGraphics *param0)
     switch (v0) {
     case 0:
     default:
-        if (param0->unk_24 != NULL) {
-            WiFi2DCharBackground_Update(param0->unk_24, &param0->unk_1C);
+        if (param0->mainBackground != NULL) {
+            WiFi2DCharBackground_Update(param0->mainBackground, &param0->viewOffset);
         }
 
-        if ((param0->unk_28 != NULL) && (FrontierScene_GetParam(fieldData->sceneID, FR_SCENE_FLAG_2) == 1)) {
-            WiFi2DCharBackground_Update(param0->unk_28, &param0->unk_1C);
+        if ((param0->subBackground != NULL) && (FrontierScene_GetParam(fieldData->sceneID, FR_SCENE_FLAG_2) == 1)) {
+            WiFi2DCharBackground_Update(param0->subBackground, &param0->viewOffset);
         }
         break;
     case 1:
@@ -405,8 +405,8 @@ static void FrontierFacilities_UpdateBackgroundScroll(FrontierGraphics *param0)
     s16 v1;
     FieldFrontierDTO *fieldData = BattleFrontier_GetFieldData(param0->frontier);
 
-    v1 = WiFi2DCharViewOffset_GetX(&param0->unk_1C) + param0->unk_A4.unk_06;
-    v0 = WiFi2DCharViewOffset_GetY(&param0->unk_1C) + param0->unk_A4.unk_04;
+    v1 = WiFi2DCharViewOffset_GetX(&param0->viewOffset) + param0->shakeState.offsetX;
+    v0 = WiFi2DCharViewOffset_GetY(&param0->viewOffset) + param0->shakeState.offsetY;
 
     SetMainScreenViewRect(SpriteSystem_GetRenderer(param0->spriteSystem), FX32_CONST(v0), FX32_CONST(v1));
     Bg_ScheduleScroll(param0->bgConfig, 3, 0, v0);
@@ -424,15 +424,15 @@ static void FrontierFacilities_ProcessMoveQueues(FrontierGraphics *param0)
     WiFi2DCharMoveRequest v1;
     BOOL v2;
 
-    while (WiFi2DCharMoveQueue_Pop(param0->unk_30, &v1) == 1) {
-        WiFi2DCharObjectManager_StartMove(param0->unk_14, &v1);
+    while (WiFi2DCharMoveQueue_Pop(param0->moveQueue, &v1) == 1) {
+        WiFi2DCharObjectManager_StartMove(param0->objectManager, &v1);
     }
 
-    while (WiFi2DCharEventQueue_Pop(param0->unk_2C, &v0) == 1) {
-        v2 = WiFi2DCharAI_ChooseMove(param0->unk_18, param0->unk_14, &v0, &v1);
+    while (WiFi2DCharEventQueue_Pop(param0->eventQueue, &v0) == 1) {
+        v2 = WiFi2DCharAI_ChooseMove(param0->objectGrid, param0->objectManager, &v0, &v1);
 
         if (v2 == 1) {
-            WiFi2DCharObjectManager_StartMove(param0->unk_14, &v1);
+            WiFi2DCharObjectManager_StartMove(param0->objectManager, &v1);
         }
     }
 }
@@ -611,12 +611,12 @@ static void LoadSubScreenBackground(FrontierGraphics *graphics)
 
 static void FrontierFacilities_InitObjectSystem(FrontierGraphics *param0, int sceneID, const TrainerInfo *playerInfo)
 {
-    param0->unk_14 = WiFi2DCharObjectManager_New(32, HEAP_ID_94);
-    param0->unk_18 = WiFi2DCharGrid_New(256 / 16, 256 / 16, HEAP_ID_94);
+    param0->objectManager = WiFi2DCharObjectManager_New(32, HEAP_ID_94);
+    param0->objectGrid = WiFi2DCharGrid_New(256 / 16, 256 / 16, HEAP_ID_94);
 
-    WiFi2DCharViewOffset_Reset(&param0->unk_1C);
+    WiFi2DCharViewOffset_Reset(&param0->viewOffset);
 
-    param0->unk_20 = WiFi2DCharRenderer_NewWithShadow(SpriteManager_GetSpriteList(param0->spriteMan), param0->plttData, 32, BattleFrontier_GetPlayerObjEventGfx(playerInfo), 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_94);
+    param0->objectRenderer = WiFi2DCharRenderer_NewWithShadow(SpriteManager_GetSpriteList(param0->spriteMan), param0->plttData, 32, BattleFrontier_GetPlayerObjEventGfx(playerInfo), 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_94);
 
     {
         WiFiMenuAppSpriteParams v0 = {
@@ -639,7 +639,7 @@ static void FrontierFacilities_InitObjectSystem(FrontierGraphics *param0, int sc
         v1 = FrontierScene_GetParam(sceneID, FR_SCENE_FLAG_1);
 
         if (v1 == 0) {
-            param0->unk_24 = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
+            param0->mainBackground = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
         }
 
         if (FrontierScene_GetParam(sceneID, FR_SCENE_SUB_TILEMAP_IDX) != 0xffff) {
@@ -650,15 +650,15 @@ static void FrontierFacilities_InitObjectSystem(FrontierGraphics *param0, int sc
             v0.unk_06 = 1;
 
             if (v1 == 0) {
-                param0->unk_28 = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
+                param0->subBackground = WiFi2DCharBackground_New(SpriteSystem_GetRenderer(param0->spriteSystem), param0->bgConfig, &v0, HEAP_ID_94);
             }
         }
     }
 
-    param0->unk_2C = WiFi2DCharEventQueue_New(128, HEAP_ID_94);
-    param0->unk_30 = WiFi2DCharMoveQueue_New(128, HEAP_ID_94);
+    param0->eventQueue = WiFi2DCharEventQueue_New(128, HEAP_ID_94);
+    param0->moveQueue = WiFi2DCharMoveQueue_New(128, HEAP_ID_94);
 
-    WiFi2DCharGrid_SetTiles(param0->unk_18, sEmptyGridTiles);
+    WiFi2DCharGrid_SetTiles(param0->objectGrid, sEmptyGridTiles);
 
     {
         GXBGMode bgMode = FrontierScene_GetParam(sceneID, FR_SCENE_BGMODE);
@@ -726,20 +726,20 @@ static void FrontierFacilities_FreeObjectSystem(FrontierGraphics *param0)
         }
     }
 
-    WiFi2DCharObjectManager_Free(param0->unk_14);
-    WiFi2DCharGrid_Free(param0->unk_18);
-    WiFi2DCharRenderer_Free(param0->unk_20);
+    WiFi2DCharObjectManager_Free(param0->objectManager);
+    WiFi2DCharGrid_Free(param0->objectGrid);
+    WiFi2DCharRenderer_Free(param0->objectRenderer);
 
-    if (param0->unk_24 != NULL) {
-        WiFi2DCharBackground_Free(param0->unk_24);
+    if (param0->mainBackground != NULL) {
+        WiFi2DCharBackground_Free(param0->mainBackground);
     }
 
-    if (param0->unk_28 != NULL) {
-        WiFi2DCharBackground_Free(param0->unk_28);
+    if (param0->subBackground != NULL) {
+        WiFi2DCharBackground_Free(param0->subBackground);
     }
 
-    WiFi2DCharEventQueue_Free(param0->unk_2C);
-    WiFi2DCharMoveQueue_Free(param0->unk_30);
+    WiFi2DCharEventQueue_Free(param0->eventQueue);
+    WiFi2DCharMoveQueue_Free(param0->moveQueue);
 }
 
 static G3DPipelineBuffers *InitG3DPipeline(enum HeapID heapID)
@@ -785,20 +785,20 @@ static void InitSpriteSystem(FrontierGraphics *graphics)
 static void FreeSpriteSystem(FrontierGraphics *graphics)
 {
     for (int i = 0; i < 8; i++) {
-        if (graphics->unk_3C.unk_00[i] != NULL) {
-            FrontierFacilities_DeleteObjectSprite(graphics->unk_3C.unk_00[i]);
+        if (graphics->spriteSlots.sprites[i] != NULL) {
+            FrontierFacilities_DeleteObjectSprite(graphics->spriteSlots.sprites[i]);
         }
     }
 
     for (int i = 0; i < 8; i++) {
-        if (graphics->unk_3C.unk_34[i] != 0xffff) {
-            FrontierFacilities_UnloadObjectSpriteResources(graphics->spriteMan, graphics->unk_3C.unk_34[i]);
+        if (graphics->spriteSlots.loadedResourceIDs[i] != 0xffff) {
+            FrontierFacilities_UnloadObjectSpriteResources(graphics->spriteMan, graphics->spriteSlots.loadedResourceIDs[i]);
         }
     }
 
     for (int i = 0; i < ((50000 + 3) - 50000 + 1); i++) {
-        if (graphics->unk_80[i] != NULL) {
-            Sprite_DeleteAndFreeResources(graphics->unk_80[i]);
+        if (graphics->fieldSprites[i] != NULL) {
+            Sprite_DeleteAndFreeResources(graphics->fieldSprites[i]);
 
             SpriteManager_UnloadCharObjById(graphics->spriteMan, 50000 + i);
             SpriteManager_UnloadPlttObjById(graphics->spriteMan, 50000 + i);
@@ -835,7 +835,7 @@ void FrontierFacilities_AddObjectGfx(FrontierGraphics *param0, const FrontierObj
     v2 = v1;
     v0[v2] = *param1;
 
-    WiFi2DCharRenderer_LoadSpecies(param0->unk_20, param1->gfxID, param1->unk_02, HEAP_ID_94);
+    WiFi2DCharRenderer_LoadSpecies(param0->objectRenderer, param1->gfxID, param1->resourceVariant, HEAP_ID_94);
 }
 
 void FrontierFacilities_RemoveObjectGfx(FrontierGraphics *param0, int param1)
@@ -845,7 +845,7 @@ void FrontierFacilities_RemoveObjectGfx(FrontierGraphics *param0, int param1)
 
     for (v0 = 0; v0 < 24; v0++) {
         if (v1[v0].gfxID == param1) {
-            WiFi2DCharRenderer_UnloadSpecies(param0->unk_20, param1);
+            WiFi2DCharRenderer_UnloadSpecies(param0->objectRenderer, param1);
             v1[v0].gfxID = 0xffff;
             return;
         }
@@ -875,17 +875,17 @@ WiFi2DCharObject *FrontierFacilities_AddObject(FrontierGraphics *param0, const F
         v2 = param2;
     }
 
-    v3.unk_00 = param1->unk_06;
-    v3.unk_02 = param1->unk_08;
-    v3.unk_04 = param1->unk_04;
-    v3.unk_06 = param1->unk_02;
-    v3.unk_08 = param1->unk_0A;
-    v3.unk_0A = param1->unk_00;
+    v3.unk_00 = param1->x;
+    v3.unk_02 = param1->y;
+    v3.unk_04 = param1->objectID;
+    v3.unk_06 = param1->moveState;
+    v3.unk_08 = param1->variant;
+    v3.unk_0A = param1->gfxID;
 
-    v4 = WiFi2DCharObjectManager_AddObject(param0->unk_14, &v3);
-    v5 = WiFi2DCharRenderer_AddObject(param0->unk_20, v4, 0, HEAP_ID_94);
+    v4 = WiFi2DCharObjectManager_AddObject(param0->objectManager, &v3);
+    v5 = WiFi2DCharRenderer_AddObject(param0->objectRenderer, v4, 0, HEAP_ID_94);
 
-    WiFi2DCharRenderer_SetObjectVisible(v5, param1->unk_0B);
+    WiFi2DCharRenderer_SetObjectVisible(v5, param1->isVisible);
     FrontierFacilities_SetObject(param0->frontier, v2, v4, v5, param1);
 
     return v4;
@@ -904,7 +904,7 @@ void FrontierFacilities_RemoveObject(FrontierGraphics *param0, WiFi2DCharObject 
             GF_ASSERT(v1[v0].movementTask == NULL);
             MI_CpuClear8(&v1[v0], sizeof(FrontierObject));
 
-            v1[v0].params.unk_04 = 0xffff;
+            v1[v0].params.objectID = 0xffff;
             return;
         }
     }
@@ -916,7 +916,7 @@ void FrontierFacilities_GetObjectAndSprite(FrontierGraphics *param0, u16 param1,
     FrontierObject *v1 = BattleFrontier_GetObjects(param0->frontier);
 
     for (v0 = 0; v0 < 32; v0++) {
-        if (v1[v0].params.unk_04 == param1) {
+        if (v1[v0].params.objectID == param1) {
             if (param2 != NULL) {
                 *param2 = v1[v0].object;
             }
@@ -937,8 +937,8 @@ void FrontierFacilities_AddSpriteID(FrontierGraphics *param0, u16 param1)
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        if (param0->unk_3C.unk_34[v0] == 0xffff) {
-            param0->unk_3C.unk_34[v0] = param1;
+        if (param0->spriteSlots.loadedResourceIDs[v0] == 0xffff) {
+            param0->spriteSlots.loadedResourceIDs[v0] = param1;
             return;
         }
     }
@@ -951,8 +951,8 @@ void FrontierFacilities_RemoveSpriteID(FrontierGraphics *param0, u16 param1)
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        if (param0->unk_3C.unk_34[v0] == param1) {
-            param0->unk_3C.unk_34[v0] = 0xffff;
+        if (param0->spriteSlots.loadedResourceIDs[v0] == param1) {
+            param0->spriteSlots.loadedResourceIDs[v0] = 0xffff;
             return;
         }
     }
@@ -963,12 +963,12 @@ ManagedSprite *FrontierFacilities_AddManagedSprite(FrontierGraphics *param0, u16
     ManagedSprite *v0;
 
     GF_ASSERT(param1 < 8);
-    GF_ASSERT(param0->unk_3C.unk_00[param1] == NULL);
+    GF_ASSERT(param0->spriteSlots.sprites[param1] == NULL);
 
     v0 = FrontierFacilities_CreateObjectSprite(param0->spriteSystem, param0->spriteMan, param2);
 
-    param0->unk_3C.unk_00[param1] = v0;
-    param0->unk_3C.unk_20[param1] = param2;
+    param0->spriteSlots.sprites[param1] = v0;
+    param0->spriteSlots.resourceIDs[param1] = param2;
 
     FrontierFacilities_SetSpriteVisible(param0, param1, 0);
     return v0;
@@ -977,40 +977,40 @@ ManagedSprite *FrontierFacilities_AddManagedSprite(FrontierGraphics *param0, u16
 void FrontierFacilities_RemoveManagedSprite(FrontierGraphics *param0, u16 param1)
 {
     GF_ASSERT(param1 < 8);
-    GF_ASSERT(param0->unk_3C.unk_00[param1] != NULL);
+    GF_ASSERT(param0->spriteSlots.sprites[param1] != NULL);
 
-    FrontierFacilities_DeleteObjectSprite(param0->unk_3C.unk_00[param1]);
-    param0->unk_3C.unk_00[param1] = NULL;
+    FrontierFacilities_DeleteObjectSprite(param0->spriteSlots.sprites[param1]);
+    param0->spriteSlots.sprites[param1] = NULL;
 }
 
 ManagedSprite *FrontierFacilities_GetManagedSprite(FrontierGraphics *param0, u16 param1)
 {
-    return param0->unk_3C.unk_00[param1];
+    return param0->spriteSlots.sprites[param1];
 }
 
 void FrontierFacilities_SetSpriteVisible(FrontierGraphics *param0, u16 param1, int param2)
 {
     if (param2 == 1) {
-        param0->unk_3C.unk_30 |= 1 << param1;
+        param0->spriteSlots.visibleMask |= 1 << param1;
     } else {
-        param0->unk_3C.unk_30 &= 0xffffffff ^ (1 << param1);
+        param0->spriteSlots.visibleMask &= 0xffffffff ^ (1 << param1);
     }
 }
 
 u32 FrontierFacilities_IsSpriteVisible(FrontierGraphics *param0, u16 param1)
 {
-    return (param0->unk_3C.unk_30 >> param1) & 1;
+    return (param0->spriteSlots.visibleMask >> param1) & 1;
 }
 
 static void FrontierFacilities_SaveSpriteState(FrontierGraphics *param0)
 {
     int v0;
     FrontierSpriteStateBuffer *v1 = BattleFrontier_GetSpriteStateBuffer(param0->frontier);
-    FrontierFacilitiesSpriteSlots *v2 = &param0->unk_3C;
+    FrontierFacilitiesSpriteSlots *v2 = &param0->spriteSlots;
 
     for (v0 = 0; v0 < 8; v0++) {
-        if (v2->unk_34[v0] != 0xffff) {
-            v1->spriteIDs[v0] = v2->unk_34[v0];
+        if (v2->loadedResourceIDs[v0] != 0xffff) {
+            v1->spriteIDs[v0] = v2->loadedResourceIDs[v0];
             v0++;
         }
     }
@@ -1018,13 +1018,13 @@ static void FrontierFacilities_SaveSpriteState(FrontierGraphics *param0)
     v0 = 0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        if (v2->unk_00[v0] != NULL) {
-            v1->states[v0].activeAnim = ManagedSprite_GetActiveAnim(v2->unk_00[v0]);
-            v1->states[v0].animationFrame = ManagedSprite_GetAnimationFrame(v2->unk_00[v0]);
+        if (v2->sprites[v0] != NULL) {
+            v1->states[v0].activeAnim = ManagedSprite_GetActiveAnim(v2->sprites[v0]);
+            v1->states[v0].animationFrame = ManagedSprite_GetAnimationFrame(v2->sprites[v0]);
             v1->states[v0].visible = FrontierFacilities_IsSpriteVisible(param0, v0);
-            v1->states[v0].drawFlag = ManagedSprite_GetDrawFlag(v2->unk_00[v0]);
-            v1->states[v0].resourceID = v2->unk_20[v0];
-            ManagedSprite_GetPositionXY(v2->unk_00[v0], &v1->states[v0].x, &v1->states[v0].y);
+            v1->states[v0].drawFlag = ManagedSprite_GetDrawFlag(v2->sprites[v0]);
+            v1->states[v0].resourceID = v2->resourceIDs[v0];
+            ManagedSprite_GetPositionXY(v2->sprites[v0], &v1->states[v0].x, &v1->states[v0].y);
             v1->states[v0].valid = 1;
         }
     }
@@ -1066,8 +1066,8 @@ static void FrontierFacilities_LoadSpriteState(FrontierGraphics *param0)
 
 void FrontierFacilities_GetViewOffset(FrontierGraphics *param0, s16 *param1, s16 *param2)
 {
-    *param2 = WiFi2DCharViewOffset_GetX(&param0->unk_1C);
-    *param1 = WiFi2DCharViewOffset_GetY(&param0->unk_1C);
+    *param2 = WiFi2DCharViewOffset_GetX(&param0->viewOffset);
+    *param1 = WiFi2DCharViewOffset_GetY(&param0->viewOffset);
 }
 
 static void FrontierFacilities_CopyObjectParams(FrontierObject *param0, FrontierObjectParams *param1)
@@ -1090,7 +1090,7 @@ FrontierObject *FrontierFacilities_GetObject(BattleFrontier *param0, int param1)
     FrontierObject *v1 = BattleFrontier_GetObjects(param0);
 
     for (v0 = 0; v0 < 32; v0++) {
-        if ((v1->object != NULL) && (v1->params.unk_04 == param1)) {
+        if ((v1->object != NULL) && (v1->params.objectID == param1)) {
             return v1;
         }
 

@@ -50,18 +50,18 @@ typedef struct BattleCastle {
     u16 unused5[6];
     u16 commBuffer[40];
     u8 commHugeBuffer[512];
-    u8 unk_610[2][512];
-    u8 unk_A10;
-    u8 unk_A11;
-    u16 unk_A12;
+    u8 commPlayerBuffers[2][512];
+    u8 partnersRetireDecision;
+    u8 partnersUnusedValue;
+    u16 partnersRound;
     u16 unused6;
-    u16 unk_A16;
-    u8 unk_A18;
-    u8 unk_A19;
+    u16 partnersStreak;
+    u8 appSelection;
+    u8 partnersAppSelection;
     u8 msgsReceived;
-    u8 unk_A1B;
+    u8 syncedAppSelection;
     u16 partnersCP;
-    u16 *unk_A20;
+    u16 *appResultPtr;
     u32 unused7;
 } BattleCastle;
 

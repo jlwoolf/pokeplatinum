@@ -593,7 +593,7 @@ const FrontierTrainer sDummyFrontierTrainers[] = {
 
 typedef struct {
     u16 unk_00;
-    u8 unk_02[4];
+    u8 monSetIDs[4];
 } FrontierFacilitiesDummyWiFiTrainerTemplate;
 
 static const FrontierFacilitiesDummyWiFiTrainerTemplate sDummyWiFiTrainerTemplates[] = {
@@ -786,7 +786,7 @@ static void BattleTower_CreateDummyWiFiTrainer(FrontierOpponent *opponent, const
     opponent->trainer.unk_06 = v3->unk_00;
 
     for (i = 0; i < 4; i++) {
-        MI_CpuCopy8(&(mons[v3->unk_02[i]]), &(opponent->pokemon[i]), sizeof(FrontierPokemon));
+        MI_CpuCopy8(&(mons[v3->monSetIDs[i]]), &(opponent->pokemon[i]), sizeof(FrontierPokemon));
     }
 }
 

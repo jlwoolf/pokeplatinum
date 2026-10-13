@@ -56,16 +56,16 @@ typedef struct BattleArcade {
     u16 appCursorPos[6];
     u16 commBuffer[40];
     u8 commHugeBuffer[512];
-    u8 unk_674[2][512];
-    u8 unk_A74;
-    u8 unk_A75;
-    u16 unk_A76;
-    u16 unk_A78;
-    u8 unk_A7A;
+    u8 commPlayerBuffers[2][512];
+    u8 partnersRetireDecision;
+    u8 partnersUnusedValue;
+    u16 partnersRound;
+    u16 partnersStreak;
+    u8 emitterFlipAxis;
     u8 unk_A7B;
     u8 msgsReceived;
     u8 unk_A7D;
-    u16 *unk_A80;
+    u16 *appResultPtr;
     u32 unk_A84;
 } BattleArcade;
 

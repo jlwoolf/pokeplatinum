@@ -320,8 +320,8 @@ u16 BattleCastle_GetCurrentRound(BattleCastle *battleCastle)
     u16 currentRound = battleCastle->currentRound;
 
     if (BattleCastle_IsMultiPlayerChallenge(battleCastle->challengeType) == TRUE) {
-        if (battleCastle->unk_A12 > battleCastle->currentRound) {
-            currentRound = battleCastle->unk_A12;
+        if (battleCastle->partnersRound > battleCastle->currentRound) {
+            currentRound = battleCastle->partnersRound;
         }
     }
 

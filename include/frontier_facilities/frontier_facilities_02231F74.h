@@ -26,7 +26,7 @@ typedef struct FrontierAnimData {
     u16 localID;
     u8 *totalMovementCount;
     const FrontierAnimCmd *animCmd;
-    WiFi2DCharMoveQueue *unk_10;
+    WiFi2DCharMoveQueue *moveQueue;
     FrontierObject *frontierObj;
 } FrontierAnimData;
 

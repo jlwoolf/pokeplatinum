@@ -7,8 +7,8 @@
 // State for the screen-scroll SysTask wrapping a ScreenScrollManager.
 typedef struct {
     ScreenScrollManager *screenScrollMgr;
-    SysTask *unk_04;
-    u32 unk_08;
+    SysTask *task;
+    u32 vBlankCounter;
 } FrontierFacilitiesScreenScroll;
 
 #endif // POKEPLATINUM_STRUCT_FRONTIER_FACILITIES_0223F094_H

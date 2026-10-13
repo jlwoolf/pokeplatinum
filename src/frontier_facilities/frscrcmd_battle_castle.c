@@ -294,10 +294,10 @@ BOOL FrontierScrCmd_CallBattleCastleFunction(FrontierScriptContext *ctx)
         *returnVar = BattleCastle_GetCurrentBattle(battleCastle);
         break;
     case BC_FUNC_UNK_24:
-        *returnVar = battleCastle->unk_A10;
+        *returnVar = battleCastle->partnersRetireDecision;
         break;
     case BC_FUNC_UNK_26:
-        *returnVar = battleCastle->unk_A11;
+        *returnVar = battleCastle->partnersUnusedValue;
         break;
     case BC_FUNC_GET_CP_FROM_BATTLE:
         *returnVar = BattleCastle_CalcCPEarnedFromBattle(battleCastle);
@@ -310,24 +310,24 @@ BOOL FrontierScrCmd_CallBattleCastleFunction(FrontierScriptContext *ctx)
         FrontierCommCmd_Init(battleCastle);
         break;
     case BC_FUNC_UNK_30:
-        if (battleCastle->unk_A1B >= 6) {
-            *returnVar = battleCastle->unk_A1B - 6;
+        if (battleCastle->syncedAppSelection >= 6) {
+            *returnVar = battleCastle->syncedAppSelection - 6;
         } else {
-            *returnVar = battleCastle->unk_A1B;
+            *returnVar = battleCastle->syncedAppSelection;
         }
         break;
     case BC_FUNC_UNK_31:
-        battleCastle->unk_A1B = 0;
-        battleCastle->unk_A19 = 0;
-        battleCastle->unk_A18 = 0;
+        battleCastle->syncedAppSelection = 0;
+        battleCastle->partnersAppSelection = 0;
+        battleCastle->appSelection = 0;
         break;
     case BC_FUNC_UNK_32:
-        battleCastle->unk_A18 = arg1;
+        battleCastle->appSelection = arg1;
         break;
     case BC_FUNC_UNK_33: {
         int v10 = 0;
 
-        if (battleCastle->unk_A1B >= 6) {
+        if (battleCastle->syncedAppSelection >= 6) {
             if (CommSys_CurNetId() != 0) {
                 v10 = 1;
             }
@@ -347,7 +347,7 @@ BOOL FrontierScrCmd_CallBattleCastleFunction(FrontierScriptContext *ctx)
         *returnVar = 0;
 
         if (BattleCastle_IsMultiPlayerChallenge(battleCastle->challengeType) == TRUE) {
-            if (battleCastle->unk_A1B >= 6) {
+            if (battleCastle->syncedAppSelection >= 6) {
                 if (CommSys_CurNetId() == 0) {
                     *returnVar = 1;
                 }
@@ -480,12 +480,12 @@ static BOOL FrontierFacilities_WaitForCastleCommValue(FrontierScriptContext *ctx
 
     BattleCastle *castle = BattleFrontier_GetFacilityStruct(ctx->scriptMan->frontier);
 
-    if (castle->unk_A1B == 0) {
+    if (castle->syncedAppSelection == 0) {
         return FALSE;
     }
 
     castle->msgsReceived = 0;
-    *v1 = castle->unk_A1B;
+    *v1 = castle->syncedAppSelection;
 
     return TRUE;
 }

@@ -97,7 +97,7 @@ BOOL FrontierScrCmd_OpenBattleHallApp(FrontierScriptContext *ctx)
     args->party = battleHall->party;
     args->currentStreak = battleHall->currentStreak;
     args->cursorPos = battleHall->selectedTypeIdx;
-    args->partnersLevel = &battleHall->unk_D84[0];
+    args->partnersLevel = &battleHall->partnersMonLevels[0];
 
     Party_Init(args->party);
 
@@ -207,7 +207,7 @@ BOOL FrontierScrCmd_CallBattleHallFunction(FrontierScriptContext *ctx)
         *returnVar = BattleHall_GetCurrentBattle(battleHall);
         break;
     case BH_FUNC_UNK_24:
-        *returnVar = battleHall->unk_D88;
+        *returnVar = battleHall->partnersCommValue;
         break;
     case BH_FUNC_RESTORE_HELD_ITEMS: {
         Party *party = SaveData_GetParty(fieldData->saveData);

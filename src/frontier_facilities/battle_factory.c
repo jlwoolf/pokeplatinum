@@ -118,7 +118,7 @@ static void SetupTrainersAndInitialRentalOptions(BattleFactory *factory)
             partnersItems[i] = factory->initialRentalMons[i].item;
         }
 
-        BattleFactory_SelectInitialRentalOptions(BattleFactory_GetCurrentRound(factory), factory->isOpenLevel, factory->partnerRentalSetIDs, factory->partnerRentalMons, factory->partnerRentalIVs, factory->partnerRentalPersonalities, factory->unk_580, partnersSpecies, partnersItems);
+        BattleFactory_SelectInitialRentalOptions(BattleFactory_GetCurrentRound(factory), factory->isOpenLevel, factory->partnerRentalSetIDs, factory->partnerRentalMons, factory->partnerRentalIVs, factory->partnerRentalPersonalities, factory->partnersTradeCount, partnersSpecies, partnersItems);
 
         SwapMonIndices(factory, 4, TRUE);
         SwapMonIndices(factory, 5, TRUE);

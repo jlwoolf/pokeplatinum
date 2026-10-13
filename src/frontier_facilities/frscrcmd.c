@@ -96,32 +96,32 @@
 #include "constdata/const_020EA358.h"
 
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0A;
-    int unk_0C;
+    s16 startIndex;
+    s16 endIndex;
+    s16 stepX;
+    s16 stepY;
+    s16 offsetX;
+    s16 offsetY;
+    int center;
 } FrontierFacilitiesAffineBand;
 
 typedef struct {
-    FrontierFacilitiesAffineBand unk_00[96];
-    FrontierFacilitiesAffineBuffer *unk_600;
-    int unk_604;
+    FrontierFacilitiesAffineBand bands[96];
+    FrontierFacilitiesAffineBuffer *buffer;
+    int mode;
 } FrontierFacilitiesAffineScroll;
 
 typedef struct {
-    FrontierGraphics *unk_00;
-    int unk_04;
-    int unk_08;
-    BOOL unk_0C;
-    BOOL unk_10;
-    void *unk_14;
-    FrontierFacilitiesScreenScroll unk_18;
-    FrontierFacilitiesAffineScroll *unk_24;
-    Window *unk_28;
-    FrontierFacilitiesWipeManager *unk_2C;
+    FrontierGraphics *graphics;
+    int state;
+    int stateIndex;
+    BOOL flashDone;
+    BOOL transitionDone;
+    void *savedFacilityData;
+    FrontierFacilitiesScreenScroll screenScroll;
+    FrontierFacilitiesAffineScroll *affineScroll;
+    Window *window;
+    FrontierFacilitiesWipeManager *wipeManager;
 } FrontierFacilitiesNamingScreen;
 
 u16 FrontierScriptContext_TryGetVar(FrontierScriptContext *ctx, u16 varID);
@@ -323,7 +323,7 @@ u16 *FrontierScriptContext_GetVarPointer(FrontierScriptContext *ctx, u16 varID)
     if (varID < SCRIPT_LOCAL_VARS_START) {
         return NULL;
     } else if (varID < ((SCRIPT_LOCAL_VARS_START + 7) + 1)) {
-        return &ctx->unk_08[varID - SCRIPT_LOCAL_VARS_START];
+        return &ctx->localVars[varID - SCRIPT_LOCAL_VARS_START];
     } else if (varID < ((((SCRIPT_LOCAL_VARS_START + 7) + 1) + 7) + 1)) {
         return FrontierFacilities_GetScriptVarPointer(ctx->scriptMan, varID - ((SCRIPT_LOCAL_VARS_START + 7) + 1));
     } else if (varID < ((((((SCRIPT_LOCAL_VARS_START + 7) + 1) + 7) + 1) + 3) + 1)) {
@@ -770,7 +770,7 @@ static BOOL FrontierScrCmd_22(FrontierScriptContext *ctx)
             break;
         }
 
-        v3.unk_02 = FrontierScriptContext_ReadByte(ctx);
+        v3.resourceVariant = FrontierScriptContext_ReadByte(ctx);
 
         if (v3.gfxID == 0xEEEE) {
             FieldFrontierDTO *fieldData = BattleFrontier_GetFieldData(v0->frontier);
@@ -825,32 +825,32 @@ static BOOL FrontierScrCmd_24(FrontierScriptContext *ctx)
 
     while (TRUE) {
         v5 = -1;
-        v4.unk_04 = FrontierScriptContext_GetVar(ctx);
+        v4.objectID = FrontierScriptContext_GetVar(ctx);
 
-        if (v4.unk_04 == 0xFD13) {
+        if (v4.objectID == 0xFD13) {
             break;
         }
 
-        v4.unk_00 = FrontierScriptContext_GetVar(ctx);
-        v4.unk_0A = FrontierScriptContext_ReadByte(ctx);
-        v4.unk_06 = FrontierScriptContext_ReadHalfWord(ctx) + -8;
-        v4.unk_08 = FrontierScriptContext_ReadHalfWord(ctx) + -16;
-        v4.unk_0B = FrontierScriptContext_ReadByte(ctx);
+        v4.gfxID = FrontierScriptContext_GetVar(ctx);
+        v4.variant = FrontierScriptContext_ReadByte(ctx);
+        v4.x = FrontierScriptContext_ReadHalfWord(ctx) + -8;
+        v4.y = FrontierScriptContext_ReadHalfWord(ctx) + -16;
+        v4.isVisible = FrontierScriptContext_ReadByte(ctx);
         v4.unk_0C = FrontierScriptContext_ReadByte(ctx);
-        v4.unk_02 = 0;
+        v4.moveState = 0;
 
-        if (v4.unk_00 == 0xEEEE) {
+        if (v4.gfxID == 0xEEEE) {
             const TrainerInfo *trainerInfo;
             FieldFrontierDTO *fieldData;
 
             fieldData = BattleFrontier_GetFieldData(v0->frontier);
             trainerInfo = SaveData_GetTrainerInfo(fieldData->saveData);
-            v4.unk_00 = BattleFrontier_GetPlayerObjEventGfx(trainerInfo);
+            v4.gfxID = BattleFrontier_GetPlayerObjEventGfx(trainerInfo);
             v5 = (32 - 1);
-        } else if (v4.unk_00 == 0xEEEF) {
+        } else if (v4.gfxID == 0xEEEF) {
             int netID = FrontierScriptContext_ReadByte(ctx);
             const TrainerInfo *trainerInfo = CommInfo_TrainerInfo(netID);
-            v4.unk_00 = BattleFrontier_GetPlayerObjEventGfx(trainerInfo);
+            v4.gfxID = BattleFrontier_GetPlayerObjEventGfx(trainerInfo);
         } else {
             (void)0;
         }
@@ -868,7 +868,7 @@ static BOOL FrontierScrCmd_25(FrontierScriptContext *ctx)
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
     WiFi2DCharObject *v2;
     u16 v3 = FrontierScriptContext_GetVar(ctx);
-    v2 = WiFi2DCharObjectManager_FindObjectByID(v1->unk_14, v3);
+    v2 = WiFi2DCharObjectManager_FindObjectByID(v1->objectManager, v3);
 
     FrontierFacilities_RemoveObject(v1, v2);
 
@@ -908,7 +908,7 @@ static BOOL FrontierScrCmd_ApplyMovement(FrontierScriptContext *ctx)
     }
 
     FrontierAnimCmd *animCmd = (FrontierAnimCmd *)(ctx->scriptPtr + offset);
-    FrontierSystem_StartAnimation(localID, object, animCmd, graphics->unk_30, &scriptMan->movementCount, scriptMan->heapID);
+    FrontierSystem_StartAnimation(localID, object, animCmd, graphics->moveQueue, &scriptMan->movementCount, scriptMan->heapID);
     scriptMan->movementCount++;
 
     return FALSE;
@@ -921,7 +921,7 @@ static void FrontierSystem_StartAnimation(u16 localID, FrontierObject *object, c
 
     data->frontierObj = object;
     data->animCmd = animCmd;
-    data->unk_10 = param3;
+    data->moveQueue = param3;
     data->localID = localID;
     data->totalMovementCount = movementCount;
 
@@ -1197,11 +1197,11 @@ static BOOL FrontierScrCmd_6D(FrontierScriptContext *ctx)
         v3 = 9999;
     }
 
-    v0->unk_B0 = 0;
-    v0->unk_B2 = 0;
-    v0->unk_B4 = FrontierFacilities_GetBattleRecordingBattleType(v1, v2);
-    v0->unk_B6 = v3;
-    v0->unk_B8 = v4;
+    v0->recordingState = 0;
+    v0->recordingSaveState = 0;
+    v0->recordingBattleType = FrontierFacilities_GetBattleRecordingBattleType(v1, v2);
+    v0->recordingBattleNumber = v3;
+    v0->recordingResult = v4;
 
     FrontierScriptContext_Pause(ctx, FrontierFacilities_WaitForBattleRecordingSave);
     return TRUE;
@@ -1211,13 +1211,13 @@ static BOOL FrontierFacilities_WaitForBattleRecordingSave(FrontierScriptContext 
 {
     FrontierScriptManager *v0 = ctx->scriptMan;
     FieldFrontierDTO *fieldData = BattleFrontier_GetFieldData(ctx->scriptMan->frontier);
-    int v2 = BattleRecording_SaveWithSummary(fieldData->saveData, v0->unk_B4, v0->unk_B6, 0, &v0->unk_B0, &v0->unk_B2);
+    int v2 = BattleRecording_SaveWithSummary(fieldData->saveData, v0->recordingBattleType, v0->recordingBattleNumber, 0, &v0->recordingState, &v0->recordingSaveState);
 
     if ((v2 == 2) || (v2 == 3)) {
         if (v2 == 2) {
-            *(v0->unk_B8) = 1;
+            *(v0->recordingResult) = 1;
         } else {
-            *(v0->unk_B8) = 0;
+            *(v0->recordingResult) = 0;
         }
 
         return TRUE;
@@ -1722,20 +1722,20 @@ static BOOL (*const sFrontierFacilitiesNamingScreenStates[])(FrontierFacilitiesN
 
 static BOOL FrontierFacilities_NamingScreenFadeToBlack(FrontierFacilitiesNamingScreen *param0)
 {
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
-        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->unk_0C, 2);
-        param0->unk_04++;
+        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->flashDone, 2);
+        param0->state++;
         break;
     case 1:
-        if (param0->unk_0C == 0) {
+        if (param0->flashDone == 0) {
             break;
         }
 
         ResetVisibleHardwareWindows(DS_SCREEN_MAIN);
         ResetVisibleHardwareWindows(DS_SCREEN_SUB);
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_UNK_32, FADE_TYPE_UNK_32, COLOR_BLACK, 12, 1, HEAP_ID_FIELD2);
-        param0->unk_04++;
+        param0->state++;
         break;
     default:
         if (IsScreenFadeDone() == TRUE) {
@@ -1749,49 +1749,49 @@ static BOOL FrontierFacilities_NamingScreenFadeToBlack(FrontierFacilitiesNamingS
 
 static BOOL FrontierFacilities_NamingScreenTileWipeHorizontal(FrontierFacilitiesNamingScreen *param0)
 {
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
-        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->unk_0C, 2);
-        param0->unk_04++;
+        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->flashDone, 2);
+        param0->state++;
         break;
     case 1:
-        if (param0->unk_0C == 0) {
+        if (param0->flashDone == 0) {
             break;
         }
 
-        param0->unk_28 = Window_New(HEAP_ID_FIELD2, 1);
+        param0->window = Window_New(HEAP_ID_FIELD2, 1);
 
-        Window_Add(param0->unk_00->bgConfig, param0->unk_28, 1, 0, 0, 32, 32, 0, 0);
-        PaletteData_FillBufferRange(param0->unk_00->plttData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 16);
-        Window_FillTilemap(param0->unk_28, 0);
-        Window_ScheduleCopyToVRAM(param0->unk_28);
+        Window_Add(param0->graphics->bgConfig, param0->window, 1, 0, 0, 32, 32, 0, 0);
+        PaletteData_FillBufferRange(param0->graphics->plttData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 16);
+        Window_FillTilemap(param0->window, 0);
+        Window_ScheduleCopyToVRAM(param0->window);
 
-        param0->unk_2C = FrontierFacilities_NewWipeManager(HEAP_ID_FIELD2);
-        param0->unk_04++;
+        param0->wipeManager = FrontierFacilities_NewWipeManager(HEAP_ID_FIELD2);
+        param0->state++;
     case 2:
-        FrontierFacilities_StartWipe(param0->unk_2C, 1, 1, param0->unk_28, 15);
-        param0->unk_04++;
+        FrontierFacilities_StartWipe(param0->wipeManager, 1, 1, param0->window, 15);
+        param0->state++;
         break;
     case 3:
-        BOOL v0 = FrontierFacilities_UpdateHorizontalWipe(param0->unk_2C);
+        BOOL v0 = FrontierFacilities_UpdateHorizontalWipe(param0->wipeManager);
 
-        Window_ScheduleCopyToVRAM(param0->unk_28);
+        Window_ScheduleCopyToVRAM(param0->window);
 
         if (v0) {
-            param0->unk_04++;
+            param0->state++;
         }
         break;
     default:
         if (IsScreenFadeDone() == TRUE) {
-            FrontierFacilities_FreeWipeManager(param0->unk_2C);
+            FrontierFacilities_FreeWipeManager(param0->wipeManager);
 
-            Window_ClearAndCopyToVRAM(param0->unk_28);
-            Window_Remove(param0->unk_28);
-            Windows_Delete(param0->unk_28, 1);
+            Window_ClearAndCopyToVRAM(param0->window);
+            Window_Remove(param0->window);
+            Windows_Delete(param0->window, 1);
             SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
             SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
             Bg_ClearTilesRange(BG_LAYER_MAIN_1, 32, 0, HEAP_ID_FIELD2);
-            Bg_ClearTilemap(param0->unk_00->bgConfig, 1);
+            Bg_ClearTilemap(param0->graphics->bgConfig, 1);
 
             return FALSE;
         }
@@ -1803,52 +1803,52 @@ static BOOL FrontierFacilities_NamingScreenTileWipeHorizontal(FrontierFacilities
 
 static BOOL FrontierFacilities_NamingScreenTileWipeVertical(FrontierFacilitiesNamingScreen *param0)
 {
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
-        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->unk_0C, 2);
-        param0->unk_04++;
+        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->flashDone, 2);
+        param0->state++;
         break;
     case 1:
-        if (param0->unk_0C == 0) {
+        if (param0->flashDone == 0) {
             break;
         }
 
-        param0->unk_28 = Window_New(HEAP_ID_FIELD2, 1);
+        param0->window = Window_New(HEAP_ID_FIELD2, 1);
 
-        Window_Add(param0->unk_00->bgConfig, param0->unk_28, 1, 0, 0, 32, 32, 0, 0);
-        PaletteData_FillBufferRange(param0->unk_00->plttData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 16);
-        Window_FillTilemap(param0->unk_28, 0);
-        Window_ScheduleCopyToVRAM(param0->unk_28);
+        Window_Add(param0->graphics->bgConfig, param0->window, 1, 0, 0, 32, 32, 0, 0);
+        PaletteData_FillBufferRange(param0->graphics->plttData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 16);
+        Window_FillTilemap(param0->window, 0);
+        Window_ScheduleCopyToVRAM(param0->window);
 
-        param0->unk_2C = FrontierFacilities_NewWipeManager(HEAP_ID_FIELD2);
-        param0->unk_04++;
+        param0->wipeManager = FrontierFacilities_NewWipeManager(HEAP_ID_FIELD2);
+        param0->state++;
     case 2:
-        FrontierFacilities_StartWipe(param0->unk_2C, 1, 1, param0->unk_28, 15);
-        param0->unk_04++;
+        FrontierFacilities_StartWipe(param0->wipeManager, 1, 1, param0->window, 15);
+        param0->state++;
         break;
     case 3:
-        BOOL v0 = FrontierFacilities_UpdateVerticalWipe(param0->unk_2C);
+        BOOL v0 = FrontierFacilities_UpdateVerticalWipe(param0->wipeManager);
 
-        Window_ScheduleCopyToVRAM(param0->unk_28);
+        Window_ScheduleCopyToVRAM(param0->window);
 
         if (v0) {
-            param0->unk_04++;
+            param0->state++;
         }
         break;
 
     default:
         if (IsScreenFadeDone() == TRUE) {
-            FrontierFacilities_FreeWipeManager(param0->unk_2C);
+            FrontierFacilities_FreeWipeManager(param0->wipeManager);
 
-            Window_ClearAndCopyToVRAM(param0->unk_28);
-            Window_Remove(param0->unk_28);
-            Windows_Delete(param0->unk_28, 1);
+            Window_ClearAndCopyToVRAM(param0->window);
+            Window_Remove(param0->window);
+            Windows_Delete(param0->window, 1);
 
             SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
             SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
 
             Bg_ClearTilesRange(BG_LAYER_MAIN_1, 32, 0, HEAP_ID_FIELD2);
-            Bg_ClearTilemap(param0->unk_00->bgConfig, 1);
+            Bg_ClearTilemap(param0->graphics->bgConfig, 1);
 
             return FALSE;
         }
@@ -1868,38 +1868,38 @@ static void FrontierFacilities_AffineScrollTask(SysTask *param0, void *param1)
     int v0, v1;
     FrontierFacilitiesAffineEntry *v2;
     FrontierFacilitiesNamingScreen *v3 = param1;
-    FrontierFacilitiesAffineScroll *v4 = v3->unk_24;
+    FrontierFacilitiesAffineScroll *v4 = v3->affineScroll;
     MtxFx22 v5;
     int v6, v7, v8, v9;
 
-    v6 = Bg_GetXOffset2(v3->unk_00->bgConfig, 2);
-    v7 = Bg_GetXOffset2(v3->unk_00->bgConfig, 2);
-    v8 = Bg_GetXOffset2(v3->unk_00->bgConfig, 3);
-    v9 = Bg_GetXOffset2(v3->unk_00->bgConfig, 3);
+    v6 = Bg_GetXOffset2(v3->graphics->bgConfig, 2);
+    v7 = Bg_GetXOffset2(v3->graphics->bgConfig, 2);
+    v8 = Bg_GetXOffset2(v3->graphics->bgConfig, 3);
+    v9 = Bg_GetXOffset2(v3->graphics->bgConfig, 3);
 
-    if (v3->unk_10 == 1) {
-        v2 = FrontierFacilities_GetAffineWriteBuffer(v4->unk_600);
+    if (v3->transitionDone == 1) {
+        v2 = FrontierFacilities_GetAffineWriteBuffer(v4->buffer);
 
         for (v0 = 0; v0 < (192 / 2); v0++) {
-            v4->unk_00[v0].unk_08 = 0;
-            v4->unk_00[v0].unk_0A = 0;
+            v4->bands[v0].offsetX = 0;
+            v4->bands[v0].offsetY = 0;
 
-            for (v1 = v4->unk_00[v0].unk_00; v1 < v4->unk_00[v0].unk_02; v1++) {
+            for (v1 = v4->bands[v0].startIndex; v1 < v4->bands[v0].endIndex; v1++) {
                 s16 v10, v11;
                 s16 v12, v13;
 
-                v10 = v4->unk_00[v0].unk_0C & 0xFFFF;
-                v11 = v4->unk_00[v0].unk_0C >> 16;
+                v10 = v4->bands[v0].center & 0xFFFF;
+                v11 = v4->bands[v0].center >> 16;
 
                 CreateAffineTransformationMatrix(&v5, 0, FX32_ONE, FX32_ONE, AFFINE_MODE_NORMAL);
 
-                v12 = v6 + v4->unk_00[v0].unk_08;
-                v13 = v7 + v4->unk_00[v0].unk_0A;
+                v12 = v6 + v4->bands[v0].offsetX;
+                v13 = v7 + v4->bands[v0].offsetY;
 
-                if (v4->unk_604 == 2) {
+                if (v4->mode == 2) {
                     v12 %= 256;
                     v13 %= 256;
-                } else if (v4->unk_604 == 1) {
+                } else if (v4->mode == 1) {
                     if (v12 < 0) {
                         v12 = 256 + v12;
                     }
@@ -1911,15 +1911,15 @@ static void FrontierFacilities_AffineScrollTask(SysTask *param0, void *param1)
                     v12 %= 256;
                 }
 
-                G2x_SetBGyAffine_((u32)&v2[v1].unk_00, &v5, 0, 0, v12, v13);
+                G2x_SetBGyAffine_((u32)&v2[v1].bg2PA, &v5, 0, 0, v12, v13);
 
-                v12 = v8 + v4->unk_00[v0].unk_08;
-                v13 = v9 + v4->unk_00[v0].unk_0A;
+                v12 = v8 + v4->bands[v0].offsetX;
+                v13 = v9 + v4->bands[v0].offsetY;
 
-                if (v4->unk_604 == 2) {
+                if (v4->mode == 2) {
                     v12 %= 256;
                     v13 %= 256;
-                } else if (v4->unk_604 == 1) {
+                } else if (v4->mode == 1) {
                     if (v12 < 0) {
                         v12 = 256 + v12;
                     }
@@ -1931,11 +1931,11 @@ static void FrontierFacilities_AffineScrollTask(SysTask *param0, void *param1)
                     v12 %= 256;
                 }
 
-                G2x_SetBGyAffine_((u32)&v2[v1].unk_10, &v5, 0, 0, v12, v13);
+                G2x_SetBGyAffine_((u32)&v2[v1].bg3PA, &v5, 0, 0, v12, v13);
             }
         }
 
-        FrontierFacilities_FreeAffineBuffer(v4->unk_600);
+        FrontierFacilities_FreeAffineBuffer(v4->buffer);
 
         Heap_Free(v4);
         SysTask_Done(param0);
@@ -1943,28 +1943,28 @@ static void FrontierFacilities_AffineScrollTask(SysTask *param0, void *param1)
         return;
     }
 
-    v2 = FrontierFacilities_GetAffineWriteBuffer(v4->unk_600);
+    v2 = FrontierFacilities_GetAffineWriteBuffer(v4->buffer);
 
     for (v0 = 0; v0 < (192 / 2); v0++) {
-        v4->unk_00[v0].unk_08 += v4->unk_00[v0].unk_04;
-        v4->unk_00[v0].unk_0A += v4->unk_00[v0].unk_06;
+        v4->bands[v0].offsetX += v4->bands[v0].stepX;
+        v4->bands[v0].offsetY += v4->bands[v0].stepY;
 
-        for (v1 = v4->unk_00[v0].unk_00; v1 < v4->unk_00[v0].unk_02; v1++) {
+        for (v1 = v4->bands[v0].startIndex; v1 < v4->bands[v0].endIndex; v1++) {
             s16 v14, v15;
             s16 v16, v17;
 
-            v14 = v4->unk_00[v0].unk_0C & 0xFFFF;
-            v15 = v4->unk_00[v0].unk_0C >> 16;
+            v14 = v4->bands[v0].center & 0xFFFF;
+            v15 = v4->bands[v0].center >> 16;
 
             CreateAffineTransformationMatrix(&v5, 0, FX32_ONE, FX32_ONE, AFFINE_MODE_NORMAL);
 
-            v16 = v6 + v4->unk_00[v0].unk_08;
-            v17 = v7 + v4->unk_00[v0].unk_0A;
+            v16 = v6 + v4->bands[v0].offsetX;
+            v17 = v7 + v4->bands[v0].offsetY;
 
-            if (v4->unk_604 == 2) {
+            if (v4->mode == 2) {
                 v16 %= 256;
                 v17 %= 256;
-            } else if (v4->unk_604 == 1) {
+            } else if (v4->mode == 1) {
                 if (v16 < 0) {
                     v16 = 256 + v16;
                 }
@@ -1976,15 +1976,15 @@ static void FrontierFacilities_AffineScrollTask(SysTask *param0, void *param1)
                 v16 %= 256;
             }
 
-            G2x_SetBGyAffine_((u32)&v2[v1].unk_00, &v5, 0, 0, v16, v17);
+            G2x_SetBGyAffine_((u32)&v2[v1].bg2PA, &v5, 0, 0, v16, v17);
 
-            v16 = v8 + v4->unk_00[v0].unk_08;
-            v17 = v9 + v4->unk_00[v0].unk_0A;
+            v16 = v8 + v4->bands[v0].offsetX;
+            v17 = v9 + v4->bands[v0].offsetY;
 
-            if (v4->unk_604 == 2) {
+            if (v4->mode == 2) {
                 v16 %= 256;
                 v17 %= 256;
-            } else if (v4->unk_604 == 1) {
+            } else if (v4->mode == 1) {
                 if (v16 < 0) {
                     v16 = 256 + v16;
                 }
@@ -1996,7 +1996,7 @@ static void FrontierFacilities_AffineScrollTask(SysTask *param0, void *param1)
                 v16 %= 256;
             }
 
-            G2x_SetBGyAffine_((u32)&v2[v1].unk_10, &v5, 0, 0, v16, v17);
+            G2x_SetBGyAffine_((u32)&v2[v1].bg3PA, &v5, 0, 0, v16, v17);
         }
     }
 }
@@ -2005,52 +2005,52 @@ static BOOL FrontierFacilities_NamingScreenAffineWaveA(FrontierFacilitiesNamingS
 {
     FrontierFacilitiesAffineEntry v0;
 
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
-        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->unk_0C, 2);
-        param0->unk_04++;
+        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->flashDone, 2);
+        param0->state++;
         break;
     case 1:
-        if (param0->unk_0C == 0) {
+        if (param0->flashDone == 0) {
             break;
         }
 
         MI_CpuClear8(&v0, sizeof(FrontierFacilitiesAffineEntry));
 
-        param0->unk_10 = 0;
-        param0->unk_24 = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesAffineScroll));
-        param0->unk_24->unk_604 = 1;
-        param0->unk_24->unk_600 = FrontierFacilities_NewAffineBuffer((u32)&reg_G2_BG2PA, &v0, HEAP_ID_94);
+        param0->transitionDone = 0;
+        param0->affineScroll = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesAffineScroll));
+        param0->affineScroll->mode = 1;
+        param0->affineScroll->buffer = FrontierFacilities_NewAffineBuffer((u32)&reg_G2_BG2PA, &v0, HEAP_ID_94);
 
         int v1;
 
         for (v1 = 0; v1 < (192 / 2); v1++) {
-            param0->unk_24->unk_00[v1].unk_00 = (v1 * 2);
-            param0->unk_24->unk_00[v1].unk_02 = param0->unk_24->unk_00[v1].unk_00 + 2;
-            param0->unk_24->unk_00[v1].unk_04 = ((((192 / 2) / 2) - v1) + 1) % 8;
-            param0->unk_24->unk_00[v1].unk_06 = ((((192 / 2) / 2) - v1) + 1) / 4;
-            param0->unk_24->unk_00[v1].unk_08 = 0;
-            param0->unk_24->unk_00[v1].unk_0A = 0;
-            param0->unk_24->unk_00[v1].unk_0C = FrontierFacilities_PackU16Pair(0, 0);
+            param0->affineScroll->bands[v1].startIndex = (v1 * 2);
+            param0->affineScroll->bands[v1].endIndex = param0->affineScroll->bands[v1].startIndex + 2;
+            param0->affineScroll->bands[v1].stepX = ((((192 / 2) / 2) - v1) + 1) % 8;
+            param0->affineScroll->bands[v1].stepY = ((((192 / 2) / 2) - v1) + 1) / 4;
+            param0->affineScroll->bands[v1].offsetX = 0;
+            param0->affineScroll->bands[v1].offsetY = 0;
+            param0->affineScroll->bands[v1].center = FrontierFacilities_PackU16Pair(0, 0);
         }
 
         BrightnessController_StartTransition(40, -16, 0, GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ, BRIGHTNESS_MAIN_SCREEN);
         SysTask_Start(FrontierFacilities_AffineScrollTask, param0, 0x1000);
 
-        param0->unk_04++;
+        param0->state++;
         break;
     case 2:
         if (BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN) == FALSE) {
             break;
         }
 
-        param0->unk_10 = 1;
+        param0->transitionDone = 1;
 
         Bg_ToggleLayer(BG_LAYER_MAIN_3, 0);
-        Bg_SetOffset(param0->unk_00->bgConfig, 3, 0, 0);
-        Bg_SetOffset(param0->unk_00->bgConfig, 3, 3, 0);
+        Bg_SetOffset(param0->graphics->bgConfig, 3, 0, 0);
+        Bg_SetOffset(param0->graphics->bgConfig, 3, 3, 0);
 
-        param0->unk_04++;
+        param0->state++;
         break;
     default:
         return FALSE;
@@ -2063,62 +2063,62 @@ static BOOL FrontierFacilities_NamingScreenAffineWaveB(FrontierFacilitiesNamingS
 {
     FrontierFacilitiesAffineEntry v0;
 
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
-        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->unk_0C, 2);
-        param0->unk_04++;
+        FrontierFacilities_StartScreenFlash(1, 16, -16, &param0->flashDone, 2);
+        param0->state++;
         break;
     case 1:
-        if (param0->unk_0C == 0) {
+        if (param0->flashDone == 0) {
             break;
         }
 
         MI_CpuClear8(&v0, sizeof(FrontierFacilitiesAffineEntry));
 
-        param0->unk_10 = 0;
-        param0->unk_24 = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesAffineScroll));
-        param0->unk_24->unk_604 = 2;
-        param0->unk_24->unk_600 = FrontierFacilities_NewAffineBuffer((u32)&reg_G2_BG2PA, &v0, HEAP_ID_94);
+        param0->transitionDone = 0;
+        param0->affineScroll = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesAffineScroll));
+        param0->affineScroll->mode = 2;
+        param0->affineScroll->buffer = FrontierFacilities_NewAffineBuffer((u32)&reg_G2_BG2PA, &v0, HEAP_ID_94);
 
         int v1;
 
         for (v1 = 0; v1 < (192 / 2); v1++) {
-            param0->unk_24->unk_00[v1].unk_00 = (v1 * 2);
-            param0->unk_24->unk_00[v1].unk_02 = param0->unk_24->unk_00[v1].unk_00 + 2;
-            param0->unk_24->unk_00[v1].unk_04 = ((((192 / 2) / 2) - v1) / 8) + 1;
+            param0->affineScroll->bands[v1].startIndex = (v1 * 2);
+            param0->affineScroll->bands[v1].endIndex = param0->affineScroll->bands[v1].startIndex + 2;
+            param0->affineScroll->bands[v1].stepX = ((((192 / 2) / 2) - v1) / 8) + 1;
 
             if (v1 % 2) {
-                param0->unk_24->unk_00[v1].unk_04 *= -1;
+                param0->affineScroll->bands[v1].stepX *= -1;
             }
 
             if (v1 < ((192 / 2) / 2)) {
-                param0->unk_24->unk_00[v1].unk_06 = v1;
+                param0->affineScroll->bands[v1].stepY = v1;
             } else {
-                param0->unk_24->unk_00[v1].unk_06 = (192 / 2) - v1;
+                param0->affineScroll->bands[v1].stepY = (192 / 2) - v1;
             }
 
-            param0->unk_24->unk_00[v1].unk_08 = 0;
-            param0->unk_24->unk_00[v1].unk_0A = 0;
-            param0->unk_24->unk_00[v1].unk_0C = FrontierFacilities_PackU16Pair(0, 0);
+            param0->affineScroll->bands[v1].offsetX = 0;
+            param0->affineScroll->bands[v1].offsetY = 0;
+            param0->affineScroll->bands[v1].center = FrontierFacilities_PackU16Pair(0, 0);
         }
 
         BrightnessController_StartTransition(40, -16, 0, GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ, BRIGHTNESS_MAIN_SCREEN);
         SysTask_Start(FrontierFacilities_AffineScrollTask, param0, 0x1000);
 
-        param0->unk_04++;
+        param0->state++;
         break;
     case 2:
         if (BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN) == FALSE) {
             break;
         }
 
-        param0->unk_10 = 1;
+        param0->transitionDone = 1;
 
         Bg_ToggleLayer(BG_LAYER_MAIN_3, 0);
-        Bg_SetOffset(param0->unk_00->bgConfig, 3, 0, 0);
-        Bg_SetOffset(param0->unk_00->bgConfig, 3, 3, 0);
+        Bg_SetOffset(param0->graphics->bgConfig, 3, 0, 0);
+        Bg_SetOffset(param0->graphics->bgConfig, 3, 3, 0);
 
-        param0->unk_04++;
+        param0->state++;
         break;
     default:
         return FALSE;
@@ -2129,14 +2129,14 @@ static BOOL FrontierFacilities_NamingScreenAffineWaveB(FrontierFacilitiesNamingS
 
 static BOOL FrontierFacilities_NamingScreenBg3Scroll(FrontierFacilitiesNamingScreen *param0)
 {
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
-        FrontierFacilities_InitScreenScroll(&param0->unk_18, HEAP_ID_94);
-        param0->unk_04++;
+        FrontierFacilities_InitScreenScroll(&param0->screenScroll, HEAP_ID_94);
+        param0->state++;
         break;
     case 1:
-        FrontierFacilities_BeginScreenScroll(&param0->unk_18, 0, 191, (0xFFFF / 192) * 2, FX32_CONST(18), 4 * 100, REG_BG3HOFS_ADDR, 0, 5 - 1);
-        param0->unk_04++;
+        FrontierFacilities_BeginScreenScroll(&param0->screenScroll, 0, 191, (0xFFFF / 192) * 2, FX32_CONST(18), 4 * 100, REG_BG3HOFS_ADDR, 0, 5 - 1);
+        param0->state++;
         break;
     default:
         break;
@@ -2156,14 +2156,14 @@ static BOOL FrontierScrCmd_3F(FrontierScriptContext *ctx)
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_BATTLE, BATTLE_TRAINER_sseq, 1);
 
     v1 = Heap_Alloc(HEAP_ID_FIELD2, sizeof(FrontierFacilitiesNamingScreen));
-    v1->unk_14 = BattleFrontier_GetFacilityStruct(ctx->scriptMan->frontier);
-    v1->unk_04 = 0;
-    v1->unk_08 = ctx->data[0];
-    v1->unk_00 = FrontierScriptManager_GetGraphics(ctx->scriptMan);
+    v1->savedFacilityData = BattleFrontier_GetFacilityStruct(ctx->scriptMan->frontier);
+    v1->state = 0;
+    v1->stateIndex = ctx->data[0];
+    v1->graphics = FrontierScriptManager_GetGraphics(ctx->scriptMan);
 
     BattleFrontier_SetFacilityStruct(ctx->scriptMan->frontier, v1);
     FrontierScriptContext_Pause(ctx, FrontierFacilities_UpdateNamingScreen);
-    PaletteData_FillBufferRange(v1->unk_00->plttData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 1);
+    PaletteData_FillBufferRange(v1->graphics->plttData, PLTTBUF_MAIN_BG, PLTTSEL_BOTH, 0x0, 0, 1);
 
     return TRUE;
 }
@@ -2173,12 +2173,12 @@ static BOOL FrontierFacilities_UpdateNamingScreen(FrontierScriptContext *ctx)
     BOOL v0;
     FrontierFacilitiesNamingScreen *v1 = BattleFrontier_GetFacilityStruct(ctx->scriptMan->frontier);
 
-    v0 = sFrontierFacilitiesNamingScreenStates[v1->unk_08](v1);
+    v0 = sFrontierFacilitiesNamingScreenStates[v1->stateIndex](v1);
 
     if (v0 == 0) {
         SetScreenColorBrightness(DS_SCREEN_MAIN, COLOR_BLACK);
         SetScreenColorBrightness(DS_SCREEN_SUB, COLOR_BLACK);
-        BattleFrontier_SetFacilityStruct(ctx->scriptMan->frontier, v1->unk_14);
+        BattleFrontier_SetFacilityStruct(ctx->scriptMan->frontier, v1->savedFacilityData);
         Heap_Free(v1);
     }
 
@@ -2258,11 +2258,11 @@ static BOOL FrontierScrCmd_4C(FrontierScriptContext *ctx)
     FrontierScriptManager *v0 = ctx->scriptMan;
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
     u16 v2, v3, v4, v5;
-    FrontierFacilitiesShakeState *v6 = &v1->unk_A4;
+    FrontierFacilitiesShakeState *v6 = &v1->shakeState;
 
-    if (v6->unk_00 != NULL) {
+    if (v6->task != NULL) {
         GF_ASSERT(FALSE);
-        SysTask_Done(v6->unk_00);
+        SysTask_Done(v6->task);
     }
 
     v2 = FrontierScriptContext_GetVar(ctx);
@@ -2272,11 +2272,11 @@ static BOOL FrontierScrCmd_4C(FrontierScriptContext *ctx)
 
     MI_CpuClear8(v6, sizeof(FrontierFacilitiesShakeState));
 
-    v6->unk_04 = v2;
-    v6->unk_06 = v3;
-    v6->unk_09 = v4;
-    v6->unk_0A = v5;
-    v6->unk_00 = SysTask_Start(FrontierFacilities_ShakeObjectTask, v6, 70000);
+    v6->offsetY = v2;
+    v6->offsetX = v3;
+    v6->interval = v4;
+    v6->cyclesRemaining = v5;
+    v6->task = SysTask_Start(FrontierFacilities_ShakeObjectTask, v6, 70000);
 
     return FALSE;
 }
@@ -2292,7 +2292,7 @@ static BOOL FrontierFacilities_WaitForOscillationTask(FrontierScriptContext *ctx
     FrontierScriptManager *v0 = ctx->scriptMan;
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
 
-    if (v1->unk_A4.unk_00 == NULL) {
+    if (v1->shakeState.task == NULL) {
         return TRUE;
     }
 
@@ -2304,22 +2304,22 @@ static BOOL FrontierScrCmd_4E(FrontierScriptContext *ctx)
     FrontierScriptManager *v0 = ctx->scriptMan;
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
     u16 v2, v3, v4, v5;
-    FrontierFacilitiesWindowEffectState *v6 = &v1->unk_B0;
+    FrontierFacilitiesWindowEffectState *v6 = &v1->windowEffectState;
 
-    if (v6->unk_00 != NULL) {
+    if (v6->task != NULL) {
         GF_ASSERT(FALSE);
-        SysTask_Done(v6->unk_00);
+        SysTask_Done(v6->task);
     }
 
     MI_CpuClear8(v6, sizeof(FrontierFacilitiesWindowEffectState));
 
-    v6->unk_04 = FrontierScriptContext_GetVar(ctx);
-    v6->unk_05 = FrontierScriptContext_GetVar(ctx);
-    v6->unk_06 = FrontierScriptContext_GetVar(ctx);
-    v6->unk_07 = FrontierScriptContext_GetVar(ctx);
-    v6->unk_08 = FrontierScriptContext_GetVar(ctx);
-    v6->unk_0A = FrontierScriptContext_GetVar(ctx);
-    v6->unk_00 = SysTask_Start(FrontierFacilities_WindowEffectTask, v6, 300);
+    v6->windowX1 = FrontierScriptContext_GetVar(ctx);
+    v6->windowY1 = FrontierScriptContext_GetVar(ctx);
+    v6->windowX2 = FrontierScriptContext_GetVar(ctx);
+    v6->windowY2 = FrontierScriptContext_GetVar(ctx);
+    v6->delay = FrontierScriptContext_GetVar(ctx);
+    v6->showWindow = FrontierScriptContext_GetVar(ctx);
+    v6->task = SysTask_Start(FrontierFacilities_WindowEffectTask, v6, 300);
 
     return FALSE;
 }
@@ -2335,7 +2335,7 @@ static BOOL FrontierFacilities_WaitForWindowRegionTask(FrontierScriptContext *ct
     FrontierScriptManager *v0 = ctx->scriptMan;
     FrontierGraphics *v1 = BattleFrontier_GetGraphics(v0->frontier);
 
-    if (v1->unk_B0.unk_00 == NULL) {
+    if (v1->windowEffectState.task == NULL) {
         return TRUE;
     }
 

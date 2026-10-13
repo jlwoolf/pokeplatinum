@@ -61,8 +61,8 @@
 #define ITEM_SPRITE_SECONDARY_RESOURCE_ID 2001
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
+    u16 action;
+    u16 direction;
 } FrontierFacilitiesMovementAction;
 
 static void OpenMessageBox(FrontierScriptManager *scriptMan);
@@ -706,7 +706,7 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
             }
 
             FrontierFacilities_BuildMoveRequest(&v1, animData->frontierObj->object, animData->localID, action);
-            WiFi2DCharMoveQueue_Push(animData->unk_10, &v1);
+            WiFi2DCharMoveQueue_Push(animData->moveQueue, &v1);
 
             animData->elapsed++;
 
@@ -733,8 +733,8 @@ void FrontierObject_DoAnimation(SysTask *task, void *data)
 void FrontierFacilities_BuildMoveRequest(WiFi2DCharMoveRequest *param0, WiFi2DCharObject *param1, int param2, int action)
 {
     param0->unk_07 = param2;
-    param0->unk_06 = sFrontierMovementActions[action].unk_02;
-    param0->unk_04 = sFrontierMovementActions[action].unk_00;
+    param0->unk_06 = sFrontierMovementActions[action].direction;
+    param0->unk_04 = sFrontierMovementActions[action].action;
 
     if ((param0->unk_04 == 2) || (param0->unk_04 == 3) || (param0->unk_04 == 6)) {
         param0->unk_00 = WiFi2DCharObject_GetTargetPosition(param1);
@@ -820,15 +820,15 @@ void FrontierFacilities_CreatePokemonFieldSprite(FrontierGraphics *param0, Pokem
 
     Heap_Free(v4);
 
-    GF_ASSERT(param0->unk_80[param3 - 50000] == NULL);
-    param0->unk_80[param3 - 50000] = v5;
+    GF_ASSERT(param0->fieldSprites[param3 - 50000] == NULL);
+    param0->fieldSprites[param3 - 50000] = v5;
 }
 
 void FrontierFacilities_DeletePokemonFieldSprite(FrontierGraphics *param0, int param1)
 {
-    Sprite_DeleteAndFreeResources(param0->unk_80[param1 - 50000]);
+    Sprite_DeleteAndFreeResources(param0->fieldSprites[param1 - 50000]);
 
-    param0->unk_80[param1 - 50000] = NULL;
+    param0->fieldSprites[param1 - 50000] = NULL;
 
     SpriteManager_UnloadCharObjById(param0->spriteMan, param1);
     SpriteManager_UnloadPlttObjById(param0->spriteMan, param1);
@@ -984,20 +984,20 @@ void FrontierFacilities_ShakeObjectTask(SysTask *param0, void *param1)
 {
     FrontierFacilitiesShakeState *v0 = param1;
 
-    v0->unk_08++;
+    v0->timer++;
 
-    if (v0->unk_08 > v0->unk_09) {
-        v0->unk_08 = 0;
-        v0->unk_0A--;
+    if (v0->timer > v0->interval) {
+        v0->timer = 0;
+        v0->cyclesRemaining--;
 
-        if (v0->unk_0A < 0) {
+        if (v0->cyclesRemaining < 0) {
             SysTask_Done(param0);
             MI_CpuClear8(v0, sizeof(FrontierFacilitiesShakeState));
             return;
         }
 
-        v0->unk_04 = -v0->unk_04;
-        v0->unk_06 = -v0->unk_06;
+        v0->offsetY = -v0->offsetY;
+        v0->offsetX = -v0->offsetX;
     }
 }
 
@@ -1005,11 +1005,11 @@ void FrontierFacilities_WindowEffectTask(SysTask *param0, void *param1)
 {
     FrontierFacilitiesWindowEffectState *v0 = param1;
 
-    if (v0->unk_08 <= 0) {
-        if (v0->unk_0A == 1) {
+    if (v0->delay <= 0) {
+        if (v0->showWindow == 1) {
             G2_SetWnd0InsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3, 1);
             G2_SetWndOutsidePlane(GX_WND_PLANEMASK_BG0 | GX_WND_PLANEMASK_BG1 | GX_WND_PLANEMASK_BG2 | GX_WND_PLANEMASK_BG3 | GX_WND_PLANEMASK_OBJ, 1);
-            G2_SetWnd0Position(v0->unk_04, v0->unk_05, v0->unk_06, v0->unk_07);
+            G2_SetWnd0Position(v0->windowX1, v0->windowY1, v0->windowX2, v0->windowY2);
             GX_SetVisibleWnd(GX_WNDMASK_W0);
         } else {
             GX_SetVisibleWnd(GX_WNDMASK_NONE);
@@ -1019,7 +1019,7 @@ void FrontierFacilities_WindowEffectTask(SysTask *param0, void *param1)
         MI_CpuClear8(v0, sizeof(FrontierFacilitiesWindowEffectState));
         return;
     } else {
-        v0->unk_08--;
+        v0->delay--;
     }
 }
 

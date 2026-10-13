@@ -6,12 +6,12 @@
 // State for the object shake/oscillation SysTask: the task handle, two
 // alternating offsets, and the interval/cycle counters.
 typedef struct {
-    SysTask *unk_00;
-    s16 unk_04;
-    s16 unk_06;
-    s8 unk_08;
-    s8 unk_09;
-    s8 unk_0A;
+    SysTask *task;
+    s16 offsetY;
+    s16 offsetX;
+    s8 timer;
+    s8 interval;
+    s8 cyclesRemaining;
     u8 unk_0B;
 } FrontierFacilitiesShakeState;
 

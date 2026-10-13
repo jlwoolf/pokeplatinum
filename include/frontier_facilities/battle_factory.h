@@ -46,11 +46,11 @@ typedef struct BattleFactory {
     FieldBattleDTO *dto;
     SysTask *corridorAnimation;
     u16 commBuffer[60];
-    u8 unk_57C;
-    u8 unk_57D;
-    u16 unk_57E;
-    u16 unk_580;
-    u16 unk_582;
+    u8 partnersRetireDecision;
+    u8 partnersTradeDecision;
+    u16 partnersRound;
+    u16 partnersTradeCount;
+    u16 partnersStreak;
     u16 partnerRentalSetIDs[FACTORY_INITIAL_RENTAL_OPTIONS];
     u8 partnerRentalIVs[FACTORY_INITIAL_RENTAL_OPTIONS];
     u32 partnerRentalPersonalities[FACTORY_INITIAL_RENTAL_OPTIONS];
