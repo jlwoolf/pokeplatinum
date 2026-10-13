@@ -17,23 +17,23 @@ typedef int (*EasyChatMainFunc)(EasyChatApp *easyChatApp, int *state);
 typedef void (*EasyChatTaskFunc)(EasyChatApp *easyChatApp, int *state);
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
+    u8 index;
+    u8 maxIndex;
 } EasyChatMenuCursor;
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    u16 unk_04;
-    u8 unk_06;
-    u8 unk_07;
-    int unk_08;
+    u16 row;
+    u16 maxRow;
+    u16 wordCount;
+    u8 cursorColumn;
+    u8 cursorRow;
+    int scrollDirection;
 } EasyChatWordSelectCursor;
 
 typedef struct {
-    s16 unk_00;
-    s8 unk_02;
-    s8 unk_03;
+    s16 type;
+    s8 id;
+    s8 bankEntryCount;
 } EasyChatSentenceState;
 
 typedef struct EasyChatApp {
@@ -41,8 +41,8 @@ typedef struct EasyChatApp {
     u32 type;
     EasyChatSentence sentence;
     u16 words[MAX_EASY_CHAT_WORDS];
-    EasyChatWordListScreen *unk_14;
-    EasyChatWordList *unk_18;
+    EasyChatWordListScreen *wordListScreen;
+    EasyChatWordList *wordList;
     int state;
     EasyChatMainFunc mainFunc;
     EasyChatMainFunc nextMainFunc;
@@ -56,15 +56,15 @@ typedef struct EasyChatApp {
     TouchScreenActions *buttonAction;
     BOOL unk_44;
     BOOL unk_48;
-    u16 unk_4C;
+    u16 wordColumn;
     u16 currentWordSlot;
     u16 categoryCursorPos;
     u16 prevCategoryCursorPos;
-    EasyChatWordSelectCursor unk_54;
-    EasyChatSentenceState unk_60;
-    u8 unk_64;
+    EasyChatWordSelectCursor wordSelectCursor;
+    EasyChatSentenceState sentenceState;
+    u8 wordSlotCount;
     u8 mode;
-    EasyChatMenuCursor unk_66;
+    EasyChatMenuCursor menuCursor;
 } EasyChatApp;
 
 BOOL EasyChat_Init(ApplicationManager *appMan, int *state);

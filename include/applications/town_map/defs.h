@@ -105,7 +105,7 @@ typedef struct TownMapGraphicsManager {
     u8 zoomedInMapMvtDone;
     u8 zoomedMapMvtStage;
     u8 zoomedInMapTransitionStage;
-    u8 unk_15_0 : 4;
+    u8 cursorMoveState : 4;
     u8 signpostType : 4;
     u16 zoomedInMapMvtFrame;
     int cursorX;

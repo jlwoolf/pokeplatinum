@@ -531,7 +531,7 @@ static void InitializeStringsAndCopyOTName(PokemonSummaryScreen *summaryScreen)
 {
     summaryScreen->msgLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_POKEMON_SUMMARY_SCREEN, HEAP_ID_POKEMON_SUMMARY_SCREEN);
     summaryScreen->ribbonLoader = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_RIBBON_NAMES, HEAP_ID_POKEMON_SUMMARY_SCREEN);
-    summaryScreen->unk_684 = FontSpecialChars_Init(1, 2, 0, HEAP_ID_POKEMON_SUMMARY_SCREEN);
+    summaryScreen->fontSpecialChars = FontSpecialChars_Init(1, 2, 0, HEAP_ID_POKEMON_SUMMARY_SCREEN);
     summaryScreen->strFormatter = StringTemplate_Default(HEAP_ID_POKEMON_SUMMARY_SCREEN);
     summaryScreen->monData.speciesName = String_Init(MON_NAME_LEN + 2, HEAP_ID_POKEMON_SUMMARY_SCREEN);
     summaryScreen->monData.nickname = String_Init(MON_NAME_LEN + 2, HEAP_ID_POKEMON_SUMMARY_SCREEN);
@@ -550,7 +550,7 @@ static void FreeStrings(PokemonSummaryScreen *summaryScreen)
     MessageLoader_Free(summaryScreen->moveNameLoader);
     MessageLoader_Free(summaryScreen->ribbonLoader);
     MessageLoader_Free(summaryScreen->msgLoader);
-    FontSpecialChars_Free(summaryScreen->unk_684);
+    FontSpecialChars_Free(summaryScreen->fontSpecialChars);
     StringTemplate_Free(summaryScreen->strFormatter);
     String_Free(summaryScreen->monData.speciesName);
     String_Free(summaryScreen->monData.nickname);

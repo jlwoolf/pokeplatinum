@@ -23,36 +23,36 @@
 #include "text.h"
 
 typedef struct {
-    void *unk_00;
-    NNSG2dCellDataBank *unk_04;
-    void *unk_08;
-    NNSG2dAnimBankData *unk_0C;
+    void *cellBankData;
+    NNSG2dCellDataBank *cellBank;
+    void *animBankData;
+    NNSG2dAnimBankData *animBank;
 } EasyChatPageButtonsResources;
 
 typedef struct EasyChatPageButtons_t {
-    EasyChatWordListScreen *unk_00;
-    const EasyChatApp *unk_04;
-    const EasyChatWordList *unk_08;
-    BgConfig *unk_0C;
-    SpriteList *unk_10;
-    Sprite *unk_14;
-    Sprite *unk_18;
-    EasyChatPageButtonsResources unk_1C;
-    u16 unk_2C[8][77];
-    SysTask *unk_4FC;
+    EasyChatWordListScreen *wordListScreen;
+    const EasyChatApp *easyChatApp;
+    const EasyChatWordList *wordList;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    Sprite *upButtonSprite;
+    Sprite *downButtonSprite;
+    EasyChatPageButtonsResources resources;
+    u16 tilemaps[8][77];
+    SysTask *transitionTask;
 } EasyChatPageButtons;
 
 typedef struct {
-    EasyChatPageButtons *unk_00;
-    int unk_04;
-    u16 unk_08;
-    u16 unk_0A;
-    u16 unk_0C;
-    u16 unk_0E;
-    u16 unk_10;
-    u16 unk_12;
-    u16 unk_14;
-    u16 unk_16;
+    EasyChatPageButtons *pageButtons;
+    int state;
+    u16 timer;
+    u16 tilemapIndex;
+    u16 endTilemap;
+    u16 x;
+    u16 y;
+    u16 secondTilemap;
+    u16 secondX;
+    u16 secondY;
 } EasyChatPageButtonsTransition;
 
 static void EasyChatPageButtons_LoadScreenData(EasyChatPageButtons *param0, NARC *param1);
@@ -69,14 +69,14 @@ EasyChatPageButtons *EasyChatPageButtons_New(EasyChatWordListScreen *param0, con
 {
     EasyChatPageButtons *v0 = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatPageButtons));
 
-    v0->unk_00 = param0;
-    v0->unk_04 = param1;
-    v0->unk_08 = param2;
-    v0->unk_0C = EasyChatWordListScreen_GetBgConfig(param0);
-    v0->unk_10 = EasyChatWordListScreen_GetSpriteList(param0);
-    v0->unk_14 = NULL;
-    v0->unk_18 = NULL;
-    v0->unk_4FC = NULL;
+    v0->wordListScreen = param0;
+    v0->easyChatApp = param1;
+    v0->wordList = param2;
+    v0->bgConfig = EasyChatWordListScreen_GetBgConfig(param0);
+    v0->spriteList = EasyChatWordListScreen_GetSpriteList(param0);
+    v0->upButtonSprite = NULL;
+    v0->downButtonSprite = NULL;
+    v0->transitionTask = NULL;
 
     return v0;
 }
@@ -90,21 +90,21 @@ void EasyChatPageButtons_Free(EasyChatPageButtons *param0)
 void EasyChatPageButtons_LoadGraphics(EasyChatPageButtons *param0, NARC *param1)
 {
     Graphics_LoadPaletteFromOpenNARC(param1, 21, 4, 0, 0x40, HEAP_ID_35);
-    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 11, param0->unk_0C, 4, 0, 0, 1, HEAP_ID_35);
+    Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 11, param0->bgConfig, 4, 0, 0, 1, HEAP_ID_35);
 
     EasyChatPageButtons_LoadScreenData(param0, param1);
     EasyChatPageButtons_LoadLabels(param0, param1);
 
-    if (EasyChat_GetMode(param0->unk_04) == 0) {
-        Bg_CopyToTilemapRect(param0->unk_0C, 4, 3, 3, 11, 7, param0->unk_2C[3], 0, 0, 11, 7);
-        Bg_CopyToTilemapRect(param0->unk_0C, 4, 3, 14, 11, 7, param0->unk_2C[4], 0, 0, 11, 7);
+    if (EasyChat_GetMode(param0->easyChatApp) == 0) {
+        Bg_CopyToTilemapRect(param0->bgConfig, 4, 3, 3, 11, 7, param0->tilemaps[3], 0, 0, 11, 7);
+        Bg_CopyToTilemapRect(param0->bgConfig, 4, 3, 14, 11, 7, param0->tilemaps[4], 0, 0, 11, 7);
     } else {
-        Bg_CopyToTilemapRect(param0->unk_0C, 4, 3, 3, 11, 7, param0->unk_2C[0], 0, 0, 11, 7);
-        Bg_CopyToTilemapRect(param0->unk_0C, 4, 3, 14, 11, 7, param0->unk_2C[7], 0, 0, 11, 7);
+        Bg_CopyToTilemapRect(param0->bgConfig, 4, 3, 3, 11, 7, param0->tilemaps[0], 0, 0, 11, 7);
+        Bg_CopyToTilemapRect(param0->bgConfig, 4, 3, 14, 11, 7, param0->tilemaps[7], 0, 0, 11, 7);
     }
 
     EasyChatPageButtons_CreateSprites(param0, param1);
-    Bg_CopyTilemapBufferToVRAM(param0->unk_0C, 4);
+    Bg_CopyTilemapBufferToVRAM(param0->bgConfig, 4);
 }
 
 static void EasyChatPageButtons_LoadScreenData(EasyChatPageButtons *param0, NARC *param1)
@@ -127,8 +127,8 @@ static void EasyChatPageButtons_LoadScreenData(EasyChatPageButtons *param0, NARC
         v2 = Graphics_GetScrnDataFromOpenNARC(param1, v0[v1], 1, &v3, HEAP_ID_35);
 
         if (v2) {
-            MI_CpuCopy16(v3->rawData, param0->unk_2C[v1], 77 * 2);
-            DC_FlushRange(param0->unk_2C[v1], 77 * 2);
+            MI_CpuCopy16(v3->rawData, param0->tilemaps[v1], 77 * 2);
+            DC_FlushRange(param0->tilemaps[v1], 77 * 2);
             Heap_Free(v2);
         }
     }
@@ -148,16 +148,16 @@ static void EasyChatPageButtons_LoadLabels(EasyChatPageButtons *param0, NARC *pa
         Window v4;
 
         Window_Init(&v4);
-        v4.bgConfig = param0->unk_0C;
+        v4.bgConfig = param0->bgConfig;
         v4.width = 11;
         v4.height = 57;
         v4.colorMode = 0;
         v4.pixels = v3->pRawData;
-        EasyChatPageButtons_PrintLabel(&v4, param0->unk_0C, v0, 0);
+        EasyChatPageButtons_PrintLabel(&v4, param0->bgConfig, v0, 0);
         v4.pixels = (u8 *)(v3->pRawData) + (11 * 7 * 4 * 0x20);
-        EasyChatPageButtons_PrintLabel(&v4, param0->unk_0C, v1, 0);
+        EasyChatPageButtons_PrintLabel(&v4, param0->bgConfig, v1, 0);
         DC_FlushRange(v3->pRawData, v3->szByte);
-        Bg_LoadTiles(param0->unk_0C, 4, v3->pRawData, v3->szByte, 0);
+        Bg_LoadTiles(param0->bgConfig, 4, v3->pRawData, v3->szByte, 0);
         Heap_Free(v2);
     }
 
@@ -206,40 +206,40 @@ static void EasyChatPageButtons_CreateSprites(EasyChatPageButtons *param0, NARC 
     Graphics_LoadPartialPaletteFromOpenNARC(param1, 25, NNS_G2D_VRAM_TYPE_2DSUB, 0, 35, &v0);
     Graphics_LoadImageMappingFromOpenNARC(param1, 24, 1, 0, 0, NNS_G2D_VRAM_TYPE_2DSUB, 0, 35, &v1);
 
-    EasyChatPageButtons_LoadSpriteResources(&(param0->unk_1C), param1, 22, 23);
+    EasyChatPageButtons_LoadSpriteResources(&(param0->resources), param1, 22, 23);
 
-    param0->unk_14 = EasyChatPageButtons_AddSprite(param0, &v1, &v0, &param0->unk_1C, 192, 56, 0, 0);
-    Sprite_SetAnim(param0->unk_14, 0);
-    Sprite_SetDrawFlag(param0->unk_14, FALSE);
+    param0->upButtonSprite = EasyChatPageButtons_AddSprite(param0, &v1, &v0, &param0->resources, 192, 56, 0, 0);
+    Sprite_SetAnim(param0->upButtonSprite, 0);
+    Sprite_SetDrawFlag(param0->upButtonSprite, FALSE);
 
-    param0->unk_18 = EasyChatPageButtons_AddSprite(param0, &v1, &v0, &param0->unk_1C, 192, 136, 0, 0);
-    Sprite_SetAnim(param0->unk_18, 2);
-    Sprite_SetDrawFlag(param0->unk_18, FALSE);
+    param0->downButtonSprite = EasyChatPageButtons_AddSprite(param0, &v1, &v0, &param0->resources, 192, 136, 0, 0);
+    Sprite_SetAnim(param0->downButtonSprite, 2);
+    Sprite_SetDrawFlag(param0->downButtonSprite, FALSE);
 }
 
 static void EasyChatPageButtons_DeleteSprites(EasyChatPageButtons *param0)
 {
-    if (param0->unk_14) {
-        Sprite_Delete(param0->unk_14);
+    if (param0->upButtonSprite) {
+        Sprite_Delete(param0->upButtonSprite);
     }
 
-    if (param0->unk_18) {
-        Sprite_Delete(param0->unk_18);
+    if (param0->downButtonSprite) {
+        Sprite_Delete(param0->downButtonSprite);
     }
 
-    EasyChatPageButtons_FreeSpriteResources(&param0->unk_1C);
+    EasyChatPageButtons_FreeSpriteResources(&param0->resources);
 }
 
 static void EasyChatPageButtons_LoadSpriteResources(EasyChatPageButtonsResources *param0, NARC *param1, u32 param2, u32 param3)
 {
-    param0->unk_00 = Graphics_GetCellBankFromOpenNARC(param1, param2, 1, &(param0->unk_04), HEAP_ID_35);
-    param0->unk_08 = Graphics_GetAnimBankFromOpenNARC(param1, param3, 1, &(param0->unk_0C), HEAP_ID_35);
+    param0->cellBankData = Graphics_GetCellBankFromOpenNARC(param1, param2, 1, &(param0->cellBank), HEAP_ID_35);
+    param0->animBankData = Graphics_GetAnimBankFromOpenNARC(param1, param3, 1, &(param0->animBank), HEAP_ID_35);
 }
 
 static void EasyChatPageButtons_FreeSpriteResources(EasyChatPageButtonsResources *param0)
 {
-    Heap_Free(param0->unk_00);
-    Heap_Free(param0->unk_08);
+    Heap_Free(param0->cellBankData);
+    Heap_Free(param0->animBankData);
 }
 
 static Sprite *EasyChatPageButtons_AddSprite(EasyChatPageButtons *param0, NNSG2dImageProxy *param1, NNSG2dImagePaletteProxy *param2, EasyChatPageButtonsResources *param3, int param4, int param5, int param6, int param7)
@@ -250,15 +250,15 @@ static Sprite *EasyChatPageButtons_AddSprite(EasyChatPageButtons *param0, NNSG2d
 
     v0.imageProxy = param1;
     v0.paletteProxy = param2;
-    v0.cellBank = param3->unk_04;
-    v0.cellAnimBank = param3->unk_0C;
+    v0.cellBank = param3->cellBank;
+    v0.cellAnimBank = param3->animBank;
     v0.priority = param6;
     v0.charData = NULL;
     v0.multiCellBank = NULL;
     v0.multiCellAnimBank = NULL;
     v0.isVRamTransfer = 0;
 
-    v1.list = param0->unk_10;
+    v1.list = param0->spriteList;
     v1.resourceData = &v0;
     v1.position.x = param4 * FX32_ONE;
     v1.position.y = (param5 + 192) * FX32_ONE;
@@ -283,73 +283,73 @@ void EasyChatPageButtons_StartTransition(EasyChatPageButtons *param0)
 
     if (v0) {
         static const struct {
-            u16 unk_00;
-            u16 unk_02;
-            u16 unk_04;
-            u16 unk_06;
-            u16 unk_08;
-            u16 unk_0A;
-            u16 unk_0C;
+            u16 startTilemap;
+            u16 endTilemap;
+            u16 x;
+            u16 y;
+            u16 secondTilemap;
+            u16 secondX;
+            u16 secondY;
         } v1[] = {
             { 0x1, 0x3, 0x3, 0x3, 0x4, 0x3, 0xE },
             { 0x5, 0x7, 0x3, 0xE, 0x0, 0x3, 0x3 }
         };
-        int v2 = EasyChat_GetMode(param0->unk_04);
+        int v2 = EasyChat_GetMode(param0->easyChatApp);
 
-        v0->unk_00 = param0;
-        v0->unk_04 = 0;
-        v0->unk_08 = 0;
-        v0->unk_0A = v1[v2].unk_00;
-        v0->unk_0C = v1[v2].unk_02;
-        v0->unk_0E = v1[v2].unk_04;
-        v0->unk_10 = v1[v2].unk_06;
-        v0->unk_12 = v1[v2].unk_08;
-        v0->unk_14 = v1[v2].unk_0A;
-        v0->unk_16 = v1[v2].unk_0C;
+        v0->pageButtons = param0;
+        v0->state = 0;
+        v0->timer = 0;
+        v0->tilemapIndex = v1[v2].startTilemap;
+        v0->endTilemap = v1[v2].endTilemap;
+        v0->x = v1[v2].x;
+        v0->y = v1[v2].y;
+        v0->secondTilemap = v1[v2].secondTilemap;
+        v0->secondX = v1[v2].secondX;
+        v0->secondY = v1[v2].secondY;
 
-        param0->unk_4FC = SysTask_Start(EasyChatPageButtons_TransitionTask, v0, 1);
+        param0->transitionTask = SysTask_Start(EasyChatPageButtons_TransitionTask, v0, 1);
     } else {
-        param0->unk_4FC = NULL;
+        param0->transitionTask = NULL;
     }
 }
 
 BOOL EasyChatPageButtons_IsTransitionDone(EasyChatPageButtons *param0)
 {
-    return param0->unk_4FC == NULL;
+    return param0->transitionTask == NULL;
 }
 
 static void EasyChatPageButtons_TransitionTask(SysTask *param0, void *param1)
 {
     EasyChatPageButtonsTransition *v0 = param1;
 
-    switch (v0->unk_04) {
+    switch (v0->state) {
     case 0:
-        Bg_CopyToTilemapRect(v0->unk_00->unk_0C, 4, v0->unk_0E, v0->unk_10, 11, 7, v0->unk_00->unk_2C[v0->unk_0A], 0, 0, 11, 7);
-        Bg_CopyToTilemapRect(v0->unk_00->unk_0C, 4, v0->unk_14, v0->unk_16, 11, 7, v0->unk_00->unk_2C[v0->unk_12], 0, 0, 11, 7);
-        Bg_CopyTilemapBufferToVRAM(v0->unk_00->unk_0C, 4);
+        Bg_CopyToTilemapRect(v0->pageButtons->bgConfig, 4, v0->x, v0->y, 11, 7, v0->pageButtons->tilemaps[v0->tilemapIndex], 0, 0, 11, 7);
+        Bg_CopyToTilemapRect(v0->pageButtons->bgConfig, 4, v0->secondX, v0->secondY, 11, 7, v0->pageButtons->tilemaps[v0->secondTilemap], 0, 0, 11, 7);
+        Bg_CopyTilemapBufferToVRAM(v0->pageButtons->bgConfig, 4);
 
-        v0->unk_0A++;
-        v0->unk_04++;
+        v0->tilemapIndex++;
+        v0->state++;
         break;
     case 1:
-        if (++(v0->unk_08) >= 2) {
-            Bg_CopyToTilemapRect(v0->unk_00->unk_0C, 4, v0->unk_0E, v0->unk_10, 11, 7, v0->unk_00->unk_2C[v0->unk_0A], 0, 0, 11, 7);
-            Bg_CopyTilemapBufferToVRAM(v0->unk_00->unk_0C, 4);
+        if (++(v0->timer) >= 2) {
+            Bg_CopyToTilemapRect(v0->pageButtons->bgConfig, 4, v0->x, v0->y, 11, 7, v0->pageButtons->tilemaps[v0->tilemapIndex], 0, 0, 11, 7);
+            Bg_CopyTilemapBufferToVRAM(v0->pageButtons->bgConfig, 4);
 
-            v0->unk_08 = 0;
-            v0->unk_0A++;
-            v0->unk_04++;
+            v0->timer = 0;
+            v0->tilemapIndex++;
+            v0->state++;
         }
         break;
     case 2:
-        if (++(v0->unk_08) >= 4) {
-            Bg_CopyToTilemapRect(v0->unk_00->unk_0C, 4, v0->unk_0E, v0->unk_10, 11, 7, v0->unk_00->unk_2C[v0->unk_0A], 0, 0, 11, 7);
-            Bg_CopyTilemapBufferToVRAM(v0->unk_00->unk_0C, 4);
-            v0->unk_04++;
+        if (++(v0->timer) >= 4) {
+            Bg_CopyToTilemapRect(v0->pageButtons->bgConfig, 4, v0->x, v0->y, 11, 7, v0->pageButtons->tilemaps[v0->tilemapIndex], 0, 0, 11, 7);
+            Bg_CopyTilemapBufferToVRAM(v0->pageButtons->bgConfig, 4);
+            v0->state++;
         }
         break;
     case 3:
-        v0->unk_00->unk_4FC = NULL;
+        v0->pageButtons->transitionTask = NULL;
         Heap_Free(param1);
         SysTask_Done(param0);
     }
@@ -358,11 +358,11 @@ static void EasyChatPageButtons_TransitionTask(SysTask *param0, void *param1)
 void EasyChatPageButtons_SetVisible(EasyChatPageButtons *param0, BOOL param1)
 {
     if (param1) {
-        Sprite_SetDrawFlag(param0->unk_14, EasyChat_IsWordSelectRowBelowFirst(param0->unk_04));
-        Sprite_SetDrawFlag(param0->unk_18, EasyChat_IsWordSelectRowAboveLast(param0->unk_04));
+        Sprite_SetDrawFlag(param0->upButtonSprite, EasyChat_IsWordSelectRowBelowFirst(param0->easyChatApp));
+        Sprite_SetDrawFlag(param0->downButtonSprite, EasyChat_IsWordSelectRowAboveLast(param0->easyChatApp));
     } else {
-        Sprite_SetDrawFlag(param0->unk_14, FALSE);
-        Sprite_SetDrawFlag(param0->unk_18, FALSE);
+        Sprite_SetDrawFlag(param0->upButtonSprite, FALSE);
+        Sprite_SetDrawFlag(param0->downButtonSprite, FALSE);
     }
 }
 
@@ -372,20 +372,20 @@ void EasyChatPageButtons_SetPressedState(EasyChatPageButtons *param0, int param1
     case 0:
         switch (param2) {
         case 1:
-            Sprite_SetAnim(param0->unk_14, 1);
+            Sprite_SetAnim(param0->upButtonSprite, 1);
             break;
         case 0:
-            Sprite_SetAnim(param0->unk_14, 0);
+            Sprite_SetAnim(param0->upButtonSprite, 0);
             break;
         }
         break;
     case 1:
         switch (param2) {
         case 1:
-            Sprite_SetAnim(param0->unk_18, 3);
+            Sprite_SetAnim(param0->downButtonSprite, 3);
             break;
         case 0:
-            Sprite_SetAnim(param0->unk_18, 2);
+            Sprite_SetAnim(param0->downButtonSprite, 2);
             break;
         }
         break;

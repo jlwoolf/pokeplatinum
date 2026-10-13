@@ -14,13 +14,13 @@ typedef struct {
     BOOL isNationalDexUnlocked;
     int numEncountered;
     int numCaught;
-    BOOL unk_1740;
+    BOOL isFiltered;
     int timeOfDay;
     HeightWeightData *HWData;
     u32 trainerGameCode;
     u32 trainerGender;
     String *trainerName;
-    int unk_1758;
+    int inputState;
     u16 currentSpecies;
     u16 bootMode;
     BOOL fullmoonIslandVisible;

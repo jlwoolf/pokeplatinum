@@ -610,22 +610,22 @@ BOOL PokedexSort_CanDetectForms(const PokedexSortData *param0)
 void PokedexSort_UpdateInputState(PokedexSortData *param0)
 {
     if (gSystem.touchHeld) {
-        param0->unk_1758 = 0;
+        param0->inputState = 0;
         return;
     }
 
     if (gSystem.pressedKeys) {
-        if (param0->unk_1758 == 0) {
-            param0->unk_1758 = 1;
+        if (param0->inputState == 0) {
+            param0->inputState = 1;
         } else {
-            param0->unk_1758 = 2;
+            param0->inputState = 2;
         }
     }
 }
 
 u32 PokedexSort_GetInputState(const PokedexSortData *param0)
 {
-    return param0->unk_1758;
+    return param0->inputState;
 }
 
 static void FilterUnencountered(u16 *encounteredDex, int *caughtStatusLength, const Pokedex *pokedex, const u16 *fullDex, int pokedexLength)

@@ -425,7 +425,7 @@ typedef struct PokemonSummaryScreen {
     Sprite *sprites[SUMMARY_SPRITE_MAX];
     ManagedSprite *managedSprites[SUMMARY_SPRITE_MAX];
 
-    FontSpecialCharsContext *unk_684;
+    FontSpecialCharsContext *fontSpecialChars;
     MessageLoader *msgLoader;
     MessageLoader *ribbonLoader;
     StringTemplate *strFormatter;

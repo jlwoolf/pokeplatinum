@@ -220,8 +220,8 @@ typedef struct BattleArcadeApp {
     PaletteData *plttData;
     Options *options;
     SaveData *saveData;
-    BattleArcadeSave *unk_E0;
-    BattleArcadeStreakFlags *unk_E4;
+    BattleArcadeSave *battleArcadeSave;
+    BattleArcadeStreakFlags *streakFlags;
     BattleArcadeAppSpriteManager spriteMan;
     BattleArcadeAppSprite *cursorSprite;
     BattleArcadeAppSprite *tileSprites[GRID_SIZE];
@@ -303,8 +303,8 @@ BOOL BattleArcadeApp_Init(ApplicationManager *appMan, int *state)
     BattleArcadeAppArgs *args = ApplicationManager_Args(appMan);
 
     app->saveData = args->saveData;
-    app->unk_E0 = BattleArcadeSave_Get(app->saveData);
-    app->unk_E4 = BattleArcadeStreakFlags_Get(app->saveData);
+    app->battleArcadeSave = BattleArcadeSave_Get(app->saveData);
+    app->streakFlags = BattleArcadeStreakFlags_Get(app->saveData);
     app->challengeType = args->challengeType;
     app->round = args->round;
     app->battleStreak = args->currentStreak;

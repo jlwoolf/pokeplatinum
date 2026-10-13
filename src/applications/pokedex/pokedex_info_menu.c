@@ -459,29 +459,29 @@ static void Pokedex_021E2E10(PokedexInfoMenuState *param0)
         param0->unk_10->displayPositionX = 56;
         param0->unk_10->displayPositionY = 80;
         InfoMainForeign_SetDisplayPosition(param0->unk_18, 56, 80);
-        param0->unk_0C->unk_14 = 1;
+        param0->unk_0C->useBlendTransition = 1;
         param0->unk_2C = 1;
         break;
     case 1:
         PokedexAreaMap_SetTransitionType(param0->unk_1C, 1);
         PokedexAreaMap_SetTransitionSpeed(param0->unk_1C, 4);
         PokedexAreaMap_SetTransitionParams(param0->unk_1C, 56, 80);
-        param0->unk_0C->unk_14 = 1;
+        param0->unk_0C->useBlendTransition = 1;
         param0->unk_2C = 1;
         break;
     case 2:
         PokedexCryScreen_SetWaveParam2(param0->unk_20, 1);
         PokedexCryScreen_SetWaveParam3(param0->unk_20, 4);
         PokedexCryScreen_SetWaveParams(param0->unk_20, 56, 80);
-        param0->unk_0C->unk_14 = 1;
+        param0->unk_0C->useBlendTransition = 1;
         param0->unk_2C = 1;
         break;
     case 3:
-        param0->unk_0C->unk_14 = 0;
+        param0->unk_0C->useBlendTransition = 0;
         param0->unk_2C = 0;
         break;
     case 4:
-        param0->unk_0C->unk_14 = 0;
+        param0->unk_0C->useBlendTransition = 0;
         param0->unk_2C = 0;
         break;
     default:

@@ -756,12 +756,12 @@ static void Pokedex_021E7EC0(PokedexSizeComparisonGraphics *param0, enum HeapID 
     param0->unk_10 = PokedexGraphics_GetGraphicNarcCharacterData(param0->unk_00, weight_scale_NCGR_lz, TRUE, &param0->unk_18, heapID);
     param0->unk_14 = PokedexGraphics_GetGraphicNarcPaletteData(param0->unk_00, banner_sinnoh_NCLR, &param0->unk_1C, heapID);
 
-    v0.softSpriteMan = param0->unk_00->unk_164;
+    v0.softSpriteMan = param0->unk_00->softwareSpriteManager;
     v0.charsData = param0->unk_18;
 
     param0->unk_04 = SoftwareSprite_LoadChars(&v0);
 
-    v1.softSpriteMan = param0->unk_00->unk_164;
+    v1.softSpriteMan = param0->unk_00->softwareSpriteManager;
     v1.paletteData = param0->unk_1C;
     v1.paletteSlot = 16;
 
@@ -780,7 +780,7 @@ static void Pokedex_021E7F40(PokedexSizeComparisonGraphics *param0, int param1)
 {
     SoftwareSpriteTemplate v0;
 
-    v0.softSpriteMan = param0->unk_00->unk_164;
+    v0.softSpriteMan = param0->unk_00->softwareSpriteManager;
     v0.chars = param0->unk_04;
     v0.palette = param0->unk_08;
 

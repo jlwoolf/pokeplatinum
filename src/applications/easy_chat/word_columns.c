@@ -19,10 +19,10 @@
 #include "text.h"
 
 typedef struct EasyChatWordColumns_t {
-    EasyChatWordListScreen *unk_00;
-    const EasyChatApp *unk_04;
-    const EasyChatWordList *unk_08;
-    Sprite *unk_0C;
+    EasyChatWordListScreen *wordListScreen;
+    const EasyChatApp *easyChatApp;
+    const EasyChatWordList *wordList;
+    Sprite *cursorSprite;
 } EasyChatWordColumns;
 
 static void EasyChatWordColumns_PrintLabel(BgConfig *param0, const WindowTemplate *param1, u32 param2);
@@ -32,18 +32,18 @@ EasyChatWordColumns *EasyChatWordColumns_New(EasyChatWordListScreen *param0, con
 {
     EasyChatWordColumns *v0 = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatWordColumns));
 
-    v0->unk_00 = param0;
-    v0->unk_04 = param1;
-    v0->unk_08 = param2;
-    v0->unk_0C = NULL;
+    v0->wordListScreen = param0;
+    v0->easyChatApp = param1;
+    v0->wordList = param2;
+    v0->cursorSprite = NULL;
 
     return v0;
 }
 
 void EasyChatWordColumns_Free(EasyChatWordColumns *param0)
 {
-    if (param0->unk_0C) {
-        Sprite_Delete(param0->unk_0C);
+    if (param0->cursorSprite) {
+        Sprite_Delete(param0->cursorSprite);
     }
 
     Heap_Free(param0);
@@ -57,7 +57,7 @@ void EasyChatWordColumns_LoadGraphics(EasyChatWordColumns *param0, NARC *param1)
     static const WindowTemplate v1 = {
         3, 19, 6, 10, 2, 13, 84
     };
-    BgConfig *v2 = EasyChatWordListScreen_GetBgConfig(param0->unk_00);
+    BgConfig *v2 = EasyChatWordListScreen_GetBgConfig(param0->wordListScreen);
 
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 4, v2, 3, 0, 0, 1, HEAP_ID_35);
     Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 5, v2, 3, 0, 0, 1, HEAP_ID_35);
@@ -92,31 +92,31 @@ static void EasyChatWordColumns_CreateSprite(EasyChatWordColumns *param0)
 {
     SpriteResourcesHeader v0;
 
-    EasyChatWordListScreen_SetupSpriteResources(param0->unk_00, &v0, 0, 3);
-    param0->unk_0C = EasyChatWordListScreen_AddSprite(param0->unk_00, &v0, 64, 56, 5, NNS_G2D_VRAM_TYPE_2DMAIN);
+    EasyChatWordListScreen_SetupSpriteResources(param0->wordListScreen, &v0, 0, 3);
+    param0->cursorSprite = EasyChatWordListScreen_AddSprite(param0->wordListScreen, &v0, 64, 56, 5, NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    Sprite_SetAnim(param0->unk_0C, 2);
-    Sprite_SetDrawFlag(param0->unk_0C, FALSE);
+    Sprite_SetAnim(param0->cursorSprite, 2);
+    Sprite_SetDrawFlag(param0->cursorSprite, FALSE);
 }
 
 void EasyChatWordColumns_SetEdgeAnim(EasyChatWordColumns *param0)
 {
-    Sprite_SetAnim(param0->unk_0C, 3);
+    Sprite_SetAnim(param0->cursorSprite, 3);
 }
 
 void EasyChatWordColumns_SetDefaultAnim(EasyChatWordColumns *param0)
 {
-    Sprite_SetAnim(param0->unk_0C, 2);
+    Sprite_SetAnim(param0->cursorSprite, 2);
 }
 
 void EasyChatWordColumns_SetVisible(EasyChatWordColumns *param0, BOOL param1)
 {
-    Sprite_SetDrawFlag(param0->unk_0C, param1);
+    Sprite_SetDrawFlag(param0->cursorSprite, param1);
 }
 
 BOOL EasyChatWordColumns_IsVisible(EasyChatWordColumns *param0)
 {
-    return Sprite_GetDrawFlag(param0->unk_0C);
+    return Sprite_GetDrawFlag(param0->cursorSprite);
 }
 
 void EasyChatWordColumns_SetActiveColumn(EasyChatWordColumns *param0, int param1)
@@ -137,16 +137,16 @@ void EasyChatWordColumns_SetActiveColumn(EasyChatWordColumns *param0, int param1
         break;
     }
 
-    Sprite_SetPosition(param0->unk_0C, &v0);
-    Sprite_SetAnim(param0->unk_0C, 2);
+    Sprite_SetPosition(param0->cursorSprite, &v0);
+    Sprite_SetAnim(param0->cursorSprite, 2);
 }
 
 void EasyChatWordColumns_SetRightColumnOffset(EasyChatWordColumns *param0)
 {
-    Bg_SetOffset(EasyChatWordListScreen_GetBgConfig(param0->unk_00), 3, 3, 64);
+    Bg_SetOffset(EasyChatWordListScreen_GetBgConfig(param0->wordListScreen), 3, 3, 64);
 }
 
 void EasyChatWordColumns_SetLeftColumnOffset(EasyChatWordColumns *param0)
 {
-    Bg_SetOffset(EasyChatWordListScreen_GetBgConfig(param0->unk_00), 3, 3, 0);
+    Bg_SetOffset(EasyChatWordListScreen_GetBgConfig(param0->wordListScreen), 3, 3, 0);
 }

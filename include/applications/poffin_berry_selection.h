@@ -35,7 +35,7 @@ typedef struct PoffinBerrySelectionContext {
     Bag *bag;
     Options *options;
     JournalEntry *journalEntry;
-    BOOL unk_20;
+    BOOL isOnline;
     BOOL voiceChat;
 } PoffinBerrySelectionContext;
 
@@ -50,9 +50,9 @@ typedef struct PoffinBerrySelectionData {
     int subState;
     void *buffer;
     ApplicationManager *appMan;
-    BOOL unk_20;
+    BOOL returnToBerrySelection;
     s16 unk_24;
-    u8 unk_26;
+    u8 isOnline;
     u8 voiceChat;
 } PoffinBerrySelectionData;
 

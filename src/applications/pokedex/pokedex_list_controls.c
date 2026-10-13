@@ -261,10 +261,10 @@ static int UpdateData(PokedexDataManager *dataMan, void *data)
         return 0;
     }
 
-    UpdateDialDeceleration(v1, v0->unk_1C->unk_0C, v0->unk_1C->unk_08);
+    UpdateDialDeceleration(v1, v0->unk_1C->scrollOffset, v0->unk_1C->scrollDirection);
     UpdateTouchControls(v1, v0);
 
-    if (v0->unk_1C->unk_20 == 0) {
+    if (v0->unk_1C->scrollState == 0) {
         UpdateDialScroll(v1, v0);
     } else {
         v1->unk_0C = 0;
@@ -334,9 +334,9 @@ static int UpdateGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, c
     SetButtonText(v3->unk_00[1], v3->unk_0C[1], -14, 3, 5);
     SetButtonText(v3->unk_00[2], v3->unk_0C[2], -14, 2, 5);
 
-    if (v0->unk_1C->unk_20 == 0) {
+    if (v0->unk_1C->scrollState == 0) {
         RotateScrollWheel(v3, v2, CalcRadialAngle(524, v1->unk_0C), v1->unk_1C);
-    } else if (v0->unk_1C->unk_20 == 1) {
+    } else if (v0->unk_1C->scrollState == 1) {
         UpdateScrollWheelRotation(v3, v2, v0);
     } else {
         (void)0;
@@ -417,7 +417,7 @@ static void UpdateTouchControls(PokedexListControlsData *param0, PokedexListCont
     UpdateButtonHighlight(param1);
     TouchScreenActions_HandleAction(param0->unk_00);
 
-    if (CanStepSelection(param0, param1->unk_1C->unk_04) == 0) {
+    if (CanStepSelection(param0, param1->unk_1C->sortData) == 0) {
         param0->unk_0C = 0;
     }
 
@@ -442,7 +442,7 @@ static void TouchButtonCallback(u32 param0, enum TouchScreenButtonState param1, 
     PokedexListControlsTouchHandler *v0 = param2;
     PokedexListControls *v1 = v0->unk_04;
     PokedexListControlsData *v2 = v0->unk_00;
-    PokedexSortData *v3 = v1->unk_1C->unk_04;
+    PokedexSortData *v3 = v1->unk_1C->sortData;
     int v4;
     int v5;
 
@@ -456,13 +456,13 @@ static void TouchButtonCallback(u32 param0, enum TouchScreenButtonState param1, 
     case TOUCH_BUTTON_HELD:
         switch (param0) {
         case 0:
-            v1->unk_1C->unk_34 = 1;
+            v1->unk_1C->exitFlag = 1;
             break;
         case 1:
-            v1->unk_1C->unk_30 = 1;
+            v1->unk_1C->nationalDexFlag = 1;
             break;
         case 2:
-            v1->unk_1C->unk_2C = 1;
+            v1->unk_1C->infoFlag = 1;
             break;
         case 3:
             if (v2->unk_20 == 0) {
@@ -476,10 +476,10 @@ static void TouchButtonCallback(u32 param0, enum TouchScreenButtonState param1, 
             }
             break;
         case 6:
-            if (v1->unk_1C->unk_04->unk_1740 == 0) {
-                v1->unk_1C->unk_28 = 1;
+            if (v1->unk_1C->sortData->isFiltered == 0) {
+                v1->unk_1C->sortMenuFlag = 1;
             } else {
-                v1->unk_1C->unk_24 = 1;
+                v1->unk_1C->cancelFlag = 1;
             }
             break;
         default:
@@ -487,7 +487,7 @@ static void TouchButtonCallback(u32 param0, enum TouchScreenButtonState param1, 
         }
 
         if (param0 == 5) {
-            if (v1->unk_1C->unk_20 == 0) {
+            if (v1->unk_1C->scrollState == 0) {
                 ComputeDialDrag(v2);
 
                 if ((v2->unk_0C <= 16) && (v2->unk_0C >= -16)) {
@@ -536,10 +536,10 @@ static void LoadBackground(PokedexGraphicData **param0, const PokedexListControl
 
     PokedexGraphics_LoadGraphicNarcPaletteData(*param0, background_scroll_default_NCLR, 4, 0, 0, heapID);
 
-    if (param1->unk_1C->unk_04->unk_1740 == 1) {
+    if (param1->unk_1C->sortData->isFiltered == 1) {
         PokedexGraphics_LoadGraphicNarcPaletteData(*param0, background_scroll_sinnoh_NCLR, 4, 3 * 32, 32, heapID);
     } else {
-        if (PokedexSort_IsNationalDex(param1->unk_1C->unk_04) == 1) {
+        if (PokedexSort_IsNationalDex(param1->unk_1C->sortData) == 1) {
             PokedexGraphics_LoadGraphicNarcPaletteData(*param0, background_scroll_national_NCLR, 4, 3 * 32, 32, heapID);
         }
     }
@@ -606,7 +606,7 @@ static void CreateButtonSprites(PokedexListControlsGraphics *param0, PokedexGrap
 
     Sprite_SetAnim(param0->unk_00[0], 2);
 
-    if (param2->unk_1C->unk_04->unk_1740 == 1) {
+    if (param2->unk_1C->sortData->isFiltered == 1) {
         Sprite_SetDrawFlag(param0->unk_00[0], FALSE);
     }
 
@@ -618,7 +618,7 @@ static void CreateButtonSprites(PokedexListControlsGraphics *param0, PokedexGrap
 
     Sprite_SetAnim(param0->unk_00[1], 0);
 
-    if ((PokedexSort_CanSetNationalDex(param2->unk_1C->unk_04, 1) == 0) || (param2->unk_1C->unk_04->unk_1740 == 1)) {
+    if ((PokedexSort_CanSetNationalDex(param2->unk_1C->sortData, 1) == 0) || (param2->unk_1C->sortData->isFiltered == 1)) {
         Sprite_SetDrawFlag(param0->unk_00[1], FALSE);
     }
 
@@ -697,7 +697,7 @@ static void CreateButtonText(PokedexListControlsGraphics *param0, PokedexGraphic
 
     FontOAM_SetExplicitPalette(param0->unk_0C[0]->fontOAM, v4 + 3);
 
-    if (param2->unk_1C->unk_04->unk_1740 == 1) {
+    if (param2->unk_1C->sortData->isFiltered == 1) {
         FontOAM_SetDrawFlag(param0->unk_0C[0]->fontOAM, 0);
     }
 
@@ -711,7 +711,7 @@ static void CreateButtonText(PokedexListControlsGraphics *param0, PokedexGraphic
 
     FontOAM_SetExplicitPalette(param0->unk_0C[1]->fontOAM, v4 + 3);
 
-    if ((PokedexSort_CanSetNationalDex(param2->unk_1C->unk_04, 1) == 0) || (param2->unk_1C->unk_04->unk_1740 == 1)) {
+    if ((PokedexSort_CanSetNationalDex(param2->unk_1C->sortData, 1) == 0) || (param2->unk_1C->sortData->isFiltered == 1)) {
         FontOAM_SetDrawFlag(param0->unk_0C[1]->fontOAM, 0);
     }
 
@@ -728,7 +728,7 @@ static void CreateButtonText(PokedexListControlsGraphics *param0, PokedexGraphic
 
     v0 = PokedexTextManager_NewWindow(v3->textMan, 14, 2);
 
-    if (param2->unk_1C->unk_04->unk_1740 == 0) {
+    if (param2->unk_1C->sortData->isFiltered == 0) {
         PokedexTextManager_DisplayMessage(v3->textMan, v0, TEXT_BANK_POKEDEX, pl_msg_pokedex_quit, 0, 0);
     } else {
         PokedexTextManager_DisplayMessage(v3->textMan, v0, TEXT_BANK_POKEDEX, pl_msg_pokedex_cancel, 0, 0);
@@ -780,30 +780,30 @@ static void UnloadScrollWheel(PokedexGraphicData **param0, enum HeapID heapID)
 static void UpdateDialScroll(PokedexListControlsData *param0, PokedexListControls *param1)
 {
     int v0;
-    PokedexSortData *v1 = param1->unk_1C->unk_04;
+    PokedexSortData *v1 = param1->unk_1C->sortData;
 
-    if (param1->unk_1C->unk_0C <= 0) {
+    if (param1->unk_1C->scrollOffset <= 0) {
         if (param0->unk_10 != 0) {
             if (TryTakeStep(param0, v1) == 0) {
                 StopDialScroll(param0, param1);
             } else {
-                param1->unk_1C->unk_0C = (64 * 10);
+                param1->unk_1C->scrollOffset = (64 * 10);
                 Sound_PlayEffect(SEQ_SE_DP_DENSI06_sseq);
             }
         } else {
-            param1->unk_1C->unk_08 = 0;
+            param1->unk_1C->scrollDirection = 0;
         }
     }
 
     if (param0->unk_10 < 0) {
-        param1->unk_1C->unk_08 = 1;
+        param1->unk_1C->scrollDirection = 1;
     } else {
         if (param0->unk_10 > 0) {
-            param1->unk_1C->unk_08 = 2;
+            param1->unk_1C->scrollDirection = 2;
         }
     }
 
-    if (param1->unk_1C->unk_08 != 0) {
+    if (param1->unk_1C->scrollDirection != 0) {
         if (param0->unk_10 < 0) {
             v0 = -param0->unk_10;
         } else {
@@ -811,10 +811,10 @@ static void UpdateDialScroll(PokedexListControlsData *param0, PokedexListControl
         }
 
         v0 /= (1024 / (64 * 10));
-        param1->unk_1C->unk_0C -= v0;
+        param1->unk_1C->scrollOffset -= v0;
 
-        if (param1->unk_1C->unk_0C < 0) {
-            param1->unk_1C->unk_0C = 0;
+        if (param1->unk_1C->scrollOffset < 0) {
+            param1->unk_1C->scrollOffset = 0;
         }
     }
 }
@@ -851,12 +851,12 @@ static void UpdateScrollWheelRotation(PokedexListControlsGraphics *param0, Poked
 {
     int v0;
     int v1;
-    int v2 = (64 * 10) - param2->unk_1C->unk_0C;
+    int v2 = (64 * 10) - param2->unk_1C->scrollOffset;
 
     v1 = ((25 * 0xffff) / 360) * v2;
     v0 = v1 / (64 * 10);
 
-    if (param2->unk_1C->unk_08 == 1) {
+    if (param2->unk_1C->scrollDirection == 1) {
         v0 = -v0;
     }
 
@@ -867,7 +867,7 @@ static void UpdateScrollWheelRotation(PokedexListControlsGraphics *param0, Poked
     Bg_ScheduleAffineRotationCenter((*param1)->bgConfig, 7, 9, 128);
     Bg_ScheduleAffineRotationCenter((*param1)->bgConfig, 7, 12, 104);
 
-    if (param2->unk_1C->unk_0C == 0) {
+    if (param2->unk_1C->scrollOffset == 0) {
         param0->unk_2A = param0->unk_28;
     }
 }
@@ -919,17 +919,17 @@ static void UpdateButtonHighlight(PokedexListControls *param0)
 {
     PokedexListState *v0 = param0->unk_1C;
 
-    if (v0->unk_2C) {
+    if (v0->infoFlag) {
         param0->unk_00[2] = 2;
         return;
     }
 
-    if (v0->unk_34) {
+    if (v0->exitFlag) {
         param0->unk_00[0] = 2;
         return;
     }
 
-    if (v0->unk_30) {
+    if (v0->nationalDexFlag) {
         param0->unk_00[1] = 2;
         return;
     }
@@ -977,7 +977,7 @@ static void StopDialScroll(PokedexListControlsData *param0, PokedexListControls 
 {
     param0->unk_10 = 0;
     param0->unk_0C = 0;
-    param1->unk_1C->unk_08 = 0;
+    param1->unk_1C->scrollDirection = 0;
 }
 
 static void SelectEntry(PokedexListControls *param0, int param1)
@@ -986,16 +986,16 @@ static void SelectEntry(PokedexListControls *param0, int param1)
         return;
     }
 
-    PokedexSort_SetCurrentStatusIndex(param0->unk_1C->unk_04, param1);
+    PokedexSort_SetCurrentStatusIndex(param0->unk_1C->sortData, param1);
 
     (*param0->unk_20) |= (0x1 << 0);
 
-    param0->unk_1C->unk_0C = 0;
-    param0->unk_1C->unk_20 = 2;
-    param0->unk_1C->unk_10 = 1;
-    param0->unk_1C->unk_14 = 0;
-    param0->unk_1C->unk_08 = 0;
-    param0->unk_1C->unk_1C = 0;
+    param0->unk_1C->scrollOffset = 0;
+    param0->unk_1C->scrollState = 2;
+    param0->unk_1C->skipTransition = 1;
+    param0->unk_1C->useBlendTransition = 0;
+    param0->unk_1C->scrollDirection = 0;
+    param0->unk_1C->updateGraphics = 0;
 }
 
 static fx32 UpdateDialSpeed(fx32 param0, s32 param1)

@@ -363,15 +363,15 @@ static int JournalController_TurnPageLeft(JournalManager *journalManager)
         JournalController_AssignBgLayers(journalManager);
         JournalController_LoadNewPagePalette(journalManager, journalManager->bgLayer3, journalManager->page - 1);
         journalManager->page--;
-        JournalPrinter_PrintEntry(journalManager, journalManager->unk_1060 ^ 1);
+        JournalPrinter_PrintEntry(journalManager, journalManager->pageSide ^ 1);
         journalManager->state = 1;
         Sound_PlayEffect(SEQ_SE_DP_MEKURU3_sseq);
         break;
     case 1:
         if (JournalController_UpdatePageTurnLeft(journalManager) == TRUE) {
-            journalManager->unk_105F = 0;
+            journalManager->pageTurnColumn = 0;
             journalManager->state = 0;
-            journalManager->unk_1060 ^= 1;
+            journalManager->pageSide ^= 1;
 
             Bg_LoadToTilemapRect(journalManager->bgConfig, journalManager->bgLayer2, journalManager->tilemapBuffer_85C, 0, 0, 32, 32);
             Bg_LoadToTilemapRect(journalManager->bgConfig, journalManager->bgLayer1, journalManager->tilemapBuffer_5C, 0, 0, 32, 32);
@@ -391,15 +391,15 @@ static int JournalController_TurnPageRight(JournalManager *journalManager)
     case 0:
         JournalController_AssignBgLayers(journalManager);
         journalManager->page++;
-        JournalPrinter_PrintEntry(journalManager, journalManager->unk_1060 ^ 1);
+        JournalPrinter_PrintEntry(journalManager, journalManager->pageSide ^ 1);
         journalManager->state = 1;
         Sound_PlayEffect(SEQ_SE_DP_MEKURU3_sseq);
         break;
     case 1:
         if (JournalController_UpdatePageTurnRight(journalManager) == TRUE) {
-            journalManager->unk_105F = 0;
+            journalManager->pageTurnColumn = 0;
             journalManager->state = 0;
-            journalManager->unk_1060 ^= 1;
+            journalManager->pageSide ^= 1;
 
             return JOURNAL_STATE_HANDLE_INPUT;
         }
@@ -415,7 +415,7 @@ static int JournalController_IsClosingTransitionDone(JournalManager *journalMana
 
 static void JournalController_AssignBgLayers(JournalManager *journalManager)
 {
-    if (journalManager->unk_1060 == 0) {
+    if (journalManager->pageSide == 0) {
         journalManager->bgLayer2 = 0;
         journalManager->bgLayer1 = 2;
         journalManager->bgLayer4 = 1;
@@ -487,13 +487,13 @@ static void JournalController_CopyPageColumns(JournalManager *journalManager, u1
 
 static u8 JournalController_UpdatePageTurnLeft(JournalManager *journalManager)
 {
-    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer2, journalManager->unk_105F);
-    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer1, journalManager->unk_105F);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer2, journalManager->pageTurnColumn);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer1, journalManager->pageTurnColumn);
     JournalController_LoadNewPagePalette(journalManager, journalManager->bgLayer1, journalManager->page + 1);
 
-    journalManager->unk_105F++;
+    journalManager->pageTurnColumn++;
 
-    if (journalManager->unk_105F == 9) {
+    if (journalManager->pageTurnColumn == 9) {
         Bg_SetPriority(journalManager->bgLayer4, 0);
         Bg_SetPriority(journalManager->bgLayer3, 1);
         Bg_SetPriority(journalManager->bgLayer2, 2);
@@ -506,20 +506,20 @@ static u8 JournalController_UpdatePageTurnLeft(JournalManager *journalManager)
 
 static u8 JournalController_UpdatePageTurnRight(JournalManager *journalManager)
 {
-    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer4, 8 - journalManager->unk_105F);
-    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer3, 8 - journalManager->unk_105F);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_85C, journalManager->bgLayer4, 8 - journalManager->pageTurnColumn);
+    JournalController_CopyPageColumns(journalManager, journalManager->tilemapBuffer_5C, journalManager->bgLayer3, 8 - journalManager->pageTurnColumn);
     JournalController_LoadNewPagePalette(journalManager, journalManager->bgLayer3, journalManager->page);
 
-    if (journalManager->unk_105F == 1) {
+    if (journalManager->pageTurnColumn == 1) {
         Bg_SetPriority(journalManager->bgLayer4, 0);
         Bg_SetPriority(journalManager->bgLayer3, 1);
         Bg_SetPriority(journalManager->bgLayer2, 2);
         Bg_SetPriority(journalManager->bgLayer1, 3);
     }
 
-    journalManager->unk_105F++;
+    journalManager->pageTurnColumn++;
 
-    if (journalManager->unk_105F == 9) {
+    if (journalManager->pageTurnColumn == 9) {
         return TRUE;
     }
 

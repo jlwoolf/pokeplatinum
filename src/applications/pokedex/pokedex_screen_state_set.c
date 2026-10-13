@@ -10,9 +10,9 @@
 #include "heap.h"
 
 typedef struct PokedexScreenStateSet_t {
-    PokedexScreenState *unk_00;
-    int unk_04;
-    PokedexScreenState *unk_08;
+    PokedexScreenState *screenStates;
+    int numStates;
+    PokedexScreenState *currentState;
 } PokedexScreenStateSet;
 
 static BOOL IsStateActive(PokedexScreenStateSet *param0);
@@ -32,8 +32,8 @@ void PokedexScreenStateSet_SetStates(PokedexScreenStateSet *param0, PokedexScree
 {
     GF_ASSERT(param0);
 
-    param0->unk_00 = param1;
-    param0->unk_04 = param2;
+    param0->screenStates = param1;
+    param0->numStates = param2;
 }
 
 const PokedexScreenState *PokedexScreenStateSet_Update(PokedexScreenStateSet *param0, int param1)
@@ -52,21 +52,21 @@ const PokedexScreenState *PokedexScreenStateSet_Update(PokedexScreenStateSet *pa
     }
 
     if (IsStateActive(param0) == 1) {
-        v1 = param0->unk_08->unk_04(&param0->unk_08->unk_08);
+        v1 = param0->currentState->stepFunc(&param0->currentState->stepData);
 
         if (v1 == 1) {
             SetCurrentState(param0, NULL);
         }
     }
 
-    return param0->unk_08;
+    return param0->currentState;
 }
 
 BOOL PokedexScreenStateSet_IsActive(PokedexScreenStateSet *param0)
 {
     GF_ASSERT(param0);
 
-    if (param0->unk_08) {
+    if (param0->currentState) {
         return 1;
     }
 
@@ -75,7 +75,7 @@ BOOL PokedexScreenStateSet_IsActive(PokedexScreenStateSet *param0)
 
 static BOOL IsStateActive(PokedexScreenStateSet *param0)
 {
-    if (param0->unk_08) {
+    if (param0->currentState) {
         return 1;
     }
 
@@ -86,11 +86,11 @@ static PokedexScreenState *FindMatchingState(PokedexScreenStateSet *param0, int 
 {
     int v0;
 
-    for (v0 = 0; v0 < param0->unk_04; v0++) {
-        GF_ASSERT(param0->unk_00);
+    for (v0 = 0; v0 < param0->numStates; v0++) {
+        GF_ASSERT(param0->screenStates);
 
-        if (param0->unk_00[v0].unk_00 & param1) {
-            return param0->unk_00 + v0;
+        if (param0->screenStates[v0].transitionMask & param1) {
+            return param0->screenStates + v0;
         }
     }
 
@@ -99,9 +99,9 @@ static PokedexScreenState *FindMatchingState(PokedexScreenStateSet *param0, int 
 
 static void SetCurrentState(PokedexScreenStateSet *param0, PokedexScreenState *param1)
 {
-    param0->unk_08 = param1;
+    param0->currentState = param1;
 
-    if (param0->unk_08) {
-        param0->unk_08->unk_08.unk_00 = 0;
+    if (param0->currentState) {
+        param0->currentState->stepData.state = 0;
     }
 }

@@ -63,7 +63,7 @@ int PoffinBerrySelection_RunPoffinCookingApp(PoffinBerrySelectionData *data, int
         return MAIN_STATE_RUN_POFFIN_COOKING_APP;
     }
 
-    return (data->unk_20 == TRUE) ? MAIN_STATE_GET_BERRY_SELECTION : MAIN_STATE_END;
+    return (data->returnToBerrySelection == TRUE) ? MAIN_STATE_GET_BERRY_SELECTION : MAIN_STATE_END;
 }
 
 int PoffinBerrySelection_End(PoffinBerrySelectionData *data, int *subState)

@@ -6,12 +6,12 @@
 #include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 typedef struct {
-    PokedexUpdater *unk_00;
-    PokedexUpdater *unk_04;
-    PokedexScreenStateSet *unk_08;
-    PokedexScreenStateSet *unk_0C;
-    PokedexScreenManager *unk_10;
-    PokedexScreenManager *unk_14;
+    PokedexUpdater *updater1;
+    PokedexUpdater *updater2;
+    PokedexScreenStateSet *screenStateSet1;
+    PokedexScreenStateSet *screenStateSet2;
+    PokedexScreenManager *screenManager;
+    PokedexScreenManager *subScreenManager;
 } PokedexTransitionDual;
 
 #endif // POKEPLATINUM_STRUCT_POKEDEX_TRANSITION_DUAL_H

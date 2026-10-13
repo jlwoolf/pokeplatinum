@@ -70,17 +70,17 @@ BOOL EasyChat_Init(ApplicationManager *appMan, int *state)
         Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_34, 32768);
         Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_35, 163840);
         easyChatApp = EasyChatApp_New(appMan);
-        EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_00);
+        EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_00);
         (*state)++;
         break;
     case 1:
         easyChatApp = ApplicationManager_Data(appMan);
 
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             if (easyChatApp->type == EASY_CHAT_TYPE_SENTENCE) {
-                easyChatApp->unk_64 = EasyChatWordListScreen_GetWordSlotCount(easyChatApp->unk_14);
+                easyChatApp->wordSlotCount = EasyChatWordListScreen_GetWordSlotCount(easyChatApp->wordListScreen);
             } else {
-                easyChatApp->unk_64 = 0;
+                easyChatApp->wordSlotCount = 0;
             }
 
             return 1;
@@ -120,10 +120,10 @@ static void EasyChat_TouchButtonCallback(u32 buttonIndex, enum TouchScreenButton
 
         switch (buttonIndex) {
         case TOUCH_BUTTON_PAGE_UP:
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_25);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_25);
             break;
         case TOUCH_BUTTON_PAGE_DOWN:
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_26);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_26);
             break;
         }
 
@@ -132,10 +132,10 @@ static void EasyChat_TouchButtonCallback(u32 buttonIndex, enum TouchScreenButton
     case TOUCH_BUTTON_HELD_OUT_OF_BOUNDS:
         switch (buttonIndex) {
         case TOUCH_BUTTON_PAGE_UP:
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_27);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_27);
             break;
         case TOUCH_BUTTON_PAGE_DOWN:
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_28);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_28);
             break;
         }
 
@@ -179,11 +179,11 @@ static EasyChatApp *EasyChatApp_New(ApplicationManager *appMan)
     EasyChatArgs_GetContent(easyChatApp->args, easyChatApp->words, &easyChatApp->sentence);
 
     if (easyChatApp->type == EASY_CHAT_TYPE_SENTENCE) {
-        EasyChat_InitSentenceState(&easyChatApp->unk_60, &easyChatApp->sentence);
+        EasyChat_InitSentenceState(&easyChatApp->sentenceState, &easyChatApp->sentence);
     }
 
-    easyChatApp->unk_18 = EasyChatWordList_New(HEAP_ID_34, easyChatApp->args);
-    easyChatApp->unk_14 = EasyChatWordListScreen_New(easyChatApp, easyChatApp->unk_18);
+    easyChatApp->wordList = EasyChatWordList_New(HEAP_ID_34, easyChatApp->args);
+    easyChatApp->wordListScreen = EasyChatWordListScreen_New(easyChatApp, easyChatApp->wordList);
     easyChatApp->buttonAction = TouchScreenActions_RegisterHandler(rects, NELEMS(rects), EasyChat_TouchButtonCallback, easyChatApp, HEAP_ID_34);
     easyChatApp->unk_44 = 0;
     easyChatApp->unk_48 = 0;
@@ -201,52 +201,52 @@ static EasyChatApp *EasyChatApp_New(ApplicationManager *appMan)
 
 static void EasyChat_InitSentenceState(EasyChatSentenceState *param0, EasyChatSentence *param1)
 {
-    param0->unk_00 = EasyChatSentence_GetType(param1);
-    param0->unk_03 = EasyChatSentence_GetBankEntryCountForType(param0->unk_00);
-    param0->unk_02 = EasyChatSentence_GetID(param1);
+    param0->type = EasyChatSentence_GetType(param1);
+    param0->bankEntryCount = EasyChatSentence_GetBankEntryCountForType(param0->type);
+    param0->id = EasyChatSentence_GetID(param1);
 }
 
 static void EasyChat_AdvanceSentenceTemplate(EasyChatSentenceState *param0, EasyChatSentence *param1)
 {
-    param0->unk_02++;
+    param0->id++;
 
-    if (param0->unk_02 >= param0->unk_03) {
-        param0->unk_02 = 0;
-        param0->unk_00++;
+    if (param0->id >= param0->bankEntryCount) {
+        param0->id = 0;
+        param0->type++;
 
-        if (param0->unk_00 >= 5) {
-            param0->unk_00 = 0;
+        if (param0->type >= 5) {
+            param0->type = 0;
         }
 
-        param0->unk_03 = EasyChatSentence_GetBankEntryCountForType(param0->unk_00);
+        param0->bankEntryCount = EasyChatSentence_GetBankEntryCountForType(param0->type);
     }
 
-    EasyChatSentence_SetTypeAndID(param1, param0->unk_00, param0->unk_02);
+    EasyChatSentence_SetTypeAndID(param1, param0->type, param0->id);
 }
 
 static void EasyChat_RetreatSentenceTemplate(EasyChatSentenceState *param0, EasyChatSentence *param1)
 {
-    param0->unk_02--;
+    param0->id--;
 
-    if (param0->unk_02 < 0) {
-        param0->unk_00--;
+    if (param0->id < 0) {
+        param0->type--;
 
-        if (param0->unk_00 < 0) {
-            param0->unk_00 = (5 - 1);
+        if (param0->type < 0) {
+            param0->type = (5 - 1);
         }
 
-        param0->unk_03 = EasyChatSentence_GetBankEntryCountForType(param0->unk_00);
-        param0->unk_02 = (param0->unk_03 - 1);
+        param0->bankEntryCount = EasyChatSentence_GetBankEntryCountForType(param0->type);
+        param0->id = (param0->bankEntryCount - 1);
     }
 
-    EasyChatSentence_SetTypeAndID(param1, param0->unk_00, param0->unk_02);
+    EasyChatSentence_SetTypeAndID(param1, param0->type, param0->id);
 }
 
 static void EasyChat_FreeAppData(EasyChatApp *easyChatApp, ApplicationManager *appMan)
 {
     TouchScreenActions_Free(easyChatApp->buttonAction);
-    EasyChatWordListScreen_Free(easyChatApp->unk_14);
-    EasyChatWordList_Free(easyChatApp->unk_18);
+    EasyChatWordListScreen_Free(easyChatApp->wordListScreen);
+    EasyChatWordList_Free(easyChatApp->wordList);
     ApplicationManager_FreeData(appMan);
 }
 
@@ -280,8 +280,8 @@ static int EasyChat_Main_OneWord(EasyChatApp *easyChatApp, int *param1)
 
         if (EC_JOY_NEW(PAD_KEY_DOWN | PAD_BUTTON_START)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            easyChatApp->unk_4C = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_04);
+            easyChatApp->wordColumn = 0;
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_04);
             *param1 = 1;
             break;
         }
@@ -295,18 +295,18 @@ static int EasyChat_Main_OneWord(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_NEW(PAD_BUTTON_A)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             easyChatApp->categoryCursorPos = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_06);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_06);
             *param1 = 2;
             break;
         }
         break;
     case 1:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_ChooseWordColumn);
         }
         break;
     case 2:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_SelectCategory);
         }
         break;
@@ -328,8 +328,8 @@ static int EasyChat_Main_TwoWords(EasyChatApp *easyChatApp, int *param1)
 
         if (EC_JOY_NEW(PAD_KEY_DOWN | PAD_BUTTON_START)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            easyChatApp->unk_4C = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_04);
+            easyChatApp->wordColumn = 0;
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_04);
             *param1 = 1;
             break;
         }
@@ -338,7 +338,7 @@ static int EasyChat_Main_TwoWords(EasyChatApp *easyChatApp, int *param1)
             if (easyChatApp->currentWordSlot != 0) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 easyChatApp->currentWordSlot = 0;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_12);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_12);
             }
             break;
         }
@@ -347,7 +347,7 @@ static int EasyChat_Main_TwoWords(EasyChatApp *easyChatApp, int *param1)
             if (easyChatApp->currentWordSlot == 0) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 easyChatApp->currentWordSlot = 1;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_12);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_12);
             }
             break;
         }
@@ -361,18 +361,18 @@ static int EasyChat_Main_TwoWords(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_NEW(PAD_BUTTON_A)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             easyChatApp->categoryCursorPos = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_06);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_06);
             *param1 = 2;
             break;
         }
         break;
     case 1:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_ChooseWordColumn);
         }
         break;
     case 2:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_SelectCategory);
         }
         break;
@@ -385,7 +385,7 @@ static int EasyChat_Main_Sentence(EasyChatApp *easyChatApp, int *param1)
 {
     switch (*param1) {
     case 0:
-        easyChatApp->unk_64 = EasyChatWordListScreen_GetWordSlotCount(easyChatApp->unk_14);
+        easyChatApp->wordSlotCount = EasyChatWordListScreen_GetWordSlotCount(easyChatApp->wordListScreen);
         *param1 = 1;
     case 1:
         if (easyChatApp->touchedButtonIndex == TOUCH_BUTTON_GROUP_MODE && easyChatApp->mode != GROUP_MODE
@@ -396,10 +396,10 @@ static int EasyChat_Main_Sentence(EasyChatApp *easyChatApp, int *param1)
         }
 
         if (EC_JOY_NEW(PAD_KEY_UP)) {
-            if ((easyChatApp->unk_64) && (easyChatApp->currentWordSlot != 0)) {
+            if ((easyChatApp->wordSlotCount) && (easyChatApp->currentWordSlot != 0)) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
                 easyChatApp->currentWordSlot--;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_12);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_12);
             }
             break;
         }
@@ -407,21 +407,21 @@ static int EasyChat_Main_Sentence(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_NEW(PAD_KEY_DOWN)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
 
-            if ((easyChatApp->unk_64) && (easyChatApp->currentWordSlot < (easyChatApp->unk_64 - 1))) {
+            if ((easyChatApp->wordSlotCount) && (easyChatApp->currentWordSlot < (easyChatApp->wordSlotCount - 1))) {
                 easyChatApp->currentWordSlot++;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_12);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_12);
             } else {
-                easyChatApp->unk_4C = 0;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_04);
+                easyChatApp->wordColumn = 0;
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_04);
                 *param1 = 3;
                 break;
             }
         }
 
-        if (EC_JOY_NEW(PAD_BUTTON_START) || (EC_JOY_NEW(PAD_BUTTON_A) && (easyChatApp->unk_64 == 0))) {
+        if (EC_JOY_NEW(PAD_BUTTON_START) || (EC_JOY_NEW(PAD_BUTTON_A) && (easyChatApp->wordSlotCount == 0))) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            easyChatApp->unk_4C = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_04);
+            easyChatApp->wordColumn = 0;
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_04);
             *param1 = 3;
             break;
         }
@@ -429,8 +429,8 @@ static int EasyChat_Main_Sentence(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_REPEAT(PAD_KEY_LEFT)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             easyChatApp->currentWordSlot = 0;
-            EasyChat_RetreatSentenceTemplate(&easyChatApp->unk_60, &easyChatApp->sentence);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_03);
+            EasyChat_RetreatSentenceTemplate(&easyChatApp->sentenceState, &easyChatApp->sentence);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_03);
             *param1 = 2;
             break;
         }
@@ -438,8 +438,8 @@ static int EasyChat_Main_Sentence(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_REPEAT(PAD_KEY_RIGHT)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             easyChatApp->currentWordSlot = 0;
-            EasyChat_AdvanceSentenceTemplate(&easyChatApp->unk_60, &easyChatApp->sentence);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_03);
+            EasyChat_AdvanceSentenceTemplate(&easyChatApp->sentenceState, &easyChatApp->sentence);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_03);
             *param1 = 2;
             break;
         }
@@ -453,23 +453,23 @@ static int EasyChat_Main_Sentence(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_NEW(PAD_BUTTON_A)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             easyChatApp->categoryCursorPos = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_06);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_06);
             *param1 = 4;
             break;
         }
         break;
     case 2:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, 3)) {
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, 3)) {
             *param1 = 0;
         }
         break;
     case 3:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_ChooseWordColumn);
         }
         break;
     case 4:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_SelectCategory);
         }
         break;
@@ -482,7 +482,7 @@ static int EasyChat_Main_ChooseWordColumn(EasyChatApp *easyChatApp, int *param1)
 {
     switch (*param1) {
     case 0:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             if (easyChatApp->touchedButtonIndex == TOUCH_BUTTON_GROUP_MODE && easyChatApp->mode != GROUP_MODE
                 || easyChatApp->touchedButtonIndex == TOUCH_BUTTON_ABC_MODE && easyChatApp->mode != ABC_MODE
                 || EC_JOY_NEW(PAD_BUTTON_SELECT)) {
@@ -492,21 +492,21 @@ static int EasyChat_Main_ChooseWordColumn(EasyChatApp *easyChatApp, int *param1)
 
             if (EC_JOY_NEW(PAD_KEY_LEFT | PAD_KEY_RIGHT)) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                easyChatApp->unk_4C ^= 1;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_13);
+                easyChatApp->wordColumn ^= 1;
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_13);
                 break;
             }
 
             if (EC_JOY_NEW(PAD_BUTTON_START)) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                easyChatApp->unk_4C = 0;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_13);
+                easyChatApp->wordColumn = 0;
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_13);
                 break;
             }
 
             if (EC_JOY_NEW(PAD_KEY_UP)) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_05);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_05);
                 *param1 = 5;
                 break;
             }
@@ -514,7 +514,7 @@ static int EasyChat_Main_ChooseWordColumn(EasyChatApp *easyChatApp, int *param1)
             if (EC_JOY_NEW(PAD_BUTTON_A)) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
 
-                if (easyChatApp->unk_4C == 0) {
+                if (easyChatApp->wordColumn == 0) {
                     *param1 = 1;
                     break;
                 } else {
@@ -543,7 +543,7 @@ static int EasyChat_Main_ChooseWordColumn(EasyChatApp *easyChatApp, int *param1)
         *param1 = 0;
         break;
     case 5:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, EasyChat_Main_Initial);
         }
         break;
@@ -556,7 +556,7 @@ static int EasyChat_Main_SelectCategory(EasyChatApp *easyChatApp, int *param1)
 {
     switch (*param1) {
     case 0:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, 15) == 0) {
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, 15) == 0) {
             break;
         }
 
@@ -566,14 +566,14 @@ static int EasyChat_Main_SelectCategory(EasyChatApp *easyChatApp, int *param1)
             Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
             easyChatApp->mode ^= 1;
             easyChatApp->categoryCursorPos = 0;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_24);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_24);
             *param1 = 2;
             break;
         }
 
         if (EC_JOY_NEW(PAD_BUTTON_B)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_07);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_07);
             easyChatApp->nextMainFunc = EasyChat_Main_Initial;
             *param1 = 1;
             break;
@@ -582,14 +582,14 @@ static int EasyChat_Main_SelectCategory(EasyChatApp *easyChatApp, int *param1)
         if (EC_JOY_NEW(PAD_BUTTON_A)) {
             if (easyChatApp->categoryCursorPos == EASY_CHAT_CANCEL) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_07);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_07);
                 easyChatApp->nextMainFunc = EasyChat_Main_Initial;
                 *param1 = 1;
             } else if (EasyChat_CategoryHasWords(easyChatApp)) {
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChat_InitWordSelectCursor(&easyChatApp->unk_54, easyChatApp);
+                EasyChat_InitWordSelectCursor(&easyChatApp->wordSelectCursor, easyChatApp);
                 easyChatApp->nextMainFunc = EasyChat_Main_SelectWord;
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_08);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_08);
                 *param1 = 1;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_CUSTOM06_sseq);
@@ -599,17 +599,17 @@ static int EasyChat_Main_SelectCategory(EasyChatApp *easyChatApp, int *param1)
 
         if (EasyChat_HandleCategoryCursorMovement(easyChatApp)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_14);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_14);
             break;
         }
         break;
     case 1:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, easyChatApp->nextMainFunc);
         }
         break;
     case 2:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, 24)) {
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, 24)) {
             *param1 = 0;
         }
         break;
@@ -621,9 +621,9 @@ static int EasyChat_Main_SelectCategory(EasyChatApp *easyChatApp, int *param1)
 static BOOL EasyChat_CategoryHasWords(EasyChatApp *easyChatApp)
 {
     if (easyChatApp->mode == GROUP_MODE) {
-        return EasyChatWordList_GetGroupWordCount(easyChatApp->unk_18, easyChatApp->categoryCursorPos) != 0;
+        return EasyChatWordList_GetGroupWordCount(easyChatApp->wordList, easyChatApp->categoryCursorPos) != 0;
     } else {
-        return EasyChatWordList_GetLetterWordCount(easyChatApp->unk_18, easyChatApp->categoryCursorPos) != 0;
+        return EasyChatWordList_GetLetterWordCount(easyChatApp->wordList, easyChatApp->categoryCursorPos) != 0;
     }
 }
 
@@ -740,42 +740,42 @@ static BOOL EasyChat_HandleABCModeCursorMovement(EasyChatApp *easyChatApp)
 
 static void EasyChat_InitWordSelectCursor(EasyChatWordSelectCursor *param0, EasyChatApp *easyChatApp)
 {
-    param0->unk_00 = 0;
-    param0->unk_06 = 0;
-    param0->unk_07 = 0;
-    param0->unk_04 = EasyChat_GetCategoryWordCount(easyChatApp);
-    param0->unk_08 = 0;
+    param0->row = 0;
+    param0->cursorColumn = 0;
+    param0->cursorRow = 0;
+    param0->wordCount = EasyChat_GetCategoryWordCount(easyChatApp);
+    param0->scrollDirection = 0;
 
-    if (param0->unk_04 > 10) {
-        param0->unk_02 = ((param0->unk_04 - 10) / 2) + (param0->unk_04 & 1);
+    if (param0->wordCount > 10) {
+        param0->maxRow = ((param0->wordCount - 10) / 2) + (param0->wordCount & 1);
     } else {
-        param0->unk_02 = 0;
+        param0->maxRow = 0;
     }
 }
 
 static u32 EasyChat_WordSelectCursor_GetIndex(const EasyChatWordSelectCursor *param0)
 {
-    return (param0->unk_07 * 2) + param0->unk_06;
+    return (param0->cursorRow * 2) + param0->cursorColumn;
 }
 
 static u32 EasyChat_WordSelectCursor_GetLinearIndex(const EasyChatWordSelectCursor *param0)
 {
-    return (param0->unk_00 * 2) + EasyChat_WordSelectCursor_GetIndex(param0);
+    return (param0->row * 2) + EasyChat_WordSelectCursor_GetIndex(param0);
 }
 
 static int EasyChat_WordSelectCursor_GetScrollDirection(const EasyChatWordSelectCursor *param0)
 {
-    return param0->unk_08;
+    return param0->scrollDirection;
 }
 
 static int EasyChat_WordSelectCursor_GetRow(const EasyChatWordSelectCursor *param0)
 {
-    return param0->unk_00;
+    return param0->row;
 }
 
 static int EasyChat_WordSelectCursor_GetMaxRow(const EasyChatWordSelectCursor *param0)
 {
-    return param0->unk_02;
+    return param0->maxRow;
 }
 
 static int EasyChat_Main_SelectWord(EasyChatApp *easyChatApp, int *param1)
@@ -788,7 +788,7 @@ static int EasyChat_Main_SelectWord(EasyChatApp *easyChatApp, int *param1)
             Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
             easyChatApp->categoryCursorPos = 0;
             easyChatApp->mode ^= 1;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_09);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_09);
             easyChatApp->nextMainFunc = EasyChat_Main_SelectCategory;
             *param1 = 3;
             break;
@@ -797,33 +797,33 @@ static int EasyChat_Main_SelectWord(EasyChatApp *easyChatApp, int *param1)
         int v0;
 
         if (easyChatApp->touchedButtonIndex == TOUCH_BUTTON_PAGE_UP) {
-            v0 = EasyChat_WordSelectCursor_PageUp(&easyChatApp->unk_54);
+            v0 = EasyChat_WordSelectCursor_PageUp(&easyChatApp->wordSelectCursor);
         } else if (easyChatApp->touchedButtonIndex == TOUCH_BUTTON_PAGE_DOWN) {
-            v0 = EasyChat_WordSelectCursor_PageDown(&easyChatApp->unk_54);
+            v0 = EasyChat_WordSelectCursor_PageDown(&easyChatApp->wordSelectCursor);
         } else {
-            v0 = EasyChat_HandleSelectWordInput(&easyChatApp->unk_54, easyChatApp->pressedKeysRepeatable);
+            v0 = EasyChat_HandleSelectWordInput(&easyChatApp->wordSelectCursor, easyChatApp->pressedKeysRepeatable);
         }
 
         switch (v0) {
         case 1:
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_15);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_15);
             return 0;
         case 2:
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_16);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_16);
             *param1 = 1;
             return 0;
         case 3:
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_16);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_16);
             *param1 = 2;
             return 0;
         }
 
         if (EC_JOY_NEW(PAD_BUTTON_B)) {
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_09);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_09);
             easyChatApp->nextMainFunc = EasyChat_Main_SelectCategory;
             *param1 = 3;
             break;
@@ -833,24 +833,24 @@ static int EasyChat_Main_SelectWord(EasyChatApp *easyChatApp, int *param1)
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
             EasyChat_CommitSelectedWord(easyChatApp);
             easyChatApp->nextMainFunc = EasyChat_Main_Initial;
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_10);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_10);
             *param1 = 3;
             break;
         }
         break;
     case 1:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, EASY_CHAT_SYSTASK_16)) {
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_16)) {
             *param1 = 0;
         }
         break;
     case 2:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, EASY_CHAT_SYSTASK_16)) {
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_15);
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_16)) {
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_15);
             *param1 = 0;
         }
         break;
     case 3:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_SetMainFunc(easyChatApp, easyChatApp->nextMainFunc);
             *param1 = 0;
         }
@@ -863,31 +863,31 @@ static int EasyChat_Main_SelectWord(EasyChatApp *easyChatApp, int *param1)
 static int EasyChat_HandleSelectWordInput(EasyChatWordSelectCursor *param0, u16 pressedKeysRepeatable)
 {
     if (pressedKeysRepeatable & PAD_KEY_DOWN) {
-        if (param0->unk_07 < 4) {
-            param0->unk_07++;
+        if (param0->cursorRow < 4) {
+            param0->cursorRow++;
             u32 v0 = EasyChat_WordSelectCursor_GetLinearIndex(param0);
 
-            if (v0 < param0->unk_04) {
+            if (v0 < param0->wordCount) {
                 return 1;
             }
 
-            if (v0 == param0->unk_04) {
+            if (v0 == param0->wordCount) {
                 if (v0 & 1) {
-                    param0->unk_06 = 0;
+                    param0->cursorColumn = 0;
                     return 1;
                 }
             }
 
-            param0->unk_07--;
+            param0->cursorRow--;
             return 4;
-        } else if (param0->unk_00 < param0->unk_02) {
-            param0->unk_08 = 1;
-            param0->unk_00++;
+        } else if (param0->row < param0->maxRow) {
+            param0->scrollDirection = 1;
+            param0->row++;
 
-            if (EasyChat_WordSelectCursor_GetLinearIndex(param0) < param0->unk_04) {
+            if (EasyChat_WordSelectCursor_GetLinearIndex(param0) < param0->wordCount) {
                 return 2;
             } else {
-                param0->unk_06 = 0;
+                param0->cursorColumn = 0;
                 return 3;
             }
         }
@@ -896,12 +896,12 @@ static int EasyChat_HandleSelectWordInput(EasyChatWordSelectCursor *param0, u16 
     }
 
     if (pressedKeysRepeatable & PAD_KEY_UP) {
-        if (param0->unk_07) {
-            param0->unk_07--;
+        if (param0->cursorRow) {
+            param0->cursorRow--;
             return 1;
-        } else if (param0->unk_00) {
-            param0->unk_08 = -1;
-            param0->unk_00--;
+        } else if (param0->row) {
+            param0->scrollDirection = -1;
+            param0->row--;
             return 2;
         }
 
@@ -909,13 +909,13 @@ static int EasyChat_HandleSelectWordInput(EasyChatWordSelectCursor *param0, u16 
     }
 
     if (pressedKeysRepeatable & (PAD_KEY_LEFT | PAD_KEY_RIGHT)) {
-        param0->unk_06 ^= 1;
+        param0->cursorColumn ^= 1;
 
-        if (EasyChat_WordSelectCursor_GetLinearIndex(param0) < param0->unk_04) {
+        if (EasyChat_WordSelectCursor_GetLinearIndex(param0) < param0->wordCount) {
             return 1;
         }
 
-        param0->unk_06 ^= 1;
+        param0->cursorColumn ^= 1;
         return 4;
     }
 
@@ -932,13 +932,13 @@ static int EasyChat_HandleSelectWordInput(EasyChatWordSelectCursor *param0, u16 
 
 static int EasyChat_WordSelectCursor_PageUp(EasyChatWordSelectCursor *param0)
 {
-    if (param0->unk_00) {
-        if (param0->unk_00 >= 5) {
-            param0->unk_00 -= 5;
-            param0->unk_08 = -5;
+    if (param0->row) {
+        if (param0->row >= 5) {
+            param0->row -= 5;
+            param0->scrollDirection = -5;
         } else {
-            param0->unk_08 = -(param0->unk_00);
-            param0->unk_00 = 0;
+            param0->scrollDirection = -(param0->row);
+            param0->row = 0;
         }
 
         return 2;
@@ -949,19 +949,19 @@ static int EasyChat_WordSelectCursor_PageUp(EasyChatWordSelectCursor *param0)
 
 static int EasyChat_WordSelectCursor_PageDown(EasyChatWordSelectCursor *param0)
 {
-    if (param0->unk_00 < param0->unk_02) {
-        if ((param0->unk_00 + 5) <= param0->unk_02) {
-            param0->unk_08 = 5;
-            param0->unk_00 += 5;
+    if (param0->row < param0->maxRow) {
+        if ((param0->row + 5) <= param0->maxRow) {
+            param0->scrollDirection = 5;
+            param0->row += 5;
         } else {
-            param0->unk_08 = param0->unk_02 - param0->unk_00;
-            param0->unk_00 = param0->unk_02;
+            param0->scrollDirection = param0->maxRow - param0->row;
+            param0->row = param0->maxRow;
         }
 
-        if (EasyChat_WordSelectCursor_GetLinearIndex(param0) < param0->unk_04) {
+        if (EasyChat_WordSelectCursor_GetLinearIndex(param0) < param0->wordCount) {
             return 2;
         } else {
-            param0->unk_06 = 0;
+            param0->cursorColumn = 0;
             return 3;
         }
     }
@@ -971,13 +971,13 @@ static int EasyChat_WordSelectCursor_PageDown(EasyChatWordSelectCursor *param0)
 
 static BOOL EasyChat_CommitSelectedWord(EasyChatApp *easyChatApp)
 {
-    u32 v0 = EasyChat_WordSelectCursor_GetLinearIndex(&easyChatApp->unk_54);
+    u32 v0 = EasyChat_WordSelectCursor_GetLinearIndex(&easyChatApp->wordSelectCursor);
     u16 v1;
 
     if (easyChatApp->mode == GROUP_MODE) {
-        v1 = EasyChatWordList_GetWordByGroupIndex(easyChatApp->unk_18, easyChatApp->categoryCursorPos, v0);
+        v1 = EasyChatWordList_GetWordByGroupIndex(easyChatApp->wordList, easyChatApp->categoryCursorPos, v0);
     } else {
-        v1 = EasyChatWordList_GetWordByLetterIndex(easyChatApp->unk_18, easyChatApp->categoryCursorPos, v0);
+        v1 = EasyChatWordList_GetWordByLetterIndex(easyChatApp->wordList, easyChatApp->categoryCursorPos, v0);
     }
 
     switch (easyChatApp->type) {
@@ -999,11 +999,11 @@ static int EasyChat_Main_Exit(EasyChatApp *easyChatApp, int *param1)
 {
     switch (*param1) {
     case 0:
-        EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_01);
+        EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_01);
         (*param1)++;
         break;
     case 1:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             return 1;
         }
         break;
@@ -1027,11 +1027,11 @@ static void EasyChat_InitialFadeTask(EasyChatApp *easyChatApp, int *param1)
 {
     switch (*param1) {
     case 0:
-        EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_02);
+        EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_02);
         (*param1)++;
         break;
     case 1:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_ClearTaskFunc(easyChatApp);
         }
         break;
@@ -1044,11 +1044,11 @@ static void EasyChat_ConfirmTask(EasyChatApp *easyChatApp, int *param1)
     case 0:
         if (EasyChat_HasContentChanged(easyChatApp) || EasyChatArgs_ForceConfirm(easyChatApp->args)) {
             if (EasyChat_IsEntryComplete(easyChatApp)) {
-                EasyChat_InitMenuCursor(&easyChatApp->unk_66, 1, 0);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_18);
+                EasyChat_InitMenuCursor(&easyChatApp->menuCursor, 1, 0);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_18);
                 *param1 = 1;
             } else {
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_20);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_20);
                 *param1 = 2;
             }
         } else {
@@ -1056,16 +1056,16 @@ static void EasyChat_ConfirmTask(EasyChatApp *easyChatApp, int *param1)
         }
         break;
     case 1:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, 21)) {
-            switch (EasyChat_HandleMenuInput(&(easyChatApp->unk_66), easyChatApp->pressedKeys)) {
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, 21)) {
+            switch (EasyChat_HandleMenuInput(&(easyChatApp->menuCursor), easyChatApp->pressedKeys)) {
             case -3:
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_21);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_21);
                 break;
             case 1:
             case -2:
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_22);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_22);
                 *param1 = 3;
                 break;
             case 0:
@@ -1084,12 +1084,12 @@ static void EasyChat_ConfirmTask(EasyChatApp *easyChatApp, int *param1)
         break;
     case 2:
         if (EC_JOY_NEW(PAD_BUTTON_A | PAD_BUTTON_B | PAD_PLUS_KEY_MASK)) {
-            EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_17);
+            EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_17);
             *param1 = 3;
         }
         break;
     case 3:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_ClearTaskFunc(easyChatApp);
         }
         break;
@@ -1100,21 +1100,21 @@ static void EasyChat_ExitTask(EasyChatApp *easyChatApp, int *param1)
 {
     switch (*param1) {
     case 0:
-        EasyChat_InitMenuCursor(&easyChatApp->unk_66, 1, 1);
-        EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_19);
+        EasyChat_InitMenuCursor(&easyChatApp->menuCursor, 1, 1);
+        EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_19);
         *param1 = 1;
         break;
     case 1:
-        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->unk_14, 21)) {
-            switch (EasyChat_HandleMenuInput(&(easyChatApp->unk_66), easyChatApp->pressedKeys)) {
+        if (EasyChatWordListScreen_IsTaskDone(easyChatApp->wordListScreen, 21)) {
+            switch (EasyChat_HandleMenuInput(&(easyChatApp->menuCursor), easyChatApp->pressedKeys)) {
             case -3:
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_21);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_21);
                 break;
             case 1:
             case -2:
                 Sound_PlayEffect(SE_CONFIRM_sseq_3);
-                EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_22);
+                EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_22);
                 *param1 = 2;
                 break;
             case 0:
@@ -1126,7 +1126,7 @@ static void EasyChat_ExitTask(EasyChatApp *easyChatApp, int *param1)
         }
         break;
     case 2:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_ClearTaskFunc(easyChatApp);
         }
         break;
@@ -1154,32 +1154,32 @@ static BOOL EasyChat_IsEntryComplete(EasyChatApp *easyChatApp)
 
 static void EasyChat_InitMenuCursor(EasyChatMenuCursor *param0, int param1, int param2)
 {
-    param0->unk_00 = param2;
-    param0->unk_01 = param1;
+    param0->index = param2;
+    param0->maxIndex = param1;
 }
 
 static int EasyChat_HandleMenuInput(EasyChatMenuCursor *param0, u16 param1)
 {
     if (param1 & PAD_KEY_UP) {
-        if (param0->unk_00 == 0) {
+        if (param0->index == 0) {
             return -4;
         } else {
-            param0->unk_00--;
+            param0->index--;
             return -3;
         }
     }
 
     if (param1 & PAD_KEY_DOWN) {
-        if (param0->unk_00 == param0->unk_01) {
+        if (param0->index == param0->maxIndex) {
             return -4;
         } else {
-            param0->unk_00++;
+            param0->index++;
             return -3;
         }
     }
 
     if (param1 & PAD_BUTTON_A) {
-        return param0->unk_00;
+        return param0->index;
     }
 
     if (param1 & PAD_BUTTON_B) {
@@ -1191,7 +1191,7 @@ static int EasyChat_HandleMenuInput(EasyChatMenuCursor *param0, u16 param1)
 
 static u32 EasyChat_MenuCursor_GetIndex(const EasyChatMenuCursor *param0)
 {
-    return param0->unk_00;
+    return param0->index;
 }
 
 static void EasyChat_ToggleModeTask(EasyChatApp *easyChatApp, int *param1)
@@ -1200,11 +1200,11 @@ static void EasyChat_ToggleModeTask(EasyChatApp *easyChatApp, int *param1)
     case 0:
         Sound_PlayEffect(SEQ_SE_DP_BUTTON9_sseq);
         easyChatApp->mode ^= 1;
-        EasyChatWordListScreen_StartTask(easyChatApp->unk_14, EASY_CHAT_SYSTASK_23);
+        EasyChatWordListScreen_StartTask(easyChatApp->wordListScreen, EASY_CHAT_SYSTASK_23);
         *param1 = 1;
         break;
     case 1:
-        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->unk_14)) {
+        if (EasyChatWordListScreen_AreTasksDone(easyChatApp->wordListScreen)) {
             EasyChat_ClearTaskFunc(easyChatApp);
         }
 
@@ -1253,7 +1253,7 @@ u32 EasyChat_GetCurrentWordSlot(const EasyChatApp *easyChatApp)
 
 u32 EasyChat_GetWordColumn(const EasyChatApp *easyChatApp)
 {
-    return easyChatApp->unk_4C;
+    return easyChatApp->wordColumn;
 }
 
 u32 EasyChat_GetCategoryCursorPos(const EasyChatApp *easyChatApp)
@@ -1264,40 +1264,40 @@ u32 EasyChat_GetCategoryCursorPos(const EasyChatApp *easyChatApp)
 u32 EasyChat_GetCategoryWordCount(const EasyChatApp *easyChatApp)
 {
     if (easyChatApp->mode == GROUP_MODE) {
-        return EasyChatWordList_GetGroupWordCount(easyChatApp->unk_18, easyChatApp->categoryCursorPos);
+        return EasyChatWordList_GetGroupWordCount(easyChatApp->wordList, easyChatApp->categoryCursorPos);
     } else {
-        return EasyChatWordList_GetLetterWordCount(easyChatApp->unk_18, easyChatApp->categoryCursorPos);
+        return EasyChatWordList_GetLetterWordCount(easyChatApp->wordList, easyChatApp->categoryCursorPos);
     }
 }
 
 void EasyChat_GetWordString(const EasyChatApp *easyChatApp, u32 param1, String *param2)
 {
     if (easyChatApp->mode == GROUP_MODE) {
-        EasyChatWordList_GetStringByGroupIndex(easyChatApp->unk_18, easyChatApp->categoryCursorPos, param1, param2);
+        EasyChatWordList_GetStringByGroupIndex(easyChatApp->wordList, easyChatApp->categoryCursorPos, param1, param2);
     } else {
-        EasyChatWordList_GetStringByLetterIndex(easyChatApp->unk_18, easyChatApp->categoryCursorPos, param1, param2);
+        EasyChatWordList_GetStringByLetterIndex(easyChatApp->wordList, easyChatApp->categoryCursorPos, param1, param2);
     }
 }
 
 u32 EasyChat_GetWordSelectCursorIndex(const EasyChatApp *easyChatApp)
 {
-    return EasyChat_WordSelectCursor_GetIndex(&(easyChatApp->unk_54));
+    return EasyChat_WordSelectCursor_GetIndex(&(easyChatApp->wordSelectCursor));
 }
 
 int EasyChat_GetWordSelectScrollDirection(const EasyChatApp *easyChatApp)
 {
-    return EasyChat_WordSelectCursor_GetScrollDirection(&(easyChatApp->unk_54));
+    return EasyChat_WordSelectCursor_GetScrollDirection(&(easyChatApp->wordSelectCursor));
 }
 
 BOOL EasyChat_IsWordSelectRowBelowFirst(const EasyChatApp *easyChatApp)
 {
-    return EasyChat_WordSelectCursor_GetRow(&(easyChatApp->unk_54)) != 0;
+    return EasyChat_WordSelectCursor_GetRow(&(easyChatApp->wordSelectCursor)) != 0;
 }
 
 BOOL EasyChat_IsWordSelectRowAboveLast(const EasyChatApp *easyChatApp)
 {
-    int v0 = EasyChat_WordSelectCursor_GetRow(&(easyChatApp->unk_54));
-    int v1 = EasyChat_WordSelectCursor_GetMaxRow(&(easyChatApp->unk_54));
+    int v0 = EasyChat_WordSelectCursor_GetRow(&(easyChatApp->wordSelectCursor));
+    int v1 = EasyChat_WordSelectCursor_GetMaxRow(&(easyChatApp->wordSelectCursor));
 
     return v0 < v1;
 }
@@ -1309,5 +1309,5 @@ int EasyChat_GetFrame(const EasyChatApp *easyChatApp)
 
 u32 EasyChat_GetMenuCursorIndex(const EasyChatApp *easyChatApp)
 {
-    return EasyChat_MenuCursor_GetIndex(&easyChatApp->unk_66);
+    return EasyChat_MenuCursor_GetIndex(&easyChatApp->menuCursor);
 }

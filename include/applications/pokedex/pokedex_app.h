@@ -11,26 +11,26 @@
 #include "pokedex_memory.h"
 
 typedef struct PokedexApp {
-    BOOL unk_00;
+    BOOL exitFlag;
     enum HeapID heapID;
     PokedexMemory *pokedexMemory;
     PokedexSortData sortData;
     PokedexGraphicData graphicData;
-    int unk_1A60;
-    int unk_1A64;
-    int unk_1A68;
-    int unk_1A6C;
-    PokedexScreenStateSet *unk_1A70;
-    PokedexScreenStateSet *unk_1A74;
-    PokedexScreenStateSet *unk_1A78;
-    PokedexScreenStateSet *unk_1A7C;
-    PokedexScreenState unk_1A80;
-    PokedexScreenManager unk_1A94[10];
-    PokedexScreenManager unk_1C24[8];
-    PokedexUpdater *unk_1D64;
-    PokedexUpdater *unk_1D68;
-    PokedexUpdater *unk_1D6C;
-    PokedexUpdater *unk_1D70;
+    int transitionRequest1;
+    int transitionRequest2;
+    int transitionRequest3;
+    int transitionRequest4;
+    PokedexScreenStateSet *screenStateSet1;
+    PokedexScreenStateSet *screenStateSet2;
+    PokedexScreenStateSet *screenStateSet3;
+    PokedexScreenStateSet *screenStateSet4;
+    PokedexScreenState baseScreenState;
+    PokedexScreenManager screenManagers[10];
+    PokedexScreenManager subScreenManagers[8];
+    PokedexUpdater *updater1;
+    PokedexUpdater *updater2;
+    PokedexUpdater *updater3;
+    PokedexUpdater *updater4;
 } PokedexApp;
 
 #endif // POKEPLATINUM_POKEDEX_APP_H

@@ -11,15 +11,15 @@
 #include "sprite.h"
 
 typedef struct {
-    EasyChatWordListScreen *unk_00;
+    EasyChatWordListScreen *wordListScreen;
     const EasyChatApp *easyChatApp;
-    const EasyChatWordList *unk_08;
+    const EasyChatWordList *wordList;
     BgConfig *bgConfig;
     u32 unk_10;
-    u32 unk_14;
+    u32 animStage;
     int dummy;
-    EasyChatBlendAnimation unk_1C;
-    EasyChatScrollAnimation unk_3C;
+    EasyChatBlendAnimation blendAnimation;
+    EasyChatScrollAnimation scrollAnimation;
     Sprite *cursorSprite;
 } EasyChatCategoriesContext;
 

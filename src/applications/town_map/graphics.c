@@ -262,11 +262,11 @@ BOOL TownMap_UpdateBottomScreen(TownMapAppData *appData)
     TownMapGraphicsManager *graphicsMan = appData->graphicsMan;
 
     if (graphicsMan->zoomedInMapMvtDone & TRUE) {
-        if (graphicsMan->unk_15_0 >= 2) {
+        if (graphicsMan->cursorMoveState >= 2) {
             UpdateBottomScreenText(appData);
             graphicsMan->zoomedInMapMvtDone = 0x0;
             graphicsMan->zoomedInMapMvtFrame = 0;
-            graphicsMan->unk_15_0 = 0;
+            graphicsMan->cursorMoveState = 0;
         }
     } else if (graphicsMan->showingZoomedInMap == TRUE && graphicsMan->zoomedInMapMvtFrame == 1) {
         SetHoveredLocation(appData, NULL, graphicsMan->hoveredLocationMapHeader);
@@ -376,8 +376,8 @@ static void HandleInput(TownMapAppData *appData, int heldKeys)
 
     if (graphicsMan->queuedMovement) {
         if (!(heldKeys & (PAD_KEY_UP | PAD_KEY_DOWN | PAD_KEY_RIGHT | PAD_KEY_LEFT))) {
-            if (graphicsMan->unk_15_0 == 1) {
-                ++graphicsMan->unk_15_0;
+            if (graphicsMan->cursorMoveState == 1) {
+                ++graphicsMan->cursorMoveState;
             }
         }
 
@@ -389,8 +389,8 @@ static void HandleInput(TownMapAppData *appData, int heldKeys)
     }
 
     if (!(heldKeys & (PAD_KEY_UP | PAD_KEY_DOWN | PAD_KEY_RIGHT | PAD_KEY_LEFT))) {
-        if (graphicsMan->unk_15_0 == 1) {
-            ++graphicsMan->unk_15_0;
+        if (graphicsMan->cursorMoveState == 1) {
+            ++graphicsMan->cursorMoveState;
         }
 
         return;
@@ -434,7 +434,7 @@ static void HandleInput(TownMapAppData *appData, int heldKeys)
     }
 
     graphicsMan->zoomedInMapMvtDone = 0;
-    graphicsMan->unk_15_0 = 1;
+    graphicsMan->cursorMoveState = 1;
 
     return;
 }
