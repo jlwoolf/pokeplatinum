@@ -14,23 +14,23 @@
 #include "overworld_anim_manager.h"
 
 typedef struct {
-    FieldEffectManager *unk_00;
+    FieldEffectManager *fieldEffectManager;
 } FieldEffectRenderer1BContext;
 
 typedef struct {
     FieldSystem *fieldSystem;
-    FieldEffectManager *unk_04;
-    FieldEffectRenderer1BContext *unk_08;
-    MapObject *unk_0C;
+    FieldEffectManager *fieldEffectManager;
+    FieldEffectRenderer1BContext *context;
+    MapObject *mapObject;
 } FieldEffectRenderer1BParams;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
+    int animIndex;
+    int localID;
+    int mapHeaderID;
     int unk_0C;
-    FieldEffectRenderer1BParams unk_10;
-    Billboard *unk_20;
+    FieldEffectRenderer1BParams params;
+    Billboard *billboard;
 } FieldEffectRenderer1BAnim;
 
 static void FieldMap_021F3EA0(FieldEffectRenderer1BContext *param0);
@@ -42,7 +42,7 @@ const BillboardAnim Unk_FieldMap_022006B0[];
 void *FieldMap_021F3E74(FieldEffectManager *param0)
 {
     FieldEffectRenderer1BContext *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer1BContext)), 0, 0);
-    v0->unk_00 = param0;
+    v0->fieldEffectManager = param0;
 
     FieldMap_021F3EA0(v0);
     return v0;
@@ -58,19 +58,19 @@ void FieldMap_021F3E90(void *param0)
 
 static void FieldMap_021F3EA0(FieldEffectRenderer1BContext *param0)
 {
-    FieldMap_021DF9E0(param0->unk_00, 9, 107);
-    FieldMap_021DFA14(param0->unk_00, 9, 180);
-    FieldMap_021DFA3C(param0->unk_00, 10, 12, 1);
+    FieldMap_021DF9E0(param0->fieldEffectManager, 9, 107);
+    FieldMap_021DFA14(param0->fieldEffectManager, 9, 180);
+    FieldMap_021DFA3C(param0->fieldEffectManager, 10, 12, 1);
 
-    FieldMap_021DF864(param0->unk_00, 11, 9, 9, 10, 0, Unk_FieldMap_022006B0);
+    FieldMap_021DF864(param0->fieldEffectManager, 11, 9, 9, 10, 0, Unk_FieldMap_022006B0);
 }
 
 static void FieldMap_021F3EE8(FieldEffectRenderer1BContext *param0)
 {
-    FieldMap_021DFA08(param0->unk_00, 9);
-    FieldMap_021DFA30(param0->unk_00, 9);
-    FieldMap_021DFA7C(param0->unk_00, 10);
-    FieldMap_021DF9D4(param0->unk_00, 11);
+    FieldMap_021DFA08(param0->fieldEffectManager, 9);
+    FieldMap_021DFA30(param0->fieldEffectManager, 9);
+    FieldMap_021DFA7C(param0->fieldEffectManager, 10);
+    FieldMap_021DF9D4(param0->fieldEffectManager, 11);
 }
 
 void FieldMap_021F3F10(MapObject *param0)
@@ -84,9 +84,9 @@ void FieldMap_021F3F10(MapObject *param0)
     v1 = MapObject_GetFieldEffectManager(param0);
 
     v0.fieldSystem = MapObject_FieldSystem(param0);
-    v0.unk_04 = v1;
-    v0.unk_08 = FieldEffectManager_GetRendererContext(v1, 27);
-    v0.unk_0C = param0;
+    v0.fieldEffectManager = v1;
+    v0.context = FieldEffectManager_GetRendererContext(v1, 27);
+    v0.mapObject = param0;
 
     MapObject_GetPosPtr(param0, &v3);
     VecFx32_SetPosFromMapCoords(MapObject_GetX(param0), MapObject_GetZ(param0), &v3);
@@ -104,13 +104,13 @@ static int FieldMap_021F3F74(OverworldAnimManager *param0, void *param1)
     v1 = param1;
     v2 = OverworldAnimManager_GetUserData(param0);
 
-    v1->unk_10 = *v2;
-    v1->unk_04 = MapObject_GetLocalID(v1->unk_10.unk_0C);
-    v1->unk_08 = MapObject_GetMapHeaderID(v1->unk_10.unk_0C);
+    v1->params = *v2;
+    v1->localID = MapObject_GetLocalID(v1->params.mapObject);
+    v1->mapHeaderID = MapObject_GetMapHeaderID(v1->params.mapObject);
 
     OverworldAnimManager_GetPosition(param0, &v0);
 
-    v1->unk_20 = FieldMap_021DF84C(v1->unk_10.unk_04, 11, &v0);
+    v1->billboard = FieldMap_021DF84C(v1->params.fieldEffectManager, 11, &v0);
 
     return 1;
 }
@@ -118,19 +118,19 @@ static int FieldMap_021F3F74(OverworldAnimManager *param0, void *param1)
 static void FieldMap_021F3FB8(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer1BAnim *v0 = param1;
-    Billboard_Delete(v0->unk_20);
+    Billboard_Delete(v0->billboard);
 }
 
 static void FieldMap_021F3FC4(OverworldAnimManager *param0, void *param1)
 {
     int v0;
     FieldEffectRenderer1BAnim *v1 = param1;
-    MapObject *v2 = v1->unk_10.unk_0C;
+    MapObject *v2 = v1->params.mapObject;
 
-    switch (v1->unk_00) {
+    switch (v1->animIndex) {
     case 0:
-        Billboard_AdvanceAnim(v1->unk_20, FX32_ONE);
-        v0 = Billboard_GetAnimFrameNum(v1->unk_20) / FX32_ONE;
+        Billboard_AdvanceAnim(v1->billboard, FX32_ONE);
+        v0 = Billboard_GetAnimFrameNum(v1->billboard) / FX32_ONE;
 
         if (v0 >= 7) {
             FieldEffectManager_FinishAnimManager(param0);
@@ -144,11 +144,11 @@ static void FieldMap_021F3FF4(OverworldAnimManager *param0, void *param1)
 {
     VecFx32 v0, v1;
     FieldEffectRenderer1BAnim *v2 = param1;
-    MapObject *v3 = v2->unk_10.unk_0C;
+    MapObject *v3 = v2->params.mapObject;
 
     OverworldAnimManager_GetPosition(param0, &v0);
     v0.z += (FX32_ONE * 8);
-    Billboard_SetPos(v2->unk_20, &v0);
+    Billboard_SetPos(v2->billboard, &v0);
 }
 
 static const OverworldAnimManagerFuncs Unk_FieldMap_0220069C = {

@@ -16,29 +16,29 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
+    int refCount;
+    int loaded;
     int unk_08;
     SysTask *unk_0C;
-    FieldEffectManager *unk_10;
-    Simple3DModel unk_14;
-    Simple3DRenderObj unk_28;
+    FieldEffectManager *fieldEffectManager;
+    Simple3DModel model;
+    Simple3DRenderObj renderObj;
 } FieldEffectRenderer10Context;
 
 typedef struct {
-    int unk_00;
-    FieldEffectManager *unk_04;
+    int variant;
+    FieldEffectManager *fieldEffectManager;
     FieldSystem *fieldSystem;
-    FieldEffectRenderer10Context *unk_0C;
-    MapObject *unk_10;
+    FieldEffectRenderer10Context *context;
+    MapObject *mapObject;
 } FieldEffectRenderer10Params;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    FieldEffectRenderer10Params unk_10;
+    int done;
+    int variant;
+    int counter;
+    int visible;
+    FieldEffectRenderer10Params params;
 } FieldEffectRenderer10Anim;
 
 static void FieldMap_021F2874(FieldEffectRenderer10Context *param0);
@@ -53,7 +53,7 @@ static const OverworldAnimManagerFuncs Unk_FieldMap_022004B0;
 void *FieldMap_021F2850(FieldEffectManager *param0)
 {
     FieldEffectRenderer10Context *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer10Context)), 0, 0);
-    v0->unk_10 = param0;
+    v0->fieldEffectManager = param0;
 
     return v0;
 }
@@ -68,43 +68,43 @@ void FieldMap_021F2864(void *param0)
 
 static void FieldMap_021F2874(FieldEffectRenderer10Context *param0)
 {
-    param0->unk_00++;
+    param0->refCount++;
 }
 
 static void FieldMap_021F287C(FieldEffectRenderer10Context *param0)
 {
-    param0->unk_00--;
+    param0->refCount--;
 
-    GF_ASSERT(param0->unk_00 >= 0);
+    GF_ASSERT(param0->refCount >= 0);
 }
 
 static void FieldMap_021F288C(FieldEffectRenderer10Context *param0)
 {
-    if (param0->unk_04 == 0) {
-        FieldEffectManager_LoadModel(param0->unk_10, &param0->unk_14, 0, 82, 1);
-        Simple3D_CreateRenderObject(&param0->unk_28, &param0->unk_14);
-        param0->unk_04 = 1;
+    if (param0->loaded == 0) {
+        FieldEffectManager_LoadModel(param0->fieldEffectManager, &param0->model, 0, 82, 1);
+        Simple3D_CreateRenderObject(&param0->renderObj, &param0->model);
+        param0->loaded = 1;
     }
 }
 
 static void FieldMap_021F28C0(FieldEffectRenderer10Context *param0)
 {
-    if (param0->unk_04 == 1) {
-        param0->unk_04 = 0;
-        Simple3D_FreeModel(&param0->unk_14);
+    if (param0->loaded == 1) {
+        param0->loaded = 0;
+        Simple3D_FreeModel(&param0->model);
     }
 }
 
 static void FieldMap_021F28D4(FieldEffectRenderer10Context *param0)
 {
-    if (param0->unk_00 == 0) {
+    if (param0->refCount == 0) {
         FieldMap_021F288C(param0);
     }
 }
 
 static void FieldMap_021F28E4(FieldEffectRenderer10Context *param0)
 {
-    if (param0->unk_00 == 0) {
+    if (param0->refCount == 0) {
         FieldMap_021F28C0(param0);
     }
 }
@@ -117,11 +117,11 @@ OverworldAnimManager *FieldMap_021F28F4(MapObject *param0, int param1, int param
     VecFx32 v3 = { 0, 0, 0 };
     FieldEffectManager *v4 = MapObject_GetFieldEffectManager(param0);
 
-    v2.unk_00 = param3;
-    v2.unk_04 = v4;
+    v2.variant = param3;
+    v2.fieldEffectManager = v4;
     v2.fieldSystem = MapObject_FieldSystem(param0);
-    v2.unk_0C = FieldEffectManager_GetRendererContext(v4, 16);
-    v2.unk_10 = param0;
+    v2.context = FieldEffectManager_GetRendererContext(v4, 16);
+    v2.mapObject = param0;
 
     if (param4 == 0) {
         v3.x = (((param1) << 4) * FX32_ONE) + ((16 * FX32_ONE) >> 1);
@@ -140,7 +140,7 @@ OverworldAnimManager *FieldMap_021F28F4(MapObject *param0, int param1, int param
 void FieldMap_021F2974(OverworldAnimManager *param0, int param1)
 {
     FieldEffectRenderer10Anim *v0 = OverworldAnimManager_GetFuncsContext(param0);
-    v0->unk_0C = param1;
+    v0->visible = param1;
 }
 
 static int FieldMap_021F2980(OverworldAnimManager *param0, void *param1)
@@ -148,12 +148,12 @@ static int FieldMap_021F2980(OverworldAnimManager *param0, void *param1)
     FieldEffectRenderer10Anim *v0 = param1;
     const FieldEffectRenderer10Params *v1 = OverworldAnimManager_GetUserData(param0);
 
-    v0->unk_10 = *v1;
-    v0->unk_04 = v1->unk_00;
-    v0->unk_0C = OverworldAnimManager_GetUserInt(param0);
+    v0->params = *v1;
+    v0->variant = v1->variant;
+    v0->visible = OverworldAnimManager_GetUserInt(param0);
 
-    FieldMap_021F28D4(v0->unk_10.unk_0C);
-    FieldMap_021F2874(v0->unk_10.unk_0C);
+    FieldMap_021F28D4(v0->params.context);
+    FieldMap_021F2874(v0->params.context);
 
     return 1;
 }
@@ -162,16 +162,16 @@ static void FieldMap_021F29BC(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer10Anim *v0 = param1;
 
-    FieldMap_021F287C(v0->unk_10.unk_0C);
-    FieldMap_021F28E4(v0->unk_10.unk_0C);
+    FieldMap_021F287C(v0->params.context);
+    FieldMap_021F28E4(v0->params.context);
 }
 
 static void FieldMap_021F29D0(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer10Anim *v0 = param1;
-    MapObject *v1 = v0->unk_10.unk_10;
+    MapObject *v1 = v0->params.mapObject;
 
-    if (v0->unk_0C == 0) {
+    if (v0->visible == 0) {
         return;
     }
 
@@ -193,21 +193,21 @@ static void FieldMap_021F2A04(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer10Anim *v0 = param1;
 
-    if (v0->unk_00 == 1) {
+    if (v0->done == 1) {
         return;
     }
 
     {
-        v0->unk_08++;
+        v0->counter++;
     }
 
     {
         u32 v1 = 0;
         MtxFx33 v2;
         VecFx32 v3, v4 = { FX32_ONE, FX32_ONE, FX32_ONE };
-        Simple3DRenderObj *v5 = &v0->unk_10.unk_0C->unk_28;
+        Simple3DRenderObj *v5 = &v0->params.context->renderObj;
 
-        switch (v0->unk_04) {
+        switch (v0->variant) {
         case 0:
             v1 = 180;
             break;
