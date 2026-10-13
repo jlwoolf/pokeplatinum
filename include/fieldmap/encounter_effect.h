@@ -23,7 +23,7 @@
 typedef struct EncounterEffect {
     int state;
     BOOL effectComplete;
-    int unk_08;
+    int frameCounter;
     void *param;
     FieldSystem *fieldSystem;
     BOOL *done;
@@ -33,49 +33,49 @@ typedef struct EncounterEffect {
 } EncounterEffect;
 
 typedef struct EncounterTextFade {
-    LinearInterpolationTaskS32 unk_00;
-    LinearInterpolationTaskS32 unk_14;
-    Window *unk_28;
-    u8 unk_2C;
-    u8 unk_2D;
-    u8 unk_2E;
-    u8 unk_2F;
+    LinearInterpolationTaskS32 xInterpolationTask;
+    LinearInterpolationTaskS32 yInterpolationTask;
+    Window *window;
+    u8 width;
+    u8 height;
+    u8 active;
+    u8 color;
 } EncounterTextFade;
 
 typedef struct EncounterTextChar {
-    LinearInterpolationTaskS32 unk_00;
-    LinearInterpolationTaskS32 unk_14;
-    Window *unk_28;
-    u8 unk_2C;
-    u8 unk_2D;
-    u8 unk_2E;
-    u8 unk_2F;
+    LinearInterpolationTaskS32 xInterpolationTask;
+    LinearInterpolationTaskS32 yInterpolationTask;
+    Window *window;
+    u8 width;
+    u8 height;
+    u8 active;
+    u8 color;
 } EncounterTextChar;
 
 typedef struct EncounterTextScroll {
-    Window *unk_00;
-    EncounterTextChar *unk_04[48];
-    u8 unk_C4;
-    u8 unk_C5;
-    u8 unk_C6;
-    u8 unk_C7;
-    s8 unk_C8;
-    u8 unk_C9;
-    u8 unk_CA;
+    Window *window;
+    EncounterTextChar *chars[48];
+    u8 charIndex;
+    u8 finishedCharCount;
+    u8 interpolationSteps;
+    u8 spawnDelay;
+    s8 spawnTimer;
+    u8 color;
+    u8 active;
     u8 unk_CB[1];
 } EncounterTextScroll;
 
 typedef struct EncounterTextLine {
-    Window *unk_00;
-    LinearInterpolationTaskS32 unk_04;
-    u8 unk_18;
-    u8 unk_19;
+    Window *window;
+    LinearInterpolationTaskS32 interpolationTask;
+    u8 active;
+    u8 color;
     u8 unk_1A[2];
 } EncounterTextLine;
 
 typedef struct EncounterTextLines {
-    EncounterTextLine *unk_00[8];
-    u8 unk_20;
+    EncounterTextLine *lines[8];
+    u8 active;
     u8 unk_21[3];
 } EncounterTextLines;
 
@@ -101,13 +101,13 @@ typedef struct ScreenSliceEffect {
 } ScreenSliceEffect;
 
 typedef struct EncounterScreenWave {
-    LinearInterpolationTaskS32 unk_00;
-    u32 unk_14;
-    u8 unk_18[192];
-    HBlankSystem *unk_D8;
-    HBlankTask *unk_DC;
-    SysTask *unk_E0;
-    BOOL *unk_E4;
+    LinearInterpolationTaskS32 interpolationTask;
+    u32 state;
+    u8 vOffsets[192];
+    HBlankSystem *hBlankSystem;
+    HBlankTask *hBlankTask;
+    SysTask *vBlankTask;
+    BOOL *done;
 } EncounterScreenWave;
 
 enum Screen {

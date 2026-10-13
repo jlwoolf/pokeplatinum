@@ -368,7 +368,7 @@ static void FieldMap_021DF754(FieldEffectManager *param0, enum HeapID heapID, u3
     BillboardListParams v1;
 
     v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectGraphicsManager)), 0, 0);
-    param0->unk_20 = v0;
+    param0->graphicsManager = v0;
 
     v0->heapID = heapID;
     v0->unk_04 = param2;
@@ -388,7 +388,7 @@ static void FieldMap_021DF754(FieldEffectManager *param0, enum HeapID heapID, u3
 
 static void FieldMap_021DF7C4(FieldEffectManager *fieldEffMan)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
 
     if (v0 != NULL) {
         BillboardList_Delete(v0->unk_0C);
@@ -398,7 +398,7 @@ static void FieldMap_021DF7C4(FieldEffectManager *fieldEffMan)
         TextureResourceManager_Delete(v0->texResMan);
         FieldEffectManager_HeapFree(v0);
 
-        fieldEffMan->unk_20 = NULL;
+        fieldEffMan->graphicsManager = NULL;
     }
 }
 
@@ -409,7 +409,7 @@ Billboard *FieldMap_021DF7F8(FieldEffectManager *param0, const BillboardResource
     BillboardList *v2;
     VecFx32 v3 = { FX32_ONE, FX32_ONE, FX32_ONE };
 
-    v2 = param0->unk_20->unk_0C;
+    v2 = param0->graphicsManager->unk_0C;
 
     v0.list = v2;
     v0.resources = param1;
@@ -429,7 +429,7 @@ Billboard *FieldMap_021DF7F8(FieldEffectManager *param0, const BillboardResource
 
 Billboard *FieldMap_021DF84C(FieldEffectManager *param0, u32 param1, const VecFx32 *param2)
 {
-    BillboardResources *v0 = FieldMap_021DF9B4(param0->unk_20, param1);
+    BillboardResources *v0 = FieldMap_021DF9B4(param0->graphicsManager, param1);
     return FieldMap_021DF7F8(param0, v0, param2);
 }
 
@@ -439,7 +439,7 @@ BillboardResources *FieldMap_021DF864(FieldEffectManager *param0, u32 param1, u3
     BillboardGfxSequence v3;
     TextureResource *v4;
     BillboardResources *v5;
-    FieldEffectGraphicsManager *v6 = param0->unk_20;
+    FieldEffectGraphicsManager *v6 = param0->graphicsManager;
     v0 = ResourceHeap_GetItemData(v6->modelResHeap, param2);
     v2 = ResourceHeap_GetItemData(v6->metadataResHeap, param3);
 
@@ -572,20 +572,20 @@ static BillboardResources *FieldMap_021DF9B4(FieldEffectGraphicsManager *param0,
 
 void FieldMap_021DF9D4(FieldEffectManager *fieldEffMan, u32 slotID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     FieldMap_021DF910(v0, slotID);
 }
 
 void FieldMap_021DF9E0(FieldEffectManager *fieldEffMan, u32 slotID, u32 resourceID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
 
     ResourceHeap_LoadMemberFromNARC(v0->modelResHeap, slotID, fieldEffMan->fldEffNARC, resourceID, FALSE);
 }
 
 void *FieldMap_021DF9FC(FieldEffectManager *fieldEffMan, u32 slotID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     void *v1 = ResourceHeap_GetItemData(v0->modelResHeap, slotID);
 
     return v1;
@@ -593,25 +593,25 @@ void *FieldMap_021DF9FC(FieldEffectManager *fieldEffMan, u32 slotID)
 
 void FieldMap_021DFA08(FieldEffectManager *fieldEffMan, u32 slotID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     ResourceHeap_FreeItem(v0->modelResHeap, slotID);
 }
 
 void FieldMap_021DFA14(FieldEffectManager *fieldEffMan, u32 slotID, u32 resourceID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     ResourceHeap_LoadMemberFromNARC(v0->metadataResHeap, slotID, fieldEffMan->fldEffNARC, resourceID, FALSE);
 }
 
 void FieldMap_021DFA30(FieldEffectManager *fieldEffMan, u32 slotID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     ResourceHeap_FreeItem(v0->metadataResHeap, slotID);
 }
 
 void FieldMap_021DFA3C(FieldEffectManager *fieldEffMan, u32 slotID, u32 param2, u32 param3)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     void *v1 = FieldEffectManager_AllocAndReadNARCWholeMember(fieldEffMan, param2, 1);
     TextureResource *v2 = TextureResourceManager_AddTextureAndAllocVRam(v0->texResMan, v1, slotID, param3, GetHeapID(fieldEffMan));
 
@@ -621,7 +621,7 @@ void FieldMap_021DFA3C(FieldEffectManager *fieldEffMan, u32 slotID, u32 param2, 
 
 void FieldMap_021DFA7C(FieldEffectManager *fieldEffMan, u32 slotID)
 {
-    FieldEffectGraphicsManager *v0 = fieldEffMan->unk_20;
+    FieldEffectGraphicsManager *v0 = fieldEffMan->graphicsManager;
     TextureResourceManager_RemoveTextureWithID(v0->texResMan, slotID);
 }
 

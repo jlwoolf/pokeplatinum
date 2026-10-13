@@ -6,9 +6,9 @@
 #include "sprite_util.h"
 
 typedef struct {
-    SpriteList *unk_00;
-    G2dRenderer unk_04;
-    SpriteResourceCollection *unk_190[4];
+    SpriteList *spriteList;
+    G2dRenderer renderer;
+    SpriteResourceCollection *spriteResourceCollections[4];
 } EncounterSpriteRenderer;
 
 #endif // POKEPLATINUM_STRUCT_ENCOUNTER_SPRITE_RENDERER_H

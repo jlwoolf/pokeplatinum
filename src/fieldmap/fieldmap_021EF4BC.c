@@ -12,18 +12,18 @@
 #include "sys_task_manager.h"
 
 typedef struct PoisonEffect_t {
-    u32 unk_00;
-    int unk_04;
-    int unk_08;
-    u16 unk_0C[192];
-    u16 unk_18C[192];
+    u32 active;
+    int counter;
+    int state;
+    u16 bufferA[192];
+    u16 bufferB[192];
     BufferManager *bufferManager;
-    HBlankSystem *unk_310;
-    HBlankTask *unk_314;
-    BOOL unk_318;
-    SysTask *unk_31C;
-    SysTask *unk_320;
-    SysTask *unk_324;
+    HBlankSystem *hBlankSystem;
+    HBlankTask *hBlankTask;
+    BOOL swapReady;
+    SysTask *mainTask;
+    SysTask *vBlankTask;
+    SysTask *vBlankSwapTask;
 } PoisonEffect;
 
 static void FieldMap_021EF5A8(SysTask *param0, void *param1);
@@ -41,16 +41,16 @@ PoisonEffect *FieldMap_021EF4BC(enum HeapID heapID, HBlankSystem *param1)
     PoisonEffect *v0 = Heap_Alloc(heapID, sizeof(PoisonEffect));
     memset(v0, 0, sizeof(PoisonEffect));
 
-    v0->unk_00 = 0;
-    v0->bufferManager = BufferManager_New(heapID, v0->unk_0C, v0->unk_18C);
-    v0->unk_310 = param1;
+    v0->active = 0;
+    v0->bufferManager = BufferManager_New(heapID, v0->bufferA, v0->bufferB);
+    v0->hBlankSystem = param1;
 
     return v0;
 }
 
 void FieldMap_021EF4F8(PoisonEffect *param0)
 {
-    if (param0->unk_00 == 1) {
+    if (param0->active == 1) {
         FieldMap_021EF710(param0);
     }
 
@@ -60,18 +60,18 @@ void FieldMap_021EF4F8(PoisonEffect *param0)
 
 void Field_DoPoisonEffect(PoisonEffect *param0)
 {
-    GF_ASSERT(param0->unk_00 == 0);
+    GF_ASSERT(param0->active == 0);
 
-    param0->unk_314 = HBlankSystem_StartTask(param0->unk_310, FieldMap_021EF6C0, param0);
-    param0->unk_31C = SysTask_Start(FieldMap_021EF5A8, param0, 1024);
-    param0->unk_320 = SysTask_ExecuteOnVBlank(FieldMap_021EF6B0, param0, 1024);
-    param0->unk_324 = SysTask_ExecuteOnVBlank(FieldMap_021EF6E4, param0, 1024);
+    param0->hBlankTask = HBlankSystem_StartTask(param0->hBlankSystem, FieldMap_021EF6C0, param0);
+    param0->mainTask = SysTask_Start(FieldMap_021EF5A8, param0, 1024);
+    param0->vBlankTask = SysTask_ExecuteOnVBlank(FieldMap_021EF6B0, param0, 1024);
+    param0->vBlankSwapTask = SysTask_ExecuteOnVBlank(FieldMap_021EF6E4, param0, 1024);
 
-    memset(param0->unk_0C, 0, sizeof(u16) * 192);
-    memset(param0->unk_18C, 0, sizeof(u16) * 192);
+    memset(param0->bufferA, 0, sizeof(u16) * 192);
+    memset(param0->bufferB, 0, sizeof(u16) * 192);
 
-    param0->unk_00 = 1;
-    param0->unk_08 = 0;
+    param0->active = 1;
+    param0->state = 0;
 
     Sound_PlayEffect(SEQ_SE_DP_DOKU2_sseq);
 }
@@ -81,30 +81,30 @@ static void FieldMap_021EF5A8(SysTask *param0, void *param1)
     PoisonEffect *v0 = param1;
     u16 *v1;
 
-    switch (v0->unk_08) {
+    switch (v0->state) {
     case 0:
-        v0->unk_04 = 3;
-        v0->unk_08++;
+        v0->counter = 3;
+        v0->state++;
         break;
     case 1:
-        v0->unk_04--;
+        v0->counter--;
         v1 = BufferManager_GetWriteBuffer(v0->bufferManager);
 
-        FieldMap_021EF66C(v1, 3 - v0->unk_04, 3);
+        FieldMap_021EF66C(v1, 3 - v0->counter, 3);
 
-        if (v0->unk_04 <= 0) {
-            v0->unk_04 = 3;
-            v0->unk_08++;
+        if (v0->counter <= 0) {
+            v0->counter = 3;
+            v0->state++;
         }
         break;
     case 2:
-        v0->unk_04--;
+        v0->counter--;
         v1 = BufferManager_GetWriteBuffer(v0->bufferManager);
 
-        FieldMap_021EF66C(v1, v0->unk_04, 3);
+        FieldMap_021EF66C(v1, v0->counter, 3);
 
-        if (v0->unk_04 <= 0) {
-            v0->unk_08++;
+        if (v0->counter <= 0) {
+            v0->state++;
         }
         break;
     case 3:
@@ -159,7 +159,7 @@ static void FieldMap_021EF6B0(SysTask *param0, void *param1)
 {
     PoisonEffect *v0 = param1;
 
-    v0->unk_318 = 0;
+    v0->swapReady = 0;
     G3X_SetHOffset(0);
 }
 
@@ -171,8 +171,8 @@ static void FieldMap_021EF6C0(HBlankTask *param0, void *param1)
 
 static void FieldMap_021EF6CC(PoisonEffect *param0)
 {
-    if (param0->unk_00 == 1) {
-        if (param0->unk_318 == 1) {
+    if (param0->active == 1) {
+        if (param0->swapReady == 1) {
             FieldMap_021EF634(param0);
         }
     }
@@ -186,24 +186,24 @@ static void FieldMap_021EF6E4(SysTask *param0, void *param1)
 
 static void FieldMap_021EF6F0(PoisonEffect *param0)
 {
-    if (param0->unk_00 == 1) {
+    if (param0->active == 1) {
         BufferManager_SwapBuffers(param0->bufferManager);
-        param0->unk_318 = 1;
+        param0->swapReady = 1;
     }
 }
 
 static void FieldMap_021EF710(PoisonEffect *param0)
 {
-    HBlankTask_Delete(param0->unk_314);
-    param0->unk_314 = NULL;
+    HBlankTask_Delete(param0->hBlankTask);
+    param0->hBlankTask = NULL;
 
-    SysTask_Done(param0->unk_31C);
-    param0->unk_31C = NULL;
+    SysTask_Done(param0->mainTask);
+    param0->mainTask = NULL;
 
-    SysTask_Done(param0->unk_320);
-    param0->unk_320 = NULL;
+    SysTask_Done(param0->vBlankTask);
+    param0->vBlankTask = NULL;
 
-    SysTask_Done(param0->unk_324);
-    param0->unk_324 = NULL;
-    param0->unk_00 = 0;
+    SysTask_Done(param0->vBlankSwapTask);
+    param0->vBlankSwapTask = NULL;
+    param0->active = 0;
 }

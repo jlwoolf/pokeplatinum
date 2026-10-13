@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_BILLBOARD_ANIM_STATE_H
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    fx32 unk_04;
+    u16 drawFlag;
+    u16 animNum;
+    fx32 frameNum;
 } BillboardAnimState;
 
 #endif // POKEPLATINUM_STRUCT_BILLBOARD_ANIM_STATE_H

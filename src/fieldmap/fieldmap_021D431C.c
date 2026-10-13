@@ -27,22 +27,22 @@
 #include "res/field/props/models/prop_models.naix"
 
 typedef struct DoorAnimation_t {
-    int unk_00;
-    TerrainCollisionHitbox unk_04;
-    int unk_14;
-    int unk_18;
-    u8 unk_1C;
-    u8 unk_1D;
-    u8 unk_1E;
-    BOOL unk_20;
-    u16 unk_24;
+    int state;
+    TerrainCollisionHitbox hitbox;
+    int x;
+    int z;
+    u8 doorType;
+    u8 fadeTimer;
+    u8 animationCount;
+    BOOL adjustFov;
+    u16 initialFOV;
 } DoorAnimation;
 
 typedef struct DoorAnimationEnv_t {
-    int unk_00;
-    u8 unk_04;
-    BOOL unk_08;
-    u16 unk_0C;
+    int state;
+    u8 fadeTimer;
+    BOOL adjustFov;
+    u16 initialFOV;
 } DoorAnimationEnv;
 
 static void FieldMap_021D4798(Camera *camera, u8 *param1);
@@ -52,7 +52,7 @@ static u8 DoorAnimation_GetSoundEffectType(const int doorModelID);
 DoorAnimation *FieldMap_021D431C(void)
 {
     DoorAnimation *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(DoorAnimation));
-    v0->unk_00 = 0;
+    v0->state = 0;
 
     return v0;
 }
@@ -64,15 +64,15 @@ void FieldMap_021D432C(DoorAnimation *param0)
 
 void FieldMap_021D4334(const int param0, const int param1, DoorAnimation *param2)
 {
-    param2->unk_14 = param0;
-    param2->unk_18 = param1;
+    param2->x = param0;
+    param2->z = param1;
 }
 
 BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
 {
     MapObject *v0;
 
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0: {
         BOOL v1;
         MapProp *v2;
@@ -101,12 +101,12 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
             elevator_door_nsbmd
         };
 
-        param1->unk_20 = 0;
-        param1->unk_1D = 0;
+        param1->adjustFov = 0;
+        param1->fadeTimer = 0;
 
-        TerrainCollisionHitbox_Init(param1->unk_14, param1->unk_18, -1, -1, 3, 1, &v3);
+        TerrainCollisionHitbox_Init(param1->x, param1->z, -1, -1, 3, 1, &v3);
 
-        param1->unk_1C = 1;
+        param1->doorType = 1;
 
         v1 = FieldSystem_FindCollidingLoadedMapPropByModelIDs(fieldSystem, v5, NELEMS(v5), &v3, &v2, &v4);
 
@@ -116,7 +116,7 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
             NNSG3dResTex *v8;
 
             v7 = MapPropAnimationManager_GetPropAnimationCount(fieldSystem->mapPropAnimMan, v4);
-            param1->unk_1E = v7;
+            param1->animationCount = v7;
             v8 = AreaDataManager_GetMapPropTexture(fieldSystem->areaDataManager);
 
             MapPropOneShotAnimationManager_LoadPropAnimations(fieldSystem->mapPropAnimMan, fieldSystem->mapPropOneShotAnimMan, 1, v4, MapProp_GetRenderObj(v2), MapProp_GetModel(v2), v8, v7, 1, 0);
@@ -124,7 +124,7 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
             GF_ASSERT(FALSE);
             return 1;
         }
-        (param1->unk_00)++;
+        (param1->state)++;
     } break;
     case 1: {
         int v9;
@@ -135,7 +135,7 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
 
         if (v9 != 75) {
             Camera_ReleaseTarget(fieldSystem->camera);
-            param1->unk_20 = 1;
+            param1->adjustFov = 1;
         }
 
         if (DoorAnimation_GetSoundEffectType(v9) == DOOR_SOUND_EFFECT_TYPE_SLIDING) {
@@ -146,9 +146,9 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
             v10 = SEQ_SE_DP_DOOR_OPEN_sseq;
         }
 
-        if (param1->unk_1E == 2) {
+        if (param1->animationCount == 2) {
             v11 = 0;
-        } else if (param1->unk_1E == 4) {
+        } else if (param1->animationCount == 4) {
             v11 = 0;
         } else {
             GF_ASSERT(FALSE);
@@ -157,7 +157,7 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
 
         MapPropOneShotAnimationManager_PlayAnimationWithSoundEffect(fieldSystem->mapPropOneShotAnimMan, 1, v11, v10);
     }
-        (param1->unk_00)++;
+        (param1->state)++;
         break;
     case 2: {
         BOOL v12;
@@ -165,13 +165,13 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
         v12 = MapPropOneShotAnimationManager_IsAnimationLoopFinished(fieldSystem->mapPropOneShotAnimMan, 1);
 
         if (v12) {
-            (param1->unk_00)++;
+            (param1->state)++;
         }
     } break;
     case 3:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
         LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_WALK_NORMAL_NORTH);
-        (param1->unk_00)++;
+        (param1->state)++;
         break;
     case 4:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
@@ -194,9 +194,9 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
                     v14 = SEQ_SE_DP_DOOR_CLOSE2_sseq;
                 }
 
-                if (param1->unk_1E == 2) {
+                if (param1->animationCount == 2) {
                     v15 = 1;
-                } else if (param1->unk_1E == 4) {
+                } else if (param1->animationCount == 4) {
                     v15 = 1;
                 } else {
                     GF_ASSERT(FALSE);
@@ -205,7 +205,7 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
 
                 MapPropOneShotAnimationManager_PlayAnimationWithSoundEffect(fieldSystem->mapPropOneShotAnimMan, 1, v15, v14);
             }
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 5: {
@@ -220,8 +220,8 @@ BOOL FieldMap_021D433C(FieldSystem *fieldSystem, DoorAnimation *param1)
     } break;
     }
 
-    if (param1->unk_20) {
-        FieldMap_021D4798(fieldSystem->camera, &param1->unk_1D);
+    if (param1->adjustFov) {
+        FieldMap_021D4798(fieldSystem->camera, &param1->fadeTimer);
     }
 
     return 0;
@@ -231,7 +231,7 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
 {
     MapObject *v0;
 
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0: {
         BOOL v1;
         MapProp *v2;
@@ -260,10 +260,10 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
             elevator_door_nsbmd
         };
 
-        param1->unk_20 = 0;
-        param1->unk_1D = 0;
-        TerrainCollisionHitbox_Init(param1->unk_14, param1->unk_18, -1, 0, 3, 1, &v3);
-        param1->unk_1C = 1;
+        param1->adjustFov = 0;
+        param1->fadeTimer = 0;
+        TerrainCollisionHitbox_Init(param1->x, param1->z, -1, 0, 3, 1, &v3);
+        param1->doorType = 1;
 
         v1 = FieldSystem_FindCollidingLoadedMapPropByModelIDs(fieldSystem, v5, NELEMS(v5), &v3, &v2, &v4);
 
@@ -273,7 +273,7 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
             NNSG3dResTex *v8;
 
             v7 = MapPropAnimationManager_GetPropAnimationCount(fieldSystem->mapPropAnimMan, v4);
-            param1->unk_1E = v7;
+            param1->animationCount = v7;
             v8 = AreaDataManager_GetMapPropTexture(fieldSystem->areaDataManager);
 
             MapPropOneShotAnimationManager_LoadPropAnimations(fieldSystem->mapPropAnimMan, fieldSystem->mapPropOneShotAnimMan, 1, v4, MapProp_GetRenderObj(v2), MapProp_GetModel(v2), v8, v7, 1, 0);
@@ -281,17 +281,17 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
             GF_ASSERT(FALSE);
 
             FieldMap_FadeScreen(FADE_TYPE_BRIGHTNESS_IN);
-            (param1->unk_00) = 6;
+            (param1->state) = 6;
             return 0;
         }
 
-        param1->unk_24 = Camera_GetFOV(fieldSystem->camera);
+        param1->initialFOV = Camera_GetFOV(fieldSystem->camera);
 
         if (v4 != 75) {
             Camera_AdjustFOV(-96, fieldSystem->camera);
         }
 
-        (param1->unk_00)++;
+        (param1->state)++;
     } break;
     case 1:
         MapTransition_StartScreenFade(fieldSystem->task, 0, 9, 1, 0x0, 6, 1, HEAP_ID_FIELD2);
@@ -303,7 +303,7 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
             v9 = MapPropOneShotAnimationManager_GetAnimationMapPropModelID(fieldSystem->mapPropOneShotAnimMan, 1);
 
             if (v9 != 75) {
-                param1->unk_20 = 1;
+                param1->adjustFov = 1;
             }
 
             if (DoorAnimation_GetSoundEffectType(v9) == DOOR_SOUND_EFFECT_TYPE_SLIDING) {
@@ -314,9 +314,9 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
                 v10 = SEQ_SE_DP_DOOR_OPEN_sseq;
             }
 
-            if (param1->unk_1E == 2) {
+            if (param1->animationCount == 2) {
                 v11 = 0;
-            } else if (param1->unk_1E == 4) {
+            } else if (param1->animationCount == 4) {
                 v11 = 2;
             } else {
                 GF_ASSERT(FALSE);
@@ -326,7 +326,7 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
             MapPropOneShotAnimationManager_PlayAnimationWithSoundEffect(fieldSystem->mapPropOneShotAnimMan, 1, v11, v10);
         }
 
-        (param1->unk_00)++;
+        (param1->state)++;
         break;
     case 2: {
         BOOL v12;
@@ -336,13 +336,13 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
         if (v12) {
             v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
             MapObject_SetHidden(v0, 0);
-            (param1->unk_00)++;
+            (param1->state)++;
         }
     } break;
     case 3:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
         LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_WALK_NORMAL_SOUTH);
-        (param1->unk_00)++;
+        (param1->state)++;
         break;
     case 4:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
@@ -365,9 +365,9 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
                     v14 = 1543;
                 }
 
-                if (param1->unk_1E == 2) {
+                if (param1->animationCount == 2) {
                     v15 = 1;
-                } else if (param1->unk_1E == 4) {
+                } else if (param1->animationCount == 4) {
                     v15 = 3;
                 } else {
                     GF_ASSERT(FALSE);
@@ -376,7 +376,7 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
 
                 MapPropOneShotAnimationManager_PlayAnimationWithSoundEffect(fieldSystem->mapPropOneShotAnimMan, 1, v15, v14);
             }
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 5: {
@@ -384,7 +384,7 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
 
         v16 = MapPropOneShotAnimationManager_IsAnimationLoopFinished(fieldSystem->mapPropOneShotAnimMan, 1);
 
-        if (v16 && IsScreenFadeDone() && (param1->unk_24 == Camera_GetFOV(fieldSystem->camera))) {
+        if (v16 && IsScreenFadeDone() && (param1->initialFOV == Camera_GetFOV(fieldSystem->camera))) {
             MapPropOneShotAnimationManager_UnloadAnimation(fieldSystem->mapPropAnimMan, fieldSystem->mapPropOneShotAnimMan, 1);
             return 1;
         }
@@ -396,8 +396,8 @@ BOOL FieldMap_021D453C(FieldSystem *fieldSystem, DoorAnimation *param1)
         break;
     }
 
-    if (param1->unk_20) {
-        FieldMap_021D47DC(fieldSystem->camera, &param1->unk_1D);
+    if (param1->adjustFov) {
+        FieldMap_021D47DC(fieldSystem->camera, &param1->fadeTimer);
     }
 
     return 0;
@@ -480,7 +480,7 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
 {
     MapObject *v0;
 
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0: {
         BOOL v1;
         MapProp *v2;
@@ -494,12 +494,12 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
         };
 
         if (param2 == 2) {
-            TerrainCollisionHitbox_Init(param1->unk_14, param1->unk_18, -1, 0, 2, 1, &v3);
+            TerrainCollisionHitbox_Init(param1->x, param1->z, -1, 0, 2, 1, &v3);
         } else {
-            TerrainCollisionHitbox_Init(param1->unk_14, param1->unk_18, 0, 0, 2, 1, &v3);
+            TerrainCollisionHitbox_Init(param1->x, param1->z, 0, 0, 2, 1, &v3);
         }
 
-        param1->unk_1C = 2;
+        param1->doorType = 2;
         v1 = FieldSystem_FindCollidingLoadedMapPropByModelIDs(fieldSystem, v5, NELEMS(v5), &v3, &v2, &v4);
 
         if (v1) {
@@ -521,7 +521,7 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
             GF_ASSERT(FALSE);
         }
 
-        (param1->unk_00)++;
+        (param1->state)++;
     } break;
     case 1:
         FieldMap_FadeScreen(FADE_TYPE_BRIGHTNESS_IN);
@@ -543,14 +543,14 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
             GF_ASSERT(FALSE);
         }
 
-        (param1->unk_00)++;
+        (param1->state)++;
         break;
     case 2:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
 
         if (LocalMapObj_IsAnimationSet(v0) == 1) {
             LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_RESUME_ANIMATION);
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 3:
@@ -566,7 +566,7 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
             }
 
             LocalMapObj_SetAnimationCode(v0, v9);
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 4:
@@ -574,7 +574,7 @@ BOOL FieldMap_021D4858(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
 
         if (LocalMapObj_CheckAnimationFinished(v0) == 1) {
             LocalMapObj_ClearAnimation(v0);
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 5: {
@@ -597,7 +597,7 @@ BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
 {
     MapObject *v0;
 
-    switch (param1->unk_00) {
+    switch (param1->state) {
     case 0: {
         BOOL v1;
         MapProp *v2;
@@ -611,12 +611,12 @@ BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
         };
 
         if (param2 == 2) {
-            TerrainCollisionHitbox_Init(param1->unk_14, param1->unk_18, -1, 0, 2, 1, &v3);
+            TerrainCollisionHitbox_Init(param1->x, param1->z, -1, 0, 2, 1, &v3);
         } else {
-            TerrainCollisionHitbox_Init(param1->unk_14, param1->unk_18, 0, 0, 2, 1, &v3);
+            TerrainCollisionHitbox_Init(param1->x, param1->z, 0, 0, 2, 1, &v3);
         }
 
-        param1->unk_1C = 2;
+        param1->doorType = 2;
         v1 = FieldSystem_FindCollidingLoadedMapPropByModelIDs(fieldSystem, v5, NELEMS(v5), &v3, &v2, &v4);
 
         if (v1) {
@@ -638,7 +638,7 @@ BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
             GF_ASSERT(FALSE);
         }
 
-        (param1->unk_00)++;
+        (param1->state)++;
     } break;
     case 1:
         MapPropOneShotAnimationManager_PlayAnimationWithSoundEffect(fieldSystem->mapPropOneShotAnimMan, 2, 0, 1557);
@@ -658,7 +658,7 @@ BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
             GF_ASSERT(FALSE);
         }
 
-        (param1->unk_00)++;
+        (param1->state)++;
         break;
     case 2:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
@@ -667,7 +667,7 @@ BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
             LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_RESUME_ANIMATION);
 
             FieldMap_FadeScreen(FADE_TYPE_BRIGHTNESS_OUT);
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 3:
@@ -675,7 +675,7 @@ BOOL FieldMap_021D4A24(FieldSystem *fieldSystem, DoorAnimation *param1, const u8
 
         if (LocalMapObj_CheckAnimationFinished(v0) == 1) {
             LocalMapObj_ClearAnimation(v0);
-            (param1->unk_00)++;
+            (param1->state)++;
         }
         break;
     case 4: {
@@ -867,7 +867,7 @@ void FieldMap_021D4D78(const int param0, const int param1, const int param2, Fie
 DoorAnimationEnv *FieldMap_021D4E00(void)
 {
     DoorAnimationEnv *v0 = Heap_AllocAtEnd(HEAP_ID_FIELD1, sizeof(DoorAnimationEnv));
-    v0->unk_00 = 0;
+    v0->state = 0;
 
     return v0;
 }
@@ -878,53 +878,53 @@ BOOL FieldMap_021D4E10(FieldTask *param0)
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
     DoorAnimationEnv *v2 = FieldTask_GetEnv(param0);
 
-    switch (v2->unk_00) {
+    switch (v2->state) {
     case 0:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
 
         if (PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar) == 1) {
             MapObject_SetHidden(v0, 1);
-            (v2->unk_00) = 1;
+            (v2->state) = 1;
         } else {
             MapObject_SetHidden(v0, 0);
-            (v2->unk_00) = 3;
+            (v2->state) = 3;
         }
 
-        v2->unk_08 = 0;
-        v2->unk_04 = 0;
+        v2->adjustFov = 0;
+        v2->fadeTimer = 0;
 
         {
-            v2->unk_0C = Camera_GetFOV(fieldSystem->camera);
+            v2->initialFOV = Camera_GetFOV(fieldSystem->camera);
             Camera_AdjustFOV(-96, fieldSystem->camera);
         }
 
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_WHITE, 6, 1, HEAP_ID_FIELD2);
-        v2->unk_08 = 1;
+        v2->adjustFov = 1;
         break;
     case 1:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
         MapObject_SetHidden(v0, 0);
         LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_WALK_NORMAL_SOUTH);
-        (v2->unk_00)++;
+        (v2->state)++;
         break;
     case 2:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
 
         if (LocalMapObj_CheckAnimationFinished(v0) == 1) {
             LocalMapObj_ClearAnimation(v0);
-            (v2->unk_00)++;
+            (v2->state)++;
         }
         break;
     case 3:
-        if (IsScreenFadeDone() && (v2->unk_0C == Camera_GetFOV(fieldSystem->camera))) {
+        if (IsScreenFadeDone() && (v2->initialFOV == Camera_GetFOV(fieldSystem->camera))) {
             Heap_Free(v2);
             return 1;
         }
         break;
     }
 
-    if (v2->unk_08) {
-        FieldMap_021D47DC(fieldSystem->camera, &v2->unk_04);
+    if (v2->adjustFov) {
+        FieldMap_021D47DC(fieldSystem->camera, &v2->fadeTimer);
     }
 
     return 0;
@@ -935,7 +935,7 @@ BOOL FieldMap_021D4F14(FieldTask *param0)
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
     DoorAnimationEnv *v1 = FieldTask_GetEnv(param0);
 
-    switch (v1->unk_00) {
+    switch (v1->state) {
     case 0: {
         MapObject *v2;
 
@@ -943,14 +943,14 @@ BOOL FieldMap_021D4F14(FieldTask *param0)
 
         MapObject_SetHidden(v2, 1);
 
-        v1->unk_08 = 0;
-        v1->unk_04 = 0;
+        v1->adjustFov = 0;
+        v1->fadeTimer = 0;
 
         Sound_PlayEffect(SEQ_SE_DP_KAIDAN2_sseq);
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_WHITE, 6, 1, HEAP_ID_FIELD2);
 
-        v1->unk_08 = 1;
-        (v1->unk_00)++;
+        v1->adjustFov = 1;
+        (v1->state)++;
     } break;
     case 1:
         if (IsScreenFadeDone()) {
@@ -960,8 +960,8 @@ BOOL FieldMap_021D4F14(FieldTask *param0)
         break;
     }
 
-    if (v1->unk_08) {
-        FieldMap_021D4798(fieldSystem->camera, &v1->unk_04);
+    if (v1->adjustFov) {
+        FieldMap_021D4798(fieldSystem->camera, &v1->fadeTimer);
     }
 
     return 0;
@@ -972,16 +972,16 @@ BOOL FieldMap_021D4FA0(FieldTask *param0)
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
     DoorAnimationEnv *v1 = FieldTask_GetEnv(param0);
 
-    switch (v1->unk_00) {
+    switch (v1->state) {
     case 0: {
-        v1->unk_08 = 0;
-        v1->unk_04 = 0;
+        v1->adjustFov = 0;
+        v1->fadeTimer = 0;
 
         Sound_PlayEffect(SEQ_SE_DP_KAIDAN2_sseq);
         MapTransition_StartScreenFade(param0, 0, 16, 0, 0x0, 6, 1, HEAP_ID_FIELD2);
 
-        v1->unk_08 = 1;
-        (v1->unk_00)++;
+        v1->adjustFov = 1;
+        (v1->state)++;
     } break;
     case 1:
         if (IsScreenFadeDone()) {
@@ -991,8 +991,8 @@ BOOL FieldMap_021D4FA0(FieldTask *param0)
         break;
     }
 
-    if (v1->unk_08) {
-        FieldMap_021D4798(fieldSystem->camera, &v1->unk_04);
+    if (v1->adjustFov) {
+        FieldMap_021D4798(fieldSystem->camera, &v1->fadeTimer);
     }
 
     return 0;
@@ -1004,7 +1004,7 @@ BOOL FieldMap_021D5020(FieldTask *param0)
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
     DoorAnimationEnv *v2 = FieldTask_GetEnv(param0);
 
-    switch (v2->unk_00) {
+    switch (v2->state) {
     case 0: {
         u8 v3;
         u8 v4;
@@ -1014,17 +1014,17 @@ BOOL FieldMap_021D5020(FieldTask *param0)
 
         if (v3 == 1) {
             MapObject_SetHidden(v0, 1);
-            (v2->unk_00) = 1;
+            (v2->state) = 1;
         } else {
             MapObject_SetHidden(v0, 0);
-            (v2->unk_00) = 3;
+            (v2->state) = 3;
         }
 
-        v2->unk_08 = 0;
-        v2->unk_04 = 0;
+        v2->adjustFov = 0;
+        v2->fadeTimer = 0;
 
         {
-            v2->unk_0C = Camera_GetFOV(fieldSystem->camera);
+            v2->initialFOV = Camera_GetFOV(fieldSystem->camera);
             Camera_AdjustFOV(-96, fieldSystem->camera);
         }
 
@@ -1046,32 +1046,32 @@ BOOL FieldMap_021D5020(FieldTask *param0)
         }
 
         MapTransition_StartScreenFade(param0, 0, v4, 1, 0x0, 6, 1, HEAP_ID_FIELD2);
-        v2->unk_08 = 1;
+        v2->adjustFov = 1;
     } break;
     case 1:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
         MapObject_SetHidden(v0, 0);
         LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_WALK_NORMAL_SOUTH);
-        (v2->unk_00)++;
+        (v2->state)++;
         break;
     case 2:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
 
         if (LocalMapObj_CheckAnimationFinished(v0) == 1) {
             LocalMapObj_ClearAnimation(v0);
-            (v2->unk_00)++;
+            (v2->state)++;
         }
         break;
     case 3:
-        if (IsScreenFadeDone() && (v2->unk_0C == Camera_GetFOV(fieldSystem->camera))) {
+        if (IsScreenFadeDone() && (v2->initialFOV == Camera_GetFOV(fieldSystem->camera))) {
             Heap_Free(v2);
             return 1;
         }
         break;
     }
 
-    if (v2->unk_08) {
-        FieldMap_021D47DC(fieldSystem->camera, &v2->unk_04);
+    if (v2->adjustFov) {
+        FieldMap_021D47DC(fieldSystem->camera, &v2->fadeTimer);
     }
 
     return 0;
@@ -1083,7 +1083,7 @@ BOOL FieldMap_021D5150(FieldTask *param0)
     FieldSystem *fieldSystem = FieldTask_GetFieldSystem(param0);
     DoorAnimationEnv *v2 = FieldTask_GetEnv(param0);
 
-    switch (v2->unk_00) {
+    switch (v2->state) {
     case 0: {
         u8 v3;
         u8 v4;
@@ -1093,10 +1093,10 @@ BOOL FieldMap_021D5150(FieldTask *param0)
 
         if (v3 == 1) {
             MapObject_SetHidden(v0, 1);
-            (v2->unk_00) = 1;
+            (v2->state) = 1;
         } else {
             MapObject_SetHidden(v0, 0);
-            (v2->unk_00) = 3;
+            (v2->state) = 3;
         }
 
         MapTransition_StartScreenFade(param0, 0, 1, 1, 0x0, 6, 1, HEAP_ID_FIELD2);
@@ -1105,14 +1105,14 @@ BOOL FieldMap_021D5150(FieldTask *param0)
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
         MapObject_SetHidden(v0, 0);
         LocalMapObj_SetAnimationCode(v0, MOVEMENT_ACTION_WALK_NORMAL_SOUTH);
-        (v2->unk_00)++;
+        (v2->state)++;
         break;
     case 2:
         v0 = PlayerAvatar_GetMapObject(fieldSystem->playerAvatar);
 
         if (LocalMapObj_CheckAnimationFinished(v0) == 1) {
             LocalMapObj_ClearAnimation(v0);
-            (v2->unk_00)++;
+            (v2->state)++;
         }
         break;
     case 3:

@@ -28,7 +28,7 @@ typedef struct FieldEffectManager {
     FieldEffectRenderer *renderers;
     NARC *fldEffNARC;
     OverworldAnimManagerList *animManList;
-    FieldEffectGraphicsManager *unk_20;
+    FieldEffectGraphicsManager *graphicsManager;
 } FieldEffectManager;
 
 FieldEffectManager *FieldEffectManager_New(FieldSystem *fieldSystem, u32 rendererCount, enum HeapID heapID);

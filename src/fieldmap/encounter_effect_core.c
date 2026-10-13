@@ -3293,14 +3293,14 @@ static BOOL EncounterEffect_EliteFourChampion(EncounterEffect *encEffect, enum H
     case 2:
 
         EncounterEffect_Flash(1, 16, 16, &encEffect->effectComplete, 1);
-        encEffect->unk_08 = 0;
+        encEffect->frameCounter = 0;
         encEffect->state++;
         break;
 
     case 3:
-        encEffect->unk_08++;
+        encEffect->frameCounter++;
 
-        if (encEffect->unk_08 == 8) {
+        if (encEffect->frameCounter == 8) {
             FieldMap_021DF038();
         }
 

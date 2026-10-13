@@ -19,30 +19,30 @@
 
 typedef struct {
     FieldSystem *fieldSystem;
-    BOOL *unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
+    BOOL *done;
+    int state;
+    int timer;
+    int direction;
 } WarpAnimation;
 
 static void FieldMap_021E135C(WarpAnimation *param0)
 {
-    switch (param0->unk_10) {
+    switch (param0->direction) {
     case 0:
-        param0->unk_10 = 2;
+        param0->direction = 2;
         break;
     case 2:
-        param0->unk_10 = 1;
+        param0->direction = 1;
         break;
     case 1:
-        param0->unk_10 = 3;
+        param0->direction = 3;
         break;
     case 3:
-        param0->unk_10 = 0;
+        param0->direction = 0;
         break;
     }
 
-    PlayerAvatar_TryFace(param0->fieldSystem->playerAvatar, param0->unk_10);
+    PlayerAvatar_TryFace(param0->fieldSystem->playerAvatar, param0->direction);
 }
 
 static void FieldMap_021E139C(SysTask *param0, void *param1)
@@ -51,25 +51,25 @@ static void FieldMap_021E139C(SysTask *param0, void *param1)
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->fieldSystem->playerAvatar);
     VecFx32 v2;
 
-    switch (v0->unk_08) {
+    switch (v0->state) {
     case 0:
-        v0->unk_08 = 1;
+        v0->state = 1;
         Sound_PlayEffect(SEQ_SE_DP_TELE2_sseq);
     case 1:
-        if (v0->unk_0C % 2) {
+        if (v0->timer % 2) {
             FieldMap_021E135C(v0);
         }
 
         MapObject_GetSpritePosOffset(v1, &v2);
-        v2.y = ((FX32_ONE * 2.2) + ((FX32_ONE / 2) * v0->unk_0C)) * v0->unk_0C;
+        v2.y = ((FX32_ONE * 2.2) + ((FX32_ONE / 2) * v0->timer)) * v0->timer;
 
         MapObject_SetSpritePosOffset(v1, &v2);
-        v0->unk_0C++;
+        v0->timer++;
 
-        if (v0->unk_0C == 20) {
+        if (v0->timer == 20) {
             StartScreenFade(FADE_SUB_THEN_MAIN, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 6, 1, HEAP_ID_FIELD1);
-        } else if ((v0->unk_0C > 20) && IsScreenFadeDone()) {
-            *v0->unk_04 = 1;
+        } else if ((v0->timer > 20) && IsScreenFadeDone()) {
+            *v0->done = 1;
             Heap_Free(v0);
             SysTask_Done(param0);
         } else {
@@ -85,41 +85,41 @@ static void FieldMap_021E1470(SysTask *param0, void *param1)
     VecFx32 v2;
     int v3;
 
-    switch (v0->unk_08) {
+    switch (v0->state) {
     case 0: {
         MapObject_SetPauseMovementOff(v1);
         MapObject_GetSpritePosOffset(v1, &v2);
-        v3 = (20 - v0->unk_0C);
+        v3 = (20 - v0->timer);
         v2.y = ((FX32_ONE * 2.2) + ((FX32_ONE / 2) * v3)) * v3;
         MapObject_SetSpritePosOffset(v1, &v2);
         MapObject_Draw(v1);
     }
 
         Sound_PlayEffect(SEQ_SE_DP_TELE2_sseq);
-        v0->unk_08 = 1;
+        v0->state = 1;
     case 1:
-        if (v0->unk_0C % 2) {
+        if (v0->timer % 2) {
             FieldMap_021E135C(v0);
         }
 
         MapObject_GetSpritePosOffset(v1, &v2);
-        v3 = (20 - v0->unk_0C);
+        v3 = (20 - v0->timer);
         v2.y = ((FX32_ONE * 2.2) + ((FX32_ONE / 2) * v3)) * v3;
         MapObject_SetSpritePosOffset(v1, &v2);
-        v0->unk_0C++;
+        v0->timer++;
 
-        if (v0->unk_0C == 2) {
+        if (v0->timer == 2) {
             StartScreenFade(FADE_MAIN_THEN_SUB, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_FIELD1);
         }
 
-        if (v0->unk_0C > 20) {
-            v0->unk_08 = 2;
+        if (v0->timer > 20) {
+            v0->state = 2;
         }
         break;
     case 2:
         if (IsScreenFadeDone()) {
             PlayerAvatar_TryFace(v0->fieldSystem->playerAvatar, 1);
-            *v0->unk_04 = 1;
+            *v0->done = 1;
             Heap_Free(v0);
             SysTask_Done(param0);
         }
@@ -134,8 +134,8 @@ void FieldSystem_StartWarpAnimation(FieldSystem *fieldSystem, BOOL param1, BOOL 
     MI_CpuClear8(v0, sizeof(WarpAnimation));
 
     v0->fieldSystem = fieldSystem;
-    v0->unk_04 = param2;
-    v0->unk_10 = PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar);
+    v0->done = param2;
+    v0->direction = PlayerAvatar_GetFacingDir(fieldSystem->playerAvatar);
 
     if (param1) {
         SysTask_Start(FieldMap_021E139C, v0, 100);
