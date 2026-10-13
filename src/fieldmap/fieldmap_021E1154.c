@@ -19,9 +19,9 @@
 #include "map_object_animation.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
+    int direction;
+    int turnTimer;
+    int state;
     FieldSystem *fieldSystem;
     PlayerAvatar *playerAvatar;
     MapObject *unk_14;
@@ -60,7 +60,7 @@ static void FieldMap_021E11B0(FieldSystem *fieldSystem, PlayerAvatar *playerAvat
 
     v0->fieldSystem = fieldSystem;
     v0->playerAvatar = playerAvatar;
-    v0->unk_00 = param2;
+    v0->direction = param2;
 
     Sound_PlayEffect(SEQ_SE_DP_F209_sseq);
     FieldSystem_CreateTask(fieldSystem, FieldMap_021E120C, v0);
@@ -88,58 +88,58 @@ static BOOL FieldMap_021E120C(FieldTask *param0)
     MapObject *v1 = PlayerAvatar_GetMapObject(v0->playerAvatar);
     u8 v2 = MapObject_GetCurrTileBehavior(v1);
 
-    switch (v0->unk_08) {
+    switch (v0->state) {
     case 0:
         MapObject_SetStatusFlagOn(v1, MAP_OBJ_STATUS_PAUSE_ANIMATION);
-        v0->unk_08++;
+        v0->state++;
         break;
     case 1:
         if (PlayerAvatar_IsMapObjectAnimationSet(v0->playerAvatar)) {
             int v3 = 0xc;
 
-            v3 = MovementAction_TurnActionTowardsDir(v0->unk_00, v3);
+            v3 = MovementAction_TurnActionTowardsDir(v0->direction, v3);
             PlayerAvatar_SetMapObjMovement(v0->playerAvatar, v3, 1);
-            PlayerAvatar_TryFace(v0->playerAvatar, v0->unk_00);
-            v0->unk_08++;
-            v0->unk_04 = 7;
+            PlayerAvatar_TryFace(v0->playerAvatar, v0->direction);
+            v0->state++;
+            v0->turnTimer = 7;
         }
         break;
     case 2:
-        switch (v0->unk_04) {
+        switch (v0->turnTimer) {
         case 6:
         case 4:
         case 2:
-            v0->unk_00 = FieldMap_021E11E0(v0->unk_00);
-            PlayerAvatar_TryFace(v0->playerAvatar, v0->unk_00);
+            v0->direction = FieldMap_021E11E0(v0->direction);
+            PlayerAvatar_TryFace(v0->playerAvatar, v0->direction);
             break;
         default:
             break;
         }
 
-        v0->unk_04--;
+        v0->turnTimer--;
 
-        if (v0->unk_04 == 0) {
+        if (v0->turnTimer == 0) {
             if (TileBehavior_IsSlideEastward(v2) == 1) {
-                v0->unk_00 = 3;
+                v0->direction = 3;
             } else if (TileBehavior_IsSlideWestward(v2) == 1) {
-                v0->unk_00 = 2;
+                v0->direction = 2;
             } else if (TileBehavior_IsSlideNorthward(v2) == 1) {
-                v0->unk_00 = 0;
+                v0->direction = 0;
             } else if (TileBehavior_IsSlideSouthward(v2) == 1) {
-                v0->unk_00 = 1;
+                v0->direction = 1;
             } else {
-                v0->unk_00 = FieldMap_021E11E0(v0->unk_00);
+                v0->direction = FieldMap_021E11E0(v0->direction);
             }
 
             {
-                u32 collision = PlayerAvatar_CheckCollision(v0->playerAvatar, v1, v0->unk_00);
+                u32 collision = PlayerAvatar_CheckCollision(v0->playerAvatar, v1, v0->direction);
 
                 if (collision == PLAYER_COLLISION_NONE) {
-                    v0->unk_08 = 1;
+                    v0->state = 1;
                 } else {
                     MapObject_SetStatusFlagOff(v1, MAP_OBJ_STATUS_LOCK_DIR);
                     MapObject_SetStatusFlagOff(v1, MAP_OBJ_STATUS_PAUSE_ANIMATION);
-                    PlayerAvatar_TryFace(v0->playerAvatar, v0->unk_00);
+                    PlayerAvatar_TryFace(v0->playerAvatar, v0->direction);
                     FieldMap_021E1350(v0);
                     Sound_StopEffect(1624, 0);
                     return 1;

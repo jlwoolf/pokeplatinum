@@ -73,14 +73,14 @@ typedef struct ScreenFlash {
 } ScreenFlash;
 
 typedef struct CutInEffect {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
+    u16 state;
+    u8 ready;
+    u8 finishRequested;
     FieldSystem *fieldSystem;
-    ParticleSystem *unk_08;
-    void *unk_0C;
-    u32 unk_10;
-    u32 unk_14;
+    ParticleSystem *particleSystem;
+    void *particleBuffer;
+    u32 texAllocOffset;
+    u32 palAllocOffset;
 } CutInEffect;
 
 static void FieldMap_021DE89C(Window *param0, s32 param1, s32 param2, s32 param3, s32 param4, u8 param5);
@@ -720,10 +720,10 @@ void EncounterEffect_InitSpriteCollection(EncounterSpriteRenderer *param0, int p
 {
     int v0;
 
-    param0->unk_00 = SpriteList_InitRendering(param1, &param0->unk_04, HEAP_ID_FIELD1);
+    param0->spriteList = SpriteList_InitRendering(param1, &param0->renderer, HEAP_ID_FIELD1);
 
     for (v0 = 0; v0 < 4; v0++) {
-        param0->unk_190[v0] = SpriteResourceCollection_New(param2, v0, HEAP_ID_FIELD1);
+        param0->spriteResourceCollections[v0] = SpriteResourceCollection_New(param2, v0, HEAP_ID_FIELD1);
     }
 }
 
@@ -731,35 +731,35 @@ void FieldMap_021DE4AC(EncounterSpriteRenderer *param0)
 {
     int v0;
 
-    SpriteList_Delete(param0->unk_00);
+    SpriteList_Delete(param0->spriteList);
 
     for (v0 = 0; v0 < 4; v0++) {
-        SpriteResourceCollection_Delete(param0->unk_190[v0]);
+        SpriteResourceCollection_Delete(param0->spriteResourceCollections[v0]);
     }
 }
 
 void FieldMap_021DE4CC(NARC *param0, EncounterSpriteRenderer *param1, EncounterSpriteResources *param2, u32 param3, u32 param4, u32 param5, u32 param6, u32 param7, u32 param8)
 {
-    param2->unk_00[0] = SpriteResourceCollection_AddTilesFromEx(param1->unk_190[0], param0, param5, 0, param8, NNS_G2D_VRAM_TYPE_2DMAIN, 4, HEAP_ID_SAVE);
-    param2->unk_00[1] = SpriteResourceCollection_AddPaletteFrom(param1->unk_190[1], param0, param3, 0, param8, NNS_G2D_VRAM_TYPE_2DMAIN, param4, HEAP_ID_FIELD1);
-    param2->unk_00[2] = SpriteResourceCollection_AddFrom(param1->unk_190[2], param0, param6, 0, param8, 2, HEAP_ID_FIELD1);
-    param2->unk_00[3] = SpriteResourceCollection_AddFrom(param1->unk_190[3], param0, param7, 0, param8, 3, HEAP_ID_FIELD1);
+    param2->resources[0] = SpriteResourceCollection_AddTilesFromEx(param1->spriteResourceCollections[0], param0, param5, 0, param8, NNS_G2D_VRAM_TYPE_2DMAIN, 4, HEAP_ID_SAVE);
+    param2->resources[1] = SpriteResourceCollection_AddPaletteFrom(param1->spriteResourceCollections[1], param0, param3, 0, param8, NNS_G2D_VRAM_TYPE_2DMAIN, param4, HEAP_ID_FIELD1);
+    param2->resources[2] = SpriteResourceCollection_AddFrom(param1->spriteResourceCollections[2], param0, param6, 0, param8, 2, HEAP_ID_FIELD1);
+    param2->resources[3] = SpriteResourceCollection_AddFrom(param1->spriteResourceCollections[3], param0, param7, 0, param8, 3, HEAP_ID_FIELD1);
 
-    SpriteTransfer_RequestCharAtEnd(param2->unk_00[0]);
-    SpriteResource_ReleaseData(param2->unk_00[0]);
-    SpriteTransfer_RequestPlttFreeSpace(param2->unk_00[1]);
-    SpriteResourcesHeader_Init(&param2->unk_10, param8, param8, param8, param8, 0xffffffff, 0xffffffff, 0, 0, param1->unk_190[0], param1->unk_190[1], param1->unk_190[2], param1->unk_190[3], NULL, NULL);
+    SpriteTransfer_RequestCharAtEnd(param2->resources[0]);
+    SpriteResource_ReleaseData(param2->resources[0]);
+    SpriteTransfer_RequestPlttFreeSpace(param2->resources[1]);
+    SpriteResourcesHeader_Init(&param2->header, param8, param8, param8, param8, 0xffffffff, 0xffffffff, 0, 0, param1->spriteResourceCollections[0], param1->spriteResourceCollections[1], param1->spriteResourceCollections[2], param1->spriteResourceCollections[3], NULL, NULL);
 }
 
 void FieldMap_021DE5A4(EncounterSpriteRenderer *param0, EncounterSpriteResources *param1)
 {
     int v0;
 
-    SpriteTransfer_ResetCharTransfer(param1->unk_00[0]);
-    SpriteTransfer_ResetPlttTransfer(param1->unk_00[1]);
+    SpriteTransfer_ResetCharTransfer(param1->resources[0]);
+    SpriteTransfer_ResetPlttTransfer(param1->resources[1]);
 
     for (v0 = 0; v0 < 4; v0++) {
-        SpriteResourceCollection_Remove(param0->unk_190[v0], param1->unk_00[v0]);
+        SpriteResourceCollection_Remove(param0->spriteResourceCollections[v0], param1->resources[v0]);
     }
 }
 
@@ -786,8 +786,8 @@ Sprite *FieldMap_021DE62C(EncounterSpriteRenderer *param0, EncounterSpriteResour
     SpriteListTemplate v0;
     Sprite *v1;
 
-    v0.list = param0->unk_00;
-    v0.resourceData = &param1->unk_10;
+    v0.list = param0->spriteList;
+    v0.resourceData = &param1->header;
     v0.position.x = param2;
     v0.position.y = param3;
     v0.position.z = param4;
@@ -828,16 +828,16 @@ void FieldMap_021DE6BC(EncounterTextFade *param0)
 
 void FieldMap_021DE6C4(EncounterTextFade *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
 {
-    GF_ASSERT(param0->unk_2E == 0);
+    GF_ASSERT(param0->active == 0);
 
-    LinearInterpolationTaskS32_Init(&param0->unk_00, param1, param2, param5);
-    LinearInterpolationTaskS32_Init(&param0->unk_14, param3, param4, param5);
+    LinearInterpolationTaskS32_Init(&param0->xInterpolationTask, param1, param2, param5);
+    LinearInterpolationTaskS32_Init(&param0->yInterpolationTask, param3, param4, param5);
 
-    param0->unk_28 = param6;
-    param0->unk_2C = param7;
-    param0->unk_2D = param8;
-    param0->unk_2F = param9;
-    param0->unk_2E = 1;
+    param0->window = param6;
+    param0->width = param7;
+    param0->height = param8;
+    param0->color = param9;
+    param0->active = 1;
 }
 
 BOOL FieldMap_021DE71C(EncounterTextFade *param0)
@@ -845,19 +845,19 @@ BOOL FieldMap_021DE71C(EncounterTextFade *param0)
     BOOL v0;
     s16 v1, v2, v3, v4;
 
-    if (param0->unk_2E == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    v0 = LinearInterpolationTaskS32_Update(&param0->unk_00);
-    LinearInterpolationTaskS32_Update(&param0->unk_14);
+    v0 = LinearInterpolationTaskS32_Update(&param0->xInterpolationTask);
+    LinearInterpolationTaskS32_Update(&param0->yInterpolationTask);
 
-    v3 = param0->unk_00.currentValue - (param0->unk_2C / 2);
-    v1 = param0->unk_14.currentValue - (param0->unk_2D / 2);
-    v4 = v3 + param0->unk_2C;
-    v2 = v1 + param0->unk_2D;
+    v3 = param0->xInterpolationTask.currentValue - (param0->width / 2);
+    v1 = param0->yInterpolationTask.currentValue - (param0->height / 2);
+    v4 = v3 + param0->width;
+    v2 = v1 + param0->height;
 
-    FieldMap_021DE89C(param0->unk_28, v1, v2, v3, v4, param0->unk_2F);
+    FieldMap_021DE89C(param0->window, v1, v2, v3, v4, param0->color);
 
     return v0;
 }
@@ -877,16 +877,16 @@ void FieldMap_021DE79C(EncounterTextChar *param0)
 
 void FieldMap_021DE7A4(EncounterTextChar *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
 {
-    GF_ASSERT(param0->unk_2E == 0);
+    GF_ASSERT(param0->active == 0);
 
-    LinearInterpolationTaskS32_Init(&param0->unk_00, param1, param2, param5);
-    LinearInterpolationTaskS32_Init(&param0->unk_14, param3, param4, param5);
+    LinearInterpolationTaskS32_Init(&param0->xInterpolationTask, param1, param2, param5);
+    LinearInterpolationTaskS32_Init(&param0->yInterpolationTask, param3, param4, param5);
 
-    param0->unk_28 = param6;
-    param0->unk_2C = param7;
-    param0->unk_2D = param8;
-    param0->unk_2F = param9;
-    param0->unk_2E = 1;
+    param0->window = param6;
+    param0->width = param7;
+    param0->height = param8;
+    param0->color = param9;
+    param0->active = 1;
 }
 
 BOOL FieldMap_021DE7FC(EncounterTextChar *param0)
@@ -894,25 +894,25 @@ BOOL FieldMap_021DE7FC(EncounterTextChar *param0)
     BOOL v0;
     s16 v1, v2, v3, v4;
 
-    if (param0->unk_2E == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    v3 = param0->unk_00.currentValue - (param0->unk_2C / 2);
-    v1 = param0->unk_14.currentValue - (param0->unk_2D / 2);
-    v4 = v3 + param0->unk_2C;
-    v2 = v1 + param0->unk_2D;
+    v3 = param0->xInterpolationTask.currentValue - (param0->width / 2);
+    v1 = param0->yInterpolationTask.currentValue - (param0->height / 2);
+    v4 = v3 + param0->width;
+    v2 = v1 + param0->height;
 
-    FieldMap_021DE89C(param0->unk_28, v1, v2, v3, v4, 0);
-    v0 = LinearInterpolationTaskS32_Update(&param0->unk_00);
-    LinearInterpolationTaskS32_Update(&param0->unk_14);
+    FieldMap_021DE89C(param0->window, v1, v2, v3, v4, 0);
+    v0 = LinearInterpolationTaskS32_Update(&param0->xInterpolationTask);
+    LinearInterpolationTaskS32_Update(&param0->yInterpolationTask);
 
-    v3 = param0->unk_00.currentValue - (param0->unk_2C / 2);
-    v1 = param0->unk_14.currentValue - (param0->unk_2D / 2);
-    v4 = v3 + param0->unk_2C;
-    v2 = v1 + param0->unk_2D;
+    v3 = param0->xInterpolationTask.currentValue - (param0->width / 2);
+    v1 = param0->yInterpolationTask.currentValue - (param0->height / 2);
+    v4 = v3 + param0->width;
+    v2 = v1 + param0->height;
 
-    FieldMap_021DE89C(param0->unk_28, v1, v2, v3, v4, param0->unk_2F);
+    FieldMap_021DE89C(param0->window, v1, v2, v3, v4, param0->color);
 
     return v0;
 }
@@ -955,7 +955,7 @@ EncounterTextScroll *FieldMap_021DE8F8(u32 heapID)
     memset(v0, 0, sizeof(EncounterTextScroll));
 
     for (v1 = 0; v1 < 48; v1++) {
-        v0->unk_04[v1] = FieldMap_021DE784(heapID);
+        v0->chars[v1] = FieldMap_021DE784(heapID);
     }
 
     return v0;
@@ -966,7 +966,7 @@ void FieldMap_021DE928(EncounterTextScroll *param0)
     int v0;
 
     for (v0 = 0; v0 < 48; v0++) {
-        FieldMap_021DE79C(param0->unk_04[v0]);
+        FieldMap_021DE79C(param0->chars[v0]);
     }
 
     Heap_Free(param0);
@@ -974,14 +974,14 @@ void FieldMap_021DE928(EncounterTextScroll *param0)
 
 void FieldMap_021DE948(EncounterTextScroll *param0, u8 param1, u8 param2, Window *param3, u8 param4)
 {
-    param0->unk_00 = param3;
-    param0->unk_C9 = param4;
-    param0->unk_C6 = param1;
-    param0->unk_C7 = param2;
-    param0->unk_C4 = 0;
-    param0->unk_C5 = 0;
-    param0->unk_C8 = 0;
-    param0->unk_CA = 1;
+    param0->window = param3;
+    param0->color = param4;
+    param0->interpolationSteps = param1;
+    param0->spawnDelay = param2;
+    param0->charIndex = 0;
+    param0->finishedCharCount = 0;
+    param0->spawnTimer = 0;
+    param0->active = 1;
 }
 
 BOOL FieldMap_021DE988(EncounterTextScroll *param0)
@@ -990,36 +990,36 @@ BOOL FieldMap_021DE988(EncounterTextScroll *param0)
     int v3;
     BOOL v4;
 
-    if (param0->unk_CA == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    if (param0->unk_C4 < 48) {
-        param0->unk_C8--;
+    if (param0->charIndex < 48) {
+        param0->spawnTimer--;
 
-        if (param0->unk_C8 <= 0) {
-            param0->unk_C8 = param0->unk_C7;
+        if (param0->spawnTimer <= 0) {
+            param0->spawnTimer = param0->spawnDelay;
 
-            v0 = Unk_FieldMap_021F9988[param0->unk_C4 % 8];
+            v0 = Unk_FieldMap_021F9988[param0->charIndex % 8];
             v0 = (32 / 2) + (v0 * 32);
-            v1 = -16 - ((param0->unk_C4 / 8) * 32);
-            v2 = (192 + -16) - ((param0->unk_C4 / 8) * 32);
+            v1 = -16 - ((param0->charIndex / 8) * 32);
+            v2 = (192 + -16) - ((param0->charIndex / 8) * 32);
 
-            FieldMap_021DE7A4(param0->unk_04[param0->unk_C4], v0, v0, v1, v2, param0->unk_C6, param0->unk_00, 32, 32, param0->unk_C9);
-            param0->unk_C4++;
+            FieldMap_021DE7A4(param0->chars[param0->charIndex], v0, v0, v1, v2, param0->interpolationSteps, param0->window, 32, 32, param0->color);
+            param0->charIndex++;
         }
     }
 
-    for (v3 = param0->unk_C5; v3 < param0->unk_C4; v3++) {
-        v4 = FieldMap_021DE7FC(param0->unk_04[v3]);
+    for (v3 = param0->finishedCharCount; v3 < param0->charIndex; v3++) {
+        v4 = FieldMap_021DE7FC(param0->chars[v3]);
 
         if (v4 == 1) {
-            param0->unk_C5++;
+            param0->finishedCharCount++;
         }
     }
 
-    if ((param0->unk_C5 >= 48) && (v4 == 1)) {
-        param0->unk_CA = 0;
+    if ((param0->finishedCharCount >= 48) && (v4 == 1)) {
+        param0->active = 0;
         return 1;
     }
 
@@ -1040,11 +1040,11 @@ void FieldMap_021DEA98(EncounterTextLine *param0)
 
 void FieldMap_021DEAA0(EncounterTextLine *param0, u8 param1, u16 param2, u16 param3, Window *param4, u8 param5)
 {
-    param0->unk_00 = param4;
-    param0->unk_19 = param5;
-    param0->unk_18 = 1;
+    param0->window = param4;
+    param0->color = param5;
+    param0->active = 1;
 
-    LinearInterpolationTaskS32_Init(&param0->unk_04, param2, param3, param1);
+    LinearInterpolationTaskS32_Init(&param0->interpolationTask, param2, param3, param1);
 }
 
 BOOL FieldMap_021DEAC8(EncounterTextLine *param0)
@@ -1052,17 +1052,17 @@ BOOL FieldMap_021DEAC8(EncounterTextLine *param0)
     BOOL v0;
     u16 v1;
 
-    if (param0->unk_18 == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    v1 = param0->unk_04.currentValue;
-    v0 = LinearInterpolationTaskS32_Update(&param0->unk_04);
+    v1 = param0->interpolationTask.currentValue;
+    v0 = LinearInterpolationTaskS32_Update(&param0->interpolationTask);
 
-    FieldMap_021DEB04(param0->unk_00, v1, param0->unk_04.currentValue, param0->unk_19);
+    FieldMap_021DEB04(param0->window, v1, param0->interpolationTask.currentValue, param0->color);
 
     if (v0 == 1) {
-        param0->unk_18 = 0;
+        param0->active = 0;
         return 1;
     }
 
@@ -1120,7 +1120,7 @@ EncounterTextLines *FieldMap_021DEBEC(u32 heapID)
     memset(v0, 0, sizeof(EncounterTextLines));
 
     for (v1 = 0; v1 < 8; v1++) {
-        v0->unk_00[v1] = FieldMap_021DEA80(heapID);
+        v0->lines[v1] = FieldMap_021DEA80(heapID);
     }
 
     return v0;
@@ -1131,7 +1131,7 @@ void FieldMap_021DEC18(EncounterTextLines *param0)
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        FieldMap_021DEA98(param0->unk_00[v0]);
+        FieldMap_021DEA98(param0->lines[v0]);
     }
 
     Heap_Free(param0);
@@ -1142,10 +1142,10 @@ void FieldMap_021DEC38(EncounterTextLines *param0, u8 param1, Window *param2, u8
     int v0;
 
     for (v0 = 0; v0 < 8; v0++) {
-        FieldMap_021DEAA0(param0->unk_00[v0], param1, (Unk_FieldMap_021F9A2C[v0][0] * 0xffff) / 360, (Unk_FieldMap_021F9A2C[v0][1] * 0xffff) / 360, param2, param3);
+        FieldMap_021DEAA0(param0->lines[v0], param1, (Unk_FieldMap_021F9A2C[v0][0] * 0xffff) / 360, (Unk_FieldMap_021F9A2C[v0][1] * 0xffff) / 360, param2, param3);
     }
 
-    param0->unk_20 = 1;
+    param0->active = 1;
     FieldMap_021DE89C(param2, 93, 99, 0, 256, param3);
 }
 
@@ -1154,16 +1154,16 @@ BOOL FieldMap_021DECB8(EncounterTextLines *param0)
     int v0;
     BOOL v1;
 
-    if (param0->unk_20 == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
     for (v0 = 0; v0 < 8; v0++) {
-        v1 = FieldMap_021DEAC8(param0->unk_00[v0]);
+        v1 = FieldMap_021DEAC8(param0->lines[v0]);
     }
 
     if (v1 == 1) {
-        param0->unk_20 = 0;
+        param0->active = 0;
         return 1;
     }
 
@@ -1180,7 +1180,7 @@ EncounterScreenWave *FieldMap_021DECEC(void)
 
 void FieldMap_021DED04(EncounterScreenWave *param0)
 {
-    if (param0->unk_E0 != NULL) {
+    if (param0->vBlankTask != NULL) {
         FieldMap_021DEE84(param0);
     }
 
@@ -1193,14 +1193,14 @@ void FieldMap_021DED20(EncounterEffect *param0, EncounterScreenWave *param1, u32
     int v1;
     int v2;
 
-    GF_ASSERT(param1->unk_E0 == NULL);
+    GF_ASSERT(param1->vBlankTask == NULL);
 
     param0->hBlankFlag = 0;
-    param1->unk_D8 = param0->fieldSystem->unk_04->hBlankSystem;
-    param1->unk_14 = 0;
-    param1->unk_E4 = &param0->hBlankFlag;
+    param1->hBlankSystem = param0->fieldSystem->unk_04->hBlankSystem;
+    param1->state = 0;
+    param1->done = &param0->hBlankFlag;
 
-    LinearInterpolationTaskS32_Init(&param1->unk_00, 255, 0, param2);
+    LinearInterpolationTaskS32_Init(&param1->interpolationTask, 255, 0, param2);
 
     for (v0 = 0; v0 < 192; v0++) {
         v1 = v0 % param3;
@@ -1208,9 +1208,9 @@ void FieldMap_021DED20(EncounterEffect *param0, EncounterScreenWave *param1, u32
         v2 = v2 / param3;
 
         if (((v0 / param3) % 2) == 0) {
-            param1->unk_18[v0] = v2;
+            param1->vOffsets[v0] = v2;
         } else {
-            param1->unk_18[v0] = param4 - v2;
+            param1->vOffsets[v0] = param4 - v2;
         }
     }
 
@@ -1226,8 +1226,8 @@ static void FieldMap_021DEDE8(SysTask *param0, void *param1)
 {
     EncounterScreenWave *v0 = param1;
 
-    v0->unk_DC = HBlankSystem_StartTask(v0->unk_D8, FieldMap_021DEE50, v0);
-    v0->unk_E0 = SysTask_ExecuteAfterVBlank(FieldMap_021DEE24, v0, 1024);
+    v0->hBlankTask = HBlankSystem_StartTask(v0->hBlankSystem, FieldMap_021DEE50, v0);
+    v0->vBlankTask = SysTask_ExecuteAfterVBlank(FieldMap_021DEE24, v0, 1024);
 
     SysTask_Done(param0);
 }
@@ -1237,12 +1237,12 @@ static void FieldMap_021DEE24(SysTask *param0, void *param1)
     EncounterScreenWave *v0 = param1;
     BOOL v1;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        v1 = LinearInterpolationTaskS32_Update(&v0->unk_00);
+        v1 = LinearInterpolationTaskS32_Update(&v0->interpolationTask);
 
         if (v1 == 1) {
-            v0->unk_14++;
+            v0->state++;
         }
         break;
     case 1:
@@ -1258,7 +1258,7 @@ static void FieldMap_021DEE50(HBlankTask *param0, void *param1)
     int v2 = GX_GetVCount();
 
     if (v2 < 192) {
-        v1 = -v0->unk_18[v2] + v0->unk_00.currentValue;
+        v1 = -v0->vOffsets[v2] + v0->interpolationTask.currentValue;
 
         if (v1 < 0) {
             v1 = 0;
@@ -1272,11 +1272,11 @@ static void FieldMap_021DEE84(EncounterScreenWave *param0)
 {
     GX_SetVisibleWnd(GX_WNDMASK_NONE);
 
-    *(param0->unk_E4) = 1;
-    HBlankTask_Delete(param0->unk_DC);
-    param0->unk_DC = NULL;
-    SysTask_Done(param0->unk_E0);
-    param0->unk_E0 = NULL;
+    *(param0->done) = 1;
+    HBlankTask_Delete(param0->hBlankTask);
+    param0->hBlankTask = NULL;
+    SysTask_Done(param0->vBlankTask);
+    param0->vBlankTask = NULL;
 }
 
 u32 CutInEffects_ForBattle(const FieldBattleDTO *param0)
@@ -1354,8 +1354,8 @@ void FieldMap_021DEFA0(FieldSystem *fieldSystem)
     Unk_FieldMap_02202120 = Heap_Alloc(HEAP_ID_FIELD1, sizeof(CutInEffect));
     memset(Unk_FieldMap_02202120, 0, sizeof(CutInEffect));
 
-    Unk_FieldMap_02202120->unk_00 = 0;
-    Unk_FieldMap_02202120->unk_02 = 0;
+    Unk_FieldMap_02202120->state = 0;
+    Unk_FieldMap_02202120->ready = 0;
     Unk_FieldMap_02202120->fieldSystem = fieldSystem;
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 0);
@@ -1373,13 +1373,13 @@ void FieldMap_021DEFA0(FieldSystem *fieldSystem)
 void FieldMap_021DF038(void)
 {
     GF_ASSERT(Unk_FieldMap_02202120);
-    Unk_FieldMap_02202120->unk_03 = 1;
+    Unk_FieldMap_02202120->finishRequested = 1;
 }
 
 BOOL FieldMap_021DF054(void)
 {
     GF_ASSERT(Unk_FieldMap_02202120);
-    return Unk_FieldMap_02202120->unk_02;
+    return Unk_FieldMap_02202120->ready;
 }
 
 void FieldMap_021DF070(void)
@@ -1411,19 +1411,19 @@ void FieldMap_021DF0CC(NARC *param0, u32 param1)
     Camera *v1;
 
     GF_ASSERT(Unk_FieldMap_02202120);
-    GF_ASSERT(Unk_FieldMap_02202120->unk_08 == NULL);
+    GF_ASSERT(Unk_FieldMap_02202120->particleSystem == NULL);
 
-    Unk_FieldMap_02202120->unk_0C = Heap_Alloc(HEAP_ID_FIELD1, 0x4800);
-    Unk_FieldMap_02202120->unk_08 = ParticleSystem_New(FieldMap_021DF3E8, FieldMap_021DF414, Unk_FieldMap_02202120->unk_0C, 0x4800, 1, HEAP_ID_FIELD1);
-    GF_ASSERT(Unk_FieldMap_02202120->unk_08);
+    Unk_FieldMap_02202120->particleBuffer = Heap_Alloc(HEAP_ID_FIELD1, 0x4800);
+    Unk_FieldMap_02202120->particleSystem = ParticleSystem_New(FieldMap_021DF3E8, FieldMap_021DF414, Unk_FieldMap_02202120->particleBuffer, 0x4800, 1, HEAP_ID_FIELD1);
+    GF_ASSERT(Unk_FieldMap_02202120->particleSystem);
 
-    ParticleSystem_SetCameraProjection(Unk_FieldMap_02202120->unk_08, 1);
+    ParticleSystem_SetCameraProjection(Unk_FieldMap_02202120->particleSystem, 1);
 
-    v1 = ParticleSystem_GetCamera(Unk_FieldMap_02202120->unk_08);
+    v1 = ParticleSystem_GetCamera(Unk_FieldMap_02202120->particleSystem);
     Camera_SetClipping(FX32_ONE, FX32_ONE * 900, v1);
 
     v0 = LoadMemberFromOpenNARC(param0, param1, 0, HEAP_ID_FIELD1, 0);
-    ParticleSystem_SetResource(Unk_FieldMap_02202120->unk_08, v0, 0 | 0, 0);
+    ParticleSystem_SetResource(Unk_FieldMap_02202120->particleSystem, v0, 0 | 0, 0);
 }
 
 void FieldMap_021DF17C(u32 param0)
@@ -1432,10 +1432,10 @@ void FieldMap_021DF17C(u32 param0)
     VecFx32 v1 = { 0, 0, 0 };
 
     GF_ASSERT(Unk_FieldMap_02202120);
-    GF_ASSERT(Unk_FieldMap_02202120->unk_08);
+    GF_ASSERT(Unk_FieldMap_02202120->particleSystem);
 
     for (v0 = 0; v0 < param0; v0++) {
-        ParticleSystem_CreateEmitter(Unk_FieldMap_02202120->unk_08, v0, &v1);
+        ParticleSystem_CreateEmitter(Unk_FieldMap_02202120->particleSystem, v0, &v1);
     }
 }
 
@@ -1443,13 +1443,13 @@ BOOL FieldMap_021DF1CC(void)
 {
     GF_ASSERT(Unk_FieldMap_02202120);
 
-    if (Unk_FieldMap_02202120->unk_08 == NULL) {
+    if (Unk_FieldMap_02202120->particleSystem == NULL) {
         return 1;
     }
 
     ParticleSystem_UpdateAll();
 
-    if (ParticleSystem_GetActiveEmitterCount(Unk_FieldMap_02202120->unk_08) == 0) {
+    if (ParticleSystem_GetActiveEmitterCount(Unk_FieldMap_02202120->particleSystem) == 0) {
         return 1;
     }
 
@@ -1458,7 +1458,7 @@ BOOL FieldMap_021DF1CC(void)
 
 BOOL FieldMap_021DF208(void)
 {
-    if (ParticleSystem_GetActiveEmitterCount(Unk_FieldMap_02202120->unk_08) == 0) {
+    if (ParticleSystem_GetActiveEmitterCount(Unk_FieldMap_02202120->particleSystem) == 0) {
         return 1;
     }
 
@@ -1469,26 +1469,26 @@ void FieldMap_021DF224(void)
 {
     GF_ASSERT(Unk_FieldMap_02202120);
 
-    ParticleSystem_Free(Unk_FieldMap_02202120->unk_08);
-    Heap_Free(Unk_FieldMap_02202120->unk_0C);
+    ParticleSystem_Free(Unk_FieldMap_02202120->particleSystem);
+    Heap_Free(Unk_FieldMap_02202120->particleBuffer);
 
-    Unk_FieldMap_02202120->unk_08 = NULL;
-    Unk_FieldMap_02202120->unk_0C = NULL;
+    Unk_FieldMap_02202120->particleSystem = NULL;
+    Unk_FieldMap_02202120->particleBuffer = NULL;
 }
 
 static void FieldMap_021DF258(SysTask *param0, void *param1)
 {
     CutInEffect *v0 = param1;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 0:
-        v0->unk_00++;
+        v0->state++;
         break;
     case 1:
-        if (v0->unk_03 == 1) {
+        if (v0->finishRequested == 1) {
             FieldMap_021DF30C(v0->fieldSystem);
             SysTask_Done(param0);
-            v0->unk_00++;
+            v0->state++;
         }
         break;
     }
@@ -1498,7 +1498,7 @@ static void FieldMap_021DF28C(SysTask *param0, void *param1)
 {
     CutInEffect *v0 = param1;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 2:
 
         ParticleSystem_ZeroAll();
@@ -1520,7 +1520,7 @@ static void FieldMap_021DF28C(SysTask *param0, void *param1)
 
         Bg_SetPriority(BG_LAYER_MAIN_0, 0);
 
-        v0->unk_02 = 1;
+        v0->ready = 1;
         SysTask_Done(param0);
         break;
     default:
@@ -1616,8 +1616,8 @@ static u32 FieldMap_021DF3E8(u32 param0, BOOL param1)
     GF_ASSERT(Unk_FieldMap_02202120);
     GF_ASSERT(param1 == 0);
 
-    v0 = Unk_FieldMap_02202120->unk_10;
-    Unk_FieldMap_02202120->unk_10 += param0;
+    v0 = Unk_FieldMap_02202120->texAllocOffset;
+    Unk_FieldMap_02202120->texAllocOffset += param0;
 
     return v0;
 }
@@ -1629,8 +1629,8 @@ static u32 FieldMap_021DF414(u32 param0, BOOL param1)
     GF_ASSERT(Unk_FieldMap_02202120);
     GF_ASSERT(param1 == 0);
 
-    v0 = Unk_FieldMap_02202120->unk_14;
-    Unk_FieldMap_02202120->unk_14 += param0;
+    v0 = Unk_FieldMap_02202120->palAllocOffset;
+    Unk_FieldMap_02202120->palAllocOffset += param0;
 
     return v0;
 }

@@ -16,8 +16,8 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    SysTask *unk_00;
-    SweetScentTask *unk_04;
+    SysTask *cutInTask;
+    SweetScentTask *sweetScentTask;
 } SweetScentCutInTask;
 
 BOOL FieldMap_021F101C(FieldTask *param0)
@@ -35,25 +35,25 @@ BOOL FieldMap_021F101C(FieldTask *param0)
     case 1: {
         int v4 = FieldMap_021F0484();
 
-        v3->unk_04 = Heap_AllocAtEnd(HEAP_ID_FIELD2, v4);
-        memset(v3->unk_04, 0, v4);
+        v3->sweetScentTask = Heap_AllocAtEnd(HEAP_ID_FIELD2, v4);
+        memset(v3->sweetScentTask, 0, v4);
     }
         (*v2)++;
         break;
     case 2: {
         int v5 = PlayerAvatar_GetGender(fieldSystem->playerAvatar);
-        v3->unk_00 = HMCutIn_StartTask(fieldSystem, 0, v1->mon, v5);
+        v3->cutInTask = HMCutIn_StartTask(fieldSystem, 0, v1->mon, v5);
     }
         (*v2)++;
         break;
     case 3:
-        if (HMCutIn_IsFinished(v3->unk_00)) {
-            HMCutIn_EndTask(v3->unk_00);
+        if (HMCutIn_IsFinished(v3->cutInTask)) {
+            HMCutIn_EndTask(v3->cutInTask);
             (*v2)++;
         }
         break;
     case 4:
-        FieldTask_InitCall(param0, FieldMap_021F0488, v3->unk_04);
+        FieldTask_InitCall(param0, FieldMap_021F0488, v3->sweetScentTask);
         (*v2)++;
         break;
     case 5:

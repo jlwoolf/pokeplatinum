@@ -41,18 +41,18 @@ typedef enum {
 } UnkEnum_FieldMap_021ED334;
 
 typedef struct {
-    int unk_00;
-    s16 unk_04;
-    void *unk_08;
-    void *unk_0C;
-    void *unk_10;
-    BillboardGfxSequence unk_14;
-    Billboard *unk_24;
-    BillboardResources unk_28;
-    MapObject *unk_50;
-    OverworldAnimManager *unk_54;
-    void *unk_58;
-    UnkFuncPtr_fieldmap_021EE454 unk_5C;
+    int graphicsID;
+    s16 state;
+    void *modelData;
+    void *gfxSequenceData;
+    void *textureData;
+    BillboardGfxSequence gfxSequence;
+    Billboard *billboard;
+    BillboardResources resources;
+    MapObject *mapObject;
+    OverworldAnimManager *animManager;
+    void *callbackArg;
+    UnkFuncPtr_fieldmap_021EE454 callback;
 } MapObjectBillboardAnim;
 
 static void FieldMap_021ED094(const MapObject *param0);
@@ -159,7 +159,7 @@ static void FieldMap_021EE698(SysTask *param0, void *param1);
 
 void FieldMap_021ECE40(MapObjectDrawManager *param0, const MapObjectManager *param1, int param2, int param3, int param4, int param5, const int *param6, int param7)
 {
-    param0->unk_104 = param1;
+    param0->mapObjectManager = param1;
 
     FieldMap_021EDDAC(param0, param2);
     FieldMap_021EE320(param0, param2, param7);
@@ -281,16 +281,16 @@ void FieldMap_021ECFD8(const MapObject *param0, Billboard **param1, int param2)
 
 void FieldMap_021ED01C(Billboard *param0, BillboardAnimState *param1)
 {
-    param1->unk_00 = Billboard_GetDrawFlag(param0);
-    param1->unk_02 = Billboard_GetAnimNum(param0);
-    param1->unk_04 = Billboard_GetFrameNum(param0);
+    param1->drawFlag = Billboard_GetDrawFlag(param0);
+    param1->animNum = Billboard_GetAnimNum(param0);
+    param1->frameNum = Billboard_GetFrameNum(param0);
 }
 
 void FieldMap_021ED03C(Billboard *param0, BillboardAnimState *param1)
 {
-    Billboard_SetDrawFlag(param0, param1->unk_00);
-    Billboard_SetAnimNum(param0, param1->unk_02);
-    Billboard_SetFrameNum(param0, param1->unk_04);
+    Billboard_SetDrawFlag(param0, param1->drawFlag);
+    Billboard_SetAnimNum(param0, param1->animNum);
+    Billboard_SetFrameNum(param0, param1->frameNum);
 }
 
 void FieldMap_021ED060(MapObject *param0, Billboard **param1, int param2)
@@ -320,13 +320,13 @@ static void FieldMap_021ED0A4(MapObjectDrawManager *param0, int param1)
     v0 = sizeof(BillboardResources) * param1;
     v2 = Heap_Alloc(HEAP_ID_FIELD1, v0);
 
-    param0->unk_E4 = v2;
+    param0->billboardResources = v2;
     GF_ASSERT(v2 != NULL);
 
     v0 = (sizeof(BillboardResourceEntry)) * param1;
     v3 = Heap_Alloc(HEAP_ID_FIELD1, v0);
 
-    param0->unk_F4 = v3;
+    param0->billboardResourceEntries = v3;
     GF_ASSERT(v3 != NULL);
 
     v1 = sizeof(BillboardResources);
@@ -344,15 +344,15 @@ static void FieldMap_021ED0F0(MapObjectDrawManager *param0)
 {
     FieldMap_021ED1A4(param0);
 
-    Heap_FreeExplicit(HEAP_ID_FIELD1, param0->unk_E4);
-    Heap_FreeExplicit(HEAP_ID_FIELD1, param0->unk_F4);
+    Heap_FreeExplicit(HEAP_ID_FIELD1, param0->billboardResources);
+    Heap_FreeExplicit(HEAP_ID_FIELD1, param0->billboardResourceEntries);
 }
 
 static BillboardResources *FieldMap_021ED110(MapObjectDrawManager *param0, u32 param1)
 {
     int v0;
-    BillboardResourceEntry *v1 = param0->unk_F4;
-    v0 = param0->unk_04;
+    BillboardResourceEntry *v1 = param0->billboardResourceEntries;
+    v0 = param0->maxBillboards;
 
     do {
         if (v1->unk_00 == param1) {
@@ -363,8 +363,8 @@ static BillboardResources *FieldMap_021ED110(MapObjectDrawManager *param0, u32 p
         v0--;
     } while (v0);
 
-    v1 = param0->unk_F4;
-    v0 = param0->unk_04;
+    v1 = param0->billboardResourceEntries;
+    v0 = param0->maxBillboards;
 
     do {
         if (v1->unk_00 == 0xffff) {
@@ -384,8 +384,8 @@ int FieldMap_021ED150(const MapObjectManager *param0, u32 param1, BillboardResou
 {
     int v0;
     const MapObjectDrawManager *v1 = MapObjectMan_GetDrawManager(param0);
-    BillboardResourceEntry *v2 = v1->unk_F4;
-    v0 = v1->unk_04;
+    BillboardResourceEntry *v2 = v1->billboardResourceEntries;
+    v0 = v1->maxBillboards;
 
     do {
         if (v2->unk_00 == param1) {
@@ -403,8 +403,8 @@ int FieldMap_021ED150(const MapObjectManager *param0, u32 param1, BillboardResou
 static void FieldMap_021ED184(MapObjectDrawManager *param0, u32 param1)
 {
     int v0;
-    BillboardResourceEntry *v1 = param0->unk_F4;
-    v0 = param0->unk_04;
+    BillboardResourceEntry *v1 = param0->billboardResourceEntries;
+    v0 = param0->maxBillboards;
 
     do {
         if (v1->unk_00 == param1) {
@@ -421,8 +421,8 @@ static void FieldMap_021ED184(MapObjectDrawManager *param0, u32 param1)
 static void FieldMap_021ED1A4(MapObjectDrawManager *param0)
 {
     int v0;
-    BillboardResourceEntry *v1 = param0->unk_F4;
-    v0 = param0->unk_04;
+    BillboardResourceEntry *v1 = param0->billboardResourceEntries;
+    v0 = param0->maxBillboards;
 
     do {
         if (v1->unk_00 != 0xffff) {
@@ -467,14 +467,14 @@ static int FieldMap_021ED1C8(const MapObjectManager *param0, const MapObject *pa
 static void FieldMap_021ED224(MapObjectDrawManager *param0, int param1, int param2, int param3, int param4, int param5, int param6)
 {
     {
-        param0->unk_F8 = ResourceHeap_New(HEAP_ID_FIELD1, HEAP_ID_64, 0x1000 * param1, param1);
+        param0->modelResourceHeap = ResourceHeap_New(HEAP_ID_FIELD1, HEAP_ID_64, 0x1000 * param1, param1);
         FieldMap_021ED558(param0);
         FieldMap_021EDCC4(param0, param2);
         FieldMap_021EDCCC(param0, param1 - param2);
     }
 
     {
-        param0->unk_FC = ResourceHeap_New(HEAP_ID_FIELD1, HEAP_ID_65, 0x80 * param3, param3);
+        param0->frameSeqResourceHeap = ResourceHeap_New(HEAP_ID_FIELD1, HEAP_ID_65, 0x80 * param3, param3);
         FieldMap_021ED694(param0);
         FieldMap_021EDCD4(param0, param4);
         FieldMap_021EDCDC(param0, param3 - param4);
@@ -494,8 +494,8 @@ static void FieldMap_021ED224(MapObjectDrawManager *param0, int param1, int para
 
 static void FieldMap_021ED2AC(MapObjectDrawManager *param0)
 {
-    ResourceHeap_Free(param0->unk_F8);
-    ResourceHeap_Free(param0->unk_FC);
+    ResourceHeap_Free(param0->modelResourceHeap);
+    ResourceHeap_Free(param0->frameSeqResourceHeap);
     TextureResourceManager_Delete(FieldMap_021EDCB0(param0));
 }
 
@@ -524,7 +524,7 @@ static int FieldMap_021ED2E8(MapObjectDrawManager *param0, ResourceHeap *param1,
     GF_ASSERT(v0 != NULL);
 
     {
-        NARC *v1 = MapObjectMan_GetNARC(param0->unk_104);
+        NARC *v1 = MapObjectMan_GetNARC(param0->mapObjectManager);
         ResourceHeap_LoadMemberFromNARC(param1, param2, v1, v0->narcIdx, 0);
     }
 
@@ -533,7 +533,7 @@ static int FieldMap_021ED2E8(MapObjectDrawManager *param0, ResourceHeap *param1,
 
 static UnkEnum_FieldMap_021ED334 FieldMap_021ED334(MapObjectDrawManager *param0, int param1, int param2, const ObjectEventGfxFileEntry *param3)
 {
-    TextureResourceManager *v0 = param0->unk_F0;
+    TextureResourceManager *v0 = param0->textureResourceManager;
 
     if (TextureResourceManager_IsIDUnused(v0, param2) == 0) {
         return UnkEnum_FieldMap_021ED334_00;
@@ -581,7 +581,7 @@ static void FieldMap_021ED3DC(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDC98(param0);
 
-    FieldMap_021ED2E8(param0, param0->unk_F8, param1, 0xffff, gObjectEventGfxModelsTable);
+    FieldMap_021ED2E8(param0, param0->modelResourceHeap, param1, 0xffff, gObjectEventGfxModelsTable);
     FieldMap_021ED56C(param0, param1);
 }
 
@@ -589,7 +589,7 @@ static void FieldMap_021ED40C(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDC98(param0);
 
-    FieldMap_021ED2E8(param0, param0->unk_F8, param1, 0xffff, gObjectEventGfxModelsTable);
+    FieldMap_021ED2E8(param0, param0->modelResourceHeap, param1, 0xffff, gObjectEventGfxModelsTable);
     FieldMap_021ED5B4(param0, param1);
 }
 
@@ -605,7 +605,7 @@ static void FieldMap_021ED460(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDCA0(param0);
 
-    FieldMap_021ED2E8(param0, param0->unk_FC, param1, 0xffff, gObjectEventGfxFrameSeqsTable);
+    FieldMap_021ED2E8(param0, param0->frameSeqResourceHeap, param1, 0xffff, gObjectEventGfxFrameSeqsTable);
     FieldMap_021ED6A8(param0, param1);
 }
 
@@ -613,7 +613,7 @@ static void FieldMap_021ED490(MapObjectDrawManager *param0, int param1)
 {
     ResourceCollection *v0 = FieldMap_021EDCA0(param0);
 
-    FieldMap_021ED2E8(param0, param0->unk_FC, param1, 0xffff, gObjectEventGfxFrameSeqsTable);
+    FieldMap_021ED2E8(param0, param0->frameSeqResourceHeap, param1, 0xffff, gObjectEventGfxFrameSeqsTable);
     FieldMap_021ED6F0(param0, param1);
 }
 
@@ -756,7 +756,7 @@ static void FieldMap_021ED63C(MapObjectManager *param0, MapObjectDrawManager *pa
     do {
         if ((*v1) != 0xffff) {
             if (FieldMap_021EDAB4(param0, *v1, NULL) == 0) {
-                ResourceHeap_FreeItem(param1->unk_F8, *v1);
+                ResourceHeap_FreeItem(param1->modelResourceHeap, *v1);
                 *v1 = 0xffff;
             }
         }
@@ -837,7 +837,7 @@ static void FieldMap_021ED778(MapObjectManager *param0, MapObjectDrawManager *pa
     do {
         if ((*v1) != 0xffff) {
             if (FieldMap_021EDB3C(param0, *v1, NULL) == 0) {
-                ResourceHeap_FreeItem(param1->unk_FC, *v1);
+                ResourceHeap_FreeItem(param1->frameSeqResourceHeap, *v1);
                 *v1 = 0xffff;
             }
         }
@@ -1132,7 +1132,7 @@ void FieldMap_021EDBC4(const MapObjectManager *param0, int param1, MapObject *pa
 
     if (FieldMap_021ED974(v1, v0) == 1) {
         if (FieldMap_021EDAB4(param0, v0, param2) == 0) {
-            ResourceHeap_FreeItem(v1->unk_F8, v0);
+            ResourceHeap_FreeItem(v1->modelResourceHeap, v0);
             FieldMap_021ED610(v1, v0);
         }
     }
@@ -1141,7 +1141,7 @@ void FieldMap_021EDBC4(const MapObjectManager *param0, int param1, MapObject *pa
 
     if (FieldMap_021ED99C(v1, v0) == 1) {
         if (FieldMap_021EDB3C(param0, v0, param2) == 0) {
-            ResourceHeap_FreeItem(v1->unk_FC, v0);
+            ResourceHeap_FreeItem(v1->frameSeqResourceHeap, v0);
             FieldMap_021ED74C(v1, v0);
         }
     }
@@ -1160,117 +1160,117 @@ void FieldMap_021EDBC4(const MapObjectManager *param0, int param1, MapObject *pa
 
 void FieldMap_021EDC84(MapObjectDrawManager *param0, BillboardList *param1)
 {
-    param0->unk_E0 = param1;
+    param0->billboardList = param1;
 }
 
 BillboardList *FieldMap_021EDC8C(MapObjectDrawManager *param0)
 {
-    return param0->unk_E0;
+    return param0->billboardList;
 }
 
 void FieldMap_021EDC94(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_04 = param1;
+    param0->maxBillboards = param1;
 }
 
 ResourceCollection *FieldMap_021EDC98(const MapObjectDrawManager *param0)
 {
-    return param0->unk_E8;
+    return param0->modelResourceCollection;
 }
 
 ResourceCollection *FieldMap_021EDCA0(const MapObjectDrawManager *param0)
 {
-    return param0->unk_EC;
+    return param0->frameSeqResourceCollection;
 }
 
 void FieldMap_021EDCA8(MapObjectDrawManager *param0, TextureResourceManager *param1)
 {
-    param0->unk_F0 = param1;
+    param0->textureResourceManager = param1;
 }
 
 TextureResourceManager *FieldMap_021EDCB0(const MapObjectDrawManager *param0)
 {
-    return param0->unk_F0;
+    return param0->textureResourceManager;
 }
 
 static int *FieldMap_021EDCB8(MapObjectDrawManager *param0)
 {
-    return param0->unk_60;
+    return param0->textureIDs;
 }
 
 static int *FieldMap_021EDCBC(MapObjectDrawManager *param0)
 {
-    return param0->unk_20;
+    return param0->modelIDs;
 }
 
 static int *FieldMap_021EDCC0(MapObjectDrawManager *param0)
 {
-    return param0->unk_40;
+    return param0->frameSeqIDs;
 }
 
 static void FieldMap_021EDCC4(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_08 = param1;
+    param0->preloadedModelCount = param1;
 }
 
 static int FieldMap_021EDCC8(const MapObjectDrawManager *param0)
 {
-    return param0->unk_08;
+    return param0->preloadedModelCount;
 }
 
 static void FieldMap_021EDCCC(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_0C = param1;
+    param0->dynamicModelCount = param1;
 }
 
 static int FieldMap_021EDCD0(const MapObjectDrawManager *param0)
 {
-    return param0->unk_0C;
+    return param0->dynamicModelCount;
 }
 
 static void FieldMap_021EDCD4(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_10 = param1;
+    param0->preloadedFrameSeqCount = param1;
 }
 
 static int FieldMap_021EDCD8(const MapObjectDrawManager *param0)
 {
-    return param0->unk_10;
+    return param0->preloadedFrameSeqCount;
 }
 
 static void FieldMap_021EDCDC(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_14 = param1;
+    param0->dynamicFrameSeqCount = param1;
 }
 
 static int FieldMap_021EDCE0(const MapObjectDrawManager *param0)
 {
-    return param0->unk_14;
+    return param0->dynamicFrameSeqCount;
 }
 
 static void FieldMap_021EDCE4(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_18 = param1;
+    param0->preloadedTextureCount = param1;
 }
 
 static int FieldMap_021EDCE8(const MapObjectDrawManager *param0)
 {
-    return param0->unk_18;
+    return param0->preloadedTextureCount;
 }
 
 static void FieldMap_021EDCEC(MapObjectDrawManager *param0, int param1)
 {
-    param0->unk_1C = param1;
+    param0->dynamicTextureCount = param1;
 }
 
 static int FieldMap_021EDCF0(const MapObjectDrawManager *param0)
 {
-    return param0->unk_1C;
+    return param0->dynamicTextureCount;
 }
 
 static void *FieldMap_021EDCF4(MapObjectDrawManager *param0, u32 param1, int param2)
 {
-    return FieldMap_021ECD68(param0->unk_104, param1, param2);
+    return FieldMap_021ECD68(param0->mapObjectManager, param1, param2);
 }
 
 static const ObjectEventGfxModelAnimEntry *FieldMap_021EDD04(int param0)
@@ -1386,14 +1386,14 @@ static void FieldMap_021EDE3C(MapObjectDrawManager *param0, u32 param1, Billboar
 {
     {
         int v0 = FieldMap_021EDD2C(param1);
-        void *v1 = ResourceHeap_GetItemData(param0->unk_F8, v0);
+        void *v1 = ResourceHeap_GetItemData(param0->modelResourceHeap, v0);
 
         param2->modelRes = v1;
     }
 
     {
         int v2 = FieldMap_021EDD38(param1);
-        void *v3 = ResourceHeap_GetItemData(param0->unk_FC, v2);
+        void *v3 = ResourceHeap_GetItemData(param0->frameSeqResourceHeap, v2);
 
         BillboardGfxSequence_SetData(v3, &param2->gfxSequence);
     }
@@ -1478,18 +1478,18 @@ int FieldMap_021EDF30(int param0)
 
 static int FieldMap_021EDF3C(MapObjectDrawManager *param0, int param1, u32 param2, int param3)
 {
-    MapObjectDrawTaskManager *v0 = param0->unk_100;
+    MapObjectDrawTaskManager *v0 = param0->drawTaskManager;
 
-    if ((v0->unk_04 >= v0->unk_02) || (BillboardList_IsRedrawing(param0->unk_E0) == 1)) {
+    if ((v0->loadedTextureCount >= v0->maxTexturesPerFrame) || (BillboardList_IsRedrawing(param0->billboardList) == 1)) {
         int v1 = 0;
-        MapObjectTextureLoadTask *v2 = v0->unk_0C;
+        MapObjectTextureLoadTask *v2 = v0->textureLoadTasks;
 
-        while (v1 < v0->unk_00) {
-            if (v2->unk_0C == NULL) {
-                v2->unk_0C = param0->unk_F0;
-                v2->unk_08 = param3;
-                v2->unk_04 = param1;
-                v2->unk_00 = param2;
+        while (v1 < v0->count) {
+            if (v2->textureManager == NULL) {
+                v2->textureManager = param0->textureResourceManager;
+                v2->isDynamic = param3;
+                v2->textureID = param1;
+                v2->narcMemberIdx = param2;
                 return 0;
             }
 
@@ -1505,7 +1505,7 @@ static int FieldMap_021EDF3C(MapObjectDrawManager *param0, int param1, u32 param
         void *v3 = FieldMap_021EDCF4(param0, param2, 0);
 
         FieldMap_021EE0E8(param0, param1, v3, param3);
-        v0->unk_04++;
+        v0->loadedTextureCount++;
         return 1;
     }
 }
@@ -1513,12 +1513,12 @@ static int FieldMap_021EDF3C(MapObjectDrawManager *param0, int param1, u32 param
 static void FieldMap_021EDFBC(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectTextureLoadTask *v2 = v1->unk_0C;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectTextureLoadTask *v2 = v1->textureLoadTasks;
 
-    while (v0 < v1->unk_00) {
-        if ((v2->unk_04 == param1) && (v2->unk_0C != NULL)) {
-            v2->unk_0C = NULL;
+    while (v0 < v1->count) {
+        if ((v2->textureID == param1) && (v2->textureManager != NULL)) {
+            v2->textureManager = NULL;
             return;
         }
 
@@ -1530,12 +1530,12 @@ static void FieldMap_021EDFBC(MapObjectDrawManager *param0, int param1)
 static int FieldMap_021EDFF0(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectTextureLoadTask *v2 = v1->unk_0C;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectTextureLoadTask *v2 = v1->textureLoadTasks;
 
-    while (v0 < v1->unk_00) {
-        if ((v2->unk_04 == param1) && (v2->unk_0C != NULL)) {
-            if (v2->unk_08 == 0) {
+    while (v0 < v1->count) {
+        if ((v2->textureID == param1) && (v2->textureManager != NULL)) {
+            if (v2->isDynamic == 0) {
                 return 3;
             }
 
@@ -1553,22 +1553,22 @@ static void FieldMap_021EE030(SysTask *param0, void *param1)
 {
     int v0 = 0;
     MapObjectDrawManager *v1 = param1;
-    MapObjectDrawTaskManager *v2 = v1->unk_100;
-    MapObjectTextureLoadTask *v3 = v2->unk_0C;
+    MapObjectDrawTaskManager *v2 = v1->drawTaskManager;
+    MapObjectTextureLoadTask *v3 = v2->textureLoadTasks;
 
     {
-        if (BillboardList_IsRedrawing(v1->unk_E0) == 1) {
+        if (BillboardList_IsRedrawing(v1->billboardList) == 1) {
             return;
         }
     }
 
-    while ((v2->unk_04 < v2->unk_02) && v0 < v2->unk_00) {
-        if (v3->unk_0C != NULL) {
-            void *v4 = FieldMap_021EDCF4(v1, v3->unk_00, 0);
+    while ((v2->loadedTextureCount < v2->maxTexturesPerFrame) && v0 < v2->count) {
+        if (v3->textureManager != NULL) {
+            void *v4 = FieldMap_021EDCF4(v1, v3->narcMemberIdx, 0);
 
-            FieldMap_021EE0E8(v1, v3->unk_04, v4, v3->unk_08);
-            v3->unk_0C = NULL;
-            v2->unk_04++;
+            FieldMap_021EE0E8(v1, v3->textureID, v4, v3->isDynamic);
+            v3->textureManager = NULL;
+            v2->loadedTextureCount++;
         }
 
         v3++;
@@ -1578,14 +1578,14 @@ static void FieldMap_021EE030(SysTask *param0, void *param1)
     {
         int v5;
 
-        v3 = v2->unk_0C;
+        v3 = v2->textureLoadTasks;
 
-        for (v0 = 0; v0 < (v2->unk_00 - 1); v0++) {
-            if (v3[v0].unk_0C == NULL) {
-                for (v5 = v0 + 1; v5 < v2->unk_00; v5++) {
-                    if (v3[v5].unk_0C != NULL) {
+        for (v0 = 0; v0 < (v2->count - 1); v0++) {
+            if (v3[v0].textureManager == NULL) {
+                for (v5 = v0 + 1; v5 < v2->count; v5++) {
+                    if (v3[v5].textureManager != NULL) {
                         v3[v0] = v3[v5];
-                        v3[v5].unk_0C = NULL;
+                        v3[v5].textureManager = NULL;
                         break;
                     }
                 }
@@ -1593,12 +1593,12 @@ static void FieldMap_021EE030(SysTask *param0, void *param1)
         }
     }
 
-    v2->unk_04 = 0;
+    v2->loadedTextureCount = 0;
 }
 
 static void FieldMap_021EE0E8(MapObjectDrawManager *param0, int param1, void *param2, int param3)
 {
-    TextureResource *v0 = TextureResourceManager_AddTextureAndAllocVRam(param0->unk_F0, param2, param1, 1, HEAP_ID_FIELD1);
+    TextureResource *v0 = TextureResourceManager_AddTextureAndAllocVRam(param0->textureResourceManager, param2, param1, 1, HEAP_ID_FIELD1);
 
     GF_ASSERT(v0 != NULL);
     FieldMap_021EE134(param0, param1);
@@ -1613,18 +1613,18 @@ static void FieldMap_021EE0E8(MapObjectDrawManager *param0, int param1, void *pa
 static void FieldMap_021EE134(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectTextureManager *v2 = v1->unk_10;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectTextureManager *v2 = v1->textureManagers;
 
-    v1->unk_06 = 1;
+    v1->locked = 1;
 
-    while (v0 < v1->unk_00) {
-        if (v2->unk_08 == NULL) {
-            v2->unk_08 = param0->unk_F0;
-            v2->unk_04 = param1;
-            v2->unk_00 = 0;
+    while (v0 < v1->count) {
+        if (v2->textureManager == NULL) {
+            v2->textureManager = param0->textureResourceManager;
+            v2->textureID = param1;
+            v2->uploaded = 0;
 
-            v1->unk_06 = 0;
+            v1->locked = 0;
             return;
         }
 
@@ -1638,15 +1638,15 @@ static void FieldMap_021EE134(MapObjectDrawManager *param0, int param1)
 static void FieldMap_021EE170(MapObjectDrawManager *param0, int param1)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectTextureManager *v2 = v1->unk_10;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectTextureManager *v2 = v1->textureManagers;
 
-    v1->unk_06 = 1;
+    v1->locked = 1;
 
-    while (v0 < v1->unk_00) {
-        if ((v2->unk_08 != NULL) && (v2->unk_04 == param1)) {
-            v2->unk_08 = NULL;
-            v2->unk_00 = 0;
+    while (v0 < v1->count) {
+        if ((v2->textureManager != NULL) && (v2->textureID == param1)) {
+            v2->textureManager = NULL;
+            v2->uploaded = 0;
             break;
         }
 
@@ -1654,26 +1654,26 @@ static void FieldMap_021EE170(MapObjectDrawManager *param0, int param1)
         v0++;
     }
 
-    v1->unk_06 = 0;
+    v1->locked = 0;
 }
 
 static void FieldMap_021EE1AC(SysTask *param0, void *param1)
 {
     MapObjectDrawManager *v0 = param1;
-    MapObjectDrawTaskManager *v1 = v0->unk_100;
+    MapObjectDrawTaskManager *v1 = v0->drawTaskManager;
 
-    if (v1->unk_06 == 1) {
+    if (v1->locked == 1) {
         return;
     }
 
     {
         int v2 = 0;
-        MapObjectTextureManager *v3 = v1->unk_10;
+        MapObjectTextureManager *v3 = v1->textureManagers;
 
-        while (v2 < v1->unk_00) {
-            if ((v3->unk_00 == 0) && (v3->unk_08 != NULL)) {
-                TextureResourceManager_UploadResourceToVRam(v3->unk_08, v3->unk_04);
-                v3->unk_00 = 1;
+        while (v2 < v1->count) {
+            if ((v3->uploaded == 0) && (v3->textureManager != NULL)) {
+                TextureResourceManager_UploadResourceToVRam(v3->textureManager, v3->textureID);
+                v3->uploaded = 1;
             }
 
             v3++;
@@ -1686,38 +1686,38 @@ static void FieldMap_021EE1E8(SysTask *param0, void *param1)
 {
     int v0 = 0;
     MapObjectDrawManager *v1 = param1;
-    MapObjectDrawTaskManager *v2 = v1->unk_100;
-    MapObjectTextureManager *v3 = v2->unk_10;
+    MapObjectDrawTaskManager *v2 = v1->drawTaskManager;
+    MapObjectTextureManager *v3 = v2->textureManagers;
 
-    v2->unk_06 = 1;
+    v2->locked = 1;
 
-    while (v0 < v2->unk_00) {
-        if ((v3->unk_00 == 1) && (v3->unk_08 != NULL)) {
-            TextureResourceManager_DiscardTextureData(v3->unk_08, v3->unk_04);
-            v3->unk_00 = 0;
-            v3->unk_08 = NULL;
+    while (v0 < v2->count) {
+        if ((v3->uploaded == 1) && (v3->textureManager != NULL)) {
+            TextureResourceManager_DiscardTextureData(v3->textureManager, v3->textureID);
+            v3->uploaded = 0;
+            v3->textureManager = NULL;
         }
 
         v3++;
         v0++;
     }
 
-    v2->unk_06 = 0;
+    v2->locked = 0;
 }
 
 static void FieldMap_021EE228(MapObjectDrawManager *param0, MapObject *param1, Billboard **param2, int param3)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectBillboardList *v2 = v1->unk_08;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectBillboardList *v2 = v1->billboardLists;
 
-    while (v0 < v1->unk_00) {
-        if (v2->unk_04 == NULL) {
-            v2->unk_04 = param1;
-            v2->unk_08 = param2;
-            v2->unk_00 = param3;
+    while (v0 < v1->count) {
+        if (v2->mapObject == NULL) {
+            v2->mapObject = param1;
+            v2->billboard = param2;
+            v2->graphicsID = param3;
 
-            *(v2->unk_08) = NULL;
+            *(v2->billboard) = NULL;
             FieldMap_021EDD78(param1, 1);
             return;
         }
@@ -1732,13 +1732,13 @@ static void FieldMap_021EE228(MapObjectDrawManager *param0, MapObject *param1, B
 static void FieldMap_021EE264(MapObjectDrawManager *param0, const MapObject *param1)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectBillboardList *v2 = v1->unk_08;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectBillboardList *v2 = v1->billboardLists;
 
-    while (v0 < v1->unk_00) {
-        if (v2->unk_04 == param1) {
-            v2->unk_04 = NULL;
-            v2->unk_08 = NULL;
+    while (v0 < v1->count) {
+        if (v2->mapObject == param1) {
+            v2->mapObject = NULL;
+            v2->billboard = NULL;
 
             return;
         }
@@ -1751,11 +1751,11 @@ static void FieldMap_021EE264(MapObjectDrawManager *param0, const MapObject *par
 static void FieldMap_021EE294(MapObjectDrawManager *param0)
 {
     int v0 = 0;
-    MapObjectDrawTaskManager *v1 = param0->unk_100;
-    MapObjectBillboardList *v2 = v1->unk_08;
+    MapObjectDrawTaskManager *v1 = param0->drawTaskManager;
+    MapObjectBillboardList *v2 = v1->billboardLists;
 
-    while (v0 < v1->unk_00) {
-        if (v2->unk_04 != NULL) {
+    while (v0 < v1->count) {
+        if (v2->mapObject != NULL) {
             FieldMap_021EE2D0(param0, v2);
         }
 
@@ -1772,20 +1772,20 @@ static void FieldMap_021EE2C4(SysTask *param0, void *param1)
 
 static void FieldMap_021EE2D0(MapObjectDrawManager *param0, MapObjectBillboardList *param1)
 {
-    if (FieldMap_021ED94C(param0, param1->unk_00) != 2) {
-        *(param1->unk_08) = FieldMap_021ECF1C(param1->unk_04, param1->unk_00);
-        GF_ASSERT(*(param1->unk_08) != NULL);
+    if (FieldMap_021ED94C(param0, param1->graphicsID) != 2) {
+        *(param1->billboard) = FieldMap_021ECF1C(param1->mapObject, param1->graphicsID);
+        GF_ASSERT(*(param1->billboard) != NULL);
 
-        FieldMap_021EDD78(param1->unk_04, 0);
+        FieldMap_021EDD78(param1->mapObject, 0);
 
-        if (MapObject_CheckStatusFlag(param1->unk_04, MAP_OBJ_STATUS_21) == 1) {
-            MapObject_CallRendererLoad(param1->unk_04);
+        if (MapObject_CheckStatusFlag(param1->mapObject, MAP_OBJ_STATUS_21) == 1) {
+            MapObject_CallRendererLoad(param1->mapObject);
         } else {
-            MapObject_CallRendererDraw(param1->unk_04);
+            MapObject_CallRendererDraw(param1->mapObject);
         }
 
-        param1->unk_04 = NULL;
-        param1->unk_08 = NULL;
+        param1->mapObject = NULL;
+        param1->billboard = NULL;
     }
 }
 
@@ -1803,40 +1803,40 @@ static void FieldMap_021EE320(MapObjectDrawManager *param0, int param1, int para
     GF_ASSERT(v5 != NULL);
     memset(v5, 0, v1);
 
-    v5->unk_00 = param1;
-    v5->unk_02 = param2;
+    v5->count = param1;
+    v5->maxTexturesPerFrame = param2;
 
     v0 = (u32)v5 + (sizeof(MapObjectDrawTaskManager));
-    v5->unk_08 = (void *)v0;
+    v5->billboardLists = (void *)v0;
 
     v0 += v4;
-    v5->unk_0C = (void *)v0;
+    v5->textureLoadTasks = (void *)v0;
 
     v0 += v3;
-    v5->unk_10 = (void *)v0;
+    v5->textureManagers = (void *)v0;
 
-    param0->unk_100 = v5;
+    param0->drawTaskManager = v5;
 
-    v0 = MapObjectMan_GetTaskBasePriority(param0->unk_104);
-    v5->unk_18 = SysTask_Start(FieldMap_021EE030, param0, v0 + 1);
-    v5->unk_1C = SysTask_Start(FieldMap_021EE2C4, param0, v0 + 2);
-    v5->unk_20 = SysTask_ExecuteOnVBlank(FieldMap_021EE1AC, param0, 0xff);
-    v5->unk_24 = SysTask_ExecuteAfterVBlank(FieldMap_021EE1E8, param0, 0xff);
+    v0 = MapObjectMan_GetTaskBasePriority(param0->mapObjectManager);
+    v5->textureLoadTask = SysTask_Start(FieldMap_021EE030, param0, v0 + 1);
+    v5->billboardProcessTask = SysTask_Start(FieldMap_021EE2C4, param0, v0 + 2);
+    v5->vBlankUploadTask = SysTask_ExecuteOnVBlank(FieldMap_021EE1AC, param0, 0xff);
+    v5->afterVBlankTask = SysTask_ExecuteAfterVBlank(FieldMap_021EE1E8, param0, 0xff);
 }
 
 static void FieldMap_021EE3C4(MapObjectDrawManager *param0)
 {
-    MapObjectDrawTaskManager *v0 = param0->unk_100;
+    MapObjectDrawTaskManager *v0 = param0->drawTaskManager;
 
-    v0->unk_06 = 1;
+    v0->locked = 1;
 
-    SysTask_Done(v0->unk_18);
-    SysTask_Done(v0->unk_1C);
-    SysTask_Done(v0->unk_20);
-    SysTask_Done(v0->unk_24);
+    SysTask_Done(v0->textureLoadTask);
+    SysTask_Done(v0->billboardProcessTask);
+    SysTask_Done(v0->vBlankUploadTask);
+    SysTask_Done(v0->afterVBlankTask);
     Heap_Free(v0);
 
-    param0->unk_100 = NULL;
+    param0->drawTaskManager = NULL;
 }
 
 Billboard *FieldMap_021EE3FC(MapObject *param0, int param1, UnkFuncPtr_fieldmap_021EE454 param2, void *param3)
@@ -1868,8 +1868,8 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
 
     memset(v11, 0, sizeof(MapObjectBillboardAnim));
 
-    v11->unk_00 = param1;
-    v11->unk_50 = param0;
+    v11->graphicsID = param1;
+    v11->mapObject = param0;
 
     v2 = MapObject_GetGraphicsID(param0);
 
@@ -1888,7 +1888,7 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
         } while (v7->id != 0xffff);
 
         GF_ASSERT(v7->id != 0xffff);
-        v11->unk_08 = FieldMap_021EDCF4(v8, v7->narcIdx, 0);
+        v11->modelData = FieldMap_021EDCF4(v8, v7->narcIdx, 0);
     }
 
     {
@@ -1906,8 +1906,8 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
         } while (v7->id != 0xffff);
 
         GF_ASSERT(v7->id != 0xffff);
-        v11->unk_0C = FieldMap_021EDCF4(v8, v7->narcIdx, 0);
-        BillboardGfxSequence_SetData(v11->unk_0C, &v11->unk_14);
+        v11->gfxSequenceData = FieldMap_021EDCF4(v8, v7->narcIdx, 0);
+        BillboardGfxSequence_SetData(v11->gfxSequenceData, &v11->gfxSequence);
     }
 
     {
@@ -1925,27 +1925,27 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
         } while (v7->id != 0xffff);
 
         GF_ASSERT(v7->id != 0xffff);
-        v11->unk_10 = FieldMap_021EDCF4(v8, v7->narcIdx, 0);
+        v11->textureData = FieldMap_021EDCF4(v8, v7->narcIdx, 0);
     }
 
-    BillboardResources_SetWithoutKeys(&v11->unk_28, v11->unk_08, NNS_G3dGetTex(v11->unk_10), FieldMap_021EDD44(v2), &v11->unk_14);
+    BillboardResources_SetWithoutKeys(&v11->resources, v11->modelData, NNS_G3dGetTex(v11->textureData), FieldMap_021EDD44(v2), &v11->gfxSequence);
 
     {
         const VecFx32 *v8 = Billboard_GetPos(v10);
 
         v0 = *v8;
-        v11->unk_24 = FieldMap_021EDDDC(v9, &v11->unk_28, &v0, FieldMap_021EDD50(v2));
-        GF_ASSERT(v11->unk_24 != NULL);
-        v6 = v11->unk_24;
+        v11->billboard = FieldMap_021EDDDC(v9, &v11->resources, &v0, FieldMap_021EDD50(v2));
+        GF_ASSERT(v11->billboard != NULL);
+        v6 = v11->billboard;
     }
 
-    Billboard_SetRotMatrix(v11->unk_24, Billboard_GetRotMatrix(v10));
-    Billboard_SetAnimNum(v11->unk_24, Billboard_GetAnimNum(v10));
-    Billboard_SetAnimFrameNum(v11->unk_24, Billboard_GetAnimFrameNum(v10));
-    Billboard_SetFrameNum(v11->unk_24, Billboard_GetFrameNum(v10));
-    Billboard_AdvanceAnim(v11->unk_24, 0);
-    Billboard_SetDrawFlag(v11->unk_24, 1);
-    Billboard_TryRequestVRAMTransfer(v11->unk_24);
+    Billboard_SetRotMatrix(v11->billboard, Billboard_GetRotMatrix(v10));
+    Billboard_SetAnimNum(v11->billboard, Billboard_GetAnimNum(v10));
+    Billboard_SetAnimFrameNum(v11->billboard, Billboard_GetAnimFrameNum(v10));
+    Billboard_SetFrameNum(v11->billboard, Billboard_GetFrameNum(v10));
+    Billboard_AdvanceAnim(v11->billboard, 0);
+    Billboard_SetDrawFlag(v11->billboard, 1);
+    Billboard_TryRequestVRAMTransfer(v11->billboard);
 
     {
         if (MapObject_CheckStatus24(param0) == 1) {
@@ -1963,27 +1963,27 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
             }
 
             MapObject_GetPosPtr(param0, &v12);
-            v11->unk_54 = FieldMap_021F1BA4(MapObject_GetFieldEffectManager(param0), &v11->unk_28, v11->unk_24, &v12, v13, v14);
+            v11->animManager = FieldMap_021F1BA4(MapObject_GetFieldEffectManager(param0), &v11->resources, v11->billboard, &v12, v13, v14);
         }
     }
 
     MapObject_ClearGraphics(param0);
-    FieldMap_021EDBC4(v8->unk_104, v2, param0);
+    FieldMap_021EDBC4(v8->mapObjectManager, v2, param0);
     MapObject_SetGraphicsIDAndRefresh(param0, param1);
 
     {
-        int v16 = MapObjectMan_GetTaskBasePriority(v8->unk_104);
+        int v16 = MapObjectMan_GetTaskBasePriority(v8->mapObjectManager);
         SysTask *v17 = SysTask_ExecuteAfterVBlank(FieldMap_021EE698, v11, 0xff);
 
         GF_ASSERT(v17 != NULL);
         FieldMap_021EE698(v17, v11);
     }
 
-    if (Billboard_GetState(v11->unk_24) == 0) {
+    if (Billboard_GetState(v11->billboard) == 0) {
         v6 = NULL;
     } else {
-        v11->unk_58 = param3;
-        v11->unk_5C = param2;
+        v11->callbackArg = param3;
+        v11->callback = param2;
     }
 
     return v6;
@@ -1992,48 +1992,48 @@ static Billboard *FieldMap_021EE454(MapObject *param0, int param1, UnkFuncPtr_fi
 static void FieldMap_021EE698(SysTask *param0, void *param1)
 {
     MapObjectBillboardAnim *v0 = param1;
-    MapObject *v1 = v0->unk_50;
+    MapObject *v1 = v0->mapObject;
 
-    switch (v0->unk_04) {
+    switch (v0->state) {
     case 0:
         if ((MapObject_IsActive(v1) == 0) || (FieldMap_021EDD94(v1) == 0)) {
-            if (v0->unk_5C != NULL) {
-                v0->unk_5C(
-                    v0->unk_58, v0->unk_24);
+            if (v0->callback != NULL) {
+                v0->callback(
+                    v0->callbackArg, v0->billboard);
             }
 
-            if (v0->unk_54 != NULL) {
-                OverworldAnimManager_Finish(v0->unk_54);
+            if (v0->animManager != NULL) {
+                OverworldAnimManager_Finish(v0->animManager);
             }
 
-            Billboard_Delete(v0->unk_24);
-            Heap_Free(v0->unk_08);
-            Heap_Free(v0->unk_0C);
-            Heap_Free(v0->unk_10);
+            Billboard_Delete(v0->billboard);
+            Heap_Free(v0->modelData);
+            Heap_Free(v0->gfxSequenceData);
+            Heap_Free(v0->textureData);
             Heap_Free(v0);
             SysTask_Done(param0);
             return;
         }
 
-        if (MapObject_GetGraphicsID(v1) != v0->unk_00) {
-            v0->unk_04++;
+        if (MapObject_GetGraphicsID(v1) != v0->graphicsID) {
+            v0->state++;
         }
         break;
     case 1:
         if (FieldMap_021EDD94(v1) == 0) {
-            if (v0->unk_5C != NULL) {
-                v0->unk_5C(
-                    v0->unk_58, v0->unk_24);
+            if (v0->callback != NULL) {
+                v0->callback(
+                    v0->callbackArg, v0->billboard);
             }
 
-            if (v0->unk_54 != NULL) {
-                OverworldAnimManager_Finish(v0->unk_54);
+            if (v0->animManager != NULL) {
+                OverworldAnimManager_Finish(v0->animManager);
             }
 
-            Billboard_Delete(v0->unk_24);
-            Heap_Free(v0->unk_08);
-            Heap_Free(v0->unk_0C);
-            Heap_Free(v0->unk_10);
+            Billboard_Delete(v0->billboard);
+            Heap_Free(v0->modelData);
+            Heap_Free(v0->gfxSequenceData);
+            Heap_Free(v0->textureData);
             Heap_Free(v0);
             SysTask_Done(param0);
         }

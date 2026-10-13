@@ -34,10 +34,10 @@ VecFx32 FieldMap_GetPositionFromTouchCoordinates(u16 touchX, u16 touchY, const F
 
     if (touchX < HW_LCD_WIDTH / 2) {
         v5 = HW_LCD_WIDTH / 2 - touchX;
-        v7 = param2->unk_02 * v5 / (HW_LCD_WIDTH / 2);
+        v7 = param2->fovX * v5 / (HW_LCD_WIDTH / 2);
     } else {
         v5 = touchX - HW_LCD_WIDTH / 2;
-        v7 = param2->unk_02 * v5 / (HW_LCD_WIDTH / 2);
+        v7 = param2->fovX * v5 / (HW_LCD_WIDTH / 2);
         v7 *= -1;
     }
 
@@ -45,14 +45,14 @@ VecFx32 FieldMap_GetPositionFromTouchCoordinates(u16 touchX, u16 touchY, const F
     MTX_MultVec43(&v10, &v8, &v9);
     MTX_RotY43(&v8, FX_SinIdx(v7), FX_CosIdx(v7));
     MTX_MultVec43(&v9, &v8, &v9);
-    MTX_MultVec43(&v9, &param2->unk_20, &v9);
+    MTX_MultVec43(&v9, &param2->rotationMatrix, &v9);
 
     VecFx32 v11;
     fx32 v12;
     fx32 v13;
 
-    v13 = VEC_DotProduct(&param2->unk_10, &v9);
-    v12 = -(FX_Div(param2->unk_1C, v13));
+    v13 = VEC_DotProduct(&param2->upVector, &v9);
+    v12 = -(FX_Div(param2->cameraHeight, v13));
 
     VEC_MultAdd(v12, &v9, &param2->cameraDistance, &v11);
 
@@ -79,7 +79,7 @@ static void FieldMap_021EB0E0(FieldCamera *param0, Camera *const camera)
 
     fx32 tan = FX_Div(FX_SinIdx(param0->fovY), FX_CosIdx(param0->fovY));
 
-    param0->unk_02 = FX_AtanIdx(tan * 4 / 3);
+    param0->fovX = FX_AtanIdx(tan * 4 / 3);
 
     VecFx32 v2 = { 0, FX32_ONE, 0 };
     VecFx32 position, target;
@@ -89,10 +89,10 @@ static void FieldMap_021EB0E0(FieldCamera *param0, Camera *const camera)
 
     VEC_Subtract(&position, &target, &param0->cameraDistance);
 
-    param0->unk_10 = v2;
-    param0->unk_1C = VEC_DotProduct(&v2, &param0->cameraDistance);
+    param0->upVector = v2;
+    param0->cameraHeight = VEC_DotProduct(&v2, &param0->cameraDistance);
 
-    MTX_RotX43(&param0->unk_20, FX_SinIdx(angle.x), FX_CosIdx(angle.x));
+    MTX_RotX43(&param0->rotationMatrix, FX_SinIdx(angle.x), FX_CosIdx(angle.x));
     param0->camera = camera;
 }
 

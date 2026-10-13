@@ -7,11 +7,11 @@
 
 typedef struct FieldCamera {
     u16 fovY;
-    u16 unk_02;
+    u16 fovX;
     VecFx32 cameraDistance;
-    VecFx32 unk_10;
-    fx32 unk_1C;
-    MtxFx43 unk_20;
+    VecFx32 upVector;
+    fx32 cameraHeight;
+    MtxFx43 rotationMatrix;
     Camera *camera;
     VecFx32 unk_54;
 } FieldCamera;

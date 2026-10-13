@@ -12,16 +12,16 @@
 
 typedef struct {
     enum HeapID heapID;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    fx32 unk_10;
-    fx32 unk_14;
-    fx32 unk_18;
-    u32 unk_1C;
-    fx32 unk_20;
-    u32 unk_24;
-    fx32 unk_28;
+    int state;
+    int finished;
+    int mode;
+    fx32 targetDistance;
+    fx32 delta;
+    fx32 endDistance;
+    u32 numSteps;
+    fx32 currentDistance;
+    u32 currentStep;
+    fx32 stepIncrement;
     FieldSystem *fieldSystem;
     Camera *camera;
 } CameraDistanceTask;
@@ -42,11 +42,11 @@ SysTask *FieldMap_021F0EB0(FieldSystem *fieldSystem, enum HeapID heapID)
     memset(v1, 0, (sizeof(CameraDistanceTask)));
 
     v1->heapID = heapID;
-    v1->unk_0C = 0;
+    v1->mode = 0;
     v1->fieldSystem = fieldSystem;
     v1->camera = fieldSystem->camera;
-    v1->unk_10 = Camera_GetDistance(v1->camera);
-    v1->unk_20 = v1->unk_10;
+    v1->targetDistance = Camera_GetDistance(v1->camera);
+    v1->currentDistance = v1->targetDistance;
 
     task = SysTask_Start(FieldMap_021F0F2C, v1, 0xffff);
     return task;
@@ -55,7 +55,7 @@ SysTask *FieldMap_021F0EB0(FieldSystem *fieldSystem, enum HeapID heapID)
 BOOL FieldMap_021F0EF0(SysTask *param0)
 {
     CameraDistanceTask *v0 = SysTask_GetParam(param0);
-    return v0->unk_08;
+    return v0->finished;
 }
 
 void FieldMap_021F0EFC(SysTask *param0)
@@ -70,35 +70,35 @@ void FieldMap_021F0F10(SysTask *param0, int param1, fx32 param2, u32 param3)
 {
     CameraDistanceTask *v0 = SysTask_GetParam(param0);
 
-    v0->unk_04 = 0;
-    v0->unk_08 = 0;
-    v0->unk_0C = param1;
-    v0->unk_14 = param2;
-    v0->unk_1C = param3;
-    v0->unk_24 = 0;
+    v0->state = 0;
+    v0->finished = 0;
+    v0->mode = param1;
+    v0->delta = param2;
+    v0->numSteps = param3;
+    v0->currentStep = 0;
 }
 
 static void FieldMap_021F0F2C(SysTask *param0, void *param1)
 {
     CameraDistanceTask *v0 = param1;
-    Unk_FieldMap_0220020C[v0->unk_0C](v0);
+    Unk_FieldMap_0220020C[v0->mode](v0);
 }
 
 static void FieldMap_021F0F40(CameraDistanceTask *param0)
 {
-    param0->unk_08 = 1;
+    param0->finished = 1;
 }
 
 static void FieldMap_021F0F48(CameraDistanceTask *param0)
 {
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
         FieldMap_021F0FC8(param0);
-        param0->unk_04++;
+        param0->state++;
     case 1:
         if (FieldMap_021F0FF8(param0) == 1) {
-            param0->unk_04++;
-            param0->unk_08 = 1;
+            param0->state++;
+            param0->finished = 1;
         }
 
         FieldMap_021F0FB8(param0);
@@ -107,14 +107,14 @@ static void FieldMap_021F0F48(CameraDistanceTask *param0)
 
 static void FieldMap_021F0F80(CameraDistanceTask *param0)
 {
-    switch (param0->unk_04) {
+    switch (param0->state) {
     case 0:
         FieldMap_021F0FE0(param0);
-        param0->unk_04++;
+        param0->state++;
     case 1:
         if (FieldMap_021F0FF8(param0) == 1) {
-            param0->unk_04++;
-            param0->unk_08 = 1;
+            param0->state++;
+            param0->finished = 1;
         }
 
         FieldMap_021F0FB8(param0);
@@ -123,34 +123,34 @@ static void FieldMap_021F0F80(CameraDistanceTask *param0)
 
 static void FieldMap_021F0FB8(CameraDistanceTask *param0)
 {
-    Camera_SetDistance(param0->unk_20, param0->camera);
+    Camera_SetDistance(param0->currentDistance, param0->camera);
 }
 
 static void FieldMap_021F0FC8(CameraDistanceTask *param0)
 {
-    fx32 v0 = param0->unk_1C;
+    fx32 v0 = param0->numSteps;
 
-    param0->unk_28 = param0->unk_14 / v0;
-    param0->unk_18 = param0->unk_20 + param0->unk_14;
+    param0->stepIncrement = param0->delta / v0;
+    param0->endDistance = param0->currentDistance + param0->delta;
 }
 
 static void FieldMap_021F0FE0(CameraDistanceTask *param0)
 {
-    fx32 v0 = param0->unk_1C;
-    fx32 v1 = param0->unk_10 - param0->unk_20;
+    fx32 v0 = param0->numSteps;
+    fx32 v1 = param0->targetDistance - param0->currentDistance;
 
-    param0->unk_28 = v1 / v0;
-    param0->unk_18 = param0->unk_10;
+    param0->stepIncrement = v1 / v0;
+    param0->endDistance = param0->targetDistance;
 }
 
 static int FieldMap_021F0FF8(CameraDistanceTask *param0)
 {
-    param0->unk_20 += param0->unk_28;
-    param0->unk_24++;
+    param0->currentDistance += param0->stepIncrement;
+    param0->currentStep++;
 
-    if (param0->unk_24 >= param0->unk_1C) {
-        param0->unk_24 = param0->unk_1C;
-        param0->unk_20 = param0->unk_18;
+    if (param0->currentStep >= param0->numSteps) {
+        param0->currentStep = param0->numSteps;
+        param0->currentDistance = param0->endDistance;
         return 1;
     }
 

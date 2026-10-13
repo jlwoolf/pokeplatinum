@@ -15,16 +15,16 @@
 #include "terrain_collision_manager.h"
 
 typedef struct {
-    int unk_00;
-    int unk_04;
+    int lastX;
+    int lastZ;
 } BikeSlopeEffect;
 
 static void FieldMap_021EE75C(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     BikeSlopeEffect *v0 = (BikeSlopeEffect *)param2;
 
-    v0->unk_00 = 0;
-    v0->unk_04 = 0;
+    v0->lastX = 0;
+    v0->lastZ = 0;
 }
 
 static void FieldMap_021EE764(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
@@ -42,12 +42,12 @@ static void FieldMap_021EE768(FieldEffect *param0, FieldSystem *fieldSystem, voi
     v1 = PlayerAvatar_GetXPos(fieldSystem->playerAvatar);
     v2 = PlayerAvatar_GetZPos(fieldSystem->playerAvatar);
 
-    if ((v4->unk_00 == v1) && (v4->unk_04 == v2)) {
+    if ((v4->lastX == v1) && (v4->lastZ == v2)) {
         return;
     }
 
-    v4->unk_00 = v1;
-    v4->unk_04 = v2;
+    v4->lastX = v1;
+    v4->lastZ = v2;
 
     v0 = TerrainCollisionManager_GetTileBehavior(fieldSystem, v1, v2);
 
@@ -73,5 +73,5 @@ static const FieldEffectTemplate Unk_FieldMap_021FF4F0 = {
 
 void FieldMap_021EE7C0(FieldSystem *fieldSystem)
 {
-    FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &Unk_FieldMap_021FF4F0);
+    FieldMap_021D1B6C(fieldSystem->lastZ->lastZ, &Unk_FieldMap_021FF4F0);
 }
