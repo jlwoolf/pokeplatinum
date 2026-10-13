@@ -75,8 +75,8 @@ static void FieldMap_021D1B24(SysTask *param0, void *param1)
     FieldEffect *v0 = param1;
 
     if (FieldSystem_IsRunningFieldMapInner(v0->unk_00->fieldSystem)) {
-        if (v0->unk_0C->unk_10) {
-            v0->unk_0C->unk_10(v0, v0->unk_00->fieldSystem, v0->unk_10);
+        if (v0->unk_0C->update) {
+            v0->unk_0C->update(v0, v0->unk_00->fieldSystem, v0->unk_10);
         }
     }
 }
@@ -86,8 +86,8 @@ static void FieldMap_021D1B48(SysTask *param0, void *param1)
     FieldEffect *v0 = param1;
 
     if (FieldSystem_IsRunningFieldMapInner(v0->unk_00->fieldSystem)) {
-        if (v0->unk_0C->unk_14) {
-            v0->unk_0C->unk_14(v0, v0->unk_00->fieldSystem, v0->unk_10);
+        if (v0->unk_0C->draw) {
+            v0->unk_0C->draw(v0, v0->unk_00->fieldSystem, v0->unk_10);
         }
     }
 }
@@ -99,20 +99,20 @@ FieldEffect *FieldMap_021D1B6C(FieldEffectSystem *param0, const FieldEffectTempl
 
     for (v1 = param0->unk_0C, v0 = 0; v0 < param0->unk_08; v1++, v0++) {
         if (v1->sysTask1 == NULL) {
-            v1->sysTask1 = SysTask_Start(FieldMap_021D1B24, v1, param1->unk_00);
-            v1->sysTask2 = SysTaskManager_AddTask(param0->sysTaskManager, FieldMap_021D1B48, v1, param1->unk_00);
+            v1->sysTask1 = SysTask_Start(FieldMap_021D1B24, v1, param1->priority);
+            v1->sysTask2 = SysTaskManager_AddTask(param0->sysTaskManager, FieldMap_021D1B48, v1, param1->priority);
             v1->unk_00 = param0;
             v1->unk_0C = param1;
 
             GF_ASSERT(v1->sysTask1 != NULL);
             GF_ASSERT(v1->sysTask2 != NULL);
 
-            if (param1->unk_04 != 0) {
-                v1->unk_10 = Heap_Alloc(param0->heapID, param1->unk_04);
+            if (param1->dataSize != 0) {
+                v1->unk_10 = Heap_Alloc(param0->heapID, param1->dataSize);
             }
 
-            if (param1->unk_08) {
-                param1->unk_08(v1, param0->fieldSystem, v1->unk_10);
+            if (param1->init) {
+                param1->init(v1, param0->fieldSystem, v1->unk_10);
             }
 
             return v1;
@@ -129,11 +129,11 @@ void FieldMap_021D1BEC(FieldEffect *param0)
         return;
     }
 
-    if (param0->unk_0C->unk_0C) {
-        param0->unk_0C->unk_0C(param0, param0->unk_00->fieldSystem, param0->unk_10);
+    if (param0->unk_0C->free) {
+        param0->unk_0C->free(param0, param0->unk_00->fieldSystem, param0->unk_10);
     }
 
-    if (param0->unk_0C->unk_04 != 0) {
+    if (param0->unk_0C->dataSize != 0) {
         Heap_Free(param0->unk_10);
     }
 

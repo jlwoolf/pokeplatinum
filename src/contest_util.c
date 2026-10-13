@@ -446,39 +446,39 @@ void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandom
     // Collect the indices of every opponent that matches the rank, story
     // progress, competition type, and contest type.
     for (i = 0; i < opponentCount; i++) {
-        if (contestRank != opponents[i].unk_20_0) {
+        if (contestRank != opponents[i].contestRank) {
             continue;
         }
 
         if (isPostGame == 1) {
-            if (opponents[i].unk_20_10 == 1) {
+            if (opponents[i].storyProgress == 1) {
                 continue;
             }
         } else {
-            if ((opponents[i].unk_20_10 == 2) || (opponents[i].unk_20_10 == 3)) {
+            if ((opponents[i].storyProgress == 2) || (opponents[i].storyProgress == 3)) {
                 continue;
             }
         }
 
         if (isPracticeCompetition == TRUE) {
-            if (opponents[i].unk_20_9 == 0) {
+            if (opponents[i].isPracticeCompetition == 0) {
                 continue;
             }
         } else if (isRealCompetition == TRUE) {
-            if (opponents[i].unk_20_8 == 0) {
+            if (opponents[i].isRealCompetition == 0) {
                 continue;
             }
         } else {
-            if ((opponents[i].unk_20_9 == 1) || (opponents[i].unk_20_8 == 1)) {
+            if ((opponents[i].isPracticeCompetition == 1) || (opponents[i].isRealCompetition == 1)) {
                 continue;
             }
         }
 
-        if (contestType == CONTEST_TYPE_COOL && opponents[i].unk_20_3
-            || contestType == CONTEST_TYPE_BEAUTY && opponents[i].unk_20_4
-            || contestType == CONTEST_TYPE_CUTE && opponents[i].unk_20_5
-            || contestType == CONTEST_TYPE_SMART && opponents[i].unk_20_6
-            || contestType == CONTEST_TYPE_TOUGH && opponents[i].unk_20_7) {
+        if (contestType == CONTEST_TYPE_COOL && opponents[i].isCool
+            || contestType == CONTEST_TYPE_BEAUTY && opponents[i].isBeauty
+            || contestType == CONTEST_TYPE_CUTE && opponents[i].isCute
+            || contestType == CONTEST_TYPE_SMART && opponents[i].isSmart
+            || contestType == CONTEST_TYPE_TOUGH && opponents[i].isTough) {
             candidateIndices[candidateCount++] = i;
         }
     }
@@ -491,7 +491,7 @@ void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandom
         specialCount = 0;
 
         for (i = 0; i < candidateCount; i++) {
-            if (opponents[candidateIndices[i]].unk_20_10 == 3) {
+            if (opponents[candidateIndices[i]].storyProgress == 3) {
                 specialCount++;
             }
         }
@@ -501,7 +501,7 @@ void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandom
             specialPick = Contest_GetRNGNext(contest) % specialCount;
 
             for (i = 0; i < candidateCount; i++) {
-                if (opponents[candidateIndices[i]].unk_20_10 == 3) {
+                if (opponents[candidateIndices[i]].storyProgress == 3) {
                     if (specialPick == 0) {
                         specialOpponent = opponents[candidateIndices[i]];
                         break;
@@ -517,7 +517,7 @@ void Contest_SelectOpponents(Contest *contest, enum HeapID heapID, int numRandom
         for (i = 4 - numRandomOpponents; i < 4; i++) {
             randomIndex = Contest_GetRNGNext(contest) % candidateCount;
 
-            if (opponents[candidateIndices[randomIndex]].unk_20_10 == 3) {
+            if (opponents[candidateIndices[randomIndex]].storyProgress == 3) {
                 i--;
                 continue;
             }
@@ -578,40 +578,40 @@ void Contest_SetupNPCPhotos(Contest *contest, enum HeapID heapID)
     for (i = firstNPC; i < CONTEST_NUM_PARTICIPANTS; i++) {
         switch (contest->data.npcPhotoPreset) {
         case 0:
-            presetID = contest->data.opponentData[i].unk_22;
+            presetID = contest->data.opponentData[i].npcPhotoPreset0;
             break;
         case 1:
-            presetID = contest->data.opponentData[i].unk_23;
+            presetID = contest->data.opponentData[i].npcPhotoPreset1;
             break;
         case 2:
-            presetID = contest->data.opponentData[i].unk_24;
+            presetID = contest->data.opponentData[i].npcPhotoPreset2;
             break;
         case 3:
-            presetID = contest->data.opponentData[i].unk_25;
+            presetID = contest->data.opponentData[i].npcPhotoPreset3;
             break;
         case 4:
-            presetID = contest->data.opponentData[i].unk_26;
+            presetID = contest->data.opponentData[i].npcPhotoPreset4;
             break;
         case 5:
-            presetID = contest->data.opponentData[i].unk_27;
+            presetID = contest->data.opponentData[i].npcPhotoPreset5;
             break;
         case 6:
-            presetID = contest->data.opponentData[i].unk_28;
+            presetID = contest->data.opponentData[i].npcPhotoPreset6;
             break;
         case 7:
-            presetID = contest->data.opponentData[i].unk_29;
+            presetID = contest->data.opponentData[i].npcPhotoPreset7;
             break;
         case 8:
-            presetID = contest->data.opponentData[i].unk_2A;
+            presetID = contest->data.opponentData[i].npcPhotoPreset8;
             break;
         case 9:
-            presetID = contest->data.opponentData[i].unk_2B;
+            presetID = contest->data.opponentData[i].npcPhotoPreset9;
             break;
         case 10:
-            presetID = contest->data.opponentData[i].unk_2C;
+            presetID = contest->data.opponentData[i].npcPhotoPreset10;
             break;
         case 11:
-            presetID = contest->data.opponentData[i].unk_2D;
+            presetID = contest->data.opponentData[i].npcPhotoPreset11;
             break;
         default:
             GF_ASSERT(FALSE);
@@ -655,17 +655,17 @@ void Contest_InitOpponentMon(const ContestOpponentData *opponentData, Pokemon *m
 {
     int i;
     u16 move;
-    u32 personality = Pokemon_GetPersonalityForGenderAndNature(opponentData->unk_14, opponentData->unk_20_12, 0);
-    Pokemon_InitWith(mon, opponentData->unk_14, 10, INIT_IVS_RANDOM, TRUE, personality, OTID_NOT_SHINY, 0xf0f0f0f);
+    u32 personality = Pokemon_GetPersonalityForGenderAndNature(opponentData->species, opponentData->gender, 0);
+    Pokemon_InitWith(mon, opponentData->species, 10, INIT_IVS_RANDOM, TRUE, personality, OTID_NOT_SHINY, 0xf0f0f0f);
 
     for (i = 0; i < LEARNED_MOVES_MAX; i++) {
-        move = opponentData->unk_0C[i];
+        move = opponentData->moves[i];
         Pokemon_SetValue(mon, MON_DATA_MOVE1 + i, &move);
     }
 
     MessageLoader *contestOpponentNames = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_CONTEST_OPPONENT_NAMES, heapID);
-    String *monNickname = MessageLoader_GetNewString(contestOpponentNames, opponentData->unk_16);
-    String *monOTName = MessageLoader_GetNewString(contestOpponentNames, opponentData->unk_18);
+    String *monNickname = MessageLoader_GetNewString(contestOpponentNames, opponentData->monNicknameID);
+    String *monOTName = MessageLoader_GetNewString(contestOpponentNames, opponentData->monOTNameID);
 
     Pokemon_SetValue(mon, MON_DATA_NICKNAME_STRING, monNickname);
     Pokemon_SetValue(mon, MON_DATA_OT_NAME_STRING, monOTName);

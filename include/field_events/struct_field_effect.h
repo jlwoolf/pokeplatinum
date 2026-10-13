@@ -4,12 +4,12 @@
 #include "field_events/field_effect_funcptr.h"
 
 typedef struct {
-    u32 unk_00;
-    u16 unk_04;
-    FieldEffectFunc unk_08;
-    FieldEffectFunc unk_0C;
-    FieldEffectFunc unk_10;
-    FieldEffectFunc unk_14;
+    u32 priority;
+    u16 dataSize;
+    FieldEffectFunc init;
+    FieldEffectFunc free;
+    FieldEffectFunc update;
+    FieldEffectFunc draw;
 } FieldEffectTemplate;
 
 #endif // POKEPLATINUM_STRUCT_FIELD_EFFECT_H

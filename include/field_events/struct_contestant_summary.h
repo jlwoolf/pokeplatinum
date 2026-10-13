@@ -3,7 +3,7 @@
 
 typedef struct {
     u8 trainerGender;
-    u8 unk_01;
+    u8 cameraFlashVariant;
     u8 monContestFame;
     u8 padding_03;
     u16 contestantObjEventGFX;

@@ -16,9 +16,9 @@
 #include "string_gf.h"
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 leaderElectionValue;
+    u8 contestantID;
+    u8 npcPhotoPreset;
     u8 unk_03[1];
 } ContestLeaderElection;
 
@@ -42,7 +42,7 @@ void ContestCommTask_RecvLeaderElection(int param0, int param1, void *param2, vo
 
         v0->data.leaderContestantID = ContestCommTask_FindLeader(v1, v0->data.connectionCount, &v3);
         v0->data.leaderElectionResult = v3;
-        v0->data.npcPhotoPreset = v1[v0->data.leaderContestantID]->unk_02;
+        v0->data.npcPhotoPreset = v1[v0->data.leaderContestantID]->npcPhotoPreset;
     }
 }
 
@@ -50,9 +50,9 @@ BOOL ContestCommTask_SendLeaderElection(Contest *param0)
 {
     ContestLeaderElection v0;
 
-    v0.unk_00 = param0->data.leaderElectionValue;
-    v0.unk_01 = param0->data.playerContestantID;
-    v0.unk_02 = param0->data.npcPhotoPreset;
+    v0.leaderElectionValue = param0->data.leaderElectionValue;
+    v0.contestantID = param0->data.playerContestantID;
+    v0.npcPhotoPreset = param0->data.npcPhotoPreset;
 
     if (CommSys_SendData(26, &v0, sizeof(ContestLeaderElection)) == 1) {
         return 1;
@@ -66,12 +66,12 @@ static int ContestCommTask_FindLeader(ContestLeaderElection *param0[4], int conn
     int v0, v1 = 0;
 
     for (v0 = 0; v0 < connectionCount; v0++) {
-        if (param0[v1]->unk_00 < param0[v0]->unk_00) {
+        if (param0[v1]->leaderElectionValue < param0[v0]->leaderElectionValue) {
             v1 = v0;
         }
     }
 
-    *param2 = param0[v1]->unk_00;
+    *param2 = param0[v1]->leaderElectionValue;
     return v1;
 }
 
@@ -338,7 +338,7 @@ void ContestCommTask_RecvContestantSummary(int param0, int param1, void *param2,
     contestantID = v3[v1];
 
     contest->data.trainerGenders[contestantID] = v4->trainerGender;
-    contest->data.cameraFlashVariant[contestantID] = v4->unk_01;
+    contest->data.cameraFlashVariant[contestantID] = v4->cameraFlashVariant;
     contest->data.monContestFame[contestantID] = v4->monContestFame;
     contest->data.contestantObjEventGFX[contestantID] = v4->contestantObjEventGFX;
     contest->commRecvCount++;

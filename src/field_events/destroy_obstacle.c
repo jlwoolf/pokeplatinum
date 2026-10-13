@@ -13,10 +13,10 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    FieldEffect *unk_00;
-    u16 *unk_04;
-    u32 unk_08;
-    u32 unk_0C;
+    FieldEffect *effect;
+    u16 *finishedFlag;
+    u32 state;
+    u32 variant;
 } DestroyObstacleTask;
 
 typedef FieldEffect *(*DestroyObstacle_NewFunc)(FieldSystem *);
@@ -45,15 +45,15 @@ static void DestroyObstacle_Task(SysTask *param0, void *param1)
 {
     DestroyObstacleTask *v0 = param1;
 
-    switch (v0->unk_08) {
+    switch (v0->state) {
     case 0:
-        if (sDestroyObstacleFinishedFuncs[v0->unk_0C](v0->unk_00) == 1) {
-            v0->unk_08++;
+        if (sDestroyObstacleFinishedFuncs[v0->variant](v0->effect) == 1) {
+            v0->state++;
         }
         break;
     case 1:
-        sDestroyObstacleFreeFuncs[v0->unk_0C](v0->unk_00);
-        *v0->unk_04 = 1;
+        sDestroyObstacleFreeFuncs[v0->variant](v0->effect);
+        *v0->finishedFlag = 1;
         Heap_Free(v0);
         SysTask_Done(param0);
         break;
@@ -66,9 +66,9 @@ void DestroyObstacle_Start(FieldSystem *fieldSystem, u16 *param1, u32 param2, en
 
     memset(v0, 0, sizeof(DestroyObstacleTask));
 
-    v0->unk_00 = sDestroyObstacleNewFuncs[param2](fieldSystem);
-    v0->unk_04 = param1;
-    v0->unk_0C = param2;
+    v0->effect = sDestroyObstacleNewFuncs[param2](fieldSystem);
+    v0->finishedFlag = param1;
+    v0->variant = param2;
 
     *param1 = 0;
     SysTask_Start(DestroyObstacle_Task, v0, 0);

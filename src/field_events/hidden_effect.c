@@ -21,47 +21,47 @@
 #include "sound_playback.h"
 
 typedef struct {
-    Easy3DObject unk_00;
-    Easy3DModel unk_78;
-    Easy3DAnim unk_88[4];
-    u32 unk_D8;
+    Easy3DObject object;
+    Easy3DModel model;
+    Easy3DAnim anims[4];
+    u32 animCount;
 } HiddenEffectModel;
 
 typedef struct {
-    HiddenEffectModel unk_00;
-    NNSFndAllocator unk_DC;
-    u32 unk_EC;
+    HiddenEffectModel model;
+    NNSFndAllocator allocator;
+    u32 state;
 } HiddenEffectSingle;
 
 typedef struct {
-    HiddenEffectModel unk_00;
-    NNSFndAllocator unk_DC;
-    u32 unk_EC;
+    HiddenEffectModel model;
+    NNSFndAllocator allocator;
+    u32 state;
 } HiddenEffectDouble;
 
 typedef struct HiddenEffectTransition_t {
-    HiddenEffectModel unk_00[2];
-    NNSFndAllocator unk_1B8;
-    u32 unk_1C8;
+    HiddenEffectModel models[2];
+    NNSFndAllocator allocator;
+    u32 state;
 } HiddenEffectTransition;
 
 typedef struct {
-    Easy3DObject unk_00;
-    Easy3DAnim unk_78[4];
-    u32 unk_C8;
+    Easy3DObject object;
+    Easy3DAnim anims[4];
+    u32 isActive;
 } HiddenEffectParticle;
 
 typedef struct {
-    Easy3DModel unk_00;
-    HiddenEffectParticle unk_10[16];
-    void *unk_CD0[4];
+    Easy3DModel model;
+    HiddenEffectParticle particles[16];
+    void *animData[4];
     FieldSystem *fieldSystem;
-    int unk_CE4;
-    fx32 unk_CE8;
-    fx32 unk_CEC;
-    VecFx32 unk_CF0;
-    NNSFndAllocator unk_CFC;
-    u32 unk_D0C;
+    int spawnTimer;
+    fx32 spawnOffsetY;
+    fx32 spawnOffsetZ;
+    VecFx32 lastPlayerPos;
+    NNSFndAllocator allocator;
+    u32 state;
 } HiddenEffectParticles;
 
 static void HiddenEffect_SetPositionAtMapObject(MapObjectManager *param0, u32 param1, Easy3DObject *param2)
@@ -145,14 +145,14 @@ static void HiddenEffectModel_Init(HiddenEffectModel *param0, NARC *param1, u32 
 
     memset(param0, 0, sizeof(HiddenEffectModel));
 
-    Easy3DModel_LoadFrom(&param0->unk_78, param1, param2, HEAP_ID_FIELD1);
-    Easy3DObject_Init(&param0->unk_00, &param0->unk_78);
+    Easy3DModel_LoadFrom(&param0->model, param1, param2, HEAP_ID_FIELD1);
+    Easy3DObject_Init(&param0->object, &param0->model);
 
-    param0->unk_D8 = param4;
+    param0->animCount = param4;
 
-    for (v0 = 0; v0 < param0->unk_D8; v0++) {
-        Easy3DAnim_LoadFrom(&param0->unk_88[v0], &param0->unk_78, param1, param3 + v0, 4, param5);
-        Easy3DObject_AddAnim(&param0->unk_00, &param0->unk_88[v0]);
+    for (v0 = 0; v0 < param0->animCount; v0++) {
+        Easy3DAnim_LoadFrom(&param0->anims[v0], &param0->model, param1, param3 + v0, 4, param5);
+        Easy3DObject_AddAnim(&param0->object, &param0->anims[v0]);
     }
 }
 
@@ -160,10 +160,10 @@ static void HiddenEffectModel_Free(HiddenEffectModel *param0, NNSFndAllocator *p
 {
     int v0;
 
-    Easy3DModel_Release(&param0->unk_78);
+    Easy3DModel_Release(&param0->model);
 
-    for (v0 = 0; v0 < param0->unk_D8; v0++) {
-        Easy3DAnim_Release(&param0->unk_88[v0], param1);
+    for (v0 = 0; v0 < param0->animCount; v0++) {
+        Easy3DAnim_Release(&param0->anims[v0], param1);
     }
 }
 
@@ -172,8 +172,8 @@ static BOOL HiddenEffectModel_Update(HiddenEffectModel *param0)
     int v0;
     BOOL v1 = 1;
 
-    for (v0 = 0; v0 < param0->unk_D8; v0++) {
-        v1 &= Easy3DAnim_Update(&param0->unk_88[v0], FX32_ONE);
+    for (v0 = 0; v0 < param0->animCount; v0++) {
+        v1 &= Easy3DAnim_Update(&param0->anims[v0], FX32_ONE);
     }
 
     return v1;
@@ -183,14 +183,14 @@ static void HiddenEffectModel_UpdateLooped(HiddenEffectModel *param0)
 {
     int v0;
 
-    for (v0 = 0; v0 < param0->unk_D8; v0++) {
-        Easy3DAnim_UpdateLooped(&param0->unk_88[v0], FX32_ONE);
+    for (v0 = 0; v0 < param0->animCount; v0++) {
+        Easy3DAnim_UpdateLooped(&param0->anims[v0], FX32_ONE);
     }
 }
 
 static void HiddenEffectModel_Draw(HiddenEffectModel *param0)
 {
-    Easy3DObject_Draw(&param0->unk_00);
+    Easy3DObject_Draw(&param0->object);
 }
 
 static void HiddenEffectSingle_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
@@ -200,23 +200,23 @@ static void HiddenEffectSingle_Init(FieldEffect *param0, FieldSystem *fieldSyste
     NARC *v2;
 
     memset(v0, 0, sizeof(HiddenEffectSingle));
-    HeapExp_FndInitAllocator(&v0->unk_DC, HEAP_ID_FIELD1, 32);
+    HeapExp_FndInitAllocator(&v0->allocator, HEAP_ID_FIELD1, 32);
 
     v2 = NARC_ctor(NARC_INDEX_GRAPHIC__HIDEN_EFFECT, HEAP_ID_FIELD1);
 
-    HiddenEffectModel_Init(&v0->unk_00, v2, 3, 0, 3, &v0->unk_DC);
+    HiddenEffectModel_Init(&v0->model, v2, 3, 0, 3, &v0->allocator);
     NARC_dtor(v2);
 
-    HiddenEffect_SetPositionInFrontOfPlayer(fieldSystem->playerAvatar, &v0->unk_00.unk_00);
+    HiddenEffect_SetPositionInFrontOfPlayer(fieldSystem->playerAvatar, &v0->model.object);
     Sound_PlayEffect(SEQ_SE_DP_FW015_sseq);
 
-    v0->unk_EC = 0;
+    v0->state = 0;
 }
 
 static void HiddenEffectSingle_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectSingle *v0 = param2;
-    HiddenEffectModel_Free(&v0->unk_00, &v0->unk_DC);
+    HiddenEffectModel_Free(&v0->model, &v0->allocator);
 }
 
 static void HiddenEffectSingle_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
@@ -225,13 +225,13 @@ static void HiddenEffectSingle_Update(FieldEffect *param0, FieldSystem *fieldSys
     int v1;
     BOOL v2;
 
-    switch (v0->unk_EC) {
+    switch (v0->state) {
     case 0:
-        v2 = HiddenEffectModel_Update(&v0->unk_00);
+        v2 = HiddenEffectModel_Update(&v0->model);
 
         if (v2 == 1) {
-            Easy3DObject_SetVisible(&v0->unk_00.unk_00, 0);
-            v0->unk_EC++;
+            Easy3DObject_SetVisible(&v0->model.object, 0);
+            v0->state++;
         }
         break;
     case 1:
@@ -244,7 +244,7 @@ static void HiddenEffectSingle_Update(FieldEffect *param0, FieldSystem *fieldSys
 static void HiddenEffectSingle_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectSingle *v0 = param2;
-    HiddenEffectModel_Draw(&v0->unk_00);
+    HiddenEffectModel_Draw(&v0->model);
 }
 
 FieldEffect *HiddenEffectSingle_New(FieldSystem *fieldSystem)
@@ -265,7 +265,7 @@ BOOL HiddenEffectSingle_IsFinished(FieldEffect *param0)
 {
     HiddenEffectSingle *v0 = FieldMap_021D1C2C(param0);
 
-    if (v0->unk_EC == 1) {
+    if (v0->state == 1) {
         return 1;
     }
 
@@ -279,17 +279,17 @@ static void HiddenEffectDouble_Init(FieldEffect *param0, FieldSystem *fieldSyste
     NARC *v2;
 
     memset(v0, 0, sizeof(HiddenEffectDouble));
-    HeapExp_FndInitAllocator(&v0->unk_DC, HEAP_ID_FIELD1, 32);
+    HeapExp_FndInitAllocator(&v0->allocator, HEAP_ID_FIELD1, 32);
 
     v2 = NARC_ctor(NARC_INDEX_GRAPHIC__HIDEN_EFFECT, HEAP_ID_FIELD1);
 
-    HiddenEffectModel_Init(&v0->unk_00, v2, 8, 4, 4, &v0->unk_DC);
+    HiddenEffectModel_Init(&v0->model, v2, 8, 4, 4, &v0->allocator);
     NARC_dtor(v2);
 
-    HiddenEffect_SetPositionInFrontOfPlayer(fieldSystem->playerAvatar, &v0->unk_00.unk_00);
+    HiddenEffect_SetPositionInFrontOfPlayer(fieldSystem->playerAvatar, &v0->model.object);
     Sound_PlayEffect(SEQ_SE_DP_FW088_sseq);
 
-    v0->unk_EC = 0;
+    v0->state = 0;
 }
 
 static void HiddenEffectDoubleAtMapObject_Init(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
@@ -299,23 +299,23 @@ static void HiddenEffectDoubleAtMapObject_Init(FieldEffect *param0, FieldSystem 
     NARC *v2;
 
     memset(v0, 0, sizeof(HiddenEffectDouble));
-    HeapExp_FndInitAllocator(&v0->unk_DC, HEAP_ID_FIELD1, 32);
+    HeapExp_FndInitAllocator(&v0->allocator, HEAP_ID_FIELD1, 32);
 
     v2 = NARC_ctor(NARC_INDEX_GRAPHIC__HIDEN_EFFECT, HEAP_ID_FIELD1);
 
-    HiddenEffectModel_Init(&v0->unk_00, v2, 8, 4, 4, &v0->unk_DC);
-    HiddenEffect_SetPositionAtMapObject(fieldSystem->mapObjMan, 0, &v0->unk_00.unk_00);
+    HiddenEffectModel_Init(&v0->model, v2, 8, 4, 4, &v0->allocator);
+    HiddenEffect_SetPositionAtMapObject(fieldSystem->mapObjMan, 0, &v0->model.object);
 
     Sound_PlayEffect(SEQ_SE_DP_FW088_sseq);
     NARC_dtor(v2);
 
-    v0->unk_EC = 0;
+    v0->state = 0;
 }
 
 static void HiddenEffectDouble_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
-    HiddenEffectModel_Free(&v0->unk_00, &v0->unk_DC);
+    HiddenEffectModel_Free(&v0->model, &v0->allocator);
 }
 
 static void HiddenEffectDouble_Update(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
@@ -324,13 +324,13 @@ static void HiddenEffectDouble_Update(FieldEffect *param0, FieldSystem *fieldSys
     int v1;
     BOOL v2;
 
-    switch (v0->unk_EC) {
+    switch (v0->state) {
     case 0:
-        v2 = HiddenEffectModel_Update(&v0->unk_00);
+        v2 = HiddenEffectModel_Update(&v0->model);
 
         if (v2 == 1) {
-            Easy3DObject_SetVisible(&v0->unk_00.unk_00, 0);
-            v0->unk_EC++;
+            Easy3DObject_SetVisible(&v0->model.object, 0);
+            v0->state++;
         }
         break;
     case 1:
@@ -343,7 +343,7 @@ static void HiddenEffectDouble_Update(FieldEffect *param0, FieldSystem *fieldSys
 static void HiddenEffectDouble_Draw(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
 {
     HiddenEffectDouble *v0 = param2;
-    HiddenEffectModel_Draw(&v0->unk_00);
+    HiddenEffectModel_Draw(&v0->model);
 }
 
 FieldEffect *HiddenEffectDouble_New(FieldSystem *fieldSystem)
@@ -383,7 +383,7 @@ BOOL HiddenEffectDouble_IsFinished(FieldEffect *param0)
 {
     HiddenEffectDouble *v0 = FieldMap_021D1C2C(param0);
 
-    if (v0->unk_EC == 1) {
+    if (v0->state == 1) {
         return 1;
     }
 
@@ -397,17 +397,17 @@ static void HiddenEffectTransition_Init(FieldEffect *param0, FieldSystem *fieldS
     NARC *v2;
 
     memset(v0, 0, sizeof(HiddenEffectTransition));
-    HeapExp_FndInitAllocator(&v0->unk_1B8, HEAP_ID_FIELD1, 32);
+    HeapExp_FndInitAllocator(&v0->allocator, HEAP_ID_FIELD1, 32);
 
     v2 = NARC_ctor(NARC_INDEX_GRAPHIC__HIDEN_EFFECT, HEAP_ID_FIELD1);
 
-    HiddenEffectModel_Init(&v0->unk_00[0], v2, 14, 12, 2, &v0->unk_1B8);
-    HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->unk_00[0].unk_00);
+    HiddenEffectModel_Init(&v0->models[0], v2, 14, 12, 2, &v0->allocator);
+    HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->models[0].object);
 
     NARC_dtor(v2);
     Sound_PlayEffect(SEQ_SE_DP_FW463_sseq);
 
-    v0->unk_1C8 = 0;
+    v0->state = 0;
 }
 
 static void HiddenEffectTransition_Free(FieldEffect *param0, FieldSystem *fieldSystem, void *param2)
@@ -416,7 +416,7 @@ static void HiddenEffectTransition_Free(FieldEffect *param0, FieldSystem *fieldS
     int v1;
 
     for (v1 = 0; v1 < 2; v1++) {
-        HiddenEffectModel_Free(&v0->unk_00[v1], &v0->unk_1B8);
+        HiddenEffectModel_Free(&v0->models[v1], &v0->allocator);
     }
 }
 
@@ -426,28 +426,28 @@ static void HiddenEffectTransition_Update(FieldEffect *param0, FieldSystem *fiel
     BOOL v1;
     NARC *v2;
 
-    switch (v0->unk_1C8) {
+    switch (v0->state) {
     case 0:
         v2 = NARC_ctor(NARC_INDEX_GRAPHIC__HIDEN_EFFECT, HEAP_ID_FIELD1);
-        HiddenEffectModel_Init(&v0->unk_00[1], v2, 11, 9, 2, &v0->unk_1B8);
+        HiddenEffectModel_Init(&v0->models[1], v2, 11, 9, 2, &v0->allocator);
         NARC_dtor(v2);
-        HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->unk_00[1].unk_00);
-        Easy3DObject_SetVisible(&v0->unk_00[1].unk_00, 0);
-        v0->unk_1C8++;
+        HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->models[1].object);
+        Easy3DObject_SetVisible(&v0->models[1].object, 0);
+        v0->state++;
     case 1:
-        v1 = HiddenEffectModel_Update(&v0->unk_00[0]);
-        HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->unk_00[0].unk_00);
+        v1 = HiddenEffectModel_Update(&v0->models[0]);
+        HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->models[0].object);
 
         if (v1 == 1) {
-            Easy3DObject_SetVisible(&v0->unk_00[1].unk_00, 1);
-            Easy3DObject_SetVisible(&v0->unk_00[0].unk_00, 0);
-            HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->unk_00[1].unk_00);
-            v0->unk_1C8++;
+            Easy3DObject_SetVisible(&v0->models[1].object, 1);
+            Easy3DObject_SetVisible(&v0->models[0].object, 0);
+            HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->models[1].object);
+            v0->state++;
         }
         break;
     case 2:
-        HiddenEffectModel_UpdateLooped(&v0->unk_00[1]);
-        HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->unk_00[1].unk_00);
+        HiddenEffectModel_UpdateLooped(&v0->models[1]);
+        HiddenEffect_SetPositionAtPlayer(fieldSystem->playerAvatar, &v0->models[1].object);
         break;
     default:
         break;
@@ -460,7 +460,7 @@ static void HiddenEffectTransition_Draw(FieldEffect *param0, FieldSystem *fieldS
     int v1;
 
     for (v1 = 0; v1 < 2; v1++) {
-        HiddenEffectModel_Draw(&v0->unk_00[v1]);
+        HiddenEffectModel_Draw(&v0->models[v1]);
     }
 }
 
@@ -488,18 +488,18 @@ static void HiddenEffectParticle_Start(HiddenEffectParticle *param0, PlayerAvata
     VecFx32 v0;
     int v1;
 
-    GF_ASSERT(param0->unk_C8 == 0);
+    GF_ASSERT(param0->isActive == 0);
 
     PlayerAvatar_GetPosPtr(playerAvatar, &v0);
-    Easy3DObject_SetPosition(&param0->unk_00, v0.x, v0.y + param2, v0.z + param3);
+    Easy3DObject_SetPosition(&param0->object, v0.x, v0.y + param2, v0.z + param3);
 
-    param0->unk_C8 = 1;
+    param0->isActive = 1;
 
     for (v1 = 0; v1 < 4; v1++) {
-        Easy3DAnim_SetFrame(&param0->unk_78[v1], 0);
+        Easy3DAnim_SetFrame(&param0->anims[v1], 0);
     }
 
-    Easy3DObject_SetVisible(&param0->unk_00, 1);
+    Easy3DObject_SetVisible(&param0->object, 1);
     Sound_PlayEffect(SEQ_SE_DP_UG_023_sseq);
 }
 
@@ -508,19 +508,19 @@ static void HiddenEffectParticle_Update(HiddenEffectParticle *param0)
     int v0;
     BOOL v1;
 
-    if (param0->unk_C8 == 0) {
+    if (param0->isActive == 0) {
         return;
     }
 
     v1 = 1;
 
     for (v0 = 0; v0 < 4; v0++) {
-        v1 &= Easy3DAnim_Update(&param0->unk_78[v0], FX32_ONE);
+        v1 &= Easy3DAnim_Update(&param0->anims[v0], FX32_ONE);
     }
 
     if (v1 == 1) {
-        param0->unk_C8 = 0;
-        Easy3DObject_SetVisible(&param0->unk_00, 0);
+        param0->isActive = 0;
+        Easy3DObject_SetVisible(&param0->object, 0);
     }
 }
 
@@ -529,14 +529,14 @@ static void HiddenEffectParticle_Init(HiddenEffectParticle *param0, Easy3DModel 
     int v0;
 
     memset(param0, 0, sizeof(HiddenEffectParticle));
-    Easy3DObject_Init(&param0->unk_00, param1);
+    Easy3DObject_Init(&param0->object, param1);
 
     for (v0 = 0; v0 < 4; v0++) {
-        Easy3DAnim_LoadFromData(&param0->unk_78[v0], param1, param3[v0], param2);
-        Easy3DObject_AddAnim(&param0->unk_00, &param0->unk_78[v0]);
+        Easy3DAnim_LoadFromData(&param0->anims[v0], param1, param3[v0], param2);
+        Easy3DObject_AddAnim(&param0->object, &param0->anims[v0]);
     }
 
-    Easy3DObject_SetVisible(&param0->unk_00, 0);
+    Easy3DObject_SetVisible(&param0->object, 0);
 }
 
 static void HiddenEffectParticle_Free(HiddenEffectParticle *param0, NNSFndAllocator *param1)
@@ -544,7 +544,7 @@ static void HiddenEffectParticle_Free(HiddenEffectParticle *param0, NNSFndAlloca
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        Easy3DAnim_Release(&param0->unk_78[v0], param1);
+        Easy3DAnim_Release(&param0->anims[v0], param1);
     }
 
     memset(param0, 0, sizeof(HiddenEffectParticle));
@@ -556,15 +556,15 @@ static void HiddenEffectParticles_UpdateSpawn(HiddenEffectParticles *param0)
 
     PlayerAvatar_GetPosPtr(param0->fieldSystem->playerAvatar, &v0);
 
-    if (((v0.x - param0->unk_CF0.x) == 0) && (v0.y < param0->unk_CF0.y) && (v0.z > param0->unk_CF0.z)) {
-        param0->unk_CE8 = 0;
-        param0->unk_CEC = (16 * FX32_ONE) * 2;
+    if (((v0.x - param0->lastPlayerPos.x) == 0) && (v0.y < param0->lastPlayerPos.y) && (v0.z > param0->lastPlayerPos.z)) {
+        param0->spawnOffsetY = 0;
+        param0->spawnOffsetZ = (16 * FX32_ONE) * 2;
     } else {
-        param0->unk_CE8 = ((16 * FX32_ONE) * 2);
-        param0->unk_CEC = (16 * FX32_ONE);
+        param0->spawnOffsetY = ((16 * FX32_ONE) * 2);
+        param0->spawnOffsetZ = (16 * FX32_ONE);
     }
 
-    param0->unk_CF0 = v0;
+    param0->lastPlayerPos = v0;
 }
 
 static void HiddenEffectParticles_Spawn(HiddenEffectParticles *param0)
@@ -574,8 +574,8 @@ static void HiddenEffectParticles_Spawn(HiddenEffectParticles *param0)
     HiddenEffectParticles_UpdateSpawn(param0);
 
     for (v0 = 0; v0 < 16; v0++) {
-        if (param0->unk_10[v0].unk_C8 == 0) {
-            HiddenEffectParticle_Start(&param0->unk_10[v0], param0->fieldSystem->playerAvatar, param0->unk_CE8, param0->unk_CEC);
+        if (param0->particles[v0].isActive == 0) {
+            HiddenEffectParticle_Start(&param0->particles[v0], param0->fieldSystem->playerAvatar, param0->spawnOffsetY, param0->spawnOffsetZ);
             return;
         }
     }
@@ -588,7 +588,7 @@ static void HiddenEffectParticles_Update(HiddenEffectParticles *param0)
     int v0;
 
     for (v0 = 0; v0 < 16; v0++) {
-        HiddenEffectParticle_Update(&param0->unk_10[v0]);
+        HiddenEffectParticle_Update(&param0->particles[v0]);
     }
 }
 
@@ -599,24 +599,24 @@ static void HiddenEffectParticles_Init(FieldEffect *param0, FieldSystem *fieldSy
     NARC *v2;
 
     memset(v0, 0, sizeof(HiddenEffectParticles));
-    HeapExp_FndInitAllocator(&v0->unk_CFC, HEAP_ID_FIELD1, 32);
+    HeapExp_FndInitAllocator(&v0->allocator, HEAP_ID_FIELD1, 32);
 
     v2 = NARC_ctor(NARC_INDEX_GRAPHIC__HIDEN_EFFECT, HEAP_ID_FIELD1);
 
-    Easy3DModel_LoadFrom(&v0->unk_00, v2, 8, HEAP_ID_FIELD1);
+    Easy3DModel_LoadFrom(&v0->model, v2, 8, HEAP_ID_FIELD1);
 
     for (v1 = 0; v1 < 4; v1++) {
-        v0->unk_CD0[v1] = LoadMemberFromOpenNARC(v2, 4 + v1, 0, HEAP_ID_FIELD1, 0);
+        v0->animData[v1] = LoadMemberFromOpenNARC(v2, 4 + v1, 0, HEAP_ID_FIELD1, 0);
     }
 
     for (v1 = 0; v1 < 16; v1++) {
-        HiddenEffectParticle_Init(&v0->unk_10[v1], &v0->unk_00, &v0->unk_CFC, v0->unk_CD0);
+        HiddenEffectParticle_Init(&v0->particles[v1], &v0->model, &v0->allocator, v0->animData);
     }
 
     v0->fieldSystem = fieldSystem;
-    PlayerAvatar_GetPosPtr(v0->fieldSystem->playerAvatar, &v0->unk_CF0);
+    PlayerAvatar_GetPosPtr(v0->fieldSystem->playerAvatar, &v0->lastPlayerPos);
 
-    v0->unk_D0C = 0;
+    v0->state = 0;
     NARC_dtor(v2);
 }
 
@@ -626,13 +626,13 @@ static void HiddenEffectParticles_Free(FieldEffect *param0, FieldSystem *fieldSy
     int v1;
 
     for (v1 = 0; v1 < 16; v1++) {
-        HiddenEffectParticle_Free(&v0->unk_10[v1], &v0->unk_CFC);
+        HiddenEffectParticle_Free(&v0->particles[v1], &v0->allocator);
     }
 
-    Easy3DModel_Release(&v0->unk_00);
+    Easy3DModel_Release(&v0->model);
 
     for (v1 = 0; v1 < 4; v1++) {
-        Heap_Free(v0->unk_CD0[v1]);
+        Heap_Free(v0->animData[v1]);
     }
 }
 
@@ -640,12 +640,12 @@ static void HiddenEffectParticles_TaskUpdate(FieldEffect *param0, FieldSystem *f
 {
     HiddenEffectParticles *v0 = param2;
 
-    switch (v0->unk_D0C) {
+    switch (v0->state) {
     case 0:
-        v0->unk_CE4--;
+        v0->spawnTimer--;
 
-        if (v0->unk_CE4 < 0) {
-            v0->unk_CE4 = 4;
+        if (v0->spawnTimer < 0) {
+            v0->spawnTimer = 4;
             HiddenEffectParticles_Spawn(v0);
         }
 
@@ -662,7 +662,7 @@ static void HiddenEffectParticles_Draw(FieldEffect *param0, FieldSystem *fieldSy
     int v1;
 
     for (v1 = 0; v1 < 16; v1++) {
-        Easy3DObject_Draw(&v0->unk_10[v1].unk_00);
+        Easy3DObject_Draw(&v0->particles[v1].object);
     }
 }
 
