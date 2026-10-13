@@ -16,28 +16,28 @@
 #include "simple3d.h"
 
 typedef struct {
-    FieldEffectManager *unk_00;
-    Simple3DModel unk_04;
-    Simple3DRenderObj unk_18;
+    FieldEffectManager *fieldEffectManager;
+    Simple3DModel model;
+    Simple3DRenderObj renderObj;
 } FieldEffectRenderer0EContext;
 
 typedef struct {
-    FieldEffectManager *unk_00;
-    FieldEffectRenderer0EContext *unk_04;
+    FieldEffectManager *fieldEffectManager;
+    FieldEffectRenderer0EContext *context;
     PlayerAvatar *playerAvatar;
 } FieldEffectRenderer0EParams;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    u8 unk_08;
+    int state;
+    int direction;
+    u8 tileBehavior;
     int unk_0C;
     int unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    int unk_20;
-    FieldEffectRenderer0EParams unk_24;
+    int localID;
+    int mapHeaderID;
+    int timer;
+    int offset;
+    FieldEffectRenderer0EParams params;
 } FieldEffectRenderer0EAnim;
 
 static void FieldMap_021F61E8(FieldEffectRenderer0EContext *param0);
@@ -50,7 +50,7 @@ static const VecFx32 Unk_FieldMap_02200C24[4][2];
 void *FieldMap_021F61BC(FieldEffectManager *param0)
 {
     FieldEffectRenderer0EContext *v0 = FieldEffectManager_HeapAllocInit(param0, (sizeof(FieldEffectRenderer0EContext)), 0, 0);
-    v0->unk_00 = param0;
+    v0->fieldEffectManager = param0;
 
     FieldMap_021F61E8(v0);
 
@@ -67,13 +67,13 @@ void FieldMap_021F61D8(void *param0)
 
 static void FieldMap_021F61E8(FieldEffectRenderer0EContext *param0)
 {
-    FieldEffectManager_LoadModel(param0->unk_00, &param0->unk_04, 0, 80, 0);
-    Simple3D_CreateRenderObject(&param0->unk_18, &param0->unk_04);
+    FieldEffectManager_LoadModel(param0->fieldEffectManager, &param0->model, 0, 80, 0);
+    Simple3D_CreateRenderObject(&param0->renderObj, &param0->model);
 }
 
 static void FieldMap_021F620C(FieldEffectRenderer0EContext *param0)
 {
-    Simple3D_FreeModel(&param0->unk_04);
+    Simple3D_FreeModel(&param0->model);
 }
 
 void FieldMap_021F6218(PlayerAvatar *playerAvatar)
@@ -87,8 +87,8 @@ void FieldMap_021F6218(PlayerAvatar *playerAvatar)
     v4 = PlayerAvatar_GetMapObject(playerAvatar);
     v3 = MapObject_GetFieldEffectManager(v4);
 
-    v2.unk_00 = v3;
-    v2.unk_04 = FieldEffectManager_GetRendererContext(v3, 14);
+    v2.fieldEffectManager = v3;
+    v2.context = FieldEffectManager_GetRendererContext(v3, 14);
     v2.playerAvatar = playerAvatar;
 
     v1 = MapObject_CalculateTaskPriority(v4, 2);
@@ -103,12 +103,12 @@ static int FieldMap_021F6264(OverworldAnimManager *param0, void *param1)
 
     v0 = param1;
     v2 = OverworldAnimManager_GetUserData(param0);
-    v0->unk_24 = *v2;
+    v0->params = *v2;
     v1 = PlayerAvatar_GetMapObject(v2->playerAvatar);
 
-    v0->unk_04 = -1;
-    v0->unk_14 = MapObject_GetLocalID(v1);
-    v0->unk_18 = MapObject_GetMapHeaderID(v1);
+    v0->direction = -1;
+    v0->localID = MapObject_GetLocalID(v1);
+    v0->mapHeaderID = MapObject_GetMapHeaderID(v1);
 
     return 1;
 }
@@ -122,36 +122,36 @@ static void FieldMap_021F62A0(OverworldAnimManager *param0, void *param1)
 {
     int v0;
     FieldEffectRenderer0EAnim *v1 = param1;
-    PlayerAvatar *playerAvatar = v1->unk_24.playerAvatar;
+    PlayerAvatar *playerAvatar = v1->params.playerAvatar;
     MapObject *v3 = PlayerAvatar_GetMapObject(playerAvatar);
 
-    if (MapObject_MatchesLocalIDAndMap(v3, v1->unk_14, v1->unk_18) == 0) {
+    if (MapObject_MatchesLocalIDAndMap(v3, v1->localID, v1->mapHeaderID) == 0) {
         FieldEffectManager_FinishAnimManager(param0);
         return;
     }
 
-    v0 = v1->unk_04;
+    v0 = v1->direction;
 
-    v1->unk_08 = MapObject_GetCurrTileBehavior(v3);
-    v1->unk_04 = FieldMap_021F6414(v1->unk_08);
-    v1->unk_00 = 0;
+    v1->tileBehavior = MapObject_GetCurrTileBehavior(v3);
+    v1->direction = FieldMap_021F6414(v1->tileBehavior);
+    v1->state = 0;
 
-    if ((v1->unk_04 == -1) || (v1->unk_04 != PlayerAvatar_GetFacingDir(playerAvatar))) {
-        v1->unk_1C = 0;
-        v1->unk_20 = 0;
-        v1->unk_00 = 1;
+    if ((v1->direction == -1) || (v1->direction != PlayerAvatar_GetFacingDir(playerAvatar))) {
+        v1->timer = 0;
+        v1->offset = 0;
+        v1->state = 1;
         return;
     }
 
-    if (v0 != v1->unk_04) {
-        v1->unk_1C = 0;
-        v1->unk_20 = 0;
+    if (v0 != v1->direction) {
+        v1->timer = 0;
+        v1->offset = 0;
     }
 
     {
         VecFx32 v4, v5;
-        int v6 = MapObject_GetX(v3) + MapObject_GetDxFromDir(v1->unk_04);
-        int v7 = MapObject_GetZ(v3) + MapObject_GetDzFromDir(v1->unk_04);
+        int v6 = MapObject_GetX(v3) + MapObject_GetDxFromDir(v1->direction);
+        int v7 = MapObject_GetZ(v3) + MapObject_GetDzFromDir(v1->direction);
 
         VecFx32_SetPosFromMapCoords(v6, v7, &v5);
         MapObject_GetPosPtr(v3, &v4);
@@ -160,12 +160,12 @@ static void FieldMap_021F62A0(OverworldAnimManager *param0, void *param1)
     }
 
     {
-        v1->unk_1C++;
+        v1->timer++;
 
-        if (v1->unk_1C > 15) {
-            v1->unk_1C = 0;
-            v1->unk_20++;
-            v1->unk_20 %= 2;
+        if (v1->timer > 15) {
+            v1->timer = 0;
+            v1->offset++;
+            v1->offset %= 2;
         }
     }
 }
@@ -174,7 +174,7 @@ static void FieldMap_021F636C(OverworldAnimManager *param0, void *param1)
 {
     FieldEffectRenderer0EAnim *v0 = param1;
 
-    if ((v0->unk_00 == 1) || (v0->unk_04 == -1)) {
+    if ((v0->state == 1) || (v0->direction == -1)) {
         return;
     }
 
@@ -182,10 +182,10 @@ static void FieldMap_021F636C(OverworldAnimManager *param0, void *param1)
         u32 v1 = 0;
         MtxFx33 v2;
         VecFx32 v3, v4 = { FX32_ONE, FX32_ONE, FX32_ONE };
-        Simple3DRenderObj *v5 = &v0->unk_24.unk_04->unk_18;
-        const VecFx32 *v6 = &Unk_FieldMap_02200C24[v0->unk_04][v0->unk_20];
+        Simple3DRenderObj *v5 = &v0->params.context->renderObj;
+        const VecFx32 *v6 = &Unk_FieldMap_02200C24[v0->direction][v0->offset];
 
-        switch (v0->unk_04) {
+        switch (v0->direction) {
         case 0:
             v1 = 180;
             break;
