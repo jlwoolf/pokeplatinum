@@ -40,20 +40,20 @@
 #include "system.h"
 
 typedef struct {
-    fx32 unk_00;
-    s8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
+    fx32 rotation;
+    s8 timer;
+    u8 direction;
+    u8 remaining;
+    u8 active;
 } WiFiLobbyMapCameraAnim;
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    s32 unk_04;
-    ListMenuTemplate unk_08;
-    u16 unk_28;
-    u16 unk_2A;
+    u16 nextState;
+    u16 cosmeticID;
+    s32 timer;
+    ListMenuTemplate listTemplate;
+    u16 type1;
+    u16 type2;
 } WiFiLobbyMapStatusTaskState;
 
 typedef struct {
@@ -61,14 +61,14 @@ typedef struct {
 } WiFiLobbyMapInteractionState;
 
 typedef struct {
-    s32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
-    u32 unk_08;
+    s32 nextState;
+    u16 messageID;
+    u16 flag;
+    u32 activity;
 } WiFiLobbyMapJoinTaskState;
 
 typedef struct {
-    WiFiLobbyMapRecruitSubstate unk_00;
+    WiFiLobbyMapRecruitSubstate substate;
 } WiFiLobbyMapRecruitTaskState;
 
 typedef struct {
@@ -77,22 +77,22 @@ typedef struct {
 } WiFiLobbyMapVenueTaskState;
 
 typedef struct {
-    u32 unk_00;
+    u32 floatSlot;
     u16 unk_04;
     u16 unk_06;
-    s16 unk_08;
+    s16 timer;
     u8 unk_0A;
-    u8 unk_0B;
-    WiFiLobbyMapActor *unk_0C;
-    WiFiLobbyMapCameraAnim unk_10;
+    u8 frame;
+    WiFiLobbyMapActor *actor;
+    WiFiLobbyMapCameraAnim cameraAnim;
 } WiFiLobbyMapCameraFollowTaskState;
 
 typedef struct {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
+    u8 tileX;
+    u8 tileY;
+    u8 slot;
+    u8 chatPending;
+    u8 activity;
     u8 unk_05[3];
 } WiFiLobbyMapPlayerJoinState;
 
@@ -101,13 +101,13 @@ typedef struct {
 } WiFiLobbyMapPlayerJoinTaskState;
 
 typedef struct {
-    WiFiLobbyMapActor *unk_00;
+    WiFiLobbyMapActor *actor;
     u32 unk_04;
     u32 unk_08;
-    fx32 unk_0C;
-    fx32 unk_10;
-    s32 unk_14;
-    WiFiLobbyMapCameraAnim unk_18;
+    fx32 targetY;
+    fx32 targetX;
+    s32 frame;
+    WiFiLobbyMapCameraAnim cameraAnim;
 } WiFiLobbyMapBoardingTaskState;
 
 typedef void (*UnkFuncPtr_wifi_lobby_map_0226DBB8)(WiFiLobbyMapInteractionState *, WiFiLobbyMapApp *, u32, u32);
@@ -423,8 +423,8 @@ void wifi_lobby_map_022630A4(WiFiLobbyMapApp *param0)
     v2 = wifi_lobby_map_0225DF2C(param0);
 
     WiFiPlazaLobby_State_SetCurrentVenue(wifi_lobby_map_0225DEE8(param0), 1);
-    GF_ASSERT(v0->unk_06 < 4);
-    wifi_lobby_map_02262E94(v1, v2, &Unk_wifi_lobby_map_0226DA78[v0->unk_06], NULL);
+    GF_ASSERT(v0->taskType < 4);
+    wifi_lobby_map_02262E94(v1, v2, &Unk_wifi_lobby_map_0226DA78[v0->taskType], NULL);
 }
 
 void wifi_lobby_map_022630EC(WiFiLobbyMapApp *param0)
@@ -546,57 +546,57 @@ static void wifi_lobby_map_02263230(WiFiLobbyMapApp *param0, u32 param1, u32 par
 
 static void wifi_lobby_map_02263270(WiFiLobbyMapCameraAnim *param0)
 {
-    param0->unk_00 = 0;
-    param0->unk_04 = 0;
-    param0->unk_05 = 1;
-    param0->unk_06 = MTRNG_Next() % 4;
-    param0->unk_07 = 1;
+    param0->rotation = 0;
+    param0->timer = 0;
+    param0->direction = 1;
+    param0->remaining = MTRNG_Next() % 4;
+    param0->active = 1;
 }
 
 static fx32 wifi_lobby_map_02263290(WiFiLobbyMapCameraAnim *param0)
 {
     u16 v0;
 
-    switch (param0->unk_05) {
+    switch (param0->direction) {
     case 0:
-        param0->unk_00 = 0;
+        param0->rotation = 0;
         break;
     case 1:
-        if ((param0->unk_06 - 1) > 0) {
-            param0->unk_06--;
+        if ((param0->remaining - 1) > 0) {
+            param0->remaining--;
         } else {
-            param0->unk_05 = 2;
+            param0->direction = 2;
         }
         break;
     case 2:
-        param0->unk_04++;
+        param0->timer++;
 
-        v0 = (param0->unk_04 * 0x7fff) / 4;
-        param0->unk_00 = FX_Mul(FX_SinIdx(v0), (FX32_CONST(6)));
+        v0 = (param0->timer * 0x7fff) / 4;
+        param0->rotation = FX_Mul(FX_SinIdx(v0), (FX32_CONST(6)));
 
-        if (param0->unk_04 >= 4) {
-            if (param0->unk_07 == 1) {
-                param0->unk_04 = 0;
-                param0->unk_05 = 1;
-                param0->unk_06 = MTRNG_Next() % 4;
+        if (param0->timer >= 4) {
+            if (param0->active == 1) {
+                param0->timer = 0;
+                param0->direction = 1;
+                param0->remaining = MTRNG_Next() % 4;
             } else {
-                param0->unk_05 = 0;
+                param0->direction = 0;
             }
         }
         break;
     }
 
-    return param0->unk_00;
+    return param0->rotation;
 }
 
 static void wifi_lobby_map_0226332C(WiFiLobbyMapCameraAnim *param0)
 {
-    param0->unk_07 = 0;
+    param0->active = 0;
 }
 
 static BOOL wifi_lobby_map_02263334(const WiFiLobbyMapCameraAnim *param0)
 {
-    if (param0->unk_05 == 0) {
+    if (param0->direction == 0) {
         return 0;
     }
 
@@ -667,8 +667,8 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         WiFiPlazaLobby_State_PlayLobbyBGM(v3);
 
         {
-            v0->unk_02 = WiFiPlazaLobby_State_ChooseCosmeticID(v3);
-            WiFiPlazaLobby_State_SetAppearanceRank(v3, v0->unk_02);
+            v0->cosmeticID = WiFiPlazaLobby_State_ChooseCosmeticID(v3);
+            WiFiPlazaLobby_State_SetAppearanceRank(v3, v0->cosmeticID);
         }
 
         v1 = wifi_lobby_map_022631F8(param1, param2);
@@ -687,53 +687,53 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
                 wifi_lobby_map_02260B38(v5, v1);
             }
 
-            v0->unk_04 = 16;
+            v0->timer = 16;
             wifi_lobby_map_02262E8C(param0);
         }
         break;
     case 2:
-        v0->unk_04--;
+        v0->timer--;
 
-        if (v0->unk_04 == 0) {
+        if (v0->timer == 0) {
             wifi_lobby_map_0225DF18(param1, 1);
             wifi_lobby_map_02262E8C(param0);
         }
         break;
     case 3:
         wifi_lobby_map_0225CD7C(v2, v1, 2, 0);
-        v0->unk_00 = 4;
+        v0->nextState = 4;
         wifi_lobby_map_02262E88(param0, 7);
         break;
     case 4:
         wifi_lobby_map_0225CD7C(v2, v1, 2, 0);
-        v0->unk_00 = 5;
+        v0->nextState = 5;
         wifi_lobby_map_02262E88(param0, 7);
         break;
     case 5:
         wifi_lobby_map_0225CD7C(v2, v1, 1, 3);
-        v0->unk_00 = 6;
+        v0->nextState = 6;
         wifi_lobby_map_02262E88(param0, 7);
         break;
     case 6:
         wifi_lobby_map_0225CD7C(v2, v1, 2, 3);
-        v0->unk_00 = 8;
+        v0->nextState = 8;
         wifi_lobby_map_02262E88(param0, 7);
         break;
     case 7:
         if (wifi_lobby_map_0225CD60(v1, 5) == 0) {
-            wifi_lobby_map_02262E88(param0, v0->unk_00);
+            wifi_lobby_map_02262E88(param0, v0->nextState);
         }
         break;
     case 8:
         v4 = wifi_lobby_map_0225E20C(param1, 1, 0);
         wifi_lobby_map_0225DF8C(param1, v4);
-        v0->unk_00 = 16;
+        v0->nextState = 16;
         wifi_lobby_map_02262E88(param0, 21);
         break;
     case 9:
         v4 = wifi_lobby_map_0225E20C(param1, 1, 5);
         wifi_lobby_map_0225DF9C(param1, v4);
-        wifi_lobby_map_0225E074(param1, &v0->unk_08, 0, 0);
+        wifi_lobby_map_0225E074(param1, &v0->listTemplate, 0, 0);
         wifi_lobby_map_0225E0F4(param1, 1);
         wifi_lobby_map_02262E88(param0, 10);
         break;
@@ -750,11 +750,11 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         case 0xfffffffe:
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
         case 0:
-            v0->unk_28 = 0;
+            v0->type1 = 0;
             v8 = 1;
             break;
         default:
-            v0->unk_28 = v6;
+            v0->type1 = v6;
             v8 = 1;
             wifi_lobby_map_0225E30C(param1, 0, v6);
             v7 = 8;
@@ -764,7 +764,7 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         if (v8 == 1) {
             wifi_lobby_map_0225E0E4(param1, NULL, NULL);
 
-            if (v0->unk_28 != 0) {
+            if (v0->type1 != 0) {
                 v4 = wifi_lobby_map_0225E20C(param1, 1, v7);
                 wifi_lobby_map_0225DF9C(param1, v4);
                 wifi_lobby_map_0225E164(param1);
@@ -783,7 +783,7 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         case 0:
             wifi_lobby_map_0225E1F8(param1);
             wifi_lobby_map_02262E88(param0, 12);
-            WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->unk_28, v0->unk_2A);
+            WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->type1, v0->type2);
             wifi_lobby_map_0225E390(param1);
             Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
             break;
@@ -798,7 +798,7 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
     case 12:
         v4 = wifi_lobby_map_0225E20C(param1, 1, 10);
         wifi_lobby_map_0225DF9C(param1, v4);
-        wifi_lobby_map_0225E074(param1, &v0->unk_08, 0, 0);
+        wifi_lobby_map_0225E074(param1, &v0->listTemplate, 0, 0);
         wifi_lobby_map_0225E0F4(param1, 1);
         wifi_lobby_map_02262E88(param0, 13);
         break;
@@ -815,11 +815,11 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         case 0xfffffffe:
             Sound_PlayEffect(SE_CONFIRM_sseq_3);
         case 0:
-            v0->unk_2A = 0;
+            v0->type2 = 0;
             v12 = 1;
             break;
         default:
-            v0->unk_2A = v10;
+            v0->type2 = v10;
             v12 = 1;
             wifi_lobby_map_0225E30C(param1, 0, v10);
             v11 = 8;
@@ -829,7 +829,7 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         if (v12 == 1) {
             wifi_lobby_map_0225E0E4(param1, NULL, NULL);
 
-            if (v0->unk_2A != 0) {
+            if (v0->type2 != 0) {
                 v4 = wifi_lobby_map_0225E20C(param1, 1, v11);
                 wifi_lobby_map_0225DF9C(param1, v4);
                 wifi_lobby_map_0225E164(param1);
@@ -848,7 +848,7 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         case 0:
             wifi_lobby_map_0225E1F8(param1);
             wifi_lobby_map_02262E88(param0, 20);
-            WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->unk_28, v0->unk_2A);
+            WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->type1, v0->type2);
             wifi_lobby_map_0225E390(param1);
             Sound_PlayEffect(SEQ_SE_DP_BUTTON3_sseq);
             break;
@@ -864,7 +864,7 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         Sound_PlayEffect(SEQ_SE_PL_EFF03_4_sseq);
         wifi_lobby_map_0225E430(param1);
         wifi_lobby_map_0225E234(param1, param2, 0);
-        wifi_lobby_map_0225E29C(param1, v0->unk_02, 1);
+        wifi_lobby_map_0225E29C(param1, v0->cosmeticID, 1);
         {
             BOOL v14;
 
@@ -877,13 +877,13 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
             }
         }
         wifi_lobby_map_0225DF8C(param1, v4);
-        v0->unk_00 = 18;
+        v0->nextState = 18;
         wifi_lobby_map_02262E88(param0, 21);
         break;
     case 17:
         v4 = wifi_lobby_map_0225E20C(param1, 1, 2);
         wifi_lobby_map_0225DF8C(param1, v4);
-        v0->unk_00 = 22;
+        v0->nextState = 22;
         wifi_lobby_map_02262E88(param0, 21);
         break;
     case 18:
@@ -896,35 +896,35 @@ static BOOL wifi_lobby_map_02263414(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         v4 = wifi_lobby_map_0225E20C(param1, 1, 4);
         wifi_lobby_map_0225DF8C(param1, v4);
 
-        v0->unk_00 = 9;
+        v0->nextState = 9;
         wifi_lobby_map_02262E88(param0, 21);
 
-        WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->unk_28, v0->unk_2A);
+        WiFiPlazaLobby_State_SetPokemonTypes(v3, v0->type1, v0->type2);
         wifi_lobby_map_0225E328(param1, param2, 0);
         break;
     case 19:
-        wifi_lobby_map_0225E30C(param1, 0, v0->unk_28);
+        wifi_lobby_map_0225E30C(param1, 0, v0->type1);
         v4 = wifi_lobby_map_0225E20C(param1, 1, 12);
 
         wifi_lobby_map_0225DF8C(param1, v4);
-        v0->unk_00 = 17;
+        v0->nextState = 17;
 
         wifi_lobby_map_02262E88(param0, 21);
         break;
     case 20:
-        wifi_lobby_map_0225E30C(param1, 0, v0->unk_28);
-        wifi_lobby_map_0225E30C(param1, 1, v0->unk_2A);
+        wifi_lobby_map_0225E30C(param1, 0, v0->type1);
+        wifi_lobby_map_0225E30C(param1, 1, v0->type2);
 
         v4 = wifi_lobby_map_0225E20C(param1, 1, 11);
         wifi_lobby_map_0225DF8C(param1, v4);
 
-        v0->unk_00 = 17;
+        v0->nextState = 17;
         wifi_lobby_map_02262E88(param0, 21);
         break;
 
     case 21:
         if (wifi_lobby_map_0225DFAC(param1) == 1) {
-            wifi_lobby_map_02262E88(param0, v0->unk_00);
+            wifi_lobby_map_02262E88(param0, v0->nextState);
         }
         break;
     case 22:
@@ -959,7 +959,7 @@ static BOOL wifi_lobby_map_02263910(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0:
-        wifi_lobby_map_02263230(param1, param2, v2->unk_00, v2->unk_02, 1);
+        wifi_lobby_map_02263230(param1, param2, v2->spawnX, v2->spawnY, 1);
 
         if (WiFiPlazaLobby_Time_HasWifiError() == 0) {
             WiFiPlazaLobby_Network_LeaveSubChannel();
@@ -979,7 +979,7 @@ static BOOL wifi_lobby_map_02263910(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
         if (wifi_lobby_map_0225DF30(param1) == 0) {
             wifi_lobby_map_02262E8C(param0);
-            wifi_lobby_map_0225CDAC(v1, v0, 2, v2->unk_04);
+            wifi_lobby_map_0225CDAC(v1, v0, 2, v2->direction);
         }
         break;
     case 2: {
@@ -1000,7 +1000,7 @@ static BOOL wifi_lobby_map_02263910(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
     case 3: {
         String *v5;
 
-        wifi_lobby_map_0225E27C(param1, v2->unk_08, 0);
+        wifi_lobby_map_0225E27C(param1, v2->venue, 0);
 
         v5 = wifi_lobby_map_0225E20C(param1, 0, 21);
 
@@ -1047,7 +1047,7 @@ static BOOL wifi_lobby_map_02263A58(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0: {
-        wifi_lobby_map_02263230(param1, param2, v3->unk_00, v3->unk_02, 1);
+        wifi_lobby_map_02263230(param1, param2, v3->spawnX, v3->spawnY, 1);
         wifi_lobby_map_02262E8C(param0);
         wifi_lobby_map_02262EC0(v2, param2, &Unk_wifi_lobby_map_0226DA00, NULL);
         WiFiPlazaLobby_State_SetBGMSuppressed(v4, 0);
@@ -1062,7 +1062,7 @@ static BOOL wifi_lobby_map_02263A58(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
         if (wifi_lobby_map_0225DF30(param1) == 0) {
             wifi_lobby_map_02262E8C(param0);
-            wifi_lobby_map_0225CDAC(v1, v0, 2, v5->unk_04);
+            wifi_lobby_map_0225CDAC(v1, v0, 2, v5->direction);
         }
     } break;
     case 2: {
@@ -1083,7 +1083,7 @@ static BOOL wifi_lobby_map_02263A58(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
     case 3: {
         String *v7;
 
-        wifi_lobby_map_0225E27C(param1, v3->unk_08, 0);
+        wifi_lobby_map_0225E27C(param1, v3->venue, 0);
         v7 = wifi_lobby_map_0225E20C(param1, 0, 8);
         wifi_lobby_map_0225DF8C(param1, v7);
         wifi_lobby_map_02262E8C(param0);
@@ -1123,7 +1123,7 @@ static BOOL wifi_lobby_map_02263BA4(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0:
-        wifi_lobby_map_02263230(param1, param2, v2->unk_00, v2->unk_02, 1);
+        wifi_lobby_map_02263230(param1, param2, v2->spawnX, v2->spawnY, 1);
         WiFiPlazaLobby_State_SetBGMVolumeDucked(v3, 0);
         wifi_lobby_map_02262E8C(param0);
         break;
@@ -1132,7 +1132,7 @@ static BOOL wifi_lobby_map_02263BA4(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
         if (wifi_lobby_map_0225DF30(param1) == 0) {
             wifi_lobby_map_02262E8C(param0);
-            wifi_lobby_map_0225CDAC(v1, v0, 2, v2->unk_04);
+            wifi_lobby_map_0225CDAC(v1, v0, 2, v2->direction);
         }
         break;
     case 2: {
@@ -1584,34 +1584,34 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
             switch (v5) {
             case WiFiPlazaLobbyNetworkSubChannelKind_00:
-                v4->unk_08 = WiFiPlazaLobbyActivity_03;
+                v4->activity = WiFiPlazaLobbyActivity_03;
                 break;
             case WiFiPlazaLobbyNetworkSubChannelKind_01:
-                v4->unk_08 = WiFiPlazaLobbyActivity_04;
+                v4->activity = WiFiPlazaLobbyActivity_04;
                 break;
             case WiFiPlazaLobbyNetworkSubChannelKind_02:
-                v4->unk_08 = WiFiPlazaLobbyActivity_05;
+                v4->activity = WiFiPlazaLobbyActivity_05;
                 break;
             case WiFiPlazaLobbyNetworkSubChannelKind_03:
-                v4->unk_08 = WiFiPlazaLobbyActivity_06;
+                v4->activity = WiFiPlazaLobbyActivity_06;
                 break;
             default:
                 GF_ASSERT(FALSE);
-                v4->unk_08 = WiFiPlazaLobbyActivity_05;
+                v4->activity = WiFiPlazaLobbyActivity_05;
                 break;
             }
         }
 
         if (WiFiPlazaLobby_State_IsLobbyClosed(v2) == 1) {
-            v4->unk_04 = 22;
-            v4->unk_06 = 0;
+            v4->messageID = 22;
+            v4->flag = 0;
             wifi_lobby_map_02262E88(param0, 5);
             break;
         }
 
         if (WiFiPlazaLobby_State_CheckNetworkEvent(v2) == 1) {
-            v4->unk_04 = 72;
-            v4->unk_06 = 1;
+            v4->messageID = 72;
+            v4->flag = 1;
             wifi_lobby_map_02262E88(param0, 5);
             break;
         }
@@ -1623,8 +1623,8 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
             v7 = wifi_lobby_map_02264B64(v3);
 
             if (WiFiPlazaLobby_Network_HasSubChannelSpace(v7) == 0) {
-                v4->unk_04 = 20;
-                v4->unk_06 = 0;
+                v4->messageID = 20;
+                v4->flag = 0;
                 wifi_lobby_map_02262E88(param0, 3);
                 break;
             }
@@ -1654,7 +1654,7 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
                 v15 = wifi_lobby_map_0225DEE8(param1);
                 v9 = WiFiPlazaLobby_State_GetSecondaryMemberCount(v15);
 
-                if ((v4->unk_08 == WiFiPlazaLobbyActivity_05) || (v4->unk_08 == WiFiPlazaLobbyActivity_06)) {
+                if ((v4->activity == WiFiPlazaLobbyActivity_05) || (v4->activity == WiFiPlazaLobbyActivity_06)) {
                     v14 = 0;
 
                     for (v11 = 0; v11 < 4; v11++) {
@@ -1672,11 +1672,11 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
                     v12[0] = param2;
                 }
 
-                WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v15, v4->unk_08, v9, v12[0], v12[1], v12[2], v12[3], 0);
+                WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v15, v4->activity, v9, v12[0], v12[1], v12[2], v12[3], 0);
             }
         } else if (v8 == WiFiPlazaLobbyNetworkSubChannelJoinState_02) {
-            v4->unk_04 = 20;
-            v4->unk_06 = 0;
+            v4->messageID = 20;
+            v4->flag = 0;
             wifi_lobby_map_02262E88(param0, 3);
         }
     } break;
@@ -1692,9 +1692,9 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         wifi_lobby_map_0225DF38(param1, v16);
 
         WiFiPlazaLobby_State_SetCurrentVenue(wifi_lobby_map_0225DEE8(param1), v17);
-        WiFiPlazaLobby_State_RecordMinigameJournal(v2, v4->unk_08);
+        WiFiPlazaLobby_State_RecordMinigameJournal(v2, v4->activity);
 
-        switch (v4->unk_08) {
+        switch (v4->activity) {
         case WiFiPlazaLobbyActivity_03:
         case WiFiPlazaLobbyActivity_04:
             v18 = 5;
@@ -1722,11 +1722,11 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
             v20 = wifi_lobby_map_0225DEEC(param1);
             v19 = wifi_lobby_map_0225CD34(v1);
 
-            v20->unk_06 = 1;
-            v20->unk_00 = (v19.x) / 16;
-            v20->unk_02 = (v19.y) / 16;
-            v20->unk_04 = v21;
-            v20->unk_08 = v4->unk_08;
+            v20->taskType = 1;
+            v20->spawnX = (v19.x) / 16;
+            v20->spawnY = (v19.y) / 16;
+            v20->direction = v21;
+            v20->venue = v4->activity;
         }
 
         wifi_lobby_map_02262E64(param0);
@@ -1766,7 +1766,7 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         v24 = wifi_lobby_map_0225CE38(v1);
 
         if (v24 == 1) {
-            v4->unk_00 = 8;
+            v4->nextState = 8;
             wifi_lobby_map_02262E88(param0, 7);
         }
     } break;
@@ -1785,18 +1785,18 @@ static BOOL wifi_lobby_map_02264324(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         v26 = wifi_lobby_map_0225CD60(v1, 5);
 
         if (v26 == 0) {
-            v4->unk_00 = 8;
+            v4->nextState = 8;
             wifi_lobby_map_02262E88(param0, 7);
         }
     } break;
     case 7:
-        v4->unk_00--;
+        v4->nextState--;
 
-        if (v4->unk_00 <= 0) {
+        if (v4->nextState <= 0) {
             String *v27;
 
-            wifi_lobby_map_0225E27C(param1, v4->unk_08, 0);
-            v27 = wifi_lobby_map_0225E20C(param1, v4->unk_06, v4->unk_04);
+            wifi_lobby_map_0225E27C(param1, v4->activity, 0);
+            v27 = wifi_lobby_map_0225E20C(param1, v4->flag, v4->messageID);
             wifi_lobby_map_0225DF8C(param1, v27);
             wifi_lobby_map_02262E8C(param0);
         }
@@ -1845,7 +1845,7 @@ static BOOL wifi_lobby_map_022646C8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         wifi_lobby_map_0225CDEC(v2, v3, 0);
         wifi_lobby_map_02262E8C(param0);
 
-        v0->unk_00.unk_00 = 0;
+        v0->substate.state = 0;
         {
             u32 v5;
 
@@ -1853,19 +1853,19 @@ static BOOL wifi_lobby_map_022646C8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
             switch (v5) {
             case 30:
-                v0->unk_00.unk_01 = WiFiPlazaLobbyNetworkGameKind_00;
-                v0->unk_00.unk_02 = WiFiPlazaLobbyActivity_00;
-                v0->unk_00.unk_03 = 2;
+                v0->substate.network = WiFiPlazaLobbyNetworkGameKind_00;
+                v0->substate.activity = WiFiPlazaLobbyActivity_00;
+                v0->substate.venue = 2;
                 break;
             case 31:
-                v0->unk_00.unk_01 = WiFiPlazaLobbyNetworkGameKind_01;
-                v0->unk_00.unk_02 = WiFiPlazaLobbyActivity_01;
-                v0->unk_00.unk_03 = 3;
+                v0->substate.network = WiFiPlazaLobbyNetworkGameKind_01;
+                v0->substate.activity = WiFiPlazaLobbyActivity_01;
+                v0->substate.venue = 3;
                 break;
             case 32:
-                v0->unk_00.unk_01 = WiFiPlazaLobbyNetworkGameKind_02;
-                v0->unk_00.unk_02 = WiFiPlazaLobbyActivity_02;
-                v0->unk_00.unk_03 = 4;
+                v0->substate.network = WiFiPlazaLobbyNetworkGameKind_02;
+                v0->substate.activity = WiFiPlazaLobbyActivity_02;
+                v0->substate.venue = 4;
                 break;
             default:
                 GF_ASSERT(FALSE);
@@ -1875,10 +1875,10 @@ static BOOL wifi_lobby_map_022646C8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
             WiFiPlazaLobby_State_SetCurrentVenue(wifi_lobby_map_0225DEE8(param1), 12);
         }
 
-        wifi_lobby_map_02262EC0(v1, param2, &Unk_wifi_lobby_map_0226DA20, &v0->unk_00);
+        wifi_lobby_map_02262EC0(v1, param2, &Unk_wifi_lobby_map_0226DA20, &v0->substate);
         break;
     case 1:
-        if (v0->unk_00.unk_00 == 8) {
+        if (v0->substate.state == 8) {
             wifi_lobby_map_02262E88(param0, 2);
         } else {
             wifi_lobby_map_02262E88(param0, 3);
@@ -1910,7 +1910,7 @@ static BOOL wifi_lobby_map_022646C8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         wifi_lobby_map_0225DF34(param1, 1);
         wifi_lobby_map_0225DF38(param1, v6);
 
-        WiFiPlazaLobby_State_RecordMinigameJournal(v4, v0->unk_00.unk_02);
+        WiFiPlazaLobby_State_RecordMinigameJournal(v4, v0->substate.activity);
         WiFiPlazaLobby_State_IncrementMinigameRecord(v4);
         WiFiPlazaLobby_State_MarkActivityDone(v4, v9);
 
@@ -1924,11 +1924,11 @@ static BOOL wifi_lobby_map_022646C8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
             v11 = wifi_lobby_map_0225DEEC(param1);
             v10 = wifi_lobby_map_0225CD34(v3);
 
-            v11->unk_06 = 2;
-            v11->unk_00 = (v10.x) / 16;
-            v11->unk_02 = (v10.y) / 16;
-            v11->unk_04 = v12;
-            v11->unk_08 = v0->unk_00.unk_02;
+            v11->taskType = 2;
+            v11->spawnX = (v10.x) / 16;
+            v11->spawnY = (v10.y) / 16;
+            v11->direction = v12;
+            v11->venue = v0->substate.activity;
         }
 
         WiFiPlazaLobby_State_SetBGMSuppressed(wifi_lobby_map_0225DEE8(param1), 1);
@@ -1960,16 +1960,16 @@ static BOOL wifi_lobby_map_022646C8(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         u32 v17;
         BOOL v18 = 1;
 
-        switch (v0->unk_00.unk_00) {
+        switch (v0->substate.state) {
         case 0:
-            wifi_lobby_map_0225E27C(param1, v0->unk_00.unk_02, 0);
+            wifi_lobby_map_0225E27C(param1, v0->substate.activity, 0);
             v17 = 4;
             break;
         case 1:
             v17 = 5;
             break;
         case 2:
-            wifi_lobby_map_0225E27C(param1, v0->unk_00.unk_02, 0);
+            wifi_lobby_map_0225E27C(param1, v0->substate.activity, 0);
             v17 = 6;
             break;
         case 3:
@@ -2087,11 +2087,11 @@ static BOOL wifi_lobby_map_02264974(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
             v9 = wifi_lobby_map_0225DEEC(param1);
             v8 = wifi_lobby_map_0225CD34(v3);
 
-            v9->unk_06 = 3;
-            v9->unk_00 = (v8.x) / 16;
-            v9->unk_02 = (v8.y) / 16;
-            v9->unk_04 = v10;
-            v9->unk_08 = 0;
+            v9->taskType = 3;
+            v9->spawnX = (v8.x) / 16;
+            v9->spawnY = (v8.y) / 16;
+            v9->direction = v10;
+            v9->venue = 0;
         }
 
         wifi_lobby_map_02262E64(param0);
@@ -2351,7 +2351,7 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         u32 v7;
 
         v0 = wifi_lobby_map_02262E3C(param0, sizeof(WiFiLobbyMapCameraFollowTaskState));
-        v0->unk_0C = wifi_lobby_map_0225CC70(v2, param2);
+        v0->actor = wifi_lobby_map_0225CC70(v2, param2);
 
         v7 = wifi_lobby_map_0225DF40(param1);
 
@@ -2381,9 +2381,9 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
                 v0->unk_04 = 10;
                 wifi_lobby_map_02262E88(param0, 6);
             } else {
-                v0->unk_00 = WiFiPlazaLobby_State_AllocateFloatSlot(v4, param2, v0->unk_06);
+                v0->floatSlot = WiFiPlazaLobby_State_AllocateFloatSlot(v4, param2, v0->unk_06);
 
-                if (v0->unk_00 != 0xffffffff) {
+                if (v0->floatSlot != 0xffffffff) {
                     wifi_lobby_map_02262E88(param0, 2);
                     v6 = wifi_lobby_map_0225E20C(param1, 0, 31);
                     wifi_lobby_map_0225DF9C(param1, v6);
@@ -2407,13 +2407,13 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
                 wifi_lobby_map_0225DFCC(param1);
                 WiFiPlazaLobby_State_SendFloatJoinEvent(v4);
 
-                v0->unk_08 = 0;
+                v0->timer = 0;
 
                 WiFiPlazaLobby_State_SetCurrentVenue(wifi_lobby_map_0225DEE8(param1), 10);
                 wifi_lobby_map_0225DF44(param1);
                 wifi_lobby_map_02260B3C(v3);
-                wifi_lobby_map_0225D030(v0->unk_0C, 0);
-                wifi_lobby_map_0225D06C(v0->unk_0C, 1);
+                wifi_lobby_map_0225D030(v0->actor, 0);
+                wifi_lobby_map_0225D06C(v0->actor, 1);
                 Sound_PlayEffect(SEQ_SE_PL_DANSA5_sseq);
                 wifi_lobby_map_0225E410(param1);
 
@@ -2428,12 +2428,12 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         v5 = wifi_lobby_map_02265144(v0, v1, v3);
 
         if (v5 == 1) {
-            wifi_lobby_map_0225D06C(v0->unk_0C, 0);
-            wifi_lobby_map_0225D060(v0->unk_0C, 2);
-            wifi_lobby_map_0225D0B4(v0->unk_0C, 1 << 3);
+            wifi_lobby_map_0225D06C(v0->actor, 0);
+            wifi_lobby_map_0225D060(v0->actor, 2);
+            wifi_lobby_map_0225D0B4(v0->actor, 1 << 3);
             wifi_lobby_map_02262E88(param0, 4);
 
-            v0->unk_08 = 0;
+            v0->timer = 0;
         }
         break;
     case 4:
@@ -2452,20 +2452,20 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
         wifi_lobby_map_02265344(v0, v1, param1);
         wifi_lobby_map_022650E4(v0, v3);
-        wifi_lobby_map_0225D054(v0->unk_0C, &v8);
+        wifi_lobby_map_0225D054(v0->actor, &v8);
         wifi_lobby_map_02265370(v0, v1, param1);
 
         if (v8.x < (FX32_CONST(96))) {
-            v0->unk_0B = 0;
+            v0->frame = 0;
             wifi_lobby_map_02262E88(param0, 13);
         }
     } break;
     case 6:
-        wifi_lobby_map_0225CDAC(v2, v0->unk_0C, 2, 1);
+        wifi_lobby_map_0225CDAC(v2, v0->actor, 2, 1);
         wifi_lobby_map_02262E88(param0, 7);
         break;
     case 7:
-        if (wifi_lobby_map_0225CD60(v0->unk_0C, 5) == 0) {
+        if (wifi_lobby_map_0225CD60(v0->actor, 5) == 0) {
             wifi_lobby_map_02262E88(param0, v0->unk_04);
         }
         break;
@@ -2499,9 +2499,9 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
     case 13:
         wifi_lobby_map_02265344(v0, v1, param1);
         wifi_lobby_map_02265370(v0, v1, param1);
-        v0->unk_0B++;
+        v0->frame++;
 
-        if (v0->unk_0B > 120) {
+        if (v0->frame > 120) {
             wifi_lobby_map_0225DF34(param1, 1);
             wifi_lobby_map_0225DF38(param1, 0);
             wifi_lobby_map_0225DFEC(param1);
@@ -2519,7 +2519,7 @@ static BOOL wifi_lobby_map_02264D38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         v9 = wifi_lobby_map_0225DF10(param1);
 
         wifi_lobby_map_0225DFEC(param1);
-        wifi_lobby_map_0225CDEC(v2, v0->unk_0C, 1);
+        wifi_lobby_map_0225CDEC(v2, v0->actor, 1);
         wifi_lobby_map_02262E64(param0);
         wifi_lobby_map_02262E94(v9, param2, &Unk_wifi_lobby_map_0226D9D0, NULL);
     } break;
@@ -2532,7 +2532,7 @@ static void wifi_lobby_map_022650E4(WiFiLobbyMapCameraFollowTaskState *param0, W
 {
     VecFx32 v0;
 
-    wifi_lobby_map_0225D054(param0->unk_0C, &v0);
+    wifi_lobby_map_0225D054(param0->actor, &v0);
     wifi_lobby_map_02260B18(param1, v0.x, v0.y, v0.z);
 }
 
@@ -2542,9 +2542,9 @@ static BOOL wifi_lobby_map_02265104(const WiFiLobbyMapCameraFollowTaskState *par
     VecFx32 v1;
     u32 v2, v3;
 
-    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v3);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->floatSlot, &v2, &v3);
     wifi_lobby_map_02262318(param1, v2, v3, &v1);
-    wifi_lobby_map_0225D054(param0->unk_0C, &v0);
+    wifi_lobby_map_0225D054(param0->actor, &v0);
 
     if ((v0.x + (FX32_CONST(16))) >= v1.x) {
         return 1;
@@ -2563,26 +2563,26 @@ static BOOL wifi_lobby_map_02265144(WiFiLobbyMapCameraFollowTaskState *param0, W
     u16 v6;
     BOOL v7;
 
-    param0->unk_08++;
+    param0->timer++;
 
-    if (param0->unk_08 < 24) {
+    if (param0->timer < 24) {
         v7 = 0;
     } else {
-        param0->unk_08 = 24;
+        param0->timer = 24;
         v7 = 1;
     }
 
-    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v3);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->floatSlot, &v2, &v3);
     wifi_lobby_map_02262318(param1, v2, v3, &v1);
 
-    v4 = wifi_lobby_map_0225CD34(param0->unk_0C);
+    v4 = wifi_lobby_map_0225CD34(param0->actor);
     wifi_lobby_map_0225C700(&v4, &v0);
 
     v5.x = 0;
-    v5.y = FX_Div(FX_Mul(FX32_CONST(param0->unk_08), (v1.y - v0.y)), FX32_CONST(24));
+    v5.y = FX_Div(FX_Mul(FX32_CONST(param0->timer), (v1.y - v0.y)), FX32_CONST(24));
 
-    if (param0->unk_08 >= 4) {
-        v5.z = FX_Div(FX_Mul(FX32_CONST(param0->unk_08 - 4), (v1.z - v0.z)), FX32_CONST(20));
+    if (param0->timer >= 4) {
+        v5.z = FX_Div(FX_Mul(FX32_CONST(param0->timer - 4), (v1.z - v0.z)), FX32_CONST(20));
     } else {
         v5.z = 0;
     }
@@ -2590,10 +2590,10 @@ static BOOL wifi_lobby_map_02265144(WiFiLobbyMapCameraFollowTaskState *param0, W
     VEC_Add(&v5, &v0, &v5);
     wifi_lobby_map_02260B18(param2, v5.x, v5.y, v5.z);
 
-    v6 = (param0->unk_08 * 0x7fff) / 24;
+    v6 = (param0->timer * 0x7fff) / 24;
     v5.y += FX_Mul(FX_SinIdx(v6), (FX32_CONST(16)));
 
-    wifi_lobby_map_0225D048(param0->unk_0C, &v5);
+    wifi_lobby_map_0225D048(param0->actor, &v5);
 
     return v7;
 }
@@ -2606,22 +2606,22 @@ static BOOL wifi_lobby_map_022652BC(WiFiLobbyMapCameraFollowTaskState *param0, W
     fx32 v3;
     VecFx32 v4;
 
-    param0->unk_08++;
+    param0->timer++;
 
-    if (param0->unk_08 < 16) {
+    if (param0->timer < 16) {
         v1 = 0;
     } else {
-        param0->unk_08 = 16;
+        param0->timer = 16;
         v1 = 1;
     }
 
-    v0 = param0->unk_08 % 8;
+    v0 = param0->timer % 8;
     v2 = (v0 * 0x7fff) / 8;
     v3 = FX_Mul(FX_SinIdx(v2), (FX32_CONST(3)));
 
-    wifi_lobby_map_0225D054(param0->unk_0C, &v4);
+    wifi_lobby_map_0225D054(param0->actor, &v4);
     v4.y += v3;
-    wifi_lobby_map_0225D048(param0->unk_0C, &v4);
+    wifi_lobby_map_0225D048(param0->actor, &v4);
 
     return v1;
 }
@@ -2632,9 +2632,9 @@ static void wifi_lobby_map_02265344(WiFiLobbyMapCameraFollowTaskState *param0, W
     u32 v1;
     u32 v2;
 
-    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v1);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->floatSlot, &v2, &v1);
     wifi_lobby_map_02262318(param1, v2, v1, &v0);
-    wifi_lobby_map_0225D048(param0->unk_0C, &v0);
+    wifi_lobby_map_0225D048(param0->actor, &v0);
 }
 
 static void wifi_lobby_map_02265370(WiFiLobbyMapCameraFollowTaskState *param0, WiFiLobbyMapObjectManager *param1, WiFiLobbyMapApp *param2)
@@ -2643,23 +2643,23 @@ static void wifi_lobby_map_02265370(WiFiLobbyMapCameraFollowTaskState *param0, W
     fx32 v1;
     u32 v2, v3;
 
-    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->unk_00, &v2, &v3);
+    WiFiPlazaLobby_State_FloatSlotToRowCol(param0->floatSlot, &v2, &v3);
 
     if (wifi_lobby_map_0225E420(param2, v2) == 1) {
-        if (wifi_lobby_map_02263334(&param0->unk_10) == 0) {
-            wifi_lobby_map_02263270(&param0->unk_10);
+        if (wifi_lobby_map_02263334(&param0->cameraAnim) == 0) {
+            wifi_lobby_map_02263270(&param0->cameraAnim);
         }
     } else {
-        if (wifi_lobby_map_02263334(&param0->unk_10) == 1) {
-            wifi_lobby_map_0226332C(&param0->unk_10);
+        if (wifi_lobby_map_02263334(&param0->cameraAnim) == 1) {
+            wifi_lobby_map_0226332C(&param0->cameraAnim);
         }
     }
 
-    v1 = wifi_lobby_map_02263290(&param0->unk_10);
+    v1 = wifi_lobby_map_02263290(&param0->cameraAnim);
 
-    wifi_lobby_map_0225D054(param0->unk_0C, &v0);
+    wifi_lobby_map_0225D054(param0->actor, &v0);
     v0.y += v1;
-    wifi_lobby_map_0225D048(param0->unk_0C, &v0);
+    wifi_lobby_map_0225D048(param0->actor, &v0);
 }
 
 static void wifi_lobby_map_022653DC(WiFiLobbyMapStatusTaskState *param0, WiFiLobbyMapApp *param1)
@@ -2678,8 +2678,8 @@ static void wifi_lobby_map_022653DC(WiFiLobbyMapStatusTaskState *param0, WiFiLob
     v1 = wifi_lobby_map_0225E20C(param1, 1, 7);
     wifi_lobby_map_0225E044(param1, v1, 0);
 
-    param0->unk_08 = Unk_wifi_lobby_map_0226DA98;
-    param0->unk_08.choices = wifi_lobby_map_0225E054(param1);
+    param0->listTemplate = Unk_wifi_lobby_map_0226DA98;
+    param0->listTemplate.choices = wifi_lobby_map_0225E054(param1);
 }
 
 static void wifi_lobby_map_02265450(WiFiLobbyMapStatusTaskState *param0, WiFiLobbyMapApp *param1)
@@ -2915,36 +2915,36 @@ static BOOL wifi_lobby_map_02265840(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0: {
         v0 = wifi_lobby_map_02262E3C(param0, sizeof(WiFiLobbyMapBoardingTaskState));
-        v0->unk_00 = wifi_lobby_map_0225CC70(v1, param2);
+        v0->actor = wifi_lobby_map_0225CC70(v1, param2);
         v0->unk_04 = WiFiPlazaLobby_State_FindFloatSlotByUserID(v3, param2);
 
         GF_ASSERT(v0->unk_04 != 0xffffffff);
 
         WiFiPlazaLobby_State_FloatSlotToRowCol(v0->unk_04, &v0->unk_04, &v0->unk_08);
-        wifi_lobby_map_0225CDEC(v1, v0->unk_00, 3);
+        wifi_lobby_map_0225CDEC(v1, v0->actor, 3);
         wifi_lobby_map_02262E88(param0, 1);
     } break;
 
     case 1:
-        if (wifi_lobby_map_0225CE38(v0->unk_00)) {
+        if (wifi_lobby_map_0225CE38(v0->actor)) {
             {
                 VecFx32 v4;
 
                 wifi_lobby_map_02262318(v2, v0->unk_04, v0->unk_08, &v4);
-                v0->unk_10 = v4.x + (FX32_CONST(-16));
-                wifi_lobby_map_0225D054(v0->unk_00, &v4);
-                v0->unk_0C = v4.y;
-                v0->unk_14 = 0;
+                v0->targetX = v4.x + (FX32_CONST(-16));
+                wifi_lobby_map_0225D054(v0->actor, &v4);
+                v0->targetY = v4.y;
+                v0->frame = 0;
             }
 
             {
                 WiFi2DCharPosition v5 = { 0 };
-                wifi_lobby_map_0225CCB4(v0->unk_00, v5);
+                wifi_lobby_map_0225CCB4(v0->actor, v5);
             }
 
             Sound_PlayEffect(SEQ_SE_DP_TELE2_sseq);
 
-            wifi_lobby_map_0225D084(v0->unk_00, 1);
+            wifi_lobby_map_0225D084(v0->actor, 1);
             wifi_lobby_map_02262E88(param0, 2);
         }
         break;
@@ -2953,26 +2953,26 @@ static BOOL wifi_lobby_map_02265840(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         VecFx32 v7;
         BOOL v8 = 0;
 
-        v0->unk_14++;
+        v0->frame++;
 
-        if (v0->unk_14 >= 24) {
-            v0->unk_14 = 24;
+        if (v0->frame >= 24) {
+            v0->frame = 24;
             v8 = 1;
         }
 
         wifi_lobby_map_02262318(v2, v0->unk_04, v0->unk_08, &v6);
 
         v7.z = v6.z;
-        v7.x = v0->unk_10;
-        v7.y = FX_Div(FX_Mul(FX32_CONST(v0->unk_14), (v6.y - v0->unk_0C)), FX32_CONST(24));
-        v7.y += v0->unk_0C;
+        v7.x = v0->targetX;
+        v7.y = FX_Div(FX_Mul(FX32_CONST(v0->frame), (v6.y - v0->targetY)), FX32_CONST(24));
+        v7.y += v0->targetY;
 
-        wifi_lobby_map_0225D048(v0->unk_00, &v7);
+        wifi_lobby_map_0225D048(v0->actor, &v7);
 
         if (v8 == 1) {
-            wifi_lobby_map_0225D084(v0->unk_00, 0);
-            wifi_lobby_map_0225D0B4(v0->unk_00, 1 << 3);
-            wifi_lobby_map_0225D060(v0->unk_00, 2);
+            wifi_lobby_map_0225D084(v0->actor, 0);
+            wifi_lobby_map_0225D0B4(v0->actor, 1 << 3);
+            wifi_lobby_map_0225D060(v0->actor, 2);
             wifi_lobby_map_02262E88(param0, 3);
         }
     } break;
@@ -2982,26 +2982,26 @@ static BOOL wifi_lobby_map_02265840(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         fx32 v10;
 
         if (wifi_lobby_map_0225E420(param1, v0->unk_04) == 1) {
-            if (wifi_lobby_map_02263334(&v0->unk_18) == 0) {
-                wifi_lobby_map_02263270(&v0->unk_18);
+            if (wifi_lobby_map_02263334(&v0->cameraAnim) == 0) {
+                wifi_lobby_map_02263270(&v0->cameraAnim);
             }
         } else {
-            if (wifi_lobby_map_02263334(&v0->unk_18) == 1) {
-                wifi_lobby_map_0226332C(&v0->unk_18);
+            if (wifi_lobby_map_02263334(&v0->cameraAnim) == 1) {
+                wifi_lobby_map_0226332C(&v0->cameraAnim);
             }
         }
 
-        v10 = wifi_lobby_map_02263290(&v0->unk_18);
+        v10 = wifi_lobby_map_02263290(&v0->cameraAnim);
         wifi_lobby_map_02262318(v2, v0->unk_04, v0->unk_08, &v9);
         v9.y += v10;
-        wifi_lobby_map_0225D048(v0->unk_00, &v9);
+        wifi_lobby_map_0225D048(v0->actor, &v9);
 
         if (WiFiPlazaLobby_State_GetFloatState(v3, v0->unk_04) == 2) {
             wifi_lobby_map_02262E88(param0, 4);
         }
     } break;
     case 4:
-        wifi_lobby_map_0225CC54(v0->unk_00);
+        wifi_lobby_map_0225CC54(v0->actor);
         wifi_lobby_map_02262E64(param0);
 
         {
@@ -3032,7 +3032,7 @@ static BOOL wifi_lobby_map_02265A84(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
     switch (wifi_lobby_map_02262E84(param0)) {
     case 0:
-        if (v0->unk_04 == 0) {
+        if (v0->activity == 0) {
             wifi_lobby_map_02262E8C(param0);
         } else {
             wifi_lobby_map_02262E88(param0, 3);
@@ -3086,7 +3086,7 @@ static BOOL wifi_lobby_map_02265A84(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
         const WiFiPlazaProfile *v9;
         BOOL v10 = 0;
 
-        if ((v0->unk_03 == 1) && (WiFiPlazaLobby_State_IsChatPending(v4) == 0)) {
+        if ((v0->chatPending == 1) && (WiFiPlazaLobby_State_IsChatPending(v4) == 0)) {
             u32 v11;
             u32 v12;
             u32 v13;
@@ -3112,7 +3112,7 @@ static BOOL wifi_lobby_map_02265A84(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
                 break;
             }
 
-            if (v0->unk_03 == 1) {
+            if (v0->chatPending == 1) {
                 if (WiFiPlazaLobby_State_IsChatActive(v4) == 0) {
                     v10 = 1;
                     break;
@@ -3124,7 +3124,7 @@ static BOOL wifi_lobby_map_02265A84(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
                 v14 = WiFiPlazaLobby_State_GetVenueIndex(v8);
 
-                if (v14 != v0->unk_02) {
+                if (v14 != v0->slot) {
                     v10 = 1;
                     break;
                 }
@@ -3147,9 +3147,9 @@ static BOOL wifi_lobby_map_02265A84(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *p
 
         v15 = wifi_lobby_map_0225CCAC(v1);
 
-        if (wifi_lobby_map_0225CEDC(v15, v0->unk_00, v0->unk_01) == 0) {
-            v16.x = (v0->unk_00) * 16;
-            v16.y = (v0->unk_01) * 16;
+        if (wifi_lobby_map_0225CEDC(v15, v0->tileX, v0->tileY) == 0) {
+            v16.x = (v0->tileX) * 16;
+            v16.y = (v0->tileY) * 16;
 
             wifi_lobby_map_0225CCB4(v2, v16);
             wifi_lobby_map_0225D03C(v2, &v16);
@@ -3276,11 +3276,11 @@ static BOOL wifi_lobby_map_02265CCC(WiFiLobbyMapPlayerJoinState *param0, WiFiPla
 
         wifi_lobby_map_0225CD04(param3, v2, v1);
 
-        param0->unk_00 = (v8.x) / 16;
-        param0->unk_01 = (v8.y) / 16;
-        param0->unk_02 = param4;
-        param0->unk_03 = v6;
-        param0->unk_04 = param5;
+        param0->tileX = (v8.x) / 16;
+        param0->tileY = (v8.y) / 16;
+        param0->slot = param4;
+        param0->chatPending = v6;
+        param0->activity = param5;
     }
 
     return 1;

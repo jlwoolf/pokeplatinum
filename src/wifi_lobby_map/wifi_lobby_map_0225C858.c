@@ -12,7 +12,7 @@
 #include "heap.h"
 
 typedef struct WiFiLobbyMapGrid_t {
-    WiFi2DCharGrid *unk_00;
+    WiFi2DCharGrid *grid;
 } WiFiLobbyMapGrid;
 
 WiFiLobbyMapGrid *wifi_lobby_map_0225C858(enum HeapID heapID)
@@ -21,11 +21,11 @@ WiFiLobbyMapGrid *wifi_lobby_map_0225C858(enum HeapID heapID)
     void *v1;
 
     v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapGrid));
-    v0->unk_00 = WiFi2DCharGrid_New(35, 42, heapID);
+    v0->grid = WiFi2DCharGrid_New(35, 42, heapID);
 
     v1 = LoadMemberFromNARC(NARC_INDEX_APPLICATION__WIFI_LOBBY__MAP_CONV__WFLBY_MAP, 0, 0, heapID, 1);
 
-    WiFi2DCharGrid_SetTiles(v0->unk_00, v1);
+    WiFi2DCharGrid_SetTiles(v0->grid, v1);
     Heap_Free(v1);
 
     return v0;
@@ -33,7 +33,7 @@ WiFiLobbyMapGrid *wifi_lobby_map_0225C858(enum HeapID heapID)
 
 void wifi_lobby_map_0225C894(WiFiLobbyMapGrid *param0)
 {
-    WiFi2DCharGrid_Free(param0->unk_00);
+    WiFi2DCharGrid_Free(param0->grid);
     Heap_Free(param0);
 }
 
@@ -44,18 +44,18 @@ u16 wifi_lobby_map_0225C8A8(const WiFiLobbyMapGrid *param0)
 
 BOOL wifi_lobby_map_0225C8AC(const WiFiLobbyMapGrid *param0, u16 param1, u16 param2)
 {
-    return WiFi2DCharGrid_IsTileBlocked(param0->unk_00, param1, param2);
+    return WiFi2DCharGrid_IsTileBlocked(param0->grid, param1, param2);
 }
 
 u32 wifi_lobby_map_0225C8B8(const WiFiLobbyMapGrid *param0, u16 param1, u16 param2)
 {
-    u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_00, param1, param2);
+    u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->grid, param1, param2);
     return v0 >> 15;
 }
 
 u32 wifi_lobby_map_0225C8C4(const WiFiLobbyMapGrid *param0, u16 param1, u16 param2)
 {
-    u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->unk_00, param1, param2);
+    u32 v0 = WiFi2DCharGrid_GetTileFlags(param0->grid, param1, param2);
     v0 &= 0x7fff;
 
     return v0;
@@ -189,5 +189,5 @@ BOOL wifi_lobby_map_0225C990(u32 param0)
 
 const WiFi2DCharGrid *wifi_lobby_map_0225C9B0(const WiFiLobbyMapGrid *param0)
 {
-    return param0->unk_00;
+    return param0->grid;
 }

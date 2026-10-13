@@ -22,13 +22,13 @@
 #include "heap.h"
 
 typedef struct WiFiLobbyMapTimeEventManager_t {
-    WiFiLobbyMapApp *unk_00;
-    WiFiPlazaLobbyState *unk_04;
-    WiFiLobbyMapObjectManager *unk_08;
-    WiFiLobbyMapActorManager *unk_0C;
-    WiFiLobbyMapLighting *unk_10;
-    WiFiLobbyMapFloatManager *unk_14;
-    WiFiLobbyMapFireworks *unk_18;
+    WiFiLobbyMapApp *app;
+    WiFiPlazaLobbyState *lobbyState;
+    WiFiLobbyMapObjectManager *objectManager;
+    WiFiLobbyMapActorManager *actorManager;
+    WiFiLobbyMapLighting *lighting;
+    WiFiLobbyMapFloatManager *floatManager;
+    WiFiLobbyMapFireworks *fireworks;
 } WiFiLobbyMapTimeEventManager;
 
 static u32 wifi_lobby_map_0226C81C(PPW_LOBBY_TIME_EVENT param0);
@@ -45,45 +45,45 @@ WiFiLobbyMapTimeEventManager *wifi_lobby_map_0226C60C(u32 heapID, WiFiLobbyMapAp
     v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapTimeEventManager));
     memset(v0, 0, sizeof(WiFiLobbyMapTimeEventManager));
 
-    v0->unk_00 = param1;
-    v0->unk_04 = wifi_lobby_map_0225DEE8(param1);
-    v0->unk_08 = wifi_lobby_map_0225DEF8(param1);
-    v0->unk_0C = wifi_lobby_map_0225DEF0(param1);
+    v0->app = param1;
+    v0->lobbyState = wifi_lobby_map_0225DEE8(param1);
+    v0->objectManager = wifi_lobby_map_0225DEF8(param1);
+    v0->actorManager = wifi_lobby_map_0225DEF0(param1);
 
-    v1 = wifi_lobby_map_0226C81C(WiFiPlazaLobby_State_GetNeonATimeEvent(v0->unk_04));
-    v2 = wifi_lobby_map_0226C848(WiFiPlazaLobby_State_GetNeonBTimeEvent(v0->unk_04));
-    v3 = wifi_lobby_map_0226C87C(WiFiPlazaLobby_State_GetNeonCTimeEvent(v0->unk_04));
+    v1 = wifi_lobby_map_0226C81C(WiFiPlazaLobby_State_GetNeonATimeEvent(v0->lobbyState));
+    v2 = wifi_lobby_map_0226C848(WiFiPlazaLobby_State_GetNeonBTimeEvent(v0->lobbyState));
+    v3 = wifi_lobby_map_0226C87C(WiFiPlazaLobby_State_GetNeonCTimeEvent(v0->lobbyState));
 
-    v0->unk_10 = wifi_lobby_map_0226C338(heapID, v1, v2, v3);
-    v0->unk_14 = wifi_lobby_map_0226CE54(param1, heapID);
-    v0->unk_18 = wifi_lobby_map_0226C8B4(v0->unk_04, v0->unk_08, heapID);
+    v0->lighting = wifi_lobby_map_0226C338(heapID, v1, v2, v3);
+    v0->floatManager = wifi_lobby_map_0226CE54(param1, heapID);
+    v0->fireworks = wifi_lobby_map_0226C8B4(v0->lobbyState, v0->objectManager, heapID);
 
-    wifi_lobby_map_0225CAEC(v0->unk_0C, v1);
+    wifi_lobby_map_0225CAEC(v0->actorManager, v1);
 
-    v4 = WiFiPlazaLobby_State_GetFireworksState(v0->unk_04);
-    v5 = WiFiPlazaLobby_State_IsLobbyLocked(v0->unk_04);
-    v6 = WiFiPlazaLobby_State_IsParadeFinished(v0->unk_04);
-    v7 = WiFiPlazaLobby_State_IsNeonTransitionComplete(v0->unk_04);
-    v8 = WiFiPlazaLobby_State_IsLobbyClosed(v0->unk_04);
-    v9 = WiFiPlazaLobby_State_IsMinigameFinished(v0->unk_04);
+    v4 = WiFiPlazaLobby_State_GetFireworksState(v0->lobbyState);
+    v5 = WiFiPlazaLobby_State_IsLobbyLocked(v0->lobbyState);
+    v6 = WiFiPlazaLobby_State_IsParadeFinished(v0->lobbyState);
+    v7 = WiFiPlazaLobby_State_IsNeonTransitionComplete(v0->lobbyState);
+    v8 = WiFiPlazaLobby_State_IsLobbyClosed(v0->lobbyState);
+    v9 = WiFiPlazaLobby_State_IsMinigameFinished(v0->lobbyState);
 
     {
         if (v4 == 2) {
-            wifi_lobby_map_0226260C(v0->unk_08);
+            wifi_lobby_map_0226260C(v0->objectManager);
         }
     }
 
     {
         if (v4 != 1) {
             if ((v4 == 0) && (v7 == 1)) {
-                wifi_lobby_map_02262658(v0->unk_08, 3);
+                wifi_lobby_map_02262658(v0->objectManager, 3);
             }
         }
     }
 
     {
         if (v6 == 1) {
-            wifi_lobby_map_0226246C(v0->unk_08);
+            wifi_lobby_map_0226246C(v0->objectManager);
         }
     }
 
@@ -98,73 +98,73 @@ WiFiLobbyMapTimeEventManager *wifi_lobby_map_0226C60C(u32 heapID, WiFiLobbyMapAp
 
 void wifi_lobby_map_0226C6F8(WiFiLobbyMapTimeEventManager *param0)
 {
-    wifi_lobby_map_0226C914(param0->unk_18);
-    wifi_lobby_map_0226CF38(param0->unk_14);
-    wifi_lobby_map_0226C39C(param0->unk_10);
+    wifi_lobby_map_0226C914(param0->fireworks);
+    wifi_lobby_map_0226CF38(param0->floatManager);
+    wifi_lobby_map_0226C39C(param0->lighting);
 
     Heap_Free(param0);
 }
 
 void wifi_lobby_map_0226C718(WiFiLobbyMapTimeEventManager *param0)
 {
-    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->unk_04, 1)) {
+    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->lobbyState, 1)) {
         u32 v0;
 
-        v0 = wifi_lobby_map_0226C81C(WiFiPlazaLobby_State_GetNeonATimeEvent(param0->unk_04));
+        v0 = wifi_lobby_map_0226C81C(WiFiPlazaLobby_State_GetNeonATimeEvent(param0->lobbyState));
 
-        wifi_lobby_map_0226C430(param0->unk_10, v0);
-        wifi_lobby_map_0225CB08(param0->unk_0C, v0);
+        wifi_lobby_map_0226C430(param0->lighting, v0);
+        wifi_lobby_map_0225CB08(param0->actorManager, v0);
     }
 
-    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->unk_04, 2)) {
+    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->lobbyState, 2)) {
         u32 v1;
 
-        v1 = wifi_lobby_map_0226C848(WiFiPlazaLobby_State_GetNeonBTimeEvent(param0->unk_04));
-        wifi_lobby_map_0226C4A0(param0->unk_10, v1);
+        v1 = wifi_lobby_map_0226C848(WiFiPlazaLobby_State_GetNeonBTimeEvent(param0->lobbyState));
+        wifi_lobby_map_0226C4A0(param0->lighting, v1);
     }
 
-    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->unk_04, 3)) {
+    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->lobbyState, 3)) {
         u32 v2;
 
-        v2 = wifi_lobby_map_0226C87C(WiFiPlazaLobby_State_GetNeonCTimeEvent(param0->unk_04));
-        wifi_lobby_map_0226C4C8(param0->unk_10, v2);
+        v2 = wifi_lobby_map_0226C87C(WiFiPlazaLobby_State_GetNeonCTimeEvent(param0->lobbyState));
+        wifi_lobby_map_0226C4C8(param0->lighting, v2);
     }
 
-    if ((WiFiPlazaLobby_State_IsNeonTransitionComplete(param0->unk_04) == 1) && (WiFiPlazaLobby_State_GetFireworksState(param0->unk_04) == 0)) {
-        if (wifi_lobby_map_0226271C(param0->unk_08) == 0) {
-            wifi_lobby_map_02262658(param0->unk_08, 1);
+    if ((WiFiPlazaLobby_State_IsNeonTransitionComplete(param0->lobbyState) == 1) && (WiFiPlazaLobby_State_GetFireworksState(param0->lobbyState) == 0)) {
+        if (wifi_lobby_map_0226271C(param0->objectManager) == 0) {
+            wifi_lobby_map_02262658(param0->objectManager, 1);
         }
     }
 
-    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->unk_04, 5)) {
-        if (WiFiPlazaLobby_State_GetFireworksState(param0->unk_04) == 1) {
-            wifi_lobby_map_0226260C(param0->unk_08);
-            wifi_lobby_map_02262658(param0->unk_08, 2);
+    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->lobbyState, 5)) {
+        if (WiFiPlazaLobby_State_GetFireworksState(param0->lobbyState) == 1) {
+            wifi_lobby_map_0226260C(param0->objectManager);
+            wifi_lobby_map_02262658(param0->objectManager, 2);
         } else {
             (void)0;
         }
     }
 
-    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->unk_04, 6)) {
-        if (WiFiPlazaLobby_State_IsParadeFinished(param0->unk_04) == 1) {
-            wifi_lobby_map_0226246C(param0->unk_08);
+    if (WiFiPlazaLobby_State_CheckTimeEventFlag(param0->lobbyState, 6)) {
+        if (WiFiPlazaLobby_State_IsParadeFinished(param0->lobbyState) == 1) {
+            wifi_lobby_map_0226246C(param0->objectManager);
         }
     }
 
-    if (WiFiPlazaLobby_State_IsLobbyClosed(param0->unk_04) == 1) {
-        wifi_lobby_map_02262478(param0->unk_08);
+    if (WiFiPlazaLobby_State_IsLobbyClosed(param0->lobbyState) == 1) {
+        wifi_lobby_map_02262478(param0->objectManager);
 
         wifi_lobby_map_0226C8A8(param0);
     }
 
-    wifi_lobby_map_0226C3A4(param0->unk_10);
-    wifi_lobby_map_0226CF40(param0->unk_14);
-    wifi_lobby_map_0226C924(param0->unk_18);
+    wifi_lobby_map_0226C3A4(param0->lighting);
+    wifi_lobby_map_0226CF40(param0->floatManager);
+    wifi_lobby_map_0226C924(param0->fireworks);
 }
 
 BOOL wifi_lobby_map_0226C810(const WiFiLobbyMapTimeEventManager *param0, u32 param1, int param2)
 {
-    return wifi_lobby_map_0226CFFC(param0->unk_14, param1, param2);
+    return wifi_lobby_map_0226CFFC(param0->floatManager, param1, param2);
 }
 
 static u32 wifi_lobby_map_0226C81C(PPW_LOBBY_TIME_EVENT param0)

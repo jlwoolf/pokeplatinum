@@ -135,15 +135,15 @@ typedef struct {
 } WiFiLobbyMapAttraction;
 
 typedef struct WiFiLobbyMapAttractionManager_t {
-    WiFiPlazaLobbyState *unk_00;
-    WiFiLobbyMapActorManager *unk_04;
-    WiFiLobbyMapCamera *unk_08;
-    WiFiLobbyMapGrid *unk_0C;
-    WiFiLobbyMapAttraction unk_10[20];
-    Easy3DModel unk_10550[15];
-    void *unk_10640[39];
-    Easy3DAnim unk_106DC[16];
-    NNSFndAllocator unk_1081C;
+    WiFiPlazaLobbyState *lobbyState;
+    WiFiLobbyMapActorManager *actorManager;
+    WiFiLobbyMapCamera *camera;
+    WiFiLobbyMapGrid *grid;
+    WiFiLobbyMapAttraction attractions[20];
+    Easy3DModel models[15];
+    void *data[39];
+    Easy3DAnim anims[16];
+    NNSFndAllocator allocator;
 } WiFiLobbyMapAttractionManager;
 
 static void wifi_lobby_map_022692B4(WiFiLobbyMapKeyframe *param0, fx32 param1, fx32 param2, fx32 param3, fx32 param4, fx32 param5, fx32 param6, s32 param7);
@@ -630,17 +630,17 @@ WiFiLobbyMapAttractionManager *wifi_lobby_map_02269190(WiFiPlazaLobbyState *para
     WiFiLobbyMapAttractionManager *v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapAttractionManager));
     memset(v0, 0, sizeof(WiFiLobbyMapAttractionManager));
 
-    v0->unk_00 = param0;
-    v0->unk_04 = param3;
-    v0->unk_08 = param2;
-    v0->unk_0C = param1;
+    v0->lobbyState = param0;
+    v0->actorManager = param3;
+    v0->camera = param2;
+    v0->grid = param1;
 
     {
         NARC *v1;
 
         v1 = NARC_ctor(NARC_INDEX_GRAPHIC__WIFI_LOBBY_OTHER, heapID);
 
-        HeapExp_FndInitAllocator(&v0->unk_1081C, heapID2, 4);
+        HeapExp_FndInitAllocator(&v0->allocator, heapID2, 4);
 
         wifi_lobby_map_02269540(v0, v1, heapID2);
         wifi_lobby_map_022695E0(v0, v1, heapID2);
@@ -668,7 +668,7 @@ void wifi_lobby_map_02269220(WiFiLobbyMapAttractionManager *param0)
     int v0;
 
     for (v0 = 0; v0 < 20; v0++) {
-        wifi_lobby_map_0226978C(param0, &param0->unk_10[v0]);
+        wifi_lobby_map_0226978C(param0, &param0->attractions[v0]);
     }
 }
 
@@ -676,10 +676,10 @@ void wifi_lobby_map_02269240(WiFiLobbyMapAttractionManager *param0)
 {
     int v0;
     BOOL v1;
-    WiFiLobbyMapActor *v2 = wifi_lobby_map_0225CCAC(param0->unk_04);
+    WiFiLobbyMapActor *v2 = wifi_lobby_map_0225CCAC(param0->actorManager);
 
     for (v0 = 0; v0 < 20; v0++) {
-        wifi_lobby_map_022697C8(param0, &param0->unk_10[v0]);
+        wifi_lobby_map_022697C8(param0, &param0->attractions[v0]);
     }
 }
 
@@ -689,18 +689,18 @@ void wifi_lobby_map_02269268(WiFiLobbyMapAttractionManager *param0, u32 param1, 
 
     GF_ASSERT(param1 < 20);
 
-    v0 = wifi_lobby_map_0225CC70(param0->unk_04, param1);
+    v0 = wifi_lobby_map_0225CC70(param0->actorManager, param1);
 
     if (v0 == NULL) {
         return;
     }
 
-    wifi_lobby_map_02269738(param0, &param0->unk_10[param1], v0, param2);
+    wifi_lobby_map_02269738(param0, &param0->attractions[param1], v0, param2);
 }
 
 BOOL wifi_lobby_map_02269298(const WiFiLobbyMapAttractionManager *param0, u32 param1)
 {
-    if (wifi_lobby_map_02269800(&param0->unk_10[param1]) == 1) {
+    if (wifi_lobby_map_02269800(&param0->attractions[param1]) == 1) {
         return 0;
     }
 
@@ -776,7 +776,7 @@ static void wifi_lobby_map_02269508(const WiFiLobbyMapOscillator *param0, fx32 *
 
 static void wifi_lobby_map_02269510(WiFiLobbyMapAttractionManager *param0, WiFiLobbyMapAttraction *param1, u32 seqID)
 {
-    if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->unk_04)) {
+    if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->actorManager)) {
         Sound_PlayEffectOnPlayer(seqID, 5);
     } else {
         if (wifi_lobby_map_0225CE70(param1->unk_08) == 0) {
@@ -790,12 +790,12 @@ static void wifi_lobby_map_02269540(WiFiLobbyMapAttractionManager *param0, NARC 
     int v0;
 
     for (v0 = 0; v0 < 15; v0++) {
-        param0->unk_10550[v0].data = LoadMemberFromOpenNARC(param1, 129 + v0, 0, heapID, 0);
-        param0->unk_10550[v0].set = NNS_G3dGetMdlSet(param0->unk_10550[v0].data);
-        param0->unk_10550[v0].model = NNS_G3dGetMdlByIdx(param0->unk_10550[v0].set, 0);
-        param0->unk_10550[v0].texture = NULL;
+        param0->models[v0].data = LoadMemberFromOpenNARC(param1, 129 + v0, 0, heapID, 0);
+        param0->models[v0].set = NNS_G3dGetMdlSet(param0->models[v0].data);
+        param0->models[v0].model = NNS_G3dGetMdlByIdx(param0->models[v0].set, 0);
+        param0->models[v0].texture = NULL;
 
-        NNS_G3dMdlSetMdlEmiAll(param0->unk_10550[v0].model, GX_RGB(31, 31, 31));
+        NNS_G3dMdlSetMdlEmiAll(param0->models[v0].model, GX_RGB(31, 31, 31));
     }
 }
 
@@ -804,7 +804,7 @@ static void wifi_lobby_map_022695C4(WiFiLobbyMapAttractionManager *param0)
     int v0;
 
     for (v0 = 0; v0 < 15; v0++) {
-        Heap_Free(param0->unk_10550[v0].data);
+        Heap_Free(param0->models[v0].data);
     }
 }
 
@@ -813,7 +813,7 @@ static void wifi_lobby_map_022695E0(WiFiLobbyMapAttractionManager *param0, NARC 
     int v0;
 
     for (v0 = 0; v0 < 39; v0++) {
-        wifi_lobby_map_0225C730(&param0->unk_10640[v0], param1, 144 + v0, heapID);
+        wifi_lobby_map_0225C730(&param0->data[v0], param1, 144 + v0, heapID);
     }
 }
 
@@ -826,7 +826,7 @@ static void wifi_lobby_map_02269608(WiFiLobbyMapAttractionManager *param0)
     NNSG3dResTex *v4;
 
     for (v0 = 0; v0 < 39; v0++) {
-        v4 = NNS_G3dGetTex(param0->unk_10640[v0]);
+        v4 = NNS_G3dGetTex(param0->data[v0]);
 
         NNS_G3dTexReleaseTexKey(v4, &v1, &v2);
         NNS_GfdFreeTexVram(v1);
@@ -834,7 +834,7 @@ static void wifi_lobby_map_02269608(WiFiLobbyMapAttractionManager *param0)
 
         v3 = NNS_G3dPlttReleasePlttKey(v4);
         NNS_GfdFreePlttVram(v3);
-        Heap_Free(param0->unk_10640[v0]);
+        Heap_Free(param0->data[v0]);
     }
 }
 
@@ -845,9 +845,9 @@ static void wifi_lobby_map_0226965C(WiFiLobbyMapAttractionManager *param0, NARC 
     for (v0 = 0; v0 < 39; v0++) {
         for (v1 = 0; v1 < 2; v1++) {
             if (Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1] != 17) {
-                if (param0->unk_106DC[Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1]].data == NULL) {
-                    param0->unk_10550[Unk_wifi_lobby_map_0226E5A4[v0].unk_00].texture = NNS_G3dGetTex(param0->unk_10640[Unk_wifi_lobby_map_0226E5A4[v0].unk_01]);
-                    Easy3DAnim_LoadFrom(&param0->unk_106DC[Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1]], &param0->unk_10550[Unk_wifi_lobby_map_0226E5A4[v0].unk_00], param1, 183 + Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1], param2, &param0->unk_1081C);
+                if (param0->anims[Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1]].data == NULL) {
+                    param0->models[Unk_wifi_lobby_map_0226E5A4[v0].unk_00].texture = NNS_G3dGetTex(param0->data[Unk_wifi_lobby_map_0226E5A4[v0].unk_01]);
+                    Easy3DAnim_LoadFrom(&param0->anims[Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1]], &param0->models[Unk_wifi_lobby_map_0226E5A4[v0].unk_00], param1, 183 + Unk_wifi_lobby_map_0226E5A4[v0].unk_02[v1], param2, &param0->allocator);
                 }
             }
         }
@@ -859,9 +859,9 @@ static void wifi_lobby_map_02269700(WiFiLobbyMapAttractionManager *param0)
     int v0;
 
     for (v0 = 0; v0 < 16; v0++) {
-        if (param0->unk_106DC[v0].data != NULL) {
-            Easy3DAnim_Release(&param0->unk_106DC[v0], &param0->unk_1081C);
-            param0->unk_106DC[v0].data = NULL;
+        if (param0->anims[v0].data != NULL) {
+            Easy3DAnim_Release(&param0->anims[v0], &param0->allocator);
+            param0->anims[v0].data = NULL;
         }
     }
 }
@@ -1027,7 +1027,7 @@ static void wifi_lobby_map_02269828(WiFiLobbyMapAttractionManager *param0, WiFiL
 
     param1->unk_87C[param2] = param3;
 
-    Easy3DObject_Init(&param1->unk_0C[param2], &param0->unk_10550[param3->unk_00]);
+    Easy3DObject_Init(&param1->unk_0C[param2], &param0->models[param3->unk_00]);
 }
 
 static void wifi_lobby_map_02269878(WiFiLobbyMapAttractionManager *param0, WiFiLobbyMapAttraction *param1, u32 param2)
@@ -1044,8 +1044,8 @@ static void wifi_lobby_map_02269878(WiFiLobbyMapAttractionManager *param0, WiFiL
         return;
     }
 
-    v1 = param0->unk_10640[param1->unk_87C[param2]->unk_01];
-    v2 = &param0->unk_10550[param1->unk_87C[param2]->unk_00];
+    v1 = param0->data[param1->unk_87C[param2]->unk_01];
+    v2 = &param0->models[param1->unk_87C[param2]->unk_00];
     v2->texture = NNS_G3dGetTex(v1);
     v0 = NNS_G3dForceBindMdlTex(v2->model, v2->texture, 0, 0);
     GF_ASSERT(v0);
@@ -1055,7 +1055,7 @@ static void wifi_lobby_map_02269878(WiFiLobbyMapAttractionManager *param0, WiFiL
 
     for (v4 = 0; v4 < 2; v4++) {
         if (param1->unk_87C[param2]->unk_02[v4] != 17) {
-            v3 = &param0->unk_106DC[param1->unk_87C[param2]->unk_02[v4]];
+            v3 = &param0->anims[param1->unk_87C[param2]->unk_02[v4]];
             Easy3DObject_AddAnim(&param1->unk_0C[param2], v3);
             Easy3DAnim_SetFrame(v3, param1->unk_8C4[param2][v4]);
         } else {
@@ -1068,7 +1068,7 @@ static void wifi_lobby_map_02269878(WiFiLobbyMapAttractionManager *param0, WiFiL
 
     for (v4 = 0; v4 < 2; v4++) {
         if (param1->unk_87C[param2]->unk_02[v4] != 17) {
-            v3 = &param0->unk_106DC[param1->unk_87C[param2]->unk_02[v4]];
+            v3 = &param0->anims[param1->unk_87C[param2]->unk_02[v4]];
             Easy3DObject_RemoveAnim(&param1->unk_0C[param2], v3);
         } else {
             break;
@@ -1094,7 +1094,7 @@ static BOOL wifi_lobby_map_022699D0(WiFiLobbyMapAttractionManager *param0, WiFiL
 static void wifi_lobby_map_022699E4(WiFiLobbyMapAttractionManager *param0, WiFiLobbyMapAttraction *param1, u32 param2, u32 param3, fx32 param4)
 {
     fx32 v0;
-    Easy3DAnim *v1 = &param0->unk_106DC[param1->unk_87C[param2]->unk_02[param3]];
+    Easy3DAnim *v1 = &param0->anims[param1->unk_87C[param2]->unk_02[param3]];
     v0 = Easy3DAnim_GetFrameCount(v1);
 
     if ((param1->unk_8C4[param2][param3] + param4) < v0) {
@@ -1108,7 +1108,7 @@ static BOOL wifi_lobby_map_02269A3C(WiFiLobbyMapAttractionManager *param0, WiFiL
 {
     fx32 v0;
     BOOL v1;
-    Easy3DAnim *v2 = &param0->unk_106DC[param1->unk_87C[param2]->unk_02[param3]];
+    Easy3DAnim *v2 = &param0->anims[param1->unk_87C[param2]->unk_02[param3]];
     v0 = Easy3DAnim_GetFrameCount(v2);
 
     if ((param1->unk_8C4[param2][param3] + param4) < v0) {
@@ -1125,7 +1125,7 @@ static BOOL wifi_lobby_map_02269A3C(WiFiLobbyMapAttractionManager *param0, WiFiL
 static void wifi_lobby_map_02269A90(WiFiLobbyMapAttractionManager *param0, WiFiLobbyMapAttraction *param1, u32 param2, u32 param3, fx32 param4)
 {
     fx32 v0;
-    Easy3DAnim *v1 = &param0->unk_106DC[param1->unk_87C[param2]->unk_02[param3]];
+    Easy3DAnim *v1 = &param0->anims[param1->unk_87C[param2]->unk_02[param3]];
     v0 = Easy3DAnim_GetFrameCount(v1);
 
     if (v0 < param4) {
@@ -1138,7 +1138,7 @@ static void wifi_lobby_map_02269A90(WiFiLobbyMapAttractionManager *param0, WiFiL
 static fx32 wifi_lobby_map_02269AE8(const WiFiLobbyMapAttractionManager *param0, const WiFiLobbyMapAttraction *param1, u32 param2, u32 param3)
 {
     fx32 v0;
-    const Easy3DAnim *v1 = &param0->unk_106DC[param1->unk_87C[param2]->unk_02[param3]];
+    const Easy3DAnim *v1 = &param0->anims[param1->unk_87C[param2]->unk_02[param3]];
     return Easy3DAnim_GetFrame(v1);
 }
 
@@ -1666,11 +1666,11 @@ static BOOL wifi_lobby_map_0226A6C8(WiFiLobbyMapAttractionManager *param0, WiFiL
 
                     if (param1->unk_954.val2.unk_04[v4] == 0) {
                         Easy3DObject_SetVisible(&param1->unk_0C[v2], 0);
-                        NNS_G3dMdlSetMdlAlphaAll(param0->unk_10550[param1->unk_87C[v2]->unk_00].model, 31);
+                        NNS_G3dMdlSetMdlAlphaAll(param0->models[param1->unk_87C[v2]->unk_00].model, 31);
                     } else {
                         param1->unk_954.val2.unk_04[v4]--;
                         v3 = (param1->unk_954.val2.unk_04[v4] * 20) / 8;
-                        NNS_G3dMdlSetMdlAlphaAll(param0->unk_10550[param1->unk_87C[v2]->unk_00].model, v3);
+                        NNS_G3dMdlSetMdlAlphaAll(param0->models[param1->unk_87C[v2]->unk_00].model, v3);
                         v1 = 0;
                     }
                 }
@@ -1804,8 +1804,8 @@ static void wifi_lobby_map_0226A9D0(WiFiLobbyMapAttractionManager *param0, WiFiL
     VecFx32 v0;
 
     {
-        if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->unk_04)) {
-            wifi_lobby_map_02260B3C(param0->unk_08);
+        if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->actorManager)) {
+            wifi_lobby_map_02260B3C(param0->camera);
         }
     }
 
@@ -1814,7 +1814,7 @@ static void wifi_lobby_map_0226A9D0(WiFiLobbyMapAttractionManager *param0, WiFiL
         u32 v2;
 
         v1 = wifi_lobby_map_0225CD34(param1->unk_08);
-        v2 = wifi_lobby_map_0225C8C4(param0->unk_0C, (v1.x) / 16, (v1.y) / 16);
+        v2 = wifi_lobby_map_0225C8C4(param0->grid, (v1.x) / 16, (v1.y) / 16);
 
         if (v2 == 42) {
             param1->unk_954.val1.unk_11 = 1;
@@ -1918,7 +1918,7 @@ static BOOL wifi_lobby_map_0226AC24(WiFiLobbyMapAttractionManager *param0, WiFiL
         wifi_lobby_map_0226B744(param0, param1, v3);
     }
 
-    if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->unk_04)) {
+    if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->actorManager)) {
         u32 v4 = 4;
 
         if (gSystem.pressedKeys & PAD_KEY_UP) {
@@ -2113,8 +2113,8 @@ static BOOL wifi_lobby_map_0226AF7C(WiFiLobbyMapAttractionManager *param0, WiFiL
             wifi_lobby_map_0225D030(param1->unk_08, 1);
 
             {
-                if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->unk_04)) {
-                    wifi_lobby_map_02260B38(param0->unk_08, param1->unk_08);
+                if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->actorManager)) {
+                    wifi_lobby_map_02260B38(param0->camera, param1->unk_08);
                 }
             }
 
@@ -2218,8 +2218,8 @@ static BOOL wifi_lobby_map_0226B1D0(WiFiLobbyMapAttractionManager *param0, WiFiL
             wifi_lobby_map_0225D030(param1->unk_08, 1);
 
             {
-                if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->unk_04)) {
-                    wifi_lobby_map_02260B38(param0->unk_08, param1->unk_08);
+                if (param1->unk_08 == wifi_lobby_map_0225CCAC(param0->actorManager)) {
+                    wifi_lobby_map_02260B38(param0->camera, param1->unk_08);
                 }
             }
 
