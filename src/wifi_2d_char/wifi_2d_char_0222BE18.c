@@ -110,14 +110,14 @@ WiFi2DCharObject *WiFi2DCharObjectManager_AddObject(WiFi2DCharObjectManager *par
 
     v0 = WiFi2DCharObjectManager_AllocObject(param0);
 
-    v0->unk_04.x = param1->unk_00;
-    v0->unk_04.y = param1->unk_02;
-    v0->unk_08.x = param1->unk_00;
-    v0->unk_08.y = param1->unk_02;
-    v0->unk_0C = param1->unk_04;
-    v0->unk_15 = param1->unk_06;
-    v0->unk_14 = param1->unk_08;
-    v0->unk_0E = param1->unk_0A;
+    v0->unk_04.x = param1->x;
+    v0->unk_04.y = param1->y;
+    v0->unk_08.x = param1->x;
+    v0->unk_08.y = param1->y;
+    v0->unk_0C = param1->objectID;
+    v0->unk_15 = param1->moveState;
+    v0->unk_14 = param1->variant;
+    v0->unk_0E = param1->gfxID;
     v0->unk_00 = 1;
 
     return v0;

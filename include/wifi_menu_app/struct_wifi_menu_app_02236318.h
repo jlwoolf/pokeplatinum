@@ -4,16 +4,16 @@
 #include <nnsys.h>
 
 typedef struct {
-    void *unk_00;
-    NNSG2dPaletteData *unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    s16 unk_0A;
-    u8 unk_0C;
-    u8 unk_0D;
-    s16 unk_0E;
-    u8 unk_10;
-    u8 unk_11[3];
+    void *heapData;
+    NNSG2dPaletteData *paletteData;
+    u8 enabledMask;
+    u8 frameIndex;
+    s16 frameTimer;
+    u8 flashIndex;
+    u8 flashStep;
+    s16 flashTimer;
+    u8 flashRequested;
+    u8 padding[3];
 } WiFiMenuAppPalette;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_02236318_H

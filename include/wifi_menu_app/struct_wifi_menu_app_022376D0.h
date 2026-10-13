@@ -2,12 +2,12 @@
 #define POKEPLATINUM_STRUCT_WIFI_MENU_APP_022376D0_H
 
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
-    u16 unk_04;
-    u16 unk_06;
-    u16 unk_08;
-    u16 unk_0A;
+    s16 x;
+    s16 y;
+    u16 objectID;
+    u16 moveState;
+    u16 variant;
+    u16 gfxID;
 } WiFiMenuAppRect;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_022376D0_H

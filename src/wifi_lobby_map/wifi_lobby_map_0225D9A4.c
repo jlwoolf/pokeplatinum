@@ -1904,9 +1904,9 @@ static void wifi_lobby_map_0225F184(WiFiLobbyMapWindow *param0, WiFiLobbyMapStri
     u32 v0;
     String *v1;
     WiFiCommErrorInfo *v2 = CommManager_GetUnk34();
-    v0 = WiFiPlazaLobby_Time_GetWFCErrorMessageID(v2->unk_00, v2->unk_04);
+    v0 = WiFiPlazaLobby_Time_GetWFCErrorMessageID(v2->errorCode, v2->errorType);
 
-    wifi_lobby_map_0225F2A8(param1, v2->unk_00, 5, 0, 2);
+    wifi_lobby_map_0225F2A8(param1, v2->errorCode, 5, 0, 2);
     v1 = wifi_lobby_map_0225F288(param1, 2, v0);
     wifi_lobby_map_0225F14C(param0, v1);
 }

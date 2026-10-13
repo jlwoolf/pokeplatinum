@@ -4,10 +4,10 @@
 #include <nnsys.h>
 
 typedef struct {
-    void *unk_00;
-    NNSG2dScreenData *unk_04;
-    void *unk_08;
-    NNSG2dCharacterData *unk_0C;
+    void *screenDataBuffer;
+    NNSG2dScreenData *screenData;
+    void *charDataBuffer;
+    NNSG2dCharacterData *charData;
 } WiFiMenuAppScreenData;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_0222E99C_H

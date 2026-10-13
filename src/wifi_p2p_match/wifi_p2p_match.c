@@ -275,8 +275,8 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
 
         if (CommManager_CheckWifiError()) {
             v5 = CommManager_GetUnk34();
-            v6 = WiFiPlazaLobby_Time_GetWFCErrorMessageID(v5->unk_00, v5->unk_04);
-            v7 = v5->unk_00;
+            v6 = WiFiPlazaLobby_Time_GetWFCErrorMessageID(v5->errorCode, v5->errorType);
+            v7 = v5->errorCode;
         } else {
             v7 = WiFiPlazaLobby_Network_GetLastError();
             v7 = WiFiPlazaLobby_Network_ToErrorCode(v7);
@@ -298,7 +298,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
             if (CommManager_CheckWifiError()) {
                 WiFiCommErrorInfo *v10 = CommManager_GetUnk34();
 
-                v8 = WiFiPlazaLobby_Time_IsWFCErrorRetryable(v10->unk_00, v10->unk_04);
+                v8 = WiFiPlazaLobby_Time_IsWFCErrorRetryable(v10->errorCode, v10->errorType);
 
                 if (v8 == 0) {
                     (*param1) = 11;

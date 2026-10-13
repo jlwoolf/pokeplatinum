@@ -5,10 +5,10 @@
 #include "sprite_resource.h"
 
 typedef struct {
-    SpriteResource *unk_00[4];
-    SpriteResourcesHeader unk_10;
-    Sprite *unk_34;
-    Sprite *unk_38;
+    SpriteResource *resources[4];
+    SpriteResourcesHeader resourcesHeader;
+    Sprite *exitCursor;
+    Sprite *actorCursor;
 } WiFiMenuAppSpriteSet;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_022358CC_SUB1_H

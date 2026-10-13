@@ -2182,9 +2182,9 @@ void CommManager_SetUnk34(int errorCode, int errorType, int error)
             correctedCode = -errorCode;
         }
 
-        sCommMan->unk_34.unk_00 = correctedCode;
-        sCommMan->unk_34.unk_04 = errorType;
-        sCommMan->unk_34.unk_08 = error;
+        sCommMan->unk_34.errorCode = correctedCode;
+        sCommMan->unk_34.errorType = errorType;
+        sCommMan->unk_34.error = error;
     }
 }
 

@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_WIFI_MENU_APP_02236760_H
 
 typedef struct {
-    u8 unk_00[4];
+    u8 flags[4];
 } WiFiCommVoiceChatFlags;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_MENU_APP_02236760_H
