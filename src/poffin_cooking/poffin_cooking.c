@@ -120,7 +120,7 @@ int PoffinCooking_Init(ApplicationManager *appMan, int *param1)
 
     poffin_cooking_0223D150(v1, v0->ctx->trainerInfo);
 
-    if (v0->unk_26) {
+    if (v0->isOnline) {
         CommSys_SetRecvLimitEnabled(1);
     }
 
@@ -208,7 +208,7 @@ int PoffinCooking_Exit(ApplicationManager *appMan, int *param1)
 
     heapID = v2->heapID;
 
-    if (v1->unk_26) {
+    if (v1->isOnline) {
         if (CommSys_CurNetId() == 0) {
             NintendoWFC_ResetMatchmakingCancelState();
         }
@@ -457,7 +457,7 @@ static int poffin_cooking_0223BB40(PoffinBerrySelectionData *param0, PoffinCooki
         }
     }
 
-    if (param0->unk_26) {
+    if (param0->isOnline) {
         param1->touchSendTimer++;
 
         if ((param1->touchSendTimer % 2) == 0) {
@@ -548,7 +548,7 @@ static int poffin_cooking_0223BCEC(PoffinBerrySelectionData *param0, PoffinCooki
         break;
     case 2:
         if (IsScreenFadeDone()) {
-            if (param0->unk_26) {
+            if (param0->isOnline) {
                 CommSys_SetRecvLimitEnabled(0);
             }
             (*param2)++;
@@ -779,9 +779,9 @@ static int poffin_cooking_0223C258(PoffinBerrySelectionData *param0, PoffinCooki
     case 0:
         if (param1->session.leaveResult == 1) {
             poffin_cooking_0223EC8C(&param1->messageBox, 3);
-            param0->unk_20 = TRUE;
+            param0->returnToBerrySelection = TRUE;
         } else {
-            param0->unk_20 = FALSE;
+            param0->returnToBerrySelection = FALSE;
 
             if (param1->playerCount <= 1) {
                 (*param2) = 2;
@@ -1061,7 +1061,7 @@ static void poffin_cooking_0223C82C(PoffinBerrySelectionData *param0, PoffinCook
         param1->session.participants[v0].touchInput.y = 96;
     }
 
-    if (param0->unk_26) {
+    if (param0->isOnline) {
         CommSys_SetSendInterval(2);
     }
 }
@@ -1073,7 +1073,7 @@ static void poffin_cooking_0223C87C(PoffinBerrySelectionData *param0, PoffinCook
     Heap_Free(param1->session.poffin);
     param1->session.poffin = NULL;
 
-    if (param0->unk_26) {
+    if (param0->isOnline) {
         CommSys_SetSendInterval(0);
     }
 }
@@ -1095,7 +1095,7 @@ static BOOL poffin_cooking_0223C8B0(PoffinBerrySelectionData *param0, Poffin *pa
         }
     }
 
-    if (param0->unk_26 == 0) {
+    if (param0->isOnline == 0) {
         v2 = Poffin_GetAttribute(param1, 0);
         TVBroadcast_SetPoffinCornerInfo(broadcast, v2);
     }

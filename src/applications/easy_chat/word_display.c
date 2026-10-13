@@ -24,34 +24,34 @@
 #include "text.h"
 
 typedef struct {
-    s16 unk_00;
-    s16 unk_02;
+    s16 x;
+    s16 y;
 } EasyChatWordDisplayWordPos;
 
 typedef struct {
-    String *unk_00;
-    const u16 *unk_04;
-    int unk_08;
+    String *string;
+    const u16 *cursor;
+    int state;
 } EasyChatWordDisplayReader;
 
 typedef struct EasyChatWordDisplay_t {
-    EasyChatWordListScreen *unk_00;
-    const EasyChatApp *unk_04;
-    const EasyChatWordList *unk_08;
-    Window unk_0C;
-    Window unk_1C;
-    Window unk_2C;
-    Sprite *unk_3C;
-    Sprite *unk_40;
-    Sprite *unk_44;
-    MessageLoader *unk_48;
-    String *unk_4C;
-    ColoredArrow *unk_50;
-    EasyChatWordDisplayWordPos unk_54[2];
-    u32 unk_5C;
-    u32 unk_60;
-    EasyChatWordDisplayReader unk_64;
-    u16 unk_70[10][16];
+    EasyChatWordListScreen *wordListScreen;
+    const EasyChatApp *easyChatApp;
+    const EasyChatWordList *wordList;
+    Window wordSlotWindow;
+    Window messageWindow;
+    Window pageIndicatorWindow;
+    Sprite *cursorSprite;
+    Sprite *downArrowSprite;
+    Sprite *upArrowSprite;
+    MessageLoader *msgLoader;
+    String *string;
+    ColoredArrow *coloredArrow;
+    EasyChatWordDisplayWordPos wordPos[2];
+    u32 wordCount;
+    u32 frameBaseTile;
+    EasyChatWordDisplayReader reader;
+    u16 paletteBuffer[10][16];
 } EasyChatWordDisplay;
 
 static void EasyChatWordDisplay_LoadPalette(EasyChatWordDisplay *param0, NARC *param1);
@@ -72,48 +72,48 @@ EasyChatWordDisplay *EasyChatWordDisplay_New(EasyChatWordListScreen *param0, con
 {
     EasyChatWordDisplay *v0 = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatWordDisplay));
 
-    v0->unk_00 = param0;
-    v0->unk_04 = param1;
-    v0->unk_08 = param2;
-    v0->unk_3C = NULL;
-    v0->unk_40 = NULL;
-    v0->unk_44 = NULL;
-    v0->unk_4C = String_Init(128, HEAP_ID_35);
-    v0->unk_48 = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_EASY_CHAT, HEAP_ID_35);
-    v0->unk_50 = ColoredArrow_New(HEAP_ID_35);
+    v0->wordListScreen = param0;
+    v0->easyChatApp = param1;
+    v0->wordList = param2;
+    v0->cursorSprite = NULL;
+    v0->downArrowSprite = NULL;
+    v0->upArrowSprite = NULL;
+    v0->string = String_Init(128, HEAP_ID_35);
+    v0->msgLoader = MessageLoader_Init(MSG_LOADER_PRELOAD_ENTIRE_BANK, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_EASY_CHAT, HEAP_ID_35);
+    v0->coloredArrow = ColoredArrow_New(HEAP_ID_35);
 
     return v0;
 }
 
 void EasyChatWordDisplay_Free(EasyChatWordDisplay *param0)
 {
-    if (param0->unk_50) {
-        ColoredArrow_Free(param0->unk_50);
+    if (param0->coloredArrow) {
+        ColoredArrow_Free(param0->coloredArrow);
     }
 
-    if (param0->unk_3C) {
-        Sprite_Delete(param0->unk_3C);
+    if (param0->cursorSprite) {
+        Sprite_Delete(param0->cursorSprite);
     }
 
-    if (param0->unk_40) {
-        Sprite_Delete(param0->unk_40);
+    if (param0->downArrowSprite) {
+        Sprite_Delete(param0->downArrowSprite);
     }
 
-    if (param0->unk_44) {
-        Sprite_Delete(param0->unk_44);
+    if (param0->upArrowSprite) {
+        Sprite_Delete(param0->upArrowSprite);
     }
 
-    if (param0->unk_48) {
-        MessageLoader_Free(param0->unk_48);
+    if (param0->msgLoader) {
+        MessageLoader_Free(param0->msgLoader);
     }
 
-    if (param0->unk_4C) {
-        String_Free(param0->unk_4C);
+    if (param0->string) {
+        String_Free(param0->string);
     }
 
-    Window_Remove(&param0->unk_0C);
-    Window_Remove(&param0->unk_1C);
-    Window_Remove(&param0->unk_2C);
+    Window_Remove(&param0->wordSlotWindow);
+    Window_Remove(&param0->messageWindow);
+    Window_Remove(&param0->pageIndicatorWindow);
     Heap_Free(param0);
 }
 
@@ -122,7 +122,7 @@ void EasyChatWordDisplay_LoadGraphics(EasyChatWordDisplay *param0, NARC *param1)
     BgConfig *v0;
     u32 v1;
 
-    v0 = EasyChatWordListScreen_GetBgConfig(param0->unk_00);
+    v0 = EasyChatWordListScreen_GetBgConfig(param0->wordListScreen);
 
     EasyChatWordDisplay_LoadPalette(param0, param1);
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 0, v0, 0, 0, 0, 1, HEAP_ID_35);
@@ -130,24 +130,24 @@ void EasyChatWordDisplay_LoadGraphics(EasyChatWordDisplay *param0, NARC *param1)
     v1 = Graphics_LoadTilesToBgLayerFromOpenNARC(param1, 1, v0, 0, 0, 0, 1, HEAP_ID_35);
     v1 /= 0x20;
 
-    Window_Add(v0, &param0->unk_0C, 0, 3, 1, 27, 4, 0, v1);
+    Window_Add(v0, &param0->wordSlotWindow, 0, 3, 1, 27, 4, 0, v1);
     v1 += 108;
 
-    Window_Add(v0, &param0->unk_1C, 0, 2, 21, 27, 2, 11, v1);
+    Window_Add(v0, &param0->messageWindow, 0, 2, 21, 27, 2, 11, v1);
     v1 += 54;
 
-    Window_Add(v0, &param0->unk_2C, 0, 23, 15, 8, 4, 11, v1);
+    Window_Add(v0, &param0->pageIndicatorWindow, 0, 23, 15, 8, 4, 11, v1);
     v1 += 32;
 
     Graphics_LoadTilesToBgLayer(NARC_INDEX_GRAPHIC__PL_WINFRAME, 0, v0, 0, v1, 0, 0, HEAP_ID_35);
-    param0->unk_60 = v1;
+    param0->frameBaseTile = v1;
     v1 += 9;
 
     Graphics_LoadPalette(NARC_INDEX_GRAPHIC__PL_WINFRAME, 24, 0, 14 * 0x20, 0x20, HEAP_ID_35);
-    LoadMessageBoxGraphics(v0, BG_LAYER_MAIN_0, v1, 15, EasyChat_GetFrame(param0->unk_04), HEAP_ID_35);
-    Window_DrawMessageBox(&param0->unk_1C, v1, 15);
-    Window_PutToTilemap(&param0->unk_0C);
-    Window_PutToTilemap(&param0->unk_1C);
+    LoadMessageBoxGraphics(v0, BG_LAYER_MAIN_0, v1, 15, EasyChat_GetFrame(param0->easyChatApp), HEAP_ID_35);
+    Window_DrawMessageBox(&param0->messageWindow, v1, 15);
+    Window_PutToTilemap(&param0->wordSlotWindow);
+    Window_PutToTilemap(&param0->messageWindow);
 
     EasyChatWordDisplay_InitWordSlots(param0);
     EasyChatWordDisplay_Refresh(param0);
@@ -166,39 +166,39 @@ static void EasyChatWordDisplay_LoadPalette(EasyChatWordDisplay *param0, NARC *p
 
     v1 = Graphics_GetPlttDataFromOpenNARC(param1, 6, &v0, HEAP_ID_35);
 
-    MI_CpuCopy16(v0->pRawData, param0->unk_70, sizeof(param0->unk_70));
-    DC_FlushRange(param0->unk_70, sizeof(param0->unk_70));
+    MI_CpuCopy16(v0->pRawData, param0->paletteBuffer, sizeof(param0->paletteBuffer));
+    DC_FlushRange(param0->paletteBuffer, sizeof(param0->paletteBuffer));
 
     Heap_Free(v1);
 }
 
 static void EasyChatWordDisplay_LoadTextPalette(EasyChatWordDisplay *param0)
 {
-    if (EasyChat_GetType(param0->unk_04) == EASY_CHAT_TYPE_SENTENCE) {
-        int v0 = 1 + EasyChat_GetSentenceType(param0->unk_04);
-        GX_LoadBGPltt(param0->unk_70[v0], 0 * 0x20, 0x20);
+    if (EasyChat_GetType(param0->easyChatApp) == EASY_CHAT_TYPE_SENTENCE) {
+        int v0 = 1 + EasyChat_GetSentenceType(param0->easyChatApp);
+        GX_LoadBGPltt(param0->paletteBuffer[v0], 0 * 0x20, 0x20);
     } else {
-        GX_LoadBGPltt(param0->unk_70[0], 0 * 0x20, 0x20);
+        GX_LoadBGPltt(param0->paletteBuffer[0], 0 * 0x20, 0x20);
     }
 }
 
 static void EasyChatWordDisplay_InitWordSlots(EasyChatWordDisplay *param0)
 {
-    switch (EasyChat_GetType(param0->unk_04)) {
+    switch (EasyChat_GetType(param0->easyChatApp)) {
     case EASY_CHAT_TYPE_ONE_WORD:
-        param0->unk_54[0].unk_00 = 104;
-        param0->unk_54[0].unk_02 = 16;
-        param0->unk_5C = 1;
+        param0->wordPos[0].x = 104;
+        param0->wordPos[0].y = 16;
+        param0->wordCount = 1;
         break;
     case EASY_CHAT_TYPE_TWO_WORDS:
-        param0->unk_54[0].unk_00 = 48;
-        param0->unk_54[0].unk_02 = 16;
-        param0->unk_54[1].unk_00 = 160;
-        param0->unk_54[1].unk_02 = 16;
-        param0->unk_5C = 2;
+        param0->wordPos[0].x = 48;
+        param0->wordPos[0].y = 16;
+        param0->wordPos[1].x = 160;
+        param0->wordPos[1].y = 16;
+        param0->wordCount = 2;
         break;
     case EASY_CHAT_TYPE_SENTENCE:
-        param0->unk_5C = 0;
+        param0->wordCount = 0;
         break;
     }
 }
@@ -208,57 +208,57 @@ static void EasyChatWordDisplay_CreateSprites(EasyChatWordDisplay *param0)
     SpriteResourcesHeader v0;
     EasyChatWordDisplayWordPos v1;
 
-    if (param0->unk_5C) {
-        EasyChatWordDisplayWordPos_ToCursor(&param0->unk_54[0], &v1);
+    if (param0->wordCount) {
+        EasyChatWordDisplayWordPos_ToCursor(&param0->wordPos[0], &v1);
     } else {
-        v1.unk_00 = 128;
-        v1.unk_02 = 24;
+        v1.x = 128;
+        v1.y = 24;
     }
 
-    EasyChatWordListScreen_SetupSpriteResources(param0->unk_00, &v0, 0, 0);
-    param0->unk_3C = EasyChatWordListScreen_AddSprite(param0->unk_00, &v0, v1.unk_00, v1.unk_02, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
+    EasyChatWordListScreen_SetupSpriteResources(param0->wordListScreen, &v0, 0, 0);
+    param0->cursorSprite = EasyChatWordListScreen_AddSprite(param0->wordListScreen, &v0, v1.x, v1.y, 0, NNS_G2D_VRAM_TYPE_2DMAIN);
 
     EasyChatWordDisplay_SetCursorAnim(param0, 1);
-    param0->unk_40 = EasyChatWordListScreen_AddSprite(param0->unk_00, &v0, 6, 24, 1, NNS_G2D_VRAM_TYPE_2DMAIN);
+    param0->downArrowSprite = EasyChatWordListScreen_AddSprite(param0->wordListScreen, &v0, 6, 24, 1, NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    Sprite_SetAnim(param0->unk_40, 13);
-    param0->unk_44 = EasyChatWordListScreen_AddSprite(param0->unk_00, &v0, 250, 24, 1, NNS_G2D_VRAM_TYPE_2DMAIN);
+    Sprite_SetAnim(param0->downArrowSprite, 13);
+    param0->upArrowSprite = EasyChatWordListScreen_AddSprite(param0->wordListScreen, &v0, 250, 24, 1, NNS_G2D_VRAM_TYPE_2DMAIN);
 
-    Sprite_SetAnim(param0->unk_44, 12);
+    Sprite_SetAnim(param0->upArrowSprite, 12);
 
-    if (EasyChat_GetType(param0->unk_04) != EASY_CHAT_TYPE_SENTENCE) {
-        Sprite_SetDrawFlag(param0->unk_44, FALSE);
-        Sprite_SetDrawFlag(param0->unk_40, FALSE);
+    if (EasyChat_GetType(param0->easyChatApp) != EASY_CHAT_TYPE_SENTENCE) {
+        Sprite_SetDrawFlag(param0->upArrowSprite, FALSE);
+        Sprite_SetDrawFlag(param0->downArrowSprite, FALSE);
     }
 }
 
 void EasyChatWordDisplay_Refresh(EasyChatWordDisplay *param0)
 {
     EasyChatWordDisplay_LoadTextPalette(param0);
-    Window_FillTilemap(&param0->unk_0C, 13);
+    Window_FillTilemap(&param0->wordSlotWindow, 13);
 
-    switch (EasyChat_GetType(param0->unk_04)) {
+    switch (EasyChat_GetType(param0->easyChatApp)) {
     case EASY_CHAT_TYPE_ONE_WORD:
-        EasyChatWordDisplay_FillWordSlot(&param0->unk_0C, &param0->unk_54[0]);
-        EasyChatWordDisplay_PrintWord(param0, &param0->unk_0C, &(param0->unk_54[0]), EasyChat_GetWordAtSlot(param0->unk_04, 0));
+        EasyChatWordDisplay_FillWordSlot(&param0->wordSlotWindow, &param0->wordPos[0]);
+        EasyChatWordDisplay_PrintWord(param0, &param0->wordSlotWindow, &(param0->wordPos[0]), EasyChat_GetWordAtSlot(param0->easyChatApp, 0));
         break;
     case EASY_CHAT_TYPE_TWO_WORDS:
-        EasyChatWordDisplay_FillWordSlot(&param0->unk_0C, &param0->unk_54[0]);
-        EasyChatWordDisplay_FillWordSlot(&param0->unk_0C, &param0->unk_54[1]);
-        EasyChatWordDisplay_PrintWord(param0, &param0->unk_0C, &(param0->unk_54[0]), EasyChat_GetWordAtSlot(param0->unk_04, 0));
-        EasyChatWordDisplay_PrintWord(param0, &param0->unk_0C, &(param0->unk_54[1]), EasyChat_GetWordAtSlot(param0->unk_04, 1));
+        EasyChatWordDisplay_FillWordSlot(&param0->wordSlotWindow, &param0->wordPos[0]);
+        EasyChatWordDisplay_FillWordSlot(&param0->wordSlotWindow, &param0->wordPos[1]);
+        EasyChatWordDisplay_PrintWord(param0, &param0->wordSlotWindow, &(param0->wordPos[0]), EasyChat_GetWordAtSlot(param0->easyChatApp, 0));
+        EasyChatWordDisplay_PrintWord(param0, &param0->wordSlotWindow, &(param0->wordPos[1]), EasyChat_GetWordAtSlot(param0->easyChatApp, 1));
         break;
     case EASY_CHAT_TYPE_SENTENCE:
-        param0->unk_5C = EasyChatWordDisplay_PrintSentence(param0);
+        param0->wordCount = EasyChatWordDisplay_PrintSentence(param0);
         break;
     }
 
-    Window_LoadTiles(&param0->unk_0C);
+    Window_LoadTiles(&param0->wordSlotWindow);
 }
 
 static u32 EasyChatWordDisplay_PrintSentence(EasyChatWordDisplay *param0)
 {
-    String *v0 = EasyChat_GetTemplateString(param0->unk_04, 35);
+    String *v0 = EasyChat_GetTemplateString(param0->easyChatApp, 35);
     int v1, v2, v3;
     BOOL v4;
     u16 v5;
@@ -266,23 +266,23 @@ static u32 EasyChatWordDisplay_PrintSentence(EasyChatWordDisplay *param0)
     v1 = v2 = v3 = 0;
     v4 = 1;
 
-    EasyChatWordDisplayReader_Init(&param0->unk_64, param0);
+    EasyChatWordDisplayReader_Init(&param0->reader, param0);
 
     while (v4) {
-        switch (EasyChatWordDisplayReader_Next(&(param0->unk_64), v0)) {
+        switch (EasyChatWordDisplayReader_Next(&(param0->reader), v0)) {
         case 0:
-            Text_AddPrinterWithParamsAndColor(&param0->unk_0C, FONT_MESSAGE, v0, v1, v2, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(3, 4, 13), NULL);
+            Text_AddPrinterWithParamsAndColor(&param0->wordSlotWindow, FONT_MESSAGE, v0, v1, v2, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(3, 4, 13), NULL);
             v1 += Font_CalcStringWidth(FONT_MESSAGE, v0, 0);
             break;
         case 1:
             v1 += 2;
-            param0->unk_54[v3].unk_00 = v1 + (96 / 2);
-            param0->unk_54[v3].unk_02 = v2 + (16 / 2);
-            EasyChatWordDisplay_FillWordSlot(&param0->unk_0C, &(param0->unk_54[v3]));
-            v5 = EasyChat_GetWordAtSlot(param0->unk_04, v3);
+            param0->wordPos[v3].x = v1 + (96 / 2);
+            param0->wordPos[v3].y = v2 + (16 / 2);
+            EasyChatWordDisplay_FillWordSlot(&param0->wordSlotWindow, &(param0->wordPos[v3]));
+            v5 = EasyChat_GetWordAtSlot(param0->easyChatApp, v3);
 
             if (v5 != 0xffff) {
-                EasyChatWordDisplay_PrintWord(param0, &param0->unk_0C, &(param0->unk_54[v3]), v5);
+                EasyChatWordDisplay_PrintWord(param0, &param0->wordSlotWindow, &(param0->wordPos[v3]), v5);
             }
 
             v3++;
@@ -298,7 +298,7 @@ static u32 EasyChatWordDisplay_PrintSentence(EasyChatWordDisplay *param0)
         }
     }
 
-    EasyChatWordDisplayReader_Free(&param0->unk_64);
+    EasyChatWordDisplayReader_Free(&param0->reader);
     String_Free(v0);
 
     return v3;
@@ -306,53 +306,53 @@ static u32 EasyChatWordDisplay_PrintSentence(EasyChatWordDisplay *param0)
 
 static void EasyChatWordDisplayReader_Init(EasyChatWordDisplayReader *param0, EasyChatWordDisplay *param1)
 {
-    param0->unk_00 = EasyChat_GetTemplateString(param1->unk_04, 35);
-    param0->unk_04 = String_GetData(param0->unk_00);
+    param0->string = EasyChat_GetTemplateString(param1->easyChatApp, 35);
+    param0->cursor = String_GetData(param0->string);
 
-    if (*(param0->unk_04) == 0xfffe) {
-        param0->unk_08 = 1;
+    if (*(param0->cursor) == 0xfffe) {
+        param0->state = 1;
     } else {
-        param0->unk_08 = 0;
+        param0->state = 0;
     }
 }
 
 static void EasyChatWordDisplayReader_Free(EasyChatWordDisplayReader *param0)
 {
-    String_Free(param0->unk_00);
+    String_Free(param0->string);
 }
 
 static int EasyChatWordDisplayReader_Next(EasyChatWordDisplayReader *param0, String *param1)
 {
-    const u16 *v0 = param0->unk_04;
+    const u16 *v0 = param0->cursor;
     int v1;
 
-    switch (param0->unk_08) {
+    switch (param0->state) {
     case 0:
-        while (param0->unk_08 == 0) {
-            switch (*(param0->unk_04)) {
+        while (param0->state == 0) {
+            switch (*(param0->cursor)) {
             case 0xe000:
-                param0->unk_08 = 2;
+                param0->state = 2;
                 break;
             case 0xffff:
-                param0->unk_08 = 3;
+                param0->state = 3;
                 break;
             case 0xfffe:
-                param0->unk_08 = 1;
+                param0->state = 1;
                 break;
             default:
-                param0->unk_04++;
+                param0->cursor++;
                 break;
             }
         }
 
-        String_CopyNumChars(param1, v0, (param0->unk_04 - v0) + 1);
+        String_CopyNumChars(param1, v0, (param0->cursor - v0) + 1);
         return 0;
     case 1:
-        param0->unk_04 = CharCode_SkipFormatArg(param0->unk_04);
+        param0->cursor = CharCode_SkipFormatArg(param0->cursor);
         v1 = 1;
         break;
     case 2:
-        param0->unk_04++;
+        param0->cursor++;
         v1 = 2;
         break;
     case 3:
@@ -360,18 +360,18 @@ static int EasyChatWordDisplayReader_Next(EasyChatWordDisplayReader *param0, Str
         return 3;
     }
 
-    switch (*(param0->unk_04)) {
+    switch (*(param0->cursor)) {
     case 0xe000:
-        param0->unk_08 = 2;
+        param0->state = 2;
         break;
     case 0xffff:
-        param0->unk_08 = 3;
+        param0->state = 3;
         break;
     case 0xfffe:
-        param0->unk_08 = 1;
+        param0->state = 1;
         break;
     default:
-        param0->unk_08 = 0;
+        param0->state = 0;
         break;
     }
 
@@ -380,14 +380,14 @@ static int EasyChatWordDisplayReader_Next(EasyChatWordDisplayReader *param0, Str
 
 static void EasyChatWordDisplayWordPos_ToTopLeft(const EasyChatWordDisplayWordPos *param0, EasyChatWordDisplayWordPos *param1)
 {
-    param1->unk_00 = param0->unk_00 - (96 / 2);
-    param1->unk_02 = param0->unk_02 - (16 / 2);
+    param1->x = param0->x - (96 / 2);
+    param1->y = param0->y - (16 / 2);
 }
 
 static void EasyChatWordDisplayWordPos_ToCursor(const EasyChatWordDisplayWordPos *param0, EasyChatWordDisplayWordPos *param1)
 {
-    param1->unk_00 = param0->unk_00 + 3 * 8;
-    param1->unk_02 = param0->unk_02 + 1 * 8;
+    param1->x = param0->x + 3 * 8;
+    param1->y = param0->y + 1 * 8;
 }
 
 static void EasyChatWordDisplay_FillWordSlot(Window *param0, const EasyChatWordDisplayWordPos *param1)
@@ -395,7 +395,7 @@ static void EasyChatWordDisplay_FillWordSlot(Window *param0, const EasyChatWordD
     EasyChatWordDisplayWordPos v0;
 
     EasyChatWordDisplayWordPos_ToTopLeft(param1, &v0);
-    Window_FillRectWithColor(param0, 14, v0.unk_00, v0.unk_02, 96, 16);
+    Window_FillRectWithColor(param0, 14, v0.x, v0.y, 96, 16);
 }
 
 static void EasyChatWordDisplay_PrintWord(EasyChatWordDisplay *param0, Window *param1, const EasyChatWordDisplayWordPos *param2, u16 param3)
@@ -405,22 +405,22 @@ static void EasyChatWordDisplay_PrintWord(EasyChatWordDisplay *param0, Window *p
         u32 v1;
 
         EasyChatWordDisplayWordPos_ToTopLeft(param2, &v0);
-        EasyChatWord_ToString(param3, param0->unk_4C);
+        EasyChatWord_ToString(param3, param0->string);
 
-        v1 = (v0.unk_00 + (96 / 2)) - (Font_CalcStringWidth(FONT_MESSAGE, param0->unk_4C, 0) / 2);
+        v1 = (v0.x + (96 / 2)) - (Font_CalcStringWidth(FONT_MESSAGE, param0->string, 0) / 2);
 
-        Text_AddPrinterWithParamsAndColor(param1, FONT_MESSAGE, param0->unk_4C, v0.unk_00, v0.unk_02, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(5, 6, 14), NULL);
+        Text_AddPrinterWithParamsAndColor(param1, FONT_MESSAGE, param0->string, v0.x, v0.y, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(5, 6, 14), NULL);
     }
 }
 
 u32 EasyChatWordDisplay_GetWordSlotCount(const EasyChatWordDisplay *param0)
 {
-    return param0->unk_5C;
+    return param0->wordCount;
 }
 
 void EasyChatWordDisplay_SetInstructionText(EasyChatWordDisplay *param0, u32 param1)
 {
-    Window_FillTilemap(&param0->unk_1C, 9);
+    Window_FillTilemap(&param0->messageWindow, 9);
 
     switch (param1) {
     case 0:
@@ -430,28 +430,28 @@ void EasyChatWordDisplay_SetInstructionText(EasyChatWordDisplay *param0, u32 par
         String *v1 = String_Init(300, HEAP_ID_SYSTEM);
 
         StringTemplate_SetBagPocketName(v0, 0, 0);
-        MessageLoader_GetString(param0->unk_48, EasyChat_GetInstructionBankEntry(param0->unk_04), param0->unk_4C);
-        StringTemplate_Format(v0, v1, param0->unk_4C);
-        Text_AddPrinterWithParamsAndColor(&param0->unk_1C, FONT_MESSAGE, v1, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
+        MessageLoader_GetString(param0->msgLoader, EasyChat_GetInstructionBankEntry(param0->easyChatApp), param0->string);
+        StringTemplate_Format(v0, v1, param0->string);
+        Text_AddPrinterWithParamsAndColor(&param0->messageWindow, FONT_MESSAGE, v1, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
 
         String_Free(v1);
         StringTemplate_Free(v0);
     } break;
     case 2:
-        MessageLoader_GetString(param0->unk_48, 6, param0->unk_4C);
-        Text_AddPrinterWithParamsAndColor(&param0->unk_1C, FONT_MESSAGE, param0->unk_4C, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
+        MessageLoader_GetString(param0->msgLoader, 6, param0->string);
+        Text_AddPrinterWithParamsAndColor(&param0->messageWindow, FONT_MESSAGE, param0->string, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
         break;
     case 1:
-        MessageLoader_GetString(param0->unk_48, 7, param0->unk_4C);
-        Text_AddPrinterWithParamsAndColor(&param0->unk_1C, FONT_MESSAGE, param0->unk_4C, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
+        MessageLoader_GetString(param0->msgLoader, 7, param0->string);
+        Text_AddPrinterWithParamsAndColor(&param0->messageWindow, FONT_MESSAGE, param0->string, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
         break;
     case 3:
-        MessageLoader_GetString(param0->unk_48, 8, param0->unk_4C);
-        Text_AddPrinterWithParamsAndColor(&param0->unk_1C, FONT_MESSAGE, param0->unk_4C, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
+        MessageLoader_GetString(param0->msgLoader, 8, param0->string);
+        Text_AddPrinterWithParamsAndColor(&param0->messageWindow, FONT_MESSAGE, param0->string, 0, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
         break;
     }
 
-    Window_LoadTiles(&param0->unk_1C);
+    Window_LoadTiles(&param0->messageWindow);
 }
 
 void EasyChatWordDisplay_SetCursorIdle(EasyChatWordDisplay *param0)
@@ -466,26 +466,26 @@ void EasyChatWordDisplay_SetCursorActive(EasyChatWordDisplay *param0)
 
 void EasyChatWordDisplay_SetCursorVisible(EasyChatWordDisplay *param0, BOOL param1)
 {
-    Sprite_SetDrawFlag(param0->unk_3C, param1);
+    Sprite_SetDrawFlag(param0->cursorSprite, param1);
     EasyChatWordDisplay_SetCursorAnim(param0, 1);
 }
 
 void EasyChatWordDisplay_HideSelectionArrows(EasyChatWordDisplay *param0)
 {
-    if (EasyChat_GetType(param0->unk_04) == EASY_CHAT_TYPE_SENTENCE) {
-        Sprite_SetDrawFlag(param0->unk_40, FALSE);
-        Sprite_SetDrawFlag(param0->unk_44, FALSE);
+    if (EasyChat_GetType(param0->easyChatApp) == EASY_CHAT_TYPE_SENTENCE) {
+        Sprite_SetDrawFlag(param0->downArrowSprite, FALSE);
+        Sprite_SetDrawFlag(param0->upArrowSprite, FALSE);
     }
 }
 
 void EasyChatWordDisplay_ShowSelectionArrows(EasyChatWordDisplay *param0)
 {
-    if (EasyChat_GetType(param0->unk_04) == EASY_CHAT_TYPE_SENTENCE) {
-        Sprite_SetDrawFlag(param0->unk_40, TRUE);
-        Sprite_SetDrawFlag(param0->unk_44, TRUE);
+    if (EasyChat_GetType(param0->easyChatApp) == EASY_CHAT_TYPE_SENTENCE) {
+        Sprite_SetDrawFlag(param0->downArrowSprite, TRUE);
+        Sprite_SetDrawFlag(param0->upArrowSprite, TRUE);
 
-        Sprite_SetAnim(param0->unk_40, 13);
-        Sprite_SetAnim(param0->unk_44, 12);
+        Sprite_SetAnim(param0->downArrowSprite, 13);
+        Sprite_SetAnim(param0->upArrowSprite, 12);
     }
 }
 
@@ -493,66 +493,66 @@ void EasyChatWordDisplay_SetCursorPosition(EasyChatWordDisplay *param0, int para
 {
     VecFx32 v0;
 
-    if (param0->unk_5C) {
+    if (param0->wordCount) {
         EasyChatWordDisplayWordPos v1;
 
-        EasyChatWordDisplayWordPos_ToCursor(&param0->unk_54[param1], &v1);
-        v0.x = v1.unk_00 * FX32_ONE;
-        v0.y = v1.unk_02 * FX32_ONE;
+        EasyChatWordDisplayWordPos_ToCursor(&param0->wordPos[param1], &v1);
+        v0.x = v1.x * FX32_ONE;
+        v0.y = v1.y * FX32_ONE;
         v0.z = 0;
     } else {
         v0.x = 128 * FX32_ONE;
         v0.y = 24 * FX32_ONE;
         v0.z = 0;
 
-        Sprite_SetPosition(param0->unk_3C, &v0);
+        Sprite_SetPosition(param0->cursorSprite, &v0);
     }
 
-    Sprite_SetPosition(param0->unk_3C, &v0);
+    Sprite_SetPosition(param0->cursorSprite, &v0);
     EasyChatWordDisplay_SetCursorAnim(param0, 1);
 }
 
 static void EasyChatWordDisplay_SetCursorAnim(EasyChatWordDisplay *param0, BOOL param1)
 {
-    if (param0->unk_5C != 0) {
+    if (param0->wordCount != 0) {
         if (param1) {
-            Sprite_SetAnim(param0->unk_3C, 0);
+            Sprite_SetAnim(param0->cursorSprite, 0);
         } else {
-            Sprite_SetAnim(param0->unk_3C, 1);
+            Sprite_SetAnim(param0->cursorSprite, 1);
         }
     } else {
         if (param1) {
-            Sprite_SetAnim(param0->unk_3C, 14);
+            Sprite_SetAnim(param0->cursorSprite, 14);
         } else {
-            Sprite_SetAnim(param0->unk_3C, 15);
+            Sprite_SetAnim(param0->cursorSprite, 15);
         }
     }
 }
 
 void EasyChatWordDisplay_DrawPageIndicator(EasyChatWordDisplay *param0, int param1)
 {
-    Window_FillTilemap(&param0->unk_2C, 9);
+    Window_FillTilemap(&param0->pageIndicatorWindow, 9);
 
-    MessageLoader_GetString(param0->unk_48, 9, param0->unk_4C);
-    Text_AddPrinterWithParamsAndColor(&param0->unk_2C, FONT_SYSTEM, param0->unk_4C, 14, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
+    MessageLoader_GetString(param0->msgLoader, 9, param0->string);
+    Text_AddPrinterWithParamsAndColor(&param0->pageIndicatorWindow, FONT_SYSTEM, param0->string, 14, 0, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
 
-    MessageLoader_GetString(param0->unk_48, 10, param0->unk_4C);
-    Text_AddPrinterWithParamsAndColor(&param0->unk_2C, FONT_SYSTEM, param0->unk_4C, 14, 0 + 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
+    MessageLoader_GetString(param0->msgLoader, 10, param0->string);
+    Text_AddPrinterWithParamsAndColor(&param0->pageIndicatorWindow, FONT_SYSTEM, param0->string, 14, 0 + 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(1, 2, 9), NULL);
 
-    Window_DrawStandardFrame(&param0->unk_2C, 0, param0->unk_60, 14);
-    ColoredArrow_Print(param0->unk_50, &param0->unk_2C, 0, 0 + (param1 * 16));
+    Window_DrawStandardFrame(&param0->pageIndicatorWindow, 0, param0->frameBaseTile, 14);
+    ColoredArrow_Print(param0->coloredArrow, &param0->pageIndicatorWindow, 0, 0 + (param1 * 16));
 
-    Window_CopyToVRAM(&param0->unk_2C);
+    Window_CopyToVRAM(&param0->pageIndicatorWindow);
 }
 
 void EasyChatWordDisplay_MovePageIndicatorArrow(EasyChatWordDisplay *param0, int param1)
 {
-    Window_FillRectWithColor(&param0->unk_2C, 9, 0, 0, 14, 4 * 8);
-    ColoredArrow_Print(param0->unk_50, &param0->unk_2C, 0, 0 + (param1 * 16));
+    Window_FillRectWithColor(&param0->pageIndicatorWindow, 9, 0, 0, 14, 4 * 8);
+    ColoredArrow_Print(param0->coloredArrow, &param0->pageIndicatorWindow, 0, 0 + (param1 * 16));
 }
 
 void EasyChatWordDisplay_ErasePageIndicator(EasyChatWordDisplay *param0)
 {
-    Window_EraseStandardFrame(&param0->unk_2C, 0);
-    Window_ClearAndCopyToVRAM(&param0->unk_2C);
+    Window_EraseStandardFrame(&param0->pageIndicatorWindow, 0);
+    Window_ClearAndCopyToVRAM(&param0->pageIndicatorWindow);
 }

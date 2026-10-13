@@ -17,35 +17,35 @@ static void EasyChatBlendAnimation_BrightnessTask(SysTask *param0, void *param1)
 
 void EasyChatScrollAnimation_Start(EasyChatScrollAnimation *param0, BgConfig *param1, u32 param2, int param3, int param4, int param5)
 {
-    param0->unk_00 = param1;
-    param0->unk_04 = param2;
+    param0->bgConfig = param1;
+    param0->bgLayer = param2;
 
     if (param3 == 0) {
-        param0->unk_0C = Bg_GetXOffset(param1, param2);
-        param0->unk_08 = 0;
+        param0->currentOffset = Bg_GetXOffset(param1, param2);
+        param0->direction = 0;
     } else {
-        param0->unk_0C = Bg_GetYOffset(param1, param2);
-        param0->unk_08 = 3;
+        param0->currentOffset = Bg_GetYOffset(param1, param2);
+        param0->direction = 3;
     }
 
-    param0->unk_10 = (param0->unk_0C + param4) & 0x1ff;
-    param0->unk_0C *= FX32_ONE;
-    param0->unk_14 = (param4 * FX32_ONE) / param5;
-    param0->unk_18 = param5;
-    param0->unk_1A = 0;
+    param0->targetOffset = (param0->currentOffset + param4) & 0x1ff;
+    param0->currentOffset *= FX32_ONE;
+    param0->offsetStep = (param4 * FX32_ONE) / param5;
+    param0->remainingFrames = param5;
+    param0->state = 0;
 }
 
 BOOL EasyChatScrollAnimation_Update(EasyChatScrollAnimation *param0)
 {
-    switch (param0->unk_1A) {
+    switch (param0->state) {
     case 0:
-        param0->unk_1C = EasyChatWordListScreen_StartVBlankTask(EasyChatScrollAnimation_Task, param0, 0);
-        param0->unk_1A++;
+        param0->sysTask = EasyChatWordListScreen_StartVBlankTask(EasyChatScrollAnimation_Task, param0, 0);
+        param0->state++;
         break;
     case 1:
-        if (param0->unk_18 == 0) {
-            SysTask_Done(param0->unk_1C);
-            param0->unk_1A++;
+        if (param0->remainingFrames == 0) {
+            SysTask_Done(param0->sysTask);
+            param0->state++;
             return 1;
         }
         break;
@@ -60,34 +60,34 @@ static void EasyChatScrollAnimation_Task(SysTask *param0, void *param1)
 {
     EasyChatScrollAnimation *v0 = param1;
 
-    if (v0->unk_18) {
-        v0->unk_0C += v0->unk_14;
-        Bg_SetOffset(v0->unk_00, v0->unk_04, v0->unk_08, (v0->unk_0C >> FX32_SHIFT));
-        v0->unk_18--;
+    if (v0->remainingFrames) {
+        v0->currentOffset += v0->offsetStep;
+        Bg_SetOffset(v0->bgConfig, v0->bgLayer, v0->direction, (v0->currentOffset >> FX32_SHIFT));
+        v0->remainingFrames--;
     } else {
-        Bg_SetOffset(v0->unk_00, v0->unk_04, v0->unk_08, v0->unk_10);
+        Bg_SetOffset(v0->bgConfig, v0->bgLayer, v0->direction, v0->targetOffset);
     }
 }
 
 void EasyChatBlendAnimation_Start(EasyChatBlendAnimation *param0, int param1, int param2, int param3, int param4, int param5)
 {
-    param0->unk_00 = param1;
-    param0->unk_04 = param2;
-    param0->unk_14 = param5;
-    param0->unk_08 = param3;
-    param0->unk_10 = (fx32)(param4 - param3) / param5;
-    param0->unk_0C = param4;
-    param0->unk_18 = 0;
-    param0->unk_1C = EasyChatWordListScreen_StartVBlankTask(EasyChatBlendAnimation_Task, param0, 0);
+    param0->plane1 = param1;
+    param0->plane2 = param2;
+    param0->remainingFrames = param5;
+    param0->currentValue = param3;
+    param0->step = (fx32)(param4 - param3) / param5;
+    param0->targetValue = param4;
+    param0->state = 0;
+    param0->sysTask = EasyChatWordListScreen_StartVBlankTask(EasyChatBlendAnimation_Task, param0, 0);
 }
 
 BOOL EasyChatBlendAnimation_Update(EasyChatBlendAnimation *param0)
 {
-    switch (param0->unk_18) {
+    switch (param0->state) {
     case 0:
-        if (param0->unk_14 == 0) {
-            SysTask_Done(param0->unk_1C);
-            param0->unk_18++;
+        if (param0->remainingFrames == 0) {
+            SysTask_Done(param0->sysTask);
+            param0->state++;
             return 1;
         }
         break;
@@ -103,12 +103,12 @@ static void EasyChatBlendAnimation_Task(SysTask *param0, void *param1)
     EasyChatBlendAnimation *v0 = param1;
     int v1, v2;
 
-    if (v0->unk_14) {
-        v0->unk_08 += v0->unk_10;
-        v1 = v0->unk_08 >> 3;
-        v0->unk_14--;
+    if (v0->remainingFrames) {
+        v0->currentValue += v0->step;
+        v1 = v0->currentValue >> 3;
+        v0->remainingFrames--;
     } else {
-        v1 = v0->unk_0C >> 3;
+        v1 = v0->targetValue >> 3;
     }
 
     if (v1 > 16) {
@@ -117,29 +117,29 @@ static void EasyChatBlendAnimation_Task(SysTask *param0, void *param1)
 
     v2 = 16 - v1;
 
-    G2_SetBlendAlpha(v0->unk_00, v0->unk_04, v1, v2);
+    G2_SetBlendAlpha(v0->plane1, v0->plane2, v1, v2);
 }
 
 void EasyChatBlendAnimation_StartBrightness(EasyChatBlendAnimation *param0, int param1, int param2, int param3, int param4)
 {
     G2_SetBlendBrightness(param1, param2);
 
-    param0->unk_00 = param1;
-    param0->unk_14 = param4;
-    param0->unk_08 = param2 * FX32_ONE;
-    param0->unk_0C = param3 * FX32_ONE;
-    param0->unk_10 = (fx32)(param0->unk_0C - param0->unk_08) / param4;
-    param0->unk_18 = 0;
-    param0->unk_1C = EasyChatWordListScreen_StartVBlankTask(EasyChatBlendAnimation_BrightnessTask, param0, 0);
+    param0->plane1 = param1;
+    param0->remainingFrames = param4;
+    param0->currentValue = param2 * FX32_ONE;
+    param0->targetValue = param3 * FX32_ONE;
+    param0->step = (fx32)(param0->targetValue - param0->currentValue) / param4;
+    param0->state = 0;
+    param0->sysTask = EasyChatWordListScreen_StartVBlankTask(EasyChatBlendAnimation_BrightnessTask, param0, 0);
 }
 
 BOOL EasyChatBlendAnimation_UpdateBrightness(EasyChatBlendAnimation *param0)
 {
-    switch (param0->unk_18) {
+    switch (param0->state) {
     case 0:
-        if (param0->unk_14 == 0) {
-            SysTask_Done(param0->unk_1C);
-            param0->unk_18++;
+        if (param0->remainingFrames == 0) {
+            SysTask_Done(param0->sysTask);
+            param0->state++;
             return 1;
         }
         break;
@@ -155,13 +155,13 @@ static void EasyChatBlendAnimation_BrightnessTask(SysTask *param0, void *param1)
     EasyChatBlendAnimation *v0 = param1;
     int v1;
 
-    if (v0->unk_14) {
-        v0->unk_08 += v0->unk_10;
-        v1 = v0->unk_08 >> FX32_SHIFT;
-        v0->unk_14--;
+    if (v0->remainingFrames) {
+        v0->currentValue += v0->step;
+        v1 = v0->currentValue >> FX32_SHIFT;
+        v0->remainingFrames--;
     } else {
-        v1 = v0->unk_0C >> FX32_SHIFT;
+        v1 = v0->targetValue >> FX32_SHIFT;
     }
 
-    G2_SetBlendBrightness(v0->unk_00, v1);
+    G2_SetBlendBrightness(v0->plane1, v1);
 }

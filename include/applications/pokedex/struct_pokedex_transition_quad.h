@@ -4,11 +4,11 @@
 #include "applications/pokedex/pokedex_updater.h"
 
 typedef struct {
-    PokedexUpdater *unk_00;
-    PokedexUpdater *unk_04;
-    PokedexUpdater *unk_08;
-    PokedexUpdater *unk_0C;
-    BOOL *unk_10;
+    PokedexUpdater *updater1;
+    PokedexUpdater *updater2;
+    PokedexUpdater *updater3;
+    PokedexUpdater *updater4;
+    BOOL *exitFlag;
 } PokedexTransitionQuad;
 
 #endif // POKEPLATINUM_STRUCT_POKEDEX_TRANSITION_QUAD_H

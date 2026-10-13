@@ -29,34 +29,34 @@
 #include "system.h"
 
 typedef struct EasyChatWordListScreen_t {
-    SysTask *unk_00;
-    SysTask *unk_04;
-    SysTask *unk_08[4];
-    const EasyChatApp *unk_18;
-    const EasyChatWordList *unk_1C;
-    BgConfig *unk_20;
-    SpriteList *unk_24;
-    G2dRenderer unk_28;
-    NNSG2dImageProxy unk_1B4[2];
-    NNSG2dImagePaletteProxy unk_1FC[2];
-    NNSG2dCellDataBank *unk_224[2];
-    NNSG2dCellAnimBankData *unk_22C[2];
-    void *unk_234[2];
-    void *unk_23C[2];
-    EasyChatWordDisplay *unk_244;
-    EasyChatWordColumns *unk_248;
-    EasyChatCategoriesContext *unk_24C;
-    EasyChatWordListView *unk_250;
-    EasyChatPageButtons *unk_254;
+    SysTask *dummyTask;
+    SysTask *renderTask;
+    SysTask *tasks[4];
+    const EasyChatApp *easyChatApp;
+    const EasyChatWordList *wordList;
+    BgConfig *bgConfig;
+    SpriteList *spriteList;
+    G2dRenderer g2dRenderer;
+    NNSG2dImageProxy imageProxy[2];
+    NNSG2dImagePaletteProxy paletteProxy[2];
+    NNSG2dCellDataBank *cellBank[2];
+    NNSG2dCellAnimBankData *cellAnimBank[2];
+    void *cellBankData[2];
+    void *cellAnimBankData[2];
+    EasyChatWordDisplay *wordDisplay;
+    EasyChatWordColumns *wordColumns;
+    EasyChatCategoriesContext *categoriesContext;
+    EasyChatWordListView *wordListView;
+    EasyChatPageButtons *pageButtons;
 } EasyChatWordListScreen;
 
 typedef struct {
-    EasyChatWordListScreen *unk_00;
-    const EasyChatApp *unk_04;
-    const EasyChatWordList *unk_08;
-    u32 unk_0C;
-    int unk_10;
-    int unk_14;
+    EasyChatWordListScreen *wordListScreen;
+    const EasyChatApp *easyChatApp;
+    const EasyChatWordList *wordList;
+    u32 narc;
+    int taskIndex;
+    int state;
 } EasyChatWordListScreenTask;
 
 static void EasyChatWordListScreen_DummyTask(SysTask *param0, void *param1);
@@ -104,19 +104,19 @@ EasyChatWordListScreen *EasyChatWordListScreen_New(const EasyChatApp *param0, co
         SetVBlankCallback(NULL, NULL);
         DisableHBlank();
 
-        v0->unk_18 = param0;
-        v0->unk_1C = param1;
+        v0->easyChatApp = param0;
+        v0->wordList = param1;
 
         NNS_G2dInitOamManagerModule();
         RenderOam_Init(0, 128, 0, 32, 0, 128, 0, 32, 35);
 
-        v0->unk_24 = SpriteList_InitRendering(128, &v0->unk_28, HEAP_ID_35);
-        v0->unk_20 = BgConfig_New(HEAP_ID_35);
-        v0->unk_00 = SysTask_Start(EasyChatWordListScreen_DummyTask, v0, 2);
-        v0->unk_04 = EasyChatWordListScreen_StartVBlankTask(EasyChatWordListScreen_RenderTask, v0, 1);
+        v0->spriteList = SpriteList_InitRendering(128, &v0->g2dRenderer, HEAP_ID_35);
+        v0->bgConfig = BgConfig_New(HEAP_ID_35);
+        v0->dummyTask = SysTask_Start(EasyChatWordListScreen_DummyTask, v0, 2);
+        v0->renderTask = EasyChatWordListScreen_StartVBlankTask(EasyChatWordListScreen_RenderTask, v0, 1);
 
         for (v1 = 0; v1 < 4; v1++) {
-            v0->unk_08[v1] = NULL;
+            v0->tasks[v1] = NULL;
         }
     }
 
@@ -131,18 +131,18 @@ void EasyChatWordListScreen_Free(EasyChatWordListScreen *param0)
         SetVBlankCallback(NULL, NULL);
 
         for (v0 = 0; v0 < 4; v0++) {
-            if (param0->unk_08[v0]) {
-                SysTask_Done(param0->unk_08[v0]);
+            if (param0->tasks[v0]) {
+                SysTask_Done(param0->tasks[v0]);
             }
         }
 
-        SysTask_Done(param0->unk_00);
-        SysTask_Done(param0->unk_04);
+        SysTask_Done(param0->dummyTask);
+        SysTask_Done(param0->renderTask);
 
         RenderOam_Free();
-        SpriteList_Delete(param0->unk_24);
+        SpriteList_Delete(param0->spriteList);
 
-        Heap_Free(param0->unk_20);
+        Heap_Free(param0->bgConfig);
         Heap_Free(param0);
     }
 }
@@ -161,7 +161,7 @@ static void EasyChatWordListScreen_RenderTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreen *v0 = param1;
 
-    SpriteList_Update(v0->unk_24);
+    SpriteList_Update(v0->spriteList);
     RenderOam_Transfer();
 
     OS_SetIrqCheckFlag(OS_IE_V_BLANK);
@@ -207,16 +207,16 @@ void EasyChatWordListScreen_StartTask(EasyChatWordListScreen *param0, int param1
         if (v1) {
             int v2;
 
-            v1->unk_14 = 0;
-            v1->unk_0C = param1;
-            v1->unk_00 = param0;
-            v1->unk_04 = param0->unk_18;
-            v1->unk_08 = param0->unk_1C;
+            v1->state = 0;
+            v1->narc = param1;
+            v1->wordListScreen = param0;
+            v1->easyChatApp = param0->easyChatApp;
+            v1->wordList = param0->wordList;
 
             for (v2 = 0; v2 < 4; v2++) {
-                if (param0->unk_08[v2] == NULL) {
-                    v1->unk_10 = v2;
-                    param0->unk_08[v2] = SysTask_Start(v0[param1], v1, 1);
+                if (param0->tasks[v2] == NULL) {
+                    v1->taskIndex = v2;
+                    param0->tasks[v2] = SysTask_Start(v0[param1], v1, 1);
                     break;
                 }
             }
@@ -231,7 +231,7 @@ BOOL EasyChatWordListScreen_AreTasksDone(EasyChatWordListScreen *param0)
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_08[v0] != NULL) {
+        if (param0->tasks[v0] != NULL) {
             return 0;
         }
     }
@@ -244,10 +244,10 @@ BOOL EasyChatWordListScreen_IsTaskDone(EasyChatWordListScreen *param0, int param
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        if (param0->unk_08[v0] != NULL) {
-            EasyChatWordListScreenTask *v1 = SysTask_GetParam(param0->unk_08[v0]);
+        if (param0->tasks[v0] != NULL) {
+            EasyChatWordListScreenTask *v1 = SysTask_GetParam(param0->tasks[v0]);
 
-            if (v1->unk_0C == param1) {
+            if (v1->narc == param1) {
                 return 0;
             }
         }
@@ -258,8 +258,8 @@ BOOL EasyChatWordListScreen_IsTaskDone(EasyChatWordListScreen *param0, int param
 
 static void EasyChatWordListScreen_FinishTask(EasyChatWordListScreenTask *param0)
 {
-    SysTask_Done(param0->unk_00->unk_08[param0->unk_10]);
-    param0->unk_00->unk_08[param0->unk_10] = NULL;
+    SysTask_Done(param0->wordListScreen->tasks[param0->taskIndex]);
+    param0->wordListScreen->tasks[param0->taskIndex] = NULL;
     Heap_Free(param0);
 }
 
@@ -280,20 +280,20 @@ static void EasyChatWordListScreen_InitGraphicsTask(SysTask *param0, void *param
     EasyChatWordListScreen_InitBgLayers(v0);
     EasyChatWordListScreen_LoadGraphics(v0, narc);
 
-    v0->unk_00->unk_244 = EasyChatWordDisplay_New(v0->unk_00, v0->unk_04, v0->unk_08);
-    EasyChatWordDisplay_LoadGraphics(v0->unk_00->unk_244, narc);
+    v0->wordListScreen->wordDisplay = EasyChatWordDisplay_New(v0->wordListScreen, v0->easyChatApp, v0->wordList);
+    EasyChatWordDisplay_LoadGraphics(v0->wordListScreen->wordDisplay, narc);
 
-    v0->unk_00->unk_248 = EasyChatWordColumns_New(v0->unk_00, v0->unk_04, v0->unk_08);
-    EasyChatWordColumns_LoadGraphics(v0->unk_00->unk_248, narc);
+    v0->wordListScreen->wordColumns = EasyChatWordColumns_New(v0->wordListScreen, v0->easyChatApp, v0->wordList);
+    EasyChatWordColumns_LoadGraphics(v0->wordListScreen->wordColumns, narc);
 
-    v0->unk_00->unk_24C = EasyChatCategoriesContext_New(v0->unk_00, v0->unk_04, v0->unk_08);
-    EasyChatCategories_DrawInterface(v0->unk_00->unk_24C, narc);
+    v0->wordListScreen->categoriesContext = EasyChatCategoriesContext_New(v0->wordListScreen, v0->easyChatApp, v0->wordList);
+    EasyChatCategories_DrawInterface(v0->wordListScreen->categoriesContext, narc);
 
-    v0->unk_00->unk_250 = EasyChatWordListView_New(v0->unk_00, v0->unk_04, v0->unk_08);
-    EasyChatWordListView_LoadGraphics(v0->unk_00->unk_250);
+    v0->wordListScreen->wordListView = EasyChatWordListView_New(v0->wordListScreen, v0->easyChatApp, v0->wordList);
+    EasyChatWordListView_LoadGraphics(v0->wordListScreen->wordListView);
 
-    v0->unk_00->unk_254 = EasyChatPageButtons_New(v0->unk_00, v0->unk_04, v0->unk_08);
-    EasyChatPageButtons_LoadGraphics(v0->unk_00->unk_254, narc);
+    v0->wordListScreen->pageButtons = EasyChatPageButtons_New(v0->wordListScreen, v0->easyChatApp, v0->wordList);
+    EasyChatPageButtons_LoadGraphics(v0->wordListScreen->pageButtons, narc);
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, TRUE);
     GXLayers_EngineBToggleLayers(GX_PLANEMASK_OBJ, TRUE);
@@ -306,58 +306,58 @@ static void EasyChatWordListScreen_InitGraphicsTask(SysTask *param0, void *param
 
 static void EasyChatWordListScreen_LoadGraphics(EasyChatWordListScreenTask *param0, NARC *param1)
 {
-    EasyChatWordListScreen *v0 = param0->unk_00;
+    EasyChatWordListScreen *v0 = param0->wordListScreen;
 
-    NNS_G2dInitImagePaletteProxy(&(v0->unk_1FC[0]));
-    NNS_G2dInitImagePaletteProxy(&(v0->unk_1FC[1]));
+    NNS_G2dInitImagePaletteProxy(&(v0->paletteProxy[0]));
+    NNS_G2dInitImagePaletteProxy(&(v0->paletteProxy[1]));
 
-    NNS_G2dInitImageProxy(&(v0->unk_1B4[0]));
-    NNS_G2dInitImageProxy(&(v0->unk_1B4[1]));
+    NNS_G2dInitImageProxy(&(v0->imageProxy[0]));
+    NNS_G2dInitImageProxy(&(v0->imageProxy[1]));
 
-    Graphics_LoadImageMappingFromOpenNARC(param1, 9, 1, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 0, 35, &(v0->unk_1B4[0]));
-    Graphics_LoadPartialPaletteFromOpenNARC(param1, 10, NNS_G2D_VRAM_TYPE_2DMAIN, 0, 35, &(v0->unk_1FC[0]));
+    Graphics_LoadImageMappingFromOpenNARC(param1, 9, 1, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 0, 35, &(v0->imageProxy[0]));
+    Graphics_LoadPartialPaletteFromOpenNARC(param1, 10, NNS_G2D_VRAM_TYPE_2DMAIN, 0, 35, &(v0->paletteProxy[0]));
 
-    v0->unk_234[0] = Graphics_GetCellBankFromOpenNARC(param1, 7, 1, &(v0->unk_224[0]), HEAP_ID_35);
-    v0->unk_23C[0] = Graphics_GetAnimBankFromOpenNARC(param1, 8, 1, &(v0->unk_22C[0]), HEAP_ID_35);
-    v0->unk_234[1] = NULL;
-    v0->unk_23C[1] = NULL;
+    v0->cellBankData[0] = Graphics_GetCellBankFromOpenNARC(param1, 7, 1, &(v0->cellBank[0]), HEAP_ID_35);
+    v0->cellAnimBankData[0] = Graphics_GetAnimBankFromOpenNARC(param1, 8, 1, &(v0->cellAnimBank[0]), HEAP_ID_35);
+    v0->cellBankData[1] = NULL;
+    v0->cellAnimBankData[1] = NULL;
 }
 
 static void EasyChatWordListScreen_ExitTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_OUT, FADE_TYPE_BRIGHTNESS_OUT, COLOR_BLACK, 5, 1, HEAP_ID_35);
-        v0->unk_14++;
+        v0->state++;
         break;
     case 1:
         if (IsScreenFadeDone()) {
             int v2;
 
-            EasyChatWordDisplay_Free(v0->unk_00->unk_244);
-            EasyChatWordColumns_Free(v0->unk_00->unk_248);
-            EasyChatCategoriesContext_Free(v0->unk_00->unk_24C);
-            EasyChatWordListView_Free(v0->unk_00->unk_250);
-            EasyChatPageButtons_Free(v0->unk_00->unk_254);
+            EasyChatWordDisplay_Free(v0->wordListScreen->wordDisplay);
+            EasyChatWordColumns_Free(v0->wordListScreen->wordColumns);
+            EasyChatCategoriesContext_Free(v0->wordListScreen->categoriesContext);
+            EasyChatWordListView_Free(v0->wordListScreen->wordListView);
+            EasyChatPageButtons_Free(v0->wordListScreen->pageButtons);
 
             for (v2 = 0; v2 < 2; v2++) {
-                if (v1->unk_234[v2] != NULL) {
-                    Heap_Free(v1->unk_234[v2]);
+                if (v1->cellBankData[v2] != NULL) {
+                    Heap_Free(v1->cellBankData[v2]);
                 }
 
-                if (v1->unk_23C[v2] != NULL) {
-                    Heap_Free(v1->unk_23C[v2]);
+                if (v1->cellAnimBankData[v2] != NULL) {
+                    Heap_Free(v1->cellAnimBankData[v2]);
                 }
             }
 
-            Bg_FreeTilemapBuffer(v1->unk_20, BG_LAYER_MAIN_0);
-            Bg_FreeTilemapBuffer(v1->unk_20, BG_LAYER_MAIN_1);
-            Bg_FreeTilemapBuffer(v1->unk_20, BG_LAYER_MAIN_2);
-            Bg_FreeTilemapBuffer(v1->unk_20, BG_LAYER_MAIN_3);
-            Bg_FreeTilemapBuffer(v1->unk_20, BG_LAYER_SUB_0);
+            Bg_FreeTilemapBuffer(v1->bgConfig, BG_LAYER_MAIN_0);
+            Bg_FreeTilemapBuffer(v1->bgConfig, BG_LAYER_MAIN_1);
+            Bg_FreeTilemapBuffer(v1->bgConfig, BG_LAYER_MAIN_2);
+            Bg_FreeTilemapBuffer(v1->bgConfig, BG_LAYER_MAIN_3);
+            Bg_FreeTilemapBuffer(v1->bgConfig, BG_LAYER_SUB_0);
 
             EasyChatWordListScreen_FinishTask(v0);
         }
@@ -455,7 +455,7 @@ static void EasyChatWordListScreen_InitBgLayers(EasyChatWordListScreenTask *para
         .areaOver = 0,
         .mosaic = FALSE,
     };
-    EasyChatWordListScreen *v7 = param0->unk_00;
+    EasyChatWordListScreen *v7 = param0->wordListScreen;
 
     GX_SetDispSelect(GX_DISP_SELECT_MAIN_SUB);
     GX_SetGraphicsMode(GX_DISPMODE_GRAPHICS, GX_BGMODE_0, GX_BG0_AS_3D);
@@ -463,27 +463,27 @@ static void EasyChatWordListScreen_InitBgLayers(EasyChatWordListScreenTask *para
     GXLayers_SetBanks(&v0);
     SetAllGraphicsModes(&v1);
 
-    Bg_InitFromTemplate(v7->unk_20, BG_LAYER_MAIN_0, &v2, 0);
-    Bg_InitFromTemplate(v7->unk_20, BG_LAYER_MAIN_1, &v3, 0);
-    Bg_InitFromTemplate(v7->unk_20, BG_LAYER_MAIN_2, &v4, 0);
-    Bg_InitFromTemplate(v7->unk_20, BG_LAYER_MAIN_3, &v5, 0);
+    Bg_InitFromTemplate(v7->bgConfig, BG_LAYER_MAIN_0, &v2, 0);
+    Bg_InitFromTemplate(v7->bgConfig, BG_LAYER_MAIN_1, &v3, 0);
+    Bg_InitFromTemplate(v7->bgConfig, BG_LAYER_MAIN_2, &v4, 0);
+    Bg_InitFromTemplate(v7->bgConfig, BG_LAYER_MAIN_3, &v5, 0);
 
-    Bg_InitFromTemplate(v7->unk_20, BG_LAYER_SUB_0, &v6, 0);
+    Bg_InitFromTemplate(v7->bgConfig, BG_LAYER_SUB_0, &v6, 0);
 }
 
 static void EasyChatWordListScreen_FadeInTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 5, 1, HEAP_ID_35);
-        v0->unk_14++;
+        v0->state++;
         break;
     case 1:
         if (IsScreenFadeDone()) {
-            v0->unk_14++;
+            v0->state++;
         }
         break;
     default:
@@ -495,10 +495,10 @@ static void EasyChatWordListScreen_FadeInTask(SysTask *param0, void *param1)
 static void EasyChatWordListScreen_MoveWordDisplayCursorTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_Refresh(v1->unk_244);
-    EasyChatWordDisplay_SetCursorPosition(v1->unk_244, EasyChat_GetCurrentWordSlot(v0->unk_04));
+    EasyChatWordDisplay_Refresh(v1->wordDisplay);
+    EasyChatWordDisplay_SetCursorPosition(v1->wordDisplay, EasyChat_GetCurrentWordSlot(v0->easyChatApp));
 
     EasyChatWordListScreen_FinishTask(v0);
 }
@@ -506,13 +506,13 @@ static void EasyChatWordListScreen_MoveWordDisplayCursorTask(SysTask *param0, vo
 static void EasyChatWordListScreen_ShowWordListTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetCursorVisible(v1->unk_244, 0);
-    EasyChatWordDisplay_HideSelectionArrows(v1->unk_244);
+    EasyChatWordDisplay_SetCursorVisible(v1->wordDisplay, 0);
+    EasyChatWordDisplay_HideSelectionArrows(v1->wordDisplay);
 
-    EasyChatWordColumns_SetVisible(v1->unk_248, 1);
-    EasyChatWordColumns_SetActiveColumn(v1->unk_248, EasyChat_GetWordColumn(v1->unk_18));
+    EasyChatWordColumns_SetVisible(v1->wordColumns, 1);
+    EasyChatWordColumns_SetActiveColumn(v1->wordColumns, EasyChat_GetWordColumn(v1->easyChatApp));
 
     EasyChatWordListScreen_FinishTask(v0);
 }
@@ -520,31 +520,31 @@ static void EasyChatWordListScreen_ShowWordListTask(SysTask *param0, void *param
 static void EasyChatWordListScreen_HideWordListTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordColumns_SetVisible(v1->unk_248, 0);
-    EasyChatWordDisplay_ShowSelectionArrows(v1->unk_244);
-    EasyChatWordDisplay_SetCursorVisible(v1->unk_244, 1);
+    EasyChatWordColumns_SetVisible(v1->wordColumns, 0);
+    EasyChatWordDisplay_ShowSelectionArrows(v1->wordDisplay);
+    EasyChatWordDisplay_SetCursorVisible(v1->wordDisplay, 1);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_ShowCategoriesTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatWordDisplay_SetCursorIdle(v1->unk_244);
-        EasyChatWordDisplay_HideSelectionArrows(v1->unk_244);
-        EasyChatCategories_StartShowAnimation(v1->unk_24C);
-        v0->unk_14++;
+        EasyChatWordDisplay_SetCursorIdle(v1->wordDisplay);
+        EasyChatWordDisplay_HideSelectionArrows(v1->wordDisplay);
+        EasyChatCategories_StartShowAnimation(v1->categoriesContext);
+        v0->state++;
         break;
     case 1:
-        if (EasyChatCategories_UpdateShowAnimation(v1->unk_24C)) {
-            EasyChatWordColumns_SetRightColumnOffset(v1->unk_248);
-            EasyChatCategories_DrawCursor(v1->unk_24C, EasyChat_GetCategoryCursorPos(v1->unk_18));
-            EasyChatCategories_SetCursorVisible(v1->unk_24C, 1);
+        if (EasyChatCategories_UpdateShowAnimation(v1->categoriesContext)) {
+            EasyChatWordColumns_SetRightColumnOffset(v1->wordColumns);
+            EasyChatCategories_DrawCursor(v1->categoriesContext, EasyChat_GetCategoryCursorPos(v1->easyChatApp));
+            EasyChatCategories_SetCursorVisible(v1->categoriesContext, 1);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -554,21 +554,21 @@ static void EasyChatWordListScreen_ShowCategoriesTask(SysTask *param0, void *par
 static void EasyChatWordListScreen_HideForModeToggleTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatPageButtons_StartTransition(v1->unk_254);
-        v0->unk_14++;
+        EasyChatPageButtons_StartTransition(v1->pageButtons);
+        v0->state++;
         break;
     case 1:
-        EasyChatCategories_StartModeTransition(v1->unk_24C);
-        v0->unk_14++;
+        EasyChatCategories_StartModeTransition(v1->categoriesContext);
+        v0->state++;
         break;
     case 2:
-        if (EasyChatCategories_UpdateModeTransition(v1->unk_24C)
-            && EasyChatPageButtons_IsTransitionDone(v1->unk_254)) {
-            EasyChatCategories_SetModeOffset(v1->unk_24C);
+        if (EasyChatCategories_UpdateModeTransition(v1->categoriesContext)
+            && EasyChatPageButtons_IsTransitionDone(v1->pageButtons)) {
+            EasyChatCategories_SetModeOffset(v1->categoriesContext);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -578,28 +578,28 @@ static void EasyChatWordListScreen_HideForModeToggleTask(SysTask *param0, void *
 static void EasyChatWordListScreen_ShowForModeToggleTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatPageButtons_StartTransition(v1->unk_254);
-        v0->unk_14++;
+        EasyChatPageButtons_StartTransition(v1->pageButtons);
+        v0->state++;
         break;
     case 1:
-        EasyChatCategories_SetCursorVisible(v1->unk_24C, 0);
-        EasyChatCategories_StartModeTransition(v1->unk_24C);
-        v0->unk_14++;
+        EasyChatCategories_SetCursorVisible(v1->categoriesContext, 0);
+        EasyChatCategories_StartModeTransition(v1->categoriesContext);
+        v0->state++;
         break;
     case 2:
-        if (EasyChatCategories_UpdateModeTransition(v1->unk_24C)) {
-            EasyChatCategories_SetModeOffset(v1->unk_24C);
-            v0->unk_14++;
+        if (EasyChatCategories_UpdateModeTransition(v1->categoriesContext)) {
+            EasyChatCategories_SetModeOffset(v1->categoriesContext);
+            v0->state++;
         }
         break;
     case 3:
-        if (EasyChatPageButtons_IsTransitionDone(v1->unk_254)) {
-            EasyChatCategories_DrawCursor(v1->unk_24C, EasyChat_GetCategoryCursorPos(v1->unk_18));
-            EasyChatCategories_SetCursorVisible(v1->unk_24C, 1);
+        if (EasyChatPageButtons_IsTransitionDone(v1->pageButtons)) {
+            EasyChatCategories_DrawCursor(v1->categoriesContext, EasyChat_GetCategoryCursorPos(v1->easyChatApp));
+            EasyChatCategories_SetCursorVisible(v1->categoriesContext, 1);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -609,19 +609,19 @@ static void EasyChatWordListScreen_ShowForModeToggleTask(SysTask *param0, void *
 static void EasyChatWordListScreen_HideCategoriesTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatWordColumns_SetLeftColumnOffset(v1->unk_248);
-        EasyChatCategories_SetCursorVisible(v1->unk_24C, 0);
-        EasyChatCategories_StartSlideOutAnimation(v1->unk_24C);
-        v0->unk_14++;
+        EasyChatWordColumns_SetLeftColumnOffset(v1->wordColumns);
+        EasyChatCategories_SetCursorVisible(v1->categoriesContext, 0);
+        EasyChatCategories_StartSlideOutAnimation(v1->categoriesContext);
+        v0->state++;
         break;
     case 1:
-        if (EasyChatCategories_UpdateSlideOutAnimation(v1->unk_24C)) {
-            EasyChatWordDisplay_ShowSelectionArrows(v1->unk_244);
-            EasyChatWordDisplay_SetCursorActive(v1->unk_244);
+        if (EasyChatCategories_UpdateSlideOutAnimation(v1->categoriesContext)) {
+            EasyChatWordDisplay_ShowSelectionArrows(v1->wordDisplay);
+            EasyChatWordDisplay_SetCursorActive(v1->wordDisplay);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -631,26 +631,26 @@ static void EasyChatWordListScreen_HideCategoriesTask(SysTask *param0, void *par
 static void EasyChatWordListScreen_OpenWordListTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatWordListView_FillPage(v1->unk_250);
-        EasyChatCategories_SetCursorVisible(v1->unk_24C, 0);
-        EasyChatCategories_StartSlideInAnimation(v1->unk_24C);
-        v0->unk_14++;
+        EasyChatWordListView_FillPage(v1->wordListView);
+        EasyChatCategories_SetCursorVisible(v1->categoriesContext, 0);
+        EasyChatCategories_StartSlideInAnimation(v1->categoriesContext);
+        v0->state++;
         break;
     case 1:
-        if (EasyChatCategories_UpdateSlideInAnimation(v1->unk_24C)) {
-            EasyChatWordListView_Show(v1->unk_250);
-            v0->unk_14++;
+        if (EasyChatCategories_UpdateSlideInAnimation(v1->categoriesContext)) {
+            EasyChatWordListView_Show(v1->wordListView);
+            v0->state++;
         }
         break;
     case 2:
-        if (EasyChatWordListView_IsShown(v1->unk_250)) {
-            EasyChatWordListView_SetCursorPosition(v1->unk_250, EasyChat_GetWordSelectCursorIndex(v1->unk_18));
-            EasyChatWordListView_SetArrowsVisible(v1->unk_250, 1);
-            EasyChatPageButtons_SetVisible(v1->unk_254, 1);
+        if (EasyChatWordListView_IsShown(v1->wordListView)) {
+            EasyChatWordListView_SetCursorPosition(v1->wordListView, EasyChat_GetWordSelectCursorIndex(v1->easyChatApp));
+            EasyChatWordListView_SetArrowsVisible(v1->wordListView, 1);
+            EasyChatPageButtons_SetVisible(v1->pageButtons, 1);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -660,34 +660,34 @@ static void EasyChatWordListScreen_OpenWordListTask(SysTask *param0, void *param
 static void EasyChatWordListScreen_CloseWordListTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatPageButtons_StartTransition(v1->unk_254);
-        v0->unk_14++;
+        EasyChatPageButtons_StartTransition(v1->pageButtons);
+        v0->state++;
         break;
     case 1:
-        EasyChatWordListView_SetArrowsVisible(v1->unk_250, 0);
-        EasyChatPageButtons_SetVisible(v1->unk_254, 0);
-        EasyChatWordListView_Hide(v1->unk_250);
-        v0->unk_14++;
+        EasyChatWordListView_SetArrowsVisible(v1->wordListView, 0);
+        EasyChatPageButtons_SetVisible(v1->pageButtons, 0);
+        EasyChatWordListView_Hide(v1->wordListView);
+        v0->state++;
         break;
     case 2:
-        if (EasyChatWordListView_IsHidden(v1->unk_250)) {
-            EasyChatCategories_SetModeOffset(v1->unk_24C);
-            v0->unk_14++;
+        if (EasyChatWordListView_IsHidden(v1->wordListView)) {
+            EasyChatCategories_SetModeOffset(v1->categoriesContext);
+            v0->state++;
         }
         break;
     case 3:
-        EasyChatCategories_StartSlideOutAndDim(v1->unk_24C);
-        v0->unk_14++;
+        EasyChatCategories_StartSlideOutAndDim(v1->categoriesContext);
+        v0->state++;
         break;
     case 4:
-        if (EasyChatCategories_UpdateSlideOutAndDim(v1->unk_24C)
-            && EasyChatPageButtons_IsTransitionDone(v1->unk_254)) {
-            EasyChatCategories_DrawCursor(v1->unk_24C, EasyChat_GetCategoryCursorPos(v1->unk_18));
-            EasyChatCategories_SetCursorVisible(v1->unk_24C, 1);
+        if (EasyChatCategories_UpdateSlideOutAndDim(v1->categoriesContext)
+            && EasyChatPageButtons_IsTransitionDone(v1->pageButtons)) {
+            EasyChatCategories_DrawCursor(v1->categoriesContext, EasyChat_GetCategoryCursorPos(v1->easyChatApp));
+            EasyChatCategories_SetCursorVisible(v1->categoriesContext, 1);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -697,35 +697,35 @@ static void EasyChatWordListScreen_CloseWordListTask(SysTask *param0, void *para
 static void EasyChatWordListScreen_CloseWordListAndCategoriesTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatWordColumns_SetLeftColumnOffset(v1->unk_248);
-        EasyChatWordListView_SetArrowsVisible(v1->unk_250, 0);
-        EasyChatPageButtons_SetVisible(v1->unk_254, 0);
-        EasyChatWordListView_Hide(v1->unk_250);
-        v0->unk_14++;
+        EasyChatWordColumns_SetLeftColumnOffset(v1->wordColumns);
+        EasyChatWordListView_SetArrowsVisible(v1->wordListView, 0);
+        EasyChatPageButtons_SetVisible(v1->pageButtons, 0);
+        EasyChatWordListView_Hide(v1->wordListView);
+        v0->state++;
         break;
     case 1:
-        if (EasyChatWordListView_IsHidden(v1->unk_250)) {
-            EasyChatCategories_ResetVerticalOffset(v1->unk_24C);
-            EasyChatCategories_StartSlideOutAndDim(v1->unk_24C);
-            v0->unk_14++;
+        if (EasyChatWordListView_IsHidden(v1->wordListView)) {
+            EasyChatCategories_ResetVerticalOffset(v1->categoriesContext);
+            EasyChatCategories_StartSlideOutAndDim(v1->categoriesContext);
+            v0->state++;
         }
         break;
     case 2:
-        if (EasyChatCategories_UpdateSlideOutAndDim(v1->unk_24C)) {
-            EasyChatCategories_StartBrightnessRestore(v1->unk_24C);
-            v0->unk_14++;
+        if (EasyChatCategories_UpdateSlideOutAndDim(v1->categoriesContext)) {
+            EasyChatCategories_StartBrightnessRestore(v1->categoriesContext);
+            v0->state++;
         }
         break;
     case 3:
-        if (EasyChatCategories_UpdateBrightnessRestore(v1->unk_24C)) {
-            EasyChatWordDisplay_Refresh(v1->unk_244);
-            EasyChatWordDisplay_SetCursorVisible(v1->unk_244, 1);
-            EasyChatWordDisplay_ShowSelectionArrows(v1->unk_244);
-            EasyChatWordDisplay_SetCursorActive(v1->unk_244);
+        if (EasyChatCategories_UpdateBrightnessRestore(v1->categoriesContext)) {
+            EasyChatWordDisplay_Refresh(v1->wordDisplay);
+            EasyChatWordDisplay_SetCursorVisible(v1->wordDisplay, 1);
+            EasyChatWordDisplay_ShowSelectionArrows(v1->wordDisplay);
+            EasyChatWordDisplay_SetCursorActive(v1->wordDisplay);
             EasyChatWordListScreen_FinishTask(v0);
         }
     }
@@ -734,34 +734,34 @@ static void EasyChatWordListScreen_CloseWordListAndCategoriesTask(SysTask *param
 static void EasyChatWordListScreen_OpenWordListAndCategoriesTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatWordColumns_SetLeftColumnOffset(v1->unk_248);
-        EasyChatWordListView_SetArrowsVisible(v1->unk_250, 0);
-        EasyChatPageButtons_SetVisible(v1->unk_254, 0);
-        EasyChatWordListView_Hide(v1->unk_250);
-        v0->unk_14++;
+        EasyChatWordColumns_SetLeftColumnOffset(v1->wordColumns);
+        EasyChatWordListView_SetArrowsVisible(v1->wordListView, 0);
+        EasyChatPageButtons_SetVisible(v1->pageButtons, 0);
+        EasyChatWordListView_Hide(v1->wordListView);
+        v0->state++;
         break;
     case 1:
-        if (EasyChatWordListView_IsHidden(v1->unk_250)) {
-            EasyChatCategories_ResetVerticalOffset(v1->unk_24C);
-            EasyChatCategories_StartSlideOutAndDim(v1->unk_24C);
-            v0->unk_14++;
+        if (EasyChatWordListView_IsHidden(v1->wordListView)) {
+            EasyChatCategories_ResetVerticalOffset(v1->categoriesContext);
+            EasyChatCategories_StartSlideOutAndDim(v1->categoriesContext);
+            v0->state++;
         }
         break;
     case 2:
-        if (EasyChatCategories_UpdateSlideOutAndDim(v1->unk_24C)) {
-            EasyChatCategories_StartBrightnessRestore(v1->unk_24C);
-            v0->unk_14++;
+        if (EasyChatCategories_UpdateSlideOutAndDim(v1->categoriesContext)) {
+            EasyChatCategories_StartBrightnessRestore(v1->categoriesContext);
+            v0->state++;
         }
         break;
     case 3:
-        if (EasyChatCategories_UpdateBrightnessRestore(v1->unk_24C)) {
-            EasyChatWordDisplay_Refresh(v1->unk_244);
-            EasyChatWordDisplay_SetCursorVisible(v1->unk_244, 0);
-            EasyChatWordColumns_SetVisible(v1->unk_248, 1);
+        if (EasyChatCategories_UpdateBrightnessRestore(v1->categoriesContext)) {
+            EasyChatWordDisplay_Refresh(v1->wordDisplay);
+            EasyChatWordDisplay_SetCursorVisible(v1->wordDisplay, 0);
+            EasyChatWordColumns_SetVisible(v1->wordColumns, 1);
             EasyChatWordListScreen_FinishTask(v0);
         }
     }
@@ -770,52 +770,52 @@ static void EasyChatWordListScreen_OpenWordListAndCategoriesTask(SysTask *param0
 static void EasyChatWordListScreen_UpdateWordColumnTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetCursorPosition(v1->unk_244, EasyChat_GetCurrentWordSlot(v1->unk_18));
+    EasyChatWordDisplay_SetCursorPosition(v1->wordDisplay, EasyChat_GetCurrentWordSlot(v1->easyChatApp));
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_UpdatePageIndicatorTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordColumns_SetActiveColumn(v1->unk_248, EasyChat_GetWordColumn(v1->unk_18));
+    EasyChatWordColumns_SetActiveColumn(v1->wordColumns, EasyChat_GetWordColumn(v1->easyChatApp));
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_UpdateCategoryCursorTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatCategories_DrawCursor(v1->unk_24C, EasyChat_GetCategoryCursorPos(v1->unk_18));
+    EasyChatCategories_DrawCursor(v1->categoriesContext, EasyChat_GetCategoryCursorPos(v1->easyChatApp));
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_UpdateWordDisplayTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordListView_SetCursorPosition(v1->unk_250, EasyChat_GetWordSelectCursorIndex(v1->unk_18));
+    EasyChatWordListView_SetCursorPosition(v1->wordListView, EasyChat_GetWordSelectCursorIndex(v1->easyChatApp));
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_ScrollWordListTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    switch (v0->unk_14) {
+    switch (v0->state) {
     case 0:
-        EasyChatWordListView_Scroll(v1->unk_250, EasyChat_GetWordSelectScrollDirection(v1->unk_18));
-        v0->unk_14++;
+        EasyChatWordListView_Scroll(v1->wordListView, EasyChat_GetWordSelectScrollDirection(v1->easyChatApp));
+        v0->state++;
         break;
     case 1:
-        if (EasyChatWordListView_IsScrollDone(v1->unk_250)) {
-            EasyChatPageButtons_SetVisible(v1->unk_254, 1);
+        if (EasyChatWordListView_IsScrollDone(v1->wordListView)) {
+            EasyChatPageButtons_SetVisible(v1->pageButtons, 1);
             EasyChatWordListScreen_FinishTask(v0);
         }
         break;
@@ -825,24 +825,24 @@ static void EasyChatWordListScreen_ScrollWordListTask(SysTask *param0, void *par
 static void EasyChatWordListScreen_SetPageTextDefaultTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetInstructionText(v1->unk_244, 0);
+    EasyChatWordDisplay_SetInstructionText(v1->wordDisplay, 0);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_SetPageTextDownTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetInstructionText(v1->unk_244, 2);
-    EasyChatWordDisplay_DrawPageIndicator(v1->unk_244, EasyChat_GetMenuCursorIndex(v0->unk_04));
+    EasyChatWordDisplay_SetInstructionText(v1->wordDisplay, 2);
+    EasyChatWordDisplay_DrawPageIndicator(v1->wordDisplay, EasyChat_GetMenuCursorIndex(v0->easyChatApp));
 
-    if (EasyChatWordColumns_IsVisible(v1->unk_248)) {
-        EasyChatWordColumns_SetEdgeAnim(v1->unk_248);
+    if (EasyChatWordColumns_IsVisible(v1->wordColumns)) {
+        EasyChatWordColumns_SetEdgeAnim(v1->wordColumns);
     } else {
-        EasyChatWordDisplay_SetCursorIdle(v1->unk_244);
+        EasyChatWordDisplay_SetCursorIdle(v1->wordDisplay);
     }
 
     EasyChatWordListScreen_FinishTask(v0);
@@ -851,15 +851,15 @@ static void EasyChatWordListScreen_SetPageTextDownTask(SysTask *param0, void *pa
 static void EasyChatWordListScreen_SetPageTextUpTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetInstructionText(v1->unk_244, 3);
-    EasyChatWordDisplay_DrawPageIndicator(v1->unk_244, EasyChat_GetMenuCursorIndex(v0->unk_04));
+    EasyChatWordDisplay_SetInstructionText(v1->wordDisplay, 3);
+    EasyChatWordDisplay_DrawPageIndicator(v1->wordDisplay, EasyChat_GetMenuCursorIndex(v0->easyChatApp));
 
-    if (EasyChatWordColumns_IsVisible(v1->unk_248)) {
-        EasyChatWordColumns_SetEdgeAnim(v1->unk_248);
+    if (EasyChatWordColumns_IsVisible(v1->wordColumns)) {
+        EasyChatWordColumns_SetEdgeAnim(v1->wordColumns);
     } else {
-        EasyChatWordDisplay_SetCursorIdle(v1->unk_244);
+        EasyChatWordDisplay_SetCursorIdle(v1->wordDisplay);
     }
 
     EasyChatWordListScreen_FinishTask(v0);
@@ -868,33 +868,33 @@ static void EasyChatWordListScreen_SetPageTextUpTask(SysTask *param0, void *para
 static void EasyChatWordListScreen_SetPageTextNoneTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetInstructionText(v1->unk_244, 1);
+    EasyChatWordDisplay_SetInstructionText(v1->wordDisplay, 1);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_UpdatePageArrowTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_MovePageIndicatorArrow(v1->unk_244, EasyChat_GetMenuCursorIndex(v0->unk_04));
+    EasyChatWordDisplay_MovePageIndicatorArrow(v1->wordDisplay, EasyChat_GetMenuCursorIndex(v0->easyChatApp));
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_ResetPageTextTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatWordDisplay_SetInstructionText(v1->unk_244, 0);
-    EasyChatWordDisplay_ErasePageIndicator(v1->unk_244);
+    EasyChatWordDisplay_SetInstructionText(v1->wordDisplay, 0);
+    EasyChatWordDisplay_ErasePageIndicator(v1->wordDisplay);
 
-    if (EasyChatWordColumns_IsVisible(v1->unk_248)) {
-        EasyChatWordColumns_SetDefaultAnim(v1->unk_248);
+    if (EasyChatWordColumns_IsVisible(v1->wordColumns)) {
+        EasyChatWordColumns_SetDefaultAnim(v1->wordColumns);
     } else {
-        EasyChatWordDisplay_SetCursorActive(v1->unk_244);
+        EasyChatWordDisplay_SetCursorActive(v1->wordDisplay);
     }
 
     EasyChatWordListScreen_FinishTask(v0);
@@ -903,60 +903,60 @@ static void EasyChatWordListScreen_ResetPageTextTask(SysTask *param0, void *para
 static void EasyChatWordListScreen_PageUpPressedTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatPageButtons_SetPressedState(v1->unk_254, 0, 1);
+    EasyChatPageButtons_SetPressedState(v1->pageButtons, 0, 1);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_PageDownPressedTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatPageButtons_SetPressedState(v1->unk_254, 1, 1);
+    EasyChatPageButtons_SetPressedState(v1->pageButtons, 1, 1);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_PageUpReleasedTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatPageButtons_SetPressedState(v1->unk_254, 0, 0);
+    EasyChatPageButtons_SetPressedState(v1->pageButtons, 0, 0);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 static void EasyChatWordListScreen_PageDownReleasedTask(SysTask *param0, void *param1)
 {
     EasyChatWordListScreenTask *v0 = param1;
-    EasyChatWordListScreen *v1 = v0->unk_00;
+    EasyChatWordListScreen *v1 = v0->wordListScreen;
 
-    EasyChatPageButtons_SetPressedState(v1->unk_254, 1, 0);
+    EasyChatPageButtons_SetPressedState(v1->pageButtons, 1, 0);
     EasyChatWordListScreen_FinishTask(v0);
 }
 
 u32 EasyChatWordListScreen_GetWordSlotCount(EasyChatWordListScreen *param0)
 {
-    return EasyChatWordDisplay_GetWordSlotCount(param0->unk_244);
+    return EasyChatWordDisplay_GetWordSlotCount(param0->wordDisplay);
 }
 
 BgConfig *EasyChatWordListScreen_GetBgConfig(EasyChatWordListScreen *param0)
 {
-    return param0->unk_20;
+    return param0->bgConfig;
 }
 
 SpriteList *EasyChatWordListScreen_GetSpriteList(EasyChatWordListScreen *param0)
 {
-    return param0->unk_24;
+    return param0->spriteList;
 }
 
 void EasyChatWordListScreen_SetupSpriteResources(EasyChatWordListScreen *param0, SpriteResourcesHeader *param1, u32 param2, u32 param3)
 {
-    param1->imageProxy = &param0->unk_1B4[param2];
-    param1->paletteProxy = &param0->unk_1FC[param2];
-    param1->cellBank = param0->unk_224[param2];
-    param1->cellAnimBank = param0->unk_22C[param2];
+    param1->imageProxy = &param0->imageProxy[param2];
+    param1->paletteProxy = &param0->paletteProxy[param2];
+    param1->cellBank = param0->cellBank[param2];
+    param1->cellAnimBank = param0->cellAnimBank[param2];
     param1->priority = param3;
     param1->charData = NULL;
     param1->multiCellBank = NULL;
@@ -970,7 +970,7 @@ Sprite *EasyChatWordListScreen_AddSprite(EasyChatWordListScreen *param0, SpriteR
     Sprite *v1;
     OSIntrMode v2;
 
-    v0.list = param0->unk_24;
+    v0.list = param0->spriteList;
     v0.resourceData = param1;
     v0.position.x = param2 * FX32_ONE;
     v0.position.y = param3 * FX32_ONE;

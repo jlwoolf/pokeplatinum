@@ -849,7 +849,7 @@ void PokemonSummaryScreen_PrintLevel(PokemonSummaryScreen *summaryScreen)
 
     String *buf;
     if (summaryScreen->monData.isEgg == FALSE) {
-        FontSpecialChars_DrawPartyScreenLevelText(summaryScreen->unk_684, 1, window, 0, 5);
+        FontSpecialChars_DrawPartyScreenLevelText(summaryScreen->fontSpecialChars, 1, window, 0, 5);
 
         buf = MessageLoader_GetNewString(summaryScreen->msgLoader, PokemonSummary_Text_TemplateMonLevel);
 

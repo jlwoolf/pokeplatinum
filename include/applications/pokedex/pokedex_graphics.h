@@ -89,7 +89,7 @@ typedef struct PokedexGraphicData {
     PokedexTextManager *textMan;
     PokemonSpriteManager *spriteMan;
     PokemonSprite *pokemonSprite[NUM_VISIBLE_SPRITES];
-    SoftwareSpriteManager *unk_164;
+    SoftwareSpriteManager *softwareSpriteManager;
     PokedexBlendTransition blendMain;
     PokedexBlendTransition blendSub;
     PokedexSpeciesLabel pokedexSpeciesLabel;

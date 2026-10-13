@@ -110,7 +110,7 @@ void PokemonGraphics_UpdateSprites(PokedexGraphicData *pokedexGraphicData)
     NNS_G2dSetupSoftwareSpriteCamera();
 
     PokemonSpriteManager_DrawSprites(pokedexGraphicData->spriteMan);
-    SoftwareSpriteManager_DrawVisible(pokedexGraphicData->unk_164);
+    SoftwareSpriteManager_DrawVisible(pokedexGraphicData->softwareSpriteManager);
 }
 
 void PokemonGraphics_UpdateCharAndPltt(PokedexGraphicData *pokedexGraphicData)
@@ -705,7 +705,7 @@ static void NewPokemonSprite(PokedexGraphicData *pokedexGraphicData, enum HeapID
         };
 
         v3.heapID = heapID;
-        pokedexGraphicData->unk_164 = SoftwareSpriteManager_New(&v3);
+        pokedexGraphicData->softwareSpriteManager = SoftwareSpriteManager_New(&v3);
     }
 }
 
@@ -718,7 +718,7 @@ static void FreePokemonSprite(PokedexGraphicData *pokedexGraphicData)
     }
 
     PokemonSpriteManager_Free(pokedexGraphicData->spriteMan);
-    SoftwareSpriteManager_Free(pokedexGraphicData->unk_164);
+    SoftwareSpriteManager_Free(pokedexGraphicData->softwareSpriteManager);
 }
 
 static void InitSpeciesLabelGraphics(PokedexGraphicData *pokedexGraphicData, enum HeapID heapID)

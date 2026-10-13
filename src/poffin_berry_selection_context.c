@@ -25,7 +25,7 @@ static PoffinBerrySelectionContext *CreateContext(int isInGroup, SaveData *saveD
     ctx->bag = SaveData_GetBag(saveData);
     ctx->options = SaveData_GetOptions(saveData);
     ctx->journalEntry = journalEntry;
-    ctx->unk_20 = FALSE;
+    ctx->isOnline = FALSE;
     ctx->isInGroup = isInGroup;
 
     return ctx;
@@ -56,7 +56,7 @@ PoffinBerrySelectionContext *PoffinBerrySelectionContext_Create(FieldSystem *fie
 PoffinBerrySelectionContext *PoffinBerrySelectionContext_CreateVoiceChat(FieldSystem *fieldSystem, enum HeapID heapID, BOOL voiceChat)
 {
     PoffinBerrySelectionContext *ctx = CreateContext(TRUE, FieldSystem_GetSaveData(fieldSystem), heapID, fieldSystem->journalEntry);
-    ctx->unk_20 = TRUE;
+    ctx->isOnline = TRUE;
     ctx->voiceChat = voiceChat;
 
     FieldTask_OpenPoffinBerrySelection(fieldSystem, ctx);

@@ -32,8 +32,8 @@ typedef struct JournalManager {
     s8 page;
     u8 padding_105D;
     s8 state;
-    s8 unk_105F;
-    s8 unk_1060;
+    s8 pageTurnColumn;
+    s8 pageSide;
     u8 bgLayer1;
     u8 bgLayer2;
     u8 bgLayer3;

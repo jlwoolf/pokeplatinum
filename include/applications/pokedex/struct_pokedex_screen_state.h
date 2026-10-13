@@ -4,13 +4,13 @@
 #include "applications/pokedex/struct_pokedex_screen_state_data.h"
 
 typedef struct {
-    int unk_00;
+    int transitionMask;
 
     // clang-format off
-    BOOL (* unk_04)(PokedexScreenStateData * param0);
+    BOOL (* stepFunc)(PokedexScreenStateData * param0);
     // clang-format on
 
-    PokedexScreenStateData unk_08;
+    PokedexScreenStateData stepData;
 } PokedexScreenState;
 
 #endif // POKEPLATINUM_STRUCT_POKEDEX_SCREEN_STATE_H

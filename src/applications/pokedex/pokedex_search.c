@@ -391,8 +391,8 @@ static int UpdateScreenState(PokedexDataManager *dataMan, void *data)
         if (dexExists == TRUE) {
             *searchSettings->exitFlag |= EXITSEARCH;
             PokedexSort_SetCurrentValues(searchSettings->unk_04, 0);
-            searchSettings->unk_04->unk_1740 = 1;
-            searchSettings->unk_08->unk_18 = 1;
+            searchSettings->unk_04->isFiltered = 1;
+            searchSettings->unk_08->skipTransitionRequest = 1;
         } else {
             searchSettings->applyFilter = FALSE;
             searchSettings->screenChange = FALSE;

@@ -20,7 +20,7 @@ PokedexTextManager *PokedexTextManager_New(const PokedexTextManagerTemplate *tex
     GF_ASSERT(textMan);
     memset(textMan, 0, sizeof(PokedexTextManager));
 
-    textMan->unk_00 = FontOAMManager_New(textManTemplate->numTextData, textManTemplate->heapID);
+    textMan->fontOAMManager = FontOAMManager_New(textManTemplate->numTextData, textManTemplate->heapID);
     textMan->textData = Heap_Alloc(textManTemplate->heapID, sizeof(PokedexTextData) * textManTemplate->numTextData);
 
     GF_ASSERT(textMan->textData);
@@ -40,7 +40,7 @@ void PokedexTextManager_Free(PokedexTextManager *textMan)
 
     PokedexTextManager_FreeAllTextData(textMan);
     Heap_Free(textMan->textData);
-    FontOAMManager_Free(textMan->unk_00);
+    FontOAMManager_Free(textMan->fontOAMManager);
 
     memset(textMan, 0, sizeof(PokedexTextManager));
 
@@ -61,7 +61,7 @@ PokedexTextData *PokedexTextManager_NextTextDataNew(const PokedexDisplayBox *dis
     GF_ASSERT(textData);
     CharTransfer_AllocRange(size, TRUE, displayBox->vramType, &textData->allocation);
 
-    v0.fontOAMManager = displayBox->textMan->unk_00;
+    v0.fontOAMManager = displayBox->textMan->fontOAMManager;
     v0.window = displayBox->window;
     v0.spriteList = displayBox->textMan->spriteList;
     v0.paletteProxy = displayBox->paletteProxy;

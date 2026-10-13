@@ -38,11 +38,11 @@ int PoffinBerrySelection_Init(ApplicationManager *appMan, int *state)
     data->heapID = HEAP_ID_POFFIN_BERRY_SELECTION;
     data->ctx = ctx;
 
-    if (ctx->unk_20 && ctx->voiceChat) {
+    if (ctx->isOnline && ctx->voiceChat) {
         NintendoWFC_StartVoiceChat(HEAP_ID_POFFIN_BERRY_SELECTION);
     }
 
-    data->unk_26 = ctx->unk_20;
+    data->isOnline = ctx->isOnline;
     data->voiceChat = ctx->voiceChat;
     data->bagCursor = BagCursor_New(data->heapID);
 
@@ -98,13 +98,13 @@ int PoffinBerrySelection_Exit(ApplicationManager *appMan, int *state)
         MI_CpuClear8(data, sizeof(PoffinBerrySelectionData));
         ApplicationManager_FreeData(appMan);
 
-        if (ctx->unk_20 && ctx->voiceChat) {
+        if (ctx->isOnline && ctx->voiceChat) {
             NintendoWFC_TerminateVoiceChat();
         }
 
         Heap_Destroy(heapID);
 
-        if (!ctx->unk_20) {
+        if (!ctx->isOnline) {
             return TRUE;
         }
 

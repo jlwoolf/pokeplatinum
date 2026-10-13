@@ -47,9 +47,9 @@ EasyChatCategoriesContext *EasyChatCategoriesContext_New(EasyChatWordListScreen 
 {
     EasyChatCategoriesContext *ctx = Heap_Alloc(HEAP_ID_35, sizeof(EasyChatCategoriesContext));
 
-    ctx->unk_00 = param0;
+    ctx->wordListScreen = param0;
     ctx->easyChatApp = easyChatApp;
-    ctx->unk_08 = param2;
+    ctx->wordList = param2;
     ctx->bgConfig = EasyChatWordListScreen_GetBgConfig(param0);
     ctx->unk_10 = 0;
     ctx->dummy = 0;
@@ -69,7 +69,7 @@ void EasyChatCategoriesContext_Free(EasyChatCategoriesContext *ctx)
 
 void EasyChatCategories_DrawInterface(EasyChatCategoriesContext *ctx, NARC *narc)
 {
-    BgConfig *bgConfig = EasyChatWordListScreen_GetBgConfig(ctx->unk_00);
+    BgConfig *bgConfig = EasyChatWordListScreen_GetBgConfig(ctx->wordListScreen);
 
     Graphics_LoadTilemapToBgLayerFromOpenNARC(narc, 2, bgConfig, BG_LAYER_MAIN_1, 0, 0, TRUE, HEAP_ID_35);
 
@@ -110,7 +110,7 @@ static u32 EasyChatCategories_PrintGroups(EasyChatCategoriesContext *ctx, BgConf
         String *string;
         TextColor color;
 
-        if (EasyChatWordList_GetGroupWordCount(ctx->unk_08, i)) {
+        if (EasyChatWordList_GetGroupWordCount(ctx->wordList, i)) {
             string = MessageLoader_GetNewString(loader, i);
             color = TEXT_COLOR(1, 2, 15);
         } else {
@@ -162,7 +162,7 @@ static u32 EasyChatCategories_PrintABCModeSelection(EasyChatCategoriesContext *c
         EasyChatABCMode_GetCharPos(i, &x, &y);
 
         TextColor color;
-        if (EasyChatWordList_GetLetterWordCount(ctx->unk_08, i)) {
+        if (EasyChatWordList_GetLetterWordCount(ctx->wordList, i)) {
             color = TEXT_COLOR(1, 2, 15);
         } else {
             color = TEXT_COLOR(3, 4, 15);
@@ -219,8 +219,8 @@ static void EasyChatCategories_CreateCursorSprite(EasyChatCategoriesContext *ctx
 {
     SpriteResourcesHeader v0;
 
-    EasyChatWordListScreen_SetupSpriteResources(ctx->unk_00, &v0, 0, 1);
-    ctx->cursorSprite = EasyChatWordListScreen_AddSprite(ctx->unk_00, &v0, 48, 54, 2, NNS_G2D_VRAM_TYPE_2DMAIN);
+    EasyChatWordListScreen_SetupSpriteResources(ctx->wordListScreen, &v0, 0, 1);
+    ctx->cursorSprite = EasyChatWordListScreen_AddSprite(ctx->wordListScreen, &v0, 48, 54, 2, NNS_G2D_VRAM_TYPE_2DMAIN);
     Sprite_SetAnim(ctx->cursorSprite, 4);
     Sprite_SetDrawFlag(ctx->cursorSprite, FALSE);
 }
@@ -275,21 +275,21 @@ void EasyChatCategories_DrawCursor(EasyChatCategoriesContext *ctx, u32 selectedI
 
 void EasyChatCategories_StartShowAnimation(EasyChatCategoriesContext *ctx)
 {
-    ctx->unk_14 = 0;
-    EasyChatBlendAnimation_StartBrightness(&(ctx->unk_1C), GX_BLEND_PLANEMASK_BG1, -10, 0, 16);
+    ctx->animStage = 0;
+    EasyChatBlendAnimation_StartBrightness(&(ctx->blendAnimation), GX_BLEND_PLANEMASK_BG1, -10, 0, 16);
 }
 
 BOOL EasyChatCategories_UpdateShowAnimation(EasyChatCategoriesContext *ctx)
 {
-    switch (ctx->unk_14) {
+    switch (ctx->animStage) {
     case 0:
-        if (EasyChatBlendAnimation_UpdateBrightness(&ctx->unk_1C)) {
-            EasyChatScrollAnimation_Start(&(ctx->unk_3C), ctx->bgConfig, 1, 1, 24, 6);
-            ctx->unk_14++;
+        if (EasyChatBlendAnimation_UpdateBrightness(&ctx->blendAnimation)) {
+            EasyChatScrollAnimation_Start(&(ctx->scrollAnimation), ctx->bgConfig, 1, 1, 24, 6);
+            ctx->animStage++;
         }
         break;
     case 1:
-        return EasyChatScrollAnimation_Update(&(ctx->unk_3C));
+        return EasyChatScrollAnimation_Update(&(ctx->scrollAnimation));
     }
 
     return 0;
@@ -297,21 +297,21 @@ BOOL EasyChatCategories_UpdateShowAnimation(EasyChatCategoriesContext *ctx)
 
 void EasyChatCategories_StartSlideOutAnimation(EasyChatCategoriesContext *ctx)
 {
-    ctx->unk_14 = 0;
-    EasyChatScrollAnimation_Start(&(ctx->unk_3C), ctx->bgConfig, 1, 1, -24, 6);
+    ctx->animStage = 0;
+    EasyChatScrollAnimation_Start(&(ctx->scrollAnimation), ctx->bgConfig, 1, 1, -24, 6);
 }
 
 BOOL EasyChatCategories_UpdateSlideOutAnimation(EasyChatCategoriesContext *ctx)
 {
-    switch (ctx->unk_14) {
+    switch (ctx->animStage) {
     case 0:
-        if (EasyChatScrollAnimation_Update(&(ctx->unk_3C))) {
-            EasyChatBlendAnimation_StartBrightness(&(ctx->unk_1C), GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
-            ctx->unk_14++;
+        if (EasyChatScrollAnimation_Update(&(ctx->scrollAnimation))) {
+            EasyChatBlendAnimation_StartBrightness(&(ctx->blendAnimation), GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
+            ctx->animStage++;
         }
         break;
     case 1:
-        return EasyChatBlendAnimation_UpdateBrightness(&ctx->unk_1C);
+        return EasyChatBlendAnimation_UpdateBrightness(&ctx->blendAnimation);
     }
 
     return 0;
@@ -324,22 +324,22 @@ void EasyChatCategories_ResetVerticalOffset(EasyChatCategoriesContext *ctx)
 
 void EasyChatCategories_StartBrightnessRestore(EasyChatCategoriesContext *ctx)
 {
-    EasyChatBlendAnimation_StartBrightness(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
+    EasyChatBlendAnimation_StartBrightness(&ctx->blendAnimation, GX_BLEND_PLANEMASK_BG1, 0, -10, 16);
 }
 
 BOOL EasyChatCategories_UpdateBrightnessRestore(EasyChatCategoriesContext *ctx)
 {
-    return EasyChatBlendAnimation_UpdateBrightness(&ctx->unk_1C);
+    return EasyChatBlendAnimation_UpdateBrightness(&ctx->blendAnimation);
 }
 
 void EasyChatCategories_StartSlideInAnimation(EasyChatCategoriesContext *ctx)
 {
-    EasyChatBlendAnimation_Start(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 124, 0, (6 * 2));
+    EasyChatBlendAnimation_Start(&ctx->blendAnimation, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 124, 0, (6 * 2));
 }
 
 BOOL EasyChatCategories_UpdateSlideInAnimation(EasyChatCategoriesContext *ctx)
 {
-    if (EasyChatBlendAnimation_Update(&ctx->unk_1C)) {
+    if (EasyChatBlendAnimation_Update(&ctx->blendAnimation)) {
         Bg_ToggleLayer(BG_LAYER_MAIN_1, FALSE);
         return TRUE;
     }
@@ -351,12 +351,12 @@ void EasyChatCategories_StartSlideOutAndDim(EasyChatCategoriesContext *ctx)
 {
     G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 0, 16);
     Bg_ToggleLayer(BG_LAYER_MAIN_1, TRUE);
-    EasyChatBlendAnimation_Start(&ctx->unk_1C, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 0, 124, (6 * 2));
+    EasyChatBlendAnimation_Start(&ctx->blendAnimation, GX_BLEND_PLANEMASK_BG1, GX_BLEND_ALL, 0, 124, (6 * 2));
 }
 
 BOOL EasyChatCategories_UpdateSlideOutAndDim(EasyChatCategoriesContext *ctx)
 {
-    return EasyChatBlendAnimation_Update(&ctx->unk_1C);
+    return EasyChatBlendAnimation_Update(&ctx->blendAnimation);
 }
 
 void EasyChatCategories_SetModeOffset(EasyChatCategoriesContext *ctx)
@@ -382,10 +382,10 @@ void EasyChatCategories_StartModeTransition(EasyChatCategoriesContext *ctx)
         v0 = ABC_MODE_BG_X_OFFSET - GROUP_MODE_BG_X_OFFSET;
     }
 
-    EasyChatScrollAnimation_Start(&ctx->unk_3C, ctx->bgConfig, 1, 0, v0, 16);
+    EasyChatScrollAnimation_Start(&ctx->scrollAnimation, ctx->bgConfig, 1, 0, v0, 16);
 }
 
 BOOL EasyChatCategories_UpdateModeTransition(EasyChatCategoriesContext *ctx)
 {
-    return EasyChatScrollAnimation_Update(&ctx->unk_3C);
+    return EasyChatScrollAnimation_Update(&ctx->scrollAnimation);
 }

@@ -6,18 +6,18 @@
 #include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 typedef struct {
-    PokedexUpdater *unk_00;
-    PokedexUpdater *unk_04;
-    PokedexUpdater *unk_08;
-    PokedexUpdater *unk_0C;
-    PokedexScreenStateSet *unk_10;
-    PokedexScreenStateSet *unk_14;
-    PokedexScreenStateSet *unk_18;
-    PokedexScreenStateSet *unk_1C;
-    PokedexScreenManager *unk_20;
-    PokedexScreenManager *unk_24;
-    PokedexScreenManager *unk_28;
-    PokedexScreenManager *unk_2C;
+    PokedexUpdater *updater1;
+    PokedexUpdater *updater2;
+    PokedexUpdater *updater3;
+    PokedexUpdater *updater4;
+    PokedexScreenStateSet *screenStateSet1;
+    PokedexScreenStateSet *screenStateSet2;
+    PokedexScreenStateSet *screenStateSet3;
+    PokedexScreenStateSet *screenStateSet4;
+    PokedexScreenManager *screenManager1;
+    PokedexScreenManager *subScreenManager1;
+    PokedexScreenManager *screenManager2;
+    PokedexScreenManager *subScreenManager2;
 } PokedexTransitionQuadScreens;
 
 #endif // POKEPLATINUM_STRUCT_POKEDEX_TRANSITION_QUAD_SCREENS_H

@@ -50,10 +50,10 @@ typedef struct PCHallOfFameApp {
     MessageLoader *msgLoaderSpeciesNames;
     MessageLoader *msgLoaderMoveNames;
     StringTemplate *strTemplate;
-    String *unk_1F4;
-    String *unk_1F8;
+    String *textBuffer;
+    String *formattedText;
     Pokemon *mon;
-    u8 unk_200[3200];
+    u8 spriteCharBuffer[3200];
 } PCHallOfFameApp;
 
 static void PCHallOfFame_VBlankCallback(void *param0);
@@ -101,8 +101,8 @@ PCHallOfFameApp *PCHallOfFame_InitApp(PCHallOfFameMan *pcHallOfFameMan, const PC
         pcHallOfFameApp->msgLoaderSpeciesNames = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_SPECIES_NAME, HEAP_ID_PC_HALL_OF_FAME);
         pcHallOfFameApp->msgLoaderMoveNames = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_MOVE_NAMES, HEAP_ID_PC_HALL_OF_FAME);
         pcHallOfFameApp->strTemplate = StringTemplate_Default(HEAP_ID_PC_HALL_OF_FAME);
-        pcHallOfFameApp->unk_1F4 = String_Init(256, HEAP_ID_PC_HALL_OF_FAME);
-        pcHallOfFameApp->unk_1F8 = String_Init(256, HEAP_ID_PC_HALL_OF_FAME);
+        pcHallOfFameApp->textBuffer = String_Init(256, HEAP_ID_PC_HALL_OF_FAME);
+        pcHallOfFameApp->formattedText = String_Init(256, HEAP_ID_PC_HALL_OF_FAME);
         pcHallOfFameApp->mon = Pokemon_New(HEAP_ID_PC_HALL_OF_FAME);
 
         SetVBlankCallback(PCHallOfFame_VBlankCallback, pcHallOfFameApp);
@@ -116,8 +116,8 @@ void PCHallOfFame_FreeApp(PCHallOfFameApp *pcHallOfFameApp)
     if (pcHallOfFameApp) {
         SetVBlankCallback(NULL, NULL);
         Heap_Free(pcHallOfFameApp->mon);
-        String_Free(pcHallOfFameApp->unk_1F8);
-        String_Free(pcHallOfFameApp->unk_1F4);
+        String_Free(pcHallOfFameApp->formattedText);
+        String_Free(pcHallOfFameApp->textBuffer);
         StringTemplate_Free(pcHallOfFameApp->strTemplate);
         MessageLoader_Free(pcHallOfFameApp->msgLoaderMoveNames);
         MessageLoader_Free(pcHallOfFameApp->msgLoaderSpeciesNames);
@@ -375,10 +375,10 @@ static void PCHallOfFame_PrintEntryTitleText(PCHallOfFameApp *pcHallOfFameApp)
     StringTemplate_SetNumber(pcHallOfFameApp->strTemplate, 1, pcHallOfFameScreen->date.year + 2000, 4, PADDING_MODE_NONE, CHARSET_MODE_EN);
     StringTemplate_SetMonthName(pcHallOfFameApp->strTemplate, 2, pcHallOfFameScreen->date.month);
     StringTemplate_SetNumber(pcHallOfFameApp->strTemplate, 3, pcHallOfFameScreen->date.day, 2, PADDING_MODE_NONE, CHARSET_MODE_EN);
-    MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_Title, pcHallOfFameApp->unk_1F4);
-    StringTemplate_Format(pcHallOfFameApp->strTemplate, pcHallOfFameApp->unk_1F8, pcHallOfFameApp->unk_1F4);
+    MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_Title, pcHallOfFameApp->textBuffer);
+    StringTemplate_Format(pcHallOfFameApp->strTemplate, pcHallOfFameApp->formattedText, pcHallOfFameApp->textBuffer);
     Window_FillTilemap(v1, 15);
-    Text_AddPrinterWithParams(v1, FONT_SYSTEM, pcHallOfFameApp->unk_1F8, 0, 0, TEXT_SPEED_NO_TRANSFER, NULL);
+    Text_AddPrinterWithParams(v1, FONT_SYSTEM, pcHallOfFameApp->formattedText, 0, 0, TEXT_SPEED_NO_TRANSFER, NULL);
     Window_LoadTiles(v1);
 }
 
@@ -393,39 +393,39 @@ static void PCHallOfFame_PrintCurrentTextState(PCHallOfFameApp *pcHallOfFameApp)
     switch (pcHallOfFameScreen->textState) {
     case PC_HALL_OF_FAME_TEXT_GENERAL:
         Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameMon->nickname, 0, 0, TEXT_SPEED_NO_TRANSFER, NULL);
-        MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_Slash, pcHallOfFameApp->unk_1F4);
-        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->unk_1F4, 72, 0, TEXT_SPEED_NO_TRANSFER, NULL);
-        MessageLoader_GetString(pcHallOfFameApp->msgLoaderSpeciesNames, pcHallOfFameMon->species, pcHallOfFameApp->unk_1F4);
-        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->unk_1F4, 94, 0, TEXT_SPEED_NO_TRANSFER, NULL);
+        MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_Slash, pcHallOfFameApp->textBuffer);
+        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->textBuffer, 72, 0, TEXT_SPEED_NO_TRANSFER, NULL);
+        MessageLoader_GetString(pcHallOfFameApp->msgLoaderSpeciesNames, pcHallOfFameMon->species, pcHallOfFameApp->textBuffer);
+        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->textBuffer, 94, 0, TEXT_SPEED_NO_TRANSFER, NULL);
 
         switch (Pokemon_GetGenderOf(pcHallOfFameMon->species, pcHallOfFameMon->personality)) {
         case GENDER_MALE:
-            MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_MaleSign, pcHallOfFameApp->unk_1F4);
+            MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_MaleSign, pcHallOfFameApp->textBuffer);
             break;
         case GENDER_FEMALE:
-            MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_FemaleSign, pcHallOfFameApp->unk_1F4);
+            MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_FemaleSign, pcHallOfFameApp->textBuffer);
             break;
         default:
-            String_Clear(pcHallOfFameApp->unk_1F4);
+            String_Clear(pcHallOfFameApp->textBuffer);
             break;
         }
 
-        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->unk_1F4, 174, 0, TEXT_SPEED_NO_TRANSFER, NULL);
-        MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_Level, pcHallOfFameApp->unk_1F4);
+        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->textBuffer, 174, 0, TEXT_SPEED_NO_TRANSFER, NULL);
+        MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_Level, pcHallOfFameApp->textBuffer);
         StringTemplate_SetNumber(pcHallOfFameApp->strTemplate, 0, pcHallOfFameMon->level, 4, PADDING_MODE_SPACES, CHARSET_MODE_EN);
-        StringTemplate_Format(pcHallOfFameApp->strTemplate, pcHallOfFameApp->unk_1F8, pcHallOfFameApp->unk_1F4);
-        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->unk_1F8, 194, 0, TEXT_SPEED_NO_TRANSFER, NULL);
-        MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_OT, pcHallOfFameApp->unk_1F4);
-        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->unk_1F4, 0, 16, TEXT_SPEED_NO_TRANSFER, NULL);
-        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameMon->OTName, Font_CalcStringWidth(FONT_SYSTEM, pcHallOfFameApp->unk_1F4, 0), 16, TEXT_SPEED_NO_TRANSFER, NULL);
+        StringTemplate_Format(pcHallOfFameApp->strTemplate, pcHallOfFameApp->formattedText, pcHallOfFameApp->textBuffer);
+        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->formattedText, 194, 0, TEXT_SPEED_NO_TRANSFER, NULL);
+        MessageLoader_GetString(pcHallOfFameApp->msgLoaderHallOfFame, PCHallOfFame_Text_OT, pcHallOfFameApp->textBuffer);
+        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->textBuffer, 0, 16, TEXT_SPEED_NO_TRANSFER, NULL);
+        Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameMon->OTName, Font_CalcStringWidth(FONT_SYSTEM, pcHallOfFameApp->textBuffer, 0), 16, TEXT_SPEED_NO_TRANSFER, NULL);
         break;
     case PC_HALL_OF_FAME_TEXT_MOVES: {
         int i;
 
         for (i = 0; i < LEARNED_MOVES_MAX; i++) {
             if (pcHallOfFameMon->moves[i]) {
-                MessageLoader_GetString(pcHallOfFameApp->msgLoaderMoveNames, pcHallOfFameMon->moves[i], pcHallOfFameApp->unk_1F4);
-                Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->unk_1F4, (i & 1) * 96, (i / 2) * 16, TEXT_SPEED_NO_TRANSFER, NULL);
+                MessageLoader_GetString(pcHallOfFameApp->msgLoaderMoveNames, pcHallOfFameMon->moves[i], pcHallOfFameApp->textBuffer);
+                Text_AddPrinterWithParams(window, FONT_SYSTEM, pcHallOfFameApp->textBuffer, (i & 1) * 96, (i / 2) * 16, TEXT_SPEED_NO_TRANSFER, NULL);
             } else {
                 break;
             }
@@ -445,7 +445,7 @@ static void PCHallOfFame_InitSprites(PCHallOfFameApp *pcHallOfFameApp)
     pcHallOfFameApp->cellBank = Graphics_GetCellBank(27, 77, FALSE, &cellBank, HEAP_ID_PC_HALL_OF_FAME);
     pcHallOfFameApp->animBank = Graphics_GetAnimBank(27, 78, FALSE, &animBank, HEAP_ID_PC_HALL_OF_FAME);
 
-    MI_CpuClearFast(pcHallOfFameApp->unk_200, sizeof(pcHallOfFameApp->unk_200));
+    MI_CpuClearFast(pcHallOfFameApp->spriteCharBuffer, sizeof(pcHallOfFameApp->spriteCharBuffer));
 
     PCHallOfFame_CreateSprites(pcHallOfFameApp, cellBank, animBank);
     PCHallOfFame_DrawAllPokemon(pcHallOfFameApp);
@@ -537,10 +537,10 @@ static void PCHallOfFame_DrawAllPokemon(PCHallOfFameApp *pcHallOfFameApp)
         Pokemon_InitWith(pcHallOfFameApp->mon, pcHallOfFameScreen->pokemon[i].species, pcHallOfFameScreen->pokemon[i].level, INIT_IVS_RANDOM, TRUE, pcHallOfFameScreen->pokemon[i].personality, OTID_SET, pcHallOfFameScreen->pokemon[i].OTID);
         Pokemon_SetValue(pcHallOfFameApp->mon, MON_DATA_FORM, (void *)(&(pcHallOfFameScreen->pokemon[i].form)));
         Pokemon_BuildSpriteTemplate(&spriteTemplate, pcHallOfFameApp->mon, FACE_FRONT);
-        CharacterSprite_LoadPokemonSpriteRegion(spriteTemplate.narcID, spriteTemplate.character, HEAP_ID_PC_HALL_OF_FAME, &tileRegion, pcHallOfFameApp->unk_200, pcHallOfFameScreen->pokemon[i].personality, FALSE, FACE_FRONT, pcHallOfFameScreen->pokemon[i].species);
+        CharacterSprite_LoadPokemonSpriteRegion(spriteTemplate.narcID, spriteTemplate.character, HEAP_ID_PC_HALL_OF_FAME, &tileRegion, pcHallOfFameApp->spriteCharBuffer, pcHallOfFameScreen->pokemon[i].personality, FALSE, FACE_FRONT, pcHallOfFameScreen->pokemon[i].species);
 
-        DC_FlushRange(pcHallOfFameApp->unk_200, sizeof(pcHallOfFameApp->unk_200));
-        GX_LoadOBJ(pcHallOfFameApp->unk_200, 3200 * i, 3200);
+        DC_FlushRange(pcHallOfFameApp->spriteCharBuffer, sizeof(pcHallOfFameApp->spriteCharBuffer));
+        GX_LoadOBJ(pcHallOfFameApp->spriteCharBuffer, 3200 * i, 3200);
 
         Graphics_LoadPalette(spriteTemplate.narcID, spriteTemplate.palette, PAL_LOAD_MAIN_OBJ, i * 0x20, 0x20, HEAP_ID_PC_HALL_OF_FAME);
 

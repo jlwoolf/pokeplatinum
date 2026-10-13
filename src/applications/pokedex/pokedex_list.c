@@ -205,7 +205,7 @@ void PokedexList_Free(PokedexScreenManager *param0)
 
 BOOL PokedexList_IsActive(const PokedexListState *param0)
 {
-    if ((param0->unk_24 == 1) || (param0->unk_28 == 1) || (param0->unk_2C == 1) || (param0->unk_30 == 1) || (param0->unk_34 == 1)) {
+    if ((param0->cancelFlag == 1) || (param0->sortMenuFlag == 1) || (param0->infoFlag == 1) || (param0->nationalDexFlag == 1) || (param0->exitFlag == 1)) {
         return 0;
     }
 
@@ -218,11 +218,11 @@ static PokedexListState *AllocState(enum HeapID heapID, PokedexApp *param1)
     GF_ASSERT(v0);
     memset(v0, 0, sizeof(PokedexListState));
 
-    v0->unk_00 = PokedexMain_GetTransitionRequest1(param1);
-    v0->unk_04 = PokedexMain_GetSortData(param1);
-    v0->unk_10 = 0;
-    v0->unk_14 = 0;
-    v0->unk_1C = 1;
+    v0->transitionRequest = PokedexMain_GetTransitionRequest1(param1);
+    v0->sortData = PokedexMain_GetSortData(param1);
+    v0->skipTransition = 0;
+    v0->useBlendTransition = 0;
+    v0->updateGraphics = 1;
 
     return v0;
 }
@@ -291,13 +291,13 @@ static int InitData(PokedexDataManager *dataMan, void *data)
     memset(dataMan->pageData, 0, sizeof(PokedexListScroll));
 
     ResetScroll(v0, dataMan->pageData);
-    PokedexSort_UpdateCurrentValues(v0->unk_04);
+    PokedexSort_UpdateCurrentValues(v0->sortData);
 
-    v0->unk_1C = 1;
-    v0->unk_20 = 0;
+    v0->updateGraphics = 1;
+    v0->scrollState = 0;
 
-    if (v0->unk_18 == 1) {
-        v0->unk_10 = 1;
+    if (v0->skipTransitionRequest == 1) {
+        v0->skipTransition = 1;
     }
 
     ClearExitFlags(v0);
@@ -315,7 +315,7 @@ static int UpdateData(PokedexDataManager *dataMan, void *data)
     }
 
     if (dataMan->state == 0) {
-        v0->unk_18 = 0;
+        v0->skipTransitionRequest = 0;
         dataMan->state = 1;
     } else {
         UpdateScroll(v0, v1, dataMan->heapID);
@@ -350,13 +350,13 @@ static int InitGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, con
         graphicsMan->state++;
         break;
     case 1:
-        if (v1->unk_04->unk_1740 == 0) {
+        if (v1->sortData->isFiltered == 0) {
             LoadGraphics(v3, *v0, v1, graphicsMan->heapID);
         } else {
             LoadGraphicsNational(v3, *v0, v1, graphicsMan->heapID);
         }
 
-        if (v1->unk_14) {
+        if (v1->useBlendTransition) {
             StartBlendTransition(v3, v0, v1, 1);
         } else {
             StartBrightnessTransition(v3, v0, v1, 1);
@@ -365,7 +365,7 @@ static int InitGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, con
         graphicsMan->state++;
         break;
     case 2:
-        if (v1->unk_14) {
+        if (v1->useBlendTransition) {
             v4 = UpdateBlendTransition(v3, v0, v1, 1);
         } else {
             v4 = UpdateBrightnessTransition(v3, v0, v1, 1);
@@ -394,11 +394,11 @@ static int UpdateGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, c
     PokedexListGraphics *v3 = graphicsMan->pageGraphics;
     int v4;
 
-    if (v1->unk_1C == 0) {
+    if (v1->updateGraphics == 0) {
         return 0;
     }
 
-    v4 = PokedexSort_CurrentDisplayIndex(v1->unk_04);
+    v4 = PokedexSort_CurrentDisplayIndex(v1->sortData);
 
     if (v3->unk_144 != v4) {
         v3->unk_144 = v4;
@@ -429,7 +429,7 @@ static int ExitGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, con
     case 0:
         G2_BlendNone();
 
-        if (v1->unk_14) {
+        if (v1->useBlendTransition) {
             SetSpeciesLabel(v3, *v0, v1, graphicsMan->heapID);
             ResetPokemonSpriteAlpha(*v0, v1);
             StartBlendTransition(v3, v0, v1, 0);
@@ -440,7 +440,7 @@ static int ExitGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, con
         graphicsMan->state++;
         break;
     case 1:
-        if (v1->unk_14) {
+        if (v1->useBlendTransition) {
             v4 = UpdateBlendTransition(v3, v0, v1, 0);
         } else {
             v4 = UpdateBrightnessTransition(v3, v0, v1, 0);
@@ -467,7 +467,7 @@ static int ExitGraphics(void *graphics, PokedexGraphicsManager *graphicsMan, con
 
 static void ResetScroll(PokedexListState *param0, PokedexListScroll *param1)
 {
-    param0->unk_08 = 0;
+    param0->scrollDirection = 0;
     param1->unk_00 = 0;
     param1->unk_04 = 60;
     param1->unk_08 = 4;
@@ -497,7 +497,7 @@ static void UpdateScroll(PokedexListState *param0, PokedexListScroll *param1, in
         }
     }
 
-    if (param0->unk_20 != 0) {
+    if (param0->scrollState != 0) {
         UpdateScrollDeceleration(param0, param1);
     }
 
@@ -506,70 +506,70 @@ static void UpdateScroll(PokedexListState *param0, PokedexListScroll *param1, in
 
 static void ClearExitFlags(PokedexListState *param0)
 {
-    param0->unk_24 = 0;
-    param0->unk_28 = 0;
-    param0->unk_2C = 0;
-    param0->unk_30 = 0;
-    param0->unk_34 = 0;
+    param0->cancelFlag = 0;
+    param0->sortMenuFlag = 0;
+    param0->infoFlag = 0;
+    param0->nationalDexFlag = 0;
+    param0->exitFlag = 0;
 }
 
 static void HandleInput(PokedexListState *param0)
 {
     if (gSystem.pressedKeys & PAD_BUTTON_B) {
-        if (param0->unk_04->unk_1740 == 0) {
-            param0->unk_28 = 1;
+        if (param0->sortData->isFiltered == 0) {
+            param0->sortMenuFlag = 1;
         } else {
-            param0->unk_24 = 1;
+            param0->cancelFlag = 1;
         }
 
         return;
     }
 
     if (gSystem.pressedKeys & PAD_BUTTON_A) {
-        param0->unk_2C = 1;
+        param0->infoFlag = 1;
         return;
     }
 
     if (gSystem.pressedKeys & PAD_BUTTON_X) {
-        param0->unk_34 = 1;
+        param0->exitFlag = 1;
         return;
     }
 
     if (gSystem.pressedKeys & PAD_BUTTON_SELECT) {
-        param0->unk_30 = 1;
+        param0->nationalDexFlag = 1;
         return;
     }
 }
 
 static BOOL ProcessInput(PokedexListState *param0, PokedexListScroll *param1, int param2)
 {
-    if (param0->unk_28) {
+    if (param0->sortMenuFlag) {
         RequestSortMenu(param0);
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
         return 1;
     }
 
-    if (param0->unk_24) {
+    if (param0->cancelFlag) {
         ResetSortAndExit(param0, param2);
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
         return 1;
     }
 
-    if (param0->unk_2C) {
-        int v0 = PokedexSort_CurrentDisplayIndex(param0->unk_04);
+    if (param0->infoFlag) {
+        int v0 = PokedexSort_CurrentDisplayIndex(param0->sortData);
 
-        if (PokedexSort_DisplayIndexToStatusIndex(param0->unk_04, v0) != (NATIONAL_DEX_COUNT + 1)) {
+        if (PokedexSort_DisplayIndexToStatusIndex(param0->sortData, v0) != (NATIONAL_DEX_COUNT + 1)) {
             RequestInfo(param1, param0);
             Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
             return 1;
         }
     }
 
-    if (param0->unk_34) {
+    if (param0->exitFlag) {
         return RequestExit(param0);
     }
 
-    if (param0->unk_30) {
+    if (param0->nationalDexFlag) {
         return ToggleNationalDex(param0, param2);
     }
 
@@ -582,10 +582,10 @@ static void UpdateScrollDeceleration(PokedexListState *param0, PokedexListScroll
         return;
     }
 
-    if ((param0->unk_0C - param1->unk_04) > 0) {
-        param0->unk_0C -= param1->unk_04;
+    if ((param0->scrollOffset - param1->unk_04) > 0) {
+        param0->scrollOffset -= param1->unk_04;
     } else {
-        param0->unk_0C = 0;
+        param0->scrollOffset = 0;
         param1->unk_00 = 0;
 
         if (param1->unk_0C > 0) {
@@ -602,22 +602,22 @@ static void UpdateScrollDeceleration(PokedexListState *param0, PokedexListScroll
 
 static void BeginScrollStep(PokedexListState *param0, PokedexListScroll *param1, int param2)
 {
-    param0->unk_0C = (64 * 10);
+    param0->scrollOffset = (64 * 10);
     param1->unk_00 = param2;
-    param0->unk_08 = param2;
+    param0->scrollDirection = param2;
 }
 
 static BOOL TryMoveSelection(PokedexListState *param0, int param1)
 {
-    return PokedexSort_TakeStep(param0->unk_04, param1);
+    return PokedexSort_TakeStep(param0->sortData, param1);
 }
 
 static void LoadGraphics(PokedexListGraphics *param0, PokedexGraphicData *param1, const PokedexListState *param2, enum HeapID heapID)
 {
     PokedexGraphics_LoadGraphicNarcPaletteData(param1, background_scroll_default_NCLR, 0, 0, 0, heapID);
     LoadBackground(param1, heapID);
-    LoadSearchTilemap(param0, param1, heapID, PokedexSort_IsNationalDex(param2->unk_04));
-    DrawSeenObtainedCounters(param1, heapID, PokedexSort_NumEncountered(param2->unk_04), PokedexSort_NumCaught(param2->unk_04));
+    LoadSearchTilemap(param0, param1, heapID, PokedexSort_IsNationalDex(param2->sortData));
+    DrawSeenObtainedCounters(param1, heapID, PokedexSort_NumEncountered(param2->sortData), PokedexSort_NumCaught(param2->sortData));
     AllocateSpriteResources(param0, heapID);
     LoadSpriteResources(param0, param1, heapID);
     CreateListSprites(param0, param1, heapID);
@@ -659,7 +659,7 @@ static void LoadGraphicsNational(PokedexListGraphics *param0, PokedexGraphicData
     Heap_Free(v0);
 
     LoadBackground(param1, heapID);
-    LoadSearchTilemap(param0, param1, heapID, PokedexSort_IsNationalDex(param2->unk_04));
+    LoadSearchTilemap(param0, param1, heapID, PokedexSort_IsNationalDex(param2->sortData));
     AllocateSpriteResources(param0, heapID);
     LoadSpriteResources(param0, param1, heapID);
     CreateListSprites(param0, param1, heapID);
@@ -667,7 +667,7 @@ static void LoadGraphicsNational(PokedexListGraphics *param0, PokedexGraphicData
     param0->unk_4C = GetEntryTextWindowSize(param1, heapID);
 
     CreateListText(param0, param1, param2, heapID);
-    DrawRegisterResults(param1, heapID, PokedexSort_NumEncountered(param2->unk_04));
+    DrawRegisterResults(param1, heapID, PokedexSort_NumEncountered(param2->sortData));
     ResetListScroll(param0, param2);
     ArrangeListSprites(param0, param2);
     UpdateCaughtIcons(param0, param2);
@@ -867,9 +867,9 @@ static void CreateListText(PokedexListGraphics *param0, PokedexGraphicData *para
     displayBox.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     displayBox.heapID = param3;
 
-    v1 = PokedexSort_CurrentDisplayIndex(param2->unk_04) - 4;
+    v1 = PokedexSort_CurrentDisplayIndex(param2->sortData) - 4;
     v2 = param0->unk_24;
-    v3 = PokedexSort_NumDisplayed(param2->unk_04);
+    v3 = PokedexSort_NumDisplayed(param2->sortData);
 
     for (v0 = 0; v0 < 9; v0++) {
         if (param0->unk_28[v2]) {
@@ -878,11 +878,11 @@ static void CreateListText(PokedexListGraphics *param0, PokedexGraphicData *para
         }
 
         if ((v1 >= 0) && (v1 < v3)) {
-            dexIndex = PokedexSort_DisplayIndexToStatusIndex(param2->unk_04, v1);
+            dexIndex = PokedexSort_DisplayIndexToStatusIndex(param2->sortData, v1);
 
             if (dexIndex != (NATIONAL_DEX_COUNT + 1)) {
-                pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param2->unk_04, dexIndex);
-                v5 = PokedexMain_DisplayNameNumber(param1, param2->unk_04, param3, pokeCaughtStatus->species);
+                pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param2->sortData, dexIndex);
+                v5 = PokedexMain_DisplayNameNumber(param1, param2->sortData, param3, pokeCaughtStatus->species);
                 displayBox.window = v5;
                 param0->unk_28[v2] = PokedexTextManager_NextTextDataNew(&displayBox, param0->unk_4C);
                 PokedexTextManager_FreeWindow(v5);
@@ -904,18 +904,18 @@ static void UpdateCurrentPokemon(PokedexListGraphics *param0, PokedexGraphicData
     int v1;
     const SpeciesCaughtStatus *pokeCaughtStatus;
 
-    v1 = PokedexSort_CurrentDisplayIndex(param2->unk_04);
-    dexIndex = PokedexSort_CurrentStatusIndex(param2->unk_04);
-    pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param2->unk_04, dexIndex);
+    v1 = PokedexSort_CurrentDisplayIndex(param2->sortData);
+    dexIndex = PokedexSort_CurrentStatusIndex(param2->sortData);
+    pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param2->sortData, dexIndex);
 
-    if (PokedexSort_DisplayIndexToStatusIndex(param2->unk_04, v1) == (NATIONAL_DEX_COUNT + 1)) {
+    if (PokedexSort_DisplayIndexToStatusIndex(param2->sortData, v1) == (NATIONAL_DEX_COUNT + 1)) {
         PokedexGraphics_SetPokemonCharHide(param1, 0);
 
         if (param0->unk_7C) {
             Sprite_SetDrawFlag(param0->unk_7C, TRUE);
         }
     } else {
-        PokedexMain_DisplayPokemonSprite(param1, param2->unk_04, pokeCaughtStatus->species, 2, 56, 80);
+        PokedexMain_DisplayPokemonSprite(param1, param2->sortData, pokeCaughtStatus->species, 2, 56, 80);
         PokedexGraphics_SetPokemonCharHide(param1, 1);
 
         if (param0->unk_7C) {
@@ -970,7 +970,7 @@ static void ArrangeListSprites(PokedexListGraphics *param0, const PokedexListSta
     v0 = param0->unk_24;
 
     for (v2 = 0; v2 < 9; v2++) {
-        if (param1->unk_08 == 1) {
+        if (param1->scrollDirection == 1) {
             v3 = v2 + 2;
             v4 = v2 + 1;
         } else {
@@ -978,8 +978,8 @@ static void ArrangeListSprites(PokedexListGraphics *param0, const PokedexListSta
             v4 = v2 + 1;
         }
 
-        v1.x = InterpolateFx32(sPokedexListSpriteX[v3], sPokedexListSpriteX[v4], (64 * 10), (64 * 10) - param1->unk_0C);
-        v1.y = InterpolateFx32(sPokedexListSpriteY[v3], sPokedexListSpriteY[v4], (64 * 10), (64 * 10) - param1->unk_0C);
+        v1.x = InterpolateFx32(sPokedexListSpriteX[v3], sPokedexListSpriteX[v4], (64 * 10), (64 * 10) - param1->scrollOffset);
+        v1.y = InterpolateFx32(sPokedexListSpriteY[v3], sPokedexListSpriteY[v4], (64 * 10), (64 * 10) - param1->scrollOffset);
 
         Sprite_SetPosition(param0->unk_00[v0], &v1);
 
@@ -1019,10 +1019,10 @@ static void RotateWheel(PokedexListGraphics *param0, const PokedexListState *par
     int v1;
     int v2;
 
-    v1 = PokedexSort_CurrentDisplayIndex(param1->unk_04);
-    v2 = PokedexSort_NumDisplayed(param1->unk_04);
+    v1 = PokedexSort_CurrentDisplayIndex(param1->sortData);
+    v2 = PokedexSort_NumDisplayed(param1->sortData);
 
-    if (param1->unk_08 == 1) {
+    if (param1->scrollDirection == 1) {
         if ((param0->unk_24 + 1) < 9) {
             param0->unk_24++;
         } else {
@@ -1038,7 +1038,7 @@ static void RotateWheel(PokedexListGraphics *param0, const PokedexListState *par
             Sprite_SetDrawFlag(param0->unk_00[v0], TRUE);
         }
     } else {
-        if (param1->unk_08 == 2) {
+        if (param1->scrollDirection == 2) {
             if ((param0->unk_24 - 1) >= 0) {
                 param0->unk_24--;
             } else {
@@ -1073,8 +1073,8 @@ static void UpdateCaughtIcons(PokedexListGraphics *param0, const PokedexListStat
     int v10;
     int dexIndex;
 
-    v6 = PokedexSort_CurrentDisplayIndex(param1->unk_04);
-    v7 = PokedexSort_NumDisplayed(param1->unk_04);
+    v6 = PokedexSort_CurrentDisplayIndex(param1->sortData);
+    v7 = PokedexSort_NumDisplayed(param1->sortData);
 
     for (v2 = 0; v2 < 9; v2++) {
         v3 = (param0->unk_24 + v2) % 9;
@@ -1083,10 +1083,10 @@ static void UpdateCaughtIcons(PokedexListGraphics *param0, const PokedexListStat
         v5 = ((v6 - 4) + v2);
 
         if ((v5 >= 0) && (v5 < v7)) {
-            dexIndex = PokedexSort_DisplayIndexToStatusIndex(param1->unk_04, v5);
+            dexIndex = PokedexSort_DisplayIndexToStatusIndex(param1->sortData, v5);
 
             if (dexIndex != (NATIONAL_DEX_COUNT + 1)) {
-                pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param1->unk_04, dexIndex);
+                pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param1->sortData, dexIndex);
 
                 if (pokeCaughtStatus->caughtStatus == CS_CAUGHT) {
                     isCaught = 1;
@@ -1116,14 +1116,14 @@ static void UpdateCaughtIcons(PokedexListGraphics *param0, const PokedexListStat
 
 static void UpdateCaughtIconSpacing(PokedexListGraphics *param0, const PokedexListState *param1)
 {
-    int v0 = PokedexSort_NumDisplayed(param1->unk_04);
+    int v0 = PokedexSort_NumDisplayed(param1->sortData);
     param0->unk_78 = FX_Div((54 * FX32_ONE), v0 << FX32_SHIFT);
 }
 
 static void UpdateScrollIndicator(PokedexListGraphics *param0, const PokedexListState *param1)
 {
     VecFx32 v0;
-    int v1 = PokedexSort_CurrentDisplayIndex(param1->unk_04);
+    int v1 = PokedexSort_CurrentDisplayIndex(param1->sortData);
 
     v0.y = FX_Mul(param0->unk_78, v1 << FX32_SHIFT);
     v0.y += (58 * FX32_ONE);
@@ -1146,7 +1146,7 @@ static fx32 InterpolateFx32(fx32 param0, fx32 param1, int param2, int param3)
 static void ResetGraphics(PokedexListGraphics *param0, const PokedexListState *param1)
 {
     memset(param0, 0, sizeof(PokedexListGraphics));
-    param0->unk_144 = PokedexSort_CurrentDisplayIndex(param1->unk_04);
+    param0->unk_144 = PokedexSort_CurrentDisplayIndex(param1->sortData);
 }
 
 static void UpdateListTextPositions(PokedexListGraphics *param0, PokedexGraphicData *param1, const PokedexListState *param2, int param3)
@@ -1195,10 +1195,10 @@ static void UpdateEntryText(PokedexListGraphics *param0, PokedexGraphicData *par
     int v3;
     int v4;
 
-    v0 = PokedexSort_CurrentDisplayIndex(param2->unk_04);
-    v1 = PokedexSort_NumDisplayed(param2->unk_04);
+    v0 = PokedexSort_CurrentDisplayIndex(param2->sortData);
+    v1 = PokedexSort_NumDisplayed(param2->sortData);
 
-    switch (param2->unk_08) {
+    switch (param2->scrollDirection) {
     case 1:
         v2 = param0->unk_24 + 9 - 1;
         v3 = v0 + 4;
@@ -1211,13 +1211,13 @@ static void UpdateEntryText(PokedexListGraphics *param0, PokedexGraphicData *par
         break;
     }
 
-    if (param2->unk_08 == 0) {
+    if (param2->scrollDirection == 0) {
         CreateListText(param0, param1, param2, param3);
     } else {
         v2 %= 9;
 
         if ((v3 < v1) && (v3 >= 0)) {
-            v4 = PokedexSort_DisplayIndexToStatusIndex(param2->unk_04, v3);
+            v4 = PokedexSort_DisplayIndexToStatusIndex(param2->sortData, v3);
 
             if (v4 != (NATIONAL_DEX_COUNT + 1)) {
                 CreateEntryText(param0, param1, param2, param3, v2, v4);
@@ -1237,7 +1237,7 @@ static void CreateEntryText(PokedexListGraphics *param0, PokedexGraphicData *par
 {
     PokedexDisplayBox displayBox;
     Window *v1;
-    const SpeciesCaughtStatus *pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param2->unk_04, dexIndex);
+    const SpeciesCaughtStatus *pokeCaughtStatus = PokedexSort_StatusIndexToCaughtStatus(param2->sortData, dexIndex);
     GF_ASSERT(pokeCaughtStatus);
 
     displayBox.textMan = param1->textMan;
@@ -1250,7 +1250,7 @@ static void CreateEntryText(PokedexListGraphics *param0, PokedexGraphicData *par
     displayBox.vramType = NNS_G2D_VRAM_TYPE_2DMAIN;
     displayBox.heapID = param3;
 
-    v1 = PokedexMain_DisplayNameNumber(param1, param2->unk_04, param3, pokeCaughtStatus->species);
+    v1 = PokedexMain_DisplayNameNumber(param1, param2->sortData, param3, pokeCaughtStatus->species);
 
     if (param0->unk_28[param4]) {
         PokedexTextManager_FreeTextData(param0->unk_28[param4]);
@@ -1307,8 +1307,8 @@ static void SetVisibleSprites(PokedexListGraphics *param0, const PokedexListStat
     int v3;
     int v4;
 
-    v3 = PokedexSort_CurrentDisplayIndex(param1->unk_04);
-    v4 = PokedexSort_NumDisplayed(param1->unk_04);
+    v3 = PokedexSort_CurrentDisplayIndex(param1->sortData);
+    v4 = PokedexSort_NumDisplayed(param1->sortData);
     v0 = v3 - 4;
     v1 = param0->unk_24;
 
@@ -1330,7 +1330,7 @@ static void UpdatePokemonSpriteAlpha(PokedexListGraphics *param0, PokedexGraphic
     int v1;
     PokemonSprite *v2;
 
-    v0 = FX_Mul(31 << FX32_SHIFT, ((64 * 10) - param2->unk_0C) << FX32_SHIFT);
+    v0 = FX_Mul(31 << FX32_SHIFT, ((64 * 10) - param2->scrollOffset) << FX32_SHIFT);
     v0 = FX_Div(v0, (64 * 10) << FX32_SHIFT);
     v1 = v0 >> FX32_SHIFT;
     v2 = PokemonGraphics_GetPokemonChar(param1);
@@ -1349,7 +1349,7 @@ static void UpdateScreenBlend(const PokedexListState *param0)
     fx32 v0;
     int v1;
 
-    v0 = FX_Mul(16 << FX32_SHIFT, ((64 * 10) - param0->unk_0C) << FX32_SHIFT);
+    v0 = FX_Mul(16 << FX32_SHIFT, ((64 * 10) - param0->scrollOffset) << FX32_SHIFT);
     v0 = FX_Div(v0, (64 * 10) << FX32_SHIFT);
     v1 = v0 >> FX32_SHIFT;
 
@@ -1364,7 +1364,7 @@ static void InitScreenTransition(PokedexListGraphics *param0, PokedexGraphicData
 
     Sound_PlayEffect(SEQ_SE_DP_BUTTON01_sseq);
 
-    if (param2->unk_10 == 0) {
+    if (param2->skipTransition == 0) {
         if (param3) {
             v0 = 0;
             v2 = 0;
@@ -1421,7 +1421,7 @@ static BOOL UpdateScreenTransition(PokedexListGraphics *param0, PokedexGraphicDa
 
 static void FinishScreenTransition(PokedexGraphicData **param0, const PokedexListState *param1, BOOL param2)
 {
-    if (param1->unk_10 == 0) {
+    if (param1->skipTransition == 0) {
         if (param2 == 0) {
             Bg_SetOffset((*param0)->bgConfig, 1, 3, 0);
         }
@@ -1481,7 +1481,7 @@ static void SetSpeciesLabel(PokedexListGraphics *param0, PokedexGraphicData *par
     int v1 = (param0->unk_24 + 4) % 9;
     v0 = Sprite_GetPosition(param0->unk_00[v1]);
 
-    PokedexMain_EntryNameNumber(param1, param2->unk_04, param3, PokedexSort_CurrentStatusIndex(param2->unk_04), v0->x, v0->y);
+    PokedexMain_EntryNameNumber(param1, param2->sortData, param3, PokedexSort_CurrentStatusIndex(param2->sortData), v0->x, v0->y);
     PokedexGraphics_SetSpeciesLabelPriority(param1, 0);
 }
 
@@ -1489,7 +1489,7 @@ static void StartBrightnessTransition(PokedexListGraphics *param0, PokedexGraphi
 {
     InitScreenTransition(param0, param1, param2, param3);
 
-    if (param2->unk_10 != 1) {
+    if (param2->skipTransition != 1) {
         if (param3) {
             BrightnessController_StartTransition(4, 0, -16, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD), BRIGHTNESS_MAIN_SCREEN);
         } else {
@@ -1504,14 +1504,14 @@ static BOOL UpdateBrightnessTransition(PokedexListGraphics *param0, PokedexGraph
 
     v0[0] = UpdateScreenTransition(param0, param1);
 
-    if (param2->unk_10 != 1) {
+    if (param2->skipTransition != 1) {
         v0[1] = BrightnessController_IsTransitionComplete(BRIGHTNESS_MAIN_SCREEN);
     } else {
         v0[1] = 1;
     }
 
     if ((v0[0] == 1) && (v0[1] == 1)) {
-        if (param2->unk_10 != 1) {
+        if (param2->skipTransition != 1) {
             if (param3 == 0) {
                 BrightnessController_SetScreenBrightness(-16, (GX_BLEND_PLANEMASK_BG0 | GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_OBJ | GX_BLEND_PLANEMASK_BD), BRIGHTNESS_MAIN_SCREEN);
                 Window_FillTilemap(&(*param1)->window, 0);
@@ -1537,7 +1537,7 @@ static void StartBlendTransition(PokedexListGraphics *param0, PokedexGraphicData
         InitLabelTransform(param0, param1);
     }
 
-    if (param2->unk_10 != 1) {
+    if (param2->skipTransition != 1) {
         if (param3) {
             PokedexGraphics_InitBlendTransition(&(*param1)->blendMain, 4, -16, 0, 0, 16, (GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), GX_BLEND_PLANEMASK_BG3, 0);
         } else {
@@ -1553,7 +1553,7 @@ static BOOL UpdateBlendTransition(PokedexListGraphics *param0, PokedexGraphicDat
 
     v0[0] = UpdateScreenTransition(param0, param1);
 
-    if (param2->unk_10 != 1) {
+    if (param2->skipTransition != 1) {
         v0[1] = PokedexGraphics_TakeBlendTransitionStep(&(*param1)->blendMain);
     }
 
@@ -1573,7 +1573,7 @@ static BOOL UpdateBlendTransition(PokedexListGraphics *param0, PokedexGraphicDat
 
     if (v1 == 4) {
         if (param3 == 0) {
-            if (param2->unk_10 != 1) {
+            if (param2->skipTransition != 1) {
                 G2_SetBlendBrightnessExt((GX_BLEND_PLANEMASK_BG1 | GX_BLEND_PLANEMASK_BG2 | GX_BLEND_PLANEMASK_BG3 | GX_BLEND_PLANEMASK_BD), GX_BLEND_PLANEMASK_BG3, 0, 0, -16);
                 Window_FillTilemap(&(*param1)->window, 0);
                 Bg_ClearTilemap((*param1)->bgConfig, 1);
@@ -1622,28 +1622,28 @@ static BOOL UpdateLabelTransform(PokedexListGraphics *param0, PokedexGraphicData
 
 static void RequestSortMenu(PokedexListState *param0)
 {
-    *param0->unk_00 |= (1 << 2);
-    param0->unk_10 = 0;
-    param0->unk_14 = 0;
-    param0->unk_20 = 2;
+    *param0->transitionRequest |= (1 << 2);
+    param0->skipTransition = 0;
+    param0->useBlendTransition = 0;
+    param0->scrollState = 2;
 }
 
 static void RequestInfo(PokedexListScroll *param0, PokedexListState *param1)
 {
-    *param1->unk_00 |= (1 << 1);
-    param1->unk_10 = 0;
-    param1->unk_14 = 1;
-    param1->unk_0C = 0;
-    param1->unk_20 = 2;
+    *param1->transitionRequest |= (1 << 1);
+    param1->skipTransition = 0;
+    param1->useBlendTransition = 1;
+    param1->scrollOffset = 0;
+    param1->scrollState = 2;
 }
 
 static BOOL RequestExit(PokedexListState *param0)
 {
-    if (param0->unk_04->unk_1740 == 0) {
-        *param0->unk_00 |= (1 << 0);
-        param0->unk_10 = 0;
-        param0->unk_14 = 0;
-        param0->unk_20 = 2;
+    if (param0->sortData->isFiltered == 0) {
+        *param0->transitionRequest |= (1 << 0);
+        param0->skipTransition = 0;
+        param0->useBlendTransition = 0;
+        param0->scrollState = 2;
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
         return 1;
     }
@@ -1655,11 +1655,11 @@ static BOOL ToggleNationalDex(PokedexListState *param0, int param1)
 {
     int v0;
 
-    if (param0->unk_04->unk_1740 == 1) {
+    if (param0->sortData->isFiltered == 1) {
         return 0;
     }
 
-    v0 = PokedexSort_IsNationalDex(param0->unk_04);
+    v0 = PokedexSort_IsNationalDex(param0->sortData);
 
     if (v0 == 0) {
         v0 = 1;
@@ -1667,18 +1667,18 @@ static BOOL ToggleNationalDex(PokedexListState *param0, int param1)
         v0 = 0;
     }
 
-    if (PokedexSort_CanSetNationalDex(param0->unk_04, v0)) {
-        PokedexSort_TrySetNationalDex(param0->unk_04, v0);
+    if (PokedexSort_CanSetNationalDex(param0->sortData, v0)) {
+        PokedexSort_TrySetNationalDex(param0->sortData, v0);
         Sound_PlayEffect(SEQ_SE_DP_DECIDE_sseq);
-        PokedexSort_SortUnfiltered(param0->unk_04, 0, 0, 0, 0, 0, v0, param1);
-        PokedexSort_SetCurrentStatusIndex(param0->unk_04, 0);
+        PokedexSort_SortUnfiltered(param0->sortData, 0, 0, 0, 0, 0, v0, param1);
+        PokedexSort_SetCurrentStatusIndex(param0->sortData, 0);
 
-        param0->unk_0C = 0;
-        *param0->unk_00 |= (1 << 4);
-        param0->unk_10 = 0;
-        param0->unk_14 = 0;
-        param0->unk_20 = 2;
-        param0->unk_1C = 0;
+        param0->scrollOffset = 0;
+        *param0->transitionRequest |= (1 << 4);
+        param0->skipTransition = 0;
+        param0->useBlendTransition = 0;
+        param0->scrollState = 2;
+        param0->updateGraphics = 0;
 
         return 1;
     }
@@ -1688,20 +1688,20 @@ static BOOL ToggleNationalDex(PokedexListState *param0, int param1)
 
 static void ResetSortAndExit(PokedexListState *param0, int param1)
 {
-    u32 species = PokedexSort_CurrentSpecies(param0->unk_04);
+    u32 species = PokedexSort_CurrentSpecies(param0->sortData);
 
-    PokedexSort_SortUnfiltered(param0->unk_04, 0, 0, 0, 0, 0, PokedexSort_IsNationalDex(param0->unk_04), param1);
-    (*param0->unk_00) |= (1 << 4);
+    PokedexSort_SortUnfiltered(param0->sortData, 0, 0, 0, 0, 0, PokedexSort_IsNationalDex(param0->sortData), param1);
+    (*param0->transitionRequest) |= (1 << 4);
 
-    PokedexSort_SetCurrentStatusIndexWithSpecies(param0->unk_04, species);
+    PokedexSort_SetCurrentStatusIndexWithSpecies(param0->sortData, species);
 
-    param0->unk_0C = 0;
-    param0->unk_04->unk_1740 = 0;
-    param0->unk_10 = 0;
-    param0->unk_14 = 0;
-    param0->unk_08 = 0;
-    param0->unk_20 = 2;
-    param0->unk_1C = 0;
+    param0->scrollOffset = 0;
+    param0->sortData->isFiltered = 0;
+    param0->skipTransition = 0;
+    param0->useBlendTransition = 0;
+    param0->scrollDirection = 0;
+    param0->scrollState = 2;
+    param0->updateGraphics = 0;
 }
 
 static void UpdateScrollLeft(PokedexListScroll *param0, PokedexListState *param1)
@@ -1711,7 +1711,7 @@ static void UpdateScrollLeft(PokedexListScroll *param0, PokedexListState *param1
     if (param0->unk_18 >= 0) {
         if (TryMoveSelection(param1, param0->unk_1C)) {
             BeginScrollStep(param1, param0, param0->unk_20);
-            param1->unk_20 = 1;
+            param1->scrollState = 1;
             Sound_PlayEffect(SEQ_SE_DP_DENSI06_sseq);
         } else {
             param0->unk_18 = 0;
@@ -1719,7 +1719,7 @@ static void UpdateScrollLeft(PokedexListScroll *param0, PokedexListState *param1
     } else {
         ResetScroll(param1, param0);
         param0->unk_14 = 0;
-        param1->unk_20 = 0;
+        param1->scrollState = 0;
     }
 }
 
@@ -1728,11 +1728,11 @@ static void UpdateScrollInput(PokedexListScroll *param0, PokedexListState *param
     if (gSystem.heldKeys & PAD_KEY_UP) {
         if (TryMoveSelection(param1, -1)) {
             BeginScrollStep(param1, param0, 2);
-            param1->unk_20 = 1;
+            param1->scrollState = 1;
             Sound_PlayEffect(SEQ_SE_DP_DENSI06_sseq);
         } else {
             ResetScroll(param1, param0);
-            param1->unk_20 = 0;
+            param1->scrollState = 0;
         }
 
         return;
@@ -1741,11 +1741,11 @@ static void UpdateScrollInput(PokedexListScroll *param0, PokedexListState *param
     if (gSystem.heldKeys & PAD_KEY_DOWN) {
         if (TryMoveSelection(param1, 1)) {
             BeginScrollStep(param1, param0, 1);
-            param1->unk_20 = 1;
+            param1->scrollState = 1;
             Sound_PlayEffect(SEQ_SE_DP_DENSI06_sseq);
         } else {
             ResetScroll(param1, param0);
-            param1->unk_20 = 0;
+            param1->scrollState = 0;
         }
 
         return;
@@ -1769,8 +1769,8 @@ static void UpdateScrollInput(PokedexListScroll *param0, PokedexListState *param
         return;
     }
 
-    if (param1->unk_20 == 1) {
+    if (param1->scrollState == 1) {
         ResetScroll(param1, param0);
-        param1->unk_20 = 0;
+        param1->scrollState = 0;
     }
 }

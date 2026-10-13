@@ -6,9 +6,9 @@
 #include "applications/pokedex/struct_pokedex_screen_manager.h"
 
 typedef struct {
-    PokedexScreenManager *unk_00;
-    PokedexUpdater *unk_04;
-    PokedexScreenStateSet *unk_08;
+    PokedexScreenManager *screenManager;
+    PokedexUpdater *updater;
+    PokedexScreenStateSet *screenStateSet;
 } PokedexTransitionSingle;
 
 #endif // POKEPLATINUM_STRUCT_POKEDEX_TRANSITION_SINGLE_H

@@ -259,14 +259,14 @@ PokedexApp *PokedexMain_NewPokedexApp(enum HeapID heapID, const PokedexOverlayAr
 
     pokedexApp->heapID = heapID;
     pokedexApp->pokedexMemory = pokedexOverlayArgs->pokedexMemory;
-    pokedexApp->unk_1A70 = PokedexScreenStateSet_New(heapID);
-    pokedexApp->unk_1A74 = PokedexScreenStateSet_New(heapID);
-    pokedexApp->unk_1A78 = PokedexScreenStateSet_New(heapID);
-    pokedexApp->unk_1A7C = PokedexScreenStateSet_New(heapID);
-    pokedexApp->unk_1D64 = PokedexUpdater_New(heapID);
-    pokedexApp->unk_1D68 = PokedexUpdater_New(heapID);
-    pokedexApp->unk_1D6C = PokedexUpdater_New(heapID);
-    pokedexApp->unk_1D70 = PokedexUpdater_New(heapID);
+    pokedexApp->screenStateSet1 = PokedexScreenStateSet_New(heapID);
+    pokedexApp->screenStateSet2 = PokedexScreenStateSet_New(heapID);
+    pokedexApp->screenStateSet3 = PokedexScreenStateSet_New(heapID);
+    pokedexApp->screenStateSet4 = PokedexScreenStateSet_New(heapID);
+    pokedexApp->updater1 = PokedexUpdater_New(heapID);
+    pokedexApp->updater2 = PokedexUpdater_New(heapID);
+    pokedexApp->updater3 = PokedexUpdater_New(heapID);
+    pokedexApp->updater4 = PokedexUpdater_New(heapID);
 
     sortParams.pokedex = pokedexOverlayArgs->pokedex;
     sortParams.trainerInfo = pokedexOverlayArgs->trainerInfo;
@@ -283,17 +283,17 @@ PokedexApp *PokedexMain_NewPokedexApp(enum HeapID heapID, const PokedexOverlayAr
 
     for (i = 0; i < 10; i++) {
         if (sScreenInitFunctions[i]) {
-            sScreenInitFunctions[i](&pokedexApp->unk_1A94[i], pokedexApp, heapID);
+            sScreenInitFunctions[i](&pokedexApp->screenManagers[i], pokedexApp, heapID);
         }
     }
 
     for (i = 0; i < 8; i++) {
         if (sSubScreenInitFunctions[i]) {
-            sSubScreenInitFunctions[i](&pokedexApp->unk_1C24[i], pokedexApp, heapID);
+            sSubScreenInitFunctions[i](&pokedexApp->subScreenManagers[i], pokedexApp, heapID);
         }
     }
 
-    Pokedex_021D47F0(heapID, &pokedexApp->unk_1A80, pokedexApp, 1);
+    Pokedex_021D47F0(heapID, &pokedexApp->baseScreenState, pokedexApp, 1);
     PokedexMain_InitScreenStateSet(pokedexApp);
 
     return pokedexApp;
@@ -305,54 +305,54 @@ BOOL PokedexMain_Update(PokedexApp *pokedexApp)
 
     PokedexSort_UpdateInputState(&pokedexApp->sortData);
 
-    if ((PokedexScreenStateSet_IsActive(pokedexApp->unk_1A78) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A70) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A7C) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A74) == 0)) {
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D6C, 0);
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D70, 0);
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D64, 0);
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D68, 0);
+    if ((PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet3) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet1) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet4) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet2) == 0)) {
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater3, 0);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater4, 0);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater1, 0);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater2, 0);
     } else {
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D6C, 1);
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D70, 1);
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D64, 1);
-        PokedexUpdater_SetDataUnchanged(pokedexApp->unk_1D68, 1);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater3, 1);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater4, 1);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater1, 1);
+        PokedexUpdater_SetDataUnchanged(pokedexApp->updater2, 1);
     }
 
-    PokedexUpdater_UpdateData(pokedexApp->unk_1D6C);
-    PokedexUpdater_UpdateData(pokedexApp->unk_1D70);
-    PokedexUpdater_UpdateData(pokedexApp->unk_1D64);
-    PokedexUpdater_UpdateData(pokedexApp->unk_1D68);
+    PokedexUpdater_UpdateData(pokedexApp->updater3);
+    PokedexUpdater_UpdateData(pokedexApp->updater4);
+    PokedexUpdater_UpdateData(pokedexApp->updater1);
+    PokedexUpdater_UpdateData(pokedexApp->updater2);
 
-    PokedexUpdater_UpdateGraphics(pokedexApp->unk_1D6C);
-    PokedexUpdater_UpdateGraphics(pokedexApp->unk_1D70);
-    PokedexUpdater_UpdateGraphics(pokedexApp->unk_1D64);
-    PokedexUpdater_UpdateGraphics(pokedexApp->unk_1D68);
+    PokedexUpdater_UpdateGraphics(pokedexApp->updater3);
+    PokedexUpdater_UpdateGraphics(pokedexApp->updater4);
+    PokedexUpdater_UpdateGraphics(pokedexApp->updater1);
+    PokedexUpdater_UpdateGraphics(pokedexApp->updater2);
 
-    if ((PokedexScreenStateSet_IsActive(pokedexApp->unk_1A70) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A7C) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A74) == 0)) {
-        PokedexScreenStateSet_Update(pokedexApp->unk_1A78, pokedexApp->unk_1A68);
+    if ((PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet1) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet4) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet2) == 0)) {
+        PokedexScreenStateSet_Update(pokedexApp->screenStateSet3, pokedexApp->transitionRequest3);
     }
 
-    if ((PokedexScreenStateSet_IsActive(pokedexApp->unk_1A78) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A7C) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A74) == 0)) {
-        PokedexScreenStateSet_Update(pokedexApp->unk_1A70, pokedexApp->unk_1A60);
+    if ((PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet3) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet4) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet2) == 0)) {
+        PokedexScreenStateSet_Update(pokedexApp->screenStateSet1, pokedexApp->transitionRequest1);
     }
 
-    if ((PokedexScreenStateSet_IsActive(pokedexApp->unk_1A78) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A70) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A74) == 0)) {
-        PokedexScreenStateSet_Update(pokedexApp->unk_1A7C, pokedexApp->unk_1A6C);
+    if ((PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet3) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet1) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet2) == 0)) {
+        PokedexScreenStateSet_Update(pokedexApp->screenStateSet4, pokedexApp->transitionRequest4);
     }
 
-    if ((PokedexScreenStateSet_IsActive(pokedexApp->unk_1A78) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A70) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->unk_1A7C) == 0)) {
-        PokedexScreenStateSet_Update(pokedexApp->unk_1A74, pokedexApp->unk_1A64);
+    if ((PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet3) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet1) == 0) && (PokedexScreenStateSet_IsActive(pokedexApp->screenStateSet4) == 0)) {
+        PokedexScreenStateSet_Update(pokedexApp->screenStateSet2, pokedexApp->transitionRequest2);
     }
 
     G3_ResetG3X();
     PokemonGraphics_UpdateSprites(&pokedexApp->graphicData);
     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, GX_BUFFERMODE_Z);
 
-    pokedexApp->unk_1A68 = 0;
-    pokedexApp->unk_1A6C = 0;
-    pokedexApp->unk_1A60 = 0;
-    pokedexApp->unk_1A64 = 0;
+    pokedexApp->transitionRequest3 = 0;
+    pokedexApp->transitionRequest4 = 0;
+    pokedexApp->transitionRequest1 = 0;
+    pokedexApp->transitionRequest2 = 0;
 
-    if (pokedexApp->unk_00 == 1) {
+    if (pokedexApp->exitFlag == 1) {
         FreePokedexApp(pokedexApp);
         pokedexApp = NULL;
         return 1;
@@ -385,79 +385,79 @@ void PokedexMain_UpdateSprites(PokedexApp *pokedexApp)
 PokedexUpdater *PokedexMain_GetUpdater1(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1D64;
+    return pokedexApp->updater1;
 }
 
 PokedexUpdater *PokedexMain_GetUpdater2(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1D68;
+    return pokedexApp->updater2;
 }
 
 PokedexUpdater *PokedexMain_GetUpdater3(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1D6C;
+    return pokedexApp->updater3;
 }
 
 PokedexUpdater *PokedexMain_GetUpdater4(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1D70;
+    return pokedexApp->updater4;
 }
 
 PokedexScreenStateSet *PokedexMain_GetScreenStateSet1(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1A70;
+    return pokedexApp->screenStateSet1;
 }
 
 PokedexScreenStateSet *PokedexMain_GetScreenStateSet2(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1A74;
+    return pokedexApp->screenStateSet2;
 }
 
 PokedexScreenStateSet *PokedexMain_GetScreenStateSet3(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1A78;
+    return pokedexApp->screenStateSet3;
 }
 
 PokedexScreenStateSet *PokedexMain_GetScreenStateSet4(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return pokedexApp->unk_1A7C;
+    return pokedexApp->screenStateSet4;
 }
 
 int *PokedexMain_GetTransitionRequest1(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return &pokedexApp->unk_1A60;
+    return &pokedexApp->transitionRequest1;
 }
 
 int *PokedexMain_GetTransitionRequest2(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return &pokedexApp->unk_1A64;
+    return &pokedexApp->transitionRequest2;
 }
 
 int *PokedexMain_GetTransitionRequest3(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return &pokedexApp->unk_1A68;
+    return &pokedexApp->transitionRequest3;
 }
 
 int *PokedexMain_GetTransitionRequest4(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return &pokedexApp->unk_1A6C;
+    return &pokedexApp->transitionRequest4;
 }
 
 BOOL *PokedexMain_GetExitFlag(PokedexApp *pokedexApp)
 {
     GF_ASSERT(pokedexApp);
-    return &pokedexApp->unk_00;
+    return &pokedexApp->exitFlag;
 }
 
 PokedexSortData *PokedexMain_GetSortData(PokedexApp *pokedexApp)
@@ -475,13 +475,13 @@ PokedexGraphicData *PokedexMain_GetGraphicData(PokedexApp *pokedexApp)
 PokedexScreenManager *PokedexMain_GetScreenManager(PokedexApp *pokedexApp, int param1)
 {
     GF_ASSERT(param1 < 10);
-    return &pokedexApp->unk_1A94[param1];
+    return &pokedexApp->screenManagers[param1];
 }
 
 PokedexScreenManager *PokedexMain_GetSubScreenManager(PokedexApp *pokedexApp, int param1)
 {
     GF_ASSERT(param1 < 8);
-    return &pokedexApp->unk_1C24[param1];
+    return &pokedexApp->subScreenManagers[param1];
 }
 
 void PokedexMain_SetCursorAnimFrame(Sprite *param0, int param1)
@@ -902,41 +902,41 @@ static void FreePokedexApp(PokedexApp *pokedexApp)
 {
     int i;
 
-    PokedexScreenState_Free(&pokedexApp->unk_1A80);
+    PokedexScreenState_Free(&pokedexApp->baseScreenState);
 
-    GF_ASSERT(pokedexApp->unk_1A70);
-    Heap_Free(pokedexApp->unk_1A70);
+    GF_ASSERT(pokedexApp->screenStateSet1);
+    Heap_Free(pokedexApp->screenStateSet1);
 
-    GF_ASSERT(pokedexApp->unk_1A74);
-    Heap_Free(pokedexApp->unk_1A74);
+    GF_ASSERT(pokedexApp->screenStateSet2);
+    Heap_Free(pokedexApp->screenStateSet2);
 
-    GF_ASSERT(pokedexApp->unk_1A78);
-    Heap_Free(pokedexApp->unk_1A78);
+    GF_ASSERT(pokedexApp->screenStateSet3);
+    Heap_Free(pokedexApp->screenStateSet3);
 
-    GF_ASSERT(pokedexApp->unk_1A7C);
-    Heap_Free(pokedexApp->unk_1A7C);
+    GF_ASSERT(pokedexApp->screenStateSet4);
+    Heap_Free(pokedexApp->screenStateSet4);
 
-    GF_ASSERT(pokedexApp->unk_1D64);
-    Heap_Free(pokedexApp->unk_1D64);
+    GF_ASSERT(pokedexApp->updater1);
+    Heap_Free(pokedexApp->updater1);
 
-    GF_ASSERT(pokedexApp->unk_1D68);
-    Heap_Free(pokedexApp->unk_1D68);
+    GF_ASSERT(pokedexApp->updater2);
+    Heap_Free(pokedexApp->updater2);
 
-    GF_ASSERT(pokedexApp->unk_1D6C);
-    Heap_Free(pokedexApp->unk_1D6C);
+    GF_ASSERT(pokedexApp->updater3);
+    Heap_Free(pokedexApp->updater3);
 
-    GF_ASSERT(pokedexApp->unk_1D70);
-    Heap_Free(pokedexApp->unk_1D70);
+    GF_ASSERT(pokedexApp->updater4);
+    Heap_Free(pokedexApp->updater4);
 
     for (i = 0; i < 10; i++) {
         if (sScreenExitFunctions[i]) {
-            sScreenExitFunctions[i](&pokedexApp->unk_1A94[i]);
+            sScreenExitFunctions[i](&pokedexApp->screenManagers[i]);
         }
     }
 
     for (i = 0; i < 8; i++) {
         if (sSubScreenExitFunctions[i]) {
-            sSubScreenExitFunctions[i](&pokedexApp->unk_1C24[i]);
+            sSubScreenExitFunctions[i](&pokedexApp->subScreenManagers[i]);
         }
     }
 
@@ -994,8 +994,8 @@ static void InitG2(enum HeapID heapID)
 
 static void PokedexMain_InitScreenStateSet(PokedexApp *pokedexApp)
 {
-    PokedexScreenStateSet_SetStates(pokedexApp->unk_1A70, &pokedexApp->unk_1A80, 1);
-    pokedexApp->unk_1A60 = 1;
+    PokedexScreenStateSet_SetStates(pokedexApp->screenStateSet1, &pokedexApp->baseScreenState, 1);
+    pokedexApp->transitionRequest1 = 1;
 }
 
 static void InitG3(void)

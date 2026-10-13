@@ -238,7 +238,7 @@ typedef struct RowanIntro {
     enum DisplayTextBlockState displayTextBlockState;
     int textPrinterID;
     String *string;
-    PaletteAnimator *unk_60;
+    PaletteAnimator *paletteAnimator;
     StringTemplate *strFormatter;
     YesNoTouchMenu *yesNoTouchMenu;
     SysTask *unused;
@@ -691,7 +691,7 @@ static void RowanIntro_InitMessageStructs(RowanIntro *manager)
 
     Text_ResetAllPrinters();
 
-    manager->unk_60 = PaletteAnimator_New(NULL, 0, 6, manager->heapID);
+    manager->paletteAnimator = PaletteAnimator_New(NULL, 0, 6, manager->heapID);
     manager->strFormatter = StringTemplate_Default(manager->heapID);
     manager->displayMessageState = DM_STATE_INIT;
     manager->displayTextBlockState = DTB_STATE_INIT;
@@ -701,7 +701,7 @@ static void RowanIntro_InitMessageStructs(RowanIntro *manager)
 static void RowanIntro_FreeMessageStructs(RowanIntro *manager)
 {
     StringTemplate_Free(manager->strFormatter);
-    PaletteAnimator_Free(manager->unk_60);
+    PaletteAnimator_Free(manager->paletteAnimator);
     MessageLoader_Free(manager->msgLoader);
 }
 
