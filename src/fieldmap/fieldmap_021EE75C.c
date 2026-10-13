@@ -73,5 +73,5 @@ static const FieldEffectTemplate Unk_FieldMap_021FF4F0 = {
 
 void FieldMap_021EE7C0(FieldSystem *fieldSystem)
 {
-    FieldMap_021D1B6C(fieldSystem->lastZ->lastZ, &Unk_FieldMap_021FF4F0);
+    FieldMap_021D1B6C(fieldSystem->unk_04->unk_04, &Unk_FieldMap_021FF4F0);
 }

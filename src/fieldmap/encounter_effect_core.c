@@ -820,7 +820,7 @@ void EncounterEffect_Trainer_Grass_LowerLevel(SysTask *task, void *param)
     }
 
     if (encEffect->state != 7) {
-        SpriteList_Update(trainerEffect->unk_48.unk_00);
+        SpriteList_Update(trainerEffect->unk_48.spriteList);
     }
 }
 
@@ -964,7 +964,7 @@ void EncounterEffect_Trainer_Grass_HigherLevel(SysTask *param0, void *param1)
     }
 
     if (encEffect->state != 7) {
-        SpriteList_Update(v1->unk_2C.unk_00);
+        SpriteList_Update(v1->unk_2C.spriteList);
     }
 }
 
@@ -1136,7 +1136,7 @@ void EncounterEffect_Trainer_Water_LowerLevel(SysTask *param0, void *param1)
     }
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_50.unk_00);
+        SpriteList_Update(v1->unk_50.spriteList);
     }
 }
 
@@ -1349,7 +1349,7 @@ void EncounterEffect_Trainer_Water_HigherLevel(SysTask *param0, void *param1)
     Window_ScheduleCopyToVRAM(v1->unk_270);
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_00.unk_00);
+        SpriteList_Update(v1->unk_00.spriteList);
     }
 }
 
@@ -1474,7 +1474,7 @@ void EncounterEffect_Trainer_Cave_LowerLevel(SysTask *param0, void *param1)
     }
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_5C.unk_00);
+        SpriteList_Update(v1->unk_5C.spriteList);
     }
 }
 
@@ -1687,7 +1687,7 @@ void EncounterEffect_Trainer_Cave_HigherLevel(SysTask *param0, void *param1)
     }
 
     if (v0->state != 9) {
-        SpriteList_Update(v1->unk_00.unk_00);
+        SpriteList_Update(v1->unk_00.spriteList);
     }
 }
 
@@ -1816,7 +1816,7 @@ void EncounterEffect_Frontier(SysTask *param0, void *param1)
     }
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_2C.unk_00);
+        SpriteList_Update(v1->unk_2C.spriteList);
     }
 }
 
@@ -1935,7 +1935,7 @@ void EncounterEffect_Double(SysTask *param0, void *param1)
     }
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_00.unk_00);
+        SpriteList_Update(v1->unk_00.spriteList);
     }
 }
 
@@ -2118,7 +2118,7 @@ void EncounterEffect_GalacticGrunt(SysTask *param0, void *param1)
     }
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_00.unk_00);
+        SpriteList_Update(v1->unk_00.spriteList);
     }
 }
 
@@ -2246,7 +2246,7 @@ void EncounterEffect_GalacticBoss(SysTask *param0, void *param1)
     }
 
     if (v0->state != 7) {
-        SpriteList_Update(v1->unk_08.unk_00);
+        SpriteList_Update(v1->unk_08.spriteList);
     }
 }
 
@@ -3119,7 +3119,7 @@ static BOOL EncounterEffect_GymLeader(EncounterEffect *encEffect, enum HeapID he
     }
 
     if (encEffect->state != 15) {
-        SpriteList_Update(leaderEncEffect->unk_44.unk_00);
+        SpriteList_Update(leaderEncEffect->unk_44.spriteList);
     }
 
     return 0;
@@ -3579,7 +3579,7 @@ static BOOL EncounterEffect_EliteFourChampion(EncounterEffect *encEffect, enum H
     }
 
     if (encEffect->state != 14) {
-        SpriteList_Update(v0->unk_5C.unk_00);
+        SpriteList_Update(v0->unk_5C.spriteList);
 
         if (4 < encEffect->state) {
             G3_ResetG3X();
