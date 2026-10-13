@@ -12,8 +12,8 @@
 #include "sound_playback.h"
 
 typedef struct {
-    u32 unk_00;
-    fx32 unk_04;
+    u32 frameThreshold;
+    fx32 speed;
 } WiFiLobbyMapFireworksEffect;
 
 typedef union {
@@ -29,17 +29,17 @@ typedef union {
 } WiFiLobbyMapFireworksState;
 
 typedef struct {
-    const u8 *unk_00;
-    u32 unk_04;
+    const u8 *ids;
+    u32 count;
 } WiFiLobbyMapObjectIdList;
 
 typedef struct WiFiLobbyMapFireworks_t {
-    const WiFiPlazaLobbyState *unk_00;
-    WiFiLobbyMapObjectManager *unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u16 unk_0A;
-    WiFiLobbyMapFireworksState unk_0C;
+    const WiFiPlazaLobbyState *lobbyState;
+    WiFiLobbyMapObjectManager *objectManager;
+    u8 eventStage;
+    u8 soundPlaying;
+    u16 state;
+    WiFiLobbyMapFireworksState stateData;
 } WiFiLobbyMapFireworks;
 
 static void wifi_lobby_map_0226C984(WiFiLobbyMapFireworks *param0, u32 param1, u32 param2);
@@ -140,12 +140,12 @@ WiFiLobbyMapFireworks *wifi_lobby_map_0226C8B4(const WiFiPlazaLobbyState *param0
     v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapFireworks));
     memset(v0, 0, sizeof(WiFiLobbyMapFireworks));
 
-    v0->unk_00 = param0;
-    v0->unk_04 = param1;
+    v0->lobbyState = param0;
+    v0->objectManager = param1;
     v1 = WiFiPlazaLobby_State_GetFireworksEventStage(param0);
-    v0->unk_0A = WiFiPlazaLobby_State_GetFireworksState(param0);
+    v0->state = WiFiPlazaLobby_State_GetFireworksState(param0);
 
-    if ((0 != v0->unk_0A) && (v1 != 0)) {
+    if ((0 != v0->state) && (v1 != 0)) {
         u32 v2;
 
         wifi_lobby_map_0226251C(param1, 1);
@@ -170,22 +170,22 @@ void wifi_lobby_map_0226C924(WiFiLobbyMapFireworks *param0)
     u32 v1;
     u32 v2;
 
-    v1 = WiFiPlazaLobby_State_GetFireworksEventStage(param0->unk_00);
-    v2 = WiFiPlazaLobby_State_GetFireworksFrame(param0->unk_00);
-    v0 = WiFiPlazaLobby_State_GetFireworksState(param0->unk_00);
+    v1 = WiFiPlazaLobby_State_GetFireworksEventStage(param0->lobbyState);
+    v2 = WiFiPlazaLobby_State_GetFireworksFrame(param0->lobbyState);
+    v0 = WiFiPlazaLobby_State_GetFireworksState(param0->lobbyState);
 
-    if (param0->unk_0A != v0) {
-        param0->unk_0A = v0;
+    if (param0->state != v0) {
+        param0->state = v0;
 
         if (v0 == 1) {
-            wifi_lobby_map_0226251C(param0->unk_04, 1);
+            wifi_lobby_map_0226251C(param0->objectManager, 1);
             wifi_lobby_map_0226CB1C(param0, v1, v2);
             wifi_lobby_map_0226CC3C(param0);
         }
     }
 
     if (v0 != 0) {
-        if (param0->unk_08 != v1) {
+        if (param0->eventStage != v1) {
             wifi_lobby_map_0226CB1C(param0, v1, v2);
         }
 
@@ -241,10 +241,10 @@ static void wifi_lobby_map_0226C9B4(WiFiLobbyMapFireworks *param0, u32 param1)
         do {
             v3 = 0;
 
-            if ((v1 % 4) == v5[param0->unk_0C.val1.unk_00][0]) {
+            if ((v1 % 4) == v5[param0->stateData.val1.unk_00][0]) {
                 v2 = 1;
                 v3 = 1;
-            } else if ((v1 % 4) == v5[param0->unk_0C.val1.unk_00][1]) {
+            } else if ((v1 % 4) == v5[param0->stateData.val1.unk_00][1]) {
                 v2 = 0;
                 v3 = 1;
             }
@@ -252,7 +252,7 @@ static void wifi_lobby_map_0226C9B4(WiFiLobbyMapFireworks *param0, u32 param1)
             if (v3 == 1) {
                 if (v1 < NELEMS(Unk_wifi_lobby_map_0226E74C)) {
                     v4 = Unk_wifi_lobby_map_0226E74C[v1];
-                    v0 = wifi_lobby_map_02262754(param0->unk_04, v4, v2, (FX32_ONE));
+                    v0 = wifi_lobby_map_02262754(param0->objectManager, v4, v2, (FX32_ONE));
                     GF_ASSERT(v0 == 1);
                 } else {
                     v0 = 0;
@@ -264,7 +264,7 @@ static void wifi_lobby_map_0226C9B4(WiFiLobbyMapFireworks *param0, u32 param1)
             v1++;
         } while (v0 == 1);
 
-        param0->unk_0C.val1.unk_00 = (param0->unk_0C.val1.unk_00 + 1) % 4;
+        param0->stateData.val1.unk_00 = (param0->stateData.val1.unk_00 + 1) % 4;
     }
 }
 
@@ -276,36 +276,36 @@ static void wifi_lobby_map_0226CA38(WiFiLobbyMapFireworks *param0, u32 param1)
     BOOL v4;
 
     if ((param1 % 6) == 0) {
-        v1 = Unk_wifi_lobby_map_0226E6D4[param0->unk_0C.val2.unk_00][1];
-        v2 = Unk_wifi_lobby_map_0226E6D4[param0->unk_0C.val2.unk_00][0];
+        v1 = Unk_wifi_lobby_map_0226E6D4[param0->stateData.val2.unk_00][1];
+        v2 = Unk_wifi_lobby_map_0226E6D4[param0->stateData.val2.unk_00][0];
 
         wifi_lobby_map_0226CBB4(v1, &v3);
 
-        for (v0 = 0; v0 < v3.unk_04; v0++) {
-            v4 = wifi_lobby_map_02262754(param0->unk_04, v3.unk_00[v0], 0, (FX32_ONE));
+        for (v0 = 0; v0 < v3.count; v0++) {
+            v4 = wifi_lobby_map_02262754(param0->objectManager, v3.ids[v0], 0, (FX32_ONE));
             GF_ASSERT(v4 == 1);
         }
 
         wifi_lobby_map_0226CBB4(v2, &v3);
 
-        for (v0 = 0; v0 < v3.unk_04; v0++) {
-            v4 = wifi_lobby_map_02262754(param0->unk_04, v3.unk_00[v0], 1, (FX32_ONE));
+        for (v0 = 0; v0 < v3.count; v0++) {
+            v4 = wifi_lobby_map_02262754(param0->objectManager, v3.ids[v0], 1, (FX32_ONE));
             GF_ASSERT(v4 == 1);
         }
 
-        param0->unk_0C.val2.unk_00 = (param0->unk_0C.val2.unk_00 + 1) % 7;
+        param0->stateData.val2.unk_00 = (param0->stateData.val2.unk_00 + 1) % 7;
     }
 }
 
 static void wifi_lobby_map_0226CAD4(WiFiLobbyMapFireworks *param0, u32 param1)
 {
-    if (param0->unk_0C.val3.unk_00 < 3) {
-        if (Unk_wifi_lobby_map_0226E6FC[param0->unk_0C.val3.unk_00].unk_00 < param1) {
-            wifi_lobby_map_0226278C(param0->unk_04, Unk_wifi_lobby_map_0226E6FC[param0->unk_0C.val3.unk_00].unk_04);
-            wifi_lobby_map_022625D8(param0->unk_04, Unk_wifi_lobby_map_0226E6FC[param0->unk_0C.val3.unk_00].unk_04);
+    if (param0->stateData.val3.unk_00 < 3) {
+        if (Unk_wifi_lobby_map_0226E6FC[param0->stateData.val3.unk_00].frameThreshold < param1) {
+            wifi_lobby_map_0226278C(param0->objectManager, Unk_wifi_lobby_map_0226E6FC[param0->stateData.val3.unk_00].speed);
+            wifi_lobby_map_022625D8(param0->objectManager, Unk_wifi_lobby_map_0226E6FC[param0->stateData.val3.unk_00].speed);
             Sound_PlayEffect(SEQ_SE_PL_140_2_sseq);
 
-            param0->unk_0C.val3.unk_00++;
+            param0->stateData.val3.unk_00++;
         }
     }
 }
@@ -324,71 +324,71 @@ static void wifi_lobby_map_0226CB1C(WiFiLobbyMapFireworks *param0, u32 param1, u
     GF_ASSERT(param1 < 6);
 
     if (param1 < 6) {
-        memset(&param0->unk_0C, 0, sizeof(WiFiLobbyMapFireworksState));
+        memset(&param0->stateData, 0, sizeof(WiFiLobbyMapFireworksState));
 
         v0[param1](param0, param2);
-        param0->unk_08 = param1;
+        param0->eventStage = param1;
     }
 }
 
 static void wifi_lobby_map_0226CB54(WiFiLobbyMapFireworks *param0, u32 param1)
 {
-    wifi_lobby_map_02262724(param0->unk_04, 0, FX32_ONE);
+    wifi_lobby_map_02262724(param0->objectManager, 0, FX32_ONE);
 }
 
 static void wifi_lobby_map_0226CB64(WiFiLobbyMapFireworks *param0, u32 param1)
 {
-    wifi_lobby_map_02262724(param0->unk_04, 1, FX32_ONE);
+    wifi_lobby_map_02262724(param0->objectManager, 1, FX32_ONE);
 }
 
 static void wifi_lobby_map_0226CB74(WiFiLobbyMapFireworks *param0, u32 param1)
 {
-    wifi_lobby_map_02262724(param0->unk_04, 0, FX32_ONE);
+    wifi_lobby_map_02262724(param0->objectManager, 0, FX32_ONE);
 }
 
 static void wifi_lobby_map_0226CB84(WiFiLobbyMapFireworks *param0, u32 param1)
 {
-    wifi_lobby_map_02262724(param0->unk_04, 0, FX32_ONE);
+    wifi_lobby_map_02262724(param0->objectManager, 0, FX32_ONE);
 }
 
 static void wifi_lobby_map_0226CB94(WiFiLobbyMapFireworks *param0, u32 param1)
 {
     wifi_lobby_map_0226CC58(param0);
 
-    wifi_lobby_map_02262724(param0->unk_04, 0, FX32_ONE);
-    wifi_lobby_map_0226251C(param0->unk_04, 0);
+    wifi_lobby_map_02262724(param0->objectManager, 0, FX32_ONE);
+    wifi_lobby_map_0226251C(param0->objectManager, 0);
 }
 
 static void wifi_lobby_map_0226CBB4(u32 param0, WiFiLobbyMapObjectIdList *param1)
 {
     switch (param0) {
     case 0:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6CC);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6CC;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6CC);
+        param1->ids = Unk_wifi_lobby_map_0226E6CC;
         break;
     case 1:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6C4);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6C4;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6C4);
+        param1->ids = Unk_wifi_lobby_map_0226E6C4;
         break;
     case 2:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6BC);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6BC;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6BC);
+        param1->ids = Unk_wifi_lobby_map_0226E6BC;
         break;
     case 3:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6B4);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6B4;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6B4);
+        param1->ids = Unk_wifi_lobby_map_0226E6B4;
         break;
     case 4:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6B8);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6B8;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6B8);
+        param1->ids = Unk_wifi_lobby_map_0226E6B8;
         break;
     case 5:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6C0);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6C0;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6C0);
+        param1->ids = Unk_wifi_lobby_map_0226E6C0;
         break;
     case 6:
-        param1->unk_04 = NELEMS(Unk_wifi_lobby_map_0226E6C8);
-        param1->unk_00 = Unk_wifi_lobby_map_0226E6C8;
+        param1->count = NELEMS(Unk_wifi_lobby_map_0226E6C8);
+        param1->ids = Unk_wifi_lobby_map_0226E6C8;
         break;
     default:
         GF_ASSERT(FALSE);
@@ -398,16 +398,16 @@ static void wifi_lobby_map_0226CBB4(u32 param0, WiFiLobbyMapObjectIdList *param1
 
 static void wifi_lobby_map_0226CC3C(WiFiLobbyMapFireworks *param0)
 {
-    if (param0->unk_09 == 0) {
+    if (param0->soundPlaying == 0) {
         Sound_PlayEffect(SEQ_SE_PL_140_3_sseq);
-        param0->unk_09 = 1;
+        param0->soundPlaying = 1;
     }
 }
 
 static void wifi_lobby_map_0226CC58(WiFiLobbyMapFireworks *param0)
 {
-    if (param0->unk_09) {
+    if (param0->soundPlaying) {
         Sound_StopEffect(1438, 0);
-        param0->unk_09 = 0;
+        param0->soundPlaying = 0;
     }
 }

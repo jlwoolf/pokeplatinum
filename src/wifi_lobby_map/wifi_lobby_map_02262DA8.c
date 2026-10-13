@@ -10,25 +10,25 @@
 #include "heap.h"
 
 typedef struct {
-    const WiFiLobbyMapTaskCallbacks *unk_00;
-    void *unk_04;
-    void *unk_08;
-    u32 unk_0C;
+    const WiFiLobbyMapTaskCallbacks *callbacks;
+    void *data;
+    void *args;
+    u32 state;
 } WiFiLobbyMapTaskContext;
 
 typedef struct WiFiLobbyMapTask_t {
     u16 heapID;
-    u8 unk_02;
-    u8 unk_03;
-    WiFiLobbyMapTaskContext unk_04;
-    WiFiLobbyMapTaskContext unk_14;
+    u8 enabled;
+    u8 index;
+    WiFiLobbyMapTaskContext context;
+    WiFiLobbyMapTaskContext parentContext;
 } WiFiLobbyMapTask;
 
 typedef struct WiFiLobbyMapTaskManager_t {
-    u32 unk_00;
-    WiFiLobbyMapApp *unk_04;
-    WiFiLobbyMapTask unk_08[20];
-    WiFiLobbyMapTask unk_2D8;
+    u32 heapID;
+    WiFiLobbyMapApp *app;
+    WiFiLobbyMapTask tasks[20];
+    WiFiLobbyMapTask reservedTask;
 } WiFiLobbyMapTaskManager;
 
 static void wifi_lobby_map_02262F14(WiFiLobbyMapTaskManager *param0, u32 param1);
@@ -49,18 +49,18 @@ WiFiLobbyMapTaskManager *wifi_lobby_map_02262DA8(WiFiLobbyMapApp *param0, enum H
     WiFiLobbyMapTaskManager *v0 = Heap_Alloc(heapID, sizeof(WiFiLobbyMapTaskManager));
     memset(v0, 0, sizeof(WiFiLobbyMapTaskManager));
 
-    v0->unk_00 = heapID;
-    v0->unk_04 = param0;
+    v0->heapID = heapID;
+    v0->app = param0;
 
     {
         int v1;
 
         for (v1 = 0; v1 < 20; v1++) {
-            wifi_lobby_map_02262F64(&v0->unk_08[v1], v1, heapID);
+            wifi_lobby_map_02262F64(&v0->tasks[v1], v1, heapID);
         }
     }
 
-    wifi_lobby_map_02262F64(&v0->unk_2D8, 0, heapID);
+    wifi_lobby_map_02262F64(&v0->reservedTask, 0, heapID);
 
     return v0;
 }
@@ -71,11 +71,11 @@ void wifi_lobby_map_02262DF4(WiFiLobbyMapTaskManager *param0)
         int v0;
 
         for (v0 = 0; v0 < 20; v0++) {
-            wifi_lobby_map_02262F70(&param0->unk_08[v0]);
+            wifi_lobby_map_02262F70(&param0->tasks[v0]);
         }
     }
 
-    wifi_lobby_map_02262F70(&param0->unk_2D8);
+    wifi_lobby_map_02262F70(&param0->reservedTask);
     Heap_Free(param0);
 }
 
@@ -91,44 +91,44 @@ void wifi_lobby_map_02262E2C(WiFiLobbyMapTaskManager *param0)
 
 void *wifi_lobby_map_02262E38(WiFiLobbyMapTask *param0)
 {
-    return param0->unk_04.unk_08;
+    return param0->context.args;
 }
 
 void *wifi_lobby_map_02262E3C(WiFiLobbyMapTask *param0, u32 param1)
 {
-    GF_ASSERT(param0->unk_04.unk_04 == NULL);
+    GF_ASSERT(param0->context.data == NULL);
 
-    param0->unk_04.unk_04 = Heap_Alloc(param0->heapID, param1);
-    memset(param0->unk_04.unk_04, 0, param1);
+    param0->context.data = Heap_Alloc(param0->heapID, param1);
+    memset(param0->context.data, 0, param1);
 
-    return param0->unk_04.unk_04;
+    return param0->context.data;
 }
 
 void wifi_lobby_map_02262E64(WiFiLobbyMapTask *param0)
 {
-    GF_ASSERT(param0->unk_04.unk_04 != NULL);
-    Heap_Free(param0->unk_04.unk_04);
-    param0->unk_04.unk_04 = NULL;
+    GF_ASSERT(param0->context.data != NULL);
+    Heap_Free(param0->context.data);
+    param0->context.data = NULL;
 }
 
 void *wifi_lobby_map_02262E80(WiFiLobbyMapTask *param0)
 {
-    return param0->unk_04.unk_04;
+    return param0->context.data;
 }
 
 u32 wifi_lobby_map_02262E84(const WiFiLobbyMapTask *param0)
 {
-    return param0->unk_04.unk_0C;
+    return param0->context.state;
 }
 
 void wifi_lobby_map_02262E88(WiFiLobbyMapTask *param0, u32 param1)
 {
-    param0->unk_04.unk_0C = param1;
+    param0->context.state = param1;
 }
 
 void wifi_lobby_map_02262E8C(WiFiLobbyMapTask *param0)
 {
-    param0->unk_04.unk_0C++;
+    param0->context.state++;
 }
 
 void wifi_lobby_map_02262E94(WiFiLobbyMapTaskManager *param0, u32 param1, const WiFiLobbyMapTaskCallbacks *param2, void *param3)
@@ -136,7 +136,7 @@ void wifi_lobby_map_02262E94(WiFiLobbyMapTaskManager *param0, u32 param1, const 
     GF_ASSERT(param0);
     GF_ASSERT(param1 < 20);
 
-    wifi_lobby_map_02262FD4(&param0->unk_08[param1], param2, param3);
+    wifi_lobby_map_02262FD4(&param0->tasks[param1], param2, param3);
 }
 
 void wifi_lobby_map_02262EC0(WiFiLobbyMapTaskManager *param0, u32 param1, const WiFiLobbyMapTaskCallbacks *param2, void *param3)
@@ -144,7 +144,7 @@ void wifi_lobby_map_02262EC0(WiFiLobbyMapTaskManager *param0, u32 param1, const 
     GF_ASSERT(param0);
     GF_ASSERT(param1 < 20);
 
-    wifi_lobby_map_0226300C(&param0->unk_08[param1], param2, param3);
+    wifi_lobby_map_0226300C(&param0->tasks[param1], param2, param3);
 }
 
 void wifi_lobby_map_02262EEC(WiFiLobbyMapTaskManager *param0, u32 param1, BOOL param2)
@@ -152,13 +152,13 @@ void wifi_lobby_map_02262EEC(WiFiLobbyMapTaskManager *param0, u32 param1, BOOL p
     GF_ASSERT(param0);
     GF_ASSERT(param1 < 20);
 
-    wifi_lobby_map_02263008(&param0->unk_08[param1], param2);
+    wifi_lobby_map_02263008(&param0->tasks[param1], param2);
 }
 
 static void wifi_lobby_map_02262F14(WiFiLobbyMapTaskManager *param0, u32 param1)
 {
-    if (wifi_lobby_map_0226307C(&param0->unk_2D8) == 1) {
-        wifi_lobby_map_02262F94(&param0->unk_2D8, param0, param1, 0);
+    if (wifi_lobby_map_0226307C(&param0->reservedTask) == 1) {
+        wifi_lobby_map_02262F94(&param0->reservedTask, param0, param1, 0);
         return;
     }
 
@@ -166,8 +166,8 @@ static void wifi_lobby_map_02262F14(WiFiLobbyMapTaskManager *param0, u32 param1)
         int v0;
 
         for (v0 = 0; v0 < 20; v0++) {
-            if (wifi_lobby_map_0226307C(&param0->unk_08[v0]) == 1) {
-                wifi_lobby_map_02262F94(&param0->unk_08[v0], param0, param1, v0);
+            if (wifi_lobby_map_0226307C(&param0->tasks[v0]) == 1) {
+                wifi_lobby_map_02262F94(&param0->tasks[v0], param0, param1, v0);
             }
         }
     }
@@ -176,18 +176,18 @@ static void wifi_lobby_map_02262F14(WiFiLobbyMapTaskManager *param0, u32 param1)
 static void wifi_lobby_map_02262F64(WiFiLobbyMapTask *param0, u32 param1, enum HeapID heapID)
 {
     param0->heapID = heapID;
-    param0->unk_02 = 1;
-    param0->unk_03 = param1;
+    param0->enabled = 1;
+    param0->index = param1;
 }
 
 static void wifi_lobby_map_02262F70(WiFiLobbyMapTask *param0)
 {
-    if (param0->unk_04.unk_04 != NULL) {
-        Heap_Free(param0->unk_04.unk_04);
+    if (param0->context.data != NULL) {
+        Heap_Free(param0->context.data);
     }
 
-    if (param0->unk_14.unk_04 != NULL) {
-        Heap_Free(param0->unk_14.unk_04);
+    if (param0->parentContext.data != NULL) {
+        Heap_Free(param0->parentContext.data);
     }
 
     memset(param0, 0, sizeof(WiFiLobbyMapTask));
@@ -198,16 +198,16 @@ static void wifi_lobby_map_02262F94(WiFiLobbyMapTask *param0, WiFiLobbyMapTaskMa
     BOOL v0;
     UnkFuncPtr_wifi_lobby_map_0226DA18 v1;
 
-    if (param0->unk_02 == 0) {
+    if (param0->enabled == 0) {
         return;
     }
 
     switch (param2) {
     case 0:
-        v1 = param0->unk_04.unk_00->unk_00;
+        v1 = param0->context.callbacks->update;
         break;
     case 1:
-        v1 = param0->unk_04.unk_00->unk_04;
+        v1 = param0->context.callbacks->postUpdate;
         break;
     default:
         GF_ASSERT(FALSE);
@@ -215,7 +215,7 @@ static void wifi_lobby_map_02262F94(WiFiLobbyMapTask *param0, WiFiLobbyMapTaskMa
     }
 
     if (v1 != NULL) {
-        v0 = v1(param0, param1->unk_04, param3);
+        v0 = v1(param0, param1->app, param3);
 
         if (v0 == 1) {
             wifi_lobby_map_02263044(param0);
@@ -226,35 +226,35 @@ static void wifi_lobby_map_02262F94(WiFiLobbyMapTask *param0, WiFiLobbyMapTaskMa
 static void wifi_lobby_map_02262FD4(WiFiLobbyMapTask *param0, const WiFiLobbyMapTaskCallbacks *param1, void *param2)
 {
     GF_ASSERT(wifi_lobby_map_0226306C(param0) == 1);
-    GF_ASSERT(param0->unk_04.unk_04 == NULL);
+    GF_ASSERT(param0->context.data == NULL);
 
-    wifi_lobby_map_0226308C(&param0->unk_04, param1, param2, 0, NULL);
+    wifi_lobby_map_0226308C(&param0->context, param1, param2, 0, NULL);
 }
 
 static void wifi_lobby_map_02263008(WiFiLobbyMapTask *param0, BOOL param1)
 {
-    param0->unk_02 = param1;
+    param0->enabled = param1;
 }
 
 static void wifi_lobby_map_0226300C(WiFiLobbyMapTask *param0, const WiFiLobbyMapTaskCallbacks *param1, void *param2)
 {
     GF_ASSERT(wifi_lobby_map_0226306C(param0) == 1);
-    param0->unk_14 = param0->unk_04;
+    param0->parentContext = param0->context;
 
-    wifi_lobby_map_0226308C(&param0->unk_04, param1, param2, 0, NULL);
+    wifi_lobby_map_0226308C(&param0->context, param1, param2, 0, NULL);
 }
 
 static void wifi_lobby_map_02263044(WiFiLobbyMapTask *param0)
 {
-    GF_ASSERT(param0->unk_04.unk_04 == NULL);
-    param0->unk_04 = param0->unk_14;
+    GF_ASSERT(param0->context.data == NULL);
+    param0->context = param0->parentContext;
 
-    wifi_lobby_map_02263098(&param0->unk_14);
+    wifi_lobby_map_02263098(&param0->parentContext);
 }
 
 static BOOL wifi_lobby_map_0226306C(const WiFiLobbyMapTask *param0)
 {
-    if (param0->unk_14.unk_00 == NULL) {
+    if (param0->parentContext.callbacks == NULL) {
         return 1;
     }
 
@@ -263,7 +263,7 @@ static BOOL wifi_lobby_map_0226306C(const WiFiLobbyMapTask *param0)
 
 static BOOL wifi_lobby_map_0226307C(const WiFiLobbyMapTask *param0)
 {
-    if (param0->unk_04.unk_00 == NULL) {
+    if (param0->context.callbacks == NULL) {
         return 0;
     }
 
@@ -272,16 +272,16 @@ static BOOL wifi_lobby_map_0226307C(const WiFiLobbyMapTask *param0)
 
 static void wifi_lobby_map_0226308C(WiFiLobbyMapTaskContext *param0, const WiFiLobbyMapTaskCallbacks *param1, void *param2, u32 param3, void *param4)
 {
-    param0->unk_00 = param1;
-    param0->unk_0C = param3;
-    param0->unk_04 = param4;
-    param0->unk_08 = param2;
+    param0->callbacks = param1;
+    param0->state = param3;
+    param0->data = param4;
+    param0->args = param2;
 }
 
 static void wifi_lobby_map_02263098(WiFiLobbyMapTaskContext *param0)
 {
-    param0->unk_00 = NULL;
-    param0->unk_0C = 0;
-    param0->unk_04 = NULL;
-    param0->unk_08 = NULL;
+    param0->callbacks = NULL;
+    param0->state = 0;
+    param0->data = NULL;
+    param0->args = NULL;
 }

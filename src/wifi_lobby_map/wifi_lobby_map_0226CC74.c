@@ -18,7 +18,7 @@
 #include "string_gf.h"
 
 typedef struct {
-    u32 unk_00;
+    u32 nextState;
 } WiFiLobbyMapObjectTaskState;
 
 BOOL wifi_lobby_map_0226CC74(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, u32 param2)
@@ -54,7 +54,7 @@ BOOL wifi_lobby_map_0226CC74(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, 
 
         if (WiFiPlazaLobby_State_IsLobbyClosed(v1)) {
             v5 = wifi_lobby_map_0225E20C(param1, 1, 3);
-            v0->unk_00 = 4;
+            v0->nextState = 4;
             wifi_lobby_map_0225DF8C(param1, v5);
             wifi_lobby_map_02262E88(param0, 5);
             break;
@@ -62,21 +62,21 @@ BOOL wifi_lobby_map_0226CC74(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, 
 
         if (WiFiPlazaLobby_State_IsNeonTransitionComplete(v1) == 1) {
             v5 = wifi_lobby_map_0225E20C(param1, 1, 88);
-            v0->unk_00 = 4;
+            v0->nextState = 4;
             wifi_lobby_map_0225DF8C(param1, v5);
             wifi_lobby_map_02262E88(param0, 5);
             break;
         } else {
             if (WiFiPlazaLobby_State_IsQuestionAnswered(v1) == 1) {
                 v5 = wifi_lobby_map_0225E20C(param1, 1, 87);
-                v0->unk_00 = 4;
+                v0->nextState = 4;
 
                 wifi_lobby_map_0225DF8C(param1, v5);
                 wifi_lobby_map_02262E88(param0, 5);
                 break;
             } else {
                 v5 = wifi_lobby_map_0225E20C(param1, 1, 81);
-                v0->unk_00 = 1;
+                v0->nextState = 1;
 
                 wifi_lobby_map_0225DF8C(param1, v5);
                 wifi_lobby_map_02262E88(param0, 5);
@@ -108,7 +108,7 @@ BOOL wifi_lobby_map_0226CC74(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, 
     } break;
     case 3:
         v5 = wifi_lobby_map_0225E20C(param1, 1, 85);
-        v0->unk_00 = 4;
+        v0->nextState = 4;
 
         wifi_lobby_map_0225DF8C(param1, v5);
         wifi_lobby_map_02262E88(param0, 5);
@@ -123,7 +123,7 @@ BOOL wifi_lobby_map_0226CC74(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, 
         return 1;
     case 5:
         if (wifi_lobby_map_0225DFAC(param1) == 1) {
-            wifi_lobby_map_02262E88(param0, v0->unk_00);
+            wifi_lobby_map_02262E88(param0, v0->nextState);
         }
         break;
     default:
