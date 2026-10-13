@@ -115,11 +115,11 @@ typedef struct {
 } GBAPokemonCartInfo;
 
 typedef struct {
-    u8 unk_00[4084];
-    u16 unk_FF4; // GBASectorID
-    u16 unk_FF6;
-    u32 unk_FF8;
-    u32 unk_FFC;
+    u8 data[4084];
+    u16 sectorId; // GBASectorID
+    u16 checksum;
+    u32 signature;
+    u32 saveCounter;
 } GBACartSaveSector;
 
 static int GBACart_Identify(const GBAPokemonCartInfo *cartInfo, int param1);
@@ -323,13 +323,13 @@ static u16 GBACart_VerifySlot(int param0, void *param1, u32 *param2)
         GBACart_ReadSector(v4 % 14 + param0 * 14, (void *)v3);
         DC_FlushRange(v3, 0x1000);
 
-        if (v3->unk_FF8 == 0x8012025) {
+        if (v3->signature == 0x8012025) {
             v1 = 1;
-            v2 = GBACart_Checksum((u32 *)v3->unk_00, GetGBASectorSize(v3->unk_FF4));
+            v2 = GBACart_Checksum((u32 *)v3->data, GetGBASectorSize(v3->sectorId));
 
-            if (v3->unk_FF6 == v2) {
-                *param2 = v3->unk_FFC;
-                v0 |= (0x1 << v3->unk_FF4);
+            if (v3->checksum == v2) {
+                *param2 = v3->saveCounter;
+                v0 |= (0x1 << v3->sectorId);
             }
         }
     }
@@ -417,7 +417,7 @@ static u32 sGBACartSaveCounter;
 
 int GBACart_LoadSave()
 {
-    u16 v0 = GBACart_FindValidSlot((void *)sGBASaveSlot->unk_00, &sGBACartActiveSlot, &sGBACartSaveCounter);
+    u16 v0 = GBACart_FindValidSlot((void *)sGBASaveSlot->sectorData, &sGBACartActiveSlot, &sGBACartSaveCounter);
 
     if (v0 != 0x1) {
         switch (v0) {
@@ -433,21 +433,21 @@ int GBACart_LoadSave()
     if ((sGBACartActiveSlot == 0) || (sGBACartActiveSlot == 1)) {
         int v1;
         u32 v2 = 0;
-        GBACartSaveSector *v3 = (GBACartSaveSector *)sGBASaveSlot->unk_00;
+        GBACartSaveSector *v3 = (GBACartSaveSector *)sGBASaveSlot->sectorData;
 
         for (v1 = 0; v1 < 14; v1++) {
             GBACart_ReadSector(v1 + sGBACartActiveSlot * 14, (void *)v3);
 
-            if (v3->unk_FF8 == 0x8012025) {
-                u16 v4 = GBACart_Checksum((u32 *)v3->unk_00, GetGBASectorSize(v3->unk_FF4));
+            if (v3->signature == 0x8012025) {
+                u16 v4 = GBACart_Checksum((u32 *)v3->data, GetGBASectorSize(v3->sectorId));
 
-                if (v3->unk_FF6 == v4) {
-                    sGBACartSaveCounter = v3->unk_FFC;
-                    v2 |= (0x1 << v3->unk_FF4);
+                if (v3->checksum == v4) {
+                    sGBACartSaveCounter = v3->saveCounter;
+                    v2 |= (0x1 << v3->sectorId);
 
-                    MI_CpuCopy32((u32 *)v3->unk_00, GetGBASaveSectorById(v3->unk_FF4), GetGBASectorSize(v3->unk_FF4));
+                    MI_CpuCopy32((u32 *)v3->data, GetGBASaveSectorById(v3->sectorId), GetGBASectorSize(v3->sectorId));
 
-                    if (v3->unk_FF4 == 0) {
+                    if (v3->sectorId == 0) {
                         sGBACartSaveBlock1Sector = v1;
                     }
                 }
@@ -469,17 +469,17 @@ static int sGBACartWriteState = 0;
 
 static void GBACart_WriteSector(int gbaSectorID)
 {
-    GBACartSaveSector *v0 = (GBACartSaveSector *)sGBASaveSlot->unk_00;
+    GBACartSaveSector *v0 = (GBACartSaveSector *)sGBASaveSlot->sectorData;
 
     sGBACartWriteState = 1;
 
     MI_CpuClear32(v0, 0x1000);
-    MI_CpuCopy32(GetGBASaveSectorById(gbaSectorID), v0->unk_00, GetGBASectorSize(gbaSectorID));
+    MI_CpuCopy32(GetGBASaveSectorById(gbaSectorID), v0->data, GetGBASectorSize(gbaSectorID));
 
-    v0->unk_FFC = sGBACartSaveCounter;
-    v0->unk_FF4 = (u16)gbaSectorID;
-    v0->unk_FF8 = 0x8012025;
-    v0->unk_FF6 = GBACart_Checksum((u32 *)v0->unk_00, GetGBASectorSize(gbaSectorID));
+    v0->saveCounter = sGBACartSaveCounter;
+    v0->sectorId = (u16)gbaSectorID;
+    v0->signature = 0x8012025;
+    v0->checksum = GBACart_Checksum((u32 *)v0->data, GetGBASectorSize(gbaSectorID));
 
     {
         u8 v1 = (u8)(((gbaSectorID + sGBACartSaveBlock1Sector + 1) % 14) + 14 * sGBACartWriteSlot);

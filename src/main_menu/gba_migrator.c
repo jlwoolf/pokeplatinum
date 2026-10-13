@@ -116,25 +116,25 @@ enum CannotMigrateMsg {
 };
 
 typedef struct {
-    Window *unk_00;
+    Window *window;
     int unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
-    int unk_14;
-    int unk_18;
-    int unk_1C;
-    int unk_20;
+    int x;
+    int y;
+    int width;
+    int height;
+    int textX;
+    int textY;
+    int baseTile;
     int bgLayer;
-    int unk_28;
-    TextColor unk_2C;
-    TextColor unk_30;
+    int fontID;
+    TextColor textColor;
+    TextColor fillColor;
     int messageEntryID;
-    charcode_t *unk_38;
-    String *unk_3C;
-    StringTemplate *unk_40;
-    int unk_44;
-    int unk_48;
+    charcode_t *charcodeString;
+    String *string;
+    StringTemplate *stringTemplate;
+    int textSpeed;
+    int printerID;
 } GBAMigratorTextBox;
 
 typedef struct {
@@ -150,58 +150,58 @@ typedef struct {
 } SelectedMonData;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
-    void *unk_08;
+    int state;
+    int timer;
+    void *waitDial;
 } GBAMigratorSaveState;
 
 typedef struct {
-    int unk_00;
-    int unk_04;
+    int charOffset;
+    int paletteIndex;
     Sprite *iconSprite;
-    u8 unk_0C[512];
+    u8 rawData[512];
 } GBAMigratorMonSprite;
 
 typedef struct {
     int gbaVersion;
     int canMigrateStatus;
     int messageEntryID;
-    int unk_0C;
+    int frameCounter;
     SaveData *saveData;
     TrainerInfo *trainerInfo;
     Options *options;
     int messageBoxFrame;
     BgConfig *bgConfig;
-    int unk_24;
-    SpriteList *unk_28;
-    G2dRenderer unk_2C;
-    SpriteResourceCollection *unk_1B8[6];
-    SpriteResource *unk_1D0[6];
-    SpriteResourcesHeader unk_1E8;
-    GBAMigratorBoxMonSprites unk_20C[GBA_MAX_MONS_PER_BOX];
+    int nextState;
+    SpriteList *spriteList;
+    G2dRenderer g2dRenderer;
+    SpriteResourceCollection *spriteResourceCollections[6];
+    SpriteResource *spriteResources[6];
+    SpriteResourcesHeader spriteResourcesHeader;
+    GBAMigratorBoxMonSprites boxMonSprites[GBA_MAX_MONS_PER_BOX];
     TouchScreenRect touchScreenRects[GBA_MAX_MONS_PER_BOX + 4];
-    Sprite *unk_3FC[4];
-    Sprite *unk_40C[4];
-    Sprite *unk_41C[4];
+    Sprite *confirmSprites[4];
+    Sprite *nextBoxSprites[4];
+    Sprite *prevBoxSprites[4];
     SelectedMonData selectedMonData[CATCHING_SHOW_MONS];
     int selectedCount;
     Sprite *selectedMonIcons[CATCHING_SHOW_MONS];
-    GBAMigratorTextBox unk_490;
-    Window unk_4DC;
-    Window unk_4EC;
-    Window unk_4FC;
-    int unk_50C;
-    int unk_510;
+    GBAMigratorTextBox textBox;
+    Window boxNameWindow;
+    Window monInfoWindow;
+    Window messageWindow;
+    int loadInfoResult;
+    int loadSaveResult;
     GBASaveSlot saveSlot;
     GBAPokemonStorage *pokemonStorage;
     int currentBox;
     int fullSelectionTimer; // Used track how long to wait until fade out once all 6 mon have been selected.
     YesNoTouchMenu *yesNoTouchMenu;
-    GBAMigratorSaveState unk_E8F0;
-    GBAMigratorMonSprite unk_E8FC[GBA_MAX_MONS_PER_BOX];
-    void (*unk_12664)(void);
-    String *unk_12668;
-    String *unk_1266C;
+    GBAMigratorSaveState saveState;
+    GBAMigratorMonSprite monSprites[GBA_MAX_MONS_PER_BOX];
+    void (*flushMonIcons)(void);
+    String *messageString;
+    String *tempString;
 } GBAMigrator;
 
 static void GBAMigrator_ShowBoxName(GBAMigrator *migrator, int boxNum);
@@ -309,27 +309,27 @@ static int GBAMigrator_HandleSave(GBAMigrator *migrator)
     u8 v1[16];
     int saveResult;
     MigratedPokemon *transferData;
-    GBAMigratorSaveState *v4 = &migrator->unk_E8F0;
+    GBAMigratorSaveState *v4 = &migrator->saveState;
 
-    switch (v4->unk_00) {
+    switch (v4->state) {
     case 0:
         CopySelectedMonToPalParkTransfer(migrator);
         transferData = SaveData_GetPalParkTransfer(migrator->saveData);
         PalParkTransfer_SaveTransferHistory(transferData, GetGBAPlayerTrainerId());
-        v4->unk_00++;
+        v4->state++;
         break;
     case 1:
-        v4->unk_04 = 1 + OS_GetTick() % 120;
-        v4->unk_00++;
+        v4->timer = 1 + OS_GetTick() % 120;
+        v4->state++;
         break;
     case 2:
-        if (--v4->unk_04 == 0) {
-            v4->unk_00++;
+        if (--v4->timer == 0) {
+            v4->state++;
         }
         break;
     case 3:
         SaveData_SaveStateInit(migrator->saveData, 2);
-        v4->unk_00++;
+        v4->state++;
         break;
     case 4:
         saveResult = SaveData_SaveStateMain(migrator->saveData);
@@ -339,12 +339,12 @@ static int GBAMigrator_HandleSave(GBAMigrator *migrator)
         }
 
         if (saveResult == SAVE_RESULT_PROCEED_FINAL) {
-            v4->unk_00++;
+            v4->state++;
         }
         break;
     case 5:
         CTRDG_ReadAgbFlash(0, 0, v1, sizeof(v1));
-        v4->unk_00++;
+        v4->state++;
         break;
     case 6:
         v0 = GBACart_WriteNextSector();
@@ -354,7 +354,7 @@ static int GBAMigrator_HandleSave(GBAMigrator *migrator)
             return 12;
         }
 
-        v4->unk_00++;
+        v4->state++;
         break;
     case 7:
         if (GBACart_GetWriteState() == 9) {
@@ -362,7 +362,7 @@ static int GBAMigrator_HandleSave(GBAMigrator *migrator)
         }
 
         if (GBACart_GetWriteState() == 11) {
-            v4->unk_00++;
+            v4->state++;
         } else {
             v0 = GBACart_GetWriteResult();
 
@@ -383,7 +383,7 @@ static int GBAMigrator_HandleSave(GBAMigrator *migrator)
 
         GBACart_GetWriteResult();
         SleepLock(SLEEP_TYPE_SAVE_DATA);
-        v4->unk_00++;
+        v4->state++;
         break;
     case 9:
         v0 = GBACart_GetWriteResult();
@@ -451,10 +451,10 @@ static int GBAMigrator_CalcTextX(GBAMigratorTextBox *param0, String *param1, int
 
     if (param2 & 0x1) {
         v0 = Font_CalcStringWidth(FONT_MESSAGE, (const String *)param1, 0);
-        v1 = param0->unk_10 * 8;
+        v1 = param0->width * 8;
         return (v1 - v0) / 2;
     } else {
-        return param0->unk_18;
+        return param0->textX;
     }
 }
 
@@ -466,41 +466,41 @@ static void GBAMigrator_DrawTextBox(GBAMigrator *migrator, GBAMigratorTextBox *p
     int v3, v4, v5;
     String *v6;
 
-    if (param1->unk_44 == 0) {
+    if (param1->textSpeed == 0) {
         v5 = TEXT_SPEED_NO_TRANSFER;
     } else {
-        v5 = param1->unk_44;
+        v5 = param1->textSpeed;
     }
 
-    if (param1->unk_00->bgConfig == NULL) {
-        Window_Add(migrator->bgConfig, param1->unk_00, param1->bgLayer, param1->unk_08, param1->unk_0C, param1->unk_10, param1->unk_14, 15, param1->unk_20);
+    if (param1->window->bgConfig == NULL) {
+        Window_Add(migrator->bgConfig, param1->window, param1->bgLayer, param1->x, param1->y, param1->width, param1->height, 15, param1->baseTile);
     }
 
     if (!(param2 & 0x2)) {
-        Window_FillTilemap(param1->unk_00, param1->unk_30);
+        Window_FillTilemap(param1->window, param1->fillColor);
     }
 
     if (param1->messageEntryID != -1) {
         msgLoader = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_MIGRATE_FROM_GBA, HEAP_ID_MIGRATE_FROM_GBA);
 
-        if (param1->unk_40) {
-            v1 = param1->unk_40;
+        if (param1->stringTemplate) {
+            v1 = param1->stringTemplate;
         } else {
             v1 = StringTemplate_Default(HEAP_ID_MIGRATE_FROM_GBA);
         }
 
-        String_Clear(migrator->unk_12668);
+        String_Clear(migrator->messageString);
 
-        v0 = migrator->unk_12668;
+        v0 = migrator->messageString;
         v6 = MessageLoader_GetNewString(msgLoader, param1->messageEntryID);
 
-        StringTemplate_Format(v1, migrator->unk_12668, v6);
+        StringTemplate_Format(v1, migrator->messageString, v6);
         String_Free(v6);
 
         v3 = GBAMigrator_CalcTextX(param1, v0, param2);
-        param1->unk_48 = Text_AddPrinterWithParamsAndColor(param1->unk_00, param1->unk_28, v0, v3, param1->unk_1C, v5, param1->unk_2C, NULL);
+        param1->printerID = Text_AddPrinterWithParamsAndColor(param1->window, param1->fontID, v0, v3, param1->textY, v5, param1->textColor, NULL);
 
-        if (param1->unk_40 == NULL) {
+        if (param1->stringTemplate == NULL) {
             StringTemplate_Free(v1);
         }
 
@@ -508,30 +508,30 @@ static void GBAMigrator_DrawTextBox(GBAMigrator *migrator, GBAMigratorTextBox *p
         param1->messageEntryID = -1;
     }
 
-    if (param1->unk_38) {
-        v0 = migrator->unk_1266C;
-        String_CopyNumChars(v0, param1->unk_38, 64);
+    if (param1->charcodeString) {
+        v0 = migrator->tempString;
+        String_CopyNumChars(v0, param1->charcodeString, 64);
         v3 = GBAMigrator_CalcTextX(param1, v0, param2);
-        param1->unk_48 = Text_AddPrinterWithParamsAndColor(param1->unk_00, param1->unk_28, v0, v3, param1->unk_1C, v5, param1->unk_2C, NULL);
-        param1->unk_38 = NULL;
+        param1->printerID = Text_AddPrinterWithParamsAndColor(param1->window, param1->fontID, v0, v3, param1->textY, v5, param1->textColor, NULL);
+        param1->charcodeString = NULL;
     }
 
-    if (param1->unk_3C) {
-        v3 = GBAMigrator_CalcTextX(param1, param1->unk_3C, param2);
+    if (param1->string) {
+        v3 = GBAMigrator_CalcTextX(param1, param1->string, param2);
 
-        param1->unk_48 = Text_AddPrinterWithParamsAndColor(param1->unk_00, param1->unk_28, param1->unk_3C, v3, param1->unk_1C, v5, param1->unk_2C, NULL);
-        param1->unk_3C = NULL;
+        param1->printerID = Text_AddPrinterWithParamsAndColor(param1->window, param1->fontID, param1->string, v3, param1->textY, v5, param1->textColor, NULL);
+        param1->string = NULL;
     }
 
     if (!(param2 & 0x4)) {
-        Window_CopyToVRAM(param1->unk_00);
+        Window_CopyToVRAM(param1->window);
     }
 
     if (param2 & 0x8) {
         if (param2 & 0x10) {
-            Window_DrawMessageBoxWithScrollCursor(param1->unk_00, 0, 0x3F0 - (18 + 12), 13);
+            Window_DrawMessageBoxWithScrollCursor(param1->window, 0, 0x3F0 - (18 + 12), 13);
         } else {
-            Window_DrawStandardFrame(param1->unk_00, 0, 0x3F0, 14);
+            Window_DrawStandardFrame(param1->window, 0, 0x3F0, 14);
         }
     }
 }
@@ -561,33 +561,33 @@ static void GBAMigrator_InitSprites(GBAMigrator *migrator)
     NNS_G2dInitOamManagerModule();
 
     RenderOam_Init(0, 126, 0, 32, 0, 126, 0, 32, HEAP_ID_MIGRATE_FROM_GBA);
-    migrator->unk_28 = SpriteList_InitRendering(80, &migrator->unk_2C, HEAP_ID_MIGRATE_FROM_GBA);
-    SetSubScreenViewRect(&migrator->unk_2C, 0, 256 * FX32_ONE);
+    migrator->spriteList = SpriteList_InitRendering(80, &migrator->g2dRenderer, HEAP_ID_MIGRATE_FROM_GBA);
+    SetSubScreenViewRect(&migrator->g2dRenderer, 0, 256 * FX32_ONE);
 
     for (i = 0; i < 6; i++) {
-        migrator->unk_1B8[i] = SpriteResourceCollection_New(3, i, HEAP_ID_MIGRATE_FROM_GBA);
+        migrator->spriteResourceCollections[i] = SpriteResourceCollection_New(3, i, HEAP_ID_MIGRATE_FROM_GBA);
     }
 
-    migrator->unk_1D0[0] = SpriteResourceCollection_AddTiles(migrator->unk_1B8[0], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_NCGR_lz, 1, 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_MIGRATE_FROM_GBA);
-    migrator->unk_1D0[1] = SpriteResourceCollection_AddPalette(migrator->unk_1B8[1], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_NCLR, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 4, HEAP_ID_MIGRATE_FROM_GBA);
-    migrator->unk_1D0[2] = SpriteResourceCollection_Add(migrator->unk_1B8[2], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_cell_NCER_lz, 1, 0, 2, HEAP_ID_MIGRATE_FROM_GBA);
-    migrator->unk_1D0[3] = SpriteResourceCollection_Add(migrator->unk_1B8[3], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_anim_NANR_lz, 1, 0, 3, HEAP_ID_MIGRATE_FROM_GBA);
+    migrator->spriteResources[0] = SpriteResourceCollection_AddTiles(migrator->spriteResourceCollections[0], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_NCGR_lz, 1, 0, NNS_G2D_VRAM_TYPE_2DMAIN, HEAP_ID_MIGRATE_FROM_GBA);
+    migrator->spriteResources[1] = SpriteResourceCollection_AddPalette(migrator->spriteResourceCollections[1], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_NCLR, 0, 0, NNS_G2D_VRAM_TYPE_2DMAIN, 4, HEAP_ID_MIGRATE_FROM_GBA);
+    migrator->spriteResources[2] = SpriteResourceCollection_Add(migrator->spriteResourceCollections[2], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_cell_NCER_lz, 1, 0, 2, HEAP_ID_MIGRATE_FROM_GBA);
+    migrator->spriteResources[3] = SpriteResourceCollection_Add(migrator->spriteResourceCollections[3], NARC_INDEX_GRAPHIC__MYSTERY, gba_migration_sprites_anim_NANR_lz, 1, 0, 3, HEAP_ID_MIGRATE_FROM_GBA);
 
-    SpriteTransfer_RequestChar(migrator->unk_1D0[0]);
-    SpriteTransfer_RequestPlttWholeRange(migrator->unk_1D0[1]);
+    SpriteTransfer_RequestChar(migrator->spriteResources[0]);
+    SpriteTransfer_RequestPlttWholeRange(migrator->spriteResources[1]);
     Graphics_LoadPalette(NARC_INDEX_POKETOOL__ICONGRA__PL_POKE_ICON, PokeIconPalettesFileIndex(), 1, 8 * 0x20, 0, HEAP_ID_MIGRATE_FROM_GBA);
 }
 
 static void GBAMigrator_InitSpriteResources(GBAMigrator *migrator)
 {
-    SpriteResourcesHeader_Init(&migrator->unk_1E8, 0, 0, 0, 0, -1, -1, 0, 0, migrator->unk_1B8[0], migrator->unk_1B8[1], migrator->unk_1B8[2], migrator->unk_1B8[3], NULL, NULL);
+    SpriteResourcesHeader_Init(&migrator->spriteResourcesHeader, 0, 0, 0, 0, -1, -1, 0, 0, migrator->spriteResourceCollections[0], migrator->spriteResourceCollections[1], migrator->spriteResourceCollections[2], migrator->spriteResourceCollections[3], NULL, NULL);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_OBJ, 1);
 }
 
 static void GBAMigrator_SetSpriteTemplate(AffineSpriteListTemplate *param0, GBAMigrator *migrator, SpriteResourcesHeader *param2, int param3)
 {
-    param0->list = migrator->unk_28;
-    param0->resourceData = &migrator->unk_1E8;
+    param0->list = migrator->spriteList;
+    param0->resourceData = &migrator->spriteResourcesHeader;
     param0->position.z = 0;
     param0->affineScale.x = FX32_ONE;
     param0->affineScale.y = FX32_ONE;
@@ -719,11 +719,11 @@ static void GBAMigrator_LoadMonIconData(int speciesGBA, int isEgg, int form, int
         spriteIndex = PokeIconSpriteIndex(speciesGBA, isEgg, form);
 
         GBAMigrator_ReadCharacterData(spriteIndex, &v1, param5, param6);
-        MI_CpuCopyFast(v1->pRawData, v2->unk_0C, (4 * 4) * 0x20);
+        MI_CpuCopyFast(v1->pRawData, v2->rawData, (4 * 4) * 0x20);
 
-        v2->unk_00 = (0x64 + param3 * (4 * 4)) * 0x20;
+        v2->charOffset = (0x64 + param3 * (4 * 4)) * 0x20;
         v2->iconSprite = monIconSprite;
-        v2->unk_04 = PokeIconPaletteIndex(speciesGBA, form, isEgg) + 8;
+        v2->paletteIndex = PokeIconPaletteIndex(speciesGBA, form, isEgg) + 8;
     } else {
         v2->iconSprite = NULL;
     }
@@ -736,9 +736,9 @@ static void GBAMigrator_FlushMonIcons(void)
 
     for (i = 0; i < GBA_MAX_MONS_PER_BOX; i++, v1++) {
         if (v1->iconSprite) {
-            DC_FlushRange(v1->unk_0C, (4 * 4) * 0x20);
-            GX_LoadOBJ(v1->unk_0C, v1->unk_00, (4 * 4) * 0x20);
-            Sprite_SetExplicitPalette(v1->iconSprite, v1->unk_04);
+            DC_FlushRange(v1->rawData, (4 * 4) * 0x20);
+            GX_LoadOBJ(v1->rawData, v1->charOffset, (4 * 4) * 0x20);
+            Sprite_SetExplicitPalette(v1->iconSprite, v1->paletteIndex);
         }
     }
 }
@@ -759,25 +759,25 @@ static void GBAMigrator_LoadBoxSprites(GBAMigrator *migrator)
             gbaVersion = gSystem.gbaCartridgeVersion;
             form = GetSpeciesGBAForm(GBAPokemon_ConvertSpeciesToDS(speciesGBA), personality, gbaVersion);
 
-            GBAMigrator_LoadMonIconData(speciesGBA, isEgg, form, i, migrator->unk_20C[i].monIconSprite, v6, v7);
-            Sprite_SetDrawFlag(migrator->unk_20C[i].monIconSprite, TRUE);
+            GBAMigrator_LoadMonIconData(speciesGBA, isEgg, form, i, migrator->boxMonSprites[i].monIconSprite, v6, v7);
+            Sprite_SetDrawFlag(migrator->boxMonSprites[i].monIconSprite, TRUE);
 
             if (GBABoxPokemon_GetData(&(migrator->pokemonStorage->boxes[migrator->currentBox][i]), GBA_MON_DATA_HELD_ITEM, NULL)) {
-                Sprite_SetDrawFlag(migrator->unk_20C[i].heldItemSprite, TRUE);
+                Sprite_SetDrawFlag(migrator->boxMonSprites[i].heldItemSprite, TRUE);
             } else {
-                Sprite_SetDrawFlag(migrator->unk_20C[i].heldItemSprite, FALSE);
+                Sprite_SetDrawFlag(migrator->boxMonSprites[i].heldItemSprite, FALSE);
             }
         } else {
             GBAMigrator_LoadMonIconData(speciesGBA, isEgg, form, i, NULL, v6, v7);
-            Sprite_SetDrawFlag(migrator->unk_20C[i].monIconSprite, FALSE);
-            Sprite_SetDrawFlag(migrator->unk_20C[i].heldItemSprite, FALSE);
+            Sprite_SetDrawFlag(migrator->boxMonSprites[i].monIconSprite, FALSE);
+            Sprite_SetDrawFlag(migrator->boxMonSprites[i].heldItemSprite, FALSE);
         }
     }
 
     Heap_Free(v6);
     NARC_dtor(v7);
 
-    migrator->unk_12664 = GBAMigrator_FlushMonIcons;
+    migrator->flushMonIcons = GBAMigrator_FlushMonIcons;
 
     GBAMigrator_ShowBoxName(migrator, migrator->currentBox);
     GBAMigrator_UpdateSelectionSprites(migrator);
@@ -788,7 +788,7 @@ static void InitBoxPokemonSprites(GBAMigrator *migrator)
     int count, col, row;
     AffineSpriteListTemplate v3;
 
-    GBAMigrator_SetSpriteTemplate(&v3, migrator, &migrator->unk_1E8, NNS_G2D_VRAM_TYPE_2DMAIN);
+    GBAMigrator_SetSpriteTemplate(&v3, migrator, &migrator->spriteResourcesHeader, NNS_G2D_VRAM_TYPE_2DMAIN);
 
     count = 0;
 
@@ -799,28 +799,28 @@ static void InitBoxPokemonSprites(GBAMigrator *migrator)
             v3.position.x = FX32_ONE * (col * 40 + 28);
             v3.position.y = FX32_ONE * (row * 24 + 40);
 
-            if (migrator->unk_20C[count].monIconSprite == NULL) {
-                migrator->unk_20C[count].monIconSprite = SpriteList_AddAffine(&v3);
+            if (migrator->boxMonSprites[count].monIconSprite == NULL) {
+                migrator->boxMonSprites[count].monIconSprite = SpriteList_AddAffine(&v3);
             }
 
-            Sprite_SetAnimateFlag(migrator->unk_20C[count].monIconSprite, 1);
-            Sprite_SetAnim(migrator->unk_20C[count].monIconSprite, 10 + count);
-            Sprite_SetExplicitPriority(migrator->unk_20C[count].monIconSprite, 1);
-            Sprite_SetDrawFlag(migrator->unk_20C[count].monIconSprite, TRUE);
-            Sprite_SetPriority(migrator->unk_20C[count].monIconSprite, 100 + count);
+            Sprite_SetAnimateFlag(migrator->boxMonSprites[count].monIconSprite, 1);
+            Sprite_SetAnim(migrator->boxMonSprites[count].monIconSprite, 10 + count);
+            Sprite_SetExplicitPriority(migrator->boxMonSprites[count].monIconSprite, 1);
+            Sprite_SetDrawFlag(migrator->boxMonSprites[count].monIconSprite, TRUE);
+            Sprite_SetPriority(migrator->boxMonSprites[count].monIconSprite, 100 + count);
 
             v3.position.x += FX32_ONE * 6;
             v3.position.y += FX32_ONE * 12;
 
-            if (migrator->unk_20C[count].heldItemSprite == NULL) {
-                migrator->unk_20C[count].heldItemSprite = SpriteList_AddAffine(&v3);
+            if (migrator->boxMonSprites[count].heldItemSprite == NULL) {
+                migrator->boxMonSprites[count].heldItemSprite = SpriteList_AddAffine(&v3);
             }
 
-            Sprite_SetAnimateFlag(migrator->unk_20C[count].heldItemSprite, 1);
-            Sprite_SetAnim(migrator->unk_20C[count].heldItemSprite, 40);
-            Sprite_SetExplicitPriority(migrator->unk_20C[count].heldItemSprite, 1);
-            Sprite_SetDrawFlag(migrator->unk_20C[count].heldItemSprite, FALSE);
-            Sprite_SetPriority(migrator->unk_20C[count].heldItemSprite, 0 + count);
+            Sprite_SetAnimateFlag(migrator->boxMonSprites[count].heldItemSprite, 1);
+            Sprite_SetAnim(migrator->boxMonSprites[count].heldItemSprite, 40);
+            Sprite_SetExplicitPriority(migrator->boxMonSprites[count].heldItemSprite, 1);
+            Sprite_SetDrawFlag(migrator->boxMonSprites[count].heldItemSprite, FALSE);
+            Sprite_SetPriority(migrator->boxMonSprites[count].heldItemSprite, 0 + count);
 
             count++;
 
@@ -836,7 +836,7 @@ static Sprite *GBAMigrator_AddSprite(GBAMigrator *migrator, int param1, int para
     AffineSpriteListTemplate v0;
     Sprite *v1;
 
-    GBAMigrator_SetSpriteTemplate(&v0, migrator, &migrator->unk_1E8, NNS_G2D_VRAM_TYPE_2DMAIN);
+    GBAMigrator_SetSpriteTemplate(&v0, migrator, &migrator->spriteResourcesHeader, NNS_G2D_VRAM_TYPE_2DMAIN);
 
     v0.position.x = FX32_ONE * param1;
     v0.position.y = FX32_ONE * param2;
@@ -857,13 +857,13 @@ static void GBAMigrator_InitBoxScreen(GBAMigrator *migrator)
     int i;
 
     GBAMigrator_SetTouchRect(&migrator->touchScreenRects[(GBA_MAX_MONS_PER_BOX + 0)], 228, 176, 50, 32);
-    migrator->unk_3FC[0] = GBAMigrator_AddSprite(migrator, 228, 176, 6, 1);
+    migrator->confirmSprites[0] = GBAMigrator_AddSprite(migrator, 228, 176, 6, 1);
 
     GBAMigrator_SetTouchRect(&migrator->touchScreenRects[(GBA_MAX_MONS_PER_BOX + 2)], 176, 176, 32, 32);
-    migrator->unk_40C[0] = GBAMigrator_AddSprite(migrator, 176, 176, 3, 1);
+    migrator->nextBoxSprites[0] = GBAMigrator_AddSprite(migrator, 176, 176, 3, 1);
 
     GBAMigrator_SetTouchRect(&migrator->touchScreenRects[(GBA_MAX_MONS_PER_BOX + 1)], 24, 176, 32, 32);
-    migrator->unk_41C[0] = GBAMigrator_AddSprite(migrator, 24, 176, 0, 1);
+    migrator->prevBoxSprites[0] = GBAMigrator_AddSprite(migrator, 24, 176, 0, 1);
     migrator->touchScreenRects[(GBA_MAX_MONS_PER_BOX + 3)].rect.top = 0xff;
 
     for (i = 0; i < CATCHING_SHOW_MONS; i++) {
@@ -1080,8 +1080,8 @@ static int GBAMigrator_TrySelectGBABoxMon(GBAMigrator *migrator, int boxPosition
 {
     int i, v1;
 
-    if (migrator->unk_20C[boxPosition].monIconSprite != NULL
-        && (Sprite_GetDrawFlag(migrator->unk_20C[boxPosition].monIconSprite) == FALSE)) {
+    if (migrator->boxMonSprites[boxPosition].monIconSprite != NULL
+        && (Sprite_GetDrawFlag(migrator->boxMonSprites[boxPosition].monIconSprite) == FALSE)) {
         return GBA_MON_STATE_EMPTY_SLOT;
     }
 
@@ -1117,7 +1117,7 @@ static int GBAMigrator_TrySelectGBABoxMon(GBAMigrator *migrator, int boxPosition
 
         for (i = 0; i < CATCHING_SHOW_MONS; i++) {
             if (migrator->selectedMonData[i].boxPosition == -1) {
-                v2 = Sprite_GetPosition(migrator->unk_20C[boxPosition].monIconSprite);
+                v2 = Sprite_GetPosition(migrator->boxMonSprites[boxPosition].monIconSprite);
                 Sprite_SetPosition(migrator->selectedMonData[i].selectionSprite, v2);
                 v2 = Sprite_GetPosition(migrator->selectedMonData[i].selectionSprite);
 
@@ -1167,21 +1167,21 @@ static void GBAMigrator_ShowBoxName(GBAMigrator *migrator, int boxNum)
 
     memset(&v0, 0, sizeof(GBAMigratorTextBox));
 
-    v0.unk_00 = &migrator->unk_4DC;
-    v0.unk_08 = 6;
-    v0.unk_0C = 21;
-    v0.unk_10 = 13;
-    v0.unk_14 = 2;
+    v0.window = &migrator->boxNameWindow;
+    v0.x = 6;
+    v0.y = 21;
+    v0.width = 13;
+    v0.height = 2;
     v0.messageEntryID = -1;
-    v0.unk_18 = 0;
-    v0.unk_1C = 0;
+    v0.textX = 0;
+    v0.textY = 0;
     v0.bgLayer = BG_LAYER_MAIN_1;
-    v0.unk_28 = 1;
-    v0.unk_2C = TEXT_COLOR(1, 2, 0);
-    v0.unk_20 = 0xA0;
+    v0.fontID = 1;
+    v0.textColor = TEXT_COLOR(1, 2, 0);
+    v0.baseTile = 0xA0;
 
     GBA_ConvertStringToDS(migrator->pokemonStorage->boxNames[boxNum], boxName, GBA_BOX_NAME_LEN + 1, GBACart_GetLanguage());
-    v0.unk_38 = boxName;
+    v0.charcodeString = boxName;
     GBAMigrator_DrawTextBox(migrator, &v0, 0x1);
 }
 
@@ -1222,42 +1222,42 @@ static void PrintGBABoxMonInfo(GBAMigrator *migrator, GBABoxPokemon *gbaBoxMon)
 
     memset(&v4, 0, sizeof(GBAMigratorTextBox));
 
-    v4.unk_00 = &migrator->unk_4EC;
-    v4.unk_08 = 0;
-    v4.unk_0C = 0;
-    v4.unk_10 = 32;
-    v4.unk_14 = 4;
+    v4.window = &migrator->monInfoWindow;
+    v4.x = 0;
+    v4.y = 0;
+    v4.width = 32;
+    v4.height = 4;
     v4.bgLayer = BG_LAYER_MAIN_1;
-    v4.unk_28 = 1;
-    v4.unk_20 = (14 * 2 + 0xA0);
-    v4.unk_2C = TEXT_COLOR(15, 2, 0);
-    v4.unk_38 = NULL;
+    v4.fontID = 1;
+    v4.baseTile = (14 * 2 + 0xA0);
+    v4.textColor = TEXT_COLOR(15, 2, 0);
+    v4.charcodeString = NULL;
 
     v4.messageEntryID = MigrateFromGBA_Text_Item;
-    v4.unk_18 = 18 * 8;
-    v4.unk_1C = 0;
+    v4.textX = 18 * 8;
+    v4.textY = 0;
 
     GBAMigrator_DrawTextBox(migrator, &v4, 0x4);
 
     v4.messageEntryID = MigrateFromGBA_Text_Level;
-    v4.unk_18 = 10 * 8;
-    v4.unk_1C = 8;
+    v4.textX = 10 * 8;
+    v4.textY = 8;
 
     GBAMigrator_DrawTextBox(migrator, &v4, 0x4 | 0x2);
     GBAMigrator_DrawMarkings(migrator, gbaBoxMon);
 
     if (gbaBoxMon == NULL) {
-        Window_CopyToVRAM(v4.unk_00);
+        Window_CopyToVRAM(v4.window);
         return;
     }
 
     GBABoxPokemon_GetData(gbaBoxMon, GBA_MON_DATA_NICKNAME, gbaNickname);
     GBA_ConvertStringToDS(gbaNickname, dsNickname, GBA_MON_NAME_LEN + 1, GBABoxPokemon_GetData(gbaBoxMon, GBA_MON_DATA_LANGUAGE, NULL));
 
-    v4.unk_38 = dsNickname;
+    v4.charcodeString = dsNickname;
     v4.messageEntryID = -1;
-    v4.unk_18 = 1 * 8;
-    v4.unk_1C = 0;
+    v4.textX = 1 * 8;
+    v4.textY = 0;
 
     GBAMigrator_DrawTextBox(migrator, &v4, 0x4 | 0x2);
 
@@ -1267,10 +1267,10 @@ static void PrintGBABoxMonInfo(GBAMigrator *migrator, GBABoxPokemon *gbaBoxMon)
 
     MessageLoader_GetString(msgLoader, species, string);
 
-    v4.unk_3C = string;
+    v4.string = string;
     v4.messageEntryID = -1;
-    v4.unk_18 = 2 * 8;
-    v4.unk_1C = 2 * 8;
+    v4.textX = 2 * 8;
+    v4.textY = 2 * 8;
 
     GBAMigrator_DrawTextBox(migrator, &v4, 0x4 | 0x2);
 
@@ -1285,10 +1285,10 @@ static void PrintGBABoxMonInfo(GBAMigrator *migrator, GBABoxPokemon *gbaBoxMon)
 
         Item_LoadName(string, itemID, HEAP_ID_MIGRATE_FROM_GBA);
 
-        v4.unk_3C = string;
+        v4.string = string;
         v4.messageEntryID = -1;
-        v4.unk_18 = 19 * 8;
-        v4.unk_1C = 2 * 8;
+        v4.textX = 19 * 8;
+        v4.textY = 2 * 8;
 
         GBAMigrator_DrawTextBox(migrator, &v4, 0x4 | 0x2);
         String_Free(string);
@@ -1299,10 +1299,10 @@ static void PrintGBABoxMonInfo(GBAMigrator *migrator, GBABoxPokemon *gbaBoxMon)
 
     String_FormatInt(string, level, 3, PADDING_MODE_SPACES, CHARSET_MODE_EN);
 
-    v4.unk_3C = string;
+    v4.string = string;
     v4.messageEntryID = -1;
-    v4.unk_18 = 12 * 8 + 4;
-    v4.unk_1C = 1 * 8;
+    v4.textX = 12 * 8 + 4;
+    v4.textY = 1 * 8;
 
     GBAMigrator_DrawTextBox(migrator, &v4, 0x2);
 
@@ -1318,7 +1318,7 @@ static void GBAMigrator_FadeIn(GBAMigrator *migrator, enum FadeType fadeType, in
         *state = GBA_MIGRATOR_STATE_FADE_OUT_TO_SELECTED_MON;
     }
 
-    migrator->unk_24 = param2;
+    migrator->nextState = param2;
 }
 
 static void GBAMigrator_FadeOut(GBAMigrator *migrator, enum FadeType fadeType, int param2, int *state)
@@ -1329,7 +1329,7 @@ static void GBAMigrator_FadeOut(GBAMigrator *migrator, enum FadeType fadeType, i
         *state = GBA_MIGRATOR_STATE_FADE_OUT_TO_SELECTED_MON;
     }
 
-    migrator->unk_24 = param2;
+    migrator->nextState = param2;
 }
 
 static void GBAMigrator_InitBg(BgConfig *bgConfig)
@@ -1468,20 +1468,20 @@ static void GBAMigrator_InitTextBoxWindow(GBAMigrator *migrator)
     LoadStandardWindowGraphics(migrator->bgConfig, BG_LAYER_MAIN_0, 0x3F0, 14, 0, HEAP_ID_MIGRATE_FROM_GBA);
     LoadMessageBoxGraphics(migrator->bgConfig, BG_LAYER_MAIN_0, 0x3F0 - (18 + 12), 13, migrator->messageBoxFrame, HEAP_ID_MIGRATE_FROM_GBA);
 
-    memset(&migrator->unk_490, 0, sizeof(GBAMigratorTextBox));
+    memset(&migrator->textBox, 0, sizeof(GBAMigratorTextBox));
 
-    migrator->unk_490.unk_00 = &migrator->unk_4FC;
-    migrator->unk_490.unk_08 = 2;
-    migrator->unk_490.unk_0C = 1;
-    migrator->unk_490.unk_10 = 27;
-    migrator->unk_490.unk_14 = 4;
-    migrator->unk_490.bgLayer = BG_LAYER_MAIN_0;
-    migrator->unk_490.unk_28 = 1;
-    migrator->unk_490.unk_20 = 0 + 1;
-    migrator->unk_490.unk_2C = TEXT_COLOR(1, 2, 15);
-    migrator->unk_490.unk_30 = TEXT_COLOR(15, 2, 15);
-    migrator->unk_490.unk_38 = NULL;
-    migrator->unk_490.unk_3C = NULL;
+    migrator->textBox.window = &migrator->messageWindow;
+    migrator->textBox.x = 2;
+    migrator->textBox.y = 1;
+    migrator->textBox.width = 27;
+    migrator->textBox.height = 4;
+    migrator->textBox.bgLayer = BG_LAYER_MAIN_0;
+    migrator->textBox.fontID = 1;
+    migrator->textBox.baseTile = 0 + 1;
+    migrator->textBox.textColor = TEXT_COLOR(1, 2, 15);
+    migrator->textBox.fillColor = TEXT_COLOR(15, 2, 15);
+    migrator->textBox.charcodeString = NULL;
+    migrator->textBox.string = NULL;
 }
 
 static void GBAMigrator_InitConfirmScreen(GBAMigrator *migrator)
@@ -1491,19 +1491,19 @@ static void GBAMigrator_InitConfirmScreen(GBAMigrator *migrator)
     AffineSpriteListTemplate v5;
 
     for (i = 0; i < GBA_MAX_MONS_PER_BOX; i++) {
-        Sprite_SetDrawFlag(migrator->unk_20C[i].monIconSprite, FALSE);
-        Sprite_SetDrawFlag(migrator->unk_20C[i].heldItemSprite, FALSE);
+        Sprite_SetDrawFlag(migrator->boxMonSprites[i].monIconSprite, FALSE);
+        Sprite_SetDrawFlag(migrator->boxMonSprites[i].heldItemSprite, FALSE);
     }
 
     for (i = 0; i < CATCHING_SHOW_MONS; i++) {
         Sprite_SetDrawFlag(migrator->selectedMonData[i].selectionSprite, FALSE);
     }
 
-    Sprite_SetDrawFlag(migrator->unk_3FC[0], FALSE);
-    Sprite_SetDrawFlag(migrator->unk_41C[0], FALSE);
-    Sprite_SetDrawFlag(migrator->unk_40C[0], FALSE);
+    Sprite_SetDrawFlag(migrator->confirmSprites[0], FALSE);
+    Sprite_SetDrawFlag(migrator->prevBoxSprites[0], FALSE);
+    Sprite_SetDrawFlag(migrator->nextBoxSprites[0], FALSE);
 
-    GBAMigrator_SetSpriteTemplate(&v5, migrator, &migrator->unk_1E8, NNS_G2D_VRAM_TYPE_2DMAIN);
+    GBAMigrator_SetSpriteTemplate(&v5, migrator, &migrator->spriteResourcesHeader, NNS_G2D_VRAM_TYPE_2DMAIN);
 
     for (i = 0; i < CATCHING_SHOW_MONS; i++) {
         v5.position.x = FX32_ONE * (i * 40 + 28);
@@ -1533,8 +1533,8 @@ static void GBAMigrator_InitConfirmScreen(GBAMigrator *migrator)
     LoadMessageBoxGraphics(migrator->bgConfig, BG_LAYER_MAIN_0, 0x3F0 - (18 + 12), 13, migrator->messageBoxFrame, HEAP_ID_MIGRATE_FROM_GBA);
 
     GBAMigrator_InitTextBoxWindow(migrator);
-    migrator->unk_490.messageEntryID = MigrateFromGBA_Text_SixChosenWillMigrate;
-    GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0x8 | 0x10);
+    migrator->textBox.messageEntryID = MigrateFromGBA_Text_SixChosenWillMigrate;
+    GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0x8 | 0x10);
 }
 
 static void GBAMigrator_RemoveWindow(Window *window)
@@ -1555,11 +1555,11 @@ static void ResetChosenPokemonData(GBAMigrator *migrator)
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG1, 1);
-    GBAMigrator_RemoveWindow(&migrator->unk_4FC);
+    GBAMigrator_RemoveWindow(&migrator->messageWindow);
 
-    Sprite_SetDrawFlag(migrator->unk_3FC[0], TRUE);
-    Sprite_SetDrawFlag(migrator->unk_41C[0], TRUE);
-    Sprite_SetDrawFlag(migrator->unk_40C[0], TRUE);
+    Sprite_SetDrawFlag(migrator->confirmSprites[0], TRUE);
+    Sprite_SetDrawFlag(migrator->prevBoxSprites[0], TRUE);
+    Sprite_SetDrawFlag(migrator->nextBoxSprites[0], TRUE);
 
     for (i = 0; i < CATCHING_SHOW_MONS; i++) {
         migrator->selectedMonData[i].boxPosition = -1;
@@ -1576,12 +1576,12 @@ static void GBAMigrator_FreeUi(GBAMigrator *migrator)
     SetVBlankCallback(NULL, NULL);
 
     for (i = 0; i < GBA_MAX_MONS_PER_BOX; i++) {
-        if (migrator->unk_20C[i].monIconSprite != NULL) {
-            Sprite_Delete(migrator->unk_20C[i].monIconSprite);
+        if (migrator->boxMonSprites[i].monIconSprite != NULL) {
+            Sprite_Delete(migrator->boxMonSprites[i].monIconSprite);
         }
 
-        if (migrator->unk_20C[i].heldItemSprite != NULL) {
-            Sprite_Delete(migrator->unk_20C[i].heldItemSprite);
+        if (migrator->boxMonSprites[i].heldItemSprite != NULL) {
+            Sprite_Delete(migrator->boxMonSprites[i].heldItemSprite);
         }
     }
 
@@ -1591,32 +1591,32 @@ static void GBAMigrator_FreeUi(GBAMigrator *migrator)
         }
     }
 
-    if (migrator->unk_3FC[0]) {
-        Sprite_Delete(migrator->unk_3FC[0]);
+    if (migrator->confirmSprites[0]) {
+        Sprite_Delete(migrator->confirmSprites[0]);
     }
 
-    if (migrator->unk_41C[0]) {
-        Sprite_Delete(migrator->unk_41C[0]);
+    if (migrator->prevBoxSprites[0]) {
+        Sprite_Delete(migrator->prevBoxSprites[0]);
     }
 
-    if (migrator->unk_40C[0]) {
-        Sprite_Delete(migrator->unk_40C[0]);
+    if (migrator->nextBoxSprites[0]) {
+        Sprite_Delete(migrator->nextBoxSprites[0]);
     }
 
-    GBAMigrator_RemoveWindow(&migrator->unk_4DC);
-    GBAMigrator_RemoveWindow(&migrator->unk_4EC);
-    GBAMigrator_RemoveWindow(&migrator->unk_4FC);
+    GBAMigrator_RemoveWindow(&migrator->boxNameWindow);
+    GBAMigrator_RemoveWindow(&migrator->monInfoWindow);
+    GBAMigrator_RemoveWindow(&migrator->messageWindow);
 
     Font_Free(FONT_SUBSCREEN);
-    SpriteTransfer_ResetCharTransfer(migrator->unk_1D0[0]);
-    SpriteTransfer_ResetPlttTransfer(migrator->unk_1D0[1]);
+    SpriteTransfer_ResetCharTransfer(migrator->spriteResources[0]);
+    SpriteTransfer_ResetPlttTransfer(migrator->spriteResources[1]);
 
     for (i = 0; i < 6; i++) {
-        SpriteResourceCollection_Delete(migrator->unk_1B8[i]);
+        SpriteResourceCollection_Delete(migrator->spriteResourceCollections[i]);
     }
 
-    SpriteList_Delete(migrator->unk_28);
-    migrator->unk_28 = NULL;
+    SpriteList_Delete(migrator->spriteList);
+    migrator->spriteList = NULL;
 
     RenderOam_Free();
     CharTransfer_Free();
@@ -1663,10 +1663,10 @@ static void GBAMigrator_ShowConfirmMessage(GBAMigrator *migrator)
 
     GBAMigrator_InitTextBoxWindow(migrator);
 
-    migrator->unk_490.messageEntryID = sMigrateFromGBAGameMessageIDs[migrator->gbaVersion];
-    migrator->unk_490.unk_40 = strTemplate;
+    migrator->textBox.messageEntryID = sMigrateFromGBAGameMessageIDs[migrator->gbaVersion];
+    migrator->textBox.stringTemplate = strTemplate;
 
-    GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0x8 | 0x10);
+    GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0x8 | 0x10);
 
     String_Free(string);
     StringTemplate_Free(strTemplate);
@@ -1678,9 +1678,9 @@ static void GBAMigrator_VBlankCallback(void *param0)
 {
     GBAMigrator *migrator = (GBAMigrator *)param0;
 
-    if (migrator->unk_12664) {
-        migrator->unk_12664();
-        migrator->unk_12664 = NULL;
+    if (migrator->flushMonIcons) {
+        migrator->flushMonIcons();
+        migrator->flushMonIcons = NULL;
     }
 
     VramTransfer_Process();
@@ -1748,12 +1748,12 @@ static BOOL GBAMigrator_WaitCannotMigrateMessage(GBAMigrator *migrator, int canM
     if (migrator->canMigrateStatus != CAN_MIGRATE) {
         GBAMigrator_InitTextBoxWindow(migrator);
         RenderControlFlags_SetSpeedUpOnTouch(TRUE);
-        migrator->unk_490.messageEntryID = sCannotMigrateMessageIDs[canMigrateStatus];
-        migrator->unk_490.unk_44 = 1;
-        GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0x8 | 0x10);
+        migrator->textBox.messageEntryID = sCannotMigrateMessageIDs[canMigrateStatus];
+        migrator->textBox.textSpeed = 1;
+        GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0x8 | 0x10);
         migrator->canMigrateStatus = CAN_MIGRATE;
     } else {
-        if (Text_IsPrinterActive(migrator->unk_490.unk_48) == 0) {
+        if (Text_IsPrinterActive(migrator->textBox.printerID) == 0) {
             RenderControlFlags_SetSpeedUpOnTouch(FALSE);
             return TRUE;
         }
@@ -1767,12 +1767,12 @@ static BOOL GBAMigrator_WaitCannotMigrateMessageYesNo(GBAMigrator *migrator, int
     if (migrator->canMigrateStatus != CAN_MIGRATE) {
         GBAMigrator_InitTextBoxWindow(migrator);
         RenderControlFlags_SetSpeedUpOnTouch(TRUE);
-        migrator->unk_490.messageEntryID = sCannotMigrateMessageIDs[cannotMigrateID];
-        migrator->unk_490.unk_44 = 1;
-        GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0x8 | 0x10);
+        migrator->textBox.messageEntryID = sCannotMigrateMessageIDs[cannotMigrateID];
+        migrator->textBox.textSpeed = 1;
+        GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0x8 | 0x10);
         migrator->canMigrateStatus = CAN_MIGRATE;
     } else {
-        if (Text_IsPrinterActive(migrator->unk_490.unk_48) == 0) {
+        if (Text_IsPrinterActive(migrator->textBox.printerID) == 0) {
             GBAMigrator_InitYesNoMenu(migrator);
             RenderControlFlags_SetSpeedUpOnTouch(FALSE);
             return TRUE;
@@ -1787,14 +1787,14 @@ static BOOL GBAMigrator_WaitMessage(GBAMigrator *migrator, int param1)
     if (migrator->messageEntryID != -1) {
         GBAMigrator_InitTextBoxWindow(migrator);
         RenderControlFlags_SetSpeedUpOnTouch(TRUE);
-        migrator->unk_490.messageEntryID = migrator->messageEntryID;
-        migrator->unk_490.unk_44 = param1;
-        GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0x8 | 0x10);
+        migrator->textBox.messageEntryID = migrator->messageEntryID;
+        migrator->textBox.textSpeed = param1;
+        GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0x8 | 0x10);
         migrator->messageEntryID = -1;
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
     } else {
         if (param1) {
-            if (Text_IsPrinterActive(migrator->unk_490.unk_48) == 0) {
+            if (Text_IsPrinterActive(migrator->textBox.printerID) == 0) {
                 RenderControlFlags_SetSpeedUpOnTouch(FALSE);
                 return TRUE;
             }
@@ -1829,8 +1829,8 @@ static int GBAMigrator_Init(ApplicationManager *appMan, int *state)
     migrator->trainerInfo = SaveData_GetTrainerInfo(migrator->saveData);
     migrator->options = SaveData_GetOptions(migrator->saveData);
     migrator->messageBoxFrame = Options_Frame(migrator->options);
-    migrator->unk_12668 = String_Init(256, HEAP_ID_MIGRATE_FROM_GBA);
-    migrator->unk_1266C = String_Init(256, HEAP_ID_MIGRATE_FROM_GBA);
+    migrator->messageString = String_Init(256, HEAP_ID_MIGRATE_FROM_GBA);
+    migrator->tempString = String_Init(256, HEAP_ID_MIGRATE_FROM_GBA);
 
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_9, SEQ_PRESENT_sseq, 1);
 
@@ -1839,7 +1839,7 @@ static int GBAMigrator_Init(ApplicationManager *appMan, int *state)
     }
 
     MainMenuUtil_UnsetGBACartIRQFunc();
-    sGBAMigratorMonSprites = migrator->unk_E8FC;
+    sGBAMigratorMonSprites = migrator->monSprites;
 
     return 1;
 }
@@ -1854,26 +1854,26 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
     CTRDG_IsExisting();
 
     if ((CTRDG_IsPulledOut() == TRUE) || gIgnoreCartridgeForWake) {
-        GBAMigratorSaveState *v4 = &migrator->unk_E8F0;
+        GBAMigratorSaveState *v4 = &migrator->saveState;
 
-        if ((v4->unk_00 == 3) || (v4->unk_00 == 4)) {
+        if ((v4->state == 3) || (v4->state == 4)) {
             SaveData_SaveStateCancel(migrator->saveData);
         }
 
         FatalErrorScreen_ShowGbaPakError(HEAP_ID_MIGRATE_FROM_GBA);
     }
 
-    migrator->unk_0C++;
+    migrator->frameCounter++;
 
     switch (*state) {
     case GBA_MIGRATOR_STATE_0:
         ResetLoadedGBACartInfo();
-        migrator->unk_50C = GBACart_LoadInfo(&migrator->saveSlot);
+        migrator->loadInfoResult = GBACart_LoadInfo(&migrator->saveSlot);
 
-        if (migrator->unk_50C == 0) {
-            migrator->unk_510 = GBACart_LoadSave();
+        if (migrator->loadInfoResult == 0) {
+            migrator->loadSaveResult = GBACart_LoadSave();
 
-            if (migrator->unk_510 == 0) {
+            if (migrator->loadSaveResult == 0) {
                 migrator->pokemonStorage = GetGBAPokemonStorage();
                 migrator->currentBox = migrator->pokemonStorage->currentBox;
             } else {
@@ -1976,10 +1976,10 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         switch (boxPos) {
         case YES_NO_TOUCH_MENU_YES:
             YesNoTouchMenu_Reset(migrator->yesNoTouchMenu);
-            migrator->unk_490.unk_44 = 0;
-            migrator->unk_490.messageEntryID = MigrateFromGBA_Text_MakingAdjustments;
-            GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0);
-            migrator->unk_E8F0.unk_08 = Window_AddWaitDial(&migrator->unk_4FC, 0x3F0 - (18 + 12));
+            migrator->textBox.textSpeed = 0;
+            migrator->textBox.messageEntryID = MigrateFromGBA_Text_MakingAdjustments;
+            GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0);
+            migrator->saveState.waitDial = Window_AddWaitDial(&migrator->messageWindow, 0x3F0 - (18 + 12));
             *state = GBA_MIGRATOR_STATE_10;
             break;
         case YES_NO_TOUCH_MENU_NO:
@@ -1990,7 +1990,7 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         break;
     case GBA_MIGRATOR_STATE_10:
         GBAMigrator_SaveGame(migrator);
-        DestroyWaitDial(migrator->unk_E8F0.unk_08);
+        DestroyWaitDial(migrator->saveState.waitDial);
         migrator->canMigrateStatus = CANNOT_MIGRATE_CLOCK_ADJUSTED;
         *state = GBA_MIGRATOR_STATE_11;
         break;
@@ -2000,7 +2000,7 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         }
         break;
     case GBA_MIGRATOR_STATE_12:
-        GBAMigrator_RemoveWindow(&migrator->unk_4FC);
+        GBAMigrator_RemoveWindow(&migrator->messageWindow);
         GBAMigrator_LoadBoxTilemap(migrator);
         InitBoxPokemonSprites(migrator);
         GBAMigrator_LoadBoxSprites(migrator);
@@ -2071,7 +2071,7 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         break;
     case GBA_MIGRATOR_STATE_14:
         if (GBAMigrator_WaitMessage(migrator, 0)) {
-            GBAMigrator_RemoveWindow(&migrator->unk_4FC);
+            GBAMigrator_RemoveWindow(&migrator->messageWindow);
             *state = GBA_MIGRATOR_STATE_13;
         }
         break;
@@ -2103,9 +2103,9 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
     case GBA_MIGRATOR_STATE_18: {
         GBAMigratorTextBox v5;
 
-        migrator->unk_490.messageEntryID = MigrateFromGBA_Text_CannotReturnToGBA;
+        migrator->textBox.messageEntryID = MigrateFromGBA_Text_CannotReturnToGBA;
 
-        GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0);
+        GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0);
         GBAMigrator_InitYesNoMenu(migrator);
 
         Sound_PlayEffect(SE_CONFIRM_sseq_3);
@@ -2116,11 +2116,11 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
 
         switch (boxPos) {
         case YES_NO_TOUCH_MENU_YES:
-            migrator->unk_490.messageEntryID = sSavingOnGBAGameAndPlatinumMessageIDs[migrator->gbaVersion];
-            GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0);
+            migrator->textBox.messageEntryID = sSavingOnGBAGameAndPlatinumMessageIDs[migrator->gbaVersion];
+            GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0);
             YesNoTouchMenu_Reset(migrator->yesNoTouchMenu);
-            migrator->unk_E8F0.unk_00 = 0;
-            migrator->unk_E8F0.unk_08 = Window_AddWaitDial(&migrator->unk_4FC, 0x3F0 - (18 + 12));
+            migrator->saveState.state = 0;
+            migrator->saveState.waitDial = Window_AddWaitDial(&migrator->messageWindow, 0x3F0 - (18 + 12));
             *state = GBA_MIGRATOR_STATE_21;
             ResetLock(RESET_LOCK_SOFT_RESET);
             break;
@@ -2138,16 +2138,16 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         v2 = GBAMigrator_HandleSave(migrator);
 
         if (v2 != 10) {
-            DestroyWaitDial(migrator->unk_E8F0.unk_08);
+            DestroyWaitDial(migrator->saveState.waitDial);
             Sound_PlayEffect(SEQ_SE_DP_SAVE_sseq);
 
             if (v2 == 11) {
-                migrator->unk_490.messageEntryID = MigrateFromGBA_Text_SafelyMigratedToPlatinum;
+                migrator->textBox.messageEntryID = MigrateFromGBA_Text_SafelyMigratedToPlatinum;
             } else {
-                migrator->unk_490.messageEntryID = MigrateFromGBA_Text_SaveFailed;
+                migrator->textBox.messageEntryID = MigrateFromGBA_Text_SaveFailed;
             }
 
-            GBAMigrator_DrawTextBox(migrator, &migrator->unk_490, 0);
+            GBAMigrator_DrawTextBox(migrator, &migrator->textBox, 0);
             *state = GBA_MIGRATOR_STATE_22;
             ResetUnlock(RESET_LOCK_SOFT_RESET);
         }
@@ -2160,7 +2160,7 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         break;
     case GBA_MIGRATOR_STATE_FADE_OUT_TO_SELECTED_MON:
         if (IsScreenFadeDone()) {
-            *state = migrator->unk_24;
+            *state = migrator->nextState;
         }
         break;
     case GBA_MIGRATOR_STATE_24:
@@ -2169,8 +2169,8 @@ static int GBAMigrator_Main(ApplicationManager *appMan, int *state)
         break;
     }
 
-    if (migrator->unk_28 != NULL) {
-        SpriteList_Update(migrator->unk_28);
+    if (migrator->spriteList != NULL) {
+        SpriteList_Update(migrator->spriteList);
     }
 
     return 0;
@@ -2182,8 +2182,8 @@ static int GBAMigrator_Exit(ApplicationManager *appMan, int *state)
 
     GBAMigrator *migrator = ApplicationManager_Data(appMan);
 
-    String_Free(migrator->unk_12668);
-    String_Free(migrator->unk_1266C);
+    String_Free(migrator->messageString);
+    String_Free(migrator->tempString);
     Heap_Free(migrator->bgConfig);
     EnqueueApplication(FS_OVERLAY_ID(game_opening), &gTitleScreenAppTemplate);
     ApplicationManager_FreeData(appMan);

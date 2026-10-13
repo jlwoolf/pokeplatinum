@@ -4,7 +4,7 @@
 #include "main_menu/struct_wireless_comm_connect_data_head.h"
 
 typedef struct {
-    WirelessCommConnectDataHead unk_00;
+    WirelessCommConnectDataHead head;
     u8 unk_08[16];
 } WirelessCommConnectData;
 

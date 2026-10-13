@@ -108,7 +108,7 @@ static void MysteryGiftWifi_SetNextState(MysteryGiftAppData *param0, int *param1
 {
     sMysteryGiftWifiNdDone = 0;
     sMysteryGiftWifiNdError = DWC_ND_ERROR_NONE;
-    param0->unk_16B0 = param2;
+    param0->nextState = param2;
     *param1 = 4114;
 }
 
@@ -116,7 +116,7 @@ static void MysteryGiftWifi_CleanupAsync(MysteryGiftAppData *param0, int param1,
 {
     sMysteryGiftWifiCleanupDone = 0;
     sMysteryGiftWifiExitCode = param1;
-    param0->unk_16B0 = param3;
+    param0->nextState = param3;
     *param2 = 4115;
 
     if (!DWC_NdCleanupAsync(MysteryGiftWifi_NdCleanupCallback)) {
@@ -211,7 +211,7 @@ int MysteryGiftWifi_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 4098:
-        DWC_InitInetEx(&v2->unk_164C, DEFAULT_DWC_DMA_NUMBER, DEFAULT_DWC_POWER_MODE, DEFAULT_DWC_SSL_PRIORITY);
+        DWC_InitInetEx(&v2->inetControl, DEFAULT_DWC_DMA_NUMBER, DEFAULT_DWC_POWER_MODE, DEFAULT_DWC_SSL_PRIORITY);
         DWC_SetAuthServer(DWC_CONNECTINET_AUTH_RELEASE);
         DWC_ConnectInetAsync();
         NetworkIcon_Init();
@@ -287,7 +287,7 @@ int MysteryGiftWifi_Main(ApplicationManager *appMan, int *param1)
         *param1 = 4104;
         break;
     case 4104:
-        if (DWC_NdGetFileListNumAsync(&v2->unk_16B4) == 0) {
+        if (DWC_NdGetFileListNumAsync(&v2->ndFileListCount) == 0) {
             *param1 = MysteryGiftWifi_HandleError(v2);
             break;
         }
@@ -295,7 +295,7 @@ int MysteryGiftWifi_Main(ApplicationManager *appMan, int *param1)
         MysteryGiftWifi_SetNextState(v2, param1, 4105);
         break;
     case 4105:
-        if (v2->unk_16B4 != 1) {
+        if (v2->ndFileListCount != 1) {
             MysteryGiftWifi_CleanupAsync(v2, 2, param1, 4109, 4109);
         } else {
             if (DWC_NdGetFileListAsync(sMysteryGiftWifiFileList, 0, 10) == 0) {
@@ -313,16 +313,16 @@ int MysteryGiftWifi_Main(ApplicationManager *appMan, int *param1)
         }
 
         *param1 = 4107;
-        v2->unk_26C4 = 0;
+        v2->ndDownloadPercent = 0;
         break;
     case 4107:
         if (sMysteryGiftWifiNdDone == 0) {
             if (gSystem.pressedKeys & PAD_BUTTON_B) {
                 MysteryGiftWifi_CleanupAsync(v2, 3, param1, 4108, 4108);
             } else {
-                if (DWC_NdGetProgress(&v2->unk_26BC, &v2->unk_26C0) == 1) {
-                    if (v2->unk_26C4 != (v2->unk_26BC * 100) / v2->unk_26C0) {
-                        v2->unk_26C4 = (v2->unk_26BC * 100) / v2->unk_26C0;
+                if (DWC_NdGetProgress(&v2->ndTransferredBytes, &v2->ndTotalBytes) == 1) {
+                    if (v2->ndDownloadPercent != (v2->ndTransferredBytes * 100) / v2->ndTotalBytes) {
+                        v2->ndDownloadPercent = (v2->ndTransferredBytes * 100) / v2->ndTotalBytes;
                     }
                 }
             }
@@ -383,7 +383,7 @@ int MysteryGiftWifi_Main(ApplicationManager *appMan, int *param1)
             if (sMysteryGiftWifiNdError != DWC_ND_ERROR_NONE) {
                 *param1 = MysteryGiftWifi_HandleError(v2);
             } else {
-                *param1 = v2->unk_16B0;
+                *param1 = v2->nextState;
             }
         } else if (gSystem.pressedKeys & PAD_BUTTON_B) {
             v2->wifiExitRequested = 1;
@@ -392,7 +392,7 @@ int MysteryGiftWifi_Main(ApplicationManager *appMan, int *param1)
     case 4115:
         if (sMysteryGiftWifiCleanupDone == 1) {
             sMysteryGiftWifiCleanupDone = 0;
-            *param1 = v2->unk_16B0;
+            *param1 = v2->nextState;
         } else if (gSystem.pressedKeys & PAD_BUTTON_B) {
             v2->wifiExitRequested = 1;
         }

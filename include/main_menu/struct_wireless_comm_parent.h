@@ -6,11 +6,11 @@
 #include "main_menu/struct_wireless_comm_bssid_low.h"
 
 typedef struct {
-    WirelessCommBssidHigh unk_00;
-    WirelessCommGameInfoString unk_04;
-    WirelessCommGameInfoString unk_1C;
-    WirelessCommBssidLow unk_34;
-    u8 unk_36;
+    WirelessCommBssidHigh bssidHigh;
+    WirelessCommGameInfoString trainerName;
+    WirelessCommGameInfoString trainerId;
+    WirelessCommBssidLow bssidLow;
+    u8 linkLevel;
     u8 unk_37;
 } WirelessCommParent;
 

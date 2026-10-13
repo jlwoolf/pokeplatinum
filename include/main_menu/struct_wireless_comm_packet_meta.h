@@ -2,9 +2,9 @@
 #define POKEPLATINUM_STRUCT_MAIN_MENU_02233674_SUB3_H
 
 typedef struct {
-    u32 unk_00_0 : 8;
-    u32 unk_00_8 : 8;
-    u32 unk_00_16 : 16;
+    u32 port : 8;
+    u32 type : 8;
+    u32 crc16 : 16;
 } WirelessCommPacketMeta;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_02233674_SUB3_H

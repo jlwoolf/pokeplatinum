@@ -5,7 +5,7 @@ typedef struct {
     union {
         u8 val1[4];
         u32 val2;
-    } unk_00;
+    } bssid;
 } WirelessCommBssidHigh;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_022335A8_H

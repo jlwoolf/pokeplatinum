@@ -118,7 +118,7 @@ typedef struct {
 } GBAPokemonStorage;
 
 typedef struct {
-    u32 unk_00[1024];
+    u32 sectorData[1024];
     u8 saveBlock2[GBA_SECTOR_SIZE * 1];
     u8 saveBlock1[GBA_SECTOR_SIZE * 4];
     GBAPokemonStorage pokemonStorage;
