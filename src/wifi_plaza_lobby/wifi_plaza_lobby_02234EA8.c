@@ -39,7 +39,7 @@ WiFiPlazaLobbyTime WiFiPlazaLobby_Earth_ComputeLocalTimeOffset(u16 param0, u8 pa
     }
 
     memset(&v4, 0, sizeof(WiFiPlazaLobbyTime));
-    v4.unk_00_val2_unk_00 = v3;
+    v4.hour = v3;
 
     WiFiPlazaLobby_Time_Add(&v4, &param2, &v4);
     NARC_dtor(v5);

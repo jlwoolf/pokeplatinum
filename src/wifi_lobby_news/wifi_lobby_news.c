@@ -333,13 +333,13 @@ int WiFiLobbyNews_Init(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyNews), HEAP_ID_107);
     memset(v0, 0, sizeof(WiFiLobbyNews));
 
-    v0->newsData = v1->unk_00;
-    v0->time = v1->unk_04;
+    v0->newsData = v1->news;
+    v0->time = v1->currentTime;
 
     WiFiLobbyNews_InitGraphics(&v0->graphics, HEAP_ID_107);
     WiFiLobbyNews_LoadScreenData(&v0->screenData, &v0->graphics, HEAP_ID_107);
-    WiFiLobbyNews_InitTimer(&v0->timer, &v0->graphics, &v0->screenData, v0->newsData, v0->time, v1->unk_08, HEAP_ID_107);
-    WiFiLobbyNews_InitHeadlines(&v0->headlines, &v0->graphics, &v0->screenData, v0->newsData, v1->unk_08, HEAP_ID_107);
+    WiFiLobbyNews_InitTimer(&v0->timer, &v0->graphics, &v0->screenData, v0->newsData, v0->time, v1->state, HEAP_ID_107);
+    WiFiLobbyNews_InitHeadlines(&v0->headlines, &v0->graphics, &v0->screenData, v0->newsData, v1->state, HEAP_ID_107);
     WiFiLobbyNews_InitTicker(&v0->ticker, &v0->graphics, HEAP_ID_107);
     WiFiLobbyNews_InitLabels(&v0->labels, &v0->graphics, HEAP_ID_107);
 
@@ -361,7 +361,7 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_107);
-        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->unk_08, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->state, 1);
         (*param1)++;
         break;
     case 1:
@@ -372,9 +372,9 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
         }
         break;
     case 2:
-        if ((gSystem.pressedKeys & PAD_BUTTON_B) || (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_08) == 1) || (WiFiPlazaLobby_Time_HasWifiError() == 1)) {
-            if (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_08) == 1) {
-                WiFiPlazaLobby_State_SetPlayerWarpPending(v1->unk_08);
+        if ((gSystem.pressedKeys & PAD_BUTTON_B) || (WiFiPlazaLobby_State_IsLobbyClosed(v1->state) == 1) || (WiFiPlazaLobby_Time_HasWifiError() == 1)) {
+            if (WiFiPlazaLobby_State_IsLobbyClosed(v1->state) == 1) {
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v1->state);
             }
             (*param1) = 3;
         } else {
@@ -390,7 +390,7 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
                 WiFiLobbyNews_FlashLabel(&v0->labels, 2);
             }
 
-            v2 = WiFiLobbyNews_UpdateTicker(&v0->ticker, v0->newsData, v1->unk_08, HEAP_ID_107);
+            v2 = WiFiLobbyNews_UpdateTicker(&v0->ticker, v0->newsData, v1->state, HEAP_ID_107);
 
             if (v2 == 1) {
                 WiFiLobbyNews_FlashLabel(&v0->labels, 3);
@@ -410,7 +410,7 @@ int WiFiLobbyNews_Main(ApplicationManager *appMan, int *param1)
         break;
     }
 
-    WiFiLobbyNews_Update(v0, v1->unk_08);
+    WiFiLobbyNews_Update(v0, v1->state);
 
     return 0;
 }
@@ -625,9 +625,9 @@ static void WiFiLobbyNews_InitTimer(WiFiLobbyNewsTimer *param0, WiFiLobbyNewsGra
     v0 = WiFiPlazaLobby_State_GetLobbyCloseTime(param5);
     v1 = v0 / 60;
 
-    param0->time.unk_00_val2_unk_00 = 0;
-    param0->time.unk_00_val2_unk_01 = v1 + 1;
-    param0->time.unk_00_val2_unk_02 = 0;
+    param0->time.hour = 0;
+    param0->time.minute = v1 + 1;
+    param0->time.second = 0;
     param0->unitsPerTile = v0 / (4 * 10);
     param0->active = 1;
     param0->frame = 0;
@@ -665,7 +665,7 @@ static BOOL WiFiLobbyNews_UpdateTimer(WiFiLobbyNewsTimer *param0, const WiFiPlaz
     WiFiPlazaLobby_Time_Subtract(param2, &v1, &v2);
     WiFiPlazaLobby_Time_Subtract(&v2, &param0->time, &v3);
 
-    if ((v3.unk_00_val2_unk_02 >= param0->unitsPerTile) || (v3.unk_00_val2_unk_01 > 0) || (v3.unk_00_val2_unk_00 > 0)) {
+    if ((v3.second >= param0->unitsPerTile) || (v3.minute > 0) || (v3.hour > 0)) {
         param0->needsRedraw = 1;
         param0->time = v2;
 
@@ -701,9 +701,9 @@ static void WiFiLobbyNews_DrawTimerGrid(WiFiLobbyNewsTimer *param0, WiFiLobbyNew
     s32 v4, v5;
     s32 v6;
 
-    v2 = param0->time.unk_00_val2_unk_02;
-    v2 += param0->time.unk_00_val2_unk_01 * 60;
-    v2 += param0->time.unk_00_val2_unk_00 * 3600;
+    v2 = param0->time.second;
+    v2 += param0->time.minute * 60;
+    v2 += param0->time.hour * 3600;
     v2 /= param0->unitsPerTile;
 
     if (param0->needsRedraw) {

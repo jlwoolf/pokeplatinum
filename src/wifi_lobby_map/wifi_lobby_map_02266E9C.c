@@ -1952,7 +1952,7 @@ static u32 wifi_lobby_map_02268A3C(const WiFiPlazaProfile *param0)
 
     v0 = WiFiPlazaLobby_State_GetProfileLocation(param0);
 
-    switch (v0.unk_00_val2_unk_00) {
+    switch (v0.hour) {
     case 4:
     case 5:
     case 6:

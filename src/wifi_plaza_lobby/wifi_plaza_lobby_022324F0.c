@@ -24,68 +24,68 @@
 typedef struct {
     u16 country;
     u8 region;
-    u8 unk_03;
+    u8 used;
 } WiFiPlazaLobbyNetworkCountryRegion;
 
 typedef struct {
-    s16 unk_00;
-    u16 unk_02;
-    s32 *unk_04;
+    s16 count;
+    u16 capacity;
+    s32 *ids;
 } WiFiPlazaLobbyNetworkPlayerIdArray;
 
 typedef struct {
-    const WiFiPlazaLobbyNetworkMessageHandler *unk_00;
-    u32 unk_04;
-    void *unk_08;
+    const WiFiPlazaLobbyNetworkMessageHandler *handlers;
+    u32 count;
+    void *context;
 } WiFiPlazaLobbyNetworkMessageHandlerState;
 
 typedef struct {
     PPW_LobbyRecruitInfo lobbyRecruitInfo;
-    u16 unk_44;
-    u16 unk_46;
-    s32 unk_48;
+    u16 active;
+    u16 timeLimit;
+    s32 hostUserId;
 } WiFiPlazaLobbyNetworkRecruit;
 
 typedef struct {
     PPW_LobbyVipRecord *lobbyVipRecord;
-    u16 unk_04;
-    u16 unk_06;
+    u16 capacity;
+    u16 count;
 } WiFiPlazaLobbyNetworkVipRecordBuffer;
 
 typedef struct {
     PPW_LobbyQuestionnaire lobbyQuestionnaire;
-    u32 unk_2D8;
+    u32 submitState;
 } WiFiPlazaLobbyNetworkQuestionnaire;
 
 typedef struct {
     SaveData *saveData;
     WiFiList *wiFiList;
     WiFiHistory *wiFiHistory;
-    WiFiPlazaLobbyNetworkCallbacks unk_0C;
-    void *unk_20;
-    u8 *unk_24;
-    u32 unk_28;
+    WiFiPlazaLobbyNetworkCallbacks callbacks;
+    void *callbackContext;
+    u8 *playerProfiles;
+    u32 profileSize;
     PPW_LobbySystemProfile sysProfile[20];
-    WiFiPlazaLobbyNetworkPlayerIdArray unk_11C[2];
-    u8 unk_12C;
-    u8 unk_12D;
-    u8 unk_12E;
-    u8 unk_12F;
-    u8 unk_130;
-    u8 unk_131;
-    u8 unk_132;
-    u8 unk_133;
-    WiFiPlazaLobbyNetworkCountryRegion unk_134[20];
-    WiFiPlazaLobbyNetworkMessageHandlerState unk_184[2];
+    WiFiPlazaLobbyNetworkPlayerIdArray playerIdLists[2];
+    u8 lobbyState;
+    u8 subChannelKind;
+    u8 subChannelState;
+    u8 subChannelJoinState;
+    u8 channelDataUpdatePending;
+    u8 excessFlood;
+    u8 errorFlag;
+    u8 profileCheckError;
+    WiFiPlazaLobbyNetworkCountryRegion countryRegions[20];
+    WiFiPlazaLobbyNetworkMessageHandlerState messageHandlers[2];
     PPW_LobbyTimeInfo timeInfo;
-    u8 unk_1B4[1024];
-    u32 unk_5B4;
-    WiFiPlazaLobbyNetworkRecruit unk_5B8[3];
+    u8 schedule[1024];
+    u32 scheduleSize;
+    WiFiPlazaLobbyNetworkRecruit recruits[3];
     u16 gameKind;
-    u8 unk_69E;
-    u8 unk_69F;
-    WiFiPlazaLobbyNetworkVipRecordBuffer unk_6A0;
-    WiFiPlazaLobbyNetworkQuestionnaire unk_6A8;
+    u8 recruiting;
+    u8 recruitStopped;
+    WiFiPlazaLobbyNetworkVipRecordBuffer vipRecords;
+    WiFiPlazaLobbyNetworkQuestionnaire questionnaire;
     PPW_LOBBY_RESULT result;
 } WiFiPlazaLobbyNetworkContext;
 
@@ -165,20 +165,20 @@ void WiFiPlazaLobby_Network_New(u32 heapID, SaveData *saveData, u32 param2, cons
     sNetworkContext->saveData = saveData;
     sNetworkContext->wiFiList = SaveData_GetWiFiList(saveData);
     sNetworkContext->wiFiHistory = SaveData_WiFiHistory(saveData);
-    sNetworkContext->unk_0C = *param3;
-    sNetworkContext->unk_20 = param4;
+    sNetworkContext->callbacks = *param3;
+    sNetworkContext->callbackContext = param4;
 
     WiFiPlazaLobby_Network_AllocPlayerProfileBuffer(sNetworkContext, param2, heapID);
     WiFiPlazaLobby_Network_InitPlayerIdLists(sNetworkContext, PPW_LOBBY_MAX_PLAYER_NUM_MAIN, PPW_LOBBY_MAX_PLAYER_NUM_FOOT, heapID);
     WiFiPlazaLobby_Network_ResetRecruitInfo(sNetworkContext);
-    WiFiPlazaLobby_Network_InitVipRecordBuffer(&sNetworkContext->unk_6A0, 128, heapID);
+    WiFiPlazaLobby_Network_InitVipRecordBuffer(&sNetworkContext->vipRecords, 128, heapID);
 }
 
 void WiFiPlazaLobby_Network_Free(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    WiFiPlazaLobby_Network_FreeVipRecordBuffer(&sNetworkContext->unk_6A0);
+    WiFiPlazaLobby_Network_FreeVipRecordBuffer(&sNetworkContext->vipRecords);
     WiFiPlazaLobby_Network_FreePlayerIdLists(sNetworkContext);
     WiFiPlazaLobby_Network_FreePlayerProfileBuffer(sNetworkContext);
 
@@ -198,7 +198,7 @@ WiFiPlazaLobbyNetworkLobbyState WiFiPlazaLobby_Network_Process(void)
 
     switch (lobbyState) {
     case PPW_LOBBY_STATE_NOTINITIALIZED:
-        sNetworkContext->unk_12C = WiFiPlazaLobbyNetworkLobbyState_00;
+        sNetworkContext->lobbyState = WiFiPlazaLobbyNetworkLobbyState_00;
         break;
     case PPW_LOBBY_STATE_CONNECTING:
     case PPW_LOBBY_STATE_CONNECTED:
@@ -207,20 +207,20 @@ WiFiPlazaLobbyNetworkLobbyState WiFiPlazaLobby_Network_Process(void)
     case PPW_LOBBY_STATE_SEARCHINGCHANNEL:
     case PPW_LOBBY_STATE_ENTERMAINCHANNEL:
     case PPW_LOBBY_STATE_PREPARINGMAINCHANNEL:
-        sNetworkContext->unk_12C = WiFiPlazaLobbyNetworkLobbyState_01;
+        sNetworkContext->lobbyState = WiFiPlazaLobbyNetworkLobbyState_01;
         break;
     case PPW_LOBBY_STATE_READY:
-        sNetworkContext->unk_12C = WiFiPlazaLobbyNetworkLobbyState_02;
+        sNetworkContext->lobbyState = WiFiPlazaLobbyNetworkLobbyState_02;
         break;
     case PPW_LOBBY_STATE_CLOSING:
-        sNetworkContext->unk_12C = WiFiPlazaLobbyNetworkLobbyState_03;
+        sNetworkContext->lobbyState = WiFiPlazaLobbyNetworkLobbyState_03;
         break;
     case PPW_LOBBY_STATE_ERROR:
-        sNetworkContext->unk_12C = WiFiPlazaLobbyNetworkLobbyState_04;
+        sNetworkContext->lobbyState = WiFiPlazaLobbyNetworkLobbyState_04;
         break;
     }
 
-    if (sNetworkContext->unk_12C == WiFiPlazaLobbyNetworkLobbyState_02) {
+    if (sNetworkContext->lobbyState == WiFiPlazaLobbyNetworkLobbyState_02) {
         WiFiPlazaLobby_Network_UpdateRecruitProgress(sNetworkContext);
         PPW_LobbyGetTimeInfo(&sNetworkContext->timeInfo);
 
@@ -231,19 +231,19 @@ WiFiPlazaLobbyNetworkLobbyState WiFiPlazaLobby_Network_Process(void)
 
             switch (v1) {
             case PPW_LOBBY_CHANNEL_STATE_NONE:
-                sNetworkContext->unk_12E = WiFiPlazaLobbyNetworkLobbyState_00;
-                sNetworkContext->unk_12D = WiFiPlazaLobbyNetworkSubChannelKind_04;
+                sNetworkContext->subChannelState = WiFiPlazaLobbyNetworkLobbyState_00;
+                sNetworkContext->subChannelKind = WiFiPlazaLobbyNetworkSubChannelKind_04;
                 break;
             case PPW_LOBBY_CHANNEL_STATE_UNAVAILABLE:
-                sNetworkContext->unk_12E = WiFiPlazaLobbyNetworkLobbyState_01;
+                sNetworkContext->subChannelState = WiFiPlazaLobbyNetworkLobbyState_01;
                 break;
             case PPW_LOBBY_CHANNEL_STATE_AVAILABLE:
-                if (sNetworkContext->unk_12E != WiFiPlazaLobbyNetworkLobbyState_03) {
-                    sNetworkContext->unk_12E = WiFiPlazaLobbyNetworkLobbyState_02;
+                if (sNetworkContext->subChannelState != WiFiPlazaLobbyNetworkLobbyState_03) {
+                    sNetworkContext->subChannelState = WiFiPlazaLobbyNetworkLobbyState_02;
                 }
                 break;
             case PPW_LOBBY_CHANNEL_STATE_ERROR:
-                sNetworkContext->unk_12E = WiFiPlazaLobbyNetworkLobbyState_04;
+                sNetworkContext->subChannelState = WiFiPlazaLobbyNetworkLobbyState_04;
                 break;
             }
         }
@@ -301,7 +301,7 @@ BOOL WiFiPlazaLobby_Network_Initialize(const void *param0, u32 param1)
 
     {
         DWCUserData *userData = WiFiList_GetUserData(sNetworkContext->wiFiList);
-        sNetworkContext->result = PPW_LobbyInitializeAsync("pokemonplatds", "IIup73", param1, &v0, userData, param0, sNetworkContext->unk_28);
+        sNetworkContext->result = PPW_LobbyInitializeAsync("pokemonplatds", "IIup73", param1, &v0, userData, param0, sNetworkContext->profileSize);
     }
 
     return WiFiPlazaLobby_Network_CheckLobbyResult(sNetworkContext->result);
@@ -311,7 +311,7 @@ BOOL WiFiPlazaLobby_Network_IsReady(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    if (sNetworkContext->unk_12C == WiFiPlazaLobbyNetworkLobbyState_02) {
+    if (sNetworkContext->lobbyState == WiFiPlazaLobbyNetworkLobbyState_02) {
         return 1;
     }
 
@@ -334,7 +334,7 @@ BOOL WiFiPlazaLobby_Network_IsShutDown(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    if (sNetworkContext->unk_12C == WiFiPlazaLobbyNetworkLobbyState_00) {
+    if (sNetworkContext->lobbyState == WiFiPlazaLobbyNetworkLobbyState_00) {
         return 1;
     }
 
@@ -345,29 +345,29 @@ WiFiPlazaLobbyNetworkLobbyState WiFiPlazaLobby_Network_GetState(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    if (sNetworkContext->unk_12D != WiFiPlazaLobbyNetworkSubChannelKind_04) {
-        if (sNetworkContext->unk_12E == WiFiPlazaLobbyNetworkLobbyState_04) {
+    if (sNetworkContext->subChannelKind != WiFiPlazaLobbyNetworkSubChannelKind_04) {
+        if (sNetworkContext->subChannelState == WiFiPlazaLobbyNetworkLobbyState_04) {
             return WiFiPlazaLobbyNetworkLobbyState_04;
         }
     }
 
-    if (sNetworkContext->unk_133) {
+    if (sNetworkContext->profileCheckError) {
         return WiFiPlazaLobbyNetworkLobbyState_04;
     }
 
-    if (sNetworkContext->unk_132) {
+    if (sNetworkContext->errorFlag) {
         return WiFiPlazaLobbyNetworkLobbyState_04;
     }
 
-    return sNetworkContext->unk_12C;
+    return sNetworkContext->lobbyState;
 }
 
 BOOL WiFiPlazaLobby_Network_ConsumeExcessFlood(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    BOOL v0 = sNetworkContext->unk_131;
+    BOOL v0 = sNetworkContext->excessFlood;
 
-    sNetworkContext->unk_131 = 0;
+    sNetworkContext->excessFlood = 0;
     return v0;
 }
 
@@ -382,7 +382,7 @@ void WiFiPlazaLobby_Network_SetMyProfile(const void *param0)
     GF_ASSERT(sNetworkContext != NULL);
     WiFiPlazaLobby_Network_SetPlayerData(sNetworkContext, PPW_LobbyGetMyUserId(), param0);
 
-    PPW_LobbyUpdateMyProfile(param0, sNetworkContext->unk_28, 0);
+    PPW_LobbyUpdateMyProfile(param0, sNetworkContext->profileSize, 0);
 }
 
 const void *WiFiPlazaLobby_Network_GetPlayerData(s32 param0)
@@ -465,8 +465,8 @@ BOOL WiFiPlazaLobby_Network_JoinSubChannel(WiFiPlazaLobbyNetworkSubChannelKind p
     BOOL v0 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
 
     if (v0 == 1) {
-        sNetworkContext->unk_12D = param0;
-        sNetworkContext->unk_12F = WiFiPlazaLobbyNetworkSubChannelJoinState_00;
+        sNetworkContext->subChannelKind = param0;
+        sNetworkContext->subChannelJoinState = WiFiPlazaLobbyNetworkSubChannelJoinState_00;
     }
 
     return v0;
@@ -475,7 +475,7 @@ BOOL WiFiPlazaLobby_Network_JoinSubChannel(WiFiPlazaLobbyNetworkSubChannelKind p
 WiFiPlazaLobbyNetworkSubChannelJoinState WiFiPlazaLobby_Network_GetSubChannelJoinState(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    return sNetworkContext->unk_12F;
+    return sNetworkContext->subChannelJoinState;
 }
 
 BOOL WiFiPlazaLobby_Network_LeaveSubChannel(void)
@@ -486,7 +486,7 @@ BOOL WiFiPlazaLobby_Network_LeaveSubChannel(void)
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
 
     if (v1 == 1) {
-        sNetworkContext->unk_12E = WiFiPlazaLobbyNetworkLobbyState_03;
+        sNetworkContext->subChannelState = WiFiPlazaLobbyNetworkLobbyState_03;
     }
 
     return v1;
@@ -496,7 +496,7 @@ BOOL WiFiPlazaLobby_Network_IsSubChannelInactive(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    if (sNetworkContext->unk_12E == WiFiPlazaLobbyNetworkLobbyState_00) {
+    if (sNetworkContext->subChannelState == WiFiPlazaLobbyNetworkLobbyState_00) {
         return 1;
     }
 
@@ -513,16 +513,16 @@ void WiFiPlazaLobby_Network_GetMainPlayerList(WiFiPlazaLobbyNetworkPlayerIdList 
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    param0->unk_00 = sNetworkContext->unk_11C[0].unk_00;
-    param0->unk_04 = sNetworkContext->unk_11C[0].unk_04;
+    param0->count = sNetworkContext->playerIdLists[0].count;
+    param0->userIDs = sNetworkContext->playerIdLists[0].ids;
 }
 
 void WiFiPlazaLobby_Network_GetSubChannelPlayerList(WiFiPlazaLobbyNetworkPlayerIdList *param0)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    param0->unk_00 = sNetworkContext->unk_11C[1].unk_00;
-    param0->unk_04 = sNetworkContext->unk_11C[1].unk_04;
+    param0->count = sNetworkContext->playerIdLists[1].count;
+    param0->userIDs = sNetworkContext->playerIdLists[1].ids;
 }
 
 u32 WiFiPlazaLobby_Network_FindMainPlayerIndex(s32 param0)
@@ -556,10 +556,10 @@ u32 WiFiPlazaLobby_Network_GetScheduleValue(WiFiPlazaLobbyNetworkScheduleField p
     u32 v0;
 
     GF_ASSERT(sNetworkContext != NULL);
-    GF_ASSERT((sNetworkContext->unk_12C == WiFiPlazaLobbyNetworkLobbyState_02) || (sNetworkContext->unk_12C == WiFiPlazaLobbyNetworkLobbyState_04));
+    GF_ASSERT((sNetworkContext->lobbyState == WiFiPlazaLobbyNetworkLobbyState_02) || (sNetworkContext->lobbyState == WiFiPlazaLobbyNetworkLobbyState_04));
     GF_ASSERT(param0 < WiFiPlazaLobbyNetworkScheduleField_08);
 
-    PPW_LobbySchedule *lobbySchedule = (PPW_LobbySchedule *)sNetworkContext->unk_1B4;
+    PPW_LobbySchedule *lobbySchedule = (PPW_LobbySchedule *)sNetworkContext->schedule;
 
     switch (param0) {
     case WiFiPlazaLobbyNetworkScheduleField_00:
@@ -602,7 +602,7 @@ BOOL WiFiPlazaLobby_Network_UpdateLocationChannelData(void)
     BOOL v0 = WiFiPlazaLobby_Network_AddCountryRegionToChannelData(sNetworkContext);
 
     if (v0) {
-        sNetworkContext->unk_130 = 1;
+        sNetworkContext->channelDataUpdatePending = 1;
     }
 
     return v0;
@@ -610,7 +610,7 @@ BOOL WiFiPlazaLobby_Network_UpdateLocationChannelData(void)
 
 BOOL WiFiPlazaLobby_Network_IsLocationChannelDataSynced(void)
 {
-    if (sNetworkContext->unk_130 == 0) {
+    if (sNetworkContext->channelDataUpdatePending == 0) {
         return 1;
     }
 
@@ -622,7 +622,7 @@ u16 WiFiPlazaLobby_Network_GetPlayerCountry(u8 param0)
     GF_ASSERT(sNetworkContext != NULL);
     GF_ASSERT(param0 < 20);
 
-    return sNetworkContext->unk_134[param0].country;
+    return sNetworkContext->countryRegions[param0].country;
 }
 
 u8 WiFiPlazaLobby_Network_GetPlayerRegion(u8 param0)
@@ -630,44 +630,44 @@ u8 WiFiPlazaLobby_Network_GetPlayerRegion(u8 param0)
     GF_ASSERT(sNetworkContext != NULL);
     GF_ASSERT(param0 < 20);
 
-    return sNetworkContext->unk_134[param0].region;
+    return sNetworkContext->countryRegions[param0].region;
 }
 
 void WiFiPlazaLobby_Network_SetMainMessageHandler(const WiFiPlazaLobbyNetworkMessageHandler *param0, u32 param1, void *param2)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    sNetworkContext->unk_184[0].unk_00 = param0;
-    sNetworkContext->unk_184[0].unk_04 = param1;
-    sNetworkContext->unk_184[0].unk_08 = param2;
+    sNetworkContext->messageHandlers[0].handlers = param0;
+    sNetworkContext->messageHandlers[0].count = param1;
+    sNetworkContext->messageHandlers[0].context = param2;
 }
 
 void WiFiPlazaLobby_Network_SetSubChannelMessageHandler(const WiFiPlazaLobbyNetworkMessageHandler *param0, u32 param1, void *param2)
 {
     GF_ASSERT(sNetworkContext != NULL);
 
-    sNetworkContext->unk_184[1].unk_00 = param0;
-    sNetworkContext->unk_184[1].unk_04 = param1;
-    sNetworkContext->unk_184[1].unk_08 = param2;
+    sNetworkContext->messageHandlers[1].handlers = param0;
+    sNetworkContext->messageHandlers[1].count = param1;
+    sNetworkContext->messageHandlers[1].context = param2;
 }
 
 void WiFiPlazaLobby_Network_ClearMainMessageHandler(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    memset(&sNetworkContext->unk_184[0], 0, sizeof(WiFiPlazaLobbyNetworkMessageHandlerState));
+    memset(&sNetworkContext->messageHandlers[0], 0, sizeof(WiFiPlazaLobbyNetworkMessageHandlerState));
 }
 
 void WiFiPlazaLobby_Network_ClearSubChannelMessageHandler(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    memset(&sNetworkContext->unk_184[1], 0, sizeof(WiFiPlazaLobbyNetworkMessageHandlerState));
+    memset(&sNetworkContext->messageHandlers[1], 0, sizeof(WiFiPlazaLobbyNetworkMessageHandlerState));
 }
 
 void WiFiPlazaLobby_Network_SendMainChannelMessage(u32 param0, const void *param1, u32 param2)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    GF_ASSERT(sNetworkContext->unk_184[0].unk_04 > param0);
-    GF_ASSERT(sNetworkContext->unk_184[0].unk_00[param0].unk_04 == param2);
+    GF_ASSERT(sNetworkContext->messageHandlers[0].count > param0);
+    GF_ASSERT(sNetworkContext->messageHandlers[0].handlers[param0].size == param2);
 
     PPW_LOBBY_RESULT lobbyResult = PPW_LobbySendChannelBinaryMessage(PPW_LOBBY_CHANNEL_KIND_MAIN, param0, param1, param2);
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
@@ -678,8 +678,8 @@ void WiFiPlazaLobby_Network_SendMainChannelMessage(u32 param0, const void *param
 void WiFiPlazaLobby_Network_SendPlayerMessage(u32 param0, s32 param1, const void *param2, u32 param3)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    GF_ASSERT(sNetworkContext->unk_184[0].unk_04 > param0);
-    GF_ASSERT(sNetworkContext->unk_184[0].unk_00[param0].unk_04 == param3);
+    GF_ASSERT(sNetworkContext->messageHandlers[0].count > param0);
+    GF_ASSERT(sNetworkContext->messageHandlers[0].handlers[param0].size == param3);
 
     PPW_LOBBY_RESULT lobbyResult = PPW_LobbySendPlayerBinaryMessage(param1, param0, param2, param3);
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
@@ -690,11 +690,11 @@ void WiFiPlazaLobby_Network_SendPlayerMessage(u32 param0, s32 param1, const void
 void WiFiPlazaLobby_Network_SendSubChannelMessage(u32 param0, const void *param1, u32 param2)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    GF_ASSERT(sNetworkContext->unk_184[1].unk_04 > param0);
-    GF_ASSERT(sNetworkContext->unk_184[1].unk_00[param0].unk_04 == param2);
-    GF_ASSERT(sNetworkContext->unk_12D != WiFiPlazaLobbyNetworkSubChannelKind_04);
+    GF_ASSERT(sNetworkContext->messageHandlers[1].count > param0);
+    GF_ASSERT(sNetworkContext->messageHandlers[1].handlers[param0].size == param2);
+    GF_ASSERT(sNetworkContext->subChannelKind != WiFiPlazaLobbyNetworkSubChannelKind_04);
 
-    u32 v2 = WiFiPlazaLobby_Network_SubChannelToChannelKind(sNetworkContext->unk_12D);
+    u32 v2 = WiFiPlazaLobby_Network_SubChannelToChannelKind(sNetworkContext->subChannelKind);
     PPW_LOBBY_RESULT lobbyResult = PPW_LobbySendChannelBinaryMessage(v2, param0, param1, param2);
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
 
@@ -713,26 +713,26 @@ BOOL WiFiPlazaLobby_Network_StartGameRecruit(WiFiPlazaLobbyNetworkGameKind param
         return 0;
     }
 
-    sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.gameKind = param0;
-    sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.maxNum = param1;
-    sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.currentNum = 1;
-    sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.paramVal = 0;
+    sNetworkContext->recruits[param0].lobbyRecruitInfo.gameKind = param0;
+    sNetworkContext->recruits[param0].lobbyRecruitInfo.maxNum = param1;
+    sNetworkContext->recruits[param0].lobbyRecruitInfo.currentNum = 1;
+    sNetworkContext->recruits[param0].lobbyRecruitInfo.paramVal = 0;
 
-    WiFiPlazaLobby_Network_SetRecruitStartTime(&sNetworkContext->unk_5B8[param0].lobbyRecruitInfo, &sNetworkContext->timeInfo.currentTime);
+    WiFiPlazaLobby_Network_SetRecruitStartTime(&sNetworkContext->recruits[param0].lobbyRecruitInfo, &sNetworkContext->timeInfo.currentTime);
 
-    PPW_LOBBY_RESULT lobbyResult = PPW_LobbyStartRecruit(&sNetworkContext->unk_5B8[param0].lobbyRecruitInfo);
+    PPW_LOBBY_RESULT lobbyResult = PPW_LobbyStartRecruit(&sNetworkContext->recruits[param0].lobbyRecruitInfo);
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
 
     GF_ASSERT(v1);
 
-    sNetworkContext->unk_5B8[param0].unk_44 = 1;
-    sNetworkContext->unk_5B8[param0].unk_48 = PPW_LobbyGetMyUserId();
-    sNetworkContext->unk_5B8[param0].unk_46 = 60 * 30;
+    sNetworkContext->recruits[param0].active = 1;
+    sNetworkContext->recruits[param0].hostUserId = PPW_LobbyGetMyUserId();
+    sNetworkContext->recruits[param0].timeLimit = 60 * 30;
     sNetworkContext->gameKind = param0;
-    sNetworkContext->unk_69E = 1;
-    sNetworkContext->unk_69F = 0;
+    sNetworkContext->recruiting = 1;
+    sNetworkContext->recruitStopped = 0;
 
-    if (NintendoWFC_StartPublicMatchmaking((u8 *)sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.matchMakingString, param1, 1, sNetworkContext->unk_5B8[param0].unk_46 / 30)) {
+    if (NintendoWFC_StartPublicMatchmaking((u8 *)sNetworkContext->recruits[param0].lobbyRecruitInfo.matchMakingString, param1, 1, sNetworkContext->recruits[param0].timeLimit / 30)) {
         (void)0;
     }
 
@@ -750,7 +750,7 @@ void WiFiPlazaLobby_Network_StopGameRecruit(void)
         return;
     }
 
-    if (sNetworkContext->unk_69E == 0) {
+    if (sNetworkContext->recruiting == 0) {
         return;
     }
 
@@ -761,20 +761,20 @@ void WiFiPlazaLobby_Network_StopGameRecruit(void)
     v1 = WiFiPlazaLobby_Network_ClearRecruitInfo(sNetworkContext, sNetworkContext->gameKind, PPW_LobbyGetMyUserId());
     GF_ASSERT(v1);
 
-    sNetworkContext->unk_69E = 0;
+    sNetworkContext->recruiting = 0;
 }
 
 void WiFiPlazaLobby_Network_UpdateRecruitInfo(void)
 {
     GF_ASSERT(sNetworkContext);
 
-    if (sNetworkContext->unk_69E == 0) {
+    if (sNetworkContext->recruiting == 0) {
         return;
     }
 
-    sNetworkContext->unk_5B8[sNetworkContext->gameKind].lobbyRecruitInfo.paramVal = 1;
+    sNetworkContext->recruits[sNetworkContext->gameKind].lobbyRecruitInfo.paramVal = 1;
 
-    PPW_LOBBY_RESULT lobbyResult = PPW_LobbyUpdateRecruitInfo(&sNetworkContext->unk_5B8[sNetworkContext->gameKind].lobbyRecruitInfo);
+    PPW_LOBBY_RESULT lobbyResult = PPW_LobbyUpdateRecruitInfo(&sNetworkContext->recruits[sNetworkContext->gameKind].lobbyRecruitInfo);
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
 
     GF_ASSERT(v1);
@@ -788,7 +788,7 @@ BOOL WiFiPlazaLobby_Network_IsCurrentRecruitUpdated(void)
         return 0;
     }
 
-    if (sNetworkContext->unk_5B8[sNetworkContext->gameKind].lobbyRecruitInfo.paramVal == 1) {
+    if (sNetworkContext->recruits[sNetworkContext->gameKind].lobbyRecruitInfo.paramVal == 1) {
         return 1;
     }
 
@@ -798,7 +798,7 @@ BOOL WiFiPlazaLobby_Network_IsCurrentRecruitUpdated(void)
 BOOL WiFiPlazaLobby_Network_IsRecruitStopped(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    return sNetworkContext->unk_69F;
+    return sNetworkContext->recruitStopped;
 }
 
 BOOL WiFiPlazaLobby_Network_IsGameRecruiting(WiFiPlazaLobbyNetworkGameKind param0)
@@ -815,7 +815,7 @@ BOOL WiFiPlazaLobby_Network_IsRecruitAcceptingPlayers(WiFiPlazaLobbyNetworkGameK
         return 0;
     }
 
-    if (sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.paramVal == 0) {
+    if (sNetworkContext->recruits[param0].lobbyRecruitInfo.paramVal == 0) {
         return 1;
     }
 
@@ -862,13 +862,13 @@ BOOL WiFiPlazaLobby_Network_JoinGameRecruit(WiFiPlazaLobbyNetworkGameKind param0
         return 0;
     }
 
-    if (sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.paramVal == 1) {
+    if (sNetworkContext->recruits[param0].lobbyRecruitInfo.paramVal == 1) {
         return 0;
     }
 
     sNetworkContext->gameKind = param0;
 
-    if (NintendoWFC_StartPublicMatchmaking((u8 *)sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.matchMakingString, sNetworkContext->unk_5B8[param0].lobbyRecruitInfo.maxNum, 0, sNetworkContext->unk_5B8[param0].unk_46 / 30)) {
+    if (NintendoWFC_StartPublicMatchmaking((u8 *)sNetworkContext->recruits[param0].lobbyRecruitInfo.matchMakingString, sNetworkContext->recruits[param0].lobbyRecruitInfo.maxNum, 0, sNetworkContext->recruits[param0].timeLimit / 30)) {
         (void)0;
     }
 
@@ -887,7 +887,7 @@ s32 WiFiPlazaLobby_Network_GetRecruitTimeLimit(WiFiPlazaLobbyNetworkGameKind par
         return 60 * 30;
     }
 
-    return sNetworkContext->unk_5B8[param0].unk_46;
+    return sNetworkContext->recruits[param0].timeLimit;
 }
 
 s32 WiFiPlazaLobby_Network_GetRecruitHostUserId(void)
@@ -898,45 +898,45 @@ s32 WiFiPlazaLobby_Network_GetRecruitHostUserId(void)
         return DWC_LOBBY_INVALID_USER_ID;
     }
 
-    return sNetworkContext->unk_5B8[sNetworkContext->gameKind].unk_48;
+    return sNetworkContext->recruits[sNetworkContext->gameKind].hostUserId;
 }
 
 BOOL WiFiPlazaLobby_Network_IsRecruiting(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    return sNetworkContext->unk_69E;
+    return sNetworkContext->recruiting;
 }
 
 BOOL WiFiPlazaLobby_Network_IsVipProfile(s32 param0)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    return WiFiPlazaLobby_Network_ContainsVipProfile(&sNetworkContext->unk_6A0, param0);
+    return WiFiPlazaLobby_Network_ContainsVipProfile(&sNetworkContext->vipRecords, param0);
 }
 
 s32 WiFiPlazaLobby_Network_GetVipKey(s32 param0)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    return WiFiPlazaLobby_Network_FindVipKey(&sNetworkContext->unk_6A0, param0);
+    return WiFiPlazaLobby_Network_FindVipKey(&sNetworkContext->vipRecords, param0);
 }
 
 void WiFiPlazaLobby_Network_SubmitQuestionnaireAnswer(s32 param0)
 {
     GF_ASSERT(sNetworkContext != NULL);
     GF_ASSERT(param0 < PPW_LOBBY_QUESTIONNAIRE_ANSWER_NUM);
-    GF_ASSERT(sNetworkContext->unk_6A8.unk_2D8 != WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01);
+    GF_ASSERT(sNetworkContext->questionnaire.submitState != WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01);
 
     u32 v0 = PPW_LobbySubmitQuestionnaire(param0);
     BOOL v1 = WiFiPlazaLobby_Network_CheckLobbyResult(v0);
 
     GF_ASSERT(v1 == 1);
 
-    sNetworkContext->unk_6A8.unk_2D8 = WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01;
+    sNetworkContext->questionnaire.submitState = WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01;
 }
 
 WiFiPlazaLobbyNetworkQuestionnaireSubmitState WiFiPlazaLobby_Network_GetQuestionnaireSubmitState(void)
 {
     GF_ASSERT(sNetworkContext != NULL);
-    return sNetworkContext->unk_6A8.unk_2D8;
+    return sNetworkContext->questionnaire.submitState;
 }
 
 s32 WiFiPlazaLobby_Network_GetQuestionnaireField(WiFiPlazaLobbyNetworkQuestionnaireField param0)
@@ -948,32 +948,32 @@ s32 WiFiPlazaLobby_Network_GetQuestionnaireField(WiFiPlazaLobbyNetworkQuestionna
 
     switch (param0) {
     case WiFiPlazaLobbyNetworkQuestionnaireField_00:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.questionSerialNo;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.questionSerialNo;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_01:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.questionNo;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.questionNo;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_02:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.isSpecialWeek;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.isSpecialWeek;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_03:
-        if (sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.questionNo >= PPW_LOBBY_FREE_QUESTION_START_NO) {
+        if (sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.questionNo >= PPW_LOBBY_FREE_QUESTION_START_NO) {
             v0 = 1;
         } else {
             v0 = 0;
         }
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_04:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.questionSerialNo;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.questionSerialNo;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_05:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.questionNo;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.questionNo;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_06:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.isSpecialWeek;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.isSpecialWeek;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireField_07:
-        if (sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.questionNo >= PPW_LOBBY_FREE_QUESTION_START_NO) {
+        if (sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.questionNo >= PPW_LOBBY_FREE_QUESTION_START_NO) {
             v0 = 1;
         } else {
             v0 = 0;
@@ -982,7 +982,7 @@ s32 WiFiPlazaLobby_Network_GetQuestionnaireField(WiFiPlazaLobbyNetworkQuestionna
     case WiFiPlazaLobbyNetworkQuestionnaireField_08:
     case WiFiPlazaLobbyNetworkQuestionnaireField_09:
     case WiFiPlazaLobbyNetworkQuestionnaireField_10:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastMultiResult[param0 - WiFiPlazaLobbyNetworkQuestionnaireField_08];
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastMultiResult[param0 - WiFiPlazaLobbyNetworkQuestionnaireField_08];
         break;
     default:
         GF_ASSERT(FALSE);
@@ -1002,20 +1002,20 @@ u16 *WiFiPlazaLobby_Network_GetQuestionnaireText(WiFiPlazaLobbyNetworkQuestionna
 
     switch (param0) {
     case WiFiPlazaLobbyNetworkQuestionnaireText_00:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.questionSentence;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.questionSentence;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireText_01:
     case WiFiPlazaLobbyNetworkQuestionnaireText_02:
     case WiFiPlazaLobbyNetworkQuestionnaireText_03:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.answer[param0 - WiFiPlazaLobbyNetworkQuestionnaireText_01];
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.answer[param0 - WiFiPlazaLobbyNetworkQuestionnaireText_01];
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireText_04:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.questionSentence;
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.questionSentence;
         break;
     case WiFiPlazaLobbyNetworkQuestionnaireText_05:
     case WiFiPlazaLobbyNetworkQuestionnaireText_06:
     case WiFiPlazaLobbyNetworkQuestionnaireText_07:
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.answer[param0 - WiFiPlazaLobbyNetworkQuestionnaireText_05];
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.answer[param0 - WiFiPlazaLobbyNetworkQuestionnaireText_05];
         break;
     default:
         GF_ASSERT(FALSE);
@@ -1043,9 +1043,9 @@ BOOL WiFiPlazaLobby_Network_GetQuestionnaireLanguageFlag(WiFiPlazaLobbyNetworkQu
     BOOL v0;
 
     if (param0 == WiFiPlazaLobbyNetworkQuestionnaireLanguage_00) {
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.currentQuestionnaireRecord.multiLanguageSummarizeFlags[language];
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.currentQuestionnaireRecord.multiLanguageSummarizeFlags[language];
     } else {
-        v0 = sNetworkContext->unk_6A8.lobbyQuestionnaire.lastQuestionnaireRecord.multiLanguageSummarizeFlags[language];
+        v0 = sNetworkContext->questionnaire.lobbyQuestionnaire.lastQuestionnaireRecord.multiLanguageSummarizeFlags[language];
     }
 
     return v0;
@@ -1059,8 +1059,8 @@ void WiFiPlazaLobby_Network_ResetMatchmaking(void)
     NintendoWFC_SetConnectionClosedCB(NULL, NULL);
 
     sNetworkContext->gameKind = WiFiPlazaLobbyNetworkGameKind_03;
-    sNetworkContext->unk_69E = 0;
-    sNetworkContext->unk_69F = 0;
+    sNetworkContext->recruiting = 0;
+    sNetworkContext->recruitStopped = 0;
 }
 
 static BOOL WiFiPlazaLobby_Network_CheckLobbyResult(PPW_LOBBY_RESULT param0)
@@ -1095,8 +1095,8 @@ static BOOL WiFiPlazaLobby_Network_CheckLobbyResult(PPW_LOBBY_RESULT param0)
 
 static void WiFiPlazaLobby_Network_ClearErrorFlags(void)
 {
-    sNetworkContext->unk_133 = 0;
-    sNetworkContext->unk_132 = 0;
+    sNetworkContext->profileCheckError = 0;
+    sNetworkContext->errorFlag = 0;
 }
 
 static WiFiPlazaLobbyNetworkSubChannelKind WiFiPlazaLobby_Network_ChannelKindToSubChannel(PPW_LOBBY_CHANNEL_KIND lobbyChannelKind)
@@ -1127,11 +1127,11 @@ static BOOL WiFiPlazaLobby_Network_AddCountryRegionToChannelData(WiFiPlazaLobbyN
     int v2;
 
     for (v2 = 0; v2 < 20; v2++) {
-        if (param0->unk_134[v2].unk_03 == 0) {
+        if (param0->countryRegions[v2].used == 0) {
             break;
         }
 
-        if ((param0->unk_134[v2].country == country) && (param0->unk_134[v2].region == region)) {
+        if ((param0->countryRegions[v2].country == country) && (param0->countryRegions[v2].region == region)) {
             return 0;
         }
     }
@@ -1141,30 +1141,30 @@ static BOOL WiFiPlazaLobby_Network_AddCountryRegionToChannelData(WiFiPlazaLobbyN
         return 0;
     }
 
-    param0->unk_134[v2].country = country;
-    param0->unk_134[v2].region = region;
-    param0->unk_134[v2].unk_03 = 1;
+    param0->countryRegions[v2].country = country;
+    param0->countryRegions[v2].region = region;
+    param0->countryRegions[v2].used = 1;
 
-    PPW_LOBBY_RESULT lobbyResult = PPW_LobbySetChannelData(PPW_LOBBY_INVALID_USER_ID, PPW_LOBBY_CHANNEL_KIND_MAIN, sWorldDataArchiveName[0], (const u8 *)param0->unk_134, sizeof(WiFiPlazaLobbyNetworkCountryRegion) * 20);
+    PPW_LOBBY_RESULT lobbyResult = PPW_LobbySetChannelData(PPW_LOBBY_INVALID_USER_ID, PPW_LOBBY_CHANNEL_KIND_MAIN, sWorldDataArchiveName[0], (const u8 *)param0->countryRegions, sizeof(WiFiPlazaLobbyNetworkCountryRegion) * 20);
 
     return WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult);
 }
 
 static void WiFiPlazaLobby_Network_AllocPlayerProfileBuffer(WiFiPlazaLobbyNetworkContext *unused, u32 param1, u32 heapID)
 {
-    sNetworkContext->unk_24 = Heap_Alloc(heapID, param1 * PPW_LOBBY_MAX_PLAYER_NUM_MAIN);
-    memset(sNetworkContext->unk_24, 0, param1 * PPW_LOBBY_MAX_PLAYER_NUM_MAIN);
-    sNetworkContext->unk_28 = param1;
+    sNetworkContext->playerProfiles = Heap_Alloc(heapID, param1 * PPW_LOBBY_MAX_PLAYER_NUM_MAIN);
+    memset(sNetworkContext->playerProfiles, 0, param1 * PPW_LOBBY_MAX_PLAYER_NUM_MAIN);
+    sNetworkContext->profileSize = param1;
 }
 
 static void WiFiPlazaLobby_Network_FreePlayerProfileBuffer(WiFiPlazaLobbyNetworkContext *unused)
 {
-    Heap_Free(sNetworkContext->unk_24);
+    Heap_Free(sNetworkContext->playerProfiles);
 }
 
 static void WiFiPlazaLobby_Network_SetPlayerData(WiFiPlazaLobbyNetworkContext *param0, s32 param1, const void *param2)
 {
-    WiFiPlazaLobby_Network_SetPlayerDataWithSize(param0, param1, param2, param0->unk_28);
+    WiFiPlazaLobby_Network_SetPlayerDataWithSize(param0, param1, param2, param0->profileSize);
 }
 
 static void WiFiPlazaLobby_Network_SetPlayerDataWithSize(WiFiPlazaLobbyNetworkContext *param0, s32 param1, const void *param2, u32 param3)
@@ -1172,15 +1172,15 @@ static void WiFiPlazaLobby_Network_SetPlayerDataWithSize(WiFiPlazaLobbyNetworkCo
     s32 v0 = WiFiPlazaLobby_Network_FindPlayerIndex(param0, param1, 0);
     GF_ASSERT(v0 != 0xffffffff);
 
-    u8 *v1 = param0->unk_24;
-    v1 = &v1[param0->unk_28 * v0];
+    u8 *v1 = param0->playerProfiles;
+    v1 = &v1[param0->profileSize * v0];
     u32 v2;
 
-    if (param0->unk_28 > param3) {
+    if (param0->profileSize > param3) {
         v2 = param3;
-        memset(v1, 0, param0->unk_28);
+        memset(v1, 0, param0->profileSize);
     } else {
-        v2 = param0->unk_28;
+        v2 = param0->profileSize;
     }
 
     memcpy(v1, param2, v2);
@@ -1191,8 +1191,8 @@ static const void *WiFiPlazaLobby_Network_GetPlayerDataFromContext(const WiFiPla
     s32 v0 = WiFiPlazaLobby_Network_FindPlayerIndex(param0, param1, 0);
     GF_ASSERT(v0 != 0xffffffff);
 
-    const u8 *v1 = param0->unk_24;
-    v1 = &v1[param0->unk_28 * v0];
+    const u8 *v1 = param0->playerProfiles;
+    v1 = &v1[param0->profileSize * v0];
 
     return v1;
 }
@@ -1202,10 +1202,10 @@ static void WiFiPlazaLobby_Network_ClearPlayerData(WiFiPlazaLobbyNetworkContext 
     s32 v0 = WiFiPlazaLobby_Network_FindPlayerIndex(param0, param1, 0);
     GF_ASSERT(v0 != 0xffffffff);
 
-    u8 *v1 = param0->unk_24;
-    v1 = &v1[param0->unk_28 * v0];
+    u8 *v1 = param0->playerProfiles;
+    v1 = &v1[param0->profileSize * v0];
 
-    memset(v1, 0, param0->unk_28);
+    memset(v1, 0, param0->profileSize);
 }
 
 static void WiFiPlazaLobby_Network_SetPlayerSystemProfile(WiFiPlazaLobbyNetworkContext *param0, s32 param1, const PPW_LobbySystemProfile *lobbySystemProfile)
@@ -1237,7 +1237,7 @@ static void WiFiPlazaLobby_Network_InitPlayerIdLists(WiFiPlazaLobbyNetworkContex
     int v1;
 
     for (int i = 0; i < 2; i++) {
-        GF_ASSERT(param0->unk_11C[i].unk_04 == NULL);
+        GF_ASSERT(param0->playerIdLists[i].ids == NULL);
 
         if (i == 0) {
             v1 = param1;
@@ -1245,9 +1245,9 @@ static void WiFiPlazaLobby_Network_InitPlayerIdLists(WiFiPlazaLobbyNetworkContex
             v1 = param2;
         }
 
-        param0->unk_11C[i].unk_00 = 0;
-        param0->unk_11C[i].unk_04 = Heap_Alloc(heapID, sizeof(s32) * v1);
-        param0->unk_11C[i].unk_02 = v1;
+        param0->playerIdLists[i].count = 0;
+        param0->playerIdLists[i].ids = Heap_Alloc(heapID, sizeof(s32) * v1);
+        param0->playerIdLists[i].capacity = v1;
 
         WiFiPlazaLobby_Network_ResetPlayerIdList(param0, i);
     }
@@ -1256,18 +1256,18 @@ static void WiFiPlazaLobby_Network_InitPlayerIdLists(WiFiPlazaLobbyNetworkContex
 static void WiFiPlazaLobby_Network_FreePlayerIdLists(WiFiPlazaLobbyNetworkContext *param0)
 {
     for (int i = 0; i < 2; i++) {
-        GF_ASSERT(param0->unk_11C[i].unk_04 != NULL);
-        Heap_Free(param0->unk_11C[i].unk_04);
-        param0->unk_11C[i].unk_04 = NULL;
+        GF_ASSERT(param0->playerIdLists[i].ids != NULL);
+        Heap_Free(param0->playerIdLists[i].ids);
+        param0->playerIdLists[i].ids = NULL;
     }
 }
 
 static void WiFiPlazaLobby_Network_ResetPlayerIdList(WiFiPlazaLobbyNetworkContext *param0, u32 param1)
 {
-    param0->unk_11C[param1].unk_00 = 0;
+    param0->playerIdLists[param1].count = 0;
 
-    for (int i = 0; i < param0->unk_11C[param1].unk_02; i++) {
-        param0->unk_11C[param1].unk_04[i] = DWC_LOBBY_INVALID_USER_ID;
+    for (int i = 0; i < param0->playerIdLists[param1].capacity; i++) {
+        param0->playerIdLists[param1].ids[i] = DWC_LOBBY_INVALID_USER_ID;
     }
 }
 
@@ -1277,23 +1277,23 @@ static void WiFiPlazaLobby_Network_AddPlayerId(WiFiPlazaLobbyNetworkContext *par
         return;
     }
 
-    GF_ASSERT(param0->unk_11C[param2].unk_00 < param0->unk_11C[param2].unk_02);
+    GF_ASSERT(param0->playerIdLists[param2].count < param0->playerIdLists[param2].capacity);
 
-    if (param0->unk_11C[param2].unk_00 >= param0->unk_11C[param2].unk_02) {
+    if (param0->playerIdLists[param2].count >= param0->playerIdLists[param2].capacity) {
         return;
     }
 
     u32 v0;
 
-    for (int i = 0; i < param0->unk_11C[param2].unk_02; i++) {
-        if (param0->unk_11C[param2].unk_04[i] == DWC_LOBBY_INVALID_USER_ID) {
+    for (int i = 0; i < param0->playerIdLists[param2].capacity; i++) {
+        if (param0->playerIdLists[param2].ids[i] == DWC_LOBBY_INVALID_USER_ID) {
             v0 = i;
             break;
         }
     }
 
-    param0->unk_11C[param2].unk_04[v0] = param1;
-    param0->unk_11C[param2].unk_00++;
+    param0->playerIdLists[param2].ids[v0] = param1;
+    param0->playerIdLists[param2].count++;
 }
 
 static void WiFiPlazaLobby_Network_RemovePlayerId(WiFiPlazaLobbyNetworkContext *param0, s32 param1, u32 param2)
@@ -1304,14 +1304,14 @@ static void WiFiPlazaLobby_Network_RemovePlayerId(WiFiPlazaLobbyNetworkContext *
         return;
     }
 
-    param0->unk_11C[param2].unk_04[v0] = DWC_LOBBY_INVALID_USER_ID;
-    param0->unk_11C[param2].unk_00--;
+    param0->playerIdLists[param2].ids[v0] = DWC_LOBBY_INVALID_USER_ID;
+    param0->playerIdLists[param2].count--;
 }
 
 static s32 WiFiPlazaLobby_Network_FindPlayerIndex(const WiFiPlazaLobbyNetworkContext *param0, s32 param1, u32 param2)
 {
-    for (int i = 0; i < param0->unk_11C[param2].unk_02; i++) {
-        if (param0->unk_11C[param2].unk_04[i] == param1) {
+    for (int i = 0; i < param0->playerIdLists[param2].capacity; i++) {
+        if (param0->playerIdLists[param2].ids[i] == param1) {
             return i;
         }
     }
@@ -1321,8 +1321,8 @@ static s32 WiFiPlazaLobby_Network_FindPlayerIndex(const WiFiPlazaLobbyNetworkCon
 
 static s32 WiFiPlazaLobby_Network_GetPlayerIdAt(const WiFiPlazaLobbyNetworkContext *param0, s32 param1, u32 param2)
 {
-    GF_ASSERT(param1 < param0->unk_11C[param2].unk_02);
-    return param0->unk_11C[param2].unk_04[param1];
+    GF_ASSERT(param1 < param0->playerIdLists[param2].capacity);
+    return param0->playerIdLists[param2].ids[param1];
 }
 
 static void WiFiPlazaLobby_Network_RebuildSubChannelPlayers(WiFiPlazaLobbyNetworkContext *param0, WiFiPlazaLobbyNetworkSubChannelKind param1)
@@ -1331,7 +1331,7 @@ static void WiFiPlazaLobby_Network_RebuildSubChannelPlayers(WiFiPlazaLobbyNetwor
     u32 v2 = WiFiPlazaLobby_Network_SubChannelToChannelKind(param1);
     WiFiPlazaLobby_Network_ResetPlayerIdList(param0, 1);
 
-    for (int v0 = 0; v0 < param0->unk_11C[0].unk_02; v0++) {
+    for (int v0 = 0; v0 < param0->playerIdLists[0].capacity; v0++) {
         v1 = WiFiPlazaLobby_Network_GetPlayerIdAt(param0, v0, 0);
 
         if (v1 != 0xffffffff) {
@@ -1357,7 +1357,7 @@ static BOOL WiFiPlazaLobby_Network_HasSubChannelRoom(const WiFiPlazaLobbyNetwork
     int v1 = 0;
     s32 v2;
 
-    for (int i = 0; i < param0->unk_11C[0].unk_02; i++) {
+    for (int i = 0; i < param0->playerIdLists[0].capacity; i++) {
         v2 = WiFiPlazaLobby_Network_GetPlayerIdAt(param0, i, 0);
 
         if (v2 != 0xffffffff) {
@@ -1377,20 +1377,20 @@ static BOOL WiFiPlazaLobby_Network_HasSubChannelRoom(const WiFiPlazaLobbyNetwork
 static void WiFiPlazaLobby_Network_HandleJoinChannel(BOOL param0, PPW_LOBBY_CHANNEL_KIND lobbyChannelKind)
 {
     if (lobbyChannelKind == PPW_LOBBY_CHANNEL_KIND_MAIN) {
-        sNetworkContext->unk_5B4 = 1024;
-        PPW_LOBBY_RESULT lobbyResult = PPW_LobbyGetSchedule((PPW_LobbySchedule *)sNetworkContext->unk_1B4, &sNetworkContext->unk_5B4);
+        sNetworkContext->scheduleSize = 1024;
+        PPW_LOBBY_RESULT lobbyResult = PPW_LobbyGetSchedule((PPW_LobbySchedule *)sNetworkContext->schedule, &sNetworkContext->scheduleSize);
         GF_ASSERT(WiFiPlazaLobby_Network_CheckLobbyResult(lobbyResult));
 
         PPW_LobbyGetChannelDataAsync(PPW_LOBBY_INVALID_USER_ID, PPW_LOBBY_CHANNEL_KIND_MAIN, sWorldDataArchiveName[0], NULL);
     } else {
-        if (sNetworkContext->unk_12D == WiFiPlazaLobby_Network_ChannelKindToSubChannel(lobbyChannelKind)) {
+        if (sNetworkContext->subChannelKind == WiFiPlazaLobby_Network_ChannelKindToSubChannel(lobbyChannelKind)) {
             if (param0 == 1) {
-                sNetworkContext->unk_12F = WiFiPlazaLobbyNetworkSubChannelJoinState_01;
+                sNetworkContext->subChannelJoinState = WiFiPlazaLobbyNetworkSubChannelJoinState_01;
 
-                WiFiPlazaLobby_Network_RebuildSubChannelPlayers(sNetworkContext, sNetworkContext->unk_12D);
+                WiFiPlazaLobby_Network_RebuildSubChannelPlayers(sNetworkContext, sNetworkContext->subChannelKind);
                 WiFiPlazaLobby_Network_AddPlayerId(sNetworkContext, PPW_LobbyGetMyUserId(), 1);
             } else {
-                sNetworkContext->unk_12F = WiFiPlazaLobbyNetworkSubChannelJoinState_02;
+                sNetworkContext->subChannelJoinState = WiFiPlazaLobbyNetworkSubChannelJoinState_02;
             }
         } else {
             GF_ASSERT(FALSE);
@@ -1417,7 +1417,7 @@ static void WiFiPlazaLobby_Network_HandlePlayerConnected(s32 userId, const PPW_L
     WiFiPlazaLobby_Network_SetPlayerDataWithSize(sNetworkContext, userId, param2, param3);
     WiFiPlazaLobby_Network_SetPlayerSystemProfile(sNetworkContext, userId, param1);
 
-    sNetworkContext->unk_0C.unk_00(userId, WiFiPlazaLobby_Network_GetPlayerDataFromContext(sNetworkContext, userId), sNetworkContext->unk_20, v0);
+    sNetworkContext->callbacks.onPlayerConnected(userId, WiFiPlazaLobby_Network_GetPlayerDataFromContext(sNetworkContext, userId), sNetworkContext->callbackContext, v0);
 }
 
 static void WiFiPlazaLobby_Network_HandlePlayerDisconnected(s32 param0)
@@ -1428,13 +1428,13 @@ static void WiFiPlazaLobby_Network_HandlePlayerDisconnected(s32 param0)
 
     {
         for (int i = 0; i < WiFiPlazaLobbyNetworkGameKind_03; i++) {
-            if (sNetworkContext->unk_5B8[i].unk_48 == param0) {
-                WiFiPlazaLobby_Network_HandleRecruitStopped(param0, &sNetworkContext->unk_5B8[i].lobbyRecruitInfo);
+            if (sNetworkContext->recruits[i].hostUserId == param0) {
+                WiFiPlazaLobby_Network_HandleRecruitStopped(param0, &sNetworkContext->recruits[i].lobbyRecruitInfo);
             }
         }
     }
 
-    sNetworkContext->unk_0C.unk_04(param0, sNetworkContext->unk_20);
+    sNetworkContext->callbacks.onPlayerDisconnected(param0, sNetworkContext->callbackContext);
 
     WiFiPlazaLobby_Network_ClearPlayerSystemProfile(sNetworkContext, param0);
     WiFiPlazaLobby_Network_ClearPlayerData(sNetworkContext, param0);
@@ -1467,7 +1467,7 @@ static void WiFiPlazaLobby_Network_HandleBinaryMessageReceived(s32 param0, PPW_L
     case PPW_LOBBY_CHANNEL_KIND_NEWS:
         u32 v1 = WiFiPlazaLobby_Network_ChannelKindToSubChannel(param1);
 
-        if (sNetworkContext->unk_12D == v1) {
+        if (sNetworkContext->subChannelKind == v1) {
             v0 = 1;
         } else {
             return;
@@ -1480,9 +1480,9 @@ static void WiFiPlazaLobby_Network_HandleBinaryMessageReceived(s32 param0, PPW_L
         return;
     }
 
-    if (sNetworkContext->unk_184[v0].unk_04 > param2) {
-        GF_ASSERT(sNetworkContext->unk_184[v0].unk_00[param2].unk_04 <= param4);
-        sNetworkContext->unk_184[v0].unk_00[param2].unk_00(param0, param3, sNetworkContext->unk_184[v0].unk_00[param2].unk_04, sNetworkContext->unk_184[v0].unk_08);
+    if (sNetworkContext->messageHandlers[v0].count > param2) {
+        GF_ASSERT(sNetworkContext->messageHandlers[v0].handlers[param2].size <= param4);
+        sNetworkContext->messageHandlers[v0].handlers[param2].callback(param0, param3, sNetworkContext->messageHandlers[v0].handlers[param2].size, sNetworkContext->messageHandlers[v0].context);
     } else {
         (void)0;
     }
@@ -1491,10 +1491,10 @@ static void WiFiPlazaLobby_Network_HandleBinaryMessageReceived(s32 param0, PPW_L
 static void WiFiPlazaLobby_Network_HandleGetChannelData(BOOL unused1, BOOL unused2, PPW_LOBBY_CHANNEL_KIND unused3, s32 unused4, const char *param4, const u8 *param5, u32 unused5, void *unused6)
 {
     if (strcmp(param4, sWorldDataArchiveName[0]) == 0) {
-        memcpy(sNetworkContext->unk_134, param5, sizeof(WiFiPlazaLobbyNetworkCountryRegion) * 20);
+        memcpy(sNetworkContext->countryRegions, param5, sizeof(WiFiPlazaLobbyNetworkCountryRegion) * 20);
 
-        if (sNetworkContext->unk_130) {
-            sNetworkContext->unk_130 = 0;
+        if (sNetworkContext->channelDataUpdatePending) {
+            sNetworkContext->channelDataUpdatePending = 0;
         }
     }
 }
@@ -1508,11 +1508,11 @@ static void WiFiPlazaLobby_Network_HandleSystemProfileUpdated(s32 param0, const 
         return;
     }
 
-    if (sNetworkContext->unk_12D != WiFiPlazaLobbyNetworkSubChannelKind_04) {
+    if (sNetworkContext->subChannelKind != WiFiPlazaLobbyNetworkSubChannelKind_04) {
         const PPW_LobbySystemProfile *lobbySysProfile = WiFiPlazaLobby_Network_GetPlayerSystemProfile(sNetworkContext, param0);
         channelKind1 = lobbySysProfile->subChannelKind;
         channelKind2 = sysProfile->subChannelKind;
-        v2 = WiFiPlazaLobby_Network_SubChannelToChannelKind(sNetworkContext->unk_12D);
+        v2 = WiFiPlazaLobby_Network_SubChannelToChannelKind(sNetworkContext->subChannelKind);
 
         if ((channelKind1 == PPW_LOBBY_CHANNEL_KIND_INVALID) && (channelKind2 == v2)) {
             WiFiPlazaLobby_Network_AddPlayerId(sNetworkContext, param0, 1);
@@ -1534,7 +1534,7 @@ static void WiFiPlazaLobby_Network_HandleUserProfileUpdated(s32 param0, const u8
 
     WiFiPlazaLobby_Network_SetPlayerData(sNetworkContext, param0, param1);
 
-    sNetworkContext->unk_0C.unk_08(param0, param1, sNetworkContext->unk_20);
+    sNetworkContext->callbacks.onPlayerProfile(param0, param1, sNetworkContext->callbackContext);
 }
 
 static void WiFiPlazaLobby_Network_HandleRecruit(s32 param0, const PPW_LobbyRecruitInfo *recruitInfo)
@@ -1548,14 +1548,14 @@ static void WiFiPlazaLobby_Network_HandleRecruit(s32 param0, const PPW_LobbyRecr
     u32 v0 = WiFiPlazaLobby_Network_GetMyUserId();
 
     if (v0 != param0) {
-        if (sNetworkContext->unk_69E) {
+        if (sNetworkContext->recruiting) {
             if (sNetworkContext->gameKind == recruitInfo->gameKind) {
                 s64 v1, v2;
-                WiFiPlazaLobby_Network_GetRecruitStartTime(&sNetworkContext->unk_5B8[sNetworkContext->gameKind].lobbyRecruitInfo, &v1);
+                WiFiPlazaLobby_Network_GetRecruitStartTime(&sNetworkContext->recruits[sNetworkContext->gameKind].lobbyRecruitInfo, &v1);
                 WiFiPlazaLobby_Network_GetRecruitStartTime(recruitInfo, &v2);
 
                 if (v1 >= v2) {
-                    sNetworkContext->unk_69F = 1;
+                    sNetworkContext->recruitStopped = 1;
 
                     WiFiPlazaLobby_Network_StopGameRecruit();
                 } else {
@@ -1579,21 +1579,21 @@ static void WiFiPlazaLobby_Network_HandleRecruitStopped(s32 param0, const PPW_Lo
     BOOL v0 = WiFiPlazaLobby_Network_ClearRecruitInfo(sNetworkContext, recruitInfo->gameKind, param0);
 
     if ((sNetworkContext->gameKind == recruitInfo->gameKind) && (v0 == 1)) {
-        sNetworkContext->unk_69F = 1;
+        sNetworkContext->recruitStopped = 1;
     }
 }
 
 static void WiFiPlazaLobby_Network_HandleScheduleProgress(PPW_LOBBY_TIME_EVENT timeEvent)
 {
-    sNetworkContext->unk_0C.unk_0C(timeEvent, sNetworkContext->unk_20);
+    sNetworkContext->callbacks.onTimeEvent(timeEvent, sNetworkContext->callbackContext);
 }
 
 static void WiFiPlazaLobby_Network_HandleCheckProfile(PPW_LOBBY_STATS_RESULT statsResult, const u8 *param1, u32 param2)
 {
     if (statsResult != PPW_LOBBY_STATS_RESULT_SUCCESS) {
-        sNetworkContext->unk_133 = 1;
+        sNetworkContext->profileCheckError = 1;
     } else {
-        sNetworkContext->unk_0C.unk_10(param1, param2, sNetworkContext->unk_20);
+        sNetworkContext->callbacks.onStats(param1, param2, sNetworkContext->callbackContext);
     }
 }
 
@@ -1603,47 +1603,47 @@ static BOOL WiFiPlazaLobby_Network_HandleNotifySchedule(PPW_LOBBY_STATS_RESULT s
         return 1;
     }
 
-    sNetworkContext->unk_132 = 1;
+    sNetworkContext->errorFlag = 1;
     return 0;
 }
 
 static void WiFiPlazaLobby_Network_HandleGetVip(PPW_LOBBY_STATS_RESULT lobbyStatsResult, const PPW_LobbyVipRecord *lobbyVipRecord, u32 param2)
 {
     if (lobbyStatsResult == PPW_LOBBY_STATS_RESULT_SUCCESS) {
-        WiFiPlazaLobby_Network_SetVipRecords(&sNetworkContext->unk_6A0, lobbyVipRecord, param2);
+        WiFiPlazaLobby_Network_SetVipRecords(&sNetworkContext->vipRecords, lobbyVipRecord, param2);
     } else {
-        sNetworkContext->unk_132 = 1;
+        sNetworkContext->errorFlag = 1;
     }
 }
 
 static void WiFiPlazaLobby_Network_HandleGetQuestionnaire(PPW_LOBBY_STATS_RESULT lobbyStatsResult, const PPW_LobbyQuestionnaire *lobbyQuestionnaire)
 {
     if (lobbyStatsResult == PPW_LOBBY_STATS_RESULT_SUCCESS) {
-        WiFiPlazaLobby_Network_SetQuestionnaire(&sNetworkContext->unk_6A8, lobbyQuestionnaire);
+        WiFiPlazaLobby_Network_SetQuestionnaire(&sNetworkContext->questionnaire, lobbyQuestionnaire);
     } else {
-        sNetworkContext->unk_132 = 1;
+        sNetworkContext->errorFlag = 1;
     }
 }
 
 static void WiFiPlazaLobby_Network_HandleSubmitQuestionnaire(PPW_LOBBY_STATS_RESULT lobbyStatsResult)
 {
-    GF_ASSERT(sNetworkContext->unk_6A8.unk_2D8 == WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01);
+    GF_ASSERT(sNetworkContext->questionnaire.submitState == WiFiPlazaLobbyNetworkQuestionnaireSubmitState_01);
 
     if (lobbyStatsResult == PPW_LOBBY_STATS_RESULT_SUCCESS) {
-        sNetworkContext->unk_6A8.unk_2D8 = WiFiPlazaLobbyNetworkQuestionnaireSubmitState_02;
+        sNetworkContext->questionnaire.submitState = WiFiPlazaLobbyNetworkQuestionnaireSubmitState_02;
     } else {
-        sNetworkContext->unk_6A8.unk_2D8 = WiFiPlazaLobbyNetworkQuestionnaireSubmitState_02;
+        sNetworkContext->questionnaire.submitState = WiFiPlazaLobbyNetworkQuestionnaireSubmitState_02;
     }
 }
 
 static void WiFiPlazaLobby_Network_HandleExcessFlood(u32 unused)
 {
-    sNetworkContext->unk_131 = 1;
+    sNetworkContext->excessFlood = 1;
 }
 
 static void WiFiPlazaLobby_Network_ResetRecruitInfo(WiFiPlazaLobbyNetworkContext *param0)
 {
-    memset(param0->unk_5B8, 0, sizeof(WiFiPlazaLobbyNetworkRecruit) * WiFiPlazaLobbyNetworkGameKind_03);
+    memset(param0->recruits, 0, sizeof(WiFiPlazaLobbyNetworkRecruit) * WiFiPlazaLobbyNetworkGameKind_03);
     param0->gameKind = WiFiPlazaLobbyNetworkGameKind_03;
 }
 
@@ -1652,17 +1652,17 @@ static void WiFiPlazaLobby_Network_SetRecruitInfo(WiFiPlazaLobbyNetworkContext *
     GF_ASSERT(gameKind < WiFiPlazaLobbyNetworkGameKind_03);
 
     if (WiFiPlazaLobby_Network_IsRecruitActive(param0, gameKind) == 1) {
-        if (param0->unk_5B8[gameKind].unk_48 != param2) {
+        if (param0->recruits[gameKind].hostUserId != param2) {
             return;
         }
     }
 
-    param0->unk_5B8[gameKind].lobbyRecruitInfo = *lobbyRecruitInfo;
+    param0->recruits[gameKind].lobbyRecruitInfo = *lobbyRecruitInfo;
 
-    if (param0->unk_5B8[gameKind].unk_44 == 0) {
-        param0->unk_5B8[gameKind].unk_44 = 1;
-        param0->unk_5B8[gameKind].unk_48 = param2;
-        param0->unk_5B8[gameKind].unk_46 = WiFiPlazaLobby_Network_GetRecruitRemainingTime(param0, gameKind);
+    if (param0->recruits[gameKind].active == 0) {
+        param0->recruits[gameKind].active = 1;
+        param0->recruits[gameKind].hostUserId = param2;
+        param0->recruits[gameKind].timeLimit = WiFiPlazaLobby_Network_GetRecruitRemainingTime(param0, gameKind);
     }
 }
 
@@ -1671,8 +1671,8 @@ static BOOL WiFiPlazaLobby_Network_ClearRecruitInfo(WiFiPlazaLobbyNetworkContext
     GF_ASSERT(param1 < WiFiPlazaLobbyNetworkGameKind_03);
 
     if (WiFiPlazaLobby_Network_IsRecruitActive(param0, param1) == 1) {
-        if (param0->unk_5B8[param1].unk_48 == param2) {
-            param0->unk_5B8[param1].unk_44 = 0;
+        if (param0->recruits[param1].hostUserId == param2) {
+            param0->recruits[param1].active = 0;
             return 1;
         }
     }
@@ -1683,7 +1683,7 @@ static BOOL WiFiPlazaLobby_Network_ClearRecruitInfo(WiFiPlazaLobbyNetworkContext
 static BOOL WiFiPlazaLobby_Network_IsRecruitActive(const WiFiPlazaLobbyNetworkContext *param0, WiFiPlazaLobbyNetworkGameKind param1)
 {
     GF_ASSERT(param1 < WiFiPlazaLobbyNetworkGameKind_03);
-    return param0->unk_5B8[param1].unk_44;
+    return param0->recruits[param1].active;
 }
 
 static u16 WiFiPlazaLobby_Network_GetRecruitRemainingTime(const WiFiPlazaLobbyNetworkContext *param0, WiFiPlazaLobbyNetworkGameKind param1)
@@ -1709,16 +1709,16 @@ static u16 WiFiPlazaLobby_Network_GetRecruitRemainingTime(const WiFiPlazaLobbyNe
 static const PPW_LobbyRecruitInfo *WiFiPlazaLobby_Network_GetRecruitInfo(const WiFiPlazaLobbyNetworkContext *param0, WiFiPlazaLobbyNetworkGameKind param1)
 {
     GF_ASSERT(param1 < WiFiPlazaLobbyNetworkGameKind_03);
-    GF_ASSERT(param0->unk_5B8[param1].unk_44 == 1);
-    return &param0->unk_5B8[param1].lobbyRecruitInfo;
+    GF_ASSERT(param0->recruits[param1].active == 1);
+    return &param0->recruits[param1].lobbyRecruitInfo;
 }
 
 static void WiFiPlazaLobby_Network_UpdateRecruitProgress(WiFiPlazaLobbyNetworkContext *unused)
 {
-    if (sNetworkContext->unk_69E == 1) {
+    if (sNetworkContext->recruiting == 1) {
         u32 numConnections = NintendoWFC_GetNumConnections();
         GF_ASSERT(numConnections <= 4);
-        WiFiPlazaLobbyNetworkRecruit *v2 = &sNetworkContext->unk_5B8[sNetworkContext->gameKind];
+        WiFiPlazaLobbyNetworkRecruit *v2 = &sNetworkContext->recruits[sNetworkContext->gameKind];
 
         if (v2->lobbyRecruitInfo.currentNum != numConnections) {
             v2->lobbyRecruitInfo.currentNum = numConnections;
@@ -1729,15 +1729,15 @@ static void WiFiPlazaLobby_Network_UpdateRecruitProgress(WiFiPlazaLobbyNetworkCo
     u16 v1;
 
     for (int i = 0; i < WiFiPlazaLobbyNetworkGameKind_03; i++) {
-        if (sNetworkContext->unk_5B8[i].unk_44 == 1) {
-            if (sNetworkContext->unk_5B8[i].unk_46 > 0) {
-                sNetworkContext->unk_5B8[i].unk_46--;
+        if (sNetworkContext->recruits[i].active == 1) {
+            if (sNetworkContext->recruits[i].timeLimit > 0) {
+                sNetworkContext->recruits[i].timeLimit--;
             }
 
             v1 = WiFiPlazaLobby_Network_GetRecruitRemainingTime(sNetworkContext, i);
 
-            if (v1 < sNetworkContext->unk_5B8[i].unk_46) {
-                sNetworkContext->unk_5B8[i].unk_46 = v1;
+            if (v1 < sNetworkContext->recruits[i].timeLimit) {
+                sNetworkContext->recruits[i].timeLimit = v1;
             }
         }
     }
@@ -1763,11 +1763,11 @@ static void WiFiPlazaLobby_Network_HandleConnectionClosed(u16 param0, void *para
 {
     WiFiPlazaLobbyNetworkContext *v0 = param1;
 
-    if (v0->unk_69E == 1) {
+    if (v0->recruiting == 1) {
         WiFiPlazaLobby_Network_StopGameRecruit();
     } else {
         if (param0 == 0) {
-            sNetworkContext->unk_69F = 1;
+            sNetworkContext->recruitStopped = 1;
         }
     }
 }
@@ -1788,8 +1788,8 @@ static u32 WiFiPlazaLobby_Network_GetScheduleEventTime(const PPW_LobbySchedule *
 static void WiFiPlazaLobby_Network_InitVipRecordBuffer(WiFiPlazaLobbyNetworkVipRecordBuffer *param0, u32 param1, u32 heapID)
 {
     param0->lobbyVipRecord = Heap_Alloc(heapID, sizeof(PPW_LobbyVipRecord) * param1);
-    param0->unk_04 = param1;
-    param0->unk_06 = 0;
+    param0->capacity = param1;
+    param0->count = 0;
 }
 
 static void WiFiPlazaLobby_Network_FreeVipRecordBuffer(WiFiPlazaLobbyNetworkVipRecordBuffer *param0)
@@ -1800,23 +1800,23 @@ static void WiFiPlazaLobby_Network_FreeVipRecordBuffer(WiFiPlazaLobbyNetworkVipR
 
 static void WiFiPlazaLobby_Network_SetVipRecords(WiFiPlazaLobbyNetworkVipRecordBuffer *param0, const PPW_LobbyVipRecord *lobbyVipRecord, u32 param2)
 {
-    GF_ASSERT(param2 < param0->unk_04);
+    GF_ASSERT(param2 < param0->capacity);
 
     u32 v0;
 
-    if (param2 < param0->unk_04) {
+    if (param2 < param0->capacity) {
         v0 = param2;
     } else {
-        v0 = param0->unk_04;
+        v0 = param0->capacity;
     }
 
     MI_CpuCopy32(lobbyVipRecord, param0->lobbyVipRecord, sizeof(PPW_LobbyVipRecord) * v0);
-    param0->unk_06 = v0;
+    param0->count = v0;
 }
 
 static BOOL WiFiPlazaLobby_Network_ContainsVipProfile(const WiFiPlazaLobbyNetworkVipRecordBuffer *param0, s32 param1)
 {
-    for (int i = 0; i < param0->unk_06; i++) {
+    for (int i = 0; i < param0->count; i++) {
         if (param0->lobbyVipRecord[i].profileId == param1) {
             return 1;
         }
@@ -1827,7 +1827,7 @@ static BOOL WiFiPlazaLobby_Network_ContainsVipProfile(const WiFiPlazaLobbyNetwor
 
 static s32 WiFiPlazaLobby_Network_FindVipKey(const WiFiPlazaLobbyNetworkVipRecordBuffer *param0, s32 param1)
 {
-    for (int i = 0; i < param0->unk_06; i++) {
+    for (int i = 0; i < param0->count; i++) {
         if (param0->lobbyVipRecord[i].profileId == param1) {
             return param0->lobbyVipRecord[i].key;
         }

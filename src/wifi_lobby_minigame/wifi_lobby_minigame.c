@@ -828,13 +828,13 @@ BOOL WiFiLobbyMinigame_IsPlayerReady(const WiFiLobbyMinigamePlayerContext *param
         return 0;
     }
 
-    v0 = param0->unk_0C->unk_04.unk_00[param1];
+    v0 = param0->unk_0C->userIDs.playerIndices[param1];
 
     if (v0 == 0xffffffff) {
         return 0;
     }
 
-    v1 = param0->unk_0C->unk_08.unk_00[v0];
+    v1 = param0->unk_0C->presentFlags.flags[v0];
 
     return v1;
 }
@@ -859,7 +859,7 @@ TrainerInfo *WiFiLobbyMinigame_GetTrainerInfo(const WiFiLobbyMinigamePlayerConte
     }
 
     GF_ASSERT(param0->unk_0C != NULL);
-    return param0->unk_0C->unk_20[param1];
+    return param0->unk_0C->trainerInfos[param1];
 }
 
 WiFiLobbyMinigameIntroScreen *WiFiLobbyMinigame_CreateIntroScreen0(const WiFiLobbyMinigamePlayerContext *param0, u32 heapID)
@@ -1049,10 +1049,10 @@ BOOL WiFiLobbyMinigame_CheckDisconnected(WiFiLobbyMinigamePlayerContext *param0)
         }
 
         if (v0 == 1) {
-            param0->unk_0C->unk_1C = 1;
+            param0->unk_0C->trainerInfoValid = 1;
         }
 
-        if (param0->unk_0C->unk_1C == 1) {
+        if (param0->unk_0C->trainerInfoValid == 1) {
             v0 = 1;
         }
     }
@@ -1063,7 +1063,7 @@ BOOL WiFiLobbyMinigame_CheckDisconnected(WiFiLobbyMinigamePlayerContext *param0)
 BOOL WiFiLobbyMinigame_HandleDisconnect(const WiFiLobbyMinigamePlayerContext *param0)
 {
     GF_ASSERT(param0->unk_0C != NULL);
-    GF_ASSERT(param0->unk_0C->unk_1C == 1);
+    GF_ASSERT(param0->unk_0C->trainerInfoValid == 1);
 
     if (CommInfo_IsInitialized() == 1) {
         CommInfo_Delete();
@@ -2568,7 +2568,7 @@ static void WiFiLobbyMinigame_ResultsScreenTask(SysTask *param0, void *param1)
     switch (v0->unk_04) {
     case 0:
 
-        v0->unk_6B0 = v0->unk_0C.unk_0C->unk_00;
+        v0->unk_6B0 = v0->unk_0C.unk_0C->appearanceRank;
 
         if (v0->unk_0C.unk_0B == 1) {
             v0->unk_09 = 0;
@@ -2578,7 +2578,7 @@ static void WiFiLobbyMinigame_ResultsScreenTask(SysTask *param0, void *param1)
             v2 = WiFiLobbyMinigame_GetTargetScore(v0);
 
             if ((v0->unk_1C.unk_10[v0->unk_0C.unk_09] == 0) && (v0->unk_1C.unk_00[v0->unk_0C.unk_09] > v2)) {
-                v0->unk_0C.unk_0C->unk_00 = WiFiLobbyMinigame_GetNextMinigame(v0->unk_0C.unk_0C->unk_00);
+                v0->unk_0C.unk_0C->appearanceRank = WiFiLobbyMinigame_GetNextMinigame(v0->unk_0C.unk_0C->appearanceRank);
                 v0->unk_09 = 1;
             } else {
                 v0->unk_09 = 0;
@@ -2768,9 +2768,9 @@ static void WiFiLobbyMinigame_ResultsScreenTask(SysTask *param0, void *param1)
             u32 v11;
 
             if (v0->unk_09) {
-                WiFiLobbyMinigame_SetMessagePlazaItemName(&v0->unk_58, v0->unk_0C.unk_0C->unk_00);
+                WiFiLobbyMinigame_SetMessagePlazaItemName(&v0->unk_58, v0->unk_0C.unk_0C->appearanceRank);
 
-                if (v0->unk_6B0 == v0->unk_0C.unk_0C->unk_00) {
+                if (v0->unk_6B0 == v0->unk_0C.unk_0C->appearanceRank) {
                     v11 = 19;
                 } else {
                     v11 = 2;
@@ -2889,7 +2889,7 @@ static void WiFiLobbyMinigame_ResultsScreenTaskGame2(SysTask *param0, void *para
             v0->unk_09 = 0;
         } else {
             if (v0->unk_1C.unk_14 >= 10) {
-                v0->unk_0C.unk_0C->unk_00 = WiFiLobbyMinigame_GetNextMinigame(v0->unk_0C.unk_0C->unk_00);
+                v0->unk_0C.unk_0C->appearanceRank = WiFiLobbyMinigame_GetNextMinigame(v0->unk_0C.unk_0C->appearanceRank);
                 v0->unk_09 = 1;
             } else {
                 v0->unk_09 = 0;
@@ -3581,13 +3581,13 @@ static void WiFiLobbyMinigame_SendGameResults(WiFiLobbyMinigameResultsScreen *pa
 
     for (v0 = 0; v0 < param0->unk_0C.unk_08; v0++) {
         if ((param0->unk_1C.unk_10[v0] == 0) && (param0->unk_1C.unk_00[v0] != v3)) {
-            v1[v2] = param0->unk_0C.unk_0C->unk_04.unk_00[v0];
+            v1[v2] = param0->unk_0C.unk_0C->userIDs.playerIndices[v0];
             v2++;
         }
     }
 
     if (v2 > 0) {
-        WiFiPlazaLobby_State_SendMinigameResultMessage(param0->unk_0C.unk_0C->unk_30, param0->unk_07, v2, v1[0], v1[1], v1[2], v1[3]);
+        WiFiPlazaLobby_State_SendMinigameResultMessage(param0->unk_0C.unk_0C->state, param0->unk_07, v2, v1[0], v1[1], v1[2], v1[3]);
     }
 }
 
@@ -3595,7 +3595,7 @@ static void WiFiLobbyMinigame_SendGameResultsGame2(WiFiLobbyMinigameResultsScree
 {
     if (param0->unk_0C.unk_08 > 0) {
         if (param0->unk_1C.unk_14 >= 10) {
-            WiFiPlazaLobby_State_SendMinigameResultMessage(param0->unk_0C.unk_0C->unk_30, param0->unk_07, param0->unk_0C.unk_08, param0->unk_0C.unk_0C->unk_04.unk_00[0], param0->unk_0C.unk_0C->unk_04.unk_00[1], param0->unk_0C.unk_0C->unk_04.unk_00[2], param0->unk_0C.unk_0C->unk_04.unk_00[3]);
+            WiFiPlazaLobby_State_SendMinigameResultMessage(param0->unk_0C.unk_0C->state, param0->unk_07, param0->unk_0C.unk_08, param0->unk_0C.unk_0C->userIDs.playerIndices[0], param0->unk_0C.unk_0C->userIDs.playerIndices[1], param0->unk_0C.unk_0C->userIDs.playerIndices[2], param0->unk_0C.unk_0C->userIDs.playerIndices[3]);
         }
     }
 }

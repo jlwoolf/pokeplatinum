@@ -583,8 +583,8 @@ int wifi_lobby_map_0225D9A4(ApplicationManager *appMan, int *param1)
     v0 = ApplicationManager_NewData(appMan, sizeof(WiFiLobbyMapApp), HEAP_ID_112);
     memset(v0, 0, sizeof(WiFiLobbyMapApp));
 
-    v0->unk_38 = &v1->unk_0C;
-    v0->unk_34 = v1->unk_1C;
+    v0->unk_38 = &v1->mapArgs;
+    v0->unk_34 = v1->state;
     v0->unk_02 = WiFiPlazaLobby_State_GetMySlotIndex(v0->unk_34);
 
     GF_ASSERT(WiFiPlazaLobby_State_GetMySlotIndex(v0->unk_34) != 0xffffffff);
@@ -604,7 +604,7 @@ int wifi_lobby_map_0225D9A4(ApplicationManager *appMan, int *param1)
         v0->unk_444 = wifi_lobby_map_0225C9B4(24, v2, v0->unk_44C, HEAP_ID_112, HEAP_ID_113);
     }
 
-    v0->unk_448 = wifi_lobby_map_02261E10(v1->unk_04, v1->unk_08, v0->unk_44C, HEAP_ID_112, HEAP_ID_113);
+    v0->unk_448 = wifi_lobby_map_02261E10(v1->season, v1->roomType, v0->unk_44C, HEAP_ID_112, HEAP_ID_113);
     v0->unk_450 = wifi_lobby_map_02260A70(HEAP_ID_112);
 
     wifi_lobby_map_0225E9C8(&v0->unk_35C, &v0->unk_3C, v1->saveData, HEAP_ID_112);
@@ -766,7 +766,7 @@ int wifi_lobby_map_0225DDF8(ApplicationManager *appMan, int *param1)
     WiFiPlazaLobbyMainAppArgs *v1 = ApplicationManager_Args(appMan);
 
     {
-        v1->unk_18 = v0->unk_01;
+        v1->exitCode = v0->unk_01;
     }
 
     SetVBlankCallback(NULL, NULL);
@@ -2863,7 +2863,7 @@ static void wifi_lobby_map_022603B0(WiFiLobbyMapButtonSprites *param0, WiFiLobby
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        wifi_lobby_map_0225F32C(param1, v0, param2->unk_00[v0]);
+        wifi_lobby_map_0225F32C(param1, v0, param2->words[v0]);
     }
 }
 

@@ -6,9 +6,9 @@
 #include "savedata.h"
 
 typedef struct {
-    WiFiPlazaLobbyCooldownTimestamp *unk_00;
+    WiFiPlazaLobbyCooldownTimestamp *cooldownTimestamp;
     SaveData *saveData;
-    BOOL unk_08;
+    BOOL wifiMenuResult;
 } WiFiPlazaLobbyAppArgs;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_0222DCE0_H

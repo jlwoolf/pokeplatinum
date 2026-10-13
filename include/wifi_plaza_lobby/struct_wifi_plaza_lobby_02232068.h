@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02232068_H
 
 typedef struct {
-    u8 unk_00[20];
+    u8 flags[20];
 } WiFiPlazaLobbyNewsPlayerFlags;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02232068_H

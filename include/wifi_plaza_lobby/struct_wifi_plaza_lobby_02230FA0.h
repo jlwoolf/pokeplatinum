@@ -6,9 +6,9 @@
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0223177C_decl.h"
 
 typedef struct {
-    WiFiPlazaLobbyNews *unk_00;
-    const WiFiPlazaLobbyTime *unk_04;
-    WiFiPlazaLobbyState *unk_08;
+    WiFiPlazaLobbyNews *news;
+    const WiFiPlazaLobbyTime *currentTime;
+    WiFiPlazaLobbyState *state;
 } WiFiPlazaLobbyNewsAppArgs;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02230FA0_H

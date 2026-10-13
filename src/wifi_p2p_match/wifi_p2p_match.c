@@ -170,7 +170,7 @@ int WifiP2PMatch_InitConnect(ApplicationManager *appMan, int *param1)
 
     v0->saveData = v1->saveData;
     Sound_SetSceneAndPlayBGM(SOUND_SCENE_11, SEQ_WIFILOBBY_sseq, 0);
-    v1->unk_10 = 0;
+    v1->loginComplete = 0;
 
     WifiP2PMatch_InitGraphics(v0, 112);
     WifiP2PMatch_InitMessageBox(&v0->messageBox, v0->bgConfig, 1, 674, 2, 19, 27, 4, (1 + (18 + 12)) + 9, v0->saveData, 112);
@@ -201,7 +201,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
         }
         break;
     case 2:
-        if (v1->unk_08 == 0) {
+        if (v1->wifiMenuResult == 0) {
             WifiP2PMatch_PrintMessage(&v0->connectBox, 17);
             v0->menu = Menu_MakeYesNoChoice(v0->bgConfig, &sYesNoWindowTemplate, 1 + (18 + 12), 14, 112);
             (*param1)++;
@@ -226,7 +226,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
     case 4: {
         WiFiPlazaProfile *v3;
 
-        v3 = WiFiPlazaLobby_State_GetOwnProfile(v1->unk_04);
+        v3 = WiFiPlazaLobby_State_GetOwnProfile(v1->state);
         CommManager_LoginWifiPlaza(v0->saveData, v3);
     }
 
@@ -241,7 +241,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
         }
 
         if (CommManager_GetWifiPlazaLoginSuccess() == 1) {
-            WiFiPlazaLobby_State_CreateWFCTrainerInfo(v1->unk_04);
+            WiFiPlazaLobby_State_CreateWFCTrainerInfo(v1->state);
             (*param1)++;
         }
         break;
@@ -262,10 +262,10 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
             }
 
             {
-                v1->unk_0C->unk_00 = GetTimestamp();
+                v1->cooldownTimestamp->timestamp = GetTimestamp();
             }
 
-            v1->unk_10 = 1;
+            v1->loginComplete = 1;
             (*param1)++;
         }
         break;
@@ -283,7 +283,7 @@ int WifiP2PMatch_MainConnect(ApplicationManager *appMan, int *param1)
             v6 = 32;
         }
 
-        WiFiPlazaLobby_State_FreeWFCTrainerInfo(v1->unk_04);
+        WiFiPlazaLobby_State_FreeWFCTrainerInfo(v1->state);
         WifiP2PMatch_EraseMessageBox(&v0->messageBox);
         WifiP2PMatch_EraseMessageBox(&v0->connectBox);
         WifiP2PMatch_SetMessageNumber(&v0->errorBox, v7);
@@ -466,7 +466,7 @@ int WifiP2PMatch_MainDisconnect(ApplicationManager *appMan, int *param1)
     case 6:
         if (CommManager_IsInitialized() == 0) {
             WifiP2PMatch_DestroyWaitDial(&v0->connectBox);
-            WiFiPlazaLobby_State_FreeWFCTrainerInfo(v1->unk_04);
+            WiFiPlazaLobby_State_FreeWFCTrainerInfo(v1->state);
             (*param1) = 7;
         }
         break;

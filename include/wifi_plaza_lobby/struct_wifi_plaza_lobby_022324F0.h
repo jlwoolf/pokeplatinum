@@ -10,11 +10,11 @@ typedef void (*WiFiPlazaLobbyNetworkTimeEventCallback)(PPW_LOBBY_TIME_EVENT, voi
 typedef void (*WiFiPlazaLobbyNetworkStatsCallback)(const void *, u32, void *);
 
 typedef struct {
-    WiFiPlazaLobbyNetworkPlayerConnectedCallback unk_00;
-    WiFiPlazaLobbyNetworkPlayerDisconnectedCallback unk_04;
-    WiFiPlazaLobbyNetworkPlayerProfileCallback unk_08;
-    WiFiPlazaLobbyNetworkTimeEventCallback unk_0C;
-    WiFiPlazaLobbyNetworkStatsCallback unk_10;
+    WiFiPlazaLobbyNetworkPlayerConnectedCallback onPlayerConnected;
+    WiFiPlazaLobbyNetworkPlayerDisconnectedCallback onPlayerDisconnected;
+    WiFiPlazaLobbyNetworkPlayerProfileCallback onPlayerProfile;
+    WiFiPlazaLobbyNetworkTimeEventCallback onTimeEvent;
+    WiFiPlazaLobbyNetworkStatsCallback onStats;
 } WiFiPlazaLobbyNetworkCallbacks;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_022324F0_H

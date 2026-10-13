@@ -4,8 +4,8 @@
 #include "wifi_plaza_lobby/struct_wifi_plaza_lobby_0222DFF8_decl.h"
 
 typedef struct {
-    WiFiPlazaLobbyState *unk_00;
-    u8 unk_04;
+    WiFiPlazaLobbyState *state;
+    u8 paletteSet;
     u8 padding_05[3];
 } WiFiPlazaLobbyFootprintStampArgs;
 

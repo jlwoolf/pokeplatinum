@@ -18,9 +18,9 @@ void WiFiPlazaLobby_Time_SetFromSeconds(WiFiPlazaLobbyTime *param0, const s64 *p
 
     RTC_ConvertSecondToDateTime(&v0, &v1, *param1);
 
-    param0->unk_00_val2_unk_00 = v1.hour;
-    param0->unk_00_val2_unk_01 = v1.minute;
-    param0->unk_00_val2_unk_02 = v1.second;
+    param0->hour = v1.hour;
+    param0->minute = v1.minute;
+    param0->second = v1.second;
 }
 
 void WiFiPlazaLobby_Time_Add(const WiFiPlazaLobbyTime *param0, const WiFiPlazaLobbyTime *param1, WiFiPlazaLobbyTime *param2)
@@ -32,20 +32,20 @@ void WiFiPlazaLobby_Time_Add(const WiFiPlazaLobbyTime *param0, const WiFiPlazaLo
     v1 = *param0;
     v2 = *param1;
 
-    v1.unk_00_val2_unk_02 += v2.unk_00_val2_unk_02;
-    v0 = v1.unk_00_val2_unk_02 / 60;
-    v1.unk_00_val2_unk_01 += v0;
+    v1.second += v2.second;
+    v0 = v1.second / 60;
+    v1.minute += v0;
 
-    param2->unk_00_val2_unk_02 = v1.unk_00_val2_unk_02 % 60;
+    param2->second = v1.second % 60;
 
-    v1.unk_00_val2_unk_01 += v2.unk_00_val2_unk_01;
-    v0 = v1.unk_00_val2_unk_01 / 60;
-    v1.unk_00_val2_unk_00 += v0;
+    v1.minute += v2.minute;
+    v0 = v1.minute / 60;
+    v1.hour += v0;
 
-    param2->unk_00_val2_unk_01 = v1.unk_00_val2_unk_01 % 60;
+    param2->minute = v1.minute % 60;
 
-    v1.unk_00_val2_unk_00 += v2.unk_00_val2_unk_00;
-    param2->unk_00_val2_unk_00 = v1.unk_00_val2_unk_00 % 24;
+    v1.hour += v2.hour;
+    param2->hour = v1.hour % 24;
 }
 
 void WiFiPlazaLobby_Time_Subtract(const WiFiPlazaLobbyTime *param0, const WiFiPlazaLobbyTime *param1, WiFiPlazaLobbyTime *param2)
@@ -57,34 +57,34 @@ void WiFiPlazaLobby_Time_Subtract(const WiFiPlazaLobbyTime *param0, const WiFiPl
 
     v2 = *param0;
     v3 = *param1;
-    v1 = ((s8)v2.unk_00_val2_unk_02 - (s8)v3.unk_00_val2_unk_02);
+    v1 = ((s8)v2.second - (s8)v3.second);
 
     if (v1 < 0) {
         v0 = ((-v1) / 60) + 1;
-        v2.unk_00_val2_unk_02 += 60 * v0;
-        v2.unk_00_val2_unk_01 -= v0;
+        v2.second += 60 * v0;
+        v2.minute -= v0;
     }
 
-    param2->unk_00_val2_unk_02 = v2.unk_00_val2_unk_02 - v3.unk_00_val2_unk_02;
+    param2->second = v2.second - v3.second;
 
-    v1 = ((s8)v2.unk_00_val2_unk_01 - (s8)v3.unk_00_val2_unk_01);
+    v1 = ((s8)v2.minute - (s8)v3.minute);
 
     if (v1 < 0) {
         v0 = ((-v1) / 60) + 1;
-        v2.unk_00_val2_unk_01 += 60 * v0;
-        v2.unk_00_val2_unk_00 -= v0;
+        v2.minute += 60 * v0;
+        v2.hour -= v0;
     }
 
-    param2->unk_00_val2_unk_01 = v2.unk_00_val2_unk_01 - v3.unk_00_val2_unk_01;
+    param2->minute = v2.minute - v3.minute;
 
-    v1 = ((s8)v2.unk_00_val2_unk_00 - (s8)v3.unk_00_val2_unk_00);
+    v1 = ((s8)v2.hour - (s8)v3.hour);
 
     if (v1 < 0) {
         v0 = ((-v1) / 24) + 1;
-        v2.unk_00_val2_unk_00 += 24 * v0;
+        v2.hour += 24 * v0;
     }
 
-    param2->unk_00_val2_unk_00 = v2.unk_00_val2_unk_00 - v3.unk_00_val2_unk_00;
+    param2->hour = v2.hour - v3.hour;
 }
 
 void WiFiPlazaLobby_Time_AddPlace(WiFiPlazaLobbyPlaceList *param0, u16 param1, u8 param2, BOOL param3)
@@ -106,10 +106,10 @@ void WiFiPlazaLobby_Time_AddPlace(WiFiPlazaLobbyPlaceList *param0, u16 param1, u
     v1 = 0;
 
     for (v0 = 0; v0 < 50; v0++) {
-        if (param0->unk_00[v0].unk_03_4 == 0) {
+        if (param0->places[v0].isActive == 0) {
             v1 = 1;
         } else {
-            if ((param0->unk_00[v0].unk_00 == param1) && (param0->unk_00[v0].unk_02 == param2)) {
+            if ((param0->places[v0].country == param1) && (param0->places[v0].region == param2)) {
                 if (param3 == 1) {
                     return;
                 } else {
@@ -119,10 +119,10 @@ void WiFiPlazaLobby_Time_AddPlace(WiFiPlazaLobbyPlaceList *param0, u16 param1, u
         }
 
         if (v1) {
-            param0->unk_00[v0].unk_00 = param1;
-            param0->unk_00[v0].unk_02 = param2;
-            param0->unk_00[v0].unk_03_0 = param3;
-            param0->unk_00[v0].unk_03_4 = 1;
+            param0->places[v0].country = param1;
+            param0->places[v0].region = param2;
+            param0->places[v0].isSelf = param3;
+            param0->places[v0].isActive = 1;
             return;
         }
     }
@@ -131,32 +131,32 @@ void WiFiPlazaLobby_Time_AddPlace(WiFiPlazaLobbyPlaceList *param0, u16 param1, u
 u16 WiFiPlazaLobby_Time_GetPlaceCountry(const WiFiPlazaLobbyPlaceList *param0, u8 param1)
 {
     GF_ASSERT(param1 < 50);
-    GF_ASSERT(param0->unk_00[param1].unk_03_4 == 1);
+    GF_ASSERT(param0->places[param1].isActive == 1);
 
-    return param0->unk_00[param1].unk_00;
+    return param0->places[param1].country;
 }
 
 u8 WiFiPlazaLobby_Time_GetPlaceRegion(const WiFiPlazaLobbyPlaceList *param0, u8 param1)
 {
     GF_ASSERT(param1 < 50);
-    GF_ASSERT(param0->unk_00[param1].unk_03_4 == 1);
+    GF_ASSERT(param0->places[param1].isActive == 1);
 
-    return param0->unk_00[param1].unk_02;
+    return param0->places[param1].region;
 }
 
 BOOL WiFiPlazaLobby_Time_GetPlaceIsSelf(const WiFiPlazaLobbyPlaceList *param0, u8 param1)
 {
     GF_ASSERT(param1 < 50);
-    GF_ASSERT(param0->unk_00[param1].unk_03_4 == 1);
+    GF_ASSERT(param0->places[param1].isActive == 1);
 
-    return param0->unk_00[param1].unk_03_0;
+    return param0->places[param1].isSelf;
 }
 
 BOOL WiFiPlazaLobby_Time_IsPlaceActive(const WiFiPlazaLobbyPlaceList *param0, u8 param1)
 {
     GF_ASSERT(param1 < 50);
 
-    return param0->unk_00[param1].unk_03_4;
+    return param0->places[param1].isActive;
 }
 
 void WiFiPlazaLobby_Time_SetupModelGlobalLighting(void *param0)

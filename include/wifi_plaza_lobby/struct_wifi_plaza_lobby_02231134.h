@@ -6,10 +6,10 @@
 #include "savedata.h"
 
 typedef struct {
-    WiFiPlazaLobbyMinigameParticipants unk_00;
+    WiFiPlazaLobbyMinigameParticipants participants;
     SaveData *saveData;
-    BOOL unk_38;
-    u32 unk_3C;
+    BOOL fromLobby;
+    u32 voiceChatEnabled;
 } WiFiPlazaLobbyMinigameManeneArgs;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231134_H

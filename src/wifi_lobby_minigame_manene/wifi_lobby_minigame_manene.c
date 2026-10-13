@@ -219,7 +219,7 @@ static void WiFiLobbyMinigameManene_InitGame(WiFiLobbyMinigameManeneApp *param0)
     param0->introAnimation = WiFiLobbyMinigame_CreateIntroAnimation(SpriteManager_GetSpriteList(param0->resources.spriteManager), HEAP_ID_106);
     PaletteData_LoadBufferFromHardware(param0->resources.paletteData, PLTTBUF_MAIN_OBJ, PLTT_DEST(0), 16 * PALETTE_SIZE_BYTES);
 
-    if (param0->args->unk_3C) {
+    if (param0->args->voiceChatEnabled) {
         NintendoWFC_StartVoiceChat(HEAP_ID_106);
     }
 }
@@ -248,7 +248,7 @@ int WiFiLobbyMinigameManene_Init(ApplicationManager *appMan, int *param1)
         }
     }
 
-    WiFiLobbyMinigame_InitPlayerContext(&v0->playerContext, v0->args->unk_38, v0->args->saveData, v0->args->unk_3C, &v0->args->unk_00);
+    WiFiLobbyMinigame_InitPlayerContext(&v0->playerContext, v0->args->fromLobby, v0->args->saveData, v0->args->voiceChatEnabled, &v0->args->participants);
     return 1;
 }
 
@@ -620,7 +620,7 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
                 WiFiLobbyMinigameManene_ResetRound(v0);
                 WiFiLobbyMinigameManene_AdvanceState(v0, v1, 0, param1);
 
-                if (v0->args->unk_3C) {
+                if (v0->args->voiceChatEnabled) {
                     NintendoWFC_TerminateVoiceChat();
                 }
                 break;
@@ -632,7 +632,7 @@ int WiFiLobbyMinigameManene_Main(ApplicationManager *appMan, int *param1)
         v1 = 1;
         CommTiming_StartSync(27);
 
-        if (v0->args->unk_3C) {
+        if (v0->args->voiceChatEnabled) {
             NintendoWFC_TerminateVoiceChat();
         }
 

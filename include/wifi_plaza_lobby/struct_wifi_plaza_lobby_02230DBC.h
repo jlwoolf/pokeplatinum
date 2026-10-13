@@ -8,12 +8,12 @@
 #include "trainer_info.h"
 
 typedef struct {
-    u32 unk_00;
-    WiFiPlazaLobbyQuestionnaireData unk_04;
-    WiFiPlazaLobbyNewsPlayerFlags unk_08;
-    BOOL unk_1C;
-    TrainerInfo *unk_20[4];
-    WiFiPlazaLobbyState *unk_30;
+    u32 appearanceRank;
+    WiFiPlazaLobbyQuestionnaireData userIDs;
+    WiFiPlazaLobbyNewsPlayerFlags presentFlags;
+    BOOL trainerInfoValid;
+    TrainerInfo *trainerInfos[4];
+    WiFiPlazaLobbyState *state;
 } WiFiPlazaLobbyMinigameParticipants;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02230DBC_H

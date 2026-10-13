@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02232B20_H
 
 typedef struct {
-    u32 unk_00;
-    const s32 *unk_04;
+    u32 count;
+    const s32 *userIDs;
 } WiFiPlazaLobbyNetworkPlayerIdList;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02232B20_H
