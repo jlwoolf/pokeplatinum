@@ -8,10 +8,10 @@
 
 typedef struct {
     SaveData *saveData;
-    WiFiPlazaLobbyState *unk_04;
-    BOOL unk_08;
-    WiFiPlazaLobbyCooldownTimestamp *unk_0C;
-    BOOL unk_10;
+    WiFiPlazaLobbyState *state;
+    BOOL wifiMenuResult;
+    WiFiPlazaLobbyCooldownTimestamp *cooldownTimestamp;
+    BOOL loginComplete;
 } WiFiPlazaLobbyP2PMatchConnectArgs;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231024_H

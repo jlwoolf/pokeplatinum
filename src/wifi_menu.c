@@ -471,8 +471,8 @@ static WiFiPlazaLobbyMinigameManeneArgs *WiFiMenu_LaunchMimeJrMinigame(FieldSyst
 
         v0 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
         memset(v0, 0, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
-        v0->unk_3C = param2;
-        v0->unk_38 = 0;
+        v0->voiceChatEnabled = param2;
+        v0->fromLobby = 0;
         v0->saveData = fieldSystem->saveData;
 
         Overlay_LoadByID(FS_OVERLAY_ID(wifi_lobby_minigame), 2);

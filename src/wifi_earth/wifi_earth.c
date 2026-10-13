@@ -700,13 +700,13 @@ int WiFiEarth_Init(ApplicationManager *appMan, int *param1)
     v0->options = SaveData_GetOptions(v1->saveData);
     v0->unk_14 = WiFiHistory_GetCountry(v0->wiFiHistory);
     v0->unk_18 = WiFiHistory_GetRegion(v0->wiFiHistory);
-    v0->unk_1C = v1->unk_08;
+    v0->unk_1C = v1->currentTime;
 
     WiFiEarth_InitWorldUnlock(v0, v1);
     WiFiEarth_InitGraphics(&v0->unk_20, v0->options, HEAP_ID_105);
     WiFiEarth_InitGlobe(&v0->unk_1DC, &v0->unk_20, HEAP_ID_105);
     WiFiEarth_InitMessageLoader(&v0->unk_1CC, HEAP_ID_105);
-    WiFiEarth_InitPlaceMarkers(&v0->unk_288, v1->unk_00, &v0->unk_20, v0->unk_04, HEAP_ID_105);
+    WiFiEarth_InitPlaceMarkers(&v0->unk_288, v1->placeList, &v0->unk_20, v0->unk_04, HEAP_ID_105);
     WiFiEarth_InitCamera(&v0->unk_BC30, v0->unk_04, HEAP_ID_105);
     WiFiEarth_InitExitWindow(&v0->unk_BC44, &v0->unk_20, &v0->unk_1CC, HEAP_ID_105);
     WiFiEarth_InitConfirmWindow(&v0->unk_BF64, &v0->unk_20, &v0->unk_1CC, v1->saveData, HEAP_ID_105);
@@ -731,7 +731,7 @@ int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_105);
-        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->unk_0C, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->state, 1);
         (*param1)++;
         break;
     case 1:
@@ -745,8 +745,8 @@ int WiFiEarth_Main(ApplicationManager *appMan, int *param1)
         v2 = WiFiEarth_UpdateState(v0);
         WiFiEarth_UpdateProfilePanelState(v0);
 
-        if (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_0C) == 1) {
-            WiFiPlazaLobby_State_SetPlayerWarpPending(v1->unk_0C);
+        if (WiFiPlazaLobby_State_IsLobbyClosed(v1->state) == 1) {
+            WiFiPlazaLobby_State_SetPlayerWarpPending(v1->state);
             v2 = 1;
         }
 
@@ -1199,11 +1199,11 @@ static void WiFiEarth_SelectInitialMarker(WiFiEarthAppData *param0, const WiFiPl
     BOOL v3 = WiFiEarth_MoveCameraToPlace(param0, param0->unk_14, param0->unk_18);
 
     if (v3 == 0) {
-        v0 = WiFiEarth_GetPlayerCountryIndex(param1->unk_00);
+        v0 = WiFiEarth_GetPlayerCountryIndex(param1->placeList);
 
         if (v0 != 50) {
-            v1 = WiFiPlazaLobby_Time_GetPlaceCountry(param1->unk_00, v0);
-            v2 = WiFiPlazaLobby_Time_GetPlaceRegion(param1->unk_00, v0);
+            v1 = WiFiPlazaLobby_Time_GetPlaceCountry(param1->placeList, v0);
+            v2 = WiFiPlazaLobby_Time_GetPlaceRegion(param1->placeList, v0);
             v3 = WiFiEarth_MoveCameraToPlace(param0, v1, v2);
 
             GF_ASSERT(v3 == 1);
@@ -1305,7 +1305,7 @@ static u32 WiFiEarth_CalcLocalTime(const WiFiEarthAppData *param0, u32 param1, W
     VecFx32 v3;
     int v4;
 
-    v0 = param2.unk_00_val2_unk_00 - 4;
+    v0 = param2.hour - 4;
     v4 = WiFiEarth_GetMarkerIndex(&param0->unk_288, 219, 3);
 
     GF_ASSERT(v4 < WiFiEarth_GetMarkerCount(&param0->unk_288));
@@ -1358,8 +1358,8 @@ static void WiFiEarth_InitWorldUnlock(WiFiEarthAppData *param0, const WiFiPlazaL
 
     if (param0->unk_04.isJapanese == 1) {
         for (v0 = 0; v0 < 50; v0++) {
-            if (param1->unk_00->unk_00[v0].unk_03_4 == 1) {
-                if (param1->unk_00->unk_00[v0].unk_00 != 103) {
+            if (param1->placeList->places[v0].isActive == 1) {
+                if (param1->placeList->places[v0].country != 103) {
                     param0->unk_04.worldUnlocked = 1;
                 }
             }

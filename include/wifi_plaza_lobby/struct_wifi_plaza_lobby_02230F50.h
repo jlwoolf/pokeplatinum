@@ -8,10 +8,10 @@
 #include "savedata.h"
 
 typedef struct {
-    const WiFiPlazaLobbyPlaceList *unk_00;
+    const WiFiPlazaLobbyPlaceList *placeList;
     SaveData *saveData;
-    WiFiPlazaLobbyTime unk_08;
-    WiFiPlazaLobbyState *unk_0C;
+    WiFiPlazaLobbyTime currentTime;
+    WiFiPlazaLobbyState *state;
 } WiFiPlazaLobbyEarthAppArgs;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02230F50_H

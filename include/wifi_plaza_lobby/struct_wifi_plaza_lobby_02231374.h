@@ -7,8 +7,8 @@
 
 typedef struct {
     SaveData *saveData;
-    WiFiPlazaLobbyState *unk_04;
-    int unk_08;
+    WiFiPlazaLobbyState *state;
+    int showResults;
 } WiFiPlazaLobbyQuestionnaireArgs;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231374_H

@@ -55,8 +55,8 @@ static BOOL WiFiLobbyTask_Task(FieldTask *task)
     switch (work->state) {
     case 0: {
         work->appArgs.saveData = fieldSystem->saveData;
-        work->appArgs.unk_08 = work->wifiMenuResult;
-        work->appArgs.unk_00 = &fieldSystem->unk_C4;
+        work->appArgs.wifiMenuResult = work->wifiMenuResult;
+        work->appArgs.cooldownTimestamp = &fieldSystem->unk_C4;
         FieldTask_RunApplication(task, &sWiFiLobbyAppTemplate, &work->appArgs);
         work->state++;
     } break;

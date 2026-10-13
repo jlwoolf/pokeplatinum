@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02230914_H
 
 typedef struct {
-    u16 unk_00[4];
+    u16 words[4];
 } WiFiPlazaLobbyPasswordWords;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02230914_H

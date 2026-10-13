@@ -5,16 +5,16 @@
 #include "trainer_info.h"
 
 typedef struct {
-    enum PlazaMinigame unk_00;
-    u32 unk_04;
-    const TrainerInfo *unk_08;
-    const TrainerInfo *unk_0C;
-    const TrainerInfo *unk_10;
-    const TrainerInfo *unk_14;
-    u16 unk_18;
-    u16 unk_1A;
-    u16 unk_1C;
-    u16 unk_1E;
+    enum PlazaMinigame minigame;
+    u32 count;
+    const TrainerInfo *trainerInfo0;
+    const TrainerInfo *trainerInfo1;
+    const TrainerInfo *trainerInfo2;
+    const TrainerInfo *trainerInfo3;
+    u16 slot0;
+    u16 slot1;
+    u16 slot2;
+    u16 slot3;
 } WiFiPlazaLobbyNewsMinigameResultEntry;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231B80_H

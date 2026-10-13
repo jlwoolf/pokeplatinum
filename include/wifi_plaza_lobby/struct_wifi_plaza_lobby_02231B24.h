@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231B24_H
 
 typedef struct {
-    u32 unk_00;
+    u32 slot;
 } WiFiPlazaLobbyNewsTrainerEntry;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231B24_H

@@ -22,11 +22,11 @@
 #include "trainer_info.h"
 
 typedef struct WiFiPlazaProfile {
-    s32 unk_00;
+    s32 userId;
     u32 trainerID;
     charcode_t trainerName[TRAINER_NAME_LEN + 1];
-    WiFiPlazaLobbyTime unk_18;
-    WiFiPlazaLobbyTime unk_1C;
+    WiFiPlazaLobbyTime enterTime;
+    WiFiPlazaLobbyTime localTime;
     u16 partySpecies[MAX_PARTY_SIZE];
     u8 partyForms[MAX_PARTY_SIZE];
     u8 partyIsEgg[MAX_PARTY_SIZE];
@@ -37,14 +37,14 @@ typedef struct WiFiPlazaProfile {
     u8 region;
     u8 isNationalDexObtained;
     u8 isMainStoryCleared;
-    u8 unk_41;
+    u8 appearanceRank;
     u8 gameVersion;
-    u8 unk_43;
+    u8 venue;
     s64 startTimestamp;
-    u8 unk_4C[12];
-    s32 unk_58[12];
-    u16 unk_88[2];
-    WiFiPlazaLobbyQuestionnaireAnswer unk_8C;
+    u8 recentAppearances[12];
+    s32 recentUserIDs[12];
+    u16 pokemonTypes[2];
+    WiFiPlazaLobbyQuestionnaireAnswer questionnaireAnswer;
 } WiFiPlazaProfile;
 
 WiFiPlazaLobbyState *WiFiPlazaLobby_State_Create(SaveData *saveData, enum HeapID heapID);

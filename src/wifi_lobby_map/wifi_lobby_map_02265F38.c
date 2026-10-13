@@ -568,7 +568,7 @@ BOOL wifi_lobby_map_02265F38(WiFiLobbyMapTask *param0, WiFiLobbyMapApp *param1, 
 
             WiFiPlazaLobby_State_GetUserIDTable(v2, &v24);
             v23 = WiFiPlazaLobby_Network_GetRecruitPlayerCount(v1->unk_01);
-            WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v2, v1->unk_02, v23, v24.unk_00[0], v24.unk_00[1], v24.unk_00[2], v24.unk_00[3], 1);
+            WiFiPlazaLobby_State_SendMinigameProfileViewMessage(v2, v1->unk_02, v23, v24.playerIndices[0], v24.playerIndices[1], v24.playerIndices[2], v24.playerIndices[3], 1);
         }
 
         wifi_lobby_map_0225DFCC(param1);

@@ -45,18 +45,18 @@ FS_EXTERN_OVERLAY(wifi_lobby_minigame_manene);
 FS_EXTERN_OVERLAY(wifi_lobby_minigame_balloon);
 
 typedef struct {
-    void *unk_00;
+    void *data;
 } WiFiPlazaLobbySubAppSlot;
 
 typedef struct WiFiPlazaLobbyAppManager_t {
     ApplicationManager *appMan;
-    WiFiPlazaLobbySubAppSlot unk_04[13];
-    u8 unk_38;
-    u8 unk_39;
+    WiFiPlazaLobbySubAppSlot subApps[13];
+    u8 currentSubApp;
+    u8 wifiMenuResult;
     u16 heapID;
-    WiFiPlazaLobbyState *unk_3C;
+    WiFiPlazaLobbyState *state;
     SaveData *saveData;
-    WiFiPlazaLobbyCooldownTimestamp *unk_44;
+    WiFiPlazaLobbyCooldownTimestamp *cooldownTimestamp;
 } WiFiPlazaLobbyAppManager;
 
 static void WiFiPlazaLobby_AppManager_CreateSubApp(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1, const ApplicationManagerTemplate *param2);
@@ -117,10 +117,10 @@ WiFiPlazaLobbyAppManager *WiFiPlazaLobby_AppManager_New(BOOL param0, SaveData *s
     WiFiPlazaLobbyAppManager *v0 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyAppManager));
     memset(v0, 0, sizeof(WiFiPlazaLobbyAppManager));
 
-    v0->unk_3C = param3;
+    v0->state = param3;
     v0->saveData = saveData;
-    v0->unk_44 = param2;
-    v0->unk_39 = param0;
+    v0->cooldownTimestamp = param2;
+    v0->wifiMenuResult = param0;
     v0->heapID = heapID;
 
     {
@@ -163,7 +163,7 @@ int WiFiPlazaLobby_AppManager_Update(WiFiPlazaLobbyAppManager *param0)
         if (v0) {
             ApplicationManager_Free(param0->appMan);
             param0->appMan = NULL;
-            v1 = WiFiPlazaLobby_AppManager_UpdateSubApp(param0, param0->unk_38);
+            v1 = WiFiPlazaLobby_AppManager_UpdateSubApp(param0, param0->currentSubApp);
         }
     }
 
@@ -178,7 +178,7 @@ void WiFiPlazaLobby_AppManager_VBlankUpdate(WiFiPlazaLobbyAppManager *param0)
 static void WiFiPlazaLobby_AppManager_CreateSubApp(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1, const ApplicationManagerTemplate *param2)
 {
     GF_ASSERT(param0->appMan == NULL);
-    param0->appMan = ApplicationManager_New(param2, param1->unk_00, param0->heapID);
+    param0->appMan = ApplicationManager_New(param2, param1->data, param0->heapID);
 }
 
 static void WiFiPlazaLobby_AppManager_InitSubApp(WiFiPlazaLobbyAppManager *param0, u32 param1, u32 heapID)
@@ -200,7 +200,7 @@ static void WiFiPlazaLobby_AppManager_InitSubApp(WiFiPlazaLobbyAppManager *param
     };
 
     GF_ASSERT(param1 < 13);
-    v0[param1](param0, &param0->unk_04[param1], heapID);
+    v0[param1](param0, &param0->subApps[param1], heapID);
 }
 
 static void WiFiPlazaLobby_AppManager_FreeSubApp(WiFiPlazaLobbyAppManager *param0, u32 param1)
@@ -222,7 +222,7 @@ static void WiFiPlazaLobby_AppManager_FreeSubApp(WiFiPlazaLobbyAppManager *param
     };
 
     GF_ASSERT(param1 < 13);
-    v0[param1](&param0->unk_04[param1]);
+    v0[param1](&param0->subApps[param1]);
 }
 
 static void WiFiPlazaLobby_AppManager_StartSubApp(WiFiPlazaLobbyAppManager *param0, u32 param1)
@@ -244,9 +244,9 @@ static void WiFiPlazaLobby_AppManager_StartSubApp(WiFiPlazaLobbyAppManager *para
     };
 
     GF_ASSERT(param1 < 13);
-    v0[param1](param0, &param0->unk_04[param1]);
+    v0[param1](param0, &param0->subApps[param1]);
 
-    param0->unk_38 = param1;
+    param0->currentSubApp = param1;
 }
 
 static int WiFiPlazaLobby_AppManager_UpdateSubApp(WiFiPlazaLobbyAppManager *param0, u32 param1)
@@ -268,7 +268,7 @@ static int WiFiPlazaLobby_AppManager_UpdateSubApp(WiFiPlazaLobbyAppManager *para
     };
 
     GF_ASSERT(param1 < 13);
-    return v0[param1](param0, &param0->unk_04[param1]);
+    return v0[param1](param0, &param0->subApps[param1]);
 }
 
 static void WiFiPlazaLobby_AppManager_InitParticipants(WiFiPlazaLobbyMinigameParticipants *param0, u32 heapID)
@@ -276,7 +276,7 @@ static void WiFiPlazaLobby_AppManager_InitParticipants(WiFiPlazaLobbyMinigamePar
     int i;
 
     for (i = 0; i < 4; i++) {
-        param0->unk_20[i] = TrainerInfo_New(heapID);
+        param0->trainerInfos[i] = TrainerInfo_New(heapID);
     }
 }
 
@@ -285,8 +285,8 @@ static void WiFiPlazaLobby_AppManager_FreeParticipants(WiFiPlazaLobbyMinigamePar
     int v0;
 
     for (v0 = 0; v0 < 4; v0++) {
-        Heap_Free(param0->unk_20[v0]);
-        param0->unk_20[v0] = NULL;
+        Heap_Free(param0->trainerInfos[v0]);
+        param0->trainerInfos[v0] = NULL;
     }
 }
 
@@ -297,19 +297,19 @@ static void WiFiPlazaLobby_AppManager_SetupParticipants(WiFiPlazaLobbyMinigamePa
     int v2;
 
     v0 = WiFiPlazaLobby_State_GetOwnProfile(param1);
-    param0->unk_00 = WiFiPlazaLobby_State_GetAppearanceRank(v0);
+    param0->appearanceRank = WiFiPlazaLobby_State_GetAppearanceRank(v0);
 
-    WiFiPlazaLobby_State_GetMemberPresentBitmap(param1, &param0->unk_08);
-    WiFiPlazaLobby_State_GetUserIDTable(param1, &param0->unk_04);
+    WiFiPlazaLobby_State_GetMemberPresentBitmap(param1, &param0->presentFlags);
+    WiFiPlazaLobby_State_GetUserIDTable(param1, &param0->userIDs);
 
-    param0->unk_30 = param1;
-    param0->unk_1C = 0;
+    param0->state = param1;
+    param0->trainerInfoValid = 0;
 
     for (v2 = 0; v2 < 4; v2++) {
-        v1 = WiFiPlazaLobby_State_GetProfileBySlot(param1, param0->unk_04.unk_00[v2]);
+        v1 = WiFiPlazaLobby_State_GetProfileBySlot(param1, param0->userIDs.playerIndices[v2]);
 
         if (v1 != NULL) {
-            WiFiPlazaLobby_State_ApplyProfileToTrainerInfo(v1, param0->unk_20[v2], param2);
+            WiFiPlazaLobby_State_ApplyProfileToTrainerInfo(v1, param0->trainerInfos[v2], param2);
         }
     }
 }
@@ -318,19 +318,19 @@ static void WiFiPlazaLobby_AppManager_InitMainPlaza(WiFiPlazaLobbyAppManager *pa
 {
     WiFiPlazaLobbyMainAppArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyMainAppArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyMainAppArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyMainAppArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyMainAppArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
     v0->saveData = param0->saveData;
-    v0->unk_1C = param0->unk_3C;
+    v0->state = param0->state;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeMainPlaza(WiFiPlazaLobbySubAppSlot *param0)
 {
-    GF_ASSERT(param0->unk_00);
-    Heap_Free(param0->unk_00);
-    param0->unk_00 = NULL;
+    GF_ASSERT(param0->data);
+    Heap_Free(param0->data);
+    param0->data = NULL;
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchMainPlaza(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -343,18 +343,18 @@ static void WiFiPlazaLobby_AppManager_LaunchMainPlaza(WiFiPlazaLobbyAppManager *
         wifi_lobby_map_0225D9A4, wifi_lobby_map_0225DB90, wifi_lobby_map_0225DDF8, FS_OVERLAY_ID(wifi_lobby_map)
     };
 
-    v0 = param1->unk_00;
-    v0->unk_04 = WiFiPlazaLobby_State_GetLobbySeason(param0->unk_3C);
-    v0->unk_08 = WiFiPlazaLobby_State_GetLobbyRoomType(param0->unk_3C);
+    v0 = param1->data;
+    v0->season = WiFiPlazaLobby_State_GetLobbySeason(param0->state);
+    v0->roomType = WiFiPlazaLobby_State_GetLobbyRoomType(param0->state);
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v1);
 }
 
 static int WiFiPlazaLobby_AppManager_UpdateMainPlaza(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
 {
-    WiFiPlazaLobbyMainAppArgs *v0 = param1->unk_00;
+    WiFiPlazaLobbyMainAppArgs *v0 = param1->data;
 
-    switch (v0->unk_18) {
+    switch (v0->exitCode) {
     case 0:
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 9);
         break;
@@ -400,18 +400,18 @@ static void WiFiPlazaLobby_AppManager_InitEarth(WiFiPlazaLobbyAppManager *param0
 {
     WiFiPlazaLobbyEarthAppArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyEarthAppArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyEarthAppArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyEarthAppArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyEarthAppArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
 
     v0->saveData = param0->saveData;
-    v0->unk_0C = param0->unk_3C;
+    v0->state = param0->state;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeEarth(WiFiPlazaLobbySubAppSlot *param0)
 {
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchEarth(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -424,17 +424,17 @@ static void WiFiPlazaLobby_AppManager_LaunchEarth(WiFiPlazaLobbyAppManager *para
         WiFiEarth_Init, WiFiEarth_Main, WiFiEarth_Exit, FS_OVERLAY_ID(wifi_earth)
     };
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
 
-    v0->unk_00 = WiFiPlazaLobby_State_GetPlayerCountryTable(param0->unk_3C);
-    v0->unk_08 = *(WiFiPlazaLobby_State_GetCurrentTime(param0->unk_3C));
+    v0->placeList = WiFiPlazaLobby_State_GetPlayerCountryTable(param0->state);
+    v0->currentTime = *(WiFiPlazaLobby_State_GetCurrentTime(param0->state));
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v1);
 }
 
 static int WiFiPlazaLobby_AppManager_UpdateEarth(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
 {
-    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->unk_3C)) {
+    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->state)) {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 10);
     } else {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);
@@ -447,19 +447,19 @@ static void WiFiPlazaLobby_AppManager_InitNews(WiFiPlazaLobbyAppManager *param0,
 {
     WiFiPlazaLobbyNewsAppArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyNewsAppArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyNewsAppArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyNewsAppArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyNewsAppArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
 
-    v0->unk_00 = WiFiPlazaLobby_State_GetNewsManager(param0->unk_3C);
-    v0->unk_04 = WiFiPlazaLobby_State_GetCurrentTime(param0->unk_3C);
-    v0->unk_08 = param0->unk_3C;
+    v0->news = WiFiPlazaLobby_State_GetNewsManager(param0->state);
+    v0->currentTime = WiFiPlazaLobby_State_GetCurrentTime(param0->state);
+    v0->state = param0->state;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeNews(WiFiPlazaLobbySubAppSlot *param0)
 {
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchNews(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -475,7 +475,7 @@ static void WiFiPlazaLobby_AppManager_LaunchNews(WiFiPlazaLobbyAppManager *param
 
 static int WiFiPlazaLobby_AppManager_UpdateNews(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
 {
-    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->unk_3C)) {
+    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->state)) {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 10);
     } else {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);
@@ -488,21 +488,21 @@ static void WiFiPlazaLobby_AppManager_InitP2PMatchConnect(WiFiPlazaLobbyAppManag
 {
     WiFiPlazaLobbyP2PMatchConnectArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyP2PMatchConnectArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyP2PMatchConnectArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyP2PMatchConnectArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyP2PMatchConnectArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
 
     v0->saveData = param0->saveData;
-    v0->unk_04 = param0->unk_3C;
-    v0->unk_08 = param0->unk_39;
-    v0->unk_0C = param0->unk_44;
+    v0->state = param0->state;
+    v0->wifiMenuResult = param0->wifiMenuResult;
+    v0->cooldownTimestamp = param0->cooldownTimestamp;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeP2PMatchConnect(WiFiPlazaLobbySubAppSlot *param0)
 {
-    WiFiPlazaLobbyP2PMatchConnectArgs *v0 = param0->unk_00;
-    Heap_Free(param0->unk_00);
+    WiFiPlazaLobbyP2PMatchConnectArgs *v0 = param0->data;
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchP2PMatchConnect(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -518,9 +518,9 @@ static void WiFiPlazaLobby_AppManager_LaunchP2PMatchConnect(WiFiPlazaLobbyAppMan
 
 static int WiFiPlazaLobby_AppManager_UpdateP2PMatchConnect(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
 {
-    WiFiPlazaLobbyP2PMatchConnectArgs *v0 = param1->unk_00;
+    WiFiPlazaLobbyP2PMatchConnectArgs *v0 = param1->data;
 
-    if (v0->unk_10 == 0) {
+    if (v0->loginComplete == 0) {
         return 1;
     }
 
@@ -532,10 +532,10 @@ static void WiFiPlazaLobby_AppManager_InitMinigameBucket(WiFiPlazaLobbyAppManage
 {
     WiFiLobbyMinigameBucketArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBucketArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiLobbyMinigameBucketArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBucketArgs));
+    memset(param1->data, 0, sizeof(WiFiLobbyMinigameBucketArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
 
     v0->unk_38 = 0;
     v0->unk_39 = 1;
@@ -546,10 +546,10 @@ static void WiFiPlazaLobby_AppManager_InitMinigameBucket(WiFiPlazaLobbyAppManage
 
 static void WiFiPlazaLobby_AppManager_FreeMinigameBucket(WiFiPlazaLobbySubAppSlot *param0)
 {
-    WiFiLobbyMinigameBucketArgs *v0 = param0->unk_00;
+    WiFiLobbyMinigameBucketArgs *v0 = param0->data;
 
     WiFiPlazaLobby_AppManager_FreeParticipants(&v0->unk_00);
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchMinigameBucket(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -569,8 +569,8 @@ static void WiFiPlazaLobby_AppManager_LaunchMinigameBucket(WiFiPlazaLobbyAppMana
     {
         WiFiLobbyMinigameBucketArgs *v1;
 
-        v1 = param1->unk_00;
-        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->unk_00, param0->unk_3C, param0->heapID);
+        v1 = param1->data;
+        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->unk_00, param0->state, param0->heapID);
     }
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v0);
@@ -584,10 +584,10 @@ static int WiFiPlazaLobby_AppManager_UpdateMinigameBucket(WiFiPlazaLobbyAppManag
     {
         WiFiLobbyMinigameBucketArgs *v0;
 
-        v0 = param1->unk_00;
+        v0 = param1->data;
 
-        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->unk_3C, v0->unk_00.unk_1C);
-        WiFiPlazaLobby_State_SetAppearanceRank(param0->unk_3C, v0->unk_00.unk_00);
+        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->state, v0->unk_00.trainerInfoValid);
+        WiFiPlazaLobby_State_SetAppearanceRank(param0->state, v0->unk_00.appearanceRank);
     }
 
     WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);
@@ -599,24 +599,24 @@ static void WiFiPlazaLobby_AppManager_InitMinigameManene(WiFiPlazaLobbyAppManage
 {
     WiFiPlazaLobbyMinigameManeneArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyMinigameManeneArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
 
-    v0->unk_3C = 0;
-    v0->unk_38 = 1;
+    v0->voiceChatEnabled = 0;
+    v0->fromLobby = 1;
     v0->saveData = param0->saveData;
 
-    WiFiPlazaLobby_AppManager_InitParticipants(&v0->unk_00, heapID);
+    WiFiPlazaLobby_AppManager_InitParticipants(&v0->participants, heapID);
 }
 
 static void WiFiPlazaLobby_AppManager_FreeMinigameManene(WiFiPlazaLobbySubAppSlot *param0)
 {
-    WiFiPlazaLobbyMinigameManeneArgs *v0 = param0->unk_00;
+    WiFiPlazaLobbyMinigameManeneArgs *v0 = param0->data;
 
-    WiFiPlazaLobby_AppManager_FreeParticipants(&v0->unk_00);
-    Heap_Free(param0->unk_00);
+    WiFiPlazaLobby_AppManager_FreeParticipants(&v0->participants);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchMinigameManene(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -636,8 +636,8 @@ static void WiFiPlazaLobby_AppManager_LaunchMinigameManene(WiFiPlazaLobbyAppMana
     {
         WiFiPlazaLobbyMinigameManeneArgs *v1;
 
-        v1 = param1->unk_00;
-        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->unk_00, param0->unk_3C, param0->heapID);
+        v1 = param1->data;
+        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->participants, param0->state, param0->heapID);
     }
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v0);
@@ -651,10 +651,10 @@ static int WiFiPlazaLobby_AppManager_UpdateMinigameManene(WiFiPlazaLobbyAppManag
     {
         WiFiPlazaLobbyMinigameManeneArgs *v0;
 
-        v0 = param1->unk_00;
+        v0 = param1->data;
 
-        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->unk_3C, v0->unk_00.unk_1C);
-        WiFiPlazaLobby_State_SetAppearanceRank(param0->unk_3C, v0->unk_00.unk_00);
+        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->state, v0->participants.trainerInfoValid);
+        WiFiPlazaLobby_State_SetAppearanceRank(param0->state, v0->participants.appearanceRank);
     }
 
     WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);
@@ -666,10 +666,10 @@ static void WiFiPlazaLobby_AppManager_InitMinigameBalloon(WiFiPlazaLobbyAppManag
 {
     WiFiLobbyMinigameBalloonArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBalloonArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiLobbyMinigameBalloonArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiLobbyMinigameBalloonArgs));
+    memset(param1->data, 0, sizeof(WiFiLobbyMinigameBalloonArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
     v0->voiceChatEnabled = 0;
     v0->fromLobby = 1;
     v0->saveData = param0->saveData;
@@ -679,10 +679,10 @@ static void WiFiPlazaLobby_AppManager_InitMinigameBalloon(WiFiPlazaLobbyAppManag
 
 static void WiFiPlazaLobby_AppManager_FreeMinigameBalloon(WiFiPlazaLobbySubAppSlot *param0)
 {
-    WiFiLobbyMinigameBalloonArgs *v0 = param0->unk_00;
+    WiFiLobbyMinigameBalloonArgs *v0 = param0->data;
 
     WiFiPlazaLobby_AppManager_FreeParticipants(&v0->participants);
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchMinigameBalloon(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -702,8 +702,8 @@ static void WiFiPlazaLobby_AppManager_LaunchMinigameBalloon(WiFiPlazaLobbyAppMan
     {
         WiFiLobbyMinigameBalloonArgs *v1;
 
-        v1 = param1->unk_00;
-        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->participants, param0->unk_3C, param0->heapID);
+        v1 = param1->data;
+        WiFiPlazaLobby_AppManager_SetupParticipants(&v1->participants, param0->state, param0->heapID);
     }
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v0);
@@ -717,10 +717,10 @@ static int WiFiPlazaLobby_AppManager_UpdateMinigameBalloon(WiFiPlazaLobbyAppMana
     {
         WiFiLobbyMinigameBalloonArgs *v0;
 
-        v0 = param1->unk_00;
+        v0 = param1->data;
 
-        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->unk_3C, v0->participants.unk_1C);
-        WiFiPlazaLobby_State_SetAppearanceRank(param0->unk_3C, v0->participants.unk_00);
+        WiFiPlazaLobby_State_SetTrainerInfoValid(param0->state, v0->participants.trainerInfoValid);
+        WiFiPlazaLobby_State_SetAppearanceRank(param0->state, v0->participants.appearanceRank);
     }
 
     WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);
@@ -732,21 +732,21 @@ static void WiFiPlazaLobby_AppManager_InitFootprintStamp(WiFiPlazaLobbyAppManage
 {
     WiFiPlazaLobbyFootprintStampArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyFootprintStampArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyFootprintStampArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyFootprintStampArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyFootprintStampArgs));
 
-    v0 = param1->unk_00;
-    v0->unk_00 = param0->unk_3C;
+    v0 = param1->data;
+    v0->state = param0->state;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeFootprintStamp(WiFiPlazaLobbySubAppSlot *param0)
 {
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static int WiFiPlazaLobby_AppManager_UpdateFootprintStamp(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
 {
-    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->unk_3C)) {
+    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->state)) {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 10);
     } else {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);
@@ -768,8 +768,8 @@ static void WiFiPlazaLobby_AppManager_LaunchFootprintStampPaletteSet0(WiFiPlazaL
         FS_OVERLAY_ID(footprint_stamp),
     };
 
-    v0 = param1->unk_00;
-    v0->unk_04 = 0;
+    v0 = param1->data;
+    v0->paletteSet = 0;
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v1);
 }
@@ -787,8 +787,8 @@ static void WiFiPlazaLobby_AppManager_LaunchFootprintStampPaletteSet1(WiFiPlazaL
         FS_OVERLAY_ID(footprint_stamp),
     };
 
-    v0 = param1->unk_00;
-    v0->unk_04 = 1;
+    v0 = param1->data;
+    v0->paletteSet = 1;
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v1);
 }
@@ -797,17 +797,17 @@ static void WiFiPlazaLobby_AppManager_InitP2PMatchDisconnect(WiFiPlazaLobbyAppMa
 {
     WiFiPlazaLobbyP2PMatchDisconnectArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyP2PMatchDisconnectArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyP2PMatchDisconnectArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyP2PMatchDisconnectArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyP2PMatchDisconnectArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
     v0->saveData = param0->saveData;
-    v0->unk_04 = param0->unk_3C;
+    v0->state = param0->state;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeP2PMatchDisconnect(WiFiPlazaLobbySubAppSlot *param0)
 {
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchP2PMatchDisconnectDefault(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -831,8 +831,8 @@ static void WiFiPlazaLobby_AppManager_LaunchP2PMatchDisconnect(WiFiPlazaLobbyApp
     {
         WiFiPlazaLobbyP2PMatchDisconnectArgs *v1;
 
-        v1 = param1->unk_00;
-        v1->unk_08 = param2;
+        v1 = param1->data;
+        v1->forced = param2;
     }
 
     WiFiPlazaLobby_AppManager_CreateSubApp(param0, param1, &v0);
@@ -847,31 +847,31 @@ static void WiFiPlazaLobby_AppManager_InitQuestionnaireAnswerSelection(WiFiPlaza
 {
     WiFiPlazaLobbyQuestionnaireArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
     v0->saveData = param0->saveData;
-    v0->unk_04 = param0->unk_3C;
-    v0->unk_08 = 0;
+    v0->state = param0->state;
+    v0->showResults = 0;
 }
 
 static void WiFiPlazaLobby_AppManager_InitQuestionnaireResults(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1, u32 heapID)
 {
     WiFiPlazaLobbyQuestionnaireArgs *v0;
 
-    param1->unk_00 = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
-    memset(param1->unk_00, 0, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
+    param1->data = Heap_Alloc(heapID, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
+    memset(param1->data, 0, sizeof(WiFiPlazaLobbyQuestionnaireArgs));
 
-    v0 = param1->unk_00;
+    v0 = param1->data;
     v0->saveData = param0->saveData;
-    v0->unk_04 = param0->unk_3C;
-    v0->unk_08 = 1;
+    v0->state = param0->state;
+    v0->showResults = 1;
 }
 
 static void WiFiPlazaLobby_AppManager_FreeQuestionnaire(WiFiPlazaLobbySubAppSlot *param0)
 {
-    Heap_Free(param0->unk_00);
+    Heap_Free(param0->data);
 }
 
 static void WiFiPlazaLobby_AppManager_LaunchQuestionnaire(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
@@ -887,7 +887,7 @@ static void WiFiPlazaLobby_AppManager_LaunchQuestionnaire(WiFiPlazaLobbyAppManag
 
 static int WiFiPlazaLobby_AppManager_UpdateQuestionnaire(WiFiPlazaLobbyAppManager *param0, WiFiPlazaLobbySubAppSlot *param1)
 {
-    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->unk_3C)) {
+    if (WiFiPlazaLobby_State_IsLobbyCloseFinished(param0->state)) {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 10);
     } else {
         WiFiPlazaLobby_AppManager_StartSubApp(param0, 0);

@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_0222DCE0_SUB1_H
 
 typedef struct {
-    s64 unk_00;
+    s64 timestamp;
 } WiFiPlazaLobbyCooldownTimestamp;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_0222DCE0_SUB1_H

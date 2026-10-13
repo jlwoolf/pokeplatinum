@@ -3,12 +3,12 @@
 
 typedef struct {
     union {
-        u32 unk_00_val1;
+        u32 value;
         struct {
-            u8 unk_00_val2_unk_00;
-            u8 unk_00_val2_unk_01;
-            u8 unk_00_val2_unk_02;
-            u8 unk_00_val2_unk_03;
+            u8 hour;
+            u8 minute;
+            u8 second;
+            u8 reserved;
         };
     };
 } WiFiPlazaLobbyTime;

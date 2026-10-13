@@ -346,11 +346,11 @@ int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
     MI_CpuClear8(v0, sizeof(FootprintStampApp));
 
     v0->args = ApplicationManager_Args(appMan);
-    v0->saveData = WiFiPlazaLobby_State_GetSaveData(v0->args->unk_00);
-    v0->isArceusRoom = WiFiPlazaLobby_State_IsArceusRoom(v0->args->unk_00);
+    v0->saveData = WiFiPlazaLobby_State_GetSaveData(v0->args->state);
+    v0->isArceusRoom = WiFiPlazaLobby_State_IsArceusRoom(v0->args->state);
 
     FootprintStamp_InitCommState(v0);
-    FootprintStamp_LoadPartyEntries(v0->args->unk_04, v0->saveData, v0->partyEntries);
+    FootprintStamp_LoadPartyEntries(v0->args->paletteSet, v0->saveData, v0->partyEntries);
 
     v0->scrollTarget = (32 << 8);
     v0->scrollOffset = v0->scrollTarget;
@@ -411,8 +411,8 @@ int FootprintStamp_Init(ApplicationManager *appMan, int *param1)
 
     StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_118);
 
-    if (v0->args->unk_00 != NULL) {
-        WiFiPlazaLobby_State_SetBGMVolumeDucked(v0->args->unk_00, 1);
+    if (v0->args->state != NULL) {
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v0->args->state, 1);
     }
 
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG0, 1);
@@ -443,7 +443,7 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
 {
     FootprintStampApp *v0 = ApplicationManager_Data(appMan);
 
-    FootprintStampModels_Update(&v0->modelManager, v0->camera, v0->state, v0->args->unk_04);
+    FootprintStampModels_Update(&v0->modelManager, v0->camera, v0->state, v0->args->paletteSet);
 
     switch (*param1) {
     case 0:
@@ -588,7 +588,7 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
             FootprintStamp_UpdatePlayerSlots(v0);
         }
 
-        if (((WiFiPlazaLobby_Time_HasWifiError() == 1) || (WiFiPlazaLobby_State_IsLobbyClosed(v0->args->unk_00) == 1)) && ((*param1) != 4)) {
+        if (((WiFiPlazaLobby_Time_HasWifiError() == 1) || (WiFiPlazaLobby_State_IsLobbyClosed(v0->args->state) == 1)) && ((*param1) != 4)) {
             if (v0->menuOpen == 1) {
                 YesNoTouchMenu_Reset(v0->yesNoMenu);
             }
@@ -600,7 +600,7 @@ int FootprintStamp_Main(ApplicationManager *appMan, int *param1)
                 (*param1) = 9;
             } else {
                 Sound_PlayEffect(SEQ_SE_DP_PINPON_sseq);
-                WiFiPlazaLobby_State_SetPlayerWarpPending(v0->args->unk_00);
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v0->args->state);
                 (*param1) = 6;
             }
         }
@@ -874,7 +874,7 @@ static void FootprintStamp_LoadBoardGraphics(FootprintStampApp *param0, NARC *pa
     Graphics_LoadTilemapToBgLayerFromOpenNARC(param1, 20, param0->bgConfig, 3, 0, 0, 0, HEAP_ID_118);
     PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 23, HEAP_ID_118, PLTTBUF_SUB_BG, 0, 0);
 
-    if (param0->args->unk_04 == 0) {
+    if (param0->args->paletteSet == 0) {
         PaletteData_CopyBuffer(param0->paletteData, 1, 16 * 1, 1, 16 * 0, PALETTE_SIZE_BYTES);
     }
 
@@ -895,7 +895,7 @@ static void FootprintStamp_LoadBoardGraphics(FootprintStampApp *param0, NARC *pa
         LoadMessageBoxGraphics(param0->bgConfig, BG_LAYER_MAIN_1, 1, 14, v2, HEAP_ID_118);
         PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__PL_FONT, 6, HEAP_ID_118, 0, PALETTE_SIZE_BYTES, PLTT_DEST(13));
 
-        if (param0->args->unk_04 == 0) {
+        if (param0->args->paletteSet == 0) {
             PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__PL_FONT, 6, HEAP_ID_118, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(13));
         } else {
             PaletteData_LoadBufferFromFileStart(param0->paletteData, NARC_INDEX_GRAPHIC__FOOTPRINT_BOARD, 25, HEAP_ID_118, PLTTBUF_SUB_BG, PALETTE_SIZE_BYTES, PLTT_DEST(13));
@@ -924,7 +924,7 @@ static void FootprintStamp_LoadMainSprites(FootprintStampApp *param0, NARC *para
 
     v1 = SpriteSystem_LoadPaletteBufferFromOpenNarc(param0->paletteData, PLTTBUF_MAIN_OBJ, param0->spriteSystem, param0->spriteManager, param1, 3, FALSE, 1, NNS_G2D_VRAM_TYPE_2DMAIN, 10002);
 
-    if (param0->args->unk_04 == 0) {
+    if (param0->args->paletteSet == 0) {
         v2 = 0x0;
     } else {
         v2 = 0x7fff;
@@ -1171,7 +1171,7 @@ static void FootprintStamp_LoadBoardModel(FootprintStampApp *param0, NARC *param
 {
     int v0;
 
-    if (param0->args->unk_04 == 0) {
+    if (param0->args->paletteSet == 0) {
         v0 = 28;
     } else {
         v0 = 27;
@@ -1358,9 +1358,9 @@ static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
     WiFiPlazaLobby_Network_GetSubChannelPlayerList(&v0);
 
     for (v1 = 0; v1 < 8; v1++) {
-        if (param0->playerUserIds[v1] != v0.unk_04[v1]) {
-            if (v0.unk_04[v1] != DWC_LOBBY_INVALID_USER_ID) {
-                FootprintStampPlayers_DrawName(param0->messageLoader, param0->stringTemplate, param0->playerWindows, param0->args->unk_00, v0.unk_04[v1]);
+        if (param0->playerUserIds[v1] != v0.userIDs[v1]) {
+            if (v0.userIDs[v1] != DWC_LOBBY_INVALID_USER_ID) {
+                FootprintStampPlayers_DrawName(param0->messageLoader, param0->stringTemplate, param0->playerWindows, param0->args->state, v0.userIDs[v1]);
 
                 {
                     u16 *v5;
@@ -1388,13 +1388,13 @@ static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
                 v3++;
             }
 
-            if (v0.unk_04[v1] == param0->commState.localUserId) {
+            if (v0.userIDs[v1] == param0->commState.localUserId) {
                 ManagedSprite_SetPositionXYWithSubscreenOffset(param0->cursorSprite, sCursorSpritePositions[v1][0], sCursorSpritePositions[v1][1], (192 + 80) << FX32_SHIFT);
                 ManagedSprite_SetDrawFlag(param0->cursorSprite, 1);
             }
         }
 
-        param0->playerUserIds[v1] = v0.unk_04[v1];
+        param0->playerUserIds[v1] = v0.userIDs[v1];
     }
 
     v4 = 0;
@@ -1420,7 +1420,7 @@ static int FootprintStamp_UpdatePlayerSlots(FootprintStampApp *param0)
 
 void FootprintStamp_DrawPlayerName(FootprintStampApp *param0, s32 param1)
 {
-    FootprintStampPlayers_DrawName(param0->messageLoader, param0->stringTemplate, param0->playerWindows, param0->args->unk_00, param1);
+    FootprintStampPlayers_DrawName(param0->messageLoader, param0->stringTemplate, param0->playerWindows, param0->args->state, param1);
 }
 
 void FootprintStamp_ClearPlayerName(FootprintStampApp *param0, u32 param1)

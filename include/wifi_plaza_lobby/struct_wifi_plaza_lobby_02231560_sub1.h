@@ -2,10 +2,10 @@
 #define POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231560_SUB1_H
 
 typedef struct {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03_0 : 4;
-    u8 unk_03_4 : 4;
+    u16 country;
+    u8 region;
+    u8 isSelf : 4;
+    u8 isActive : 4;
 } WiFiPlazaLobbyPlace;
 
 #endif // POKEPLATINUM_STRUCT_WIFI_PLAZA_LOBBY_02231560_SUB1_H

@@ -23,9 +23,9 @@ FS_EXTERN_OVERLAY(wifi_2d_char);
 
 typedef struct {
     SaveData *saveData;
-    WiFiPlazaLobbyState *unk_04;
-    WiFiPlazaLobbyAppManager *unk_08;
-    SysTask *unk_0C;
+    WiFiPlazaLobbyState *state;
+    WiFiPlazaLobbyAppManager *appManager;
+    SysTask *vblankTask;
 } WiFiPlazaLobbyAppData;
 
 static void WiFiPlazaLobby_VBlankTask(SysTask *param0, void *param1);
@@ -50,15 +50,15 @@ int WiFiPlazaLobby_Init(ApplicationManager *appMan, int *param1)
     v1 = ApplicationManager_Args(appMan);
 
     v0->saveData = v1->saveData;
-    v0->unk_04 = WiFiPlazaLobby_State_Create(v0->saveData, HEAP_ID_104);
-    v0->unk_08 = WiFiPlazaLobby_AppManager_New(v1->unk_08, v1->saveData, v1->unk_00, v0->unk_04, HEAP_ID_104);
+    v0->state = WiFiPlazaLobby_State_Create(v0->saveData, HEAP_ID_104);
+    v0->appManager = WiFiPlazaLobby_AppManager_New(v1->wifiMenuResult, v1->saveData, v1->cooldownTimestamp, v0->state, HEAP_ID_104);
 
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
 
-    v0->unk_0C = SysTask_ExecuteAfterVBlank(WiFiPlazaLobby_VBlankTask, v0, 0);
+    v0->vblankTask = SysTask_ExecuteAfterVBlank(WiFiPlazaLobby_VBlankTask, v0, 0);
 
-    WiFiPlazaLobby_AppManager_ConnectToWifiPlaza(v0->unk_08);
+    WiFiPlazaLobby_AppManager_ConnectToWifiPlaza(v0->appManager);
 
     return 1;
 }
@@ -69,9 +69,9 @@ int WiFiPlazaLobby_Main(ApplicationManager *appMan, int *param1)
     int v1;
 
     v0 = ApplicationManager_Data(appMan);
-    v1 = WiFiPlazaLobby_AppManager_Update(v0->unk_08);
+    v1 = WiFiPlazaLobby_AppManager_Update(v0->appManager);
 
-    WiFiPlazaLobby_State_Init(v0->unk_04);
+    WiFiPlazaLobby_State_Init(v0->state);
 
     if (v1 == 1) {
         return 1;
@@ -84,12 +84,12 @@ int WiFiPlazaLobby_Exit(ApplicationManager *appMan, int *param1)
 {
     WiFiPlazaLobbyAppData *v0 = ApplicationManager_Data(appMan);
 
-    SysTask_Done(v0->unk_0C);
+    SysTask_Done(v0->vblankTask);
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
 
-    WiFiPlazaLobby_AppManager_Free(v0->unk_08);
-    WiFiPlazaLobby_State_Destroy(v0->unk_04);
+    WiFiPlazaLobby_AppManager_Free(v0->appManager);
+    WiFiPlazaLobby_State_Destroy(v0->state);
 
     ApplicationManager_FreeData(appMan);
     Heap_Destroy(HEAP_ID_104);
@@ -108,6 +108,6 @@ static void WiFiPlazaLobby_VBlankTask(SysTask *param0, void *param1)
 {
     WiFiPlazaLobbyAppData *v0 = param1;
 
-    WiFiPlazaLobby_AppManager_VBlankUpdate(v0->unk_08);
-    WiFiPlazaLobby_State_UpdateNoop(v0->unk_04);
+    WiFiPlazaLobby_AppManager_VBlankUpdate(v0->appManager);
+    WiFiPlazaLobby_State_UpdateNoop(v0->state);
 }

@@ -319,11 +319,11 @@ int WiFiLobbyQuestionnaire_Init(ApplicationManager *appMan, int *param1)
     memset(v0, 0, sizeof(WiFiLobbyQuestionnaire));
 
     WiFiLobbyQuestionnaireGraphics_Init(&v0->graphics, v1->saveData, 122);
-    WiFiLobbyQuestionnaireMessages_Init(&v0->messages, v1->unk_04, 122);
+    WiFiLobbyQuestionnaireMessages_Init(&v0->messages, v1->state, 122);
     WiFiLobbyQuestionnaireMessageBox_Init(&v0->messageBox, &v0->graphics, v1->saveData, 122);
 
-    GF_ASSERT(v1->unk_08 < 2);
-    sScreenInitFuncs[v1->unk_08](&v0->screen, &v0->messages, &v0->graphics, v1, 122);
+    GF_ASSERT(v1->showResults < 2);
+    sScreenInitFuncs[v1->showResults](&v0->screen, &v0->messages, &v0->graphics, v1, 122);
 
     SetVBlankCallback(WiFiLobbyQuestionnaire_VBlankCallback, v0);
     DisableHBlank();
@@ -343,7 +343,7 @@ int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
     switch (*param1) {
     case 0:
         StartScreenFade(FADE_BOTH_SCREENS, FADE_TYPE_BRIGHTNESS_IN, FADE_TYPE_BRIGHTNESS_IN, COLOR_BLACK, 6, 1, HEAP_ID_PARTY_MENU2);
-        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->unk_04, 1);
+        WiFiPlazaLobby_State_SetBGMVolumeDucked(v1->state, 1);
         (*param1)++;
         break;
     case 1:
@@ -355,8 +355,8 @@ int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
         break;
     case 2:
         if (IsScreenFadeDone() == TRUE) {
-            if (WiFiPlazaLobby_State_IsLobbyClosed(v1->unk_04) == 1) {
-                WiFiPlazaLobby_State_SetPlayerWarpPending(v1->unk_04);
+            if (WiFiPlazaLobby_State_IsLobbyClosed(v1->state) == 1) {
+                WiFiPlazaLobby_State_SetPlayerWarpPending(v1->state);
                 (*param1)++;
                 break;
             }
@@ -367,7 +367,7 @@ int WiFiLobbyQuestionnaire_Main(ApplicationManager *appMan, int *param1)
             }
         }
 
-        v2 = sScreenMainFuncs[v1->unk_08](&v0->screen, &v0->messages, &v0->graphics, &v0->messageBox, v1, 122);
+        v2 = sScreenMainFuncs[v1->showResults](&v0->screen, &v0->messages, &v0->graphics, &v0->messageBox, v1, 122);
 
         if (v2 == 1) {
             (*param1)++;
@@ -399,7 +399,7 @@ int WiFiLobbyQuestionnaire_Exit(ApplicationManager *appMan, int *param1)
     SetVBlankCallback(NULL, NULL);
     DisableHBlank();
 
-    sScreenFreeFuncs[v1->unk_08](&v0->screen, &v0->messages, &v0->graphics);
+    sScreenFreeFuncs[v1->showResults](&v0->screen, &v0->messages, &v0->graphics);
 
     WiFiLobbyQuestionnaireMessageBox_Free(&v0->messageBox, 122);
     WiFiLobbyQuestionnaireMessages_Free(&v0->messages);
@@ -762,7 +762,7 @@ static BOOL WiFiLobbyQuestionnaireAnswerSelection_Main(WiFiLobbyQuestionnaireAns
         break;
 
     case 6:
-        WiFiPlazaLobby_State_SetQuestionnaireAnswer(param4->unk_04, param0->question.questionSerialNo, param0->selectedAnswer);
+        WiFiPlazaLobby_State_SetQuestionnaireAnswer(param4->state, param0->question.questionSerialNo, param0->selectedAnswer);
         WiFiPlazaLobby_Network_SubmitQuestionnaireAnswer(param0->selectedAnswer);
 
         v1 = WiFiLobbyQuestionnaireMessages_GetString(param1, 0, 96);
@@ -1020,9 +1020,9 @@ static void WiFiLobbyQuestionnaireResults_Init(WiFiLobbyQuestionnaireResults *pa
         WiFiLobbyQuestionnaireQuestion_Init(&param0->currentQuestion, 1, heapID);
         WiFiLobbyQuestionnaireQuestion_Init(&param0->lastQuestion, 0, heapID);
 
-        if (WiFiPlazaLobby_State_GetQuestionnaireResult(param3->unk_04, &param0->currentTally) == 0) {
-            WiFiLobbyQuestionnaireAnswerTally_CountAnswers(&param0->currentTally, param3->unk_04);
-            WiFiPlazaLobby_State_SetQuestionnaireResult(param3->unk_04, &param0->currentTally);
+        if (WiFiPlazaLobby_State_GetQuestionnaireResult(param3->state, &param0->currentTally) == 0) {
+            WiFiLobbyQuestionnaireAnswerTally_CountAnswers(&param0->currentTally, param3->state);
+            WiFiPlazaLobby_State_SetQuestionnaireResult(param3->state, &param0->currentTally);
         }
 
         WiFiLobbyQuestionnaireAnswerTally_Init(&param0->lastTally);
@@ -1078,10 +1078,10 @@ static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *pa
         const WiFiPlazaProfile *v3;
         BOOL v4;
 
-        v3 = WiFiPlazaLobby_State_GetOwnProfile(param4->unk_04);
+        v3 = WiFiPlazaLobby_State_GetOwnProfile(param4->state);
         WiFiPlazaLobby_State_GetQuestionnaireAnswer(v3, &v2);
 
-        v4 = WiFiPlazaLobby_State_IsMemberPresent(param4->unk_04, WiFiPlazaLobby_State_GetMySlotIndex(param4->unk_04));
+        v4 = WiFiPlazaLobby_State_IsMemberPresent(param4->state, WiFiPlazaLobby_State_GetMySlotIndex(param4->state));
         WiFiLobbyQuestionnaireResults_DrawQuestion(param0, &param0->currentQuestion, param1, param2, &v2, heapID, TEXT_COLOR(9, 10, 0), TEXT_COLOR(13, 14, 0), v4);
         WiFiLobbyQuestionnaireResults_InitBars(param0, &param0->currentTally, param2, 1);
 
@@ -1196,7 +1196,7 @@ static BOOL WiFiLobbyQuestionnaireResults_Main(WiFiLobbyQuestionnaireResults *pa
         savedWiFiPlazaQuestion = SaveData_GetWiFiPlazaQuestion(param4->saveData);
         v7.questionNumber = WiFiPlazaQuestion_GetQuestionNumber(savedWiFiPlazaQuestion);
         v7.selectedAnswer = WiFiPlazaQuestion_GetSelectedAnswer(savedWiFiPlazaQuestion);
-        v9 = WiFiPlazaLobby_State_IsMemberPresent(param4->unk_04, WiFiPlazaLobby_State_GetMySlotIndex(param4->unk_04));
+        v9 = WiFiPlazaLobby_State_IsMemberPresent(param4->state, WiFiPlazaLobby_State_GetMySlotIndex(param4->state));
 
         WiFiLobbyQuestionnaireResults_DrawQuestion(param0, &param0->lastQuestion, param1, param2, &v7, heapID, TEXT_COLOR(11, 12, 0), TEXT_COLOR(15, 14, 0), v9);
         WiFiLobbyQuestionnaireResults_InitBars(param0, &param0->lastTally, param2, 2);
