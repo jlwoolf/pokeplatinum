@@ -171,14 +171,14 @@ void FrontierScriptManager_UpdateMessageLoader(FrontierScriptManager *scriptMan,
 FrontierScriptLocalVars *FrontierFacilities_SaveScriptLocalVars(FrontierScriptManager *param0, enum HeapID heapID)
 {
     FrontierScriptLocalVars *v0 = Heap_Alloc(heapID, sizeof(FrontierScriptLocalVars));
-    *v0 = param0->unk_24;
+    *v0 = param0->localVars;
 
     return v0;
 }
 
 void FrontierFacilities_RestoreScriptLocalVars(FrontierScriptManager *param0, FrontierScriptLocalVars *param1)
 {
-    param0->unk_24 = *param1;
+    param0->localVars = *param1;
     Heap_Free(param1);
 }
 
@@ -190,7 +190,7 @@ static void FrontierScriptContext_JumpToOffsetID(FrontierScriptContext *ctx, int
 
 u16 *FrontierFacilities_GetScriptVarPointer(FrontierScriptManager *param0, int param1)
 {
-    return &param0->unk_24.vars[param1];
+    return &param0->localVars.vars[param1];
 }
 
 FrontierGraphics *FrontierScriptManager_GetGraphics(FrontierScriptManager *scriptMan)

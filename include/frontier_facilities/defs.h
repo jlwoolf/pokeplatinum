@@ -25,7 +25,7 @@ typedef BOOL (*FrontierShouldResumeScriptFunc)(FrontierScriptContext *);
 struct FrontierScriptContext {
     FrontierScriptManager *scriptMan;
     u32 unk_04;
-    u16 unk_08[8];
+    u16 localVars[8];
     u8 stackPointer;
     u8 state;
     const u8 *scriptPtr;
@@ -76,7 +76,7 @@ typedef struct FrontierMenuManager {
 struct FrontierScriptManager {
     BattleFrontier *frontier;
     FrontierScriptContext *ctx[8];
-    FrontierScriptLocalVars unk_24;
+    FrontierScriptLocalVars localVars;
     enum HeapID heapID;
     u8 unk_38;
     MessageLoader *msgLoader;
@@ -99,11 +99,11 @@ struct FrontierScriptManager {
     int unused4[10];
     Window *castleHostInfoWin;
     Window *castlePlayer2InfoWin;
-    u16 unk_B0;
-    u16 unk_B2;
-    u16 unk_B4;
-    u16 unk_B6;
-    u16 *unk_B8;
+    u16 recordingState;
+    u16 recordingSaveState;
+    u16 recordingBattleType;
+    u16 recordingBattleNumber;
+    u16 *recordingResult;
 };
 
 #endif // POKEPLATINUM_FRONTIER_DEFS_H

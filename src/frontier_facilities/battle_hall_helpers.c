@@ -1608,10 +1608,10 @@ u16 BattleHall_GetHighestLevelInParty(BattleHall *battleHall)
         }
     } else {
         if (BattleHall_IsMultiPlayerChallenge(battleHall->challengeType) == TRUE) {
-            if (firstMonsLevel > battleHall->unk_D84[0]) {
+            if (firstMonsLevel > battleHall->partnersMonLevels[0]) {
                 return firstMonsLevel;
             } else {
-                return battleHall->unk_D84[0];
+                return battleHall->partnersMonLevels[0];
             }
         }
     }

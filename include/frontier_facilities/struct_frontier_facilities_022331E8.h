@@ -6,13 +6,13 @@
 // State for the GX window reveal SysTask: the task handle, window bounds,
 // delay and step counters.
 typedef struct {
-    SysTask *unk_00;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    s16 unk_08;
-    s8 unk_0A;
+    SysTask *task;
+    u8 windowX1;
+    u8 windowY1;
+    u8 windowX2;
+    u8 windowY2;
+    s16 delay;
+    s8 showWindow;
     u8 unk_0B;
 } FrontierFacilitiesWindowEffectState;
 

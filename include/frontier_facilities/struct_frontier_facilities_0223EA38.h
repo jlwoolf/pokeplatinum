@@ -4,11 +4,11 @@
 // A linear scalar animation: current value, start, range, step count and
 // elapsed steps.
 typedef struct {
-    int unk_00;
-    int unk_04;
-    int unk_08;
-    int unk_0C;
-    int unk_10;
+    int current;
+    int start;
+    int range;
+    int elapsedSteps;
+    int stepCount;
 } FrontierFacilitiesLinearAnimation;
 
 #endif // POKEPLATINUM_STRUCT_FRONTIER_FACILITIES_0223EA38_H

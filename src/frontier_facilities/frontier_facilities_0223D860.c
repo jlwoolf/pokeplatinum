@@ -116,8 +116,8 @@ static BOOL FrontierFacilities_ExecuteObjectMovement(BattleFrontier *param0, Fro
     case 1:
     case 2:
     case 3:
-        FrontierFacilities_BuildMoveRequest(&v1, param1->object, param1->params.unk_04, v0->params[3 + v0->step - 1]);
-        WiFi2DCharMoveQueue_Push(v2->unk_30, &v1);
+        FrontierFacilities_BuildMoveRequest(&v1, param1->object, param1->params.objectID, v0->params[3 + v0->step - 1]);
+        WiFi2DCharMoveQueue_Push(v2->moveQueue, &v1);
 
         if (v0->params[0] == v0->params[3 + v0->step - 1]) {
             v0->params[2] = 45;

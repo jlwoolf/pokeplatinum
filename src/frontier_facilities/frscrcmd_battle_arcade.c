@@ -199,7 +199,7 @@ static void SetupBattleArcadeAppArgs(BattleArcadeAppArgs *args, BattleArcade *ba
     args->selectedEffect = &battleArcade->activeEffect;
     args->performance = battleArcade->performance;
     args->currentStreak = battleArcade->currentStreak;
-    args->partnersStreak = battleArcade->unk_A78;
+    args->partnersStreak = battleArcade->partnersStreak;
     args->rouletteSpeed = &battleArcade->rouletteSpeed;
     args->party = battleArcade->playersParty;
     args->opponentsParty = battleArcade->opponentsParty;
@@ -326,7 +326,7 @@ BOOL FrontierScrCmd_CallBattleArcadeFunction(FrontierScriptContext *ctx)
         *destVar = BattleArcade_GetCurrentBattle(battleArcade);
         break;
     case BA_FUNC_UNK_24:
-        *destVar = battleArcade->unk_A74;
+        *destVar = battleArcade->partnersRetireDecision;
         break;
     case BA_FUNC_SWAP_MON_SPRITES:
         if (battleArcade->activeEffect == ARCADE_EFFECT_SWAP_MONS) {
@@ -425,7 +425,7 @@ BOOL FrontierScrCmd_CallBattleArcadeFunction(FrontierScriptContext *ctx)
         }
     } break;
     case BA_FUNC_CREATE_EMITTER:
-        battleArcade->unk_A7A = arg2;
+        battleArcade->emitterFlipAxis = arg2;
         CreateEmitter(ctx, battleArcade, arg1);
         break;
     case BA_FUNC_LOAD_TRAINERS:
@@ -502,7 +502,7 @@ static void EmitterCallback(SPLEmitter *emitter)
     BattleArcade *arcade = ParticleSystem_GetEmitterCallbackParam();
     const VecFx32 pos[] = { FX32_CONST(-1), 0, 0 };
 
-    if (arcade->unk_A7A == 1) {
+    if (arcade->emitterFlipAxis == 1) {
         ParticleSystem_GetEmitterAxis(emitter, &axis);
         axis.x *= -1;
 

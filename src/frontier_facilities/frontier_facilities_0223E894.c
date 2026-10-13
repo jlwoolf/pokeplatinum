@@ -16,61 +16,61 @@
 #include "sys_task_manager.h"
 
 typedef struct {
-    int unk_00;
-    u32 unk_04;
-    int unk_08;
-    int unk_0C;
-    u32 unk_10;
-    u32 unk_14;
-    FrontierFacilitiesAnimation unk_18;
-    FrontierFacilitiesAnimation unk_30;
-    BOOL *unk_48;
+    int state;
+    u32 repeatCount;
+    int repeatIndex;
+    int screen;
+    u32 flashBrightness;
+    u32 baseBrightness;
+    FrontierFacilitiesAnimation flashAnimation;
+    FrontierFacilitiesAnimation baseAnimation;
+    BOOL *doneFlag;
 } FrontierFacilitiesScreenFlash;
 
 typedef struct FrontierFacilitiesWipeRect_t {
-    FrontierFacilitiesLinearAnimation unk_00;
-    FrontierFacilitiesLinearAnimation unk_14;
-    Window *unk_28;
-    u8 unk_2C;
-    u8 unk_2D;
-    u8 unk_2E;
-    u8 unk_2F;
+    FrontierFacilitiesLinearAnimation xAnimation;
+    FrontierFacilitiesLinearAnimation yAnimation;
+    Window *window;
+    u8 width;
+    u8 height;
+    u8 active;
+    u8 color;
 } FrontierFacilitiesWipeRect;
 
 typedef struct FrontierFacilitiesWipeManager_t {
-    Window *unk_00;
-    FrontierFacilitiesWipeRect *unk_04[96];
-    u8 unk_184;
-    u8 unk_185;
-    u8 unk_186;
-    u8 unk_187;
-    u8 unk_188;
-    u8 unk_189;
-    u8 unk_18A;
-    s8 unk_18B;
-    u8 unk_18C;
-    u8 unk_18D;
+    Window *window;
+    FrontierFacilitiesWipeRect *rects[96];
+    u8 rectCount;
+    u8 waveIndex;
+    u8 row;
+    u8 direction;
+    u8 completedCount;
+    u8 rectSteps;
+    u8 stepDelay;
+    s8 delayCounter;
+    u8 rectColor;
+    u8 active;
     u8 unk_18E[1];
 } FrontierFacilitiesWipeManager;
 
 typedef void (*FrontierFacilitiesCallback)(void *);
 
 typedef struct {
-    SysTask *unk_00;
-    SysTask *unk_04;
-    BOOL unk_08;
-    BOOL unk_0C;
-    FrontierFacilitiesCallback unk_10;
-    FrontierFacilitiesCallback unk_14;
-    void *unk_18;
+    SysTask *onVBlankTask;
+    SysTask *afterVBlankTask;
+    BOOL enabled;
+    BOOL afterVBlankPending;
+    FrontierFacilitiesCallback afterVBlankCallback;
+    FrontierFacilitiesCallback onVBlankCallback;
+    void *data;
 } FrontierFacilitiesVBlankCallbacks;
 
 typedef struct FrontierFacilitiesAffineBuffer_t {
-    FrontierFacilitiesVBlankCallbacks unk_00;
+    FrontierFacilitiesVBlankCallbacks vBlankCallbacks;
     BufferManager *bufferManager;
-    FrontierFacilitiesAffineEntry unk_20[192];
-    FrontierFacilitiesAffineEntry unk_1820[192];
-    u32 unk_3020;
+    FrontierFacilitiesAffineEntry bufferA[192];
+    FrontierFacilitiesAffineEntry bufferB[192];
+    u32 destAddress;
 } FrontierFacilitiesAffineBuffer;
 
 static void FrontierFacilities_ApplyBrightnessFade(SysTask *param0, void *param1);
@@ -87,64 +87,64 @@ void FrontierFacilities_StartScreenFlash(int param0, u32 param1, u32 param2, BOO
 
     SysTask_Start(FrontierFacilities_UpdateScreenFlash, v1, 5);
 
-    v1->unk_48 = param3;
+    v1->doneFlag = param3;
 
-    if (v1->unk_48 != NULL) {
-        *(v1->unk_48) = 0;
+    if (v1->doneFlag != NULL) {
+        *(v1->doneFlag) = 0;
     }
 
-    v1->unk_0C = param0;
-    v1->unk_10 = param1;
-    v1->unk_14 = param2;
-    v1->unk_04 = param4;
+    v1->screen = param0;
+    v1->flashBrightness = param1;
+    v1->baseBrightness = param2;
+    v1->repeatCount = param4;
 }
 
 static void FrontierFacilities_UpdateScreenFlash(SysTask *param0, void *param1)
 {
     FrontierFacilitiesScreenFlash *v0 = param1;
 
-    switch (v0->unk_00) {
+    switch (v0->state) {
     case 0:
-        if (v0->unk_0C == 1) {
-            FrontierFacilities_StartBrightnessFade(&v0->unk_30, 0, v0->unk_14, 2, 8);
+        if (v0->screen == 1) {
+            FrontierFacilities_StartBrightnessFade(&v0->baseAnimation, 0, v0->baseBrightness, 2, 8);
         } else {
-            if (v0->unk_0C == 2) {
-                FrontierFacilities_StartBrightnessFade(&v0->unk_30, 0, v0->unk_14, 1, 8);
+            if (v0->screen == 2) {
+                FrontierFacilities_StartBrightnessFade(&v0->baseAnimation, 0, v0->baseBrightness, 1, 8);
             }
         }
 
-        v0->unk_00++;
+        v0->state++;
         break;
     case 1:
-        FrontierFacilities_StartBrightnessFade(&v0->unk_18, 0, v0->unk_10, v0->unk_0C, 3);
-        v0->unk_00++;
+        FrontierFacilities_StartBrightnessFade(&v0->flashAnimation, 0, v0->flashBrightness, v0->screen, 3);
+        v0->state++;
         break;
     case 2:
-        if (FrontierFacilities_UpdateBrightnessFade(&v0->unk_18)) {
-            v0->unk_00++;
+        if (FrontierFacilities_UpdateBrightnessFade(&v0->flashAnimation)) {
+            v0->state++;
         }
         break;
     case 3:
-        FrontierFacilities_StartBrightnessFade(&v0->unk_18, v0->unk_10, 0, v0->unk_0C, 3);
-        v0->unk_00++;
+        FrontierFacilities_StartBrightnessFade(&v0->flashAnimation, v0->flashBrightness, 0, v0->screen, 3);
+        v0->state++;
         break;
     case 4:
-        if (FrontierFacilities_UpdateBrightnessFade(&v0->unk_18)) {
-            v0->unk_08++;
+        if (FrontierFacilities_UpdateBrightnessFade(&v0->flashAnimation)) {
+            v0->repeatIndex++;
 
-            if (v0->unk_08 == v0->unk_04) {
-                v0->unk_00 = 5;
+            if (v0->repeatIndex == v0->repeatCount) {
+                v0->state = 5;
             } else {
-                v0->unk_00 = 1;
+                v0->state = 1;
             }
         }
         break;
     case 5:
-        v0->unk_00 = 0;
-        v0->unk_08 = 0;
+        v0->state = 0;
+        v0->repeatIndex = 0;
 
-        if (v0->unk_48 != NULL) {
-            *(v0->unk_48) = 1;
+        if (v0->doneFlag != NULL) {
+            *(v0->doneFlag) = 1;
         }
 
         SysTask_Done(param0);
@@ -153,7 +153,7 @@ static void FrontierFacilities_UpdateScreenFlash(SysTask *param0, void *param1)
         return;
     }
 
-    FrontierFacilities_UpdateBrightnessFade(&v0->unk_30);
+    FrontierFacilities_UpdateBrightnessFade(&v0->baseAnimation);
 }
 
 void FrontierFacilities_SetMasterBrightness(int param0, int param1)
@@ -167,13 +167,13 @@ void FrontierFacilities_SetMasterBrightness(int param0, int param1)
 
 void FrontierFacilities_StartBrightnessFade(FrontierFacilitiesAnimation *param0, int param1, int param2, int param3, int param4)
 {
-    param0->unk_14 = param3;
-    FrontierFacilities_InitAnimation(&param0->unk_00, param1, param2, param4);
+    param0->screen = param3;
+    FrontierFacilities_InitAnimation(&param0->animation, param1, param2, param4);
 }
 
 BOOL FrontierFacilities_UpdateBrightnessFade(FrontierFacilitiesAnimation *param0)
 {
-    BOOL v0 = FrontierFacilities_StepAnimation(&param0->unk_00);
+    BOOL v0 = FrontierFacilities_StepAnimation(&param0->animation);
     SysTask_ExecuteAfterVBlank(FrontierFacilities_ApplyBrightnessFade, param0, 10);
 
     return v0;
@@ -183,32 +183,32 @@ static void FrontierFacilities_ApplyBrightnessFade(SysTask *param0, void *param1
 {
     FrontierFacilitiesAnimation *v0 = param1;
 
-    FrontierFacilities_SetMasterBrightness(v0->unk_14, v0->unk_00.unk_00);
+    FrontierFacilities_SetMasterBrightness(v0->screen, v0->animation.current);
     SysTask_Done(param0);
 }
 
 void FrontierFacilities_InitAnimation(FrontierFacilitiesLinearAnimation *param0, int param1, int param2, int param3)
 {
-    param0->unk_00 = param1;
-    param0->unk_04 = param1;
-    param0->unk_08 = param2 - param1;
-    param0->unk_10 = param3;
-    param0->unk_0C = 0;
+    param0->current = param1;
+    param0->start = param1;
+    param0->range = param2 - param1;
+    param0->stepCount = param3;
+    param0->elapsedSteps = 0;
 }
 
 BOOL FrontierFacilities_StepAnimation(FrontierFacilitiesLinearAnimation *param0)
 {
-    int v0 = param0->unk_08 * param0->unk_0C;
-    v0 = v0 / param0->unk_10;
+    int v0 = param0->range * param0->elapsedSteps;
+    v0 = v0 / param0->stepCount;
 
-    param0->unk_00 = v0 + param0->unk_04;
+    param0->current = v0 + param0->start;
 
-    if ((param0->unk_0C + 1) <= param0->unk_10) {
-        param0->unk_0C++;
+    if ((param0->elapsedSteps + 1) <= param0->stepCount) {
+        param0->elapsedSteps++;
         return 0;
     }
 
-    param0->unk_0C = param0->unk_10;
+    param0->elapsedSteps = param0->stepCount;
     return 1;
 }
 
@@ -227,16 +227,16 @@ void FrontierFacilities_FreeWipeRect(FrontierFacilitiesWipeRect *param0)
 
 void FrontierFacilities_StartWipeRect(FrontierFacilitiesWipeRect *param0, int param1, int param2, int param3, int param4, int param5, Window *param6, u32 param7, u32 param8, u8 param9)
 {
-    GF_ASSERT(param0->unk_2E == 0);
+    GF_ASSERT(param0->active == 0);
 
-    FrontierFacilities_InitAnimation(&param0->unk_00, param1, param2, param5);
-    FrontierFacilities_InitAnimation(&param0->unk_14, param3, param4, param5);
+    FrontierFacilities_InitAnimation(&param0->xAnimation, param1, param2, param5);
+    FrontierFacilities_InitAnimation(&param0->yAnimation, param3, param4, param5);
 
-    param0->unk_28 = param6;
-    param0->unk_2C = param7;
-    param0->unk_2D = param8;
-    param0->unk_2F = param9;
-    param0->unk_2E = 1;
+    param0->window = param6;
+    param0->width = param7;
+    param0->height = param8;
+    param0->color = param9;
+    param0->active = 1;
 }
 
 BOOL FrontierFacilities_UpdateWipeRect(FrontierFacilitiesWipeRect *param0)
@@ -244,24 +244,24 @@ BOOL FrontierFacilities_UpdateWipeRect(FrontierFacilitiesWipeRect *param0)
     BOOL v0;
     s16 v1, v2, v3, v4;
 
-    if (param0->unk_2E == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    v3 = param0->unk_00.unk_00 - (param0->unk_2C / 2);
-    v1 = param0->unk_14.unk_00 - (param0->unk_2D / 2);
-    v4 = v3 + param0->unk_2C;
-    v2 = v1 + param0->unk_2D;
+    v3 = param0->xAnimation.current - (param0->width / 2);
+    v1 = param0->yAnimation.current - (param0->height / 2);
+    v4 = v3 + param0->width;
+    v2 = v1 + param0->height;
 
-    v0 = FrontierFacilities_StepAnimation(&param0->unk_00);
-    FrontierFacilities_StepAnimation(&param0->unk_14);
+    v0 = FrontierFacilities_StepAnimation(&param0->xAnimation);
+    FrontierFacilities_StepAnimation(&param0->yAnimation);
 
-    v3 = param0->unk_00.unk_00 - (param0->unk_2C / 2);
-    v1 = param0->unk_14.unk_00 - (param0->unk_2D / 2);
-    v4 = v3 + param0->unk_2C;
-    v2 = v1 + param0->unk_2D;
+    v3 = param0->xAnimation.current - (param0->width / 2);
+    v1 = param0->yAnimation.current - (param0->height / 2);
+    v4 = v3 + param0->width;
+    v2 = v1 + param0->height;
 
-    FrontierFacilities_FillWindowRect(param0->unk_28, v1, v2, v3, v4, param0->unk_2F);
+    FrontierFacilities_FillWindowRect(param0->window, v1, v2, v3, v4, param0->color);
 
     return v0;
 }
@@ -304,7 +304,7 @@ FrontierFacilitiesWipeManager *FrontierFacilities_NewWipeManager(enum HeapID hea
     memset(v0, 0, sizeof(FrontierFacilitiesWipeManager));
 
     for (v1 = 0; v1 < ((256 / 16) * (192 / 32)); v1++) {
-        v0->unk_04[v1] = FrontierFacilities_NewWipeRect(heapID);
+        v0->rects[v1] = FrontierFacilities_NewWipeRect(heapID);
     }
 
     return v0;
@@ -315,7 +315,7 @@ void FrontierFacilities_FreeWipeManager(FrontierFacilitiesWipeManager *param0)
     int v0;
 
     for (v0 = 0; v0 < ((256 / 16) * (192 / 32)); v0++) {
-        FrontierFacilities_FreeWipeRect(param0->unk_04[v0]);
+        FrontierFacilities_FreeWipeRect(param0->rects[v0]);
     }
 
     Heap_Free(param0);
@@ -323,17 +323,17 @@ void FrontierFacilities_FreeWipeManager(FrontierFacilitiesWipeManager *param0)
 
 void FrontierFacilities_StartWipe(FrontierFacilitiesWipeManager *param0, u8 param1, u8 param2, Window *param3, u8 param4)
 {
-    param0->unk_00 = param3;
-    param0->unk_18C = param4;
-    param0->unk_189 = param1;
-    param0->unk_18A = param2;
-    param0->unk_184 = 0;
-    param0->unk_185 = 0;
-    param0->unk_186 = 0;
-    param0->unk_187 = 0;
-    param0->unk_188 = 0;
-    param0->unk_18B = 0;
-    param0->unk_18D = 1;
+    param0->window = param3;
+    param0->rectColor = param4;
+    param0->rectSteps = param1;
+    param0->stepDelay = param2;
+    param0->rectCount = 0;
+    param0->waveIndex = 0;
+    param0->row = 0;
+    param0->direction = 0;
+    param0->completedCount = 0;
+    param0->delayCounter = 0;
+    param0->active = 1;
 }
 
 static const u8 sHorizontalWipeOrder[][(256 / 16)] = {
@@ -347,65 +347,65 @@ BOOL FrontierFacilities_UpdateHorizontalWipe(FrontierFacilitiesWipeManager *para
     int v4;
     BOOL v5;
 
-    if (param0->unk_18D == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    if (param0->unk_184 < ((256 / 16) * (192 / 32))) {
-        param0->unk_18B--;
+    if (param0->rectCount < ((256 / 16) * (192 / 32))) {
+        param0->delayCounter--;
 
-        if (param0->unk_18B <= 0) {
-            param0->unk_18B = param0->unk_18A;
+        if (param0->delayCounter <= 0) {
+            param0->delayCounter = param0->stepDelay;
 
-            v0 = 32 * (sHorizontalWipeOrder[param0->unk_187][param0->unk_185] * 1);
+            v0 = 32 * (sHorizontalWipeOrder[param0->direction][param0->waveIndex] * 1);
             v1 = v0 + 32;
-            v2 = param0->unk_186;
+            v2 = param0->row;
             v3 = (16 / 2) + (v2 * 16);
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184], v0, v1, v3, v3, param0->unk_189, param0->unk_00, 32, 16, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount], v0, v1, v3, v3, param0->rectSteps, param0->window, 32, 16, param0->rectColor);
 
-            v0 = 32 * (sHorizontalWipeOrder[param0->unk_187 ^ 1][param0->unk_185] * 1);
+            v0 = 32 * (sHorizontalWipeOrder[param0->direction ^ 1][param0->waveIndex] * 1);
             v1 = v0 + 32;
-            v2 = ((192 / 16) / 2) - param0->unk_186 - 1;
+            v2 = ((192 / 16) / 2) - param0->row - 1;
             v3 = (16 / 2) + (v2 * 16);
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184 + 1], v0, v1, v3, v3, param0->unk_189, param0->unk_00, 32, 16, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount + 1], v0, v1, v3, v3, param0->rectSteps, param0->window, 32, 16, param0->rectColor);
 
-            v0 = 32 * (sHorizontalWipeOrder[param0->unk_187][param0->unk_185] * 1);
+            v0 = 32 * (sHorizontalWipeOrder[param0->direction][param0->waveIndex] * 1);
             v1 = v0 + 32;
-            v2 = ((192 / 16) / 2) + param0->unk_186;
+            v2 = ((192 / 16) / 2) + param0->row;
             v3 = (16 / 2) + (v2 * 16);
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184 + 2], v0, v1, v3, v3, param0->unk_189, param0->unk_00, 32, 16, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount + 2], v0, v1, v3, v3, param0->rectSteps, param0->window, 32, 16, param0->rectColor);
 
-            v0 = 32 * (sHorizontalWipeOrder[param0->unk_187 ^ 1][param0->unk_185] * 1);
+            v0 = 32 * (sHorizontalWipeOrder[param0->direction ^ 1][param0->waveIndex] * 1);
             v1 = v0 + 32;
-            v2 = (192 / 16) - param0->unk_186 - 1;
+            v2 = (192 / 16) - param0->row - 1;
             v3 = (16 / 2) + (v2 * 16);
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184 + 3], v0, v1, v3, v3, param0->unk_189, param0->unk_00, 32, 16, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount + 3], v0, v1, v3, v3, param0->rectSteps, param0->window, 32, 16, param0->rectColor);
 
-            param0->unk_184 += 4;
-            param0->unk_185++;
+            param0->rectCount += 4;
+            param0->waveIndex++;
 
-            if ((param0->unk_185 % (256 / 32)) == 0) {
-                param0->unk_187 ^= 1;
-                param0->unk_186++;
-                param0->unk_185 = 0;
+            if ((param0->waveIndex % (256 / 32)) == 0) {
+                param0->direction ^= 1;
+                param0->row++;
+                param0->waveIndex = 0;
             }
         }
     }
 
-    for (v4 = param0->unk_188; v4 < param0->unk_184; v4++) {
-        v5 = FrontierFacilities_UpdateWipeRect(param0->unk_04[v4]);
+    for (v4 = param0->completedCount; v4 < param0->rectCount; v4++) {
+        v5 = FrontierFacilities_UpdateWipeRect(param0->rects[v4]);
 
         if (v5 == 1) {
-            param0->unk_188++;
+            param0->completedCount++;
         }
     }
 
-    if ((param0->unk_188 >= ((256 / 16) * (192 / 32))) && (v5 == 1)) {
-        param0->unk_18D = 0;
+    if ((param0->completedCount >= ((256 / 16) * (192 / 32))) && (v5 == 1)) {
+        param0->active = 0;
         return 1;
     }
 
@@ -423,65 +423,65 @@ BOOL FrontierFacilities_UpdateVerticalWipe(FrontierFacilitiesWipeManager *param0
     int v3;
     BOOL v4;
 
-    if (param0->unk_18D == 0) {
+    if (param0->active == 0) {
         return 1;
     }
 
-    if (param0->unk_184 < ((256 / 16) * (192 / 32))) {
-        param0->unk_18B--;
+    if (param0->rectCount < ((256 / 16) * (192 / 32))) {
+        param0->delayCounter--;
 
-        if (param0->unk_18B <= 0) {
-            param0->unk_18B = param0->unk_18A;
+        if (param0->delayCounter <= 0) {
+            param0->delayCounter = param0->stepDelay;
 
-            v0 = param0->unk_185;
+            v0 = param0->waveIndex;
             v0 = (16 / 2) + (v0 * 16);
-            v1 = 32 * (sVerticalWipeOrder[param0->unk_187][param0->unk_186] * 1);
+            v1 = 32 * (sVerticalWipeOrder[param0->direction][param0->row] * 1);
             v2 = v1 + 32;
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184], v0, v0, v1, v2, param0->unk_189, param0->unk_00, 16, 32, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount], v0, v0, v1, v2, param0->rectSteps, param0->window, 16, 32, param0->rectColor);
 
-            v0 = ((256 / 16) / 2) - param0->unk_185 - 1;
+            v0 = ((256 / 16) / 2) - param0->waveIndex - 1;
             v0 = (16 / 2) + (v0 * 16);
-            v1 = 32 * (sVerticalWipeOrder[param0->unk_187 ^ 1][param0->unk_186] * 1);
+            v1 = 32 * (sVerticalWipeOrder[param0->direction ^ 1][param0->row] * 1);
             v2 = v1 + 32;
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184 + 1], v0, v0, v1, v2, param0->unk_189, param0->unk_00, 16, 32, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount + 1], v0, v0, v1, v2, param0->rectSteps, param0->window, 16, 32, param0->rectColor);
 
-            v0 = ((256 / 16) / 2) + param0->unk_185;
+            v0 = ((256 / 16) / 2) + param0->waveIndex;
             v0 = (16 / 2) + (v0 * 16);
-            v1 = 32 * (sVerticalWipeOrder[param0->unk_187][param0->unk_186] * 1);
+            v1 = 32 * (sVerticalWipeOrder[param0->direction][param0->row] * 1);
             v2 = v1 + 32;
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184 + 2], v0, v0, v1, v2, param0->unk_189, param0->unk_00, 16, 32, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount + 2], v0, v0, v1, v2, param0->rectSteps, param0->window, 16, 32, param0->rectColor);
 
-            v0 = (256 / 16) - param0->unk_185 - 1;
+            v0 = (256 / 16) - param0->waveIndex - 1;
             v0 = (16 / 2) + (v0 * 16);
-            v1 = 32 * (sVerticalWipeOrder[param0->unk_187 ^ 1][param0->unk_186] * 1);
+            v1 = 32 * (sVerticalWipeOrder[param0->direction ^ 1][param0->row] * 1);
             v2 = v1 + 32;
 
-            FrontierFacilities_StartWipeRect(param0->unk_04[param0->unk_184 + 3], v0, v0, v1, v2, param0->unk_189, param0->unk_00, 16, 32, param0->unk_18C);
+            FrontierFacilities_StartWipeRect(param0->rects[param0->rectCount + 3], v0, v0, v1, v2, param0->rectSteps, param0->window, 16, 32, param0->rectColor);
 
-            param0->unk_184 += 4;
-            param0->unk_186++;
+            param0->rectCount += 4;
+            param0->row++;
 
-            if ((param0->unk_186 % (192 / 32)) == 0) {
-                param0->unk_187 ^= 1;
-                param0->unk_185++;
-                param0->unk_186 = 0;
+            if ((param0->row % (192 / 32)) == 0) {
+                param0->direction ^= 1;
+                param0->waveIndex++;
+                param0->row = 0;
             }
         }
     }
 
-    for (v3 = param0->unk_188; v3 < param0->unk_184; v3++) {
-        v4 = FrontierFacilities_UpdateWipeRect(param0->unk_04[v3]);
+    for (v3 = param0->completedCount; v3 < param0->rectCount; v3++) {
+        v4 = FrontierFacilities_UpdateWipeRect(param0->rects[v3]);
 
         if (v4 == 1) {
-            param0->unk_188++;
+            param0->completedCount++;
         }
     }
 
-    if ((param0->unk_188 >= ((256 / 16) * (192 / 32))) && (v4 == 1)) {
-        param0->unk_18D = 0;
+    if ((param0->completedCount >= ((256 / 16) * (192 / 32))) && (v4 == 1)) {
+        param0->active = 0;
         return 1;
     }
 
@@ -497,20 +497,20 @@ static void FrontierFacilities_UpdateScreenScroll(SysTask *param0, void *param1)
 {
     FrontierFacilitiesScreenScroll *v0 = param1;
 
-    if (v0->unk_08 >= 2) {
+    if (v0->vBlankCounter >= 2) {
         ScreenScrollManager_SwapBuffers(v0->screenScrollMgr);
-        v0->unk_08 = 0;
+        v0->vBlankCounter = 0;
     }
 
     ScreenScrollManager_RestartDMA(v0->screenScrollMgr);
-    v0->unk_08++;
+    v0->vBlankCounter++;
 }
 
 void FrontierFacilities_InitScreenScroll(FrontierFacilitiesScreenScroll *param0, enum HeapID heapID)
 {
     param0->screenScrollMgr = ScreenScrollManager_New(heapID);
-    param0->unk_08 = 0;
-    param0->unk_04 = FrontierFacilities_CreateScreenScrollTask(param0);
+    param0->vBlankCounter = 0;
+    param0->task = FrontierFacilities_CreateScreenScrollTask(param0);
 }
 
 void FrontierFacilities_BeginScreenScroll(FrontierFacilitiesScreenScroll *param0, u8 param1, u8 param2, u16 param3, fx32 param4, s16 param5, u32 param6, u32 param7, u32 param8)
@@ -522,10 +522,10 @@ static void FrontierFacilities_AfterVBlankCallback(SysTask *param0, void *param1
 {
     FrontierFacilitiesVBlankCallbacks *v0 = param1;
 
-    if (v0->unk_08) {
-        v0->unk_0C = 1;
+    if (v0->enabled) {
+        v0->afterVBlankPending = 1;
 
-        v0->unk_10(v0->unk_18);
+        v0->afterVBlankCallback(v0->data);
     } else {
         BufferManager_StopDMA();
     }
@@ -535,10 +535,10 @@ static void FrontierFacilities_OnVBlankCallback(SysTask *param0, void *param1)
 {
     FrontierFacilitiesVBlankCallbacks *v0 = param1;
 
-    if (v0->unk_08 && v0->unk_0C) {
-        v0->unk_14(v0->unk_18);
+    if (v0->enabled && v0->afterVBlankPending) {
+        v0->onVBlankCallback(v0->data);
 
-        v0->unk_0C = 0;
+        v0->afterVBlankPending = 0;
     }
 }
 
@@ -546,25 +546,25 @@ static void FrontierFacilities_InitVBlankCallbacks(FrontierFacilitiesVBlankCallb
 {
     GF_ASSERT(param0);
 
-    param0->unk_08 = 1;
-    param0->unk_0C = 0;
-    param0->unk_18 = param1;
-    param0->unk_10 = param2;
-    param0->unk_14 = param3;
-    param0->unk_04 = SysTask_ExecuteAfterVBlank(FrontierFacilities_AfterVBlankCallback, param0, 0);
-    param0->unk_00 = SysTask_ExecuteOnVBlank(FrontierFacilities_OnVBlankCallback, param0, 0);
+    param0->enabled = 1;
+    param0->afterVBlankPending = 0;
+    param0->data = param1;
+    param0->afterVBlankCallback = param2;
+    param0->onVBlankCallback = param3;
+    param0->afterVBlankTask = SysTask_ExecuteAfterVBlank(FrontierFacilities_AfterVBlankCallback, param0, 0);
+    param0->onVBlankTask = SysTask_ExecuteOnVBlank(FrontierFacilities_OnVBlankCallback, param0, 0);
 }
 
 static void FrontierFacilities_FreeVBlankCallbacks(FrontierFacilitiesVBlankCallbacks *param0)
 {
     GF_ASSERT(param0);
 
-    if (param0->unk_04 != NULL) {
-        SysTask_Done(param0->unk_04);
+    if (param0->afterVBlankTask != NULL) {
+        SysTask_Done(param0->afterVBlankTask);
     }
 
-    if (param0->unk_00 != NULL) {
-        SysTask_Done(param0->unk_00);
+    if (param0->onVBlankTask != NULL) {
+        SysTask_Done(param0->onVBlankTask);
     }
 
     BufferManager_StopDMA();
@@ -575,7 +575,7 @@ static void FrontierFacilities_TransferAffineData(FrontierFacilitiesAffineBuffer
     const void *v0 = BufferManager_GetReadBuffer(param0->bufferManager);
 
     BufferManager_StopDMA();
-    BufferManager_StartDMA(v0, (void *)param0->unk_3020, (sizeof(FrontierFacilitiesAffineEntry)), 1);
+    BufferManager_StartDMA(v0, (void *)param0->destAddress, (sizeof(FrontierFacilitiesAffineEntry)), 1);
 }
 
 static void FrontierFacilities_SwapAffineBuffers(void *param0)
@@ -601,17 +601,17 @@ FrontierFacilitiesAffineBuffer *FrontierFacilities_NewAffineBuffer(u32 param0, F
     memset(v0, 0, sizeof(FrontierFacilitiesAffineBuffer));
 
     GF_ASSERT(v0);
-    v0->bufferManager = BufferManager_New(heapID, v0->unk_20, v0->unk_1820);
+    v0->bufferManager = BufferManager_New(heapID, v0->bufferA, v0->bufferB);
 
     GF_ASSERT(v0->bufferManager);
-    v0->unk_3020 = param0;
+    v0->destAddress = param0;
 
     for (v1 = 0; v1 < 192; v1++) {
-        v0->unk_20[v1] = *param1;
-        v0->unk_1820[v1] = *param1;
+        v0->bufferA[v1] = *param1;
+        v0->bufferB[v1] = *param1;
     }
 
-    FrontierFacilities_InitVBlankCallbacks(&v0->unk_00, v0, FrontierFacilities_SwapAffineBuffers, FrontierFacilities_TransferAffineDataCallback);
+    FrontierFacilities_InitVBlankCallbacks(&v0->vBlankCallbacks, v0, FrontierFacilities_SwapAffineBuffers, FrontierFacilities_TransferAffineDataCallback);
     return v0;
 }
 
@@ -619,7 +619,7 @@ void FrontierFacilities_FreeAffineBuffer(FrontierFacilitiesAffineBuffer *param0)
 {
     GF_ASSERT(param0);
 
-    FrontierFacilities_FreeVBlankCallbacks(&param0->unk_00);
+    FrontierFacilities_FreeVBlankCallbacks(&param0->vBlankCallbacks);
 
     if (param0->bufferManager != NULL) {
         BufferManager_Delete(param0->bufferManager);

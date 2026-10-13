@@ -58,7 +58,7 @@ BattleCastle *BattleCastle_Init(SaveData *saveData, u16 resumingFromSave, u8 cha
     castle->unused = 11;
     castle->playersParty = Party_New(HEAP_ID_FIELD2);
     castle->opponentsParty = Party_New(HEAP_ID_FIELD2);
-    castle->unk_A20 = param6;
+    castle->appResultPtr = param6;
 
     BattleCastleSave *castleSave = castle->castleSave;
     BattleCastlePersistentSave *persistentSave = BattleCastlePersistentSave_Get(saveData);

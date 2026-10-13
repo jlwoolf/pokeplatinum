@@ -254,7 +254,7 @@ BattleArcade *BattleArcade_Init(SaveData *saveData, u16 resumingFromSave, u8 cha
     arcade->unused = 11;
     arcade->playersParty = Party_New(HEAP_ID_FIELD2);
     arcade->opponentsParty = Party_New(HEAP_ID_FIELD2);
-    arcade->unk_A80 = param6;
+    arcade->appResultPtr = param6;
     arcade->activeEffect = NUM_ARCADE_EFFECTS;
 
     BattleArcadeSave *arcadeSave = arcade->arcadeSave;

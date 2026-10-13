@@ -15,20 +15,20 @@
 #include "res/graphics/frontier/backgrounds/frontier_backgrounds.naix"
 
 typedef struct {
-    SysTask *unk_00;
-    BgConfig *unk_04;
-    u16 unk_08[2][2048];
-    u8 unk_2008[2][65536];
-    u8 unk_22008;
-    u8 unk_22009;
+    SysTask *task;
+    BgConfig *bgConfig;
+    u16 tilemaps[2][2048];
+    u8 tiles[2][65536];
+    u8 timer;
+    u8 tileIndex;
 } FrontierFacilitiesBattleHallBackground;
 
 typedef struct {
-    SysTask *unk_00;
-    PaletteData *unk_04;
-    u16 unk_08[3][16];
-    u8 unk_68;
-    u8 unk_69;
+    SysTask *task;
+    PaletteData *plttData;
+    u16 palettes[3][16];
+    u8 paletteIndex;
+    u8 timer;
 } FrontierFacilitiesBattleHallPalette;
 
 typedef struct {
@@ -44,9 +44,9 @@ typedef struct {
 } FrontierFacilitiesBattleHallSub1;
 
 typedef struct FrontierFacilitiesBattleHallBattleRoom_t {
-    FrontierFacilitiesBattleHallBackground *unk_00;
-    FrontierFacilitiesBattleHallPalette *unk_04;
-    FrontierFacilitiesBattleHallSub1 *unk_08;
+    FrontierFacilitiesBattleHallBackground *background;
+    FrontierFacilitiesBattleHallPalette *palette;
+    FrontierFacilitiesBattleHallSub1 *sub1;
 } FrontierFacilitiesBattleHallBattleRoom;
 
 static FrontierFacilitiesBattleHallBackground *FrontierFacilities_NewBattleHallBackground(BgConfig *param0);
@@ -66,8 +66,8 @@ FrontierFacilitiesBattleHallBattleRoom *FrontierFacilities_NewBattleHallBattleRo
     FrontierFacilitiesBattleHallBattleRoom *v0 = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesBattleHallBattleRoom));
     MI_CpuClear8(v0, sizeof(FrontierFacilitiesBattleHallBattleRoom));
 
-    v0->unk_00 = FrontierFacilities_NewBattleHallBackground(param0);
-    v0->unk_04 = FrontierFacilities_NewBattleHallPalette(param1);
+    v0->background = FrontierFacilities_NewBattleHallBackground(param0);
+    v0->palette = FrontierFacilities_NewBattleHallPalette(param1);
 
     G2_SetBlendAlpha(GX_BLEND_PLANEMASK_BG2, GX_BLEND_BGALL | GX_BLEND_PLANEMASK_OBJ, 8, 9);
 
@@ -76,8 +76,8 @@ FrontierFacilitiesBattleHallBattleRoom *FrontierFacilities_NewBattleHallBattleRo
 
 void FrontierFacilities_FreeBattleHallBattleRoom(FrontierFacilitiesBattleHallBattleRoom *param0)
 {
-    FrontierFacilities_FreeBattleHallBackground(param0->unk_00);
-    FrontierFacilities_FreeBattleHallPalette(param0->unk_04);
+    FrontierFacilities_FreeBattleHallBackground(param0->background);
+    FrontierFacilities_FreeBattleHallPalette(param0->palette);
     Heap_Free(param0);
 }
 
@@ -89,7 +89,7 @@ static FrontierFacilitiesBattleHallBackground *FrontierFacilities_NewBattleHallB
 
     v0 = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesBattleHallBackground));
     MI_CpuClear8(v0, sizeof(FrontierFacilitiesBattleHallBackground));
-    v0->unk_04 = param0;
+    v0->bgConfig = param0;
 
     {
         NARC *v1;
@@ -101,7 +101,7 @@ static FrontierFacilitiesBattleHallBackground *FrontierFacilities_NewBattleHallB
 
         for (v4 = 0; v4 < 2; v4++) {
             v2 = Graphics_GetScrnDataFromOpenNARC(v1, sBattleHallBattleRoomTilemaps[v4], 1, &v3, HEAP_ID_94);
-            MI_CpuCopy32(v3->rawData, v0->unk_08[v4], 0x1000);
+            MI_CpuCopy32(v3->rawData, v0->tilemaps[v4], 0x1000);
             Heap_Free(v2);
         }
 
@@ -116,25 +116,25 @@ static FrontierFacilitiesBattleHallBackground *FrontierFacilities_NewBattleHallB
         v5 = NARC_ctor(NARC_INDEX_FRONTIER_BACKGROUNDS, HEAP_ID_94);
 
         v6 = Graphics_GetCharDataFromOpenNARC(v5, battle_hall_battle_room_NCGR_lz, 1, &v7, HEAP_ID_94);
-        MI_CpuCopy32(v7->pRawData, v0->unk_2008[0], v7->szByte);
+        MI_CpuCopy32(v7->pRawData, v0->tiles[0], v7->szByte);
 
         Heap_Free(v6);
 
         v6 = Graphics_GetCharDataFromOpenNARC(v5, battle_hall_battle_room_2_NCGR_lz, 1, &v7, HEAP_ID_94);
-        MI_CpuCopy32(v7->pRawData, v0->unk_2008[1], v7->szByte);
+        MI_CpuCopy32(v7->pRawData, v0->tiles[1], v7->szByte);
 
         Heap_Free(v6);
         NARC_dtor(v5);
     }
 
-    v0->unk_00 = SysTask_Start(FrontierFacilities_BattleHallBackgroundTask, v0, 80000 - 500);
+    v0->task = SysTask_Start(FrontierFacilities_BattleHallBackgroundTask, v0, 80000 - 500);
 
     return v0;
 }
 
 static void FrontierFacilities_FreeBattleHallBackground(FrontierFacilitiesBattleHallBackground *param0)
 {
-    SysTask_Done(param0->unk_00);
+    SysTask_Done(param0->task);
     Heap_Free(param0);
 }
 
@@ -143,21 +143,21 @@ static void FrontierFacilities_BattleHallBackgroundTask(SysTask *param0, void *p
     u32 v0;
     FrontierFacilitiesBattleHallBackground *v1 = param1;
 
-    if (v1->unk_22008 < 12) {
-        v1->unk_22008++;
+    if (v1->timer < 12) {
+        v1->timer++;
         return;
     }
 
-    v1->unk_22008 = 0;
+    v1->timer = 0;
 
     {
-        Bg_LoadTiles(v1->unk_04, 3, v1->unk_2008[v1->unk_22009], 0x10000, 0);
+        Bg_LoadTiles(v1->bgConfig, 3, v1->tiles[v1->tileIndex], 0x10000, 0);
     }
 
-    Bg_LoadTilemapBuffer(v1->unk_04, 3, v1->unk_08[v1->unk_22009], 0x1000);
-    Bg_ScheduleTilemapTransfer(v1->unk_04, 3);
+    Bg_LoadTilemapBuffer(v1->bgConfig, 3, v1->tilemaps[v1->tileIndex], 0x1000);
+    Bg_ScheduleTilemapTransfer(v1->bgConfig, 3);
 
-    v1->unk_22009 ^= 1;
+    v1->tileIndex ^= 1;
 }
 
 static FrontierFacilitiesBattleHallPalette *FrontierFacilities_NewBattleHallPalette(PaletteData *param0)
@@ -165,24 +165,24 @@ static FrontierFacilitiesBattleHallPalette *FrontierFacilities_NewBattleHallPale
     FrontierFacilitiesBattleHallPalette *v0 = Heap_Alloc(HEAP_ID_94, sizeof(FrontierFacilitiesBattleHallPalette));
     MI_CpuClear8(v0, sizeof(FrontierFacilitiesBattleHallPalette));
 
-    v0->unk_04 = param0;
-    v0->unk_68 = 2;
+    v0->plttData = param0;
+    v0->paletteIndex = 2;
 
     {
         u16 *v1;
 
         v1 = PaletteData_GetUnfadedBuffer(param0, 0);
-        MI_CpuCopy16(&v1[16 * 5], v0->unk_08, 3 * 16 * sizeof(u16));
+        MI_CpuCopy16(&v1[16 * 5], v0->palettes, 3 * 16 * sizeof(u16));
     }
 
-    v0->unk_00 = SysTask_Start(FrontierFacilities_BattleHallPaletteTask, v0, (80000 - 500) + 1);
+    v0->task = SysTask_Start(FrontierFacilities_BattleHallPaletteTask, v0, (80000 - 500) + 1);
 
     return v0;
 }
 
 static void FrontierFacilities_FreeBattleHallPalette(FrontierFacilitiesBattleHallPalette *param0)
 {
-    SysTask_Done(param0->unk_00);
+    SysTask_Done(param0->task);
     Heap_Free(param0);
 }
 
@@ -190,16 +190,16 @@ static void FrontierFacilities_BattleHallPaletteTask(SysTask *param0, void *para
 {
     FrontierFacilitiesBattleHallPalette *v0 = param1;
 
-    if (v0->unk_69 < 8) {
-        v0->unk_69++;
+    if (v0->timer < 8) {
+        v0->timer++;
         return;
     }
 
-    v0->unk_69 = 0;
-    PaletteData_LoadBuffer(v0->unk_04, v0->unk_08[v0->unk_68], 0, PLTT_DEST(6), PALETTE_SIZE_BYTES);
-    v0->unk_68++;
+    v0->timer = 0;
+    PaletteData_LoadBuffer(v0->plttData, v0->palettes[v0->paletteIndex], 0, PLTT_DEST(6), PALETTE_SIZE_BYTES);
+    v0->paletteIndex++;
 
-    if (v0->unk_68 >= 3) {
-        v0->unk_68 = 0;
+    if (v0->paletteIndex >= 3) {
+        v0->paletteIndex = 0;
     }
 }

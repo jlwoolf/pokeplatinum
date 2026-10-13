@@ -108,7 +108,7 @@ typedef struct FrontierBrainEncounterEffect {
     s16 xAnchor;
     s16 yAnchor;
     u8 facility;
-    FontOAMManager *unk_30;
+    FontOAMManager *fontOAMManager;
     SysTask *vBlankCallback;
     int bannerPaletteTimer;
     int bannerPaletteIdx;
@@ -317,7 +317,7 @@ static BOOL FrontierBrainEncounterEffect_MainLoop(FrontierBrainEncounterEffect *
         int plttOffset = SpriteSystem_LoadPaletteBufferFromOpenNarc(encEffect->currentBannerPalette, PLTTBUF_MAIN_OBJ, encEffect->spriteSys, encEffect->spriteMan, encEffect->narc, _shared_enc_fade_NCLR, 0, TRUE, NNS_G2D_VRAM_TYPE_2DMAIN, ID_NAME_PLTT);
 
         encEffect->plttOffsets |= 1 << plttOffset;
-        encEffect->unk_30 = FontOAMManager_New(4, HEAP_ID_94);
+        encEffect->fontOAMManager = FontOAMManager_New(4, HEAP_ID_94);
 
         MessageLoader *msgLoader = MessageLoader_Init(MSG_LOADER_LOAD_ON_DEMAND, NARC_INDEX_MSGDATA__PL_MSG, TEXT_BANK_NPC_TRAINER_NAMES, heapID);
         String *nameStr = MessageLoader_GetNewString(msgLoader, encounterParams->name);
@@ -455,7 +455,7 @@ static BOOL FrontierBrainEncounterEffect_MainLoop(FrontierBrainEncounterEffect *
 
         FreeFrontierBrainNameObject(&anims->brainName);
 
-        FontOAMManager_Free(encEffect->unk_30);
+        FontOAMManager_Free(encEffect->fontOAMManager);
         Sprite_DeleteAndFreeResources(anims->mugshotSprite);
 
         FreeVsSprites(&anims->vsSpriteAnimation);
@@ -501,7 +501,7 @@ static void CreateFrontierBrainNameObject(FrontierBrainEncounterEffect *encEffec
 
     y -= 8;
 
-    v0.fontOAMManager = encEffect->unk_30;
+    v0.fontOAMManager = encEffect->fontOAMManager;
     v0.window = &window;
     v0.spriteList = SpriteManager_GetSpriteList(spriteMan);
     v0.paletteProxy = SpriteManager_FindPlttResourceProxy(spriteMan, plttResourceID);

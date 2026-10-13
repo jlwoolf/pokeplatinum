@@ -341,8 +341,8 @@ u16 BattleArcade_GetCurrentRound(BattleArcade *battleArcade)
     u16 currentRound = battleArcade->currentRound;
 
     if (BattleArcade_IsMultiPlayerChallenge(battleArcade->challengeType) == TRUE) {
-        if (battleArcade->unk_A76 > battleArcade->currentRound) {
-            currentRound = battleArcade->unk_A76;
+        if (battleArcade->partnersRound > battleArcade->currentRound) {
+            currentRound = battleArcade->partnersRound;
         }
     }
 

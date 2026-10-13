@@ -650,8 +650,8 @@ u16 BattleFactory_GetCurrentRound(BattleFactory *battleFactory)
     u16 currentRound = battleFactory->currentRound;
 
     if (BattleFactory_IsMultiplayerChallenge(battleFactory->challengeType) == TRUE) {
-        if (battleFactory->unk_57E > battleFactory->currentRound) {
-            currentRound = battleFactory->unk_57E;
+        if (battleFactory->partnersRound > battleFactory->currentRound) {
+            currentRound = battleFactory->partnersRound;
         }
     }
 
