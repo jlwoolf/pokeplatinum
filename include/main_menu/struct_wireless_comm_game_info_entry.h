@@ -5,8 +5,8 @@
 #include "main_menu/struct_wireless_comm_game_info_config.h"
 
 typedef struct {
-    WirelessCommGameInfoHeader unk_00;
-    WirelessCommGameInfoConfig unk_04;
+    WirelessCommGameInfoHeader header;
+    WirelessCommGameInfoConfig config;
 } WirelessCommGameInfoEntry;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_02233268_SUB1_H

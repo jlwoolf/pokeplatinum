@@ -5,8 +5,8 @@
 #include "main_menu/struct_wireless_comm_connect_data_config.h"
 
 typedef struct {
-    WirelessCommConnectDataVersion unk_00;
-    WirelessCommConnectDataConfig unk_04;
+    WirelessCommConnectDataVersion version;
+    WirelessCommConnectDataConfig config;
 } WirelessCommConnectDataHead;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_022339EC_SUB1_H

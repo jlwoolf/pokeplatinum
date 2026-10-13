@@ -3,16 +3,16 @@
 
 typedef struct {
     void *unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0C;
-    u32 unk_10;
-    u32 unk_14;
-    vu8 unk_18;
-    vu8 unk_19;
-    u8 unk_1A;
-    u8 unk_1B;
-    u8 unk_1C;
+    void *buffer;
+    void *sendBuffer;
+    void *recvBuffer;
+    u32 sendSize;
+    u32 recvSize;
+    vu8 mode;
+    vu8 state;
+    u8 timer;
+    u8 retryCount;
+    u8 port;
 } WirelessCommTransfer;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_02232AC8_H

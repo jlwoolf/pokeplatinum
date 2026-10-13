@@ -2,8 +2,8 @@
 #define POKEPLATINUM_STRUCT_MAIN_MENU_02233674_SUB4_H
 
 typedef struct {
-    u32 unk_00_0 : 8;
-    u32 unk_00_8 : 24;
+    u32 headerSize : 8;
+    u32 dataSize : 24;
 } WirelessCommPacketTail;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_02233674_SUB4_H

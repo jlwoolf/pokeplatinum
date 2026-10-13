@@ -7,10 +7,10 @@
 #include "main_menu/struct_wireless_comm_packet_tail.h"
 
 typedef struct {
-    WirelessCommPacketHeader unk_00;
-    WirelessCommPacketConfig unk_04;
-    WirelessCommPacketMeta unk_08;
-    WirelessCommPacketTail unk_0C;
+    WirelessCommPacketHeader header;
+    WirelessCommPacketConfig config;
+    WirelessCommPacketMeta meta;
+    WirelessCommPacketTail tail;
 } WirelessCommPacket;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_02233674_H

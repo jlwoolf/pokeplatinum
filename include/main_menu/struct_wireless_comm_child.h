@@ -5,12 +5,12 @@
 #include "main_menu/struct_wireless_comm_bssid_low.h"
 
 typedef struct {
-    WirelessCommBssidHigh unk_00;
-    WirelessCommBssidLow unk_04;
-    u16 unk_06;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0A;
+    WirelessCommBssidHigh bssidHigh;
+    WirelessCommBssidLow bssidLow;
+    u16 aid;
+    u8 dataRequested;
+    u8 pendingRequests;
+    u8 isConnected;
     u8 unk_0B;
 } WirelessCommChild;
 

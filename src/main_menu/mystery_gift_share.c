@@ -23,17 +23,17 @@
 typedef void (*MysteryGiftShareStateFunc)(void);
 
 typedef struct {
-    MysteryGiftAppData *unk_00;
-    MATHRandContext32 unk_04;
-    SysTask *unk_1C;
-    MysteryGiftShareStateFunc unk_20;
-    u16 unk_24;
+    MysteryGiftAppData *appData;
+    MATHRandContext32 rand;
+    SysTask *task;
+    MysteryGiftShareStateFunc stateFunc;
+    u16 stateFuncArg;
     u8 unk_26;
-    u8 unk_27;
-    TrainerInfo *unk_28[16];
-    WonderCard unk_68;
-    u8 unk_3C0;
-    u8 unk_3C1[16];
+    u8 eventDataIndex;
+    TrainerInfo *playerTrainerInfo[16];
+    WonderCard wonderCard;
+    u8 hasReceivedEventData;
+    u8 playerReceivedEventData[16];
 } MysteryGiftShareContext;
 
 static void MysteryGiftShare_Task(SysTask *param0, void *param1);
@@ -60,17 +60,17 @@ static void MysteryGiftShare_Init(MysteryGiftAppData *param0)
     sMysteryGiftShare = (MysteryGiftShareContext *)Heap_Alloc(HEAP_ID_COMMUNICATION, sizeof(MysteryGiftShareContext));
     MI_CpuFill8(sMysteryGiftShare, 0, sizeof(MysteryGiftShareContext));
 
-    sMysteryGiftShare->unk_24 = 50;
-    sMysteryGiftShare->unk_1C = SysTask_Start(MysteryGiftShare_Task, NULL, 10);
-    sMysteryGiftShare->unk_00 = param0;
+    sMysteryGiftShare->stateFuncArg = 50;
+    sMysteryGiftShare->task = SysTask_Start(MysteryGiftShare_Task, NULL, 10);
+    sMysteryGiftShare->appData = param0;
 
-    CommSys_Seed(&sMysteryGiftShare->unk_04);
+    CommSys_Seed(&sMysteryGiftShare->rand);
 }
 
 static void MysteryGiftShare_SetStateFunc(MysteryGiftShareStateFunc param0, int param1)
 {
-    sMysteryGiftShare->unk_20 = param0;
-    sMysteryGiftShare->unk_24 = param1;
+    sMysteryGiftShare->stateFunc = param0;
+    sMysteryGiftShare->stateFuncArg = param1;
 }
 
 static void MysteryGiftShare_ServerStartStep(void)
@@ -82,7 +82,7 @@ static void MysteryGiftShare_ServerStartStep(void)
     }
 
     for (v0 = 0; v0 < 16; v0++) {
-        sMysteryGiftShare->unk_3C1[v0] = 0;
+        sMysteryGiftShare->playerReceivedEventData[v0] = 0;
     }
 
     CommInfo_SendPlayerInfo();
@@ -94,10 +94,10 @@ static void MysteryGiftShare_ServerRecordPlayersStep(void)
     int v0;
 
     for (v0 = 0; v0 < 16; v0++) {
-        if ((sMysteryGiftShare->unk_28[v0] == NULL) && (CommSys_IsPlayerConnected(v0) == 1)) {
-            sMysteryGiftShare->unk_28[v0] = CommInfo_TrainerInfo(v0);
+        if ((sMysteryGiftShare->playerTrainerInfo[v0] == NULL) && (CommSys_IsPlayerConnected(v0) == 1)) {
+            sMysteryGiftShare->playerTrainerInfo[v0] = CommInfo_TrainerInfo(v0);
 
-            if (sMysteryGiftShare->unk_28[v0]) {
+            if (sMysteryGiftShare->playerTrainerInfo[v0]) {
                 (void)0;
             }
         }
@@ -120,7 +120,7 @@ static void MysteryGiftShare_ServerIdleStep(void)
 
 static void MysteryGiftShare_ClientConnectStep(void)
 {
-    CommManager_ConnectBattleClient(sMysteryGiftShare->unk_27);
+    CommManager_ConnectBattleClient(sMysteryGiftShare->eventDataIndex);
     MysteryGiftShare_SetStateFunc(MysteryGiftShare_ClientWaitConnectStep, 0);
 }
 
@@ -130,7 +130,7 @@ static void MysteryGiftShare_ClientWaitConnectStep(void)
         return;
     }
 
-    sMysteryGiftShare->unk_3C0 = 0;
+    sMysteryGiftShare->hasReceivedEventData = 0;
 
     CommInfo_SendPlayerInfo();
     CommTiming_StartSync(0xAB);
@@ -148,8 +148,8 @@ void MysteryGiftShare_Task(SysTask *param0, void *param1)
     if (sMysteryGiftShare == NULL) {
         SysTask_Done(param0);
     } else {
-        if (sMysteryGiftShare->unk_20 != NULL) {
-            MysteryGiftShareStateFunc v0 = sMysteryGiftShare->unk_20;
+        if (sMysteryGiftShare->stateFunc != NULL) {
+            MysteryGiftShareStateFunc v0 = sMysteryGiftShare->stateFunc;
 
             if (!sMysteryGiftShare->unk_26) {
                 v0();
@@ -192,7 +192,7 @@ void MysteryGiftShare_StartClient(MysteryGiftAppData *param0, int param1)
 
 void MysteryGiftShare_ConnectToServer(int param0)
 {
-    sMysteryGiftShare->unk_27 = param0;
+    sMysteryGiftShare->eventDataIndex = param0;
     MysteryGiftShare_SetStateFunc(MysteryGiftShare_ClientConnectStep, 0);
 }
 
@@ -217,16 +217,16 @@ int MysteryGiftShare_FindReceivedEventData(MysteryGiftAppData *param0)
 
 void MysteryGiftShare_OnEventDataReceived(int param0, int param1, void *param2, void *param3)
 {
-    if (sMysteryGiftShare->unk_27 != param0) {
+    if (sMysteryGiftShare->eventDataIndex != param0) {
         return;
     }
 
-    sMysteryGiftShare->unk_3C0 = 1;
+    sMysteryGiftShare->hasReceivedEventData = 1;
 }
 
 int MysteryGiftShare_HasReceivedEventData(void)
 {
-    return sMysteryGiftShare->unk_3C0;
+    return sMysteryGiftShare->hasReceivedEventData;
 }
 
 int MysteryGiftShare_GetWonderCardSize(void)
@@ -236,12 +236,12 @@ int MysteryGiftShare_GetWonderCardSize(void)
 
 u8 *MysteryGiftShare_GetWonderCardBuffer(int param0, void *param1, int param2)
 {
-    return (u8 *)&sMysteryGiftShare->unk_68;
+    return (u8 *)&sMysteryGiftShare->wonderCard;
 }
 
 void MysteryGiftShare_OnPlayerInfoReceived(int param0, int param1, void *param2, void *param3)
 {
-    sMysteryGiftShare->unk_3C1[param0] = 1;
+    sMysteryGiftShare->playerReceivedEventData[param0] = 1;
 }
 
 void MysteryGiftShare_End(void)

@@ -141,7 +141,7 @@ typedef struct RangerLinkManager {
     int wirelessActive;
     enum RangerLinkRangerCommState wirelessState;
     int timeout;
-    int unk_164;
+    int selectedParentIndex;
     int unk_168;
     u8 wirelessCommBuffer[12288];
     ApplicationManager *appMan;
@@ -640,7 +640,7 @@ static void ShowPlayerCommsDetails(RangerLinkManager *param0)
     u8 macAddr[6];
     OS_GetMacAddress(macAddr);
     WirelessCommBssidHigh appNumber = WirelessComm_MakeBssidHigh(macAddr);
-    WirelessComm_SplitNumber(appNumber.unk_00.val2, &appNumHigh, &appNumLow);
+    WirelessComm_SplitNumber(appNumber.bssid.val2, &appNumHigh, &appNumLow);
 
     StringTemplate_SetNumber(strTemplate, 0, appNumHigh, 4, PADDING_MODE_ZEROES, CHARSET_MODE_EN);
     StringTemplate_SetNumber(strTemplate, 1, appNumLow, 4, PADDING_MODE_ZEROES, CHARSET_MODE_EN);
@@ -902,7 +902,7 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         int v0 = WirelessComm_GetNumConnected();
 
         if (v0) {
-            rangerLinkMan->unk_164 = v0 - 1;
+            rangerLinkMan->selectedParentIndex = v0 - 1;
             SetTimeout(rangerLinkMan, 1800);
             *state = RANGER_COMM_STATE_4;
         }
@@ -910,8 +910,8 @@ enum RangerLinkRangerCommStatus DoRangerComm(RangerLinkManager *rangerLinkMan)
         CheckCommunicationInterrupted(rangerLinkMan, state, FALSE, PAD_BUTTON_B);
     } break;
     case RANGER_COMM_STATE_4:
-        if (WirelessComm_IsParentAvailable(rangerLinkMan->unk_164)) {
-            WirelessComm_SelectParent(rangerLinkMan->unk_164);
+        if (WirelessComm_IsParentAvailable(rangerLinkMan->selectedParentIndex)) {
+            WirelessComm_SelectParent(rangerLinkMan->selectedParentIndex);
             *state = RANGER_COMM_STATE_7;
             rangerLinkMan->timeout = 1800;
         }

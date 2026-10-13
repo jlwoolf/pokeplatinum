@@ -443,7 +443,7 @@ static enum MysteryGiftAppState SendGiftRequestIfCanReceive(ApplicationManager *
     }
 
     if (appData->receptionMethod == RECEIVE_FROM_FRIEND) {
-        MysteryGiftShare_ConnectToServer(appData->unk_438);
+        MysteryGiftShare_ConnectToServer(appData->receivedEventDataIndex);
     }
 
     ShowMessageBox(appMan, &appData->messageBox, MysteryGiftMenu_Text_RequestSentPleaseWait);
@@ -767,8 +767,8 @@ static enum MysteryGiftAppState ShowMysteryGiftReceptionMethodsMenu(ApplicationM
     MysteryGiftAppData *appData = ApplicationManager_Data(appMan);
     MysteryGift *mysteryGift = SaveData_GetMysteryGift(appData->saveData);
 
-    if (appData->unk_62C == 30) {
-        appData->unk_630 = 1;
+    if (appData->searchPartyState == 30) {
+        appData->searchPartyTimer = 1;
         UpdateSearchPartyState(appData);
     }
 
@@ -789,8 +789,8 @@ static enum MysteryGiftAppState ExitToWonderCardsApp(ApplicationManager *appMan)
 {
     MysteryGiftAppData *appData = ApplicationManager_Data(appMan);
 
-    if (appData->unk_62C == 30) {
-        appData->unk_630 = 1;
+    if (appData->searchPartyState == 30) {
+        appData->searchPartyTimer = 1;
         UpdateSearchPartyState(appData);
     }
 
@@ -802,8 +802,8 @@ static enum MysteryGiftAppState ExitToTitleScreen(ApplicationManager *appMan)
 {
     MysteryGiftAppData *appData = ApplicationManager_Data(appMan);
 
-    if (appData->unk_62C == 30) {
-        appData->unk_630 = 1;
+    if (appData->searchPartyState == 30) {
+        appData->searchPartyTimer = 1;
     }
 
     MainMenuUtil_SetFadeToWhite(TRUE);
@@ -1182,7 +1182,7 @@ static int MysteryGiftApp_Init(ApplicationManager *appMan, int *unused)
         MainMenuUtil_ToggleTerminateOnGBACartRemoved(TRUE);
     }
 
-    appData->unk_62C = 29;
+    appData->searchPartyState = 29;
     appData->saveData = ((ApplicationArgs *)ApplicationManager_Args(appMan))->saveData;
     appData->options = SaveData_GetOptions(appData->saveData);
     appData->msgBoxPrinterDelay = TEXT_SPEED_NO_TRANSFER;
@@ -1991,7 +1991,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
 
     CTRDG_IsExisting();
 
-    if (appData->unk_62C != 29) {
+    if (appData->searchPartyState != 29) {
         UpdateSearchPartyState(appData);
     }
 
@@ -2140,7 +2140,7 @@ static BOOL MysteryGiftApp_Main(ApplicationManager *appMan, enum MysteryGiftAppS
         }
         break;
     case MG_APP_STATE_SEARCH_FOR_FRIEND_GIFT:
-        if ((appData->unk_438 = MysteryGiftShare_FindReceivedEventData(appData)) != -1) {
+        if ((appData->receivedEventDataIndex = MysteryGiftShare_FindReceivedEventData(appData)) != -1) {
             ToggleWaitDial(appData, FALSE);
 
             appData->canReceiveGiftStatus = MysteryGiftUtil_GetEventReceiveStatus(appData->saveData, &appData->eventData);
@@ -2475,24 +2475,24 @@ static void UpdateSearchPartyState(MysteryGiftAppData *param0)
 {
     int v0;
 
-    switch (param0->unk_62C) {
+    switch (param0->searchPartyState) {
     case 29:
         break;
     case 28:
         CommManager_InitializeSearchParty(param0->saveData);
-        param0->unk_630 = 120;
-        param0->unk_62C = 30;
+        param0->searchPartyTimer = 120;
+        param0->searchPartyState = 30;
         break;
     case 30:
         v0 = CommManager_GetAvailableConnections();
 
         if (v0 & 0x1) {
-            param0->unk_634 = 1;
+            param0->foundSearchPartyConnection = 1;
         }
 
-        if (--param0->unk_630 == 0) {
+        if (--param0->searchPartyTimer == 0) {
             CommManager_EndSearchParty();
-            param0->unk_62C = 29;
+            param0->searchPartyState = 29;
         }
         break;
     }

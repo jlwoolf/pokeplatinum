@@ -93,66 +93,66 @@ void WirelessComm_Init(WirelessCommParams *param0, void *param1)
         param1 = (void *)((u32)param1 + v3);
     }
 
-    v1->unk_00 = (u8)0;
-    v1->unk_01 = (u8)0;
-    v1->unk_02 = (u8)0;
-    v1->unk_03 = 4;
-    v1->unk_04 = 0x400131;
-    v1->unk_0C = 0;
+    v1->state = (u8)0;
+    v1->commRole = (u8)0;
+    v1->linkType = (u8)0;
+    v1->packetPort = 4;
+    v1->ggid = 0x400131;
+    v1->aid = 0;
 
-    v1->unk_34 = param1;
+    v1->systemBuffer = param1;
     (u8 *)param1 += WM_SYSTEM_BUF_SIZE;
 
-    v1->unk_38 = param1;
-    (u8 *)param1 += v1->unk_2C = WirelessComm_GetParentBufferSize();
+    v1->parentSendBuffer = param1;
+    (u8 *)param1 += v1->parentSendSize = WirelessComm_GetParentBufferSize();
 
-    v1->unk_3C = param1;
-    (u8 *)param1 += v1->unk_30 = WirelessComm_GetChildBufferSize();
+    v1->childSendBuffer = param1;
+    (u8 *)param1 += v1->childSendSize = WirelessComm_GetChildBufferSize();
 
-    v1->unk_28 = param1;
+    v1->scanResult = param1;
     (u8 *)param1 += sizeof(WMBssDesc);
 
-    v1->unk_24 = param1;
+    v1->scanParam = param1;
     (u8 *)param1 += sizeof(WMScanParam);
 
-    (void)WM_Init(v1->unk_34, 2);
+    (void)WM_Init(v1->systemBuffer, 2);
 
-    v1->unk_10 = WirelessComm_SetIndCallback();
-    v1->unk_14 = 0;
-    v1->unk_18 = 0;
-    v1->unk_1C = 0;
-    v1->unk_20 = 0;
-    v1->unk_40.unk_00.unk_00.unk_00_0 = 0xF;
-    v1->unk_40.unk_00.unk_00.unk_00_8 = 0x1;
-    v1->unk_40.unk_00.unk_00.unk_00_12 = 1;
-    v1->unk_40.unk_00.unk_04.unk_00_0 = param0->unk_00_0;
-    v1->unk_40.unk_00.unk_04.unk_00_8 = param0->unk_00_8;
-    v1->unk_40.unk_00.unk_04.unk_00_12 = param0->unk_00_12;
-    v1->unk_40.unk_00.unk_04.unk_00_16 = param0->unk_00_16;
+    v1->indCallbackSet = WirelessComm_SetIndCallback();
+    v1->connected = 0;
+    v1->disconnected = 0;
+    v1->resetDone = 0;
+    v1->stopped = 0;
+    v1->gameInfo.entry.header.version = 0xF;
+    v1->gameInfo.entry.header.subVersion = 0x1;
+    v1->gameInfo.entry.header.flags = 1;
+    v1->gameInfo.entry.config.version = param0->version;
+    v1->gameInfo.entry.config.subVersion = param0->subVersion;
+    v1->gameInfo.entry.config.language = param0->language;
+    v1->gameInfo.entry.config.gameCode = param0->gameCode;
 
     {
-        const u16 *v4 = param0->unk_08;
-        const u16 *v5 = param0->unk_04;
+        const u16 *v4 = param0->trainerName;
+        const u16 *v5 = param0->trainerId;
         u32 v6 = 0;
 
         while ((v4) && (v6 < 12)) {
-            v1->unk_40.unk_08.unk_00.unk_00[v6] = *v4;
-            v1->unk_40.unk_08.unk_18.unk_00[v6] = *v5;
+            v1->gameInfo.strings.trainerName.chars[v6] = *v4;
+            v1->gameInfo.strings.trainerId.chars[v6] = *v5;
             v6++;
             v4++;
             v5++;
         }
     }
 
-    v1->unk_78.unk_00 = *(WirelessCommConnectDataHead *)&v1->unk_40.unk_00;
+    v1->connectData.head = *(WirelessCommConnectDataHead *)&v1->gameInfo.entry;
 
     WirelessComm_ResetTransfer();
 
-    WirelessComm_GetTransfer()->unk_08 = param1;
-    (u8 *)param1 += v1->unk_2C;
+    WirelessComm_GetTransfer()->sendBuffer = param1;
+    (u8 *)param1 += v1->parentSendSize;
 
-    WirelessComm_GetTransfer()->unk_0C = param1;
-    (u8 *)param1 += v1->unk_30;
+    WirelessComm_GetTransfer()->recvBuffer = param1;
+    (u8 *)param1 += v1->childSendSize;
 
     (void)WM_GetNextTgid();
 }
@@ -161,24 +161,24 @@ static void WirelessComm_SendStep(void)
 {
     WirelessCommTransfer *v0 = WirelessComm_GetTransfer();
 
-    if (v0->unk_19 == 1) {
-        if (--v0->unk_1A > 0) {
+    if (v0->state == 1) {
+        if (--v0->timer > 0) {
             return;
         }
 
-        v0->unk_19 = 0;
+        v0->state = 0;
     }
 
-    if (v0->unk_19 == 0) {
+    if (v0->state == 0) {
         u32 v1 = 64 - WirelessComm_GetPacketSize();
         u32 v2 = v1;
         int v3 = 3;
 
-        WirelessComm_BuildPacket(v0->unk_08, v0->unk_04, v2, v3, v0->unk_1C);
-        WirelessComm_SendPacket(v0->unk_08, v2 + WirelessComm_GetPacketSize(), 0xFFFF);
+        WirelessComm_BuildPacket(v0->sendBuffer, v0->buffer, v2, v3, v0->port);
+        WirelessComm_SendPacket(v0->sendBuffer, v2 + WirelessComm_GetPacketSize(), 0xFFFF);
 
-        v0->unk_19 = 1;
-        v0->unk_1A = 60;
+        v0->state = 1;
+        v0->timer = 60;
     }
 }
 
@@ -186,45 +186,45 @@ static void WirelessComm_RequestStep(void)
 {
     WirelessCommTransfer *v0 = WirelessComm_GetTransfer();
 
-    if (v0->unk_19 == 0) {
-        if (v0->unk_1C == (u8)0xFD) {
+    if (v0->state == 0) {
+        if (v0->port == (u8)0xFD) {
             WirelessCommChildList *v1 = WirelessComm_GetChildList();
             int v2;
 
             for (v2 = 0; v2 < 8; v2++) {
-                if (v1->unk_00[v2].unk_09) {
+                if (v1->children[v2].pendingRequests) {
                     int v3 = 0;
-                    u16 v4 = (u16)(1 << v1->unk_00[v2].unk_06);
+                    u16 v4 = (u16)(1 << v1->children[v2].aid);
 
-                    WirelessComm_BuildPacket(v0->unk_08, v0->unk_04, 0, v3, 0xFD);
-                    WirelessComm_SendPacket(v0->unk_08, WirelessComm_GetPacketSize(), v4);
+                    WirelessComm_BuildPacket(v0->sendBuffer, v0->buffer, 0, v3, 0xFD);
+                    WirelessComm_SendPacket(v0->sendBuffer, WirelessComm_GetPacketSize(), v4);
 
-                    v1->unk_00[v2].unk_09--;
+                    v1->children[v2].pendingRequests--;
                     return;
                 }
             }
 
-            if (--v0->unk_1A == 0) {
-                v0->unk_19 = 2;
+            if (--v0->timer == 0) {
+                v0->state = 2;
             }
         } else {
             u32 v5 = WirelessComm_GetParentBufferSize() - WirelessComm_GetPacketSize();
             int v6;
-            WirelessCommPacket *v7 = (WirelessCommPacket *)v0->unk_0C;
+            WirelessCommPacket *v7 = (WirelessCommPacket *)v0->recvBuffer;
 
-            v6 = (int)v7->unk_08.unk_00_8;
+            v6 = (int)v7->meta.type;
 
             if (v6 == 0) {
-                if (v0->unk_1B == 0) {
-                    v0->unk_19 = 2;
+                if (v0->retryCount == 0) {
+                    v0->state = 2;
                     return;
                 } else {
-                    v0->unk_1B--;
+                    v0->retryCount--;
                 }
             }
 
-            WirelessComm_BuildPacket(v0->unk_08, v0->unk_04, 0, v6, v0->unk_1C);
-            WirelessComm_SendPacket(v0->unk_08, WirelessComm_GetPacketSize(), 0xFFFF);
+            WirelessComm_BuildPacket(v0->sendBuffer, v0->buffer, 0, v6, v0->port);
+            WirelessComm_SendPacket(v0->sendBuffer, WirelessComm_GetPacketSize(), 0xFFFF);
         }
     }
 }
@@ -233,7 +233,7 @@ static void WirelessComm_TransferStep(void)
 {
     WirelessCommTransfer *v0 = WirelessComm_GetTransfer();
 
-    switch (v0->unk_18) {
+    switch (v0->mode) {
     case 1:
         WirelessComm_SendStep();
         break;
@@ -249,8 +249,8 @@ static void WirelessComm_ParentUpdate(void)
 
     switch (WirelessComm_GetState()) {
     case 6:
-        if (v0->unk_1C0) {
-            v0->unk_1C0--;
+        if (v0->timer) {
+            v0->timer--;
         }
         break;
     case 11:
@@ -332,11 +332,11 @@ static u32 WirelessComm_CountFoundParents(void)
     if (v0 == 1) {
         WirelessCommParentList *v2 = WirelessComm_GetParentList();
 
-        if (v2->unk_1C3_4 == 1) {
+        if (v2->scanState == 1) {
             u32 v3;
 
             for (v3 = 0; v3 < 8; v3++) {
-                if (v2->unk_00[v3].unk_00.unk_00.val2 != 0) {
+                if (v2->parents[v3].bssidHigh.bssid.val2 != 0) {
                     v1++;
                 }
             }
@@ -351,7 +351,7 @@ BOOL WirelessComm_IsParentAvailable(u32 param0)
     if ((WirelessComm_GetLinkType() == 1) && (WirelessComm_GetState() == 7)) {
         WirelessCommParentList *v0 = WirelessComm_GetParentList();
 
-        if ((v0->unk_1C3_4 == 1) && (v0->unk_00[param0].unk_00.unk_00.val2)) {
+        if ((v0->scanState == 1) && (v0->parents[param0].bssidHigh.bssid.val2)) {
             return 1;
         }
     }
@@ -364,9 +364,9 @@ void WirelessComm_SelectParent(u32 param0)
     if ((WirelessComm_GetLinkType() == 1) && (WirelessComm_GetState() == 7)) {
         WirelessCommParentList *v0 = WirelessComm_GetParentList();
 
-        if ((v0->unk_1C3_4 == 1) && (v0->unk_00[param0].unk_00.unk_00.val2)) {
-            v0->unk_1C3_0 = (u8)param0;
-            v0->unk_1C0 = 120;
+        if ((v0->scanState == 1) && (v0->parents[param0].bssidHigh.bssid.val2)) {
+            v0->selectedParentIndex = (u8)param0;
+            v0->timer = 120;
 
             WirelessComm_StartScanForParent();
         }
@@ -381,11 +381,11 @@ static u32 WirelessComm_CountConnectedChildren(void)
     if (v0 == 2) {
         WirelessCommChildList *v2 = WirelessComm_GetChildList();
 
-        if (v2->unk_60 == 2) {
+        if (v2->state == 2) {
             u32 i;
 
             for (i = 0; i < 8; i++) {
-                if ((v2->unk_00[i].unk_00.unk_00.val2 != 0) && (v2->unk_00[i].unk_0A)) {
+                if ((v2->children[i].bssidHigh.bssid.val2 != 0) && (v2->children[i].isConnected)) {
                     v1++;
                 }
             }
@@ -399,7 +399,7 @@ u32 WirelessComm_GetLinkLevel(void)
 {
     WirelessCommManager *v0 = WirelessComm_GetManager();
 
-    if (!v0->unk_20) {
+    if (!v0->stopped) {
         return (u32)WM_GetLinkLevel();
     } else {
         return 0;
@@ -432,15 +432,15 @@ void WirelessComm_StartSend(void)
     WirelessCommGameInfo *v1 = WirelessComm_GetGameInfo();
 
     if (WirelessComm_GetLinkType() == 1) {
-        v0->unk_18 = 1;
-        v0->unk_19 = 0;
-        v0->unk_00 = (void *)&v1->unk_08;
-        v0->unk_04 = (void *)&v1->unk_08;
-        v0->unk_10 = 0;
-        v0->unk_14 = 0;
-        v0->unk_1A = 120;
-        v0->unk_1B = 0;
-        v0->unk_1C = (u8)0xFD;
+        v0->mode = 1;
+        v0->state = 0;
+        v0->unk_00 = (void *)&v1->strings;
+        v0->buffer = (void *)&v1->strings;
+        v0->sendSize = 0;
+        v0->recvSize = 0;
+        v0->timer = 120;
+        v0->retryCount = 0;
+        v0->port = (u8)0xFD;
     }
 }
 
@@ -449,15 +449,15 @@ void WirelessComm_StartReceive(void)
     WirelessCommTransfer *v0 = WirelessComm_GetTransfer();
     WirelessCommGameInfo *v1 = WirelessComm_GetGameInfo();
 
-    v0->unk_18 = 1;
-    v0->unk_19 = 0;
-    v0->unk_00 = (void *)&v1->unk_08;
-    v0->unk_04 = (void *)&v1->unk_08;
-    v0->unk_10 = sizeof(WirelessCommGameInfoStrings);
-    v0->unk_14 = sizeof(WirelessCommGameInfoStrings);
-    v0->unk_1A = 120;
-    v0->unk_1B = 0;
-    v0->unk_1C = (u8)0xFE;
+    v0->mode = 1;
+    v0->state = 0;
+    v0->unk_00 = (void *)&v1->strings;
+    v0->buffer = (void *)&v1->strings;
+    v0->sendSize = sizeof(WirelessCommGameInfoStrings);
+    v0->recvSize = sizeof(WirelessCommGameInfoStrings);
+    v0->timer = 120;
+    v0->retryCount = 0;
+    v0->port = (u8)0xFE;
 }
 
 void WirelessComm_SendData(void *param0, u32 param1, u32 param2)
@@ -468,15 +468,15 @@ void WirelessComm_SendData(void *param0, u32 param1, u32 param2)
         return;
     }
 
-    v0->unk_18 = 2;
-    v0->unk_19 = 3;
+    v0->mode = 2;
+    v0->state = 3;
     v0->unk_00 = param0;
-    v0->unk_04 = param0;
-    v0->unk_10 = param1;
-    v0->unk_14 = 0;
-    v0->unk_1A = 120;
-    v0->unk_1B = 0;
-    v0->unk_1C = (u8)param2;
+    v0->buffer = param0;
+    v0->sendSize = param1;
+    v0->recvSize = 0;
+    v0->timer = 120;
+    v0->retryCount = 0;
+    v0->port = (u8)param2;
 }
 
 BOOL WirelessComm_IsReceiveComplete(void)
@@ -491,7 +491,7 @@ BOOL WirelessComm_IsReceiveComplete(void)
         case 10: {
             WirelessCommTransfer *v1 = WirelessComm_GetTransfer();
 
-            if (v1->unk_19 == 2) {
+            if (v1->state == 2) {
                 return 1;
             }
         } break;
@@ -514,7 +514,7 @@ BOOL WirelessComm_IsSendComplete(void)
         case 10: {
             WirelessCommTransfer *v1 = WirelessComm_GetTransfer();
 
-            if (v1->unk_19 == 2) {
+            if (v1->state == 2) {
                 return 1;
             }
         } break;
@@ -535,10 +535,10 @@ BOOL WirelessComm_IsAwaitingData(void)
         case 10: {
             WirelessCommTransfer *v0 = WirelessComm_GetTransfer();
 
-            if (v0->unk_19 == 0) {
-                WirelessCommPacket *v1 = (WirelessCommPacket *)v0->unk_0C;
+            if (v0->state == 0) {
+                WirelessCommPacket *v1 = (WirelessCommPacket *)v0->recvBuffer;
 
-                if ((v1->unk_08.unk_00_8 == 0) && (v0->unk_1B < 4)) {
+                if ((v1->meta.type == 0) && (v0->retryCount < 4)) {
                     return 1;
                 }
             }
@@ -558,8 +558,8 @@ BOOL WirelessComm_IsLinkActive(void)
         int v1;
 
         for (v1 = 0; v1 < 8; v1++) {
-            if (v0->unk_00[v1].unk_00.unk_00.val2) {
-                if (v0->unk_00[v1].unk_0A) {
+            if (v0->children[v1].bssidHigh.bssid.val2) {
+                if (v0->children[v1].isConnected) {
                     return 1;
                 }
             }
@@ -589,7 +589,7 @@ void WirelessComm_Stop(void)
             WirelessCommManager *v0 = WirelessComm_GetManager();
 
             WirelessComm_Reset();
-            v0->unk_1C = 1;
+            v0->resetDone = 1;
         }
         break;
     }
@@ -598,5 +598,5 @@ void WirelessComm_Stop(void)
 BOOL WirelessComm_HasStopped(void)
 {
     WirelessCommManager *v0 = WirelessComm_GetManager();
-    return v0->unk_20;
+    return v0->stopped;
 }

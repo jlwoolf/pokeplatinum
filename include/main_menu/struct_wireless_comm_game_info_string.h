@@ -2,7 +2,7 @@
 #define POKEPLATINUM_STRUCT_MAIN_MENU_02233268_SUB2_SUB1_H
 
 typedef struct {
-    u16 unk_00[12];
+    u16 chars[12];
 } WirelessCommGameInfoString;
 
 #endif // POKEPLATINUM_STRUCT_MAIN_MENU_02233268_SUB2_SUB1_H

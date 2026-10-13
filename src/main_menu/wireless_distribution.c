@@ -9,34 +9,34 @@
 #include "main_menu/funcptr_wireless_distribution.h"
 
 typedef struct {
-    u16 unk_00;
-    u16 unk_02;
-    u32 unk_04;
-    u8 unk_08[104];
+    u16 checksum;
+    u16 chunkIndex;
+    u32 totalSize;
+    u8 data[104];
 } WirelessDistributionChunk;
 
 typedef struct {
-    u8 unk_00[3840] ATTRIBUTE_ALIGN(32);
-    WMbssDesc unk_F00 ATTRIBUTE_ALIGN(32);
-    WMscanParam unk_1034 ATTRIBUTE_ALIGN(32);
-    u8 unk_1054[104];
-    int unk_10BC;
-    CRYPTORC4Context unk_10C0;
-    int unk_11C4;
-    int unk_11C8;
-    u16 unk_11CC;
-    u16 unk_11CE;
-    u16 unk_11D0;
-    u16 unk_11D2;
-    u32 unk_11D4;
-    u32 unk_11D8;
-    int unk_11DC;
-    int unk_11E0;
-    u8 unk_11E4[6];
-    u16 unk_11EA;
-    u8 *unk_11EC;
-    WirelessDistributionStateFunc unk_11F0;
-    u8 unk_11F4[1261];
+    u8 wmSystemBuffer[3840] ATTRIBUTE_ALIGN(32);
+    WMbssDesc bssDesc ATTRIBUTE_ALIGN(32);
+    WMscanParam scanParam ATTRIBUTE_ALIGN(32);
+    u8 recvBuffer[104];
+    int hasReceivedChunk;
+    CRYPTORC4Context rc4Context;
+    int state;
+    int error;
+    u16 mode;
+    u16 checksum;
+    u16 totalChunks;
+    u16 receivedChunkCount;
+    u32 dataSize;
+    u32 retryCount;
+    int currentChunkIndex;
+    int linkLevel;
+    u8 peerMacAddress[6];
+    u16 channelIndex;
+    u8 *dataBuffer;
+    WirelessDistributionStateFunc stateFunc;
+    u8 receivedChunkFlags[1261];
 } WirelessDistributionContext;
 
 typedef void (*WirelessManagerScanFunc)(WMBssDesc *);
@@ -73,49 +73,49 @@ static void WirelessDistribution_SetState(int param0)
     };
 
     if (sWirelessDistributionPrint) {
-        sWirelessDistributionPrint("%s -> ", v0[(*sWirelessDistribution).unk_11C4]);
+        sWirelessDistributionPrint("%s -> ", v0[(*sWirelessDistribution).state]);
     }
 
-    (*sWirelessDistribution).unk_11C4 = param0;
+    (*sWirelessDistribution).state = param0;
 
     if (sWirelessDistributionPrint) {
-        sWirelessDistributionPrint("%s\n", v0[(*sWirelessDistribution).unk_11C4]);
+        sWirelessDistributionPrint("%s\n", v0[(*sWirelessDistribution).state]);
     }
 }
 
 static void WirelessDistribution_SetError(int param0)
 {
-    if (((*sWirelessDistribution).unk_11C4 == 9) || ((*sWirelessDistribution).unk_11C4 == 10)) {
+    if (((*sWirelessDistribution).state == 9) || ((*sWirelessDistribution).state == 10)) {
         return;
     }
 
-    (*sWirelessDistribution).unk_11C8 = param0;
+    (*sWirelessDistribution).error = param0;
 }
 
 static BOOL WirelessDistribution_StartScan(void)
 {
-    sWirelessDistribution->unk_11C4 != 4 ? (void)0 : OS_Terminate();
+    sWirelessDistribution->state != 4 ? (void)0 : OS_Terminate();
 
     WirelessDistribution_SetState(2);
 
-    *(u16 *)(&((*sWirelessDistribution).unk_1034).bssid[4]) = 0xffff;
-    *(u16 *)(&((*sWirelessDistribution).unk_1034).bssid[2]) = 0xffff;
-    *(u16 *)(&((*sWirelessDistribution).unk_1034).bssid[0]) = 0xffff;
+    *(u16 *)(&((*sWirelessDistribution).scanParam).bssid[4]) = 0xffff;
+    *(u16 *)(&((*sWirelessDistribution).scanParam).bssid[2]) = 0xffff;
+    *(u16 *)(&((*sWirelessDistribution).scanParam).bssid[0]) = 0xffff;
 
     if (!WirelessDistribution_BeginScan()) {
         WirelessDistribution_SetState(9);
 
-        if ((*sWirelessDistribution).unk_11F0 != NULL) {
-            (*sWirelessDistribution).unk_11F0(4);
+        if ((*sWirelessDistribution).stateFunc != NULL) {
+            (*sWirelessDistribution).stateFunc(4);
         }
 
         return 0;
     }
 
-    (*sWirelessDistribution).unk_11CC = 2;
+    (*sWirelessDistribution).mode = 2;
 
-    if ((*sWirelessDistribution).unk_11F0 != NULL) {
-        (*sWirelessDistribution).unk_11F0(0);
+    if ((*sWirelessDistribution).stateFunc != NULL) {
+        (*sWirelessDistribution).stateFunc(0);
     }
 
     return 1;
@@ -126,7 +126,7 @@ static BOOL WirelessDistribution_BeginScan(void)
     WMErrCode v0;
     u16 v1;
 
-    (void)(((*sWirelessDistribution).unk_11C4 == 2) || (OS_Terminate(), 0));
+    (void)(((*sWirelessDistribution).state == 2) || (OS_Terminate(), 0));
 
     v1 = WM_GetAllowedChannel();
 
@@ -146,8 +146,8 @@ static BOOL WirelessDistribution_BeginScan(void)
         return 0;
     }
 
-    if ((*sWirelessDistribution).unk_11EA >= 16) {
-        int v2 = (*sWirelessDistribution).unk_11EA - 16;
+    if ((*sWirelessDistribution).channelIndex >= 16) {
+        int v2 = (*sWirelessDistribution).channelIndex - 16;
         int v3;
 
         for (v3 = 0; v3 < 13; v3++) {
@@ -158,24 +158,24 @@ static BOOL WirelessDistribution_BeginScan(void)
             }
         }
 
-        (*sWirelessDistribution).unk_11EA = (u16)(16 + v2);
-        (*sWirelessDistribution).unk_1034.channel = (u16)(v2 + 1);
+        (*sWirelessDistribution).channelIndex = (u16)(16 + v2);
+        (*sWirelessDistribution).scanParam.channel = (u16)(v2 + 1);
     } else {
-        (*sWirelessDistribution).unk_1034.channel = (*sWirelessDistribution).unk_11EA;
+        (*sWirelessDistribution).scanParam.channel = (*sWirelessDistribution).channelIndex;
     }
 
-    (*sWirelessDistribution).unk_1034.maxChannelTime = 220;
-    (*sWirelessDistribution).unk_1034.scanBuf = &((*sWirelessDistribution).unk_F00);
+    (*sWirelessDistribution).scanParam.maxChannelTime = 220;
+    (*sWirelessDistribution).scanParam.scanBuf = &((*sWirelessDistribution).bssDesc);
 
-    if ((*sWirelessDistribution).unk_11CC == 3) {
+    if ((*sWirelessDistribution).mode == 3) {
         int v4;
 
         for (v4 = 0; v4 < 6; v4++) {
-            (*sWirelessDistribution).unk_1034.bssid[v4] = (*sWirelessDistribution).unk_11E4[v4];
+            (*sWirelessDistribution).scanParam.bssid[v4] = (*sWirelessDistribution).peerMacAddress[v4];
         }
     }
 
-    v0 = WM_StartScan(WirelessDistribution_ScanCallback, &((*sWirelessDistribution).unk_1034));
+    v0 = WM_StartScan(WirelessDistribution_ScanCallback, &((*sWirelessDistribution).scanParam));
 
     if (v0 != WM_ERRCODE_OPERATING) {
         do {
@@ -199,19 +199,19 @@ static void WirelessDistribution_ScanCallback(void *param0)
 
         WirelessDistribution_SetState(9);
 
-        if ((*sWirelessDistribution).unk_11F0 != NULL) {
-            (*sWirelessDistribution).unk_11F0(4);
+        if ((*sWirelessDistribution).stateFunc != NULL) {
+            (*sWirelessDistribution).stateFunc(4);
         }
 
         return;
     }
 
-    if ((*sWirelessDistribution).unk_11C4 != 2) {
+    if ((*sWirelessDistribution).state != 2) {
         if (!WirelessDistribution_EndScan()) {
             WirelessDistribution_SetState(9);
 
-            if ((*sWirelessDistribution).unk_11F0 != NULL) {
-                (*sWirelessDistribution).unk_11F0(4);
+            if ((*sWirelessDistribution).stateFunc != NULL) {
+                (*sWirelessDistribution).stateFunc(4);
             }
         }
 
@@ -224,7 +224,7 @@ static void WirelessDistribution_ScanCallback(void *param0)
     case WM_STATECODE_PARENT_NOT_FOUND:
         break;
     case WM_STATECODE_PARENT_FOUND:
-        DC_InvalidateRange(&((*sWirelessDistribution).unk_F00), sizeof(WMbssDesc));
+        DC_InvalidateRange(&((*sWirelessDistribution).bssDesc), sizeof(WMbssDesc));
 
         if ((v0->gameInfoLength < 8) || (v0->gameInfo.ggid != 0x400318)) {
             if (sWirelessDistributionPrint) {
@@ -233,28 +233,28 @@ static void WirelessDistribution_ScanCallback(void *param0)
             break;
         }
 
-        (*sWirelessDistribution).unk_11E0 = v0->linkLevel;
+        (*sWirelessDistribution).linkLevel = v0->linkLevel;
 
-        if ((*sWirelessDistribution).unk_11CC == 2) {
+        if ((*sWirelessDistribution).mode == 2) {
             WirelessDistribution_InitTransfer((WirelessDistributionChunk *)&(v0->gameInfo.userGameInfo[0]));
 
             {
                 int v1;
 
                 for (v1 = 0; v1 < 6; v1++) {
-                    (*sWirelessDistribution).unk_11E4[v1] = v0->macAddress[v1];
+                    (*sWirelessDistribution).peerMacAddress[v1] = v0->macAddress[v1];
                 }
             }
 
-            (*sWirelessDistribution).unk_11EA = (u16)((*sWirelessDistribution).unk_11EA - 16 + 1);
+            (*sWirelessDistribution).channelIndex = (u16)((*sWirelessDistribution).channelIndex - 16 + 1);
 
-            if ((*sWirelessDistribution).unk_11F0 != NULL) {
-                (*sWirelessDistribution).unk_11F0(1);
+            if ((*sWirelessDistribution).stateFunc != NULL) {
+                (*sWirelessDistribution).stateFunc(1);
             }
         }
 
         if (WirelessDistribution_ReceiveChunk((WirelessDistributionChunk *)&(v0->gameInfo.userGameInfo[0]))) {
-            (*sWirelessDistribution).unk_11CC = 4;
+            (*sWirelessDistribution).mode = 4;
             WirelessDistribution_Stop();
 
             return;
@@ -265,8 +265,8 @@ static void WirelessDistribution_ScanCallback(void *param0)
     if (!WirelessDistribution_BeginScan()) {
         WirelessDistribution_SetState(9);
 
-        if ((*sWirelessDistribution).unk_11F0 != NULL) {
-            (*sWirelessDistribution).unk_11F0(4);
+        if ((*sWirelessDistribution).stateFunc != NULL) {
+            (*sWirelessDistribution).stateFunc(4);
         }
     }
 }
@@ -314,14 +314,14 @@ static void WirelessDistribution_EndCallback(void *param0)
 
     WirelessDistribution_SetState(0);
 
-    if ((*sWirelessDistribution).unk_11F0 != NULL) {
-        (*sWirelessDistribution).unk_11F0(3);
+    if ((*sWirelessDistribution).stateFunc != NULL) {
+        (*sWirelessDistribution).stateFunc(3);
     }
 }
 
 static BOOL WirelessDistribution_Init(void)
 {
-    (*sWirelessDistribution).unk_11C8 = WM_ERRCODE_SUCCESS;
+    (*sWirelessDistribution).error = WM_ERRCODE_SUCCESS;
 
     if (!WirelessDistribution_Initialize()) {
         return 0;
@@ -337,8 +337,8 @@ static void WirelessDistribution_IndCallback(void *param0)
     if (v0->errcode == WM_ERRCODE_FIFO_ERROR) {
         WirelessDistribution_SetState(9);
 
-        if ((*sWirelessDistribution).unk_11F0 != NULL) {
-            (*sWirelessDistribution).unk_11F0(4);
+        if ((*sWirelessDistribution).stateFunc != NULL) {
+            (*sWirelessDistribution).stateFunc(4);
         }
     }
 }
@@ -348,7 +348,7 @@ static BOOL WirelessDistribution_Initialize(void)
     WMErrCode v0;
 
     WirelessDistribution_SetState(3);
-    v0 = WM_Initialize(&((*sWirelessDistribution).unk_00[0]), WirelessDistribution_InitCallback, 2);
+    v0 = WM_Initialize(&((*sWirelessDistribution).wmSystemBuffer[0]), WirelessDistribution_InitCallback, 2);
 
     if (v0 != WM_ERRCODE_OPERATING) {
         do {
@@ -393,15 +393,15 @@ static void WirelessDistribution_InitCallback(void *param0)
 
 static BOOL WirelessDistribution_Finalize(void)
 {
-    (void)(((*sWirelessDistribution).unk_11C4 == 1) || (OS_Terminate(), 0));
+    (void)(((*sWirelessDistribution).state == 1) || (OS_Terminate(), 0));
 
     WirelessDistribution_SetState(3);
 
     if (WM_End(WirelessDistribution_EndCallback) != WM_ERRCODE_OPERATING) {
         WirelessDistribution_SetState(9);
 
-        if ((*sWirelessDistribution).unk_11F0 != NULL) {
-            (*sWirelessDistribution).unk_11F0(4);
+        if ((*sWirelessDistribution).stateFunc != NULL) {
+            (*sWirelessDistribution).stateFunc(4);
         }
 
         return 0;
@@ -412,7 +412,7 @@ static BOOL WirelessDistribution_Finalize(void)
 
 BOOL WirelessDistribution_Stop(void)
 {
-    if ((*sWirelessDistribution).unk_11C4 == 1) {
+    if ((*sWirelessDistribution).state == 1) {
         return WirelessDistribution_Finalize();
     }
 
@@ -447,8 +447,8 @@ static void WirelessDistribution_ResetCallback(void *param0)
             WirelessDistribution_SetError(v0->errcode);
         } while (0);
 
-        if ((*sWirelessDistribution).unk_11F0 != NULL) {
-            (*sWirelessDistribution).unk_11F0(4);
+        if ((*sWirelessDistribution).stateFunc != NULL) {
+            (*sWirelessDistribution).stateFunc(4);
         }
 
         return;
@@ -461,15 +461,15 @@ static void WirelessDistribution_ResetCallback(void *param0)
 BOOL WirelessDistribution_Start(void *param0, WirelessDistributionStateFunc param1, void *param2)
 {
     sWirelessDistribution = (WirelessDistributionContext *)(((u32)param2 + 31) / 32 * 32);
-    (*sWirelessDistribution).unk_11C4 = 0;
-    (*sWirelessDistribution).unk_11CC = 1;
-    (*sWirelessDistribution).unk_11EC = (u8 *)param0;
-    (*sWirelessDistribution).unk_11D0 = 0;
-    (*sWirelessDistribution).unk_11D2 = 0;
-    (*sWirelessDistribution).unk_11F0 = param1;
-    (*sWirelessDistribution).unk_11EA = 16 + 0;
-    (*sWirelessDistribution).unk_10BC = 0;
-    (*sWirelessDistribution).unk_11E0 = -1;
+    (*sWirelessDistribution).state = 0;
+    (*sWirelessDistribution).mode = 1;
+    (*sWirelessDistribution).dataBuffer = (u8 *)param0;
+    (*sWirelessDistribution).totalChunks = 0;
+    (*sWirelessDistribution).receivedChunkCount = 0;
+    (*sWirelessDistribution).stateFunc = param1;
+    (*sWirelessDistribution).channelIndex = 16 + 0;
+    (*sWirelessDistribution).hasReceivedChunk = 0;
+    (*sWirelessDistribution).linkLevel = -1;
 
     return WirelessDistribution_Init();
 }
@@ -478,61 +478,61 @@ static void WirelessDistribution_InitTransfer(WirelessDistributionChunk *param0)
 {
     int v0;
 
-    (*sWirelessDistribution).unk_10BC = 0;
-    (*sWirelessDistribution).unk_11CC = 3;
-    (*sWirelessDistribution).unk_11CE = param0->unk_00;
-    (*sWirelessDistribution).unk_11D4 = param0->unk_04;
-    (*sWirelessDistribution).unk_11D0 = (u16)(((*sWirelessDistribution).unk_11D4 - 1) / (WM_SIZE_USER_GAMEINFO - 8) + 1);
-    (*sWirelessDistribution).unk_11D2 = 0;
-    (*sWirelessDistribution).unk_11D8 = 0;
+    (*sWirelessDistribution).hasReceivedChunk = 0;
+    (*sWirelessDistribution).mode = 3;
+    (*sWirelessDistribution).checksum = param0->checksum;
+    (*sWirelessDistribution).dataSize = param0->totalSize;
+    (*sWirelessDistribution).totalChunks = (u16)(((*sWirelessDistribution).dataSize - 1) / (WM_SIZE_USER_GAMEINFO - 8) + 1);
+    (*sWirelessDistribution).receivedChunkCount = 0;
+    (*sWirelessDistribution).retryCount = 0;
 
-    for (v0 = 0; v0 < (*sWirelessDistribution).unk_11D0; v0++) {
-        (*sWirelessDistribution).unk_11F4[v0] = 0;
+    for (v0 = 0; v0 < (*sWirelessDistribution).totalChunks; v0++) {
+        (*sWirelessDistribution).receivedChunkFlags[v0] = 0;
     }
 }
 
 static int WirelessDistribution_ReceiveChunk(WirelessDistributionChunk *param0)
 {
-    if (((*sWirelessDistribution).unk_11CE != param0->unk_00) || ((*sWirelessDistribution).unk_11D4 != param0->unk_04)) {
-        if ((*sWirelessDistribution).unk_11D8++ >= 16) {
+    if (((*sWirelessDistribution).checksum != param0->checksum) || ((*sWirelessDistribution).dataSize != param0->totalSize)) {
+        if ((*sWirelessDistribution).retryCount++ >= 16) {
             WirelessDistribution_InitTransfer(param0);
 
-            if ((*sWirelessDistribution).unk_11F0 != NULL) {
-                (*sWirelessDistribution).unk_11F0(5);
+            if ((*sWirelessDistribution).stateFunc != NULL) {
+                (*sWirelessDistribution).stateFunc(5);
             }
         } else {
             return 0;
         }
     }
 
-    if (param0->unk_02 == 0xffff) {
-        MI_CpuCopy32(&(param0->unk_08[0]), &((*sWirelessDistribution).unk_1054[0]), (WM_SIZE_USER_GAMEINFO - 8));
-        (*sWirelessDistribution).unk_10BC = 1;
+    if (param0->chunkIndex == 0xffff) {
+        MI_CpuCopy32(&(param0->data[0]), &((*sWirelessDistribution).recvBuffer[0]), (WM_SIZE_USER_GAMEINFO - 8));
+        (*sWirelessDistribution).hasReceivedChunk = 1;
     } else {
-        (*sWirelessDistribution).unk_11DC = param0->unk_02;
+        (*sWirelessDistribution).currentChunkIndex = param0->chunkIndex;
 
-        if (param0->unk_02 >= (*sWirelessDistribution).unk_11D0) {
-            if ((*sWirelessDistribution).unk_11F0 != NULL) {
-                (*sWirelessDistribution).unk_11F0(4);
+        if (param0->chunkIndex >= (*sWirelessDistribution).totalChunks) {
+            if ((*sWirelessDistribution).stateFunc != NULL) {
+                (*sWirelessDistribution).stateFunc(4);
             }
 
             WirelessDistribution_SetState(9);
         }
 
-        if ((*sWirelessDistribution).unk_11F4[param0->unk_02] == 0) {
-            (*sWirelessDistribution).unk_11F4[param0->unk_02] = 1;
+        if ((*sWirelessDistribution).receivedChunkFlags[param0->chunkIndex] == 0) {
+            (*sWirelessDistribution).receivedChunkFlags[param0->chunkIndex] = 1;
 
-            if (param0->unk_02 == (*sWirelessDistribution).unk_11D0 - 1) {
-                MI_CpuCopy32(&(param0->unk_08[0]), &((*sWirelessDistribution).unk_11EC[param0->unk_02 * (WM_SIZE_USER_GAMEINFO - 8)]), (*sWirelessDistribution).unk_11D4 - param0->unk_02 * (WM_SIZE_USER_GAMEINFO - 8));
+            if (param0->chunkIndex == (*sWirelessDistribution).totalChunks - 1) {
+                MI_CpuCopy32(&(param0->data[0]), &((*sWirelessDistribution).dataBuffer[param0->chunkIndex * (WM_SIZE_USER_GAMEINFO - 8)]), (*sWirelessDistribution).dataSize - param0->chunkIndex * (WM_SIZE_USER_GAMEINFO - 8));
             } else {
-                MI_CpuCopy32(&(param0->unk_08[0]), &((*sWirelessDistribution).unk_11EC[param0->unk_02 * (WM_SIZE_USER_GAMEINFO - 8)]), (WM_SIZE_USER_GAMEINFO - 8));
+                MI_CpuCopy32(&(param0->data[0]), &((*sWirelessDistribution).dataBuffer[param0->chunkIndex * (WM_SIZE_USER_GAMEINFO - 8)]), (WM_SIZE_USER_GAMEINFO - 8));
             }
 
-            (*sWirelessDistribution).unk_11D2++;
+            (*sWirelessDistribution).receivedChunkCount++;
 
-            if ((*sWirelessDistribution).unk_11D2 == (*sWirelessDistribution).unk_11D0) {
-                if ((*sWirelessDistribution).unk_11F0 != NULL) {
-                    (*sWirelessDistribution).unk_11F0(2);
+            if ((*sWirelessDistribution).receivedChunkCount == (*sWirelessDistribution).totalChunks) {
+                if ((*sWirelessDistribution).stateFunc != NULL) {
+                    (*sWirelessDistribution).stateFunc(2);
                 }
 
                 return 1;
@@ -564,11 +564,11 @@ int WirelessDistribution_VerifyData(void)
         u16 v0[4];
         u16 *v1;
 
-        v1 = (u16 *)&((*sWirelessDistribution).unk_11E4[0]);
+        v1 = (u16 *)&((*sWirelessDistribution).peerMacAddress[0]);
         v0[0] = v1[0];
         v0[3] = v1[1];
         v0[2] = v1[2];
-        v0[1] = (*sWirelessDistribution).unk_11CE;
+        v0[1] = (*sWirelessDistribution).checksum;
 
         {
             int v2;
@@ -589,13 +589,13 @@ int WirelessDistribution_VerifyData(void)
             }
         }
 
-        CRYPTO_RC4Init(&((*sWirelessDistribution).unk_10C0), &(v0[0]), 8);
-        CRYPTO_RC4Encrypt(&((*sWirelessDistribution).unk_10C0), (*sWirelessDistribution).unk_11EC, (*sWirelessDistribution).unk_11D4, (*sWirelessDistribution).unk_11EC);
+        CRYPTO_RC4Init(&((*sWirelessDistribution).rc4Context), &(v0[0]), 8);
+        CRYPTO_RC4Encrypt(&((*sWirelessDistribution).rc4Context), (*sWirelessDistribution).dataBuffer, (*sWirelessDistribution).dataSize, (*sWirelessDistribution).dataBuffer);
 
-        MI_CpuClear32(&((*sWirelessDistribution).unk_10C0), sizeof((*sWirelessDistribution).unk_10C0));
+        MI_CpuClear32(&((*sWirelessDistribution).rc4Context), sizeof((*sWirelessDistribution).rc4Context));
     }
 
-    return WirelessDistribution_Checksum((*sWirelessDistribution).unk_11EC, (*sWirelessDistribution).unk_11D4) == (*sWirelessDistribution).unk_11CE;
+    return WirelessDistribution_Checksum((*sWirelessDistribution).dataBuffer, (*sWirelessDistribution).dataSize) == (*sWirelessDistribution).checksum;
 }
 
 int WirelessDistribution_GetContextSize(void)
@@ -605,8 +605,8 @@ int WirelessDistribution_GetContextSize(void)
 
 void *WirelessDistribution_GetData(void)
 {
-    if ((*sWirelessDistribution).unk_10BC) {
-        return &((*sWirelessDistribution).unk_1054[0]);
+    if ((*sWirelessDistribution).hasReceivedChunk) {
+        return &((*sWirelessDistribution).recvBuffer[0]);
     }
 
     return NULL;

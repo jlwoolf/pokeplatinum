@@ -75,7 +75,7 @@ BOOL WirelessComm_SetParentParameter(void)
     WirelessCommGameInfo *v2 = WirelessComm_GetGameInfo();
     WirelessCommChildList *v3 = WirelessComm_GetChildList();
 
-    v1->channel = v3->unk_64;
+    v1->channel = v3->channel;
     v1->userGameInfo = (u16 *)v2;
     v1->userGameInfoLength = (u16)WirelessComm_GetGameInfoSize();
 
@@ -125,12 +125,12 @@ BOOL WirelessComm_StartScanForParent(void)
         WMScanParam *v1 = WirelessComm_GetScanParam();
         WirelessCommParentList *v2 = WirelessComm_GetParentList();
 
-        v1->bssid[0] = v2->unk_00[v2->unk_1C3_0].unk_34.unk_00.val1[0];
-        v1->bssid[1] = v2->unk_00[v2->unk_1C3_0].unk_34.unk_00.val1[1];
-        v1->bssid[2] = v2->unk_00[v2->unk_1C3_0].unk_00.unk_00.val1[0];
-        v1->bssid[3] = v2->unk_00[v2->unk_1C3_0].unk_00.unk_00.val1[1];
-        v1->bssid[4] = v2->unk_00[v2->unk_1C3_0].unk_00.unk_00.val1[2];
-        v1->bssid[5] = v2->unk_00[v2->unk_1C3_0].unk_00.unk_00.val1[3];
+        v1->bssid[0] = v2->parents[v2->selectedParentIndex].bssidLow.bssid.val1[0];
+        v1->bssid[1] = v2->parents[v2->selectedParentIndex].bssidLow.bssid.val1[1];
+        v1->bssid[2] = v2->parents[v2->selectedParentIndex].bssidHigh.bssid.val1[0];
+        v1->bssid[3] = v2->parents[v2->selectedParentIndex].bssidHigh.bssid.val1[1];
+        v1->bssid[4] = v2->parents[v2->selectedParentIndex].bssidHigh.bssid.val1[2];
+        v1->bssid[5] = v2->parents[v2->selectedParentIndex].bssidHigh.bssid.val1[3];
     }
 
     v0 = WM_StartScan(WirelessComm_ScanSelectedParentCallback, WirelessComm_GetScanParam());
