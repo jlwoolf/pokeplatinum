@@ -24,11 +24,11 @@ typedef struct {
     u16 variant;
     union {
         struct {
-            s16 active;
-            s16 variant;
-            u16 unk_04;
-            s16 unk_06;
-            s16 unk_08;
+            s16 frame;
+            s16 duration;
+            u16 amplitudeX;
+            s16 amplitudeY;
+            s16 cycles;
         } val1;
     } unk_04;
 } WiFiLobbyMapFloatAnimation;
@@ -70,44 +70,44 @@ static BOOL wifi_lobby_map_0226D35C(WiFiLobbyMapFloatAnimation *param0, WiFiLobb
 
 static const WiFiLobbyMapFloatConfig Unk_wifi_lobby_map_0226E774[5] = {
     {
-        .unk_00 = SPECIES_TORCHIC,
-        .unk_02 = SPECIES_CHARIZARD,
-        .unk_04 = 0xFFFE,
-        .unk_06 = SEQ_SE_PL_FLOAT10_sseq,
-        .unk_08 = SEQ_SE_PL_FIRE_sseq,
-        .unk_0A = SEQ_SE_PL_FLOAT03_sseq,
+        .species = SPECIES_TORCHIC,
+        .alternateSpecies = SPECIES_CHARIZARD,
+        .midSound = 0xFFFE,
+        .endSound = SEQ_SE_PL_FLOAT10_sseq,
+        .midSoundAlt = SEQ_SE_PL_FIRE_sseq,
+        .endSoundAlt = SEQ_SE_PL_FLOAT03_sseq,
     },
     {
-        .unk_00 = SPECIES_PIPLUP,
-        .unk_02 = SPECIES_GYARADOS,
-        .unk_04 = SEQ_SE_PL_FLOAT10_sseq,
-        .unk_06 = SEQ_SE_PL_FLOAT12_sseq,
-        .unk_08 = SEQ_SE_PL_WATER_sseq,
-        .unk_0A = SEQ_SE_PL_FLOAT10_sseq,
+        .species = SPECIES_PIPLUP,
+        .alternateSpecies = SPECIES_GYARADOS,
+        .midSound = SEQ_SE_PL_FLOAT10_sseq,
+        .endSound = SEQ_SE_PL_FLOAT12_sseq,
+        .midSoundAlt = SEQ_SE_PL_WATER_sseq,
+        .endSoundAlt = SEQ_SE_PL_FLOAT10_sseq,
     },
     {
-        .unk_00 = SPECIES_PIKACHU,
-        .unk_02 = SPECIES_MAGNEZONE,
-        .unk_04 = 0xFFFE,
-        .unk_06 = SEQ_SE_PL_FLOAT10_sseq,
-        .unk_08 = 0xFFFE,
-        .unk_0A = SEQ_SE_PL_ELECTRO_sseq,
+        .species = SPECIES_PIKACHU,
+        .alternateSpecies = SPECIES_MAGNEZONE,
+        .midSound = 0xFFFE,
+        .endSound = SEQ_SE_PL_FLOAT10_sseq,
+        .midSoundAlt = 0xFFFE,
+        .endSoundAlt = SEQ_SE_PL_ELECTRO_sseq,
     },
     {
-        .unk_00 = SPECIES_BULBASAUR,
-        .unk_02 = SPECIES_CARNIVINE,
-        .unk_04 = SEQ_SE_PL_WHIP_sseq,
-        .unk_06 = SEQ_SE_PL_FLOAT11_sseq,
-        .unk_08 = SEQ_SE_PL_FLOAT03_sseq,
-        .unk_0A = SEQ_SE_PL_FLOAT10_sseq,
+        .species = SPECIES_BULBASAUR,
+        .alternateSpecies = SPECIES_CARNIVINE,
+        .midSound = SEQ_SE_PL_WHIP_sseq,
+        .endSound = SEQ_SE_PL_FLOAT11_sseq,
+        .midSoundAlt = SEQ_SE_PL_FLOAT03_sseq,
+        .endSoundAlt = SEQ_SE_PL_FLOAT10_sseq,
     },
     {
-        .unk_00 = SPECIES_MEW,
-        .unk_02 = SPECIES_MEW,
-        .unk_04 = 0xFFFE,
-        .unk_06 = SEQ_SE_PL_FLOAT10_sseq,
-        .unk_08 = SEQ_SE_PL_KIRAKIRA4_sseq,
-        .unk_0A = SEQ_SE_PL_FLOAT10_sseq,
+        .species = SPECIES_MEW,
+        .alternateSpecies = SPECIES_MEW,
+        .midSound = 0xFFFE,
+        .endSound = SEQ_SE_PL_FLOAT10_sseq,
+        .midSoundAlt = SEQ_SE_PL_KIRAKIRA4_sseq,
+        .endSoundAlt = SEQ_SE_PL_FLOAT10_sseq,
     },
 };
 
@@ -381,20 +381,20 @@ static BOOL wifi_lobby_map_0226D2D8(WiFiLobbyMapFloatAnimation *param0, WiFiLobb
 
 static void wifi_lobby_map_0226D31C(WiFiLobbyMapFloatAnimation *param0, WiFiLobbyMapObjectManager *param1, u32 param2)
 {
-    param0->unk_04.val1.unk_00 = 0;
-    param0->unk_04.val1.unk_02 = 8;
-    param0->unk_04.val1.unk_04 = (CalcAngleRotationIdx_Wraparound(5));
-    param0->unk_04.val1.unk_06 = 2;
-    param0->unk_04.val1.unk_08 = 4;
+    param0->unk_04.val1.frame = 0;
+    param0->unk_04.val1.duration = 8;
+    param0->unk_04.val1.amplitudeX = (CalcAngleRotationIdx_Wraparound(5));
+    param0->unk_04.val1.amplitudeY = 2;
+    param0->unk_04.val1.cycles = 4;
 }
 
 static void wifi_lobby_map_0226D33C(WiFiLobbyMapFloatAnimation *param0, WiFiLobbyMapObjectManager *param1, u32 param2)
 {
-    param0->unk_04.val1.unk_00 = 0;
-    param0->unk_04.val1.unk_02 = 16;
-    param0->unk_04.val1.unk_04 = (CalcAngleRotationIdx_Wraparound(10));
-    param0->unk_04.val1.unk_06 = 4;
-    param0->unk_04.val1.unk_08 = 2;
+    param0->unk_04.val1.frame = 0;
+    param0->unk_04.val1.duration = 16;
+    param0->unk_04.val1.amplitudeX = (CalcAngleRotationIdx_Wraparound(10));
+    param0->unk_04.val1.amplitudeY = 4;
+    param0->unk_04.val1.cycles = 2;
 }
 
 static BOOL wifi_lobby_map_0226D35C(WiFiLobbyMapFloatAnimation *param0, WiFiLobbyMapObjectManager *param1, u32 param2)
@@ -404,22 +404,22 @@ static BOOL wifi_lobby_map_0226D35C(WiFiLobbyMapFloatAnimation *param0, WiFiLobb
     u16 v2;
     BOOL v3 = 0;
 
-    if ((param0->unk_04.val1.unk_00 + 1) < param0->unk_04.val1.unk_02) {
-        param0->unk_04.val1.unk_00++;
+    if ((param0->unk_04.val1.frame + 1) < param0->unk_04.val1.duration) {
+        param0->unk_04.val1.frame++;
     } else {
-        param0->unk_04.val1.unk_00 = 0;
+        param0->unk_04.val1.frame = 0;
 
-        if ((param0->unk_04.val1.unk_08 - 1) > 0) {
-            param0->unk_04.val1.unk_08--;
+        if ((param0->unk_04.val1.cycles - 1) > 0) {
+            param0->unk_04.val1.cycles--;
         } else {
             v3 = 1;
         }
     }
 
-    v2 = (param0->unk_04.val1.unk_00 * 0xffff) / param0->unk_04.val1.unk_02;
-    v1 = FX_Mul(FX_SinIdx(v2), FX32_CONST(param0->unk_04.val1.unk_04)) >> FX32_SHIFT;
+    v2 = (param0->unk_04.val1.frame * 0xffff) / param0->unk_04.val1.duration;
+    v1 = FX_Mul(FX_SinIdx(v2), FX32_CONST(param0->unk_04.val1.amplitudeX)) >> FX32_SHIFT;
 
-    v0.y = FX_Mul(FX_SinIdx(v2), FX32_CONST(param0->unk_04.val1.unk_06));
+    v0.y = FX_Mul(FX_SinIdx(v2), FX32_CONST(param0->unk_04.val1.amplitudeY));
 
     wifi_lobby_map_022623F0(param1, param2, v1);
     wifi_lobby_map_022622EC(param1, param2, &v0);

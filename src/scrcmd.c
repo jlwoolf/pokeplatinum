@@ -7146,7 +7146,7 @@ static BOOL ScrCmd_CheckNoWiFiPlazaCooldown(ScriptContext *ctx)
     u16 *destVar = ScriptContext_GetVarPointer(ctx);
 
     s64 timestamp = GetTimestamp();
-    s64 v3 = timestamp - fieldSystem->unk_C4.unk_00;
+    s64 v3 = timestamp - fieldSystem->unk_C4.timestamp;
 
     if (v3 >= 120) {
         *destVar = TRUE;

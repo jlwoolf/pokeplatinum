@@ -239,7 +239,7 @@ static void ClearFrontierObjects(BattleFrontier *frontier)
     MI_CpuClear8(frontier->objects, sizeof(FrontierObject) * 32);
 
     for (int v0 = 0; v0 < 32; v0++) {
-        frontier->objects[v0].params.unk_04 = 0xffff;
+        frontier->objects[v0].params.objectID = 0xffff;
     }
 }
 

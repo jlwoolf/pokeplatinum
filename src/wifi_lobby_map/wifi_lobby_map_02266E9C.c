@@ -2278,7 +2278,7 @@ static void wifi_lobby_map_02268E44(WiFiLobbyMapMenuTemplate *param0, WiFiLobbyM
     param0->template = Unk_wifi_lobby_map_0226DCBC;
     param0->template.count = param0->count;
 
-    if (param0->template.maxDisplay > param0->unk_20) {
+    if (param0->template.maxDisplay > param0->count) {
         param0->template.maxDisplay = param0->count;
     }
 
@@ -2321,7 +2321,7 @@ static void wifi_lobby_map_02268EEC(WiFiLobbyMapMenuTemplate *param0, WiFiLobbyM
     param0->template = Unk_wifi_lobby_map_0226DCBC;
     param0->template.count = param0->count;
 
-    if (param0->template.maxDisplay > param0->unk_20) {
+    if (param0->template.maxDisplay > param0->count) {
         param0->template.maxDisplay = param0->count;
     }
 
