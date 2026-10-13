@@ -73,11 +73,11 @@ typedef struct HMCutIn {
     SpriteResource *paletteSource[3];
     SpriteResource *cellSource[4];
     SpriteResource *animSource[2];
-    OverworldAnimManagerList *unk_244;
+    OverworldAnimManagerList *animManagerList;
     Sprite *playerSprite;
     Sprite *pokemonSprite;
-    OverworldAnimManager *unk_250;
-    OverworldAnimManager *unk_254;
+    OverworldAnimManager *flyAwayAnim;
+    OverworldAnimManager *showHidePlayerAnim;
     PokemonSpriteTemplate pokemonSpriteTemplate;
     BOOL resourcesLoaded;
     BOOL resourceSourcesFreed;
@@ -116,7 +116,7 @@ typedef struct FlyTaskEnv {
     fx32 playerOffsetY;
     Sprite *birdSprite;
     HMCutInContainer cutInContainer;
-    OverworldAnimManager *unk_60;
+    OverworldAnimManager *pushPlayerUpAnim;
     SysTask *task;
 } FlyTaskEnv;
 
@@ -169,15 +169,15 @@ typedef struct FlyLandingEnv {
     int playerGender;
     BOOL animationInProgress;
     FieldSystem *fieldSystem;
-    FlyResources unk_18;
+    FlyResources resources;
     Sprite *playerSprite;
-    OverworldAnimManagerList *unk_1D4;
-    OverworldAnimManager *unk_1D8;
+    OverworldAnimManagerList *animManagerList;
+    OverworldAnimManager *flyLandingAnim;
     SysTask *_2; // unused
 } FlyLandingEnv;
 
 typedef struct FlyResourcesWithPlayer {
-    OverworldAnimManagerList *unk_00;
+    OverworldAnimManagerList *animManagerList;
     FieldSystem *fieldSystem;
     Sprite *playerSprite;
     FlyResources *resources;
@@ -203,7 +203,7 @@ typedef struct FlyLandingEnvExtended {
     fx32 playerOffsetY;
     FlyResourcesWithPlayer resourcesWithPlayer;
     Sprite *birdSprite;
-    OverworldAnimManager *unk_6C;
+    OverworldAnimManager *pushPlayerUpAnim;
     SysTask *task;
 } FlyLandingEnvExtended;
 
@@ -619,7 +619,7 @@ static OverworldAnimManager *CreateFlyLandingAnimTasks(FieldSystem *fieldSystem,
     FlyResourcesWithPlayer v2;
 
     v2.fieldSystem = fieldSystem;
-    v2.unk_00 = param1;
+    v2.animManagerList = param1;
     v2.resources = resources;
     v2.playerSprite = playerSprite;
 
@@ -652,8 +652,8 @@ static void FlyLanding_SetTasksDone(OverworldAnimManager *param0)
 {
     FlyLandingEnvExtended *v0 = OverworldAnimManager_GetFuncsContext(param0);
 
-    if (v0->unk_6C) {
-        OverworldAnimManager_Finish(v0->unk_6C);
+    if (v0->pushPlayerUpAnim) {
+        OverworldAnimManager_Finish(v0->pushPlayerUpAnim);
     }
 
     if (v0->task) {
@@ -730,7 +730,7 @@ static void FlyLanding_InitEnv(OverworldAnimManager *param0)
     Sprite_SetPriority(env->birdSprite, 132);
     Sprite_SetDrawFlag(env->birdSprite, TRUE);
 
-    env->unk_6C = PushPlayerUp(env->resourcesWithPlayer.unk_00, env->resourcesWithPlayer.playerSprite);
+    env->pushPlayerUpAnim = PushPlayerUp(env->resourcesWithPlayer.animManagerList, env->resourcesWithPlayer.playerSprite);
     env->task = FieldMap_021F0EB0(env->resourcesWithPlayer.fieldSystem, HEAP_ID_FIELD1);
 
     FieldMap_021F0F10(env->task, 1, -(FX32_ONE * 120), 12);
@@ -811,7 +811,7 @@ static int FlyLanding_SetUpSprites(FlyLandingEnvExtended *env)
 
 static int FlyLanding_SetUpEnv(FlyLandingEnvExtended *env)
 {
-    FlyLanding_SetUpPlayerAnimEnv(env->unk_6C);
+    FlyLanding_SetUpPlayerAnimEnv(env->pushPlayerUpAnim);
     FieldMap_021F0F10(env->task, 2, 0, 12);
 
     env->scaleDelta = 0x400;
@@ -1092,8 +1092,8 @@ static void SysTask_CutIn(SysTask *cutInTask, void *hmCutInPtr)
     } while (ret == TRUE);
 
     if (cutIn->updateSprites == TRUE) {
-        if (cutIn->unk_244 != NULL) {
-            OverworldAnimManagerList_Render(cutIn->unk_244);
+        if (cutIn->animManagerList != NULL) {
+            OverworldAnimManagerList_Render(cutIn->animManagerList);
         }
 
         CutIn_UpdateSpriteList(cutIn);
@@ -1362,8 +1362,8 @@ static void SysTask_CutInFly(SysTask *sysTask, void *cutInRef)
     } while (ret == TRUE);
 
     if (cutIn->updateSprites == TRUE) {
-        if (cutIn->unk_244 != NULL) {
-            OverworldAnimManagerList_Render(cutIn->unk_244);
+        if (cutIn->animManagerList != NULL) {
+            OverworldAnimManagerList_Render(cutIn->animManagerList);
         }
 
         CutIn_UpdateSpriteList(cutIn);
@@ -1698,14 +1698,14 @@ static void CutIn_InitSpriteResources(HMCutIn *cutIn)
     CutIn_LoadSpriteResources(cutIn, narc);
 
     NARC_dtor(narc);
-    cutIn->unk_244 = OverworldAnimManagerList_New(HEAP_ID_FIELD1, 32);
+    cutIn->animManagerList = OverworldAnimManagerList_New(HEAP_ID_FIELD1, 32);
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG3, 1);
 }
 
 static void CutIn_DeleteSprites(HMCutIn *cutIn)
 {
     GXLayers_EngineAToggleLayers(GX_PLANEMASK_BG3, 0);
-    OverworldAnimManagerList_FinishAndFree(cutIn->unk_244);
+    OverworldAnimManagerList_FinishAndFree(cutIn->animManagerList);
 
     CutIn_ClearTileMapBG3(cutIn->fieldSystem->bgConfig);
     CutIn_DeleteSpriteResources(cutIn);
@@ -2246,7 +2246,7 @@ static void WindParticle_RunAnimFuncs(HMCutIn *cutIn, const VecFx32 *initialPos,
     animData.cutIn = cutIn;
     animData.movementDelta = *movementDelta;
 
-    v0 = OverworldAnimManagerList_InitManager(cutIn->unk_244, &sWindParticleAnimFuncs, initialPos, param4, &animData, 132);
+    v0 = OverworldAnimManagerList_InitManager(cutIn->animManagerList, &sWindParticleAnimFuncs, initialPos, param4, &animData, 132);
 }
 
 static int WindParticleAnim_SetUpSprite(OverworldAnimManager *animMan, void *windParticleAnimEnv)
@@ -2324,28 +2324,28 @@ static void Fly_CreateTasks(HMCutIn *cutIn)
     VecFx32 position = { 0, 0, 0 };
     HMCutIn *CutIn = cutIn;
 
-    cutIn->unk_250 = OverworldAnimManagerList_InitManager(cutIn->unk_244, &sFlyAwayFuncs, &position, 0, &CutIn, 130);
+    cutIn->flyAwayAnim = OverworldAnimManagerList_InitManager(cutIn->animManagerList, &sFlyAwayFuncs, &position, 0, &CutIn, 130);
 }
 
 static int Fly_GetTaskEnvSubState(HMCutIn *cutIn)
 {
-    FlyTaskEnv *taskEnv = OverworldAnimManager_GetFuncsContext(cutIn->unk_250);
+    FlyTaskEnv *taskEnv = OverworldAnimManager_GetFuncsContext(cutIn->flyAwayAnim);
     return taskEnv->subState;
 }
 
 static void FlyAway_SetTasksDone(HMCutIn *cutIn)
 {
-    FlyTaskEnv *env = OverworldAnimManager_GetFuncsContext(cutIn->unk_250);
+    FlyTaskEnv *env = OverworldAnimManager_GetFuncsContext(cutIn->flyAwayAnim);
 
-    if (env->unk_60) {
-        OverworldAnimManager_Finish(env->unk_60);
+    if (env->pushPlayerUpAnim) {
+        OverworldAnimManager_Finish(env->pushPlayerUpAnim);
     }
 
     if (env->task) {
         FieldMap_021F0EFC(env->task);
     }
 
-    OverworldAnimManager_Finish(cutIn->unk_250);
+    OverworldAnimManager_Finish(cutIn->flyAwayAnim);
 }
 
 static BOOL FlyAway_InitBirdSprite(OverworldAnimManager *param0, void *taskEnv)
@@ -2410,7 +2410,7 @@ static void Fly_InitBirdSpritePos(HMCutIn *cutIn)
 {
     VecFx32 birdPosition = { FX32_ONE * (128 + 8), FX32_ONE * (96 - 8), 0 };
     VecFx32 birdScale = { 0x400, 0x400, 0 };
-    FlyTaskEnv *env = OverworldAnimManager_GetFuncsContext(cutIn->unk_250);
+    FlyTaskEnv *env = OverworldAnimManager_GetFuncsContext(cutIn->flyAwayAnim);
 
     env->stage = 1;
     env->state = 0;
@@ -2499,7 +2499,7 @@ static void Fly_PrepareBirdForDescent(HMCutIn *cutIn)
 {
     VecFx32 birdPosition = VEC_FX32(128, 104, 0);
     VecFx32 birdScale = VEC_FX32(1.25, 1.25, 0);
-    FlyTaskEnv *env = OverworldAnimManager_GetFuncsContext(cutIn->unk_250);
+    FlyTaskEnv *env = OverworldAnimManager_GetFuncsContext(cutIn->flyAwayAnim);
 
     env->stage = 2;
     env->state = 0;
@@ -2526,7 +2526,7 @@ static void Fly_PrepareBirdForDescent(HMCutIn *cutIn)
     Sprite_SetAffineZRotation(env->birdSprite, CalcAngleRotationIdx_Wraparound((env->birdRotation) / FX32_ONE));
     Sprite_SetDrawFlag(env->birdSprite, TRUE);
 
-    env->unk_60 = PushPlayerUp(cutIn->unk_244, cutIn->playerSprite);
+    env->pushPlayerUpAnim = PushPlayerUp(cutIn->animManagerList, cutIn->playerSprite);
     cutIn->forceDrawPlayerSprite = TRUE;
     env->task = FieldMap_021F0EB0(cutIn->fieldSystem, HEAP_ID_FIELD1);
 
@@ -2604,7 +2604,7 @@ static int FlyPickUpPlayer_DescendToCenter(FlyTaskEnv *env)
     }
 
     if (env->descendCount == 12) {
-        FlyPickUpPlayer_SetUpPlayerAnimEnv(env->unk_60);
+        FlyPickUpPlayer_SetUpPlayerAnimEnv(env->pushPlayerUpAnim);
     }
 
     Sprite *playerSprite = env->cutInContainer.cutIn->playerSprite;
@@ -2640,7 +2640,7 @@ static int FlyPickUpPlayer_PrepareForTakeoff(FlyTaskEnv *flyTaskEnv)
     fx32 birdY = spritePos->y;
     flyTaskEnv->playerOffsetY = playerY - birdY;
 
-    FlyPickUpPlayer_TransferPlayerAnimEnv(flyTaskEnv->unk_60);
+    FlyPickUpPlayer_TransferPlayerAnimEnv(flyTaskEnv->pushPlayerUpAnim);
     FieldMap_021F0F10(flyTaskEnv->task, 2, 0, 12);
 
     flyTaskEnv->scaleDelta = FX32_CONST(1. / 16);
@@ -2925,12 +2925,12 @@ static void SysTask_FlyLanding(SysTask *task, void *taskEnv)
     while (sFlyLandingFuncs[flyLandingTaskEnv->state](flyLandingTaskEnv) == TRUE) {}
 
     if (flyLandingTaskEnv->animationInProgress) {
-        if (flyLandingTaskEnv->unk_1D4 != NULL) {
-            OverworldAnimManagerList_Render(flyLandingTaskEnv->unk_1D4);
+        if (flyLandingTaskEnv->animManagerList != NULL) {
+            OverworldAnimManagerList_Render(flyLandingTaskEnv->animManagerList);
         }
 
-        if (flyLandingTaskEnv->unk_18.spriteList != NULL) {
-            SpriteList_Update(flyLandingTaskEnv->unk_18.spriteList);
+        if (flyLandingTaskEnv->resources.spriteList != NULL) {
+            SpriteList_Update(flyLandingTaskEnv->resources.spriteList);
         }
     }
 }
@@ -2944,38 +2944,38 @@ static BOOL FlyLanding_HidePlayerMapObj(FlyLandingEnv *taskEnv)
 
 static BOOL FlyLanding_LoadResources(FlyLandingEnv *taskEnv)
 {
-    taskEnv->unk_1D4 = OverworldAnimManagerList_New(HEAP_ID_FIELD1, 32);
-    FlyLanding_InitResourceData(&taskEnv->unk_18, 32, 2, 2, 2, 1, 4, 3, 4, 2);
+    taskEnv->animManagerList = OverworldAnimManagerList_New(HEAP_ID_FIELD1, 32);
+    FlyLanding_InitResourceData(&taskEnv->resources, 32, 2, 2, 2, 1, 4, 3, 4, 2);
 
     {
         NARC *narc = FlyLanding_GetCutInNarc();
 
-        FlyLanding_LoadCharResources(&taskEnv->unk_18, narc, 7, 0);
-        FlyLanding_LoadPaletteResources(&taskEnv->unk_18, narc, 3, 0);
-        FlyLanding_LoadCellResources(&taskEnv->unk_18, narc, 8, 0);
+        FlyLanding_LoadCharResources(&taskEnv->resources, narc, 7, 0);
+        FlyLanding_LoadPaletteResources(&taskEnv->resources, narc, 3, 0);
+        FlyLanding_LoadCellResources(&taskEnv->resources, narc, 8, 0);
 
-        FlyLanding_RequestCharResources(&taskEnv->unk_18, 0);
-        FlyLanding_FreeSpaceForPaletteResources(&taskEnv->unk_18, 0);
-        FlyLanding_ReleaseCharResources(&taskEnv->unk_18, 0);
-        FlyLanding_ReleasePaletteResources(&taskEnv->unk_18, 0);
+        FlyLanding_RequestCharResources(&taskEnv->resources, 0);
+        FlyLanding_FreeSpaceForPaletteResources(&taskEnv->resources, 0);
+        FlyLanding_ReleaseCharResources(&taskEnv->resources, 0);
+        FlyLanding_ReleasePaletteResources(&taskEnv->resources, 0);
 
         if (taskEnv->playerGender == 0) {
-            FlyLanding_LoadCharResources(&taskEnv->unk_18, narc, 13, 2);
-            FlyLanding_LoadCellResources(&taskEnv->unk_18, narc, 14, 2);
-            FlyLanding_LoadAnimResources(&taskEnv->unk_18, narc, 15, 1);
+            FlyLanding_LoadCharResources(&taskEnv->resources, narc, 13, 2);
+            FlyLanding_LoadCellResources(&taskEnv->resources, narc, 14, 2);
+            FlyLanding_LoadAnimResources(&taskEnv->resources, narc, 15, 1);
 
-            FlyLanding_RequestCharResources(&taskEnv->unk_18, 2);
-            FlyLanding_ReleaseCharResources(&taskEnv->unk_18, 2);
+            FlyLanding_RequestCharResources(&taskEnv->resources, 2);
+            FlyLanding_ReleaseCharResources(&taskEnv->resources, 2);
         } else {
-            FlyLanding_LoadCharResources(&taskEnv->unk_18, narc, 16, 2);
-            FlyLanding_LoadPaletteResources(&taskEnv->unk_18, narc, 4, 1);
-            FlyLanding_LoadCellResources(&taskEnv->unk_18, narc, 17, 2);
-            FlyLanding_LoadAnimResources(&taskEnv->unk_18, narc, 18, 1);
+            FlyLanding_LoadCharResources(&taskEnv->resources, narc, 16, 2);
+            FlyLanding_LoadPaletteResources(&taskEnv->resources, narc, 4, 1);
+            FlyLanding_LoadCellResources(&taskEnv->resources, narc, 17, 2);
+            FlyLanding_LoadAnimResources(&taskEnv->resources, narc, 18, 1);
 
-            FlyLanding_RequestCharResources(&taskEnv->unk_18, 2);
-            FlyLanding_FreeSpaceForPaletteResources(&taskEnv->unk_18, 1);
-            FlyLanding_ReleaseCharResources(&taskEnv->unk_18, 2);
-            FlyLanding_ReleasePaletteResources(&taskEnv->unk_18, 1);
+            FlyLanding_RequestCharResources(&taskEnv->resources, 2);
+            FlyLanding_FreeSpaceForPaletteResources(&taskEnv->resources, 1);
+            FlyLanding_ReleaseCharResources(&taskEnv->resources, 2);
+            FlyLanding_ReleasePaletteResources(&taskEnv->resources, 1);
         }
 
         NARC_dtor(narc);
@@ -2987,11 +2987,11 @@ static BOOL FlyLanding_LoadResources(FlyLandingEnv *taskEnv)
 
 static BOOL FlyLanding_InitAnimTasks(FlyLandingEnv *env)
 {
-    env->playerSprite = FlyLanding_InitPlayerSprite(&env->unk_18, env->playerGender);
+    env->playerSprite = FlyLanding_InitPlayerSprite(&env->resources, env->playerGender);
     Sprite_SetDrawFlag(env->playerSprite, TRUE);
 
-    env->unk_1D8 = CreateFlyLandingAnimTasks(env->fieldSystem, env->unk_1D4, &env->unk_18, env->playerSprite);
-    FlyLanding_InitEnv(env->unk_1D8);
+    env->flyLandingAnim = CreateFlyLandingAnimTasks(env->fieldSystem, env->animManagerList, &env->resources, env->playerSprite);
+    FlyLanding_InitEnv(env->flyLandingAnim);
 
     env->state++;
     env->animationInProgress = TRUE;
@@ -3001,11 +3001,11 @@ static BOOL FlyLanding_InitAnimTasks(FlyLandingEnv *env)
 
 static BOOL FlyLanding_EndTaskIfAnimationEnded(FlyLandingEnv *env)
 {
-    if (FlyLanding_HasAnimationEnded(env->unk_1D8) != 2) {
+    if (FlyLanding_HasAnimationEnded(env->flyLandingAnim) != 2) {
         return FALSE;
     }
 
-    FlyLanding_SetTasksDone(env->unk_1D8);
+    FlyLanding_SetTasksDone(env->flyLandingAnim);
     env->state++;
 
     return FALSE;
@@ -3013,8 +3013,8 @@ static BOOL FlyLanding_EndTaskIfAnimationEnded(FlyLandingEnv *env)
 
 static BOOL FlyLanding_CleanupResources(FlyLandingEnv *env)
 {
-    OverworldAnimManagerList_FinishAndFree(env->unk_1D4);
-    FlyLanding_ReleaseResources(&env->unk_18);
+    OverworldAnimManagerList_FinishAndFree(env->animManagerList);
+    FlyLanding_ReleaseResources(&env->resources);
 
     env->animationInProgress = FALSE;
     env->animationFinished = TRUE;
@@ -3102,14 +3102,14 @@ static void CutIn_CreateDrawPlayerSpriteTasks(HMCutIn *cutIn)
     wrapper.playerSprite = cutIn->playerSprite;
     wrapper.cutIn = cutIn;
 
-    cutIn->unk_254 = OverworldAnimManagerList_InitManager(cutIn->unk_244, &sShowHidePlayerSpriteFuncs, &initialPosition, 0, &wrapper, 134);
+    cutIn->showHidePlayerAnim = OverworldAnimManagerList_InitManager(cutIn->animManagerList, &sShowHidePlayerSpriteFuncs, &initialPosition, 0, &wrapper, 134);
 }
 
 static void CutIn_SetTaskUnk_254Done(HMCutIn *cutIn)
 {
-    if (cutIn->unk_254 != NULL) {
-        OverworldAnimManager_Finish(cutIn->unk_254);
-        cutIn->unk_254 = NULL;
+    if (cutIn->showHidePlayerAnim != NULL) {
+        OverworldAnimManager_Finish(cutIn->showHidePlayerAnim);
+        cutIn->showHidePlayerAnim = NULL;
     }
 }
 

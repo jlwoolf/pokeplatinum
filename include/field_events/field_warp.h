@@ -21,7 +21,7 @@ typedef struct FieldWarp {
     enum FieldWarpType warpType;
     SysTask *animationTask;
     SysTask *cutInTask;
-    SysTask *unk_14;
+    SysTask *cameraDistanceTask;
     MapObject *player;
     FieldSystem *fieldSystem;
     Pokemon *mon;

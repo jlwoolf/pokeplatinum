@@ -526,19 +526,19 @@ static void Contest_InitNPCContestants(Contest *contest, int isGameCompleted, in
     }
 
     for (i = 1; i < CONTEST_NUM_PARTICIPANTS; i++) {
-        contest->data.trainerGenders[i] = contest->data.opponentData[i].unk_20_12;
+        contest->data.trainerGenders[i] = contest->data.opponentData[i].gender;
     }
 
     for (i = 1; i < CONTEST_NUM_PARTICIPANTS; i++) {
-        contest->data.cameraFlashVariant[i] = contest->data.opponentData[i].unk_20_14;
+        contest->data.cameraFlashVariant[i] = contest->data.opponentData[i].cameraFlashVariant;
     }
 
     for (i = 1; i < CONTEST_NUM_PARTICIPANTS; i++) {
-        contest->data.monContestFame[i] = contest->data.opponentData[i].unk_2E;
+        contest->data.monContestFame[i] = contest->data.opponentData[i].monContestFame;
     }
 
     for (i = 1; i < CONTEST_NUM_PARTICIPANTS; i++) {
-        contest->data.contestantObjEventGFX[i] = contest->data.opponentData[i].unk_08;
+        contest->data.contestantObjEventGFX[i] = contest->data.opponentData[i].contestantObjEventGFX;
     }
 
     Contest_SetupNPCPhotos(contest, HEAP_ID_FIELD2);
@@ -977,7 +977,7 @@ static void Contest_LinkContestCommTask(SysTask *sysTask, void *param1)
         }
 
         for (; contestantID < CONTEST_NUM_PARTICIPANTS; contestantID++) {
-            contest->data.trainerGenders[contestantID] = contest->data.opponentData[contestantID].unk_20_12;
+            contest->data.trainerGenders[contestantID] = contest->data.opponentData[contestantID].gender;
         }
     }
 
@@ -1692,7 +1692,7 @@ u16 Contest_GetSeededRNGNext(u32 seed, u32 *destRNGVal)
 static void Contest_FillContestantSummary(Contest *contest, int contestantID, ContestantSummary *param2)
 {
     param2->trainerGender = contest->data.trainerGenders[contestantID];
-    param2->unk_01 = contest->data.cameraFlashVariant[contestantID];
+    param2->cameraFlashVariant = contest->data.cameraFlashVariant[contestantID];
     param2->monContestFame = contest->data.monContestFame[contestantID];
     param2->contestantObjEventGFX = contest->data.contestantObjEventGFX[contestantID];
 }

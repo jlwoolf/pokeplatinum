@@ -173,7 +173,7 @@ void contest_competition_022478D0(VisualCompetition *param0, int param1)
 
     GF_ASSERT(param0->scene.trainerSprite == NULL);
 
-    SpriteSystem_SetTrainerFrontSpriteTemplate(&v0, param0->contest->data.opponentData[param1].unk_0A);
+    SpriteSystem_SetTrainerFrontSpriteTemplate(&v0, param0->contest->data.opponentData[param1].trainerSpriteID);
     param0->scene.trainerSprite = PokemonSpriteManager_CreateSprite(param0->scene.pokemonSpriteManager, &v0, 320, 32, (-0x200 - 0x40), 3, NULL, NULL);
 }
 
